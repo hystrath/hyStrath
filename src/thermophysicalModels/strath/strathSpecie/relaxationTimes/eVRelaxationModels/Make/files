@@ -1,0 +1,7 @@
+
+eVRelaxationModel/eVRelaxationModel.C
+eVModel/eVModel.C
+
+BourdonVervisch/BourdonVervisch.C
+
+LIB = $(FOAM_USER_LIBBIN)/libeVRelaxationModels

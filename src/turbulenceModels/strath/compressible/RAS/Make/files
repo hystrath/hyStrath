@@ -1,0 +1,44 @@
+/* RAS turbulence models */
+RASModel/RAS2Model.C
+
+laminar/laminar.C
+kOmegaSST/kOmegaSST.C
+kEpsilon/kEpsilon.C
+realizableKE/realizableKE.C
+SpalartAllmaras/SpalartAllmaras.C
+
+/* Wall functions */
+wallFunctions = derivedFvPatchFields/wallFunctions
+
+alphatWallFunctions = $(wallFunctions)/alphatWallFunctions
+$(alphatWallFunctions)/alphatWallFunction/alphatWallFunctionFvPatchScalarField.C
+$(alphatWallFunctions)/alphatJayatillekeWallFunction/alphatJayatillekeWallFunctionFvPatchScalarField.C
+
+mutWallFunctions = $(wallFunctions)/mutWallFunctions
+$(mutWallFunctions)/mutWallFunction/mutWallFunctionFvPatchScalarField.C
+
+$(mutWallFunctions)/mutkWallFunction/mutkWallFunctionFvPatchScalarField.C
+$(mutWallFunctions)/mutkRoughWallFunction/mutkRoughWallFunctionFvPatchScalarField.C
+
+$(mutWallFunctions)/mutUWallFunction/mutUWallFunctionFvPatchScalarField.C
+$(mutWallFunctions)/mutURoughWallFunction/mutURoughWallFunctionFvPatchScalarField.C
+$(mutWallFunctions)/mutUSpaldingWallFunction/mutUSpaldingWallFunctionFvPatchScalarField.C
+$(mutWallFunctions)/mutLowReWallFunction/mutLowReWallFunctionFvPatchScalarField.C
+
+epsilonWallFunctions = $(wallFunctions)/epsilonWallFunctions
+$(epsilonWallFunctions)/epsilonWallFunction/epsilonWallFunctionFvPatchScalarField.C
+$(epsilonWallFunctions)/epsilonLowReWallFunction/epsilonLowReWallFunctionFvPatchScalarField.C
+
+omegaWallFunctions = $(wallFunctions)/omegaWallFunctions
+$(omegaWallFunctions)/omegaWallFunction/omegaWallFunctionFvPatchScalarField.C
+$(omegaWallFunctions)/omegaLowReWallFunction/omegaLowReWallFunctionFvPatchScalarField.C
+
+kqRWallFunctions = $(wallFunctions)/kqRWallFunctions
+$(kqRWallFunctions)/kqRWallFunction/kqRWallFunctionFvPatchFields.C
+$(kqRWallFunctions)/kLowReWallFunction/kLowReWallFunctionFvPatchScalarField.C
+
+/* Patch fields */
+
+backwardsCompatibility/wallFunctions/backwardsCompatibilityWallFunctions.C
+
+LIB = $(FOAM_USER_LIBBIN)/libstrathCompressibleRASModels

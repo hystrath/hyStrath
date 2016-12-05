@@ -1,0 +1,10 @@
+
+binaryDiffusivityModel/binaryDiffusivityModel.C
+
+noBinaryDiffusivityModel/noBinaryDiffusivityModel.C
+constant/constant.C
+Hirschfelder/Hirschfelder.C
+
+diffusivityModel/diffusivityModel.C
+
+LIB = $(FOAM_USER_LIBBIN)/libdiffusivityModels

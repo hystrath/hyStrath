@@ -1,0 +1,10 @@
+
+VTRelaxationModel/VTRelaxationModel.C
+VTModel/VTModel.C
+
+MillikanWhite/MillikanWhite.C
+MillikanWhitePark/MillikanWhitePark.C
+SchwartzSlawskyHerzfeld/SchwartzSlawskyHerzfeld.C
+
+
+LIB = $(FOAM_USER_LIBBIN)/libVTRelaxationModels
