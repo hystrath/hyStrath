@@ -12,7 +12,7 @@ Open-source release on 01/03/2017 including
 
 Available for OpenFOAM versions
 + 2.3.0: http://openfoam.org/download/2-3-0-ubuntu/
-+ 2.4.0: http://openfoam.org/download/2-3-0-ubuntu/
++ 2.4.0: http://openfoam.org/download/2-4-0-ubuntu/
 + 2.4.0-MNF: https://github.com/MicroNanoFlows/OpenFOAM-2.4.0-MNF
 
   
