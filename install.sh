@@ -44,5 +44,5 @@ cd $sendingDir/applications/solvers/compressible/hy2Foam/
 cd $currentDir
 
 echo -e "
-hyStrath betaRelease has been compiled. Hope you'll enjoy it $userName :)
+hyStrath betaRelease has been compiled. Hope you'll enjoy it, $userName :)
 "
