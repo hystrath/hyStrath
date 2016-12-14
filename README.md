@@ -1,6 +1,8 @@
 # hyStrath
 
-Related article to be found at: http://www.mdpi.com/2226-4310/3/4/34
+Related articles to be found at: 
++ http://www.mdpi.com/2226-4310/3/4/34/html
++ http://www.mdpi.com/2226-4310/3/4/45/html
 
 Beta version: 05/12/2016
 
