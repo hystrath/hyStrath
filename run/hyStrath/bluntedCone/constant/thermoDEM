@@ -1,0 +1,76 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.3.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      thermoDEM;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+N2
+{
+    specie
+    {
+        nMoles          1;
+        molWeight       28.0134;
+        particleType    2;
+        charge          0;
+        diameter        4.17e-10;
+        dissocEnergy    3.36e7;
+        omega           0.74;
+        noVibTemp       1;
+        noElecLevels    15; 
+    }
+    thermodynamics
+    {
+        decoupledCvCoeffs    ( 1.5 1 1 0 0 0 0 );
+        vibrationalList      ( 1  3371 );
+        electronicList       (  
+                                1  0
+                                3  7.223157e4
+                                6  8.577863e4
+                                6  8.605027e4
+                                3  9.535119e4
+                                1  9.805636e4
+                                2  9.968268e4
+                                2  1.048976e5
+                                5  1.116490e5
+                                1  1.225836e5
+                                6  1.248857e5
+                                6  1.282476e5
+                                10 1.338061e5
+                                6  1.404296e5
+                                6  1.504959e5
+                             );               
+    }
+    transport
+    {
+        constant
+	      {
+	          mu          0;
+	      }
+        
+	      SutherlandEucken
+	      {
+          	As          1.41e-6;
+          	Ts          111.0;
+	      }
+        
+        BlottnerEucken
+	      {
+		        A           2.68e-2;
+        	  B           3.18e-1;
+        	  C          -1.13e1;
+	      }
+    }
+}
+
+// ************************************************************************* //

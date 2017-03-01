@@ -1,0 +1,44 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.3.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      thermophysicalProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+thermoType
+{
+    type            heRho2Thermo;
+    mixture         reacting2Mixture;
+    transport       BlottnerEucken;
+    thermo          decoupledEnergyModes;
+    energy          sensible2InternalEnergy;
+    equationOfState perfect2Gas;
+    specie          advancedSpecie;
+}
+
+chemistryReader foam2ChemistryReader;
+
+foamChemistryFile "$FOAM_CASE/constant/hTCReactionsDPLR";
+
+foamChemistryThermoFile "$FOAM_CASE/constant/thermoDEM";
+
+twoTemperatureDictFile "$FOAM_CASE/constant/thermo2TModel";
+
+temperatureBounds
+{
+    Tlow    210;
+    Thigh   17000;
+    ThighPatches   1550;
+}
+
+// ************************************************************************* //
