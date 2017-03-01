@@ -31,4 +31,5 @@ Installation: ./install.sh
 Questions: hy2Foam@gmail.com
 
 Contributors: Vincent Casseau, Daniel E.R. Espinoza and Dr Thomas J. Scanlon
+About us: http://www.jwfl.org.uk/
 
