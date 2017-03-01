@@ -10,6 +10,17 @@ surfaceScalarField sigmaDotU
     & (a_pos*U_pos + a_neg*U_neg)
 );
 
+/*surfaceScalarField a_pos ("a_pos", Foam::pos(phiv_pos));
+
+surfaceScalarField sigmaDotU
+(
+    "sigmaDotU",
+    (
+        fvc::interpolate(muEff)*mesh.magSf()*fvc::snGrad(U)
+      + (mesh.Sf() & fvc::interpolate(tauMC))
+    )
+    & (a_pos*U_pos + (1-a_pos)*U_neg)
+);*/
 
 solve
 (

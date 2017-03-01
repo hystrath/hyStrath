@@ -96,7 +96,6 @@ public:
         const label rRef,
         const scalar p,
         const scalar T,
-        const scalar Tv, // MODIFIED VINCENT
         simpleMatrix<scalar>& RR
     ) const;
 
@@ -116,12 +115,12 @@ public:
     virtual void solve
     (
         scalarField& c,
-        scalarField& cfwd,
-        scalar& rriirN, // NEW VINCENT
-        scalar& rriirO, // NEW VINCENT
+        scalarField& cfwd, // MODIFIED VINCENT
+        scalarField& ceiiN, // NEW VINCENT
+        scalarField& ceiiO, // NEW VINCENT
         scalar& T,
-        scalar& Tv, // MODIFIED VINCENT
-        List<scalar>& spTv, // NEW VINCENT
+        scalar& Tv,
+        List<scalar>& spTv,
         scalar& p,
         scalar& deltaT,
         scalar& subDeltaT

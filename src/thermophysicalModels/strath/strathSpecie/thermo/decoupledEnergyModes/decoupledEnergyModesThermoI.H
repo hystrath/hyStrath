@@ -616,14 +616,8 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::zetar
 ) const
 {
     const cvCoeffsArray& a = cvCoeffs(Tt);
-    if (a[1] != 0.0)
-    {
-        return 2.0; 
-    }
-    else
-    {
-        return 0.0;
-    }    
+    
+    return 2.0*a[1]; 
 }
 
 

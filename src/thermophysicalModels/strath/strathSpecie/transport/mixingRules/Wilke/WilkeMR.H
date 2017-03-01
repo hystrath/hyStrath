@@ -57,9 +57,6 @@ protected:
   
     // Protected data
     
-        //- Thermodynamic data of the species
-        const PtrList<ThermoType>& speciesThermo_;
-        
         // Weight coefficient in WilkeMR's mixing rule
         PtrList<volScalarField> phi_;
         
@@ -107,35 +104,35 @@ public:
         //  becouse depends on thermoType template
         inline virtual scalar mu(const label i, const scalar p, const scalar Tt) const
         {
-            return speciesThermo_[i].mu(p, Tt);
+            return thermo_.composition().mu(i, p, Tt);
         }
         
         //- Thermal conductivity, trans-rotational mode, 
         //  for a specie given by index.
         inline virtual scalar kappatr(const label i, const scalar p, const scalar Tt) const
         {
-            return speciesThermo_[i].kappatr(p, Tt);
+            return thermo_.composition().kappatr(i, p, Tt);
         }
         
         //- Thermal conductivity, vib-electronic mode, 
         //  for a specie given by index.
         inline virtual scalar kappave(const label i, const scalar p, const scalar Tt, const scalar Tve) const
         {
-            return speciesThermo_[i].kappave(p, Tt, Tve);
+            return thermo_.composition().kappave(i, p, Tt, Tve);
         }
         
         //- Thermal diffusivity [kg/ms], trans-rotational mode, 
         //  for a specie given by index.
         inline virtual scalar alphatr(const label i, const scalar p, const scalar Tt) const
         {
-            return speciesThermo_[i].alphatr(p, Tt);
+            return thermo_.composition().alphatr(i, p, Tt);
         }
         
         //- Thermal diffusivity [kg/ms], vib-electronic mode, 
         //  for a specie given by index.
         inline virtual scalar alphave(const label i, const scalar p, const scalar Tt, const scalar Tve) const
         {
-            return speciesThermo_[i].alphave(p, Tt, Tve);
+            return thermo_.composition().alphave(i, p, Tt, Tve);
         }
         
         // Calculations and updates of the different fields

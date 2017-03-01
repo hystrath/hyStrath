@@ -28,8 +28,10 @@ License
 
 #include "noSpeciesDiffusion.H"
 #include "Fick.H"
+#include "SchmidtNumber.H"
 #include "LewisNumber.H"
 #include "modifiedLewisNumber.H"
+#include "StefanMaxwell.H"
 
 #include "thermoPhysics2Types.H"
 
@@ -44,55 +46,75 @@ namespace Foam
 
 makeMultiSpeciesTransportModel(noSpeciesDiffusion, demConstGasHThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(Fick, demConstGasHThermoPhysicsH2TGD);
+makeMultiSpeciesTransportModel(SchmidtNumber, demConstGasHThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(LewisNumber, demConstGasHThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(modifiedLewisNumber, demConstGasHThermoPhysicsH2TGD);
+makeMultiSpeciesTransportModel(StefanMaxwell, demConstGasHThermoPhysicsH2TGD);
 
 makeMultiSpeciesTransportModel(noSpeciesDiffusion, demGasHThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(Fick, demGasHThermoPhysicsH2TGD);
+makeMultiSpeciesTransportModel(SchmidtNumber, demGasHThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(LewisNumber, demGasHThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(modifiedLewisNumber, demGasHThermoPhysicsH2TGD);
+makeMultiSpeciesTransportModel(StefanMaxwell, demGasHThermoPhysicsH2TGD);
 
 makeMultiSpeciesTransportModel(noSpeciesDiffusion, demBEGasHThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(Fick, demBEGasHThermoPhysicsH2TGD);
+makeMultiSpeciesTransportModel(SchmidtNumber, demBEGasHThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(LewisNumber, demBEGasHThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(modifiedLewisNumber, demBEGasHThermoPhysicsH2TGD);
+makeMultiSpeciesTransportModel(StefanMaxwell, demBEGasHThermoPhysicsH2TGD);
 
 makeMultiSpeciesTransportModel(noSpeciesDiffusion, demPLEGasHThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(Fick, demPLEGasHThermoPhysicsH2TGD);
+makeMultiSpeciesTransportModel(SchmidtNumber, demPLEGasHThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(LewisNumber, demPLEGasHThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(modifiedLewisNumber, demPLEGasHThermoPhysicsH2TGD);
+makeMultiSpeciesTransportModel(StefanMaxwell, demPLEGasHThermoPhysicsH2TGD);
 
 makeMultiSpeciesTransportModel(noSpeciesDiffusion, demCEAGasHThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(Fick, demCEAGasHThermoPhysicsH2TGD);
+makeMultiSpeciesTransportModel(SchmidtNumber, demCEAGasHThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(LewisNumber, demCEAGasHThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(modifiedLewisNumber, demCEAGasHThermoPhysicsH2TGD);
+makeMultiSpeciesTransportModel(StefanMaxwell, demCEAGasHThermoPhysicsH2TGD);
 
 // Based on sensible internal energy
 
 makeMultiSpeciesTransportModel(noSpeciesDiffusion, demConstGasEThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(Fick, demConstGasEThermoPhysicsH2TGD);
+makeMultiSpeciesTransportModel(SchmidtNumber, demConstGasEThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(LewisNumber, demConstGasEThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(modifiedLewisNumber, demConstGasEThermoPhysicsH2TGD);
+makeMultiSpeciesTransportModel(StefanMaxwell, demConstGasEThermoPhysicsH2TGD);
 
 makeMultiSpeciesTransportModel(noSpeciesDiffusion, demGasEThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(Fick, demGasEThermoPhysicsH2TGD);
+makeMultiSpeciesTransportModel(SchmidtNumber, demGasEThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(LewisNumber, demGasEThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(modifiedLewisNumber, demGasEThermoPhysicsH2TGD);
+makeMultiSpeciesTransportModel(StefanMaxwell, demGasEThermoPhysicsH2TGD);
 
 makeMultiSpeciesTransportModel(noSpeciesDiffusion, demBEGasEThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(Fick, demBEGasEThermoPhysicsH2TGD);
+makeMultiSpeciesTransportModel(SchmidtNumber, demBEGasEThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(LewisNumber, demBEGasEThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(modifiedLewisNumber, demBEGasEThermoPhysicsH2TGD);
+makeMultiSpeciesTransportModel(StefanMaxwell, demBEGasEThermoPhysicsH2TGD);
 
 makeMultiSpeciesTransportModel(noSpeciesDiffusion, demPLEGasEThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(Fick, demPLEGasEThermoPhysicsH2TGD);
+makeMultiSpeciesTransportModel(SchmidtNumber, demPLEGasEThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(LewisNumber, demPLEGasEThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(modifiedLewisNumber, demPLEGasEThermoPhysicsH2TGD);
+makeMultiSpeciesTransportModel(StefanMaxwell, demPLEGasEThermoPhysicsH2TGD);
 
 makeMultiSpeciesTransportModel(noSpeciesDiffusion, demCEAGasEThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(Fick, demCEAGasEThermoPhysicsH2TGD);
+makeMultiSpeciesTransportModel(SchmidtNumber, demCEAGasEThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(LewisNumber, demCEAGasEThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(modifiedLewisNumber, demCEAGasEThermoPhysicsH2TGD);
+makeMultiSpeciesTransportModel(StefanMaxwell, demCEAGasEThermoPhysicsH2TGD);
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

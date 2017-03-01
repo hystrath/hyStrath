@@ -44,6 +44,7 @@ void Foam::modifiedLewisNumber<ThermoType>::updateCoefficients()
                 IOobject::NO_WRITE
             ),
             this->mesh_,
+            // In this case, rho*Ds = cste independent from the temperature as opposed to the LewisNumber class
             dimensionedScalar("constantrhoD", dimMass/dimLength/dimTime, Le_)
         );
         

@@ -75,7 +75,7 @@ Foam::advancedSpecie::advancedSpecie(const dictionary& dict)
     nMoles_(readScalar(dict.subDict("specie").lookup("nMoles"))),
     molWeight_(readScalar(dict.subDict("specie").lookup("molWeight"))),
     particleType_(readScalar(dict.subDict("specie").lookup("particleType"))),
-    particleCharge_(dict.subDict("specie").lookupOrDefault<scalar>("particleCharge", 0)),
+    particleCharge_(dict.subDict("specie").lookupOrDefault<scalar>("charge", 0)),
     diameter_(readScalar(dict.subDict("specie").lookup("diameter"))),
     omega_(readScalar(dict.subDict("specie").lookup("omega"))),
     vibrationalList_(dict.subDict("thermodynamics").lookup("vibrationalList")),
@@ -94,7 +94,7 @@ void Foam::advancedSpecie::write(Ostream& os) const
     dict.add("nMoles", nMoles_);
     dict.add("molWeight", molWeight_);
     dict.add("particleType", particleType_);
-    dict.add("particleCharge", particleCharge_);
+    dict.add("charge", particleCharge_);
     dict.add("diameter", diameter_);
     dict.add("omega", omega_);
     dict2.add("vibrationalList", vibrationalList_);

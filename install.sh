@@ -39,10 +39,29 @@ wmake libso
 cd $sendingDir/applications/solvers/compressible/hy2Foam/
 ./Allwmake
 
+#---- utilities ----
+cd $sendingDir/applications/utilities/postProcessing/wall/pressureCoeff
+wclean
+wmake
+
+cd $sendingDir/applications/utilities/postProcessing/wall/frictionCoeff2T
+wclean
+wmake
+
+cd $sendingDir/applications/utilities/postProcessing/wall/yPlus2T
+wclean
+wmake
+
+cd $sendingDir/applications/utilities/postProcessing/wall/StantonNumber
+wclean
+wmake
+
+
+
 
 # re-set to the initial directory ---------------------------------------------
 cd $currentDir
 
 echo -e "
-hyStrath betaRelease has been compiled. Hope you'll enjoy it, $userName :)
+cfdStrath has now been compiled. Hope you'll enjoy it $userName :)
 "

@@ -131,3 +131,42 @@ else
     ev = rhoEv/rho;
 }
 
+
+// NEW VINCENT 22/03/2016 *****************************************************
+// TODO ongoing coding concerning multiple vibrational temperatures for 
+// triatomic molecules
+/*PtrList<PtrList<volScalarField> >& hevk_mode = composition.hevel_mode(); 
+
+PtrList<PtrList<volScalarField> > rhoEvk_mode(Y.size());
+forAll (rhoEvk_mode, speciei)
+{ 
+  rhoEvk_mode.set
+  (
+      speciei, 
+      new PtrList<volScalarField>(composition.noVibrationalTemp(speciei))
+  );
+}  
+
+forAll (rhoEvk_mode, speciei)
+{  
+  forAll (rhoEvk_mode[speciei], vibMode)
+  {
+    rhoEvk_mode[speciei].set
+    (
+        vibMode,
+        new volScalarField
+        (
+            IOobject
+            (
+                "rhoEv_" + Y[speciei].name() + "." + name(vibMode+1),
+                runTime.timeName(),
+                mesh,
+                IOobject::NO_READ,
+                IOobject::NO_WRITE
+            ),
+            pD[speciei]*hevk_mode[speciei][vibMode]
+        )
+    );
+  }
+}*/
+// END NEW VINCENT 22/03/2016 *************************************************

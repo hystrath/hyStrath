@@ -44,6 +44,8 @@ SourceFiles
 
 #include "mixedFvPatchFields.H"
 
+#include "rho2ReactionThermo.H" // NEW VINCENT 15/02/2017
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
@@ -57,6 +59,14 @@ class mixed2VELMixEnergyFvPatchScalarField
 :
     public mixedFvPatchScalarField
 {
+
+private:
+
+    // Private data
+
+        // Thermo package that contains species patch data
+        const rho2ReactionThermo& thermo_; // NEW VINCENT 15/02/201
+        
 
 public:
 

@@ -26,7 +26,7 @@ Class
     Foam::multiSpeciesTransportModel
 
 Description
-    Abstract base class for multispecies transport models.
+    Abstract base class for multispecies mass transport model models.
 
 SourceFiles
     multiSpeciesTransportModelI.H
@@ -171,6 +171,20 @@ public:
 
         //- Update the species diffusion coefficients
         virtual void correct() = 0;
+        
+        //- Solve the mass transport equations without reactions
+        /*virtual scalar correct
+        (
+            multivariateSurfaceInterpolationScheme<scalar>::fieldTable& fields
+        ) = 0;*/
+
+        //- Solve the mass transport equations with reactions
+        /*scalar correct
+        (
+            volScalarField& kappa,
+            //const rho2ChemistryModel& chemistry,
+            multivariateSurfaceInterpolationScheme<scalar>::fieldTable& fields
+        );*/
         
         //- Get the mass flux for specie i and store it into spMassFlux
         void getSpeciesMassFlux(const label i, const surfaceScalarField& flux);

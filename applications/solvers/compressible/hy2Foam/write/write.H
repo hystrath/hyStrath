@@ -6,11 +6,20 @@ composition.write();
 
 if(not downgradeSingleT)
 {
-    if(noSolvedVibEq > 1)
+    if(not hyLight) 
     {
-        thermo.Tv().write();
+        thermo.T().write();
+        
+        if(noSolvedVibEq > 1)
+        {
+            thermo.Tv().write();
+        }
     }
-    if(not hyLight) thermo.T().write();
+}
+
+if(downgradeSingleTv)
+{
+    thermo.Tv().write();
 }
 
 

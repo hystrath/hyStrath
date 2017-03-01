@@ -38,10 +38,24 @@ Foam::relaxationTimeModel::QVT(label speciei) const
 }
 
 
+inline const Foam::volScalarField&
+Foam::relaxationTimeModel::QVT(const word& specieName) const
+{
+    return QVT_[solvedVibEqSpecies()[specieName]];
+}
+
+
 inline Foam::volScalarField&
 Foam::relaxationTimeModel::QVT(label speciei)
 {
     return QVT_[speciei];
+}
+
+
+inline Foam::volScalarField&
+Foam::relaxationTimeModel::QVT(const word& specieName)
+{
+    return QVT_[solvedVibEqSpecies()[specieName]];
 }
 
 

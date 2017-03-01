@@ -73,8 +73,8 @@ public:
         (
             scalarField &c,
             scalar& T,
-            scalar& Tv, // NEW VINCENT
-            List<scalar>& spTv, // NEW VINCENT
+            scalar& Tv,
+            List<scalar>& spTv,
             scalar& p,
             scalar& deltaT,
             scalar& subDeltaT
@@ -85,11 +85,11 @@ public:
         (
             scalarField& c,
             scalarField& cwfd, // NEW VINCENT
-            scalar& rriirN, // NEW VINCENT
-            scalar& rriirO, // NEW VINCENT
+            scalarField& ceiiN, // NEW VINCENT
+            scalarField& ceiiO, // NEW VINCENT
             scalar& T,
-            scalar& Tv, // NEW VINCENT
-            List<scalar>& spTv, // NEW VINCENT
+            scalar& Tv,
+            List<scalar>& spTv,
             scalar& p,
             scalar& deltaT,
             scalar& subDeltaT

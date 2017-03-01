@@ -78,6 +78,12 @@ class chemistry2Model
         template<class DeltaTType>
         scalar solve(const DeltaTType& deltaT);
         
+        //- Return the modified temperature when bounding (fixed min value) is
+        //  required. Useful when equilibrium constant is a very small value
+        //  cf Scalabrin's PhD thesis (2007), Eq. 3.13, p37
+        //  from experience, needed for electron impact reactions
+        scalar modTemperature(const scalar T) const;
+        
 
 protected:
 
@@ -103,23 +109,24 @@ protected:
         //- List of reaction rate per specie [kg/m3/s]
         PtrList<DimensionedField<scalar, volMesh> > RR_;
         
-        //- List of forward reaction rate per specie [kg/m3/s]
-        PtrList<DimensionedField<scalar, volMesh> > RRf_; // NEW VINCENT 25/03/2016
-        
-        scalar reactionRateNplusiir_, reactionRateOplusiir_; // NEW VINCENT 29/03/2016
-        
         // NEW VINCENT 25/03/2016 *********************************************
-        // Park TTv model
+        //- List of forward reaction rate per specie [kg/m3/s]
+        PtrList<DimensionedField<scalar, volMesh> > RRf_;
         
+        //- List of reaction rate for N+ and O+ species for electron impact 
+        //  reactions only [kg/m3/s]
+        PtrList<DimensionedField<scalar, volMesh> > RRIonisedAtomseii_;
+        
+        // Park TTv model
           //- Factor in the preferential model, default value: 0.3
           PtrList<FixedList<scalar, 2> > preferentialFactor_;
           
         // CVDV model 
-        
           //- Reciprocal U factor 
           scalar reciprocalUFactor_;
             
-          //- Number of vibrational energy levels considered in the simple harmonic oscillator model
+          //- Number of vibrational energy levels considered in the simple 
+          //  harmonic oscillator model
           PtrList<label> simpleHarmonicOscillatorVibCutOff_; 
         // END NEW VINCENT 25/03/2016 *****************************************
 
@@ -162,7 +169,11 @@ public:
         inline label nReaction() const;
         
         // NEW VINCENT 25/07/2016 *********************************************
-        inline scalar energyLevelSimpleHarmonicOscillator(const label speciei, const label alpha) const;
+        inline scalar energyLevelSimpleHarmonicOscillator
+        (
+            const label speciei, 
+            const label alpha
+        ) const;
         
         inline scalar termQ(const label speciei, const scalar T) const;
         // END NEW VINCENT 25/07/2016 *****************************************
@@ -251,13 +262,15 @@ public:
             );
             
             // NEW VINCENT 25/03/2016 *****************************************
-            //- Return const access to the forward chemical source terms for specie, i
+            //- Return const access to the forward chemical source terms for 
+            //  specie, i
             inline const DimensionedField<scalar, volMesh>& RRf
             (
                 const label i
             ) const;
 
-            //- Return non const access to forward chemical source terms [kg/m/s3]
+            //- Return non const access to forward chemical source terms 
+            //  units: [kg/m/s3]
             virtual DimensionedField<scalar, volMesh>& RRf
             (
                 const label i
@@ -323,8 +336,8 @@ public:
             (
                 scalarField &c,
                 scalar& T,
-                scalar& Tv, // NEW VINCENT
-                List<scalar>& spTv, // NEW VINCENT 
+                scalar& Tv,
+                List<scalar>& spTv,
                 scalar& p,
                 scalar& deltaT,
                 scalar& subDeltaT
@@ -334,11 +347,11 @@ public:
             (
                 scalarField& c,
                 scalarField& cwfd, // NEW VINCENT
-                scalar& rriirN, // NEW VINCENT
-                scalar& rriirO, // NEW VINCENT
+                scalarField& ceiiN, // NEW VINCENT
+                scalarField& ceiiO, // NEW VINCENT
                 scalar& T,
-                scalar& Tv, // NEW VINCENT
-                List<scalar>& spTv, // NEW VINCENT
+                scalar& Tv,
+                List<scalar>& spTv,
                 scalar& p,
                 scalar& deltaT,
                 scalar& subDeltaT

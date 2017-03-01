@@ -67,6 +67,16 @@ Foam::scalar Foam::Specie2Mixture<MixtureType>::W
 
 
 template<class MixtureType>
+Foam::scalar Foam::Specie2Mixture<MixtureType>::W
+(
+    const word& specieName
+) const
+{
+    return this->getLocalThermo(this->species()[specieName]).W();
+}
+
+
+template<class MixtureType>
 Foam::label Foam::Specie2Mixture<MixtureType>::particleType
 (
     const label speciei

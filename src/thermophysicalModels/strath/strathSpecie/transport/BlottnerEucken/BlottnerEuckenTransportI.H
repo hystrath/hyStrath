@@ -110,12 +110,32 @@ inline Foam::scalar Foam::BlottnerEuckenTransport<Thermo>::mu
 
 
 template<class Thermo>
+inline Foam::scalar Foam::BlottnerEuckenTransport<Thermo>::kappatrans
+(
+    const scalar p, const scalar Tt
+) const
+{
+    return 5.0/2.0*mu(p, Tt)*this->Cv_trans(p, Tt);
+}
+
+
+template<class Thermo>
+inline Foam::scalar Foam::BlottnerEuckenTransport<Thermo>::kappar
+(
+    const scalar p, const scalar Tt
+) const
+{
+    return mu(p, Tt)*this->Cv_r(p, Tt);
+}
+
+
+template<class Thermo>
 inline Foam::scalar Foam::BlottnerEuckenTransport<Thermo>::kappatr
 (
     const scalar p, const scalar Tt
 ) const
 {
-    return 5.0/2.0*mu(p, Tt)*this->Cv_trans(p, Tt) + mu(p, Tt)*this->Cv_r(p, Tt);
+    return kappatrans(p, Tt) + kappar(p, Tt);
 }
 
 
@@ -125,7 +145,7 @@ inline Foam::scalar Foam::BlottnerEuckenTransport<Thermo>::kappave
     const scalar p, const scalar Tt, const scalar Tve
 ) const
 {
-    const scalar eta_s = 1.2;
+    const scalar eta_s = 1.2; // Hard-sphere: (7-2*omega_m)/5 with omega_m = 0.5
     return eta_s*mu(p, Tt)*this->Cv_vel(p, Tve);
 }
 

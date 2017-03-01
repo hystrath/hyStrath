@@ -178,7 +178,7 @@ public:
     //- Destructor
     virtual ~basic2MultiComponentMixture()
     {
-        //delete e_;
+        delete e_;
     }
 
 
@@ -551,6 +551,9 @@ public:
 
             //- Molecular weight [kg/kmol]
             virtual scalar W(const label specieI) const = 0;
+            
+            //- Molecular weight [kg/kmol]
+            virtual scalar W(const word& specieName) const = 0;
             
             // NEW VINCENT **********************************************
             //- Particle Type

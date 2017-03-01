@@ -80,7 +80,7 @@ void Foam::molarMR<ThermoType>::correct()
     scalarField& kappaveCells = tempoKappave.internalField();
     scalarField& alphatrCells = tempoAlphatr.internalField();
     scalarField& alphaveCells = tempoAlphave.internalField();
-    
+
     //- Initialisations
     muCells = 0.0;
     kappatrCells = 0.0;
@@ -103,7 +103,7 @@ void Foam::molarMR<ThermoType>::correct()
         palphave = 0.0;
         
     }
-    
+
     //- Cell values
     forAll(species(), speciei)
     { 
@@ -117,25 +117,22 @@ void Foam::molarMR<ThermoType>::correct()
         scalarField& spkappaveCells = spkappave_[speciei].internalField();
         scalarField& spalphatrCells = spalphatr_[speciei].internalField();
         scalarField& spalphaveCells = spalphave_[speciei].internalField();
-        
+
         forAll(XCells, celli)
         {
             spmuCells[celli] = mu(speciei, pCells[celli], TtCells[celli]);
             muCells[celli] += XCells[celli]*spmuCells[celli];
-                
             spkappatrCells[celli] = kappatr(speciei, pCells[celli], TtCells[celli]);
             kappatrCells[celli] += XCells[celli]*spkappatrCells[celli];  
             
             spkappaveCells[celli] = kappave(speciei, pCells[celli], TtCells[celli], TveCells[celli]);
             kappaveCells[celli] += XCells[celli]*spkappaveCells[celli];
-            
             spalphatrCells[celli] = alphatr(speciei, pCells[celli], TtCells[celli]);
             alphatrCells[celli] += XCells[celli]*spalphatrCells[celli]; 
-            
             spalphaveCells[celli] = alphave(speciei, pCells[celli], TtCells[celli], TveCells[celli]);
             alphaveCells[celli] += XCells[celli]*spalphaveCells[celli];
-        }        
-
+        }      
+          
         //- Patch values
         forAll(X.boundaryField(), patchi)
         {        
@@ -159,22 +156,17 @@ void Foam::molarMR<ThermoType>::correct()
             { 
                 pspmu[facei] = mu(speciei, pp[facei], pTt[facei]);
                 pmu[facei] += pX[facei]*pspmu[facei];       
-                    
                 pspkappatr[facei] = kappatr(speciei, pp[facei], pTt[facei]);
                 pkappatr[facei] += pX[facei]*pspkappatr[facei];  
-                    
                 pspkappave[facei] = kappave(speciei, pp[facei], pTt[facei], pTve[facei]);
                 pkappave[facei] += pX[facei]*pspkappave[facei];
-                
                 pspalphatr[facei] = alphatr(speciei, pp[facei], pTt[facei]);
                 palphatr[facei] += pX[facei]*pspalphatr[facei];  
-                    
                 pspalphave[facei] = alphave(speciei, pp[facei], pTt[facei], pTve[facei]);
                 palphave[facei] += pX[facei]*pspalphave[facei];
-            }  
+            }
         }
     }
-       
     muMix = tempoMu;
     kappaMix = tempoKappatr;
     kappaveMix = tempoKappave;

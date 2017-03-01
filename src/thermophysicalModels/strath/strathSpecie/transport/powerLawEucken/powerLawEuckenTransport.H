@@ -152,6 +152,12 @@ public:
         //- Dynamic viscosity [kg/ms]
         inline scalar mu(const scalar p, const scalar Tt) const;
 
+        //- Thermal conductivity, translational mode [W/mK]
+        inline scalar kappatrans(const scalar p, const scalar Tt) const;
+        
+        //- Thermal conductivity, rotational mode [W/mK]
+        inline scalar kappar(const scalar p, const scalar Tr) const;
+        
         //- Thermal conductivity, trans-rotational mode [W/mK]
         inline scalar kappatr(const scalar p, const scalar Tt) const;
         

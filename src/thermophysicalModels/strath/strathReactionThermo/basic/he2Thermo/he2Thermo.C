@@ -1187,8 +1187,8 @@ Foam::he2Thermo<BasicThermo, MixtureType>::Cp_t() const
     forAll(this->Tt_, celli)
     {
        Cpt[celli] =
-            //this->cellMixture_Cp_t(celli, this->p_[celli], this->Tt_[celli]);
-            this->cellMixture(celli).Cp_t(this->p_[celli], this->Tt_[celli]);
+            this->cellMixture_Cp_t(celli, this->p_[celli], this->Tt_[celli]);  // NEW VINCENT 03/02/2017 (much faster)
+            //this->cellMixture(celli).Cp_t(this->p_[celli], this->Tt_[celli]);
     }
 
     forAll(this->Tt_.boundaryField(), patchi)

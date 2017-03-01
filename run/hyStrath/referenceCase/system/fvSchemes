@@ -1,0 +1,70 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.3.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvSchemes;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+fluxScheme            Kurganov;
+
+ddtSchemes
+{
+    default           Euler;
+}
+
+gradSchemes
+{
+    default           Gauss linear;
+}
+
+divSchemes
+{
+    default           none;
+    div(tauMC)        Gauss linear;
+    div(U)            Gauss linear;
+    div(diffusiveFluxes)   Gauss linear;
+    
+    div(phi,U)        Gauss limitedLinearV 1;
+    div(phi,Yi_h)     Gauss limitedLinear 1;
+    div(phid,p)       Gauss limitedLinear 1;
+    div(phi,epsilon)  Gauss limitedLinear 1;
+    div(phi,k)        Gauss limitedLinear 1;
+    
+    div(phi,h)      Gauss limitedLinear 1;
+    div(phi,R)      Gauss limitedLinear 1;
+    div(phi,omega)  Gauss limitedLinear 1;
+    div(phi,K)      Gauss linear;
+    div((rho*R))    Gauss linear;
+    div(R)          Gauss linear;
+}
+
+laplacianSchemes
+{
+    default           Gauss linear corrected;
+}
+
+interpolationSchemes
+{
+    default           linear;
+    reconstruct(rho)  vanLeer;
+    reconstruct(U)    vanLeerV;
+    reconstruct(T)    vanLeer;
+}
+
+snGradSchemes
+{
+    default          corrected;
+}
+
+
+// ************************************************************************* //

@@ -84,21 +84,30 @@ protected:
         //- Latest estimation of integration step
         DimensionedField<scalar, volMesh> deltaTChem_;
         
+        // NEW VINCENT 16/02/2017 *********************************************
+        //- Modified temperature activation switch when bounding (fixed min 
+        //  value) is required (cf Scalabrin's PhD thesis (2007), Eq.3.13, p37)
+        Switch modifiedTemperature_;
+        
+        //- Coefficients for the modified temperature calculation
+        PtrList<scalar> modTCoeffs_;
+        
+        // END NEW VINCENT 16/02/2017 *****************************************
+        
         // NEW VINCENT ********************************************************
         //- Model for chemistry-vibrational coupling
         word CVModel_;
         
         // Park TTV model
-        
             //- Park's exponent for heavy-particle temperature
             scalar exponentPark_;
             
             //- Model for the chemistry-vibrational coupling source term
             word ScvModel_;
             
-            //- Model for the preferential chemistry-vibrational coupling source term, if chosen
+            //- Model for the preferential chemistry-vibrational coupling 
+            //  source term, if chosen
             word preferentialModel_;
-            
         // END NEW VINCENT ****************************************************
 
 
@@ -146,6 +155,9 @@ public:
         //- Return the latest estimation of integration step
         inline const DimensionedField<scalar, volMesh>& deltaTChem() const;
         
+        //- Modified temperature activation switch
+        inline Switch modifiedTemperature() const;
+        
         
         // Functions to be derived in derived classes
 
@@ -175,7 +187,7 @@ public:
                 (
                     const label i
                 ) = 0;
-                // END NEW VINECNT 25/03/2016 *********************************
+                // END NEW VINCENT 25/03/2016 *********************************
 
                 //- Return reaction rate of the specieI in reactionI
                 virtual tmp<DimensionedField<scalar, volMesh> > calculateRR

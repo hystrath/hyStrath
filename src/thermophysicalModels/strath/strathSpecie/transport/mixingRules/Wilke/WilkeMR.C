@@ -27,6 +27,8 @@ License
 #include "WilkeMR.H"
 #include "fvm.H"
 
+//#include <time.h>
+
 // * * * * * * * * * * * * * Protected Member Functions  * * * * * * * * * * //
 
 template<class ThermoType>
@@ -42,11 +44,11 @@ void Foam::WilkeMR<ThermoType>::updatePhi()
         volScalarField& phi = phi_[speciei];
         scalarField& phiCells = phi.internalField();
         
-        phiCells = 1.0;
+        phiCells = 0.0;
         
         forAll(Tt.boundaryField(), patchi)
         {
-            phi.boundaryField()[patchi] = 1.0;
+            phi.boundaryField()[patchi] = 0.0;
         }
         
         forAll(species(), speciej)
@@ -103,13 +105,7 @@ Foam::WilkeMR<ThermoType>::WilkeMR
 :
     mixingRule(thermo, turbulence),
     
-    speciesThermo_
-    (
-        dynamic_cast<const multi2ComponentMixture<ThermoType>&>
-            (this->thermo_).speciesData()
-    ),
-    
-    miniXs_(1.0e-8)
+    miniXs_(1.0e-4)
 {     
     phi_.setSize(species().size());
        
@@ -143,7 +139,14 @@ Foam::WilkeMR<ThermoType>::WilkeMR
 template<class ThermoType>
 void Foam::WilkeMR<ThermoType>::correct()
 {
+    /*std::clock_t start;
+    std::clock_t restart;
+    double duration;
+    
+    start = std::clock();*/
     updatePhi();
+    /*duration = (std::clock() - start) / double(CLOCKS_PER_SEC);
+    Info << "timer updatePhi() load: " << duration << endl;*/
 
     const volScalarField& p = thermo_.p();
     const volScalarField& Tt = thermo_.Tt();
@@ -192,6 +195,7 @@ void Foam::WilkeMR<ThermoType>::correct()
         
     }
     
+    //restart = std::clock();
     //- Cell values
     forAll(species(), speciei)
     { 
@@ -209,21 +213,26 @@ void Foam::WilkeMR<ThermoType>::correct()
         
         forAll(XCells, celli)
         {
+            const scalar factorCelli = XCells[celli]/phiCells[celli];
+            
             spmuCells[celli] = mu(speciei, pCells[celli], TtCells[celli]);
-            muCells[celli] += XCells[celli]*spmuCells[celli]/phiCells[celli];
+            muCells[celli] += factorCelli*spmuCells[celli];
                 
             spkappatrCells[celli] = kappatr(speciei, pCells[celli], TtCells[celli]);
-            kappatrCells[celli] += XCells[celli]*spkappatrCells[celli]/phiCells[celli];  
+            kappatrCells[celli] += factorCelli*spkappatrCells[celli];  
             
             spkappaveCells[celli] = kappave(speciei, pCells[celli], TtCells[celli], TveCells[celli]);
-            kappaveCells[celli] += XCells[celli]*spkappaveCells[celli]/phiCells[celli];
+            kappaveCells[celli] += factorCelli*spkappaveCells[celli];
             
             spalphatrCells[celli] = alphatr(speciei, pCells[celli], TtCells[celli]);
-            alphatrCells[celli] += XCells[celli]*spalphatrCells[celli]/phiCells[celli];  
+            alphatrCells[celli] += factorCelli*spalphatrCells[celli];  
             
             spalphaveCells[celli] = alphave(speciei, pCells[celli], TtCells[celli], TveCells[celli]);
-            alphaveCells[celli] += XCells[celli]*spalphaveCells[celli]/phiCells[celli];
-        }        
+            alphaveCells[celli] += factorCelli*spalphaveCells[celli];
+        }
+        
+        /*duration = (std::clock() - restart) / double(CLOCKS_PER_SEC);
+        Info << "timer fields cell load: " << duration << endl;*/     
 
         //- Patch values
         forAll(X.boundaryField(), patchi)
@@ -248,22 +257,27 @@ void Foam::WilkeMR<ThermoType>::correct()
             
             forAll(pX, facei)
             { 
+                const scalar pfactorFacei = pX[facei]/pphi[facei];  
+                
                 pspmu[facei] = mu(speciei, pp[facei], pTt[facei]);
-                pmu[facei] += pX[facei]*pspmu[facei]/pphi[facei];       
+                pmu[facei] += pfactorFacei*pspmu[facei];       
                     
                 pspkappatr[facei] = kappatr(speciei, pp[facei], pTt[facei]);
-                pkappatr[facei] += pX[facei]*pspkappatr[facei]/pphi[facei];   
+                pkappatr[facei] += pfactorFacei*pspkappatr[facei];   
                     
                 pspkappave[facei] = kappave(speciei, pp[facei], pTt[facei], pTve[facei]);
-                pkappave[facei] += pX[facei]*pspkappave[facei]/pphi[facei]; 
+                pkappave[facei] += pfactorFacei*pspkappave[facei]; 
                 
                 pspalphatr[facei] = alphatr(speciei, pp[facei], pTt[facei]);
-                palphatr[facei] += pX[facei]*pspalphatr[facei]/pphi[facei];   
+                palphatr[facei] += pfactorFacei*pspalphatr[facei];   
                     
                 pspalphave[facei] = alphave(speciei, pp[facei], pTt[facei], pTve[facei]);
-                palphave[facei] += pX[facei]*pspalphave[facei]/pphi[facei]; 
+                palphave[facei] += pfactorFacei*pspalphave[facei]; 
             }  
         }
+        
+        /*duration = (std::clock() - restart) / double(CLOCKS_PER_SEC);
+        Info << "timer fields bdry load: " << duration << endl;*/
     }
        
     muMix = tempoMu;

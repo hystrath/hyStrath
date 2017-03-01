@@ -158,6 +158,27 @@ autoPtr<mixingRule> transport
 
 const volScalarField& mu = thermo.mu();
 
+//- Bulk viscosity 08/10/2016
+const scalar pi = constant::mathematical::pi;
+const scalar ZrotInf = 18.0;
+const dimensionedScalar TZ ("TZ", dimTemperature, 91.5);
+volScalarField Zrot = ZrotInf/(1.0 + sqr(pi)/2.0*sqrt(TZ/thermo.Tt()) + (sqr(pi)/4.0 + pi)*TZ/thermo.Tt());
+volScalarField Z = 3.0*pi/(4.0*(thermo.zetar()+3.0))*Zrot;
+
+volScalarField mub = mu*(2.0*thermo.zetar()*Z)/(3.0*(thermo.zetar()+3.0));
+volScalarField bulkToShearRatio
+(
+    IOobject
+    (
+        "bulkToShearRatio",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE // TODO
+    ),
+    mesh,
+    dimensionedScalar("scalarZero", dimless, 0.0)
+);
 
 bool inviscid(true);
 if(max(mu.internalField()) > 0.0)

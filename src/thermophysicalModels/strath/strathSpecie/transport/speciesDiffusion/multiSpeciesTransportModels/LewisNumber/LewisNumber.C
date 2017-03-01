@@ -25,15 +25,41 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "LewisNumber.H"
+//#include <time.h>
 
 // * * * * * * * * * * * * * Protected Member Functions  * * * * * * * * * * //
 
 template<class ThermoType>
 void Foam::LewisNumber<ThermoType>::updateCoefficients()
 {
-    forAll(this->D_, speciei)
+    // rho*Ds = kappa_tr/(Le*Cp_tr) - NEW VINCENT 16/05/2016 (Scalabrin's PhD, Eq. 2.29 is wrong)
+    /*std::clock_t start;
+    double duration;*/
+    
+    this->D_[0] = this->turbulence_.kappaEff() / (Le_ * this->thermo_.Cp_t());
+    
+    /*start = std::clock();
+    volScalarField kk = this->turbulence_.kappaEff();
+    duration = (std::clock() - start) / double(CLOCKS_PER_SEC);
+    Info << "timer kappa load: " << duration << endl;
+    start = std::clock();
+    volScalarField Cpt = this->thermo_.Cp_t();
+    duration = (std::clock() - start) / double(CLOCKS_PER_SEC);
+    Info << "timer Cpt load: " << duration << endl;*/
+    
+    if(this->thermo_.composition().particleType(0) == 3)
     {
-        this->D_[speciei] = this->turbulence_.kappaEff() / (Le_ * this->thermo_.Cp_t()); 
+        this->D_[0] *= 2.0; // Ambipolar diffusion for charged particles
+    }
+    
+    for(int speciei=1; speciei < this->D_.size(); speciei++)
+    {
+        this->D_[speciei] = this->D_[0];
+        
+        if(this->thermo_.composition().particleType(speciei) == 3)
+        {
+            this->D_[speciei] *= 2.0; // Ambipolar diffusion for charged particles
+        }
     }
 } 
 

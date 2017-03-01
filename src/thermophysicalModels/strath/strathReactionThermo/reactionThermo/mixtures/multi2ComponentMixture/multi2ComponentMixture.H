@@ -83,6 +83,10 @@ class multi2ComponentMixture
         //- Fills the solvedVibEqSpecies table from the list of species and the
         //  vibTempAssociativity list
         void fillSolvedVibEqSpeciesTable();
+        
+        //- Fills a modified solvedVibEqSpecies table from the list of species
+        //  that will later serves in the code
+        void fillHackOfSolvedVibEqSpeciesTable();
 
         //- Construct as copy (not implemented)
         multi2ComponentMixture(const multi2ComponentMixture<ThermoType>&);

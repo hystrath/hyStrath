@@ -1,0 +1,3 @@
+frictionCoeff.C
+
+EXE = $(FOAM_APPBIN)/frictionCoeff

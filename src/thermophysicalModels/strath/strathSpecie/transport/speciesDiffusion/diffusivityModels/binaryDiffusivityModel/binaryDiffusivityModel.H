@@ -25,6 +25,17 @@ License
 Namespace
     Foam::binaryDiffusivityModels
 
+Description
+    Namespace for binary diffusivity models.
+
+Class
+    Foam::binaryDiffusivityModel
+
+Description
+    An abstract base class for binary diffusivity models.
+
+SourceFiles
+    binaryDiffusivityModel.C
 
 \*---------------------------------------------------------------------------*/
 

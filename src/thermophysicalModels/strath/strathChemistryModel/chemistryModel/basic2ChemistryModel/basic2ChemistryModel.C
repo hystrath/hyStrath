@@ -72,12 +72,22 @@ Foam::basic2ChemistryModel::basic2ChemistryModel(const fvMesh& mesh)
         ),
         mesh,
         dimensionedScalar("deltaTChem0", dimTime, deltaTChemIni_)
-    )
+    ),
+    
+    modifiedTemperature_(lookupOrDefault<Switch>("modifiedTemperature", false)) // NEW VINCENT 16/02/2017
     
 {
+    if(modifiedTemperature_)
+    {
+        modTCoeffs_.setSize(2);
+        modTCoeffs_.set(0, new scalar(readScalar(subDict("modifiedTemperatureCoeffs").lookup("Tmin"))));
+        modTCoeffs_.set(1, new scalar(readScalar(subDict("modifiedTemperatureCoeffs").lookup("epsilon"))));
+    }
+    
+    
     if(isDict("chemistryVibrationCoupling")) // NEW VINCENT 13/08/2016
     {
-        CVModel_ = subDict("chemistryVibrationCoupling").lookupOrDefault<word>("model", word::null); 
+        CVModel_ = subDict("chemistryVibrationCoupling").lookupOrDefault<word>("model", word::null);
     }
     else
     {

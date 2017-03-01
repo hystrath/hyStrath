@@ -51,4 +51,9 @@ Foam::basic2ChemistryModel::deltaTChem()
 }
 
 
+inline Foam::Switch Foam::basic2ChemistryModel::modifiedTemperature() const
+{
+    return modifiedTemperature_;
+}
+
 // ************************************************************************* //

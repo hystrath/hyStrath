@@ -202,14 +202,14 @@ Foam::multiSpeciesTransportModel::multiSpeciesHeatSource() const
     (
         IOobject
         (
-            "multiSpeciesIESource",
+            "multiSpeciesHeatSource",
             mesh_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
             IOobject::NO_WRITE
         ),
         mesh_,
-        dimensionedVector("multiSpeciesIESource", dimEnergy/dimArea/dimTime, vector::zero)
+        dimensionedVector("multiSpeciesHeatSource", dimEnergy/dimArea/dimTime, vector::zero)
     );
     
     forAll(species(), speciej)

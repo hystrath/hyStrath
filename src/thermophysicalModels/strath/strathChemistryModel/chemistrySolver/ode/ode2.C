@@ -90,8 +90,8 @@ void Foam::ode2<Chemistry2Model>::solve
 (
     scalarField&,
     scalarField&,
-    scalar&, // NEW VINCENT
-    scalar&, // NEW VINCENT
+    scalarField&, // NEW VINCENT
+    scalarField&, // NEW VINCENT
     scalar&,
     scalar&, // NEW VINCENT
     List<scalar>&,  // NEW VINCENT

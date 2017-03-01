@@ -26,6 +26,7 @@ License
 
 #include "Fick.H"
 #include "fvm.H"
+#include <ctime>
 
 // * * * * * * * * * * * * * Protected Member Functions  * * * * * * * * * * //
 
@@ -91,7 +92,7 @@ Foam::Fick<ThermoType>::Fick
             (this->thermo_).speciesData()
     ),
     
-    miniXs_(1.0e-8)
+    miniXs_(1.0e-4)
 {    
     D_.setSize(species().size());
     
@@ -108,7 +109,7 @@ Foam::Fick<ThermoType>::Fick
                     mesh_.time().timeName(),
                     mesh_,
                     IOobject::NO_READ,
-                    IOobject::AUTO_WRITE
+                    IOobject::NO_WRITE
                 ),
                 mesh_,
                 dimensionedScalar("D", dimMass/dimLength/dimTime, 0.0)
@@ -134,6 +135,88 @@ void Foam::Fick<ThermoType>::correct()
 }
 
     
+/*template<class ThermoType>
+Foam::scalar Foam::Fick<ThermoType>::correct
+(
+    multivariateSurfaceInterpolationScheme<scalar>::fieldTable& fields
+)
+{
+    updateCoefficients();
+
+    scalar maxResidual = 0;
+    scalar eqnResidual = 1;
+
+    volScalarField yt = 0.0*thermo_.composition().Y(0);
+    surfaceScalarField nt = turbulence_.phi();
+    
+    forAll(this->D_, i)
+    {  
+        volScalarField& yi = thermo_.composition().Y(i);
+        surfaceScalarField& spMassFluxi = spMassFlux_[i];
+
+        tmp<fv::convectionScheme<scalar> > mvConvection
+        (
+            fv::convectionScheme<scalar>::New
+            (
+                mesh_,
+                fields,
+                turbulence_.phi(),
+                mesh_.divScheme("div(phi,Yi_h)")
+            )
+        );
+
+        if (mesh_.relaxField("Yi"))//Mohsen
+        {
+            yi.storePrevIter();
+        }
+            
+        tmp<fvScalarMatrix> yEqn
+        (   
+            fvm::ddt(thermo_.rho(), yi)
+//           + fvm::div(turbulence_.phi(), yi, "div(phi,Yi_h)")
+          + mvConvection->fvmDiv(turbulence_.phi(), yi)
+          - fvm::laplacian(D_[i],yi, "laplacian(D,Yi)")
+          ==
+            Sy_[i]
+        );
+
+        eqnResidual = solve(yEqn() , mesh_.solver("Yi")).initialResidual();
+        maxResidual = max(eqnResidual, maxResidual);
+
+        if (mesh_.relaxField("Yi"))//Mohsen
+        {
+	          yi.relax(mesh_.fieldRelaxationFactor("Yi"));//Mohsen
+        }
+
+        yi.max(0.0);
+//         yi.min(1.0);
+
+        spMassFluxi = yEqn().flux();
+
+        spMassFluxt -= spMassFluxi;
+        yt += yi;  
+    }
+     
+    // Calculate inert species
+    // CONSIDERED FOR DELETION VINCENT 29/01/2016
+    volScalarField& yInert = thermo_.composition().Y()[inertIndex_];
+    yInert = 1 - yt;
+    forAll(yInert.boundaryField(), patchi)
+    {
+        forAll(yInert.boundaryField()[patchi], facei)
+        {
+            yInert.boundaryField()[patchi][facei] = 1 - yt.boundaryField()[patchi][facei];
+        }
+    }
+    yInert.max(0.0);
+    spMassFlux_[inertIndex_] = spMassFluxt;
+    // END CONSIDERED FOR DELETION VINCENT 29/01/2016
+          
+    updateMolarFractions();
+
+    return maxResidual;
+}*/
+
 template<class ThermoType>
 bool Foam::Fick<ThermoType>::read()
 {

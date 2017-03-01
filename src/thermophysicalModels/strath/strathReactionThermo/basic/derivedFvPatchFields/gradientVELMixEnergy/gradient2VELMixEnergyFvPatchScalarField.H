@@ -69,6 +69,8 @@ SourceFiles
 
 #include "fixedGradientFvPatchFields.H"
 
+#include "rho2ReactionThermo.H" // NEW VINCENT 15/02/2017
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
@@ -82,6 +84,13 @@ class gradient2VELMixEnergyFvPatchScalarField
 :
     public fixedGradientFvPatchScalarField
 {
+
+private:
+
+    // Private data
+
+        // Thermo package that contains species patch data
+        const rho2ReactionThermo& thermo_; // NEW VINCENT 15/02/2017
 
 public:
 

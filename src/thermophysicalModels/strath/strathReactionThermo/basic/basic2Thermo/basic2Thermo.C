@@ -24,6 +24,14 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "basic2Thermo.H"
+/*#include "zeroGradientFvPatchFields.H"
+#include "fixedEnergyFvPatchScalarField.H"
+#include "gradientEnergyFvPatchScalarField.H"
+#include "mixedEnergyFvPatchScalarField.H"
+#include "fixedJumpFvPatchFields.H"
+#include "fixedJumpAMIFvPatchFields.H"
+#include "energyJumpFvPatchScalarField.H"
+#include "energyJumpAMIFvPatchScalarField.H"*/
 
 
 /* * * * * * * * * * * * * * * private static data * * * * * * * * * * * * * */
@@ -177,6 +185,33 @@ const Foam::basic2Thermo& Foam::basic2Thermo::lookupThermo
     const fvPatchScalarField& pf
 )
 {
+    /*if (pf.db().foundObject<basic2Thermo>(dictName))
+    {
+        return pf.db().lookupObject<basic2Thermo>(dictName);
+    }
+    else
+    {
+        HashTable<const basic2Thermo*> thermos =
+            pf.db().lookupClass<basic2Thermo>();
+
+        for
+        (
+            HashTable<const basic2Thermo*>::iterator iter = thermos.begin();
+            iter != thermos.end();
+            ++iter
+        )
+        {
+            if
+            (
+                &(iter()->he().dimensionedInternalField())
+              == &(pf.dimensionedInternalField())
+            )
+            {
+                return *iter();
+            }
+        }
+    }*/
+
     return pf.db().lookupObject<basic2Thermo>(dictName);
 }
 

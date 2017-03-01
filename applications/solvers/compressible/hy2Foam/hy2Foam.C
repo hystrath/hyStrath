@@ -21,9 +21,12 @@ License
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
-Application
-    hy2Foam: Two-Temperature Open-Source CFD Solver for Weakly-Ionised 
-             Hypersonic Reacting Flows
+Applications
+    hyFoam: Single-Temperature Open-Source CFD Solver for Supersonic 
+            Combusting Flows
+             
+    hy2Foam: Two-Temperature Open-Source CFD Solver for Hypersonic 
+             Weakly-Ionised Reacting Flows
 
 Description
     Density-based compressible flow solver based on central-upwind schemes of
@@ -49,7 +52,7 @@ Description
 #include "relaxationTimeModelHE.H"
 #include "relaxationTimeModeleV.H"
 
-// --- Multi-species transport model
+// --- Multi-species transport models
 #include "mixingRule.H"
 #include "multiSpeciesTransportModel.H"
 
@@ -109,6 +112,8 @@ int main(int argc, char *argv[])
         
     } while(restart);
     
+    Foam::rho2ReactionThermo::hasCrashedButRecoveredReport();
+    
     Info<< "\e[1;33mTotal no of Iterations " << totNoIteration << "\e[0m\n"
         << "\e[1;31mEnd\e[0m\n" << endl;
     
@@ -139,32 +144,30 @@ bool run
 
     #include "numerics/readFluxScheme.H"
     
-    // --- write quantities in the 0 folder
+    // --- Write quantities in the 0 folder
     #include "write/write0.H" 
 
     dimensionedScalar v_zero("v_zero", dimVolume/dimTime, 0.0);
-    dimensionedScalar vv_zero("vv_zero", dimArea, 0.0);
+    /*dimensionedScalar vv_zero("vv_zero", dimArea, 0.0);
     dimensionedVector Vv_one("vv_one", dimArea, vector::one);
     dimensionedScalar vv_one("vv_one", dimArea, 1.0);
     dimensionedScalar vvv_zero("vvv_zero", dimMass/dimTime, 0.0);
-    dimensionedScalar vvvv_zero("vvvv_zero", dimless, 0.0);
-    // NOT AVAIlABLE IN BETA RELEASE
+    dimensionedScalar vvvv_zero("vvvv_zero", dimless, 0.0);*/
     
-    // --- upwind interpolation of primitive fields on faces
+    // --- Upwind interpolation of primitive fields on faces
     #include "numerics/upwindInterpolation.H"
     //if(fluxScheme == "AUSM+-up")
     //{
         //#include "numerics/upwindInterpolation_AUSM2.H"
-        // NOT AVAIlABLE IN BETA RELEASE
     //}
     //else
     //{
           #include "numerics/upwindInterpolation_KNP.H"
     //}
     
-    // --- time control
+    // --- Time control and local time stepping
     #include "numerics/compressibleCourantNo.H"
-    #include "LTS/setInitialrDeltaT.H" // Local time stepping
+    #include "LTS/setInitialrDeltaT.H"
     #include "setInitialDeltaT.H"
 
     Info<< "\nStarting time loop\n" << endl;
@@ -178,53 +181,62 @@ bool run
         #include "runTimeEditing/transportDictModification.H"
         #include "runTimeEditing/twoTemperatureDictModification.H"
         
-        // --- upwind interpolation of primitive fields on faces
+        // --- Upwind interpolation of primitive fields on faces
         #include "numerics/upwindInterpolation.H"
         //if(fluxScheme == "AUSM+-up")
         //{
             //#include "numerics/upwindInterpolation_AUSM2.H"
-            // NOT AVAIlABLE IN BETA RELEASE
         //}
         //else
         //{
             #include "numerics/upwindInterpolation_KNP.H"
         //}
         
-        // --- time control
+        // --- Time control and local time stepping
         #include "numerics/compressibleCourantNo.H"
         #include "readTimeControls.H"
-        #include "LTS/readLTSTimeControls.H" // Local time stepping
+        #include "LTS/readLTSTimeControls.H"
         #include "setDeltaT.H"
+        if(adjustTimeStep)
+        {
+            //scalar dtChem = chemistry.solve(runTime.deltaT().value());
+            //Info<< "dtChem = " << dtChem << endl;
+            //runTime.setDeltaT(min(dtChem, runTime.deltaT().value()));
+            //Info<< "Dt = " << runTime.deltaT().value() << endl;
+        }
 
         runTime++;
-        Info<< "Time = " << runTime.timeName() << "" << nl << endl;
+        Info<< "\e[1;33mTime = " << runTime.timeName() << "\e[0m"<< nl << endl;
 
-        // --- Fields declaration for solving equations
+        // --- Fields needed for solving equations
         //if(fluxScheme == "AUSM+-up")
         //{
               //#include "numerics/declarations_AUSM2.H"
-              // NOT AVAIlABLE IN BETA RELEASE
         //}
         //else
         //{
               #include "numerics/declarations_KNP.H"
         //}
 
-        // --- Local-time-stepping (LTS)
+        // --- Local time stepping (LTS)
         if(activateLTS)
         {
             #include "LTS/setrDeltaT.H"
         }
         
-        // --- Re-set the switch that serves as a warning if the temperature goes unbounded
-        Foam::rho2ReactionThermo::temperatureFieldOutOfRange = false;
+        // --- Re-set the switch/counter that serve as a warning if the 
+        //     temperature goes unbounded
+        thermo.resetTemperatureBoundingInfo();
         
         // --- Solve continuity equation
         #include "eqns/rhoEqn.H"
-        #include "eqns/pEqn.H"
-        // --- Solve species transport and reaction equations
-        #include "eqns/YEqn.H"
 
+        // --- Solve species transport and reaction equations
+        scalar time = runTime.elapsedCpuTime();
+        #include "eqns/YEqn.H"
+        Info<< "\e[1;34mYEqn time" << tab << runTime.elapsedCpuTime() - time 
+            << " s\e[0m" << endl; 
+        
         // --- Solve momentum equations
         #include "eqns/UEqn.H"
         
@@ -238,7 +250,14 @@ bool run
         }
         else if(downgradeSingleTv)
         {
-            // NOT AVAIlABLE IN BETA RELEASE
+            // --- Solve the vibrational energy equation
+            // --- Solve the total energy equation
+            //- inviscid
+            #include "eqns/evEqnInviscid_SingleTv.H" 
+            #include "eqns/eEqnInviscid.H" 
+            //- viscous
+            #include "eqns/evEqnViscous_SingleTv.H" 
+            #include "eqns/eEqnViscous.H" 
         }
         else if(downgradeSingleVibMode)
         {
@@ -253,15 +272,24 @@ bool run
         }
         else
         {
-            // NOT AVAIlABLE IN BETA RELEASE
+            // --- Solve the vibrational energy equations (one per vib. mode)
+            // --- Solve the total energy equation
+            //- inviscid
+            //#include "Eqns/evEqn_MultiModes.H"
+            //#include "Eqns/eEqnInviscid.H" 
+            //- viscous
+            //#include "Eqns/eEqnViscous.H"   
         }
         
         // --- Pressure field calculation
         #include "eqns/pEqn.H"
-
+        
         rarefactionParameters().correct(U);
         
         turbulence->correct();
+        
+        // --- Print a report in the log file if temperature had to be bounded
+        thermo.temperatureBoundingReport();
 
         if(runTime.outputTime())
         {
@@ -269,12 +297,13 @@ bool run
             #include "write/write.H"
         }
 
-        previousIterationTime = max(runTime.elapsedCpuTime()-currentIterationTime, 1e-3);
-        Info<< "Phase no " << noRestart << "." << noSubRestart
+        previousIterationTime = 
+            max(runTime.elapsedCpuTime()-currentIterationTime, 1e-3);
+        Info<< "\e[1;33mPhase no " << noRestart << "." << noSubRestart
             << "  ExecutionTime = " << runTime.elapsedCpuTime() << " s"
             << "  ClockTime = " << runTime.elapsedClockTime() << " s"
-            << "  Iteration no " << noIteration<<" (" << previousIterationTime << " s)"
-            << nl << endl;
+            << "  Iteration no " << noIteration<<" (" << previousIterationTime 
+            << " s)\e[0m" << nl << endl;
         currentIterationTime = runTime.elapsedCpuTime();
         noIteration += 1;
     }

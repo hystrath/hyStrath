@@ -156,9 +156,17 @@ public:
             //  equation due to V-T energy transfer
             inline const volScalarField& QVT(label speciei) const;
             
+            //- Return the const source term in the corresponding vib. energy
+            //  equation due to V-T energy transfer
+            inline const volScalarField& QVT(const word& specieName) const;
+            
             //- Return the non-const source term in the corresponding vib.
             //  energy equation due to V-T energy transfer
             inline volScalarField& QVT(label speciei);
+            
+            //- Return the non-const source term in the corresponding vib.
+            //  energy equation due to V-T energy transfer
+            inline volScalarField& QVT(const word& specieName);
             
             //- Return the const Source term in vib. energy equations 
             //  due to V-T energy transfer, vibrational mode vibMode
@@ -168,6 +176,8 @@ public:
             inline const speciesTable& species() const;
             
             //- Return the table of species having a vib. eq. being solved
+            //  or a hack of this table for the single-vibrational pool model
+            // that will contain all (ionised/nonionised) molecules
             inline const speciesTable& solvedVibEqSpecies() const;
 
             //- Molar weight for a specie given by index

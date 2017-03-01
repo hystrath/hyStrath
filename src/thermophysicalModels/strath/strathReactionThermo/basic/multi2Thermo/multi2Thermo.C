@@ -351,7 +351,10 @@ Foam::multi2Thermo::multi2Thermo(const fvMesh& mesh, const word& phaseName)
 {
     if(downgradeSingleTv_)
     {
-        hevelMix_ = new volScalarField
+        // NEW VINCENT 15/02/2017
+        // Defined in the constructor of rho2ReactionThermo
+        // for boundary condition implementation
+        /*hevelMix_ = new volScalarField
         (
             IOobject
             (
@@ -365,7 +368,7 @@ Foam::multi2Thermo::multi2Thermo(const fvMesh& mesh, const word& phaseName)
             dimEnergy/dimMass,
             this->hevelMix2BoundaryTypes(),
             this->hevelMix2BoundaryBaseTypes()
-        );
+        );*/
     }
     else
     {
@@ -538,7 +541,10 @@ Foam::multi2Thermo::multi2Thermo
 {
     if(downgradeSingleTv_)
     {
-        hevelMix_ = new volScalarField
+        // NEW VINCENT 15/02/2017
+        // Defined in the constructor of rho2ReactionThermo
+        // for boundary condition implementation
+        /*hevelMix_ = new volScalarField
         (
             IOobject
             (
@@ -552,7 +558,7 @@ Foam::multi2Thermo::multi2Thermo
             dimEnergy/dimMass,
             this->hevelMix2BoundaryTypes(),
             this->hevelMix2BoundaryBaseTypes()
-        );
+        );*/
     }
     else
     {
@@ -598,7 +604,8 @@ const Foam::multi2Thermo& Foam::multi2Thermo::lookup2Thermo
     const fvPatchScalarField& pf
 )
 {
-    return pf.db().lookupObject<multi2Thermo>(dictName); // NOTE VINCENT 20/02/2016: adapted from basicThermo.C
+    // NOTE VINCENT 20/02/2016: adapted from basicThermo.C
+    return pf.db().lookupObject<multi2Thermo>(dictName); 
 }
 
 

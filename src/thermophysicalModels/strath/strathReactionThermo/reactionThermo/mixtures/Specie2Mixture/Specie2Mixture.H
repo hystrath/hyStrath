@@ -83,6 +83,9 @@ public:
             //- Molecular weight [kg/kmol]
             virtual scalar W(const label speciei) const;
             
+            //- Molecular weight [kg/kmol]
+            virtual scalar W(const word& specieName) const;
+            
             //- Particle Type
             virtual label particleType(const label speciei) const;
             

@@ -12,17 +12,19 @@ if(Y.size() > 1 and (speciesDiffusionName != "noSpeciesDiffusion" or reaction->a
         )
     );
 
+    scalar timee = runTime.elapsedCpuTime();
     if(speciesDiffusionName != "noSpeciesDiffusion")
     {
         speciesDiffusion().correct();
     }
+    Info<< "\e[1;32mcorrectSpeciesDiffusion time" << tab << (runTime.elapsedCpuTime() - timee) << " s\e[0m" << endl;
 
     reaction->correct();
     dQ = reaction->dQ();
 
     volScalarField Ytot(0.0*Y[0]);
 
-    for(int speciei=0; speciei < Y.size()-1; speciei++)
+    for(int speciei=0; speciei < Y.size(); speciei++) // TODO Y.size()-1
     {
         volScalarField& Yi = Y[speciei];
 
@@ -47,20 +49,28 @@ if(Y.size() > 1 and (speciesDiffusionName != "noSpeciesDiffusion" or reaction->a
         YiEqn.solve(mesh.solver("Yi"));
         fvOptions.correct(Yi);
         
+        if(hyDev)
+        {
+            //speciesDiffusion().getSpeciesMassFlux(speciei, YiEqn.flux()); TODO
+        }
+        
         Yi.max(0.0);
         Ytot += Yi;
         
         Yi.correctBoundaryConditions();
     }
     
-    Y.last() = min(max(1.0 - Ytot, 0.0), 1.0);
-    Y.last().correctBoundaryConditions();
+    //Y.last() = min(max(1.0 - Ytot, 0.0), 1.0); // TODO reintroduce
+    //Y.last().correctBoundaryConditions();
+    // calculate the species mass flux for the last species
 }
 
 thermo.correctFractions();
 
 if(hyLight) thermo.correct2T_Light();
 else thermo.correct2T();
-#include "eqns/pEqn.H"
+
+scalar timee = runTime.elapsedCpuTime();
 transport().correct();
+Info<< "\e[1;32mcorrectTransport time" << tab << (runTime.elapsedCpuTime() - timee) << " s\e[0m" << endl;
 

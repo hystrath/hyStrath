@@ -4,6 +4,8 @@ binaryDiffusivityModel/binaryDiffusivityModel.C
 noBinaryDiffusivityModel/noBinaryDiffusivityModel.C
 constant/constant.C
 Hirschfelder/Hirschfelder.C
+Gupta/GuptaDiffCoeff.C
+Stephani/Stephani.C
 
 diffusivityModel/diffusivityModel.C
 

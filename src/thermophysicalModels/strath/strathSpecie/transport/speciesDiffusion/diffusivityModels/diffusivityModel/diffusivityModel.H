@@ -25,6 +25,12 @@ License
 Class
     Foam::diffusivityModel
 
+Description
+    Diffusivity model for multispecies binary diffusion coefficients 
+
+SourceFiles
+    diffusivityModel.C
+
 \*---------------------------------------------------------------------------*/
 
 #ifndef diffusivityModel_H

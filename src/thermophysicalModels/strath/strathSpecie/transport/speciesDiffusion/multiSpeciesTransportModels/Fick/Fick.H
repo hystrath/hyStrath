@@ -26,7 +26,7 @@ Class
     Foam::Fick
 
 Description
-    Fick.
+    Fick multispecies mass transport model.
   
 SourceFiles
     Fick.C
@@ -48,7 +48,9 @@ namespace Foam
 \*---------------------------------------------------------------------------*/
 
 template<class ThermoType>
-class Fick: public multiSpeciesTransportModel
+class Fick
+:
+    public multiSpeciesTransportModel
 {  
 
 protected:
@@ -91,13 +93,15 @@ public:
 
     // Member Functions
 
-        //- Molar weight for a specie given by index.
+        //- Molar weight for a specie given by index. Defined here
+        //  because depend on thermoType template
         scalar W(label i) const
         {
             return speciesThermo_[i].W()*1.0e-3;
         }
     
         //- Specific enthalpy for a specie given by index and temperature.
+        //  Defined here because depend on thermoType template
         scalar hs(label i, scalar p, scalar Tt, scalar Tv) const
         {
             return speciesThermo_[i].hs(p, Tt, Tv);
@@ -106,6 +110,12 @@ public:
         //- Update the species diffusion coefficients
         virtual void correct();
         
+        //- Solve the mass transport equations without reactions
+        /*virtual scalar correct
+        (
+            multivariateSurfaceInterpolationScheme<scalar>::fieldTable& fields
+        );*/
+                
         //- Read transportProperties dictionary
         virtual bool read();
   };

@@ -88,7 +88,7 @@ protected:
             scalar (Foam::basic2MultiComponentMixture::*F)(const label, const scalar, const scalar) const,
             scalar (Foam::basic2MultiComponentMixture::*dFdT)(const label, const scalar, const scalar) const,
             scalar (Foam::rho2ReactionThermo::*limit)(const scalar) const
-        ) const;
+        );
         
         //- Determines the temperature from an energy field F, its derivate dF for a given specie i
         inline scalar Temperature
@@ -100,7 +100,7 @@ protected:
             scalar (Foam::basic2MultiComponentMixture::*F)(const label, const scalar, const scalar) const,
             scalar (Foam::basic2MultiComponentMixture::*dFdT)(const label, const scalar, const scalar) const,
             scalar (Foam::rho2ReactionThermo::*limit)(const scalar) const
-        ) const;
+        );
         
         //- Overall temperature calculation for the single-temperature model
         inline scalar TEs // NEW VINCENT 16/06/2016
@@ -109,7 +109,7 @@ protected:
             const scalar p,
             const scalar T0,
             const PtrList<scalar>& YList
-        ) const;
+        );
         
         //- Trans-rotational temperature calculation for the two-temperature model
         inline scalar TtEts // NEW VINCENT 17/06/2016
@@ -118,7 +118,7 @@ protected:
             const scalar p,
             const scalar T0,
             const PtrList<scalar>& YList
-        ) const;
+        );
         
         //- Single-vibrational temperature calculation for the two-temperature model
         inline scalar TvelEvels // NEW VINCENT 17/06/2016
@@ -127,7 +127,7 @@ protected:
             const scalar p,
             const scalar T0,
             const PtrList<scalar>& YList
-        ) const;
+        );
         
         //- Multi-vibrational temperature calculation for the two-temperature model
         inline scalar TvelEvels // NEW VINCENT 19/08/2016
@@ -136,7 +136,7 @@ protected:
             const scalar e,
             const scalar p,
             const scalar T0
-        ) const;
+        );
         
         //- Limit the temperature to be in the range Tlow_ to Thigh_
         inline scalar limit(const scalar T) const;
@@ -160,8 +160,9 @@ protected:
         //- Minimal calculation of the thermo variables
         void calculateLight();
         
-        //- Calculate hevk energies of non-molecule particles only
-        void calculateNonMoleculeHEVK();
+        //- Calculate hevk energies of non-molecule particles only for the multi-vibrational hy2Foam
+        //- Calculate hevk energies of all particles for the single-vibrational version of hy2Foam
+        void calculateHEVK();
         
         //- Initialise the fields
         void initialise();
@@ -176,9 +177,24 @@ public:
         //- Vibrational cut-off temperature
         static const scalar vibrationalCutOffTemp;
         
+        //- Minimum Y value required for an evEqn to be solved locally
+        static const scalar miniYforSolvingEvEqn;
+        
         //- Is there at least one cell for which the temperature is not
         //  within [Tlow, Thigh]?
         static bool temperatureFieldOutOfRange;
+        
+        //- Prevent the job from crashing and reset the temperature to Tlow_
+        //  Increase the stability but need extra caution 
+        static bool hasCrashedButRecovered;
+        
+        //- Number of cells for which the temperature is not
+        //  within [Tlow, Thigh]
+        static label noCellsWithTemperatureFieldOutOfRange;
+        
+        //- Min and max values taken by the temperature before bounding
+        static FixedList<scalar, 2> minMaxTemperatureFieldOutOfRange;
+        
         
     //- Runtime type information
     TypeName("rho2ReactionThermo");
@@ -224,6 +240,56 @@ public:
         //- Constant access to the ptach field values for energy boundary calculations
         static const rho2ReactionThermo& lookup2ReactionThermo(const fvPatchScalarField& pf);
         
+        //- Reset temperature bounding info
+        void resetTemperatureBoundingInfo()
+        {
+            temperatureFieldOutOfRange = false;
+            noCellsWithTemperatureFieldOutOfRange = 0;
+            minMaxTemperatureFieldOutOfRange[0] = Tlow_;
+            minMaxTemperatureFieldOutOfRange[1] = Thigh_;
+        }
+        
+        //- Reset temperature bounding info
+        void temperatureBoundingReport()
+        {
+            if(temperatureFieldOutOfRange)
+            {
+                bool printedHeader = false;
+                
+                if(minMaxTemperatureFieldOutOfRange[0] < Tlow_ - Foam::SMALL)
+                {
+                    Info<< "\e[1;31mAttempt to use rho2ReactionThermo out of temperature range " 
+                        << Foam::rho2ReactionThermo::noCellsWithTemperatureFieldOutOfRange
+                        << " times during this iteration.\n" << tab << minMaxTemperatureFieldOutOfRange[0] 
+                        << " < Tlow: " << Tlow_ << "\e[0m" << nl;
+                    printedHeader = true;
+                }
+                
+                if(minMaxTemperatureFieldOutOfRange[1] > Thigh_ + Foam::SMALL)
+                {
+                    if(not printedHeader) 
+                    {
+                        Info<< "\e[1;31mAttempt to use rho2ReactionThermo out of temperature range " 
+                            << Foam::rho2ReactionThermo::noCellsWithTemperatureFieldOutOfRange
+                            << " times during this iteration.\n" << tab;
+                    }
+                    Info<< "\e[1;31m" << tab << "Thigh: " << Thigh_ << " < " << minMaxTemperatureFieldOutOfRange[1] 
+                        << "\e[0m" << endl;
+                }
+            }
+        }
+        
+        //- Return info about hasCrashedButRecovered bool
+        static void hasCrashedButRecoveredReport()
+        {
+            if(hasCrashedButRecovered)
+            {
+                Info<< "\e[1;31mThe simulation should have crashed, extra"
+                    << "caution is required while analysing the results" 
+                    << "\e[0m" << endl;
+            }
+        }
+        
         //- Return the partial name of the thermo package that has been loaded
         word partialThermoName();
         
@@ -249,8 +315,9 @@ public:
         //- Minimal properties update
         virtual void correct2T_Light();
         
-        //- Update hevk energies of non-molecule particles only
-        virtual void correctNonMoleculeHEVK();
+        //- Update hevk energies of non-molecule particles only for the multi-vibrational hy2Foam
+        //- Update hevk energies of all particles for the single-vibrational version of hy2Foam
+        virtual void correctHEVK();
         
         //- Limit the velocity field at wall patches
         virtual void limitVelocityAtWallBoundary(volVectorField::GeometricBoundaryField& Ubdry);

@@ -82,6 +82,15 @@ template<class ThermoType>
 void Foam::noSpeciesDiffusion<ThermoType>::correct()
 {}    
     
+/*template<class ThermoType>
+Foam::scalar Foam::noSpeciesDiffusion<ThermoType>::correct
+(
+    multivariateSurfaceInterpolationScheme<scalar>::fieldTable& fields
+)
+{
+    return 0;
+}*/
+
 template<class ThermoType>
 bool Foam::noSpeciesDiffusion<ThermoType>::read()
 {

@@ -118,13 +118,46 @@ Foam::eVRelaxationModels::BourdonVervisch::taueV() const
     
     forAll(this->Tv_, celli)
     {
-        //NOT AVAILABLE IN BETA RELEASE
+        //partial pressure of electrons greater than a given value = electrons in the cell
+        if(this->p_[celli] < 1e-2)
+        {
+            taueV[celli] = Foam::GREAT;
+        }
+        else
+        {
+            FixedList<scalar, 2> tempRange = findTemperatureRange(this->Tv_[celli]);
+            scalar BV1 = boundedLinearInterpolation(this->Tv_[celli], tempRange[0], tempRange[1], BV1_[0], BV1_[1]);
+            scalar BV2 = boundedLinearInterpolation(this->Tv_[celli], tempRange[0], tempRange[1], BV2_[0], BV2_[1]);
+            scalar BV3 = boundedLinearInterpolation(this->Tv_[celli], tempRange[0], tempRange[1], BV3_[0], BV3_[1]);
+            
+            //Info << log10(this->Tv_[celli]) << tab << BV1 << tab << BV2 << tab << BV3 << tab << BV1*sqr(log10(this->Tv_[celli])) + BV2*log10(this->Tv_[celli]) + BV3 << endl;
+            taueV[celli] = 1.01325e5 / this->p_[celli] * pow(10, BV1*sqr(log10(this->Tv_[celli])) + BV2*log10(this->Tv_[celli]) + BV3);
+        }
     }
     
 
     forAll(this->Tv_.boundaryField(), patchi)
     {
-        //NOT AVAILABLE IN BETA RELEASE
+        const fvPatchScalarField& pTv = this->Tv_.boundaryField()[patchi];
+        const fvPatchScalarField& pp = this->p_.boundaryField()[patchi];
+        fvPatchScalarField& ptaueV = taueV.boundaryField()[patchi];
+
+        forAll(pTv, facei)
+        {
+            if(pp[facei] < 1e-2)
+            {
+                ptaueV[facei] = Foam::GREAT;
+            }
+            else
+            {
+                FixedList<scalar, 2> tempRange = findTemperatureRange(pTv[facei]);
+                scalar pBV1 = boundedLinearInterpolation(pTv[facei], tempRange[0], tempRange[1], BV1_[0], BV1_[1]);
+                scalar pBV2 = boundedLinearInterpolation(pTv[facei], tempRange[0], tempRange[1], BV2_[0], BV2_[1]);
+                scalar pBV3 = boundedLinearInterpolation(pTv[facei], tempRange[0], tempRange[1], BV3_[0], BV3_[1]);
+                
+                ptaueV[facei] = 1.01325e5 / pp[facei] * pow(10, pBV1*sqr(log10(pTv[facei])) + pBV2*log10(pTv[facei]) + pBV3);
+            }
+        }
     }
 
     return ttaueV;
@@ -143,7 +176,19 @@ Foam::tmp<Foam::scalarField> Foam::eVRelaxationModels::BourdonVervisch::taueV
     
     forAll(Tv, facei)
     {
-        //NOT AVAILABLE IN BETA RELEASE
+        if(p[facei] < 1e-2)
+        {
+            taueV[facei] = Foam::GREAT;
+        }
+        else
+        {
+            FixedList<scalar, 2> tempRange = findTemperatureRange(Tv[facei]);
+            scalar pBV1 = boundedLinearInterpolation(Tv[facei], tempRange[0], tempRange[1], BV1_[0], BV1_[1]);
+            scalar pBV2 = boundedLinearInterpolation(Tv[facei], tempRange[0], tempRange[1], BV2_[0], BV2_[1]);
+            scalar pBV3 = boundedLinearInterpolation(Tv[facei], tempRange[0], tempRange[1], BV3_[0], BV3_[1]);
+            
+            taueV[facei] = 1.01325e5 / p[facei]* pow(10, pBV1*sqr(log10(Tv[facei])) + pBV2*log10(Tv[facei]) + pBV3);
+        }
     }
 
     return ttaueV;

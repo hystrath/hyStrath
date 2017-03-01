@@ -26,7 +26,7 @@ Class
     Foam::binaryDiffusivityModels::constant
 
 Description
-    Constant
+    Constant binary diffusivity model.
 
 SourceFiles
     constant.C

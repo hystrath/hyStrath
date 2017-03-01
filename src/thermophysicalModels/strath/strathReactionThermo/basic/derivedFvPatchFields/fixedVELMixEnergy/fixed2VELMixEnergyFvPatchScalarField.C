@@ -38,7 +38,8 @@ fixed2VELMixEnergyFvPatchScalarField
     const DimensionedField<scalar, volMesh>& iF
 )
 :
-    fixedValueFvPatchScalarField(p, iF)
+    fixedValueFvPatchScalarField(p, iF),
+    thermo_(rho2ReactionThermo::lookup2ReactionThermo(*this))
 {} // Only this constructor is used at run-time
 
 
@@ -51,7 +52,8 @@ fixed2VELMixEnergyFvPatchScalarField
     const fvPatchFieldMapper& mapper
 )
 :
-    fixedValueFvPatchScalarField(ptf, p, iF, mapper)
+    fixedValueFvPatchScalarField(ptf, p, iF, mapper),
+    thermo_(rho2ReactionThermo::lookup2ReactionThermo(*this))
 {}
 
 
@@ -63,7 +65,8 @@ fixed2VELMixEnergyFvPatchScalarField
     const dictionary& dict
 )
 :
-    fixedValueFvPatchScalarField(p, iF, dict)
+    fixedValueFvPatchScalarField(p, iF, dict),
+    thermo_(rho2ReactionThermo::lookup2ReactionThermo(*this))
 {}
 
 
@@ -73,7 +76,8 @@ fixed2VELMixEnergyFvPatchScalarField
     const fixed2VELMixEnergyFvPatchScalarField& tppsf
 )
 :
-    fixedValueFvPatchScalarField(tppsf)
+    fixedValueFvPatchScalarField(tppsf),
+    thermo_(rho2ReactionThermo::lookup2ReactionThermo(*this))
 {}
 
 
@@ -84,7 +88,8 @@ fixed2VELMixEnergyFvPatchScalarField
     const DimensionedField<scalar, volMesh>& iF
 )
 :
-    fixedValueFvPatchScalarField(tppsf, iF)
+    fixedValueFvPatchScalarField(tppsf, iF),
+    thermo_(rho2ReactionThermo::lookup2ReactionThermo(*this))
 {}
 
 
@@ -99,16 +104,34 @@ void Foam::fixed2VELMixEnergyFvPatchScalarField::updateCoeffs()
 
     //Info << "fixed2VELMixEnergy is used for patch called " << patch().name() << endl; 
     
-    const multi2Thermo& thermo = multi2Thermo::lookup2Thermo(*this);
+    const multi2Thermo& multiThermo = multi2Thermo::lookup2Thermo(*this);
     const label patchi = patch().index();
 
-    const scalarField& pw = thermo.p().boundaryField()[patchi];
+    const scalarField& pw = multiThermo.p().boundaryField()[patchi];
     
     fvPatchScalarField& Tvw =
-        const_cast<fvPatchScalarField&>(thermo.Tv().boundaryField()[patchi]);
+        const_cast<fvPatchScalarField&>(multiThermo.Tv().boundaryField()[patchi]);
     Tvw.evaluate();
     
-    operator==(thermo.hevel(pw, Tvw, patchi)); // Force an assignment, overriding fixedValue status
+    // NEW VINCENT 15/02/2017 *************************************************
+    tmp<Field<scalar> > thevel(new Field<scalar>(pw.size()));
+    Field<scalar>& hevel = thevel();
+    
+    hevel = 0.0;
+    for(label speciei=0 ; speciei<thermo_.composition().Y().size() ; speciei++)
+    {
+        fvPatchScalarField& spYw =
+            const_cast<fvPatchScalarField&>(thermo_.composition().Y(speciei).boundaryField()[patchi]);
+        spYw.evaluate();
+        
+        hevel += spYw*thermo_.composition().hevel(speciei, pw, Tvw, patchi);
+    }
+    
+    operator==(thevel); // Force an assignment, overriding fixedValue status
+    // END NEW VINCENT 15/02/2017 *********************************************
+    
+    // DELETED VINCENT 15/02/2017 OLD FORMULATION
+    //operator==(thermo.hevel(pw, Tvw, patchi)); // Force an assignment, overriding fixedValue status
 
     fixedValueFvPatchScalarField::updateCoeffs();
 }

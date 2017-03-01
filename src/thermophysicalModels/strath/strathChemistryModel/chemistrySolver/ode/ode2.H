@@ -96,8 +96,8 @@ public:
         (
             scalarField& c,
             scalarField& cfwd,
-            scalar& rriirN, // NEW VINCENT
-            scalar& rriirO, // NEW VINCENT
+            scalarField& ceiiN, // NEW VINCENT
+            scalarField& ceiiO, // NEW VINCENT
             scalar& T,
             scalar& Tv, // NEW VINCENT
             List<scalar>& spTv, // NEW VINCENT

@@ -140,7 +140,7 @@ void Foam::multi2ComponentMixture<ThermoType>::correctVibTempAssociativity(const
                 FatalErrorIn("multi2ComponentMixture<ThermoType>::correctVibTempAssociativity") 
                         << "The vibTempAssociativity table is not correctly defined \n" 
                         << "in " << chemDict.name() << "\nfor the element no " << speciei+1
-                        << "." << nl << "The value '0' can be assigned to molecules only." << nl;
+                        << "." << nl << "The value '0' can be assigned to molecules/ions only." << nl;
                 FatalError<< exit(FatalError);
             }
             else
@@ -181,6 +181,20 @@ void Foam::multi2ComponentMixture<ThermoType>::fillSolvedVibEqSpeciesTable()
     } 
 }
 
+
+template<class ThermoType>
+void Foam::multi2ComponentMixture<ThermoType>::fillHackOfSolvedVibEqSpeciesTable()
+{
+    forAll(Y_, speciei)
+    {
+        if(speciesData_[speciei].noVibrationalTemp() != 0)
+        // The particle is either a molecule or an ionised molecule    
+        {
+            solvedVibEqSpecies_.append(species_[speciei]);
+        }
+    } 
+}
+
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 template<class ThermoType>
@@ -208,12 +222,17 @@ Foam::multi2ComponentMixture<ThermoType>::multi2ComponentMixture
 
     correctMassFractions();
     
-    /*if(not(thermoDict.lookupOrDefault<bool>("downgradeToSingleTemperature", false) 
-        or thermoDict.lookupOrDefault<bool>("downgradeToSingleTv", false)))*/
-    if(not(thermoDict.lookupOrDefault<bool>("downgradeToSingleTemperature", false)))
+    if(not(thermoDict.lookupOrDefault<bool>("downgradeToSingleTemperature", false) 
+        or thermoDict.lookupOrDefault<bool>("downgradeToSingleTv", false)))
+    // Two-temperature solver with multi-vibrational pools    
     {
         correctVibTempAssociativity(thermoDict); // NEW VINCENT 05/03/2016;
         fillSolvedVibEqSpeciesTable(); // NEW VINCENT 05/08/2016;
+    }
+    else if(thermoDict.lookupOrDefault<bool>("downgradeToSingleTv", false))
+    // Two-temperature solver with a single vibrational pool
+    {
+        fillHackOfSolvedVibEqSpeciesTable(); // NEW VINCENT 17/02/2017;
     }
 }
 
@@ -231,12 +250,18 @@ Foam::multi2ComponentMixture<ThermoType>::multi2ComponentMixture
     mixtureVol_("volMixture", speciesData_[0])
 {
     correctMassFractions();
-    /*if(not(thermoDict.lookupOrDefault<bool>("downgradeToSingleTemperature", false) 
-        or thermoDict.lookupOrDefault<bool>("downgradeToSingleTv", false)))*/
-    if(not(thermoDict.lookupOrDefault<bool>("downgradeToSingleTemperature", false))) 
+    
+    if(not(thermoDict.lookupOrDefault<bool>("downgradeToSingleTemperature", false) 
+        or thermoDict.lookupOrDefault<bool>("downgradeToSingleTv", false)))
+    // Two-temperature solver with multi-vibrational pools    
     {
         correctVibTempAssociativity(thermoDict); // NEW VINCENT 05/03/2016;
         fillSolvedVibEqSpeciesTable(); // NEW VINCENT 05/08/2016;
+    }
+    else if(thermoDict.lookupOrDefault<bool>("downgradeToSingleTv", false))
+    // Two-temperature solver with a single vibrational pool
+    {
+        fillHackOfSolvedVibEqSpeciesTable(); // NEW VINCENT 17/02/2017;
     }
 }
 
@@ -395,8 +420,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::cellMixture_Cp_t
 
     forAll(Y_, speciei)
     {
-        quantity += Y_[speciei][celli]/speciesData_[speciei].W()
-            *speciesData_[speciei].Cp_t(p, Tt);
+        quantity += Y_[speciei][celli]*speciesData_[speciei].Cp_t(p, Tt); // NEW VINCENT 03/02/2017
     }
 
     return quantity;
@@ -841,7 +865,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::molWeightMixture(const la
     {
         invMolWmix += Y_[i][celli]/speciesData_[i].W();
     }
-
+    
     return 1.0/(invMolWmix);
 }
 
@@ -962,7 +986,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::molarFraction
     const label celli
 )
 {
-    return Yi*molWeightMixture(celli)/speciesData_[speciei].W();
+    return max(Yi*molWeightMixture(celli)/speciesData_[speciei].W(), 0);
 }
 
 
@@ -975,7 +999,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::molarFraction
     const label facei
 )
 {
-    return Yi*molWeightMixture(patchi, facei)/speciesData_[speciei].W();
+    return max(Yi*molWeightMixture(patchi, facei)/speciesData_[speciei].W(), 0);
 }
 
 
@@ -987,8 +1011,8 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::numberDensity
     const scalar rho
 )
 {
-    return Yi*Foam::constant::physicoChemical::NA.value()
-            * rho/(1.0e-3*speciesData_[speciei].W());
+    return max(Yi*Foam::constant::physicoChemical::NA.value()
+            * rho/(1.0e-3*speciesData_[speciei].W()), 0);
 }
 
 
@@ -1022,7 +1046,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::partialDensity
     const scalar rho
 )
 {
-    return Yi*rho;
+    return max(Yi*rho, 0);
 }
 // END NEW VINCENT ************************************************************
 

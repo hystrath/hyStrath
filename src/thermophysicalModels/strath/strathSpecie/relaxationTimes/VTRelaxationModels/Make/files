@@ -4,6 +4,9 @@ VTModel/VTModel.C
 
 MillikanWhite/MillikanWhite.C
 MillikanWhitePark/MillikanWhitePark.C
+strathVT/strathVT.C
+strathMWP/strathMWP.C
+LeMANSMWP/LeMANSMWP.C
 SchwartzSlawskyHerzfeld/SchwartzSlawskyHerzfeld.C
 
 

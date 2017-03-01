@@ -146,10 +146,10 @@ public:
 
     // Member Functions
 
-        //- e-V relaxation time [s]
+        //- V-T relaxation time [s]
         virtual tmp<volScalarField> taueV() const;
          
-        //- e-V relaxation time for patch [s]
+        //- V-T relaxation time for patch [s]
         virtual tmp<scalarField> taueV
         (
             const label patchi,

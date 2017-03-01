@@ -105,7 +105,13 @@ Foam::CEATransport<Thermo>::viscosityCoeffs
     const scalar T
 ) const
 {
-    // NOT AVAILABLE IN BETA RELEASE
+    for(int Ti=0; Ti < temp_.size(); Ti++)
+    {
+        if(T < temp_[Ti+1])
+        {
+            return mu_[Ti];
+        }
+    }
     
     return mu_[temp_.size()-1];
 }
@@ -118,7 +124,13 @@ Foam::CEATransport<Thermo>::thermalConductivityCoeffs
     const scalar T
 ) const
 {
-    // NOT AVAILABLE IN BETA RELEASE
+    for(int Ti=0; Ti < temp_.size(); Ti++)
+    {
+        if(T < temp_[Ti+1])
+        {
+            return kappa_[Ti];
+        }
+    }
     
     return kappa_[temp_.size()-1];
 }
@@ -134,7 +146,8 @@ inline Foam::scalar Foam::CEATransport<Thermo>::mu
 {
     const CEATransportArray& muCoeffs = viscosityCoeffs(Tt);
     
-    return 0; // NOT AVAILABLE IN BETA RELEASE
+    //NB: The coefficients in the dictionary tables are given in microPoise (cf Eilmer3, CEA-viscosity.cxx)
+    return 1.0e-7*Foam::exp(muCoeffs[0]*::log(Tt) + muCoeffs[1]/Tt + muCoeffs[2]/Foam::sqr(Tt) + muCoeffs[3]);
 }
 
 
@@ -146,7 +159,8 @@ inline Foam::scalar Foam::CEATransport<Thermo>::kappatr
 {
     const CEATransportArray& kappaCoeffs = thermalConductivityCoeffs(Tt);
     
-    return 0; // NOT AVAILABLE IN BETA RELEASE
+    //NB: The coefficients in the dictionary tables are given in microWatts/(cm.K) (cf Eilmer3, CEA-thermal-conductivity.cxx)
+    return 1.0e-4*Foam::exp(kappaCoeffs[0]*::log(Tt) + kappaCoeffs[1]/Tt + kappaCoeffs[2]/Foam::sqr(Tt) + kappaCoeffs[3]);
 }
 
 
@@ -156,7 +170,8 @@ inline Foam::scalar Foam::CEATransport<Thermo>::kappave
     const scalar p, const scalar Tt, const scalar Tve
 ) const
 {
-    return 0; // NOT AVAILABLE IN BETA RELEASE
+    const scalar eta_s = 1.2;
+    return eta_s*mu(p, Tt)*this->Cv_vel(p, Tve);
 }
 
 
@@ -168,10 +183,14 @@ inline Foam::scalar Foam::CEATransport<Thermo>::alphatr
 {
     if (this->Cv_t(p, Tt) != 0.0)
     {
+        //Info << "Hi 2.0" << endl;
+        //Info << "kappatr(p, Tt): " << kappatr(p, Tt) << endl;
+        //Info << "this->Cv_t(p, Tt): " << this->Cv_t(p, Tt) << endl;
         return kappatr(p, Tt)/this->Cv_t(p, Tt);
     }
     else
     {
+        //Info << "Hi 3.0" << endl;
         return 0.0;
     } 
 }
@@ -271,7 +290,7 @@ inline void Foam::CEATransport<Thermo>::operator-=
     scalar molr2 = ceat.nMoles()/this->nMoles();
 
     temp_ = molr1*temp_ - molr2*ceat.temp_;
-    Info<<"ope-=" <<endl;
+
     for
     (
         register label coefLabel=0;

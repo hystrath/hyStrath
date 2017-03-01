@@ -382,7 +382,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                         IOobject::AUTO_WRITE
                     ),
                     mesh,
-                    dimensionedScalar("X_" + species_[i], dimless, 0.0)
+                    dimensionedScalar(species_[i], dimless, 0.0)
                 )
             );
         }

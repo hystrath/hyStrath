@@ -140,6 +140,26 @@ inline Foam::scalar Foam::SutherlandEuckenTransport<Thermo>::mu
 
 
 template<class Thermo>
+inline Foam::scalar Foam::SutherlandEuckenTransport<Thermo>::kappatrans
+(
+    const scalar p, const scalar Tt
+) const
+{
+    return 5.0/2.0*mu(p, Tt)*this->Cv_trans(p, Tt);
+}
+
+
+template<class Thermo>
+inline Foam::scalar Foam::SutherlandEuckenTransport<Thermo>::kappar
+(
+    const scalar p, const scalar Tt
+) const
+{
+    return mu(p, Tt)*this->Cv_r(p, Tt);
+}
+
+
+template<class Thermo>
 inline Foam::scalar Foam::SutherlandEuckenTransport<Thermo>::kappatr
 (
     const scalar p, const scalar Tt
@@ -147,7 +167,7 @@ inline Foam::scalar Foam::SutherlandEuckenTransport<Thermo>::kappatr
 {
     scalar Cv_ = this->Cv_t(p, Tt);
     return mu(p, Tt)*Cv_*(1.32 + 1.77*this->R()/Cv_);
-    //return 5.0/2.0*mu(p, Tt)*this->Cv_trans(p, Tt) + mu(p, Tt)*this->Cv_r(p, Tt);
+    //return kappatrans(p, Tt) + kappar(p, Tt);
 }
 
 
