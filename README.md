@@ -9,12 +9,13 @@ Latest conference papers:
 + Available soon: J.-J. Hoste et al. 'Numerical Modeling and Simulation of Supersonic Flows in Propulsion Systems by Open-Source Solvers' (AIAA Hypersonics, Xiamen, China, 6-9 March 2017)
 
 
-Beta version: 05/12/2016 -> 02/03/2017
-
-Open-source release version 1.0 on 03/03/2017 including
+01 March 2017: Open-source release version 1.0 including
 + full source code
 + tutorials
-+ manuals
+    - generic case
+    - 2D axisymmetric blunted cone
+    - 2D planar cylinder
++ manuals (03 March 2017)
 
 
 Available for OpenFOAM versions
