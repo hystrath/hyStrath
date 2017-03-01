@@ -16,6 +16,7 @@ Latest conference papers:
     - 2D axisymmetric blunted cone
     - 2D planar cylinder
 + manuals (03 March 2017)
++ latest conference presentation (03 November 2016, Final Stardust Conference at ESA-ESTEC, Noordwijk, the Netherlands)
 
 
 Available for OpenFOAM versions
