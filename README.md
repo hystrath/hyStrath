@@ -9,17 +9,20 @@ Latest conference papers:
 + Available soon: J.-J. Hoste et al. 'Numerical Modeling and Simulation of Supersonic Flows in Propulsion Systems by Open-Source Solvers' (AIAA Hypersonics, Xiamen, China, 6-9 March 2017)
 
 
-01 March 2017: Open-source release version 1.0 including
+## 01 March 2017: Open-source release version 1.0 including
 + full source code
 + tutorials
-    - generic case
-    - 2D axisymmetric blunted cone
-    - 2D planar cylinder
+  - hy2Foam
+    * generic case
+    * 2D axisymmetric blunted cone
+    * 2D planar cylinder
+  - hyFoam
+      * coming soon (April 2017)
 + manuals (03 March 2017)
 + latest conference presentation (03 Nov. 2016, Final Stardust Conference at ESA-ESTEC)
 
 
-Available for OpenFOAM versions
+## Available for OpenFOAM versions
 + 2.3.0: http://openfoam.org/download/2-3-0-ubuntu/
 + 2.4.0: http://openfoam.org/download/2-4-0-ubuntu/
 + 2.4.0-MNF: https://github.com/MicroNanoFlows/OpenFOAM-2.4.0-MNF
@@ -32,6 +35,7 @@ Questions: hy2Foam@gmail.com
 
 
 Contributors: Vincent Casseau, Daniel E.R. Espinoza and Dr Thomas J. Scanlon
+Acknowledgements: Jimmy-John O.E. Hoste, Dr Rodrigo C. Palharini, Prof Richard E. Brown
 
 About us: http://www.jwfl.org.uk/
 
