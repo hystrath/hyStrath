@@ -26,7 +26,7 @@ Class
     Foam::LewisNumber
 
 Description
-    Multispecies mass transport model based on Lewis number.
+    Multispecies Lewis number transport model.
   
 SourceFiles
     LewisNumber.C

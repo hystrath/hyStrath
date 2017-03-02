@@ -26,7 +26,7 @@ Class
     Foam::noSpeciesDiffusion
 
 Description
-    noSpeciesDiffusion multispecies mass transport model.
+    noSpeciesDiffusion multispecies transport model.
   
 SourceFiles
     noSpeciesDiffusion.C
@@ -107,12 +107,6 @@ public:
         //- Update the species diffusion coefficients
         virtual void correct();
         
-        //- Solve the mass transport equations without reactions
-        /*virtual scalar correct
-        (
-            multivariateSurfaceInterpolationScheme<scalar>::fieldTable& fields
-        );*/
-                
         //- Read transportProperties dictionary
         virtual bool read();
   };
