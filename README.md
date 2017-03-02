@@ -19,7 +19,7 @@ Including
     * 2D planar cylinder
   - *hyFoam*
       * coming soon (April 2017)
-+ manuals (03 March 2017)
++ manuals
 + latest conference presentation (03 Nov. 2016, Final Stardust Conference at ESA-ESTEC)
 
 
