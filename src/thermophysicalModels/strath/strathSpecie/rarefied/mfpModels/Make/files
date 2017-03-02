@@ -1,9 +1,0 @@
-
-basicMfpModel/basicMfpModel.C
-mfpModel/mfpModel.C
-
-maxwellian/maxwellianmfp.C
-hardSphere/hardSphere.C
-variableHardSphere/variableHardSphere.C
-
-LIB = $(FOAM_USER_LIBBIN)/libmfpModels
