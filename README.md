@@ -9,7 +9,8 @@ Latest conference papers:
 + Available soon: J.-J. Hoste et al. 'Numerical Modeling and Simulation of Supersonic Flows in Propulsion Systems by Open-Source Solvers' (AIAA Hypersonics, Xiamen, China, 6-9 March 2017)
 
 
-## 01 March 2017: Open-source release version 1.0 including
+## 01 March 2017: Open-source release version 1.0
+including
 + full source code
 + tutorials
   - hy2Foam
@@ -35,6 +36,7 @@ Questions: hy2Foam@gmail.com
 
 
 Contributors: Vincent Casseau, Daniel E.R. Espinoza and Dr Thomas J. Scanlon
+
 Acknowledgements: Jimmy-John O.E. Hoste, Dr Rodrigo C. Palharini, Prof Richard E. Brown
 
 About us: http://www.jwfl.org.uk/
