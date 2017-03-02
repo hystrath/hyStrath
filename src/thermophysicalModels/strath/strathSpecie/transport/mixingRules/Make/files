@@ -1,0 +1,5 @@
+mixingRule/mixingRule.C
+mixingRule/newMixingRule.C
+mixingRule/mixingRules.C
+
+LIB = $(FOAM_USER_LIBBIN)/libmixingRules

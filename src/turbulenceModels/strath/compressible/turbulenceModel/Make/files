@@ -1,0 +1,4 @@
+turbulenceModel/turbulenceModel2.C
+laminar/laminar2.C
+
+LIB = $(FOAM_USER_LIBBIN)/libstrathCompressibleTurbulenceModel

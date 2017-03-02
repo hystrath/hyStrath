@@ -1,0 +1,18 @@
+EXE_INC = \
+    -I$(LIB_SRC)/finiteVolume/lnInclude \
+    -I$(LIB_SRC)/thermophysicalModels/basic/lnInclude \
+    -I$(LIB_SRC)/thermophysicalModels/chemistryModel/lnInclude \
+    -I$(LIB_SRC)/thermophysicalModels/strath/strathChemistryModel/lnInclude \
+    -I$(LIB_SRC)/thermophysicalModels/reactionThermo/lnInclude \
+    -I$(LIB_SRC)/thermophysicalModels/strath/strathReactionThermo/lnInclude \
+    -I$(LIB_SRC)/thermophysicalModels/specie/lnInclude \
+    -I$(LIB_SRC)/thermophysicalModels/strath/strathSpecie/lnInclude \
+    -I$(LIB_SRC)/turbulenceModels/strath/compressible/turbulenceModel/turbulenceModel \
+    -I$(LIB_SRC)/turbulenceModels/strath
+    
+    
+
+LIB_LIBS = \
+    -lfiniteVolume \
+    -lstrathChemistryModel
+    
