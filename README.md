@@ -10,7 +10,7 @@ Latest conference papers:
 
 
 ## 01 March 2017: Open-source release version 1.0
-including
+Including
 + full source code
 + tutorials
   - hy2Foam
@@ -34,8 +34,7 @@ Installation: ./install.sh
 
 Questions: hy2Foam@gmail.com
 
-
 Contributors: Vincent Casseau, Daniel E.R. Espinoza and Dr Thomas J. Scanlon              
-Acknowledgements: Jimmy-John O.E. Hoste, Dr Rodrigo C. Palharini, Prof Richard E. Brown       
+Acknowledgements: Jimmy-John O.E. Hoste, Dr Rodrigo C. Palharini and Prof Richard E. Brown       
 About us: http://www.jwfl.org.uk/
 
