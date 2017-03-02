@@ -13,11 +13,11 @@ Latest conference papers:
 Including
 + full source code
 + tutorials
-  - hy2Foam
+  - *hy2Foam*
     * generic case
     * 2D axisymmetric blunted cone
     * 2D planar cylinder
-  - hyFoam
+  - *hyFoam*
       * coming soon (April 2017)
 + manuals (03 March 2017)
 + latest conference presentation (03 Nov. 2016, Final Stardust Conference at ESA-ESTEC)
