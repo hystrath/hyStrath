@@ -28,7 +28,7 @@ Latest conference papers:
 + 2.4.0-MNF: https://github.com/MicroNanoFlows/OpenFOAM-2.4.0-MNF
 
 
-##### Pre-requirements: Good knowledge of OpenFOAM and the rhoCentralFoam solver
+**Pre-requirements: Good knowledge of OpenFOAM and the rhoCentralFoam solver**
 Installation: ./install.sh
 
 Questions: hy2Foam@gmail.com
