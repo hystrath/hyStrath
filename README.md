@@ -39,7 +39,7 @@ About us: http://www.jwfl.org.uk/
 
 
 ### You may also be interested in: 
-####### *dsmcFoam*: the direct simulation Monte Carlo code from the University of Strathclyde  
+###### *dsmcFoam*: the direct simulation Monte Carlo code from the University of Strathclyde  
  + hosted by Dr Craig White: https://github.com/MicroNanoFlows/OpenFOAM-2.4.0-MNF/tree/devel-craig (OpenFOAM 2.4.0-MNF)  
  + code, manuals, tutorials and support available via distance learning: http://onlineshop.strath.ac.uk/product-catalogue/engineering-faculty/mechanical-aerospace-engineering/courses/direct-simulation-monte-carlo-dsmc-distance-learning-course
 
