@@ -1,6 +1,6 @@
 # hyStrath
 
-Related articles to be found at: 
+Related articles to be found at:
 + http://www.mdpi.com/2226-4310/3/4/34/html
 + http://www.mdpi.com/2226-4310/3/4/45/html
 
@@ -10,7 +10,6 @@ Latest conference papers:
 
 
 ## 01 March 2017: Open-source release version 1.0
-Including
 + full source code
 + tutorials
   - *hy2Foam*
@@ -29,7 +28,7 @@ Including
 + 2.4.0-MNF: https://github.com/MicroNanoFlows/OpenFOAM-2.4.0-MNF
 
 
-###### Pre-requirements: Good knowledge of OpenFOAM and the rhoCentralFoam solver  
+###### Pre-requirements: Good knowledge of OpenFOAM and the rhoCentralFoam solver
 Installation: ./install.sh
 
 Questions: hy2Foam@gmail.com
@@ -39,7 +38,7 @@ Acknowledgements: Jimmy-John O.E. Hoste, Dr Rodrigo C. Palharini and Prof Richar
 About us: http://www.jwfl.org.uk/
 
 
-## You may also want to check: *dsmcFoam*  
+#### You may also want to check: *dsmcFoam*  
  + hosted by Dr Craig White: https://github.com/MicroNanoFlows/OpenFOAM-2.4.0-MNF/tree/devel-craig (OpenFOAM 2.4.0-MNF)  
  + code, manuals, tutorials and support available via distance learning: http://onlineshop.strath.ac.uk/product-catalogue/engineering-faculty/mechanical-aerospace-engineering/courses/direct-simulation-monte-carlo-dsmc-distance-learning-course
 
