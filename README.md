@@ -1,6 +1,6 @@
 # hyStrath
 
-###### Home to OpenFOAM CFD solvers ** *hyFoam* ** (supersonic combusting flows) and ** *hy2Foam* ** (hypersonic reacting flows)  
+##### Home to OpenFOAM CFD solvers *hyFoam* (supersonic combusting flows) and *hy2Foam* (hypersonic reacting flows)
 ###### Developed at the University of Strathclyde, Glasgow, UK  
 
 Related articles to be found at:
