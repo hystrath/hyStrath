@@ -34,14 +34,14 @@ Latest conference papers:
 **Pre-requirements: Good knowledge of OpenFOAM and the rhoCentralFoam solver**  
 Installation: ./install.sh
 
-Questions: hy2Foam@gmail.com
+Enquiries: hy2Foam@gmail.com
 
 Contributors: Vincent Casseau, Daniel E.R. Espinoza and Dr Thomas J. Scanlon              
 Acknowledgements: Jimmy-John O.E. Hoste, Dr Rodrigo C. Palharini and Prof Richard E. Brown       
 About us: http://www.jwfl.org.uk/
 
 
-### You may also be interested in: *dsmcFoam*
+### You may also be interested in: *dsmcFoam+*
 ###### the direct simulation Monte Carlo code from the University of Strathclyde  
  + hosted by Dr Craig White: https://github.com/MicroNanoFlows/OpenFOAM-2.4.0-MNF/tree/devel-craig (OpenFOAM 2.4.0-MNF)  
  + code, manuals, tutorials and support available via distance learning: http://onlineshop.strath.ac.uk/product-catalogue/engineering-faculty/mechanical-aerospace-engineering/courses/direct-simulation-monte-carlo-dsmc-distance-learning-course
