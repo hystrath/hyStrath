@@ -24,7 +24,7 @@ Latest conference papers:
 + manuals
 + latest conference presentation (03 Nov. 2016, Final Stardust Conference at ESA-ESTEC)
 
-Please check out _hyStrath_ Wiki page: https://github.com/vincentcasseau/hyStrath/wiki
+Please check out the _hyStrath_ Wiki page: https://github.com/vincentcasseau/hyStrath/wiki
 
 
 ## Available for OpenFOAM versions
