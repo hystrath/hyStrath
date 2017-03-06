@@ -24,6 +24,8 @@ Latest conference papers:
 + manuals
 + latest conference presentation (03 Nov. 2016, Final Stardust Conference at ESA-ESTEC)
 
+Please check out _hyStrath_ Wiki page: https://github.com/vincentcasseau/hyStrath/wiki
+
 
 ## Available for OpenFOAM versions
 + 2.3.0: http://openfoam.org/download/2-3-0-ubuntu/
