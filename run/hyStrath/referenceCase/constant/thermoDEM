@@ -15,14 +15,14 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-/* Hf data extracted from http://www.update.uu.se/~jolkkonen/pdf/CRC_TD.pdf
+/* data extracted from http://www.update.uu.se/~jolkkonen/pdf/CRC_TD.pdf
       Sutherland data: http://www.lmnoeng.com/Flow/GasViscosity.php
              CEA data: Eilmer-3, gas-model.lua (Boushehri et al. (1987) and Svehla (1994))
        unused:  http://encyclopedia.airliquide.com/Encyclopedia.asp?GasID=3 */
 
 // Atoms and molecules data
 
-N2
+/*N2
 {
     specie
     {
@@ -94,7 +94,7 @@ N2
                   );
         }
     }
-}
+}*/
 
 O2
 {
@@ -162,7 +162,7 @@ O2
     }
 }
       
-NO
+/*NO
 {
     specie
     {
@@ -281,7 +281,7 @@ N
                   );
         }
     }
-}
+}*/
     
 O
 {
@@ -340,7 +340,7 @@ O
     
 // Ions and electron data
  
-N2+
+/*N2+
 {
     specie
     {
@@ -663,7 +663,7 @@ Ar
                   );
         }
     }
-}
+}*/
  
 // Carbon compounds
      
@@ -676,14 +676,14 @@ CO2
         particleType    2;
         charge          0;
         diameter        3.3e-10;
-        dissocEnergy    0;   //wrong
+        dissocEnergy    1.7e7;
         omega           0.74; //wrong
         noVibTemp       3;
         noElecLevels    5;
     }
     thermodynamics
     {
-        decoupledCvCoeffs    ( 1.5 1.5 1 0 0 -1075593 0 );
+        decoupledCvCoeffs    ( 1.5 1.5 1 1 0 -47327 0 );
         vibrationalList      ( 
                                 2  945 
                                 1  1903 
@@ -722,14 +722,14 @@ CO
         particleType    2;
         charge          0;
         diameter        3.76e-10;
-        dissocEnergy    0;   //wrong
+        dissocEnergy    1.7e7;
         omega           0.74; //wrong
         noVibTemp       1;
         noElecLevels    1;
     }
     thermodynamics
     {
-        decoupledCvCoeffs    ( 1.5 1 1 0 0 -474475 0 );
+        decoupledCvCoeffs    ( 1.5 1 1 0 0 -13290 0 );
         vibrationalList      ( 
                                 2  3122 
                              );
@@ -767,7 +767,7 @@ C
     }
     thermodynamics
     {
-        decoupledCvCoeffs    ( 1.5 0 0 0 0 7179872 0 );
+        decoupledCvCoeffs    ( 1.5 0 0 0 0 86235 0 );
         vibrationalList      ( 0  0 );
         electronicList       ( 1  0 );              
     }
@@ -789,7 +789,7 @@ C
 
 // Hydrogen compounds, from gas-model.lua
 
-H
+/*H
 {
     specie
     {
@@ -985,7 +985,7 @@ HO2
         vibrationalList      ( 
                                 1  1577
                                 1  2059 
-                             ); // Russian paper 2014
+                             ); // Russian guy 2014
         electronicList       ( 1  0 );
     }
     transport
@@ -1018,7 +1018,7 @@ NO2
                                  1  930
                                  1  1900 
                                  1  2340 
-                             ); //Tarik K. Bose, High Temp Gas Dyn p.20
+                             ); //Tarik K. Bose High Temp Gas Dyn p.20
         electronicList       ( 1  0 );
     }
     transport
@@ -1067,7 +1067,7 @@ H2O2
                                  1  2070
                                  1  4130
                                  1  4910 
-                             );//Tarik K. Bose, High Temp Gas Dyn p.20
+                             );//Tarik K. Bose High Temp Gas Dyn p.20
         electronicList       ( 1  0 );
     }
     transport
@@ -1106,6 +1106,6 @@ HNO
             mu          0;
         }
     }
-}
+}*/
 
 // ************************************************************************* //
