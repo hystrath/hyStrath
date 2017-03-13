@@ -25,27 +25,14 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "LewisNumber.H"
-//#include <time.h>
 
 // * * * * * * * * * * * * * Protected Member Functions  * * * * * * * * * * //
 
 template<class ThermoType>
 void Foam::LewisNumber<ThermoType>::updateCoefficients()
 {
-    // rho*Ds = kappa_tr/(Le*Cp_tr) - NEW VINCENT 16/05/2016 (Scalabrin's PhD, Eq. 2.29 is wrong)
-    /*std::clock_t start;
-    double duration;*/
-    
-    this->D_[0] = this->turbulence_.kappaEff() / (Le_ * this->thermo_.Cp_t());
-    
-    /*start = std::clock();
-    volScalarField kk = this->turbulence_.kappaEff();
-    duration = (std::clock() - start) / double(CLOCKS_PER_SEC);
-    Info << "timer kappa load: " << duration << endl;
-    start = std::clock();
-    volScalarField Cpt = this->thermo_.Cp_t();
-    duration = (std::clock() - start) / double(CLOCKS_PER_SEC);
-    Info << "timer Cpt load: " << duration << endl;*/
+    // rho*Ds = Le*kappa_tr/Cp_tr - NEW VINCENT 16/05/2016
+    this->D_[0] = Le_*this->turbulence_.kappaEff() / this->thermo_.Cp_t();
     
     if(this->thermo_.composition().particleType(0) == 3)
     {
