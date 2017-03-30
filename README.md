@@ -9,7 +9,7 @@ Related articles to be found at:
 
 Latest conference papers:
 + http://aip.scitation.org/doi/pdf/10.1063/1.4967557
-+ Available soon: J.-J. Hoste et al. 'Numerical Modeling and Simulation of Supersonic Flows in Propulsion Systems by Open-Source Solvers' (AIAA Hypersonics, Xiamen, China, 6-9 March 2017)
++ https://arc.aiaa.org/doi/pdf/10.2514/6.2017-2411
 
 
 ## 01 March 2017: Open-source release version 1.0
