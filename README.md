@@ -15,14 +15,14 @@ Latest conference papers:
 <br></p></div>
 
 --- 
-## xx May 2017: Release version 1.1 (coming soon)
-+ How-tos will be added [here](https://github.com/vincentcasseau/hyStrath/wiki)
+## xx May 2017: Release 1.1 (coming soon)
++ How-tos will be added [here](https://github.com/vincentcasseau/hyStrath/wiki) and are meant to replace the manuals
 + Fixes and new models (a description will be given)
 
 > !! Until the release date, there might be some inconsistencies between the manuals and the test cases !!
 
  
-## 01 March 2017: Open-source release version 1.0
+## 01 March 2017: First open-source release, version 1.0
 + full source code
 + tutorials
   - *hy2Foam*
@@ -32,7 +32,7 @@ Latest conference papers:
   - *hyFoam*
       * coming soon
 + manuals
-+ latest conference presentation (03 Nov. 2016, Final Stardust Conference at ESA-ESTEC)
++ latest conference presentation (03 Nov. 2016, Final Stardust Conference at ESA ESTEC)
 
 Please check out the _hyStrath_ Wiki page: https://github.com/vincentcasseau/hyStrath/wiki
 
