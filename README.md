@@ -17,6 +17,9 @@ Latest conference papers:
 
 > !! Until the release date, there might be some inconsistencies between the manuals and the test cases !!
 
+<div class="paragraph"><p><br>
+<br></p></div>
+
 ---  
 ## 01 March 2017: Open-source release version 1.0
 + full source code
@@ -31,6 +34,9 @@ Latest conference papers:
 + latest conference presentation (03 Nov. 2016, Final Stardust Conference at ESA-ESTEC)
 
 Please check out the _hyStrath_ Wiki page: https://github.com/vincentcasseau/hyStrath/wiki
+
+<div class="paragraph"><p><br>
+<br></p></div>
 
 ---  
 ## Available for OpenFOAM versions
@@ -47,6 +53,9 @@ Enquiries: hy2Foam@gmail.com
 Contributors: Vincent Casseau, Daniel E.R. Espinoza and Dr Thomas J. Scanlon              
 Acknowledgements: Jimmy-John O.E. Hoste, Dr Rodrigo C. Palharini and Prof Richard E. Brown       
 About us: http://www.jwfl.org.uk/
+
+<div class="paragraph"><p><br>
+<br></p></div>
 
 ---  
 ### You may also be interested in: *dsmcFoam+*
