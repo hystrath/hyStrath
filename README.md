@@ -11,7 +11,13 @@ Latest conference papers:
 + http://aip.scitation.org/doi/pdf/10.1063/1.4967557
 + https://arc.aiaa.org/doi/pdf/10.2514/6.2017-2411
 
+## xx May 2017: Release version 1.1 (coming soon)
++ How-tos will be added [here](https://github.com/vincentcasseau/hyStrath/wiki)
++ Fixes and new models (a description will be given)
 
+> !! Until the release date, there might be some inconsistencies between the manuals and the test cases !!
+
+---  
 ## 01 March 2017: Open-source release version 1.0
 + full source code
 + tutorials
@@ -20,13 +26,13 @@ Latest conference papers:
     * 2D axisymmetric blunted cone
     * 2D planar cylinder
   - *hyFoam*
-      * coming soon (April 2017)
+      * coming soon
 + manuals
 + latest conference presentation (03 Nov. 2016, Final Stardust Conference at ESA-ESTEC)
 
 Please check out the _hyStrath_ Wiki page: https://github.com/vincentcasseau/hyStrath/wiki
 
-
+---  
 ## Available for OpenFOAM versions
 + 2.3.0: http://openfoam.org/download/2-3-0-ubuntu/
 + 2.4.0: http://openfoam.org/download/2-4-0-ubuntu/
@@ -42,7 +48,7 @@ Contributors: Vincent Casseau, Daniel E.R. Espinoza and Dr Thomas J. Scanlon
 Acknowledgements: Jimmy-John O.E. Hoste, Dr Rodrigo C. Palharini and Prof Richard E. Brown       
 About us: http://www.jwfl.org.uk/
 
-
+---  
 ### You may also be interested in: *dsmcFoam+*
 ###### the direct simulation Monte Carlo code from the University of Strathclyde  
  + hosted by Dr Craig White: https://github.com/MicroNanoFlows/OpenFOAM-2.4.0-MNF/tree/devel-craig (OpenFOAM 2.4.0-MNF)  
