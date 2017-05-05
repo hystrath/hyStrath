@@ -11,16 +11,17 @@ Latest conference papers:
 + http://aip.scitation.org/doi/pdf/10.1063/1.4967557
 + https://arc.aiaa.org/doi/pdf/10.2514/6.2017-2411
 
+<div class="paragraph"><p><br>
+<br></p></div>
+
+--- 
 ## xx May 2017: Release version 1.1 (coming soon)
 + How-tos will be added [here](https://github.com/vincentcasseau/hyStrath/wiki)
 + Fixes and new models (a description will be given)
 
 > !! Until the release date, there might be some inconsistencies between the manuals and the test cases !!
 
-<div class="paragraph"><p><br>
-<br></p></div>
-
----  
+ 
 ## 01 March 2017: Open-source release version 1.0
 + full source code
 + tutorials
