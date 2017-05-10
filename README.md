@@ -9,12 +9,13 @@
 + 2.4.0: http://openfoam.org/download/2-4-0-ubuntu/
 + 2.4.0-MNF: https://github.com/MicroNanoFlows/OpenFOAM-2.4.0-MNF
 
+**Please check out the _hyStrath_ Wiki page:** https://github.com/vincentcasseau/hyStrath/wiki  
+
 **Pre-requirements: Good knowledge of OpenFOAM and the rhoCentralFoam solver**  
+
 Installation: ./install.sh
 
-**Please check out the _hyStrath_ Wiki page:** https://github.com/vincentcasseau/hyStrath/wiki
-
-## [Publications](https://github.com/vincentcasseau/hyStrath/wiki/Publications) 
+[Publications](https://github.com/vincentcasseau/hyStrath/wiki/Publications) 
 
 
 <div class="paragraph"><p><br>
