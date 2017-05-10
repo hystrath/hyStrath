@@ -15,7 +15,7 @@
 
 Installation: ./install.sh
 
-[Publications](https://github.com/vincentcasseau/hyStrath/wiki/Publications) 
+**[Publications](https://github.com/vincentcasseau/hyStrath/wiki/Publications)**
 
 
 <div class="paragraph"><p><br>
