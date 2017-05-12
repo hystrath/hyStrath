@@ -17,7 +17,7 @@ FoamFile
 
 application     hy2Foam;
 
-startFrom       startTime;
+startFrom       latestTime;
 
 startTime       0;
 
@@ -27,11 +27,11 @@ endTime         0.0002;
 
 deltaT          1.0e-10;
 
-writeControl    runTime;
+writeControl    adjustableRunTime;
 
-writeInterval   1e-5;
+writeInterval   1e-6;
 
-purgeWrite      50;
+purgeWrite      10;
 
 writeFormat     ascii;
 
@@ -41,16 +41,24 @@ writeCompression off;
 
 timeFormat      general;
 
-timePrecision   6;
+timePrecision   10;
 
 runTimeModifiable true;
 
 adjustTimeStep  yes;
 
-maxCo           0.2;
+maxCo           0.5;
 
 maxDeltaT       1.0e-5;
 
 libs ("libstrathFiniteVolume.so");
+
+functions
+{
+    //#include "probes"
+    
+    #include "forces"
+}
+
 
 // ************************************************************************* //

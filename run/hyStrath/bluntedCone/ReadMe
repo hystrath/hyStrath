@@ -1,8 +1,0 @@
-checkMesh
-
-decomposePar -latestTime
-mpirun -np 24 hy2Foam -parallel > log.hy2Foam &
-reconstructPar -latestTime
-
-Release date: 01/03/2017
-Github account: https://github.com/vincentcasseau/hyStrath

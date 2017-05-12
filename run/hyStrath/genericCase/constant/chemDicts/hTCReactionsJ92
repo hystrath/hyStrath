@@ -1,0 +1,966 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.3.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      hTCReactionsJ92; // named after Jachimowski (1992)
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// C. J. Jachimowski
+// An Analysis of Combustion Studies in Shock Expansion
+// Tunnels and Reflected Shock Tunnels
+// NASA TP-3224
+// 1992
+    
+species
+(
+    N2
+    O2
+    NO
+    H2
+    OH
+    H2O
+    HO2
+    NO2
+    H2O2
+    HNO
+    N
+    O
+    H
+);
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Units
+// A: m^3 kmol^-1 s^-1
+// Ta: K
+
+// FORWARD AND REVERSE REACTIONS
+  
+reactions
+{
+    // Reaction no 1
+    hydrogenOxygenReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "H2 + O2 = HO2 + H";
+        //forward
+        //{
+            A        7.0e10;
+            beta     0;
+            Ta       28583;
+        /*}
+        reverse
+        {
+            A        ;
+            beta     0;
+            Ta       ;
+        }*/
+    }
+    
+    // Reaction no 2
+    hydrogenAtomOxygenReaction
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "H + O2 = OH + O";
+        forward
+        {
+            A        2.2e11;
+            beta     0;
+            Ta       8454;
+        }
+        reverse
+        {
+            A        1.42e4;
+            beta     0;
+            Ta       1664;
+        }
+    }
+    
+    // Reaction no 3
+    oxygenAtomHydrogenReaction
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "O + H2 = OH + H";
+        forward
+        {
+            A        5.06e1;
+            beta     2.67;
+            Ta       3165;
+        }
+        reverse
+        {
+            A        3.94e4;
+            beta     0;
+            Ta       21092;
+        }
+    }
+    
+    // Reaction no 4
+    hydroxydeHydrogenReaction
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "OH + H2 = H2O + H";
+        forward
+        {
+            A        2.16e5;
+            beta     1.51;
+            Ta       1726;
+        }
+        reverse
+        {
+            A        1.74e5;
+            beta     0;
+            Ta       44549;
+        }
+    }
+    
+    // Reaction no 5
+    hydroxydeReaction
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "OH + OH = H2O + O";
+        forward
+        {
+            A        1.5e6;
+            beta     1.14;
+            Ta       0.0;
+        }
+        reverse
+        {
+            A        1.41e5;
+            beta     0;
+            Ta       38888;
+        }
+    }
+    
+    // Reaction no 6
+    hydrogenAtomHydroxydeTBReaction
+    {
+        type     nonEquilibriumReversiblethirdBodyArrheniusReaction;
+        reaction "H + OH + M = H2O + M";
+        forward
+        {
+            A        8.62e18;
+            beta     -2.0;
+            Ta       0.0;
+            defaultEfficiency 1.0;
+            coeffs
+            (
+                ("H2O" 16.0)
+                ("H2"  2.5)
+                ("HO2" 4.0)
+                ("N2" 1.0)
+                ("O2" 1.0)
+                ("NO" 1.0)
+                ("OH" 1.0)
+                ("NO2" 1.0)
+                ("H2O2" 1.0)
+                ("HNO" 1.0)
+                ("N" 1.0)
+                ("O" 1.0)
+                ("H" 1.0)
+            );
+        }
+        reverse
+        {
+            A        1.89e7;
+            beta     0;
+            Ta       242341;
+            defaultEfficiency 1.0;
+            coeffs
+            (
+                ("H2O" 16.0)
+                ("H2"  2.5)
+                ("HO2" 4.0)
+                ("N2" 1.0)
+                ("O2" 1.0)
+                ("NO" 1.0)
+                ("OH" 1.0)
+                ("NO2" 1.0)
+                ("H2O2" 1.0)
+                ("HNO" 1.0)
+                ("N" 1.0)
+                ("O" 1.0)
+                ("H" 1.0)
+            );
+        }
+    }
+    
+    // Reaction no 7
+    hydrogenAtomTBReaction
+    {
+        type     nonEquilibriumReversiblethirdBodyArrheniusReaction;
+        reaction "H + H + M = H2 + M";
+        forward
+        {
+            A        7.30e14;
+            beta     -1.0;
+            Ta       0.0;
+            defaultEfficiency 1.0;
+            coeffs
+            (
+                ("H2O" 16.0)
+                ("H2"  2.5)
+                ("HO2" 4.0)
+                ("N2" 1.0)
+                ("O2" 1.0)
+                ("NO" 1.0)
+                ("OH" 1.0)
+                ("NO2" 1.0)
+                ("H2O2" 1.0)
+                ("HNO" 1.0)
+                ("N" 1.0)
+                ("O" 1.0)
+                ("H" 1.0)
+            );
+        }
+        reverse
+        {
+            A        9.63e5;
+            beta     0;
+            Ta       215282;
+            defaultEfficiency 1.0;
+            coeffs
+            (
+                ("H2O" 16.0)
+                ("H2"  2.5)
+                ("HO2" 4.0)
+                ("N2" 1.0)
+                ("O2" 1.0)
+                ("NO" 1.0)
+                ("OH" 1.0)
+                ("NO2" 1.0)
+                ("H2O2" 1.0)
+                ("HNO" 1.0)
+                ("N" 1.0)
+                ("O" 1.0)
+                ("H" 1.0)
+            );
+        }
+    }
+    
+    // Reaction no 8
+    hydrogenAtomOxygenAtomTBReaction
+    {
+        type     nonEquilibriumReversiblethirdBodyArrheniusReaction;
+        reaction "H + O + M = OH + M";
+        forward
+        {
+            A        2.6e13;
+            beta     -0.6;
+            Ta       0.0;
+            defaultEfficiency 1.0;
+            coeffs
+            (
+                ("H2O" 16.0)
+                ("H2"  2.5)
+                ("HO2" 4.0)
+                ("N2" 1.0)
+                ("O2" 1.0)
+                ("NO" 1.0)
+                ("OH" 1.0)
+                ("NO2" 1.0)
+                ("H2O2" 1.0)
+                ("HNO" 1.0)
+                ("N" 1.0)
+                ("O" 1.0)
+                ("H" 1.0)
+            );
+        }
+        reverse
+        {
+            A        3.73e5;
+            beta     0;
+            Ta       213844;
+            defaultEfficiency 1.0;
+            coeffs
+            (
+                ("H2O" 16.0)
+                ("H2"  2.5)
+                ("HO2" 4.0)
+                ("N2" 1.0)
+                ("O2" 1.0)
+                ("NO" 1.0)
+                ("OH" 1.0)
+                ("NO2" 1.0)
+                ("H2O2" 1.0)
+                ("HNO" 1.0)
+                ("N" 1.0)
+                ("O" 1.0)
+                ("H" 1.0)
+            );
+        }
+    }
+    
+    // Reaction no 9
+    oxygenAtomTBReaction
+    {
+        type     nonEquilibriumReversiblethirdBodyArrheniusReaction;
+        reaction "O + O + M = O2 + M";
+        forward
+        {
+            A        1.1e14;
+            beta     -1.0;
+            Ta       0.0;
+            defaultEfficiency 1.0;
+            coeffs
+            (
+                ("H2O" 16.0)
+                ("H2"  2.5)
+                ("HO2" 4.0)
+                ("N2" 1.0)
+                ("O2" 1.0)
+                ("NO" 1.0)
+                ("OH" 1.0)
+                ("NO2" 1.0)
+                ("H2O2" 1.0)
+                ("HNO" 1.0)
+                ("N" 1.0)
+                ("O" 1.0)
+                ("H" 1.0)
+            );
+        }
+        reverse
+        {
+            A        1.01e6;
+            beta     0;
+            Ta       245919;
+            defaultEfficiency 1.0;
+            coeffs
+            (
+                ("H2O" 16.0)
+                ("H2"  2.5)
+                ("HO2" 4.0)
+                ("N2" 1.0)
+                ("O2" 1.0)
+                ("NO" 1.0)
+                ("OH" 1.0)
+                ("NO2" 1.0)
+                ("H2O2" 1.0)
+                ("HNO" 1.0)
+                ("N" 1.0)
+                ("O" 1.0)
+                ("H" 1.0)
+            );
+        }
+    }
+    
+    // Reaction no 10
+    hydrogenAtomOxygenTBReaction
+    {
+        type     nonEquilibriumReversiblethirdBodyArrheniusReaction;
+        reaction "H + O2 + M = HO2 + M";
+        forward
+        {
+            A        2.3e15;
+            beta     -1.0;
+            Ta       0.0;
+            defaultEfficiency 1.0;
+            coeffs
+            (
+                ("H2O" 16.0)
+                ("H2"  2.5)
+                ("HO2" 4.0)
+                ("N2" 1.0)
+                ("O2" 1.0)
+                ("NO" 1.0)
+                ("OH" 1.0)
+                ("NO2" 1.0)
+                ("H2O2" 1.0)
+                ("HNO" 1.0)
+                ("N" 1.0)
+                ("O" 1.0)
+                ("H" 1.0)
+            );
+        }
+        reverse
+        {
+            A        1.04e6;
+            beta     0;
+            Ta       99110;
+            defaultEfficiency 1.0;
+            coeffs
+            (
+                ("H2O" 16.0)
+                ("H2"  2.5)
+                ("HO2" 4.0)
+                ("N2" 1.0)
+                ("O2" 1.0)
+                ("NO" 1.0)
+                ("OH" 1.0)
+                ("NO2" 1.0)
+                ("H2O2" 1.0)
+                ("HNO" 1.0)
+                ("N" 1.0)
+                ("O" 1.0)
+                ("H" 1.0)
+            );
+        }
+    }
+    
+    // Reaction no 11
+    hydroperoxyleHydrogenAtomReaction
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "HO2 + H = OH + OH";
+        forward
+        {
+            A        1.5e11;
+            beta     0;
+            Ta       503;
+        }
+        reverse
+        {
+            A        1.27e4;
+            beta     0;
+            Ta       81492;
+        }
+    }
+    
+    // Reaction no 12
+    hydroperoxyleOxygenAtomReaction
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "HO2 + O = O2 + OH";
+        forward
+        {
+            A        2.0e10;
+            beta     0;
+            Ta       0.0;
+        }
+        reverse
+        {
+            A        2.62e4;
+            beta     0;
+            Ta       113098;
+        }
+    }
+    
+    // Reaction no 13
+    hydroperoxyleHydroxydeReaction
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "HO2 + OH = H2O + O2";
+        forward
+        {
+            A        2.0e10;
+            beta     0;
+            Ta       0.0;
+        }
+        reverse
+        {
+            A        2.8e5;
+            beta     0;
+            Ta       147322;
+        }
+    }
+    
+    // Reaction no 14
+    hydroperoxyleReaction
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "HO2 + HO2 = H2O2 + O2";
+        forward
+        {
+            A        2.0e9;
+            beta     0;
+            Ta       0.0;
+        }
+        reverse
+        {
+            A        1.36e4;
+            beta     0;
+            Ta       79780;
+        }
+    }
+    
+    // Reaction no 15
+    hydrogenAtomHydrogenperoxydeReaction
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "H + H2O2 = H2 + HO2";
+        forward
+        {
+            A        1.7e9;
+            beta     0;
+            Ta       1902;
+        }
+        reverse
+        {
+            A        7.29e2;
+            beta     0;
+            Ta       44352;
+        }
+    }
+    
+    // Reaction no 16
+    hydrogenAtomHydrogenperoxydeBisReaction
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "H + H2O2 = OH + H2O";
+        forward
+        {
+            A        1.0e10;
+            beta     0;
+            Ta       1801;
+        }
+        reverse
+        {
+            A        1.73e3;
+            beta     0;
+            Ta       154467;
+        }
+    }
+    
+    // Reaction no 17
+    oxygenAtomHydrogenperoxydeReaction
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "O + H2O2 = OH + HO2";
+        forward
+        {
+            A        2.8e10;
+            beta     0;
+            Ta       3220.6;
+        }
+        reverse
+        {
+            A        5.38e3;
+            beta     0;
+            Ta       46794;
+        }
+    }
+    
+    // Reaction no 18
+    hydroxyleHydrogenperoxydeReaction
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "OH + H2O2 = H2O + HO2";
+        forward
+        {
+            A        7.0e9;
+            beta     0;
+            Ta       722;
+        }
+        reverse
+        {
+            A        1.44e4;
+            beta     0;
+            Ta       70563;
+        }
+    }
+    
+    // Reaction no 19
+    hydroxyleTBReaction
+    {
+        type     nonEquilibriumReversiblethirdBodyArrheniusReaction;
+        reaction "OH + OH + M = H2O2 + M";
+        forward
+        {
+            A        1.6e19;
+            beta     -2.0;
+            Ta       0;
+            defaultEfficiency 1.0;
+            coeffs
+            (
+                ("H2O" 16.0)
+                ("H2"  2.5)
+                ("HO2" 4.0)
+                ("N2" 1.0)
+                ("O2" 1.0)
+                ("NO" 1.0)
+                ("OH" 1.0)
+                ("NO2" 1.0)
+                ("H2O2" 1.0)
+                ("HNO" 1.0)
+                ("N" 1.0)
+                ("O" 1.0)
+                ("H" 1.0)
+            );
+        }
+        reverse
+        {
+            A        2.02e8;
+            beta     0;
+            Ta       95412;
+            defaultEfficiency 1.0;
+            coeffs
+            (
+                ("H2O" 16.0)
+                ("H2"  2.5)
+                ("HO2" 4.0)
+                ("N2" 1.0)
+                ("O2" 1.0)
+                ("NO" 1.0)
+                ("OH" 1.0)
+                ("NO2" 1.0)
+                ("H2O2" 1.0)
+                ("HNO" 1.0)
+                ("N" 1.0)
+                ("O" 1.0)
+                ("H" 1.0)
+            );
+        }
+    }
+    
+    // Reaction no 20
+    nitrogenAtomTBReaction
+    {
+        type     nonEquilibriumReversiblethirdBodyArrheniusReaction;
+        reaction "N + N + M = N2 + M";
+        forward
+        {
+            A        2.8e14;
+            beta     -0.8;
+            Ta       0;
+            defaultEfficiency 1.0;
+            coeffs
+            (
+                ("H2O" 16.0)
+                ("H2"  2.5)
+                ("HO2" 4.0)
+                ("N2" 1.0)
+                ("O2" 1.0)
+                ("NO" 1.0)
+                ("OH" 1.0)
+                ("NO2" 1.0)
+                ("H2O2" 1.0)
+                ("HNO" 1.0)
+                ("N" 1.0)
+                ("O" 1.0)
+                ("H" 1.0)
+            );
+        }
+        reverse
+        {
+            A        1.10e7;
+            beta     0;
+            Ta       472007;
+            defaultEfficiency 1.0;
+            coeffs
+            (
+                ("H2O" 16.0)
+                ("H2"  2.5)
+                ("HO2" 4.0)
+                ("N2" 1.0)
+                ("O2" 1.0)
+                ("NO" 1.0)
+                ("OH" 1.0)
+                ("NO2" 1.0)
+                ("H2O2" 1.0)
+                ("HNO" 1.0)
+                ("N" 1.0)
+                ("O" 1.0)
+                ("H" 1.0)
+            );
+        }
+    }
+    
+    // Reaction no 21
+    nitrogenAtomOxygenReaction
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "N + O2 = NO + O";
+        forward
+        {
+            A        6.4e6;
+            beta     1.0;
+            Ta       3170;
+        }
+        reverse
+        {
+            A        3.76e3;
+            beta     0;
+            Ta       83991;
+        }
+    }
+    
+    // Reaction no 22
+    nitrogenAtomNitricoxideReaction
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "N + NO = N2 + O";
+        forward
+        {
+            A        1.6e10;
+            beta     0;
+            Ta       0.0;
+        }
+        reverse
+        {
+            A        6.84e4;
+            beta     0;
+            Ta       158635;
+        }
+    }
+    
+    // Reaction no 23
+    nitrogenAtomHydroxyleReaction
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "N + OH = NO + H";
+        forward
+        {
+            A        6.3e8;
+            beta     0.5;
+            Ta       0.0;
+        }
+        reverse
+        {
+            A        1.07e5;
+            beta     0;
+            Ta       102391;
+        }
+    }
+    
+    // Reaction no 24
+    hydrogenAtomNitricoxideTBReaction
+    {
+        type     nonEquilibriumReversiblethirdBodyArrheniusReaction;
+        reaction "H + NO + M = HNO + M";
+        forward
+        {
+            A        5.4e12;
+            beta     0;
+            Ta       -302;
+            defaultEfficiency 1.0;
+            coeffs
+            (
+                ("H2O" 16.0)
+                ("H2"  2.5)
+                ("HO2" 4.0)
+                ("N2" 1.0)
+                ("O2" 1.0)
+                ("NO" 1.0)
+                ("OH" 1.0)
+                ("NO2" 1.0)
+                ("H2O2" 1.0)
+                ("HNO" 1.0)
+                ("N" 1.0)
+                ("O" 1.0)
+                ("H" 1.0)
+            );
+        }
+        reverse
+        {
+            A        4.04e7;
+            beta     0;
+            Ta       102670;
+            defaultEfficiency 1.0;
+            coeffs
+            (
+                ("H2O" 16.0)
+                ("H2"  2.5)
+                ("HO2" 4.0)
+                ("N2" 1.0)
+                ("O2" 1.0)
+                ("NO" 1.0)
+                ("OH" 1.0)
+                ("NO2" 1.0)
+                ("H2O2" 1.0)
+                ("HNO" 1.0)
+                ("N" 1.0)
+                ("O" 1.0)
+                ("H" 1.0)
+            );
+        }
+    }
+    
+    // Reaction no 25
+    hydrogenAtomNitroxyleReaction
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "H + HNO = NO + H2";
+        forward
+        {
+            A        4.8e9;
+            beta     0;
+            Ta       0.0;
+        }
+        reverse
+        {
+            A        2.45e3;
+            beta     0;
+            Ta       115440;
+        }
+    }
+    
+    // Reaction no 26
+    oxygenAtomNitroxyleReaction
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "O + HNO = NO + OH";
+        forward
+        {
+            A        5.0e8;
+            beta     0.5;
+            Ta       0.0;
+        }
+        reverse
+        {
+            A        6.14e3;
+            beta     0;
+            Ta       114410;
+        }
+    }
+    
+    // Reaction no 27
+    hydroxyleNitroxyleReaction
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "OH + HNO = NO + H2O";
+        forward
+        {
+            A        3.6e10;
+            beta     0;
+            Ta       0.0;
+        }
+        reverse
+        {
+            A        8.79e4;
+            beta     0;
+            Ta       146589;
+        }
+    }
+    
+    // Reaction no 28
+    hydroperoxyleNitroxyleReaction
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "HO2 + HNO = NO + H2O2";
+        forward
+        {
+            A        2.0e9;
+            beta     0;
+            Ta       0.0;
+        }
+        reverse
+        {
+            A        2.38e3;
+            beta     0;
+            Ta       79047;
+        }
+    }
+    
+    // Reaction no 29
+    hydroperoxyleNitricoxideReaction
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "HO2 + NO = NO2 + OH";
+        forward
+        {
+            A        3.4e9;
+            beta     0;
+            Ta       -131;
+        }
+        reverse
+        {
+            A        1.56e4;
+            beta     0;
+            Ta       14596;
+        }
+    }
+    
+    // Reaction no 30
+    hydroperoxyleNitricoxideBisReaction
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "HO2 + NO = HNO + O2";
+        forward
+        {
+            A        2.0e8;
+            beta     0;
+            Ta       503.2;
+        }
+        reverse
+        {
+            A        1.15e3;
+            beta     0;
+            Ta       2839;
+        }
+    }
+    
+    // Reaction no 31
+    hydrogenAtomNitrogendioxideReaction
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "H + NO2 = NO + OH";
+        forward
+        {
+            A        3.5e11;
+            beta     0;
+            Ta       755;
+        }
+        reverse
+        {
+            A        6.46e3;
+            beta     0;
+            Ta       67401;
+        }
+    }
+    
+    // Reaction no 32
+    oxygenAtomNitrogendioxideReaction
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "O + NO2 = NO + O2";
+        forward
+        {
+            A        1.0e10;
+            beta     0;
+            Ta       302;
+        }
+        reverse
+        {
+            A        2.87e3;
+            beta     0;
+            Ta       99217;
+        }
+    }
+    
+    // Reaction no 33
+    nitrogendioxideTBReaction
+    {
+        type     irreversiblethirdBodyArrheniusReaction;
+        reaction "M + NO2 = NO + O + M";
+        //forward
+        //{
+            A        1.16e13;
+            beta     0;
+            Ta       33212.4;
+        /*}
+        reverse
+        {
+            A        ;
+            beta     0;
+            Ta       ;
+        }*/
+        defaultEfficiency 1.0;
+        coeffs
+        (
+            ("H2O" 16.0)
+            ("H2"  2.5)
+            ("HO2" 4.0)
+            ("N2" 1.0)
+            ("O2" 1.0)
+            ("NO" 1.0)
+            ("OH" 1.0)
+            ("NO2" 1.0)
+            ("H2O2" 1.0)
+            ("HNO" 1.0)
+            ("N" 1.0)
+            ("O" 1.0)
+            ("H" 1.0)
+        );
+    }
+}

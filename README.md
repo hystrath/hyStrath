@@ -24,7 +24,7 @@ Installation: ./install.sh
 ---  
 ## [Release history](https://github.com/vincentcasseau/hyStrath/wiki/Release-history)  
 ### 16 May 2017: Release 1.1
-+ [How-tos added](https://github.com/vincentcasseau/hyStrath/wiki/How-to) and are meant to replace the manuals  
++ [How-tos added](https://github.com/vincentcasseau/hyStrath/wiki/How-to) to replace the manuals  
 + Fixes and new diffusion models
 
 > Until the release date, there will be some inconsistencies between the manuals and the test cases!
@@ -34,7 +34,7 @@ Installation: ./install.sh
 <br></p></div>
 
 ---  
-Enquiries: hy2Foam@gmail.com
+**Enquiries: hy2Foam@gmail.com**
 
 Contributors: Vincent Casseau, Daniel E.R. Espinoza and Dr Thomas J. Scanlon              
 Acknowledgements: Jimmy-John O.E. Hoste, Dr Rodrigo C. Palharini and Prof Richard E. Brown       

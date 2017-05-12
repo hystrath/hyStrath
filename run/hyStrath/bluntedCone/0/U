@@ -33,6 +33,8 @@ boundaryField
         type            nonEqMaxwellSlipU;
         accommodationCoeff 1;
         Uwall           $velocityWall;
+        refValue        uniform $velocityWall;
+        valueFraction   uniform 1.0;
         thermalCreep    false;
         curvature       false;
         value           uniform $velocityWall;

@@ -1,0 +1,21 @@
+set key opaque at graph 0.65, 0.65 right top
+
+set style line 1 dashtype 1 lc rgb "black" lw 0.5 pt 1 ps 1.5
+set style line 12 dashtype 2 lc rgb "black" lw 1 pt 1 ps 1.5
+set style line 2 dashtype 1 lc rgb "red" lw 0.5 pt 1 ps 1.5
+set style line 22 dashtype 2 lc rgb "red" lw 1 pt 1 ps 1.5
+set style line 3 dashtype 1 lc rgb "blue" lw 0.5 pt 1 ps 1.5
+set style line 32 dashtype 2 lc rgb "blue" lw 1 pt 1 ps 1.5
+set style line 4 dashtype 1 lc rgb "#228B22" lw 0.5 pt 1 ps 1.5
+set style line 42 dashtype 2 lc rgb "#228B22" lw 1 pt 1 ps 1.5
+
+set output "gnuplot/integratedWallHeatFlux.eps"
+
+set size 0.95,0.47
+set origin 0.03,0.53
+set xlabel "Write time"
+set ylabel "Integrated wall heat flux [kW]"
+
+plot \
+"< cat log.hy2Foam | grep 'named cylinder:' | cut -d ':' -f 2" u 0:($1/1000) w l ls 1 not
+

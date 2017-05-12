@@ -1,0 +1,452 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.3.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      hTCReactionsEarth93;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Chul Park
+// Review of Chemical-Kinetic Problems of Future NASA Missions, I: Earth Entries
+// JOURNAL OF THERMOPHYSICS AND HEAT TRANSFER
+// Vol.7, No.3, July.-Sept. 1993
+
+species
+(
+    N2
+    O2
+    NO
+    N2+
+    O2+
+    NO+
+    N
+    O
+    N+
+    O+
+    e-
+);
+
+//vibTempAssociativity (0 0 0 1 2 2 1 1 2 1 1);
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+/* REACTIONS NO 1 TO 3               -> DISSOCIATION
+   REACTION NO 4                     -> ELECTRON IMPACT DISSOCIATION
+   REACTIONS NO 5 AND 6              -> EXCHANGE
+   REACTIONS NO 7 AND 8              -> ELECTRON IMPACT IONIZATION
+   REACTIONS NO 9 TO 11              -> ASSOCIATIVE IONIZATION
+   REACTIONS NO 12 TO 19             -> CHARGE EXCHANGE                      */
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+  
+reactions
+{
+    // Reaction no 1
+    oxygenTBReaction
+    {
+        type     reversiblethirdBodyArrheniusReaction;
+        reaction "O2 + M = 2O + M";
+        controlT dissociation;
+        A        2.0e18;
+        beta     -1.5;
+        Ta       59500;
+        coeffs
+        (
+            ("N2" 1.0)
+            ("O2" 1.0)
+            ("NO" 1.0)
+            ("N2+" 1.0)
+            ("O2+" 1.0)
+            ("NO+" 1.0)
+            ("N" 5.0)
+            ("O" 5.0)
+            ("N+" 5.0)
+            ("O+" 5.0)
+            ("e-" 0.0)
+        );
+        
+        ni       (1e20 1e21 1e22 1e23 1e24 1e25);
+        A0       (1.8103 0.91354 0.64183 0.55388 0.52455 0.50989);
+        A1       (1.9607 2.316 2.4253 2.46 2.4715 2.4773);
+        A2       (3.5716 2.2885 1.9026 1.7763 1.7342 1.7132);
+        A3       (-7.3623 -6.7969 -6.6277 -6.572 -6.5534 -6.5441);
+        A4       (0.083861 0.046338 0.035151 0.031445 0.030209 0.029591);  
+    }
+
+    // Reaction no 2
+    nitrogenTBReaction
+    {
+        type     reversiblethirdBodyArrheniusReaction;
+        reaction "N2 + M = 2N + M";
+        controlT dissociation;
+        A        7.0e18;
+        beta     -1.6;
+        Ta       113220;
+        coeffs
+        (
+            ("N2" 1.0)
+            ("O2" 1.0)
+            ("NO" 1.0)
+            ("N2+" 1.0)
+            ("O2+" 1.0)
+            ("NO+" 1.0)
+            ("N" 4.286)
+            ("O" 4.286)
+            ("N+" 4.286)
+            ("O+" 4.286)
+            ("e-" 0)
+        );
+        
+        ni       (1e20 1e21 1e22 1e23 1e24 1e25);
+        A0       (3.4907 2.0723 1.606 1.5351 1.4766 1.4766);
+        A1       (0.83133 1.3897 1.5732 1.6061 1.6291 1.6291);
+        A2       (4.0978 2.0617 1.3923 1.2993 1.2153 1.2153);
+        A3       (-12.728 -11.828 -11.533 -11.494 -11.457 -11.457);
+        A4       (0.07487 0.015105 -0.004543 -0.00698 -0.009444 -0.009444);
+    }
+    
+    // Reaction no 3
+    nitricoxideTBReaction
+    {
+        type     reversiblethirdBodyArrheniusReaction;
+        reaction "NO + M = N + O + M";
+        controlT dissociation;
+        A        5.0e12;
+        beta     0.0;
+        Ta       75500;
+        coeffs
+        (
+            ("N2" 1.0)
+            ("O2" 1.0)
+            ("NO" 1.0)
+            ("N2+" 1.0)
+            ("O2+" 1.0)
+            ("NO+" 1.0)
+            ("N" 22.0)
+            ("O" 22.0)
+            ("N+" 22.0)
+            ("O+" 22.0)
+            ("e-" 0.0)
+        );
+        
+        ni       (1e20 1e21 1e22 1e23 1e24 1e25);
+        A0       (2.1649 1.0072 0.63817 0.55889 0.515 0.50765);
+        A1       (0.078577 0.53545 0.68189 0.71558 0.73286 0.73575);
+        A2       (2.8508 1.1911 0.66336 0.55396 0.49096 0.48042);
+        A3       (-8.5422 -7.8098 -7.5773 -7.5304 -7.5025 -7.4979);
+        A4       (0.053043 0.004394 -0.011025 -0.014089 -0.015938 -0.016247);
+    }
+    
+    // Reaction no 33
+    nitrogenElectronImpactDissociationReaction
+    {
+        type     reversibleArrheniusReaction;
+        reaction "N2 + e- = 2N + e-";
+        controlT impactDissociation;
+        A        3.0e21;
+        beta     -1.6;
+        Ta       113220;
+        
+        ni       (1e20 1e21 1e22 1e23 1e24 1e25);
+        A0       (3.4907 2.0723 1.606 1.5351 1.4766 1.4766);
+        A1       (0.83133 1.3897 1.5732 1.6061 1.6291 1.6291);
+        A2       (4.0978 2.0617 1.3923 1.2993 1.2153 1.2153);
+        A3       (-12.728 -11.828 -11.533 -11.494 -11.457 -11.457);
+        A4       (0.07487 0.015105 -0.004543 -0.00698 -0.009444 -0.009444);
+    }
+     
+    // Reaction no 4
+    nitricoxideAtomicOxygenExchangeReaction
+    {
+        type     reversibleArrheniusReaction;
+        reaction "NO + O = O2 + N";
+        controlT exchange;
+        A        8.4e9;
+        beta     0.0;
+        Ta       19450;
+        
+        ni       (1e20 1e21 1e22 1e23 1e24 1e25);
+        A0       (0.35438 0.093613 -0.003732 0.004815 -0.009758 -0.002428);
+        A1       (-1.8821 -1.7806 -1.7434 -1.7443 -1.7386 -1.7415);
+        A2       (-0.72111 -1.0975 -1.2394 -1.2227 -1.2436 -1.2331);
+        A3       (-1.1797 -1.0128 -0.94952 -0.95824 -0.949 -0.95365);
+        A4       (-0.030831 -0.041949 -0.046182 -0.045545 -0.046159 -0.04585);
+    }
+    
+    // Reaction no 5
+    nitrogenAtomicOxygenExchangeReaction
+    {
+        type     reversibleArrheniusReaction;
+        reaction "N2 + O = NO + N";
+        controlT exchange;
+        A        6.4e14;
+        beta     -1.0;
+        Ta       38400;
+        
+        ni       (1e20 1e21 1e22 1e23 1e24 1e25);
+        A0       (1.3261 1.0653 0.96794 0.97646 0.96188 0.96921);
+        A1       (0.75268 0.85417 0.89131 0.89043 0.89617 0.89329);
+        A2       (1.2474 0.87093 0.7291 0.74572 0.72479 0.73531);
+        A3       (-4.1857 -4.0188 -3.9555 -3.9642 -3.955 -3.9596);
+        A4       (0.02184 0.010721 0.006488 0.007123 0.006509 0.006818);
+    }
+    
+    // Reaction no 6
+    /*atomicNitrogenElectronImpactIonisationReaction
+    {
+        type     reversibleArrheniusReaction;
+        reaction "N + e- = N+ + e- + e-";
+        controlT impactIonisation; // pb fwd & rev without trick
+        A        2.5e31;
+        beta     -3.82;
+        Ta       168600;
+        
+        ni       (1e20 1e21 1e22 1e23 1e24 1e25);
+        A0       (-1.9094 -1.2002 -0.96709 -0.93184 -0.9026 -0.9026 );
+        A1       (-3.0267 -3.3059 -3.3976 -3.414 -3.4255 -3.4255 );
+        A2       (-3.6935 -2.6755 -2.3408 -2.2946 -2.2526 -2.2526 );
+        A3       (-16.044 -16.494 -16.642 -16.661 -16.679 -16.679 );
+        A4       (-0.050183 -0.020301 -0.010477 -0.009269 -0.008037 -0.008037);
+    }
+    
+    // Reaction no 7
+    atomicOxygenElectronImpactIonisationReaction
+    {
+        type     reversibleArrheniusReaction;
+        reaction "O + e- = O+ + e- + e-";
+        controlT impactIonisation; // pb fwd & rev without trick
+        A        3.9e30;
+        beta     -3.78;
+        Ta       158500;
+        
+        ni       (1e20 1e21 1e22 1e23 1e24 1e25);
+        A0       (0.08045 0.52883 0.66478 0.70879 0.72341 0.73078);
+        A1       (-5.7393 -5.917 -5.9716 -5.989 -5.9947 -5.9976);
+        A2       (-1.4195 -0.77795 -0.58486 -0.52169 -0.5007 -0.49012);
+        A3       (-15.844 -16.127 -16.212 -16.24 -16.249 -16.254);
+        A4       (-0.001087 0.017675 0.023273 0.025127 0.025743 0.026054);
+    }
+    
+    // Reaction no 8
+    atomicNitrogenAtomicOxygenDissociativeRecombinationReaction
+    {
+        type     reversibleArrheniusReaction; // pb rev without trick
+        reaction "N + O = NO+ + e-";
+        controlT associativeIonisation;
+        A        5.3e09;
+        beta     0;
+        Ta       31900;
+        
+        ni       (1e20 1e21 1e22 1e23 1e24 1e25);
+        A0       (-2.1852 -1.0276 -0.65871 -0.57924 -0.53538 -0.52801);
+        A1       (-6.6709 -7.1278 -7.2742 -7.3079 -7.3252 -7.3281);
+        A2       (-4.2968 -2.637 -2.1096 -1.9999 -1.937 -1.9264);
+        A3       (-2.2175 -2.95 -3.1823 -3.2294 -3.2572 -3.2618);
+        A4       (-0.050748 -0.0021 0.01331 0.016382 0.01823 0.01854);
+    }
+    
+    // Reaction no 9
+    atomicNitrogenAtomicNitrogenDissociativeRecombinationReaction
+    {
+        type     reversibleArrheniusReaction; // pb rev without trick
+        reaction "N + N = N2+ + e-";
+        controlT associativeIonisation;
+        A        4.4e04;
+        beta     1.5;
+        Ta       67500;
+        
+        ni       (1e20 1e21 1e22 1e23 1e24 1e25);
+        A0       (-4.3785 -2.9601 -2.4938 -2.4229 -2.3644 -2.3644);
+        A1       (-4.2726 -4.831 -5.0145 -5.0474 -5.0704 -5.0704);
+        A2       (-7.8709 -5.8348 -5.1654 -5.0724 -4.9885 -4.9885);
+        A3       (-4.4628 -5.3621 -5.6577 -5.6961 -5.7332 -5.7332);
+        A4       (-0.12402 -0.064252 -0.044602 -0.042167 -0.039703 -0.039703);
+    }
+    
+    // Reaction no 10
+    atomicOxygenAtomicOxygenDissociativeRecombinationReaction
+    {
+        type     reversibleArrheniusReaction; // pb rev without trick
+        reaction "O + O = O2+ + e-";
+        controlT associativeIonisation;
+        A        7.1e-01;
+        beta     2.7;
+        Ta       80600;
+        
+        ni       (1e20 1e21 1e22 1e23 1e24 1e25);
+        A0       (-0.11682 0.77986 1.0516 1.1395 1.1689 1.1835);
+        A1       (-7.6883 -8.0436 -8.153 -8.1876 -8.1991 -8.2049);
+        A2       (-2.2498 -0.96678 -0.58082 -0.45461 -0.41245 -0.39146);
+        A3       (-7.7905 -8.3559 -8.5251 -8.5808 -8.5995 -8.6087);
+        A4       (-0.011079 0.02644 0.037629 0.041333 0.042571 0.043187);
+    }*/
+    
+    // Reaction no 11
+    atomicOxygenCationNitrogenChargeExchangeReaction
+    {
+        type     reversibleArrheniusReaction;
+        reaction "O+ + N2 = N2+ + O";
+        controlT chargeExchange;
+        A        9.1e08;
+        beta     0.36;
+        Ta       22800;
+        
+        ni       (1e20 1e21 1e22 1e23 1e24 1e25);
+        A0       (-0.96795 -1.4164 -1.5522 -1.5962 -1.6108 -1.6181);
+        A1       (2.2979 2.4756 2.5303 2.5476 2.5533 2.5562);
+        A2       (-2.3531 -2.9947 -3.1876 -3.2507 -3.2718 -3.2823);
+        A3       (-1.3463 -1.0636 -0.97903 -0.95116 -0.94186 -0.93721);
+        A4       (-0.048042 -0.066805 -0.072396 -0.074249 -0.074867 -0.075176);
+    }
+    
+    // Reaction no 12
+    atomicOxygenCationNitricoxideChargeExchangeReaction
+    {
+        type     reversibleArrheniusReaction;
+        reaction "O+ + NO = N+ + O2";
+        controlT chargeExchange;
+        A        1.4e02;
+        beta     1.9;
+        Ta       26600;
+        
+        ni       (1e20 1e25);
+        A0       (-1.6355 -1.6355);
+        A1       (0.83058 0.83058);
+        A2       (-2.9952 -2.9952);
+        A3       (-1.3794 -1.3794);
+        A4       (-0.079927 -0.079927);
+    }
+    
+    // Reaction no 13
+    nitricoxideCationOxygenChargeExchangeReaction
+    {
+        type     reversibleArrheniusReaction;
+        reaction "NO+ + O2 = O2+ + NO";
+        controlT chargeExchange;
+        A        2.4e10;
+        beta     0.41;
+        Ta       32600;
+        
+        ni       (1e20 1e25);
+        A0       (1.7139 1.7139);
+        A1       (0.86469 0.86469);
+        A2       (2.7679 2.7679);
+        A3       (-4.3932 -4.3932);
+        A4       (0.070493 0.070493);
+    } 
+    
+    // Reaction no 14
+    nitricoxideCationAtomicNitrogenChargeExchangeReaction
+    {
+        type     reversibleArrheniusReaction;
+        reaction "NO+ + N = N2+ + O";
+        controlT chargeExchange;
+        A        7.2e10;
+        beta     0.0;
+        Ta       35500;
+        
+        ni       (1e20 1e21 1e22 1e23 1e24 1e25);
+        A0       (-2.1934 -1.9325 -1.8352 -1.8438 -1.8292 -1.8365);
+        A1       (2.3983 2.2968 2.2597 2.2606 2.2548 2.2577);
+        A2       (-3.5743 -3.1978 -3.056 -3.0726 -3.0517 -3.0622);
+        A3       (-2.2452 -2.412 -2.4754 -2.4667 -2.4759 -2.4713);
+        A4       (-0.073271 -0.062149 -0.057919 -0.058554 -0.05794 -0.058248);
+    }
+    
+    // Reaction no 15
+    nitricoxideCationAtomicOxygenChargeExchangeReaction
+    {
+        type     reversibleArrheniusReaction;
+        reaction "NO+ + O = N+ + O2";
+        controlT chargeExchange;
+        A        1.0e09;
+        beta     0.5;
+        Ta       77200;
+        
+        ni       (1e20 1e21 1e22 1e23 1e24 1e25);
+        A0       (-1.5349 -1.0864 -0.95072 -0.90672 -0.89206 -0.88472);
+        A1       (1.6836 1.5059 1.4513 1.434 1.4282 1.4254);
+        A2       (-2.969 -2.3273 -2.1346 -2.0714 -2.0504 -2.0398);
+        A3       (-6.464 -6.7468 -6.8313 -6.8592 -6.8685 -6.8731);
+        A4       (-0.083316 -0.064551 -0.058964 -0.05711 -0.056493 -0.056184);
+    }
+    
+    // Reaction no 16
+    oxygenCationAtomicNitrogenChargeExchangeReaction
+    {
+        type     reversibleArrheniusReaction; // pb rev without trick
+        reaction "O2+ + N = N+ + O2";
+        controlT chargeExchange;
+        A        8.7e10;
+        beta     0.14;
+        Ta       28600;
+        
+        ni       (1e20 1e21 1e22 1e23 1e24 1e25);
+        A0       (-3.603 -2.8938 -2.6607 -2.6252 -2.596 -2.596);
+        A1       (2.701 2.4218 2.33 2.3136 2.3021 2.3021);
+        A2       (-5.0155 -3.9975 -3.6628 -3.6163 -3.5744 -3.5744);
+        A3       (-0.89125 -1.3409 -1.4887 -1.5079 -1.5264 -1.5264);
+        A4       (-0.12297 -0.093088 -0.083264 -0.082048 -0.080816 -0.080816);
+    }
+    
+    // Reaction no 17
+    oxygenCationNitrogenChargeExchangeReaction
+    {
+        type     reversibleArrheniusReaction;
+        reaction "O2+ + N2 = N2+ + O2";
+        controlT chargeExchange;
+        A        9.9e09;
+        beta     0.0;
+        Ta       40700;
+        
+        ni       (1e20 1e25);
+        A0       (-2.5811 -2.5811);
+        A1       (2.2863 2.2863);
+        A2       (-5.0946 -5.0946);
+        A3       (-2.0378 -2.0378);
+        A4       (-0.12192 -0.12192);
+    }
+    
+    // Reaction no 18
+    nitricoxideCationAtomicNitrogen2ChargeExchangeReaction
+    {
+        type     reversibleArrheniusReaction;
+        reaction "NO+ + N = O+ + N2";
+        controlT chargeExchange;
+        A        3.4e10;
+        beta     -1.08;
+        Ta       12800;
+        
+        ni       (1e20 1e21 1e22 1e23 1e24);
+        A0       (-1.2255 -0.51629 -0.28311 -0.24765 -0.21842);
+        A1       (0.10039 -0.17877 -0.27056 -0.28699 -0.29849);
+        A2       (-1.2212 -0.20321 0.13152 0.17802 0.21998);
+        A3       (-0.89883 -1.3485 -1.4963 -1.5155 -1.534);
+        A4       (-0.025232 0.004649 0.014474 0.015692 0.016923);
+    }
+    
+    // Reaction no 19
+    nitricoxideCationAtomicOxygen2ChargeExchangeReaction
+    {
+        type     reversibleArrheniusReaction;
+        reaction "NO+ + O = O2+ + N";
+        controlT chargeExchange;
+        A        7.2e09;
+        beta     0.29;
+        Ta       48600;
+        
+        ni       (1e20 1e21 1e22 1e23 1e24 1e25);
+        A0       (2.0681 1.8073 1.71 1.7185 1.7039 1.7112);
+        A1       (-1.0173 -0.91584 -0.87869 -0.87958 -0.87383 -0.87672);
+        A2       (2.0466 1.6701 1.5282 1.5449 1.5239 1.5345);
+        A3       (-5.5728 -5.4058 -5.3426 -5.3513 -5.342 -5.3467);
+        A4       (0.039655 0.028533 0.024301 0.024936 0.024321 0.024631);
+    }
+}

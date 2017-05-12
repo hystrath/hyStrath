@@ -1,0 +1,507 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.3.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      hTCReactionsMars94;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Chul Park, John T. Howe, Richard L. Jaffe and Graham V. Candler
+// Review of Chemical-Kinetic Problems of Future NASA Missions, II: Mars Entries
+// JOURNAL OF THERMOPHYSICS AND HEAT TRANSFER
+// Vol.8, No.1, Jan.-March 1994
+    
+species
+(
+    N2
+    O2
+    NO
+    CO2
+    CN
+    CO
+    C2
+    NCO
+    N2+
+    O2+
+    NO+
+    CN+
+    CO+
+    C2+
+    N
+    O
+    C
+    Ar
+    N+
+    O+
+    C+
+    Ar+
+    e-
+);
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+/* REACTIONS NO 1 TO 8              -> DISSOCIATION
+   REACTIONS NO 9 TO 22             -> EXCHANGE                             
+   REACTIONS NO 23 TO 25            -> ASSOCIATIVE IONIZATION
+   REACTIONS NO 26 TO 31            -> CHARGE EXCHANGE
+   REACTIONS NO 32 TO 33            -> ELECTRON IMPACT IONIZATION            */
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Units
+// A: m^3 kmol^-1 s^-1
+// Ta: K
+  
+reactions
+{
+    // Dissociation reactions: no 1 - 8
+    // Reaction no 1
+    carbonDioxideTBReaction
+    {
+        type     irreversiblethirdBodyArrheniusReaction;
+        reaction "CO2 + M = CO + O + M";
+        controlT dissociation;
+        A        6.9e17;
+        beta     -1.5;
+        Ta       63275;
+        coeffs
+        (
+            ("Ar" 1)
+            ("C"  20.29)
+            ("N" 20.29)
+            ("O" 20.29)
+            ("C2" 10)
+            ("N2" 10)
+            ("O2" 10)
+            ("CN" 10)
+            ("CO" 10)
+            ("NO" 10)
+            ("CO2" 10)
+        );
+    }
+    
+    // Reaction no 2
+    carbonMonoxideTBReaction
+    {
+        type     irreversiblethirdBodyArrheniusReaction;
+        reaction "CO + M = C + O + M";
+        controlT dissociation;
+        A        2.3e16;
+        beta     -1.0;
+        Ta       129000;
+        coeffs
+        (
+            ("Ar" 1)
+            ("C"  11.72)
+            ("N" 11.72)
+            ("O" 11.72)
+            ("C2" 10)
+            ("N2" 10)
+            ("O2" 10)
+            ("CN" 10)
+            ("CO" 10)
+            ("NO" 10)
+            ("CO2" 10)
+        );
+    }
+    
+    // Reaction no 3
+    oxygenTBReaction
+    {
+        type     irreversiblethirdBodyArrheniusReaction;
+        reaction "O2 + M = O + O + M";
+        controlT dissociation;
+        A        2.0e18;
+        beta     -1.5;
+        Ta       59750;
+        coeffs
+        (
+            ("Ar" 1)
+            ("C" 5)
+            ("N" 5)
+            ("O" 5)
+            ("C2" 1)
+            ("N2" 1)
+            ("O2" 1)
+            ("CN" 1)
+            ("CO" 1)
+            ("NO" 1)
+            ("CO2" 1)
+        );
+    }
+    
+    // Reaction no 4
+    nitrogenTBReaction
+    {
+        type     irreversiblethirdBodyArrheniusReaction;
+        reaction "N2 + M = N + N + M";
+        controlT dissociation;
+        A        7.0e18;
+        beta     -1.6;
+        Ta       113200;
+        coeffs
+        (
+            ("Ar" 1)
+            ("C" 4.29)
+            ("N" 4.29)
+            ("O" 4.29)
+            ("C2" 1)
+            ("N2" 1)
+            ("O2" 1)
+            ("CN" 1)
+            ("CO" 1)
+            ("NO" 1)
+            ("CO2" 1)
+            ("e-" 1714)
+        );
+    }
+    
+    // Reaction no 5
+    dicarbonTBReaction
+    {
+        type     irreversiblethirdBodyArrheniusReaction;
+        reaction "C2 + M = C + C + M";
+        controlT dissociation;
+        A        3.7e11;
+        beta     0;
+        Ta       69900;
+        defaultEfficiency 1.0;
+    }
+    
+    // Reaction no 6
+    cyanideTBReaction
+    {
+        type     irreversiblethirdBodyArrheniusReaction;
+        reaction "CN + M = C + N + M";
+        controlT dissociation;
+        A        2.5e11;
+        beta     0;
+        Ta       71000;
+        defaultEfficiency 1.0;
+    }
+    
+    // Reaction no 7
+    isocyanateTBReaction
+    {
+        type     irreversiblethirdBodyArrheniusReaction;
+        reaction "NCO + M = CO + N + M";
+        controlT dissociation;
+        A        6.3e13;
+        beta     -0.5;
+        Ta       24000;
+        defaultEfficiency 1.0;
+    }
+    
+    // Reaction no 8
+    nitricOxideTBReaction
+    {
+        type     irreversiblethirdBodyArrheniusReaction;
+        reaction "NO + M = N + O + M";
+        controlT dissociation;
+        A        5.0e12;
+        beta     0;
+        Ta       75500;
+        coeffs
+        (
+            ("Ar" 1)
+            ("C" 22)
+            ("N" 22)
+            ("O" 22)
+            ("C2" 1)
+            ("N2" 1)
+            ("O2" 1)
+            ("CN" 1)
+            ("CO" 1)
+            ("NO" 22)
+            ("CO2" 22)
+        );
+    }
+    
+    // Neutral exchange reactions: no 9 - 22
+    // Reaction no 9
+    nitricOxideOxygenAtomReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "NO + O = N + O2";
+        controlT exchange;
+        A        8.4e9;
+        beta     0;
+        Ta       19450;
+    }
+    
+    // Reaction no 10
+    nitrogenOxygenAtomReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "N2 + O = NO + N";
+        controlT exchange;
+        A        6.4e14;
+        beta     -1.0;
+        Ta       38370;
+    }
+    
+    // Reaction no 11
+    carbonMonoxideOxygenAtomReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "CO + O = C + O2";
+        controlT exchange;
+        A        3.9e10;
+        beta     -0.18;
+        Ta       69200;
+    }
+    
+    // Reaction no 12
+    carbonMonoxideCarbonAtomReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "CO + C = C2 + O";
+        controlT exchange;
+        A        2.0e14;
+        beta     -1.0;
+        Ta       58000;
+    }
+    
+    // Reaction no 13
+    carbonMonoxideNitrogenAtomReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "CO + N = CN + O";
+        controlT exchange;
+        A        1.0e11;
+        beta     0;
+        Ta       38600;
+    }
+    
+    // Reaction no 14
+    nitrogenCarbonAtomReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "N2 + C = CN + N";
+        controlT exchange;
+        A        1.1e11;
+        beta     -0.11;
+        Ta       23200;
+    }
+    
+    // Reaction no 15
+    cyanideOxygenAtomReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "CN + O = NO + C";
+        controlT exchange;
+        A        1.6e10;
+        beta     0.1;
+        Ta       14600;
+    }
+    
+    // Reaction no 16
+    cyanideOxygenAtomReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "CN + C = C2 + N";
+        controlT exchange;
+        A        5.0e10;
+        beta     0;
+        Ta       13000;
+    }
+    
+    // Reaction no 17
+    carbonDioxideOxygenAtomReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "CO2 + O = O2 + CO";
+        controlT exchange;
+        A        2.1e10;
+        beta     0;
+        Ta       27800;
+    }
+    
+    // Reaction no 18
+    cyanideOxygenReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "CN + O2 = NCO + O";
+        controlT exchange;
+        A        6.6e9;
+        beta     0;
+        Ta       -200;
+    }
+    
+    // Reaction no 19
+    cyanideCarbonDioxideReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "CN + CO2 = NCO + CO";
+        controlT exchange;
+        A        4.0e11;
+        beta     0;
+        Ta       19200;
+    }
+    
+    // Reaction no 20
+    cyanideNitricOxideReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "CN + NO = NCO + N";
+        controlT exchange;
+        A        1.0e11;
+        beta     0;
+        Ta       21200;
+    }
+    
+    // Reaction no 21
+    carbonMonoxideNitricOxideReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "CO + NO = NCO + O";
+        controlT exchange;
+        A        3.8e14;
+        beta     -0.873;
+        Ta       51600;
+    }
+    
+    // Reaction no 22
+    cyanideCarbonMonoxideReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "CN + CO = NCO + C";
+        controlT exchange;
+        A        1.5e13;
+        beta     -0.487;
+        Ta       65800;
+    }
+    
+    // Associative ionization reactions: no 23 - 25
+    // Reaction no 23
+    nitrogenAtomOxygenAtomReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "N + O = NO+ + e-";
+        controlT associativeIonisation;
+        A        8.8e5;
+        beta     1.0;
+        Ta       31900;
+    }
+    
+    // Reaction no 24
+    oxygenAtomReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "O + O = O2+ + e-";
+        controlT associativeIonisation;
+        A        7.1e-1;
+        beta     2.7;
+        Ta       80600;
+    }
+    
+    // Reaction no 25
+    carbonAtomOxygenAtomReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "C + O = CO+ + e-";
+        controlT associativeIonisation;
+        A        8.8e5;
+        beta     1.0;
+        Ta       33100;
+    }
+    
+    // Charge exchange reactions: no 26 - 31
+    // Reaction no 26
+    nitricOxideCationcarbonAtomReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "NO+ + C = NO + C+";
+        controlT chargeExchange;
+        A        1.0e10;
+        beta     0;
+        Ta       23200;
+    }
+    
+    // Reaction no 27
+    oxygenCationoxygenAtomReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "O2+ + O = O+ + O2";
+        controlT chargeExchange;
+        A        4.0e9;
+        beta     -0.09;
+        Ta       18000;
+    }
+    
+    // Reaction no 28
+    nitricOxideCationNitrogenAtomReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "NO+ + N = O+ + N2";
+        controlT chargeExchange;
+        A        3.4e10;
+        beta     -1.08;
+        Ta       12800;
+    }
+    
+    // Reaction no 29
+    nitricOxideCationOxygenAtomReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "NO+ + O = O2+ + N";
+        controlT chargeExchange;
+        A        7.2e9;
+        beta     0.29;
+        Ta       48600;
+    }
+    
+    // Reaction no 30
+    carbonMonoxideCarbonAtomCationReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "CO + C+ = CO+ + C";
+        controlT chargeExchange;
+        A        1.0e10;
+        beta     0;
+        Ta       31400;
+    }
+    
+    // Reaction no 31
+    oxygenCarbonAtomCationReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "O2 + C+ = O2+ + C";
+        controlT chargeExchange;
+        A        1.0e10;
+        beta     0;
+        Ta       9400;
+    }
+    
+    // Electron impact ionization reactions: no 32 - 33
+    // Reaction no 32
+    carbonAtomElectronReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "C + e- = C+ + e- + e-";
+        controlT impactIonisation;
+        A        3.9e30;
+        beta     -3.78;
+        Ta       130700;
+    }
+    
+    // Reaction no 33
+    oxygenAtomElectronReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "O + e- = O+ + e- + e-";
+        controlT impactIonisation;
+        A        3.9e30;
+        beta     -3.78;
+        Ta       158500;
+    }
+}

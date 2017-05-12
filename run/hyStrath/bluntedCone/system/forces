@@ -1,0 +1,53 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.1                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      forces;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#include "../0/include/initialConditions"
+//#include "../constant/transportProperties"
+
+forces
+{
+    type forces;
+    functionObjectLibs ("libstrathForces.so");
+    outputControl timeStep;
+    outputInterval 50;
+    patches (cone); // edit accordingly
+    rhoName rho;
+    rhoInf 5.11309e-04; // edit accordingly
+    log false;
+    CofR (0 0 0);
+    pitchAxis (0 0 1);
+}
+
+forceCoeffs
+{
+    type forceCoeffs;
+    functionObjectLibs ("libstrathForces.so");
+    outputControl timeStep;
+    outputInterval 10;
+    patches (cone); // edit accordingly
+    rhoName rho;
+    rhoInf 5.11309e-04; // edit accordingly
+    magUInf $velocityInlet;
+    log true;
+    CofR (0 0 0);
+    dragDir (1 0 0);
+    liftDir (0 1 0);
+    pitchAxis (0 0 1);
+    lRef 0.05; // edit accordingly: see constant/transportProperties/rarefiedParameters/characteristicLength
+    Aref 1.96646e-05; // edit accordingly: Aref = (4.0/360.0)*pi*0.023735**2
+}
+

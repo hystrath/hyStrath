@@ -1,0 +1,31 @@
+set key opaque at graph 0.65, 0.65 right top
+
+set style line 1 dashtype 1 lc rgb "black" lw 0.5 pt 1 ps 1.5
+set style line 12 dashtype 2 lc rgb "black" lw 1 pt 1 ps 1.5
+set style line 2 dashtype 1 lc rgb "red" lw 0.5 pt 1 ps 1.5
+set style line 22 dashtype 2 lc rgb "red" lw 1 pt 1 ps 1.5
+set style line 3 dashtype 1 lc rgb "blue" lw 0.5 pt 1 ps 1.5
+set style line 32 dashtype 2 lc rgb "blue" lw 1 pt 1 ps 1.5
+set style line 4 dashtype 1 lc rgb "#228B22" lw 0.5 pt 1 ps 1.5
+set style line 42 dashtype 2 lc rgb "#228B22" lw 1 pt 1 ps 1.5
+
+set output "gnuplot/residuals.eps"
+
+set size 0.95,0.47
+set origin 0.03,0.53
+set logscale y
+set format y "10^{%01T}"
+set xlabel "Timestep [x 100]"
+set ylabel "Residuals"
+set mytics 10
+
+plot \
+"< cat log.hy2Foam | grep 'Solving for Ux' | cut -d '=' -f 2 | cut -d ',' -f 1" every 100 w l ls 12 t 'Ux initial',\
+"< cat log.hy2Foam | grep 'Solving for Ux' | cut -d '=' -f 3 | cut -d ',' -f 1" every 100 w l ls 1  t 'Ux final',\
+"< cat log.hy2Foam | grep 'Solving for Uy' | cut -d '=' -f 2 | cut -d ',' -f 1" every 100 w l ls 22 t 'Uy initial',\
+"< cat log.hy2Foam | grep 'Solving for Uy' | cut -d '=' -f 3 | cut -d ',' -f 1" every 100 w l ls 2 t 'Uy final',\
+"< cat log.hy2Foam | grep 'Solving for evel_N2' | cut -d '=' -f 2 | cut -d ',' -f 1" every 100 w l ls 32 t 'e_{vel,{N_2} initial',\
+"< cat log.hy2Foam | grep 'Solving for evel_N2' | cut -d '=' -f 3 | cut -d ',' -f 1" every 100 w l ls 3 t 'e_{vel,{N_2} final',\
+"< cat log.hy2Foam | grep 'Solving for e,' | cut -d '=' -f 2 | cut -d ',' -f 1" every 100 w l ls 42 t 'e initial',\
+"< cat log.hy2Foam | grep 'Solving for e,' | cut -d '=' -f 3 | cut -d ',' -f 1" every 100 w l ls 4 t 'e final'
+

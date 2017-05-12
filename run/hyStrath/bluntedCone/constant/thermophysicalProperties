@@ -26,12 +26,23 @@ thermoType
     specie          advancedSpecie;
 }
 
+hyLight yes;
+
+downgradeToSingleTv yes;
+downgradeToSingleTemperature no;
+
 chemistryReader foam2ChemistryReader;
 
-foamChemistryFile "$FOAM_CASE/constant/hTCReactionsDPLR";
+foamChemistryFile "$FOAM_CASE/constant/hTCReactionsQK";
 
 foamChemistryThermoFile "$FOAM_CASE/constant/thermoDEM";
 
 twoTemperatureDictFile "$FOAM_CASE/constant/thermo2TModel";
+
+temperatureBounds
+{
+    Tlow    100;
+    Thigh   10000;
+}
 
 // ************************************************************************* //

@@ -1,0 +1,194 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.3.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      hTCReactionsES;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// John S. Evans, Charles J. Schexnayder Jr.
+// Influence of Chemical Kinetics and Unmixedness on Burning in Supersonic 
+//    Hydrogen Flames
+// AIAA Journal
+// Vol.18, No.2, pp. 188-193, Jan. 1980
+
+species
+(
+    N2
+    O2
+    //H2
+    //OH
+    //H2O
+    //O
+    //H
+);
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Units
+// A: m^3 kmol^-1 s^-1
+// Ta: K
+  
+reactions
+{
+    // Reaction no 1
+    /*oxygenReaction
+    {
+        type     irreversibleArrheniusReaction; // nonEquilibriumReversibleArrheniusReaction;
+        reaction "O2 + O2 = 2O + O2";
+        forward
+        {
+            A        7.2e18;
+            beta     -1.0;
+            Ta       59340.0;
+        }
+        reverse
+        {
+            A        4.0e17;
+            beta     -1.0;
+            Ta       0.0;        
+        }
+    }
+    
+    // Reaction no 2
+    hydrogenReaction
+    {
+        type     irreversibleArrheniusReaction; // nonEquilibriumReversibleArrheniusReaction;
+        reaction "H2 + H2 = 2H + H2";
+        forward
+        {
+            A        5.5e18;
+            beta     -1.0;
+            Ta       51987.0;
+        }
+        reverse
+        {
+            A        1.8e18;
+            beta     -1.0;
+            Ta       0.0;        
+        }
+    }
+    
+    // Reaction no 3
+    waterReaction
+    {
+        type     irreversibleArrheniusReaction; // nonEquilibriumReversibleArrheniusReaction;
+        reaction "H2O + H2O = OH + H + H2O";
+        forward
+        {
+            A        5.2e21;
+            beta     -1.5;
+            Ta       59386.0;
+        }
+        reverse
+        {
+            A        4.4e20;
+            beta     -1.5;
+            Ta       0.0;        
+        }
+    }
+    
+    // Reaction no 4
+    hydroxylReaction
+    {
+        type     irreversibleArrheniusReaction; // nonEquilibriumReversibleArrheniusReaction;
+        reaction "OH + OH = O + H + OH";
+        forward
+        {
+            A        8.5e18;
+            beta     -1.0;
+            Ta       50830.0;
+        }
+        reverse
+        {
+            A        7.1e18;
+            beta     -1.0;
+            Ta       0.0;        
+        }
+    }
+    
+    // Reaction no 5
+    oxygenAtomicHydrogenReaction
+    {
+        type     irreversibleArrheniusReaction; // nonEquilibriumReversibleArrheniusReaction;
+        reaction "O2 + H = OH + O";
+        forward
+        {
+            A        2.2e14;
+            beta     0.0;
+            Ta       8455.0;
+        }
+        reverse
+        {
+            A        1.5e13;
+            beta     0.0;
+            Ta       0.0;        
+        }
+    }
+    
+    // Reaction no 6
+    hydrogenAtomicOxygenReaction
+    {
+        type     irreversibleArrheniusReaction; // nonEquilibriumReversibleArrheniusReaction;
+        reaction "H2 + O = OH + H";
+        forward
+        {
+            A        7.5e13;
+            beta     0.0;
+            Ta       5586.0;
+        }
+        reverse
+        {
+            A        3.0e13;
+            beta     0.0;
+            Ta       4429.0;        
+        }
+    }
+    
+    // Reaction no 7
+    waterAtomicOxygenReaction
+    {
+        type     irreversibleArrheniusReaction; // nonEquilibriumReversibleArrheniusReaction;
+        reaction "H2O + O = OH + OH";
+        forward
+        {
+            A        5.8e13;
+            beta     0.0;
+            Ta       9059.0;
+        }
+        reverse
+        {
+            A        5.3e12;
+            beta     0.0;
+            Ta       503.0;        
+        }
+    }
+    
+    // Reaction no 8
+    waterAtomicHydrogenReaction
+    {
+        type     irreversibleArrheniusReaction; // nonEquilibriumReversibleArrheniusReaction;
+        reaction "H2O + H = OH + H2";
+        forward
+        {
+            A        8.4e13;
+            beta     0.0;
+            Ta       10116.0;
+        }
+        reverse
+        {
+            A        2.0e13;
+            beta     0.0;
+            Ta       2600.0;        
+        }
+    }*/
+}
