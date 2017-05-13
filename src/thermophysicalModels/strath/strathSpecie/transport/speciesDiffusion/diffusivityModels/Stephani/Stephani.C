@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2012 OpenFOAM Foundation
+    \\  /    A nd           | Copyright held by original author
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -53,10 +53,11 @@ Foam::binaryDiffusivityModels::Stephani::Stephani
     const dictionary& dictThermo,
     const dictionary& dictTransport,
     const volScalarField& p,
+    const volScalarField& pe,
     const volScalarField& T
 )
 :
-    binaryDiffusivityModel(name1, name2, dictThermo, dictTransport, p, T),
+    binaryDiffusivityModel(name1, name2, dictThermo, dictTransport, p, pe, T),
 
     pi(Foam::constant::mathematical::pi),
     kB(Foam::constant::physicoChemical::k.value()),

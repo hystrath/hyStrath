@@ -889,7 +889,7 @@ Foam::multi2ComponentMixture<ThermoType>::molWeightMixture() const
                 IOobject::NO_WRITE
             ),
             mesh,
-            dimensionedScalar("molWeightMixture", dimensionSet(1, 0, 0, 0, 1), 0.0)
+            dimensionedScalar("molWeightMixture", dimMass/dimMoles, 0.0)
         )
     );
 
@@ -903,11 +903,11 @@ Foam::multi2ComponentMixture<ThermoType>::molWeightMixture() const
 
     forAll(molWeightMixture.boundaryField(), patchi)
     {
-        scalarField& pmolWeightMixture = molWeightMixture.boundaryField()[patchi];
+        fvPatchScalarField& pmolWeightMixture = molWeightMixture.boundaryField()[patchi];
 
         forAll(pmolWeightMixture, facei)
         {
-            pmolWeightMixture[facei] = this->molWeightMixture(facei);
+            pmolWeightMixture[facei] = this->molWeightMixture(patchi, facei);
         }
     }
 

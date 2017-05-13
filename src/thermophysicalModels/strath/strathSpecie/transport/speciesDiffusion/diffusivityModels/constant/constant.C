@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2012 OpenFOAM Foundation
+    \\  /    A nd           | Copyright held by original author
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -53,29 +53,66 @@ Foam::binaryDiffusivityModels::constant::constant
     const dictionary& dictThermo,
     const dictionary& dictTransport,
     const volScalarField& p,
+    const volScalarField& pe,
     const volScalarField& T
 )
 :
-    binaryDiffusivityModel(name1, name2, dictThermo, dictTransport, p, T)
+    binaryDiffusivityModel(name1, name2, dictThermo, dictTransport, p, pe, T)
 {
-    word coupleName = name1+word("_")+name2;    
+    word coupleName = name1 + "_" + name2;    
     if(name1 != name2)
     {
-        if (dictTransport.subDict("transportModels").subDict("constantBinaryDiffusivityModelCoefficients").lookupEntryPtr(coupleName, 1, 1) == NULL)
+        if (dictTransport.subDict("transportModels").subDict("diffusiveFluxesParameters")
+            .subDict("constantBinaryDiffusivityModelCoefficients").lookupEntryPtr(coupleName, 1, 1) == NULL)
         {
-            coupleName = name2+word("_")+name1;
-            if (dictTransport.subDict("transportModels").subDict("constantBinaryDiffusivityModelCoefficients").lookupEntryPtr(coupleName, 1, 1) == NULL)
+            coupleName = name2 + "_" + name1;
+            
+            if (dictTransport.subDict("transportModels").subDict("diffusiveFluxesParameters")
+                .subDict("constantBinaryDiffusivityModelCoefficients").lookupEntryPtr(coupleName, 1, 1) == NULL)
             {
                 coupleName = name1;
-                if (dictTransport.subDict("transportModels").subDict("constantBinaryDiffusivityModelCoefficients").lookupEntryPtr(coupleName, 1, 1) == NULL)
+                
+                if (dictTransport.subDict("transportModels").subDict("diffusiveFluxesParameters")
+                    .subDict("constantBinaryDiffusivityModelCoefficients").lookupEntryPtr(coupleName, 1, 1) == NULL)
                 {
-                    coupleName = word("allSpecies");
+                    coupleName = "allSpecies";
+                    
+                    if (dictTransport.subDict("transportModels").subDict("diffusiveFluxesParameters")
+                        .subDict("constantBinaryDiffusivityModelCoefficients").lookupEntryPtr(coupleName, 1, 1) == NULL)
+                    {
+                        FatalErrorIn
+                        (
+                            "Foam::binaryDiffusivityModels::constant::constant(...)"
+                        )   << "Missing entry in constantBinaryDiffusivityModelCoefficients dict"
+                            << exit(FatalError);
+                    }                    
                 }
             }
         } 
-           
-        Dvalue_ = readScalar(dictTransport.subDict("transportModels").subDict("constantBinaryDiffusivityModelCoefficients").lookup(coupleName));
     }
+    else
+    {
+        coupleName = name1;
+        
+        if (dictTransport.subDict("transportModels").subDict("diffusiveFluxesParameters")
+            .subDict("constantBinaryDiffusivityModelCoefficients").lookupEntryPtr(coupleName, 1, 1) == NULL)
+        {
+            coupleName = "allSpecies";
+            
+            if (dictTransport.subDict("transportModels").subDict("diffusiveFluxesParameters")
+                .subDict("constantBinaryDiffusivityModelCoefficients").lookupEntryPtr(coupleName, 1, 1) == NULL)
+            {
+                FatalErrorIn
+                (
+                    "Foam::binaryDiffusivityModels::constant::constant(...)"
+                )   << "Missing entry in constantBinaryDiffusivityModelCoefficients dict"
+                    << exit(FatalError);
+            }                    
+        }
+    }
+    
+    Dvalue_ = readScalar(dictTransport.subDict("transportModels").subDict("diffusiveFluxesParameters")
+            .subDict("constantBinaryDiffusivityModelCoefficients").lookup(coupleName));
 }
 
 
@@ -128,6 +165,26 @@ Foam::binaryDiffusivityModels::constant::D() const
 Foam::tmp<Foam::scalarField> Foam::binaryDiffusivityModels::constant::D
 (
     const scalarField& p,
+    const scalarField& T,
+    const label patchi
+) const
+{
+    tmp<scalarField> tD(new scalarField(T.size()));
+    scalarField& d = tD();
+
+    forAll(T, facei)
+    {
+        d[facei] = Dvalue_;
+    }
+
+    return tD;
+}
+
+
+Foam::tmp<Foam::scalarField> Foam::binaryDiffusivityModels::constant::D
+(
+    const scalarField& p,
+    const scalarField& pe,
     const scalarField& T,
     const label patchi
 ) const

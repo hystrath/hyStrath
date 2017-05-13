@@ -49,7 +49,7 @@ forAll(rhoEvk, speciei)
     if(containsElectrons)
     { 
         rhoEvkInviscid -= thermalRelaxModeleV().QeV(speciei)
-            /*+ reaction->Seiir(speciei)*/;
+            + reaction->Seiir(speciei);
             
         if(composition.vibTempAssociativity("e-") == speciei) 
         {
@@ -58,7 +58,7 @@ forAll(rhoEvk, speciei)
         }
     }
     
-    rhoEvkInviscid.setValues(removedCellsFromMatrix, valuesToImpose); // NEW VINCENT 29/12/2016
+    //rhoEvkInviscid.setValues(removedCellsFromMatrix, valuesToImpose); // NEW VINCENT 29/12/2016
     
     rhoEvkInviscid.solve
     (
@@ -67,10 +67,10 @@ forAll(rhoEvk, speciei)
 
     forAll(Y[speciei], celli)
     {
-        if(Y[speciei][celli] > Foam::rho2ReactionThermo::miniYforSolvingEvEqn)
-        {
+        //if(Y[speciei][celli] > Foam::rho2ReactionThermo::miniYforSolvingEvEqn)
+        //{
             hevk[speciei][celli] = rhoEvk[speciei][celli]/pD[speciei][celli];
-        }
+        //}
         /*else // DELETED VINCENT 09/02/2017
         {
             hevk[speciei][celli] = 0.0; //composition.Hvels(speciei, 1.0, 210.0);

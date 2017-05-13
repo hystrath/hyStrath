@@ -23,11 +23,9 @@ Installation: ./install.sh
 
 ---  
 ## [Release history](https://github.com/vincentcasseau/hyStrath/wiki/Release-history)  
-### 16 May 2017: Release 1.1
+### 13 May 2017: Release 1.1
 + [How-tos added](https://github.com/vincentcasseau/hyStrath/wiki/How-to) to replace the manuals  
 + Fixes and new diffusion models
-
-> Until the release date, there will be some inconsistencies between the manuals and the test cases!
 
 
 <div class="paragraph"><p><br>

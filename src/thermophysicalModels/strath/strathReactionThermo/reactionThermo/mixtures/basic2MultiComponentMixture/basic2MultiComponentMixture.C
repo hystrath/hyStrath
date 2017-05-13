@@ -255,11 +255,26 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
     hev_(species_.size()),
     heel_(species_.size()),
     hevel_(species_.size()),
+    h_(species_.size()),
     //modehevel_(species_.size()), TODO ONGOING WORK 
     zetaRot_(species_.size()),
     zetaVib_(species_.size()),
     //modezetaVib_(species_.size()), TODO ONGOING WORK 
-    zetaElec_(species_.size())
+    zetaElec_(species_.size()),
+    
+    Wmix_
+    (
+        IOobject
+        (
+            "Wmix",
+            mesh.time().timeName(),
+            mesh,
+            IOobject::NO_READ,
+            IOobject::NO_WRITE
+        ),
+        mesh,
+        dimensionedScalar("Wmix", dimMass/dimMoles, 0.0)
+    )
 {
     const dictionary thermoDEM =
     (
@@ -678,6 +693,24 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                     )
                 );
             }
+            
+            h_.set
+            (
+                i,
+                new volScalarField
+                (
+                    IOobject
+                    (
+                        "h_" + species_[i],
+                        mesh.time().timeName(),
+                        mesh,
+                        IOobject::NO_READ,
+                        IOobject::NO_WRITE
+                    ),
+                    mesh,
+                    dimensionedScalar("h_" + species_[i], dimEnergy/dimMass, 0.0)
+                )
+            );
             
             zetaRot_.set
             (

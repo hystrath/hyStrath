@@ -97,8 +97,11 @@ protected:
         //- Species electronic energies
         PtrList<volScalarField> heel_;
         
-        //- Species vib-electronic energies
+        //- Species vibro-electronic energies
         PtrList<volScalarField> hevel_;
+        
+        //- Species enthalpies
+        PtrList<volScalarField> h_;
         
         //- Species vib-electronic energies
         //  for the different modes
@@ -122,6 +125,9 @@ protected:
         
         //- Ouputs the desired fields
         bool writenD_, writepD_, writeX_, writepP_, writezeta_, writehev_;
+        
+        //- Mixture molecular weight [g/mol]
+        volScalarField Wmix_;
         
     // Protected Member Functions
         
@@ -336,23 +342,42 @@ public:
         inline const volScalarField& heel(const word& specieName) const;
         
       //- hevel
-        //- Return the vib-electronic energy fields
+        //- Return the vibro-electronic energy fields
         inline PtrList<volScalarField>& hevel();
 
-        //- Return the const vib-electronic energy fields
+        //- Return the const vibro-electronic energy fields
         inline const PtrList<volScalarField>& hevel() const;
 
-        //- Return the vib-electronic energy field for a specie given by index
+        //- Return the vibro-electronic energy field for a specie given by index
         inline volScalarField& hevel(const label i);
 
-        //- Return the const vib-electronic energy field for a specie given by index
+        //- Return the const vibro-electronic energy field for a specie given by index
         inline const volScalarField& hevel(const label i) const;
 
-        //- Return the electronic vib-energy field for a specie given by name
+        //- Return the vibro-electronic energy field for a specie given by name
         inline volScalarField& hevel(const word& specieName);
 
-        //- Return the const electronic vib-energy field for a specie given by name
-        inline const volScalarField& hevel(const word& specieName) const;  
+        //- Return the const vibro-electronic energy field for a specie given by name
+        inline const volScalarField& hevel(const word& specieName) const;
+        
+      //- h
+        //- Return the enthalpy fields
+        inline PtrList<volScalarField>& enthalpy();
+
+        //- Return the const enthalpy fields
+        inline const PtrList<volScalarField>& enthalpy() const;
+
+        //- Return the enthalpy field for a specie given by index
+        inline volScalarField& enthalpy(const label i);
+
+        //- Return the const enthalpy field for a specie given by index
+        inline const volScalarField& enthalpy(const label i) const;
+
+        //- Return the enthalpy field for a specie given by name
+        inline volScalarField& enthalpy(const word& specieName);
+
+        //- Return the const enthalpy field for a specie given by name
+        inline const volScalarField& enthalpy(const word& specieName) const;    
         
       //- hevel for a specific mode m TODO ONGOING WORK
         /*//- Return the vib-electronic energy fields
@@ -486,6 +511,12 @@ public:
 
         //- Return the const no of deg of freedom / elec energy mode field for a specie given by name
         inline const volScalarField& zetael(const word& specieName) const;  
+        
+        //- Return the non-const mixture molecular weight field
+        inline volScalarField& Wmix(); // NEW VINCENT 26/04/2016
+        
+        //- Return the const mixture molecular weight field
+        inline const volScalarField& Wmix() const; // NEW VINCENT 26/04/2016
         // END NEW VINCENT ****************************************************
 
         //- Does the mixture include this specie?
@@ -516,7 +547,7 @@ public:
         virtual scalar molWeightMixture(const label patchi, const label facei) const = 0; // NEW VINCENT 04/03/2016
         
         //- Mixture molecular weight [g/mol]
-        //virtual tmp<volScalarField> molWeightMixture() const = 0; // NEW VINCENT 11/11/2016
+        virtual tmp<volScalarField> molWeightMixture() const = 0; // NEW VINCENT 11/11/2016
         
         //- Update values of molar-fractions from mass-fractions for cell-set
         virtual scalar molarFraction(const label speciei, const scalar Yi, const label celli) = 0;

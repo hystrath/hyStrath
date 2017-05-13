@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2012 OpenFOAM Foundation
+    \\  /    A nd           | Copyright held by original author
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -72,14 +72,25 @@ protected:
         //- Species name
         const word& name1_, name2_;
         
+        //- Thermo properties dictionary
+        const dictionary& dictThermo_;
+        
         //- Transport properties dictionary
-        const dictionary& dictThermo_, dictTransport_;
-
-        // Pressure [Pa]
+        const dictionary& dictTransport_;
+        
+        //- Pressure [Pa]
         const volScalarField& p_;
+        
+        //- Electron pressure [Pa]
+        const volScalarField& pe_;
 
-        // Temperature [K]
+        //- Temperature [K]
         const volScalarField& T_;
+        
+        //- Integer to mark the type of collision interaction
+        //  0: 2 neutrals, 1: 1 neutral-ion/e-, 2: 2 ions, 3: ion-electron
+        //  4: 2 electrons
+        int collisionType_;
 
 
     // Private Member Functions
@@ -110,11 +121,12 @@ public:
                 const dictionary& dictThermo,
                 const dictionary& dictTransport,
                 const volScalarField& p,
+                const volScalarField& pe,
                 const volScalarField& T
             ),
-            (name1, name2, dictThermo, dictTransport, p, T)
+            (name1, name2, dictThermo, dictTransport, p, pe, T)
         );
-
+        
 
     // Selectors
 
@@ -126,6 +138,18 @@ public:
             const dictionary& dictThermo,
             const dictionary& dictTransport,
             const volScalarField& p,
+            const volScalarField& T
+        );
+        
+        //- Return a reference to the selected diffusivity model
+        static autoPtr<binaryDiffusivityModel> New
+        (
+            const word& name1,
+            const word& name2,
+            const dictionary& dictThermo,
+            const dictionary& dictTransport,
+            const volScalarField& p,
+            const volScalarField& pe,
             const volScalarField& T
         );
 
@@ -142,6 +166,18 @@ public:
             const volScalarField& p,
             const volScalarField& T
         );
+        
+        //- Construct from components
+        binaryDiffusivityModel
+        (
+            const word& name1,
+            const word& name2,
+            const dictionary& dictThermo,
+            const dictionary& dictTransport,
+            const volScalarField& p,
+            const volScalarField& pe,
+            const volScalarField& T
+        );
 
 
     // Destructor
@@ -153,7 +189,7 @@ public:
     // Member Functions
     
         //- Binary diffusion coefficient [m^2/s]
-         virtual tmp<volScalarField> D() const = 0;
+         virtual tmp<volScalarField> D() const;
          
         //- Binary diffusion coefficient for patch [m^2/s]
         virtual tmp<scalarField> D
@@ -161,7 +197,17 @@ public:
             const scalarField& p,
             const scalarField& T,
             const label patchi
-        ) const = 0;
+        ) const;
+        
+        //- Binary diffusion coefficient for patch [m^2/s]
+        //  with addition of the electron pressure
+        virtual tmp<scalarField> D
+        (
+            const scalarField& p,
+            const scalarField& pe,
+            const scalarField& T,
+            const label patchi
+        ) const;
        
 };
 

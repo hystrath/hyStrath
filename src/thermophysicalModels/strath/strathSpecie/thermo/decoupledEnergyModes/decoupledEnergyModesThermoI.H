@@ -399,8 +399,8 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::cv_el
     scalar num3Cvel = 0.0;
     scalar denCvel = 0.0;
 
-    scalar Tel = Tv;
-    if (Tv != 0.0 and a[3] != 0.0)
+    const scalar Tel = Tv;
+    if (Tel != 0.0 and a[3] != 0.0)
     {
         for 
         (
@@ -497,9 +497,9 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::evs_mode
     const dynamicArray& v = vibrationalCoeffs(Tv);
     scalar tev = 0.0;
         
-    if (Tv != 0.0 and v[0] != 0.0)
+    if (Tv != 0.0 and a[2] != 0.0)
     {
-        if(a[2] < 0.0)
+        if(a[2] == -1)
         {
             return this->RR*abs(a[2])*Tv; 
         }
@@ -525,9 +525,9 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::evs
     const dynamicArray& v = vibrationalCoeffs(Tv);
     scalar tev = 0.0;
         
-    if (Tv != 0.0 and v[0] != 0.0)
+    if (Tv != 0.0 and a[2] != 0.0)
     {
-        if(a[2] < 0.0)
+        if(a[2] == -1)
         {
             return this->RR*abs(a[2])*Tv; 
         }
@@ -562,7 +562,7 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::eels
     scalar numEel = 0.0;
     scalar denEel = 0.0;
     
-    scalar Tel = Tv;
+    const scalar Tel = Tv;
     if (Tel != 0.0 and a[3] != 0.0)
     {
         for 

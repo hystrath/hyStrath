@@ -33,7 +33,7 @@ if(!inviscid)
             evEqnViscous += 
                 fvc::div
                 (
-                    speciesDiffusion().Jcorrected(speciei)*hevk[speciei],
+                    speciesDiffusion().Jcorr(speciei)*hevk[speciei],
                     "div(diffusiveFluxes)"
                 );
         }

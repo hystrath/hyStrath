@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2012 OpenFOAM Foundation
+    \\  /    A nd           | Copyright held by original author
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -93,18 +93,16 @@ public:
 
     // Member Functions
 
-        //- Molar weight for a specie given by index. Defined here
-        //  because depend on thermoType template
+        //- Molar weight for a specie given by index
         scalar W(label i) const
         {
             return speciesThermo_[i].W()*1.0e-3;
         }
     
-        //- Specific enthalpy for a specie given by index and temperature.
-        //  Defined here because depend on thermoType template
+        //- Specific enthalpy [J/kg] for a specie given by index and temperature
         scalar hs(label i, scalar p, scalar Tt, scalar Tv) const
         {
-            return speciesThermo_[i].hs(p, Tt, Tv);
+            return speciesThermo_[i].Hs(p, Tt, Tv);
         }
 
         //- Update the species diffusion coefficients

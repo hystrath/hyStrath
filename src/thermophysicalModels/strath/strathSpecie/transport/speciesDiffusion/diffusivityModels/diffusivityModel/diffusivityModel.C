@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2012 OpenFOAM Foundation
+    \\  /    A nd           | Copyright held by original author
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -69,6 +69,7 @@ Foam::diffusivityModel::diffusivityModel
     ),
 
     p_(p),
+    pe_(volScalarField::null()),
     T_(T),
     species_(species)
     
@@ -80,7 +81,7 @@ Foam::diffusivityModel::diffusivityModel
     {
         for(label j=i; j < species.size(); j++)
         {
-            label k = species.size()*i+j-0.5*i*(i+1);
+            const label k = species.size()*i+j-0.5*i*(i+1);
             
             DijModels_.set
             (
@@ -91,8 +92,85 @@ Foam::diffusivityModel::diffusivityModel
                     species[j],
                     dictThermo_,
                     dictTransport_,
-                    p,
-                    T
+                    p_,
+                    T_
+                )
+            );
+
+            Dij_.set
+            (
+                k,
+                new volScalarField
+                (
+                   DijModels_[k].D()
+                )
+            );   
+        }
+    } 
+}
+
+
+Foam::diffusivityModel::diffusivityModel
+(
+    const word transportPropertiesDictName,
+    const word thermoSpeciesDictName,
+    const volScalarField& p,
+    const volScalarField& pe,
+    const volScalarField& T,
+    const wordList& species
+)
+:
+    dictTransport_
+    (
+        IOobject
+        (
+            transportPropertiesDictName,
+            T.mesh().time().constant(),
+            T.mesh(),
+            IOobject::MUST_READ,
+            IOobject::NO_WRITE
+        )
+    ),
+    
+    dictThermo_
+    (
+        IOobject
+        (
+            thermoSpeciesDictName,
+            T.mesh().time().constant(),
+            T.mesh(),
+            IOobject::MUST_READ,
+            IOobject::NO_WRITE
+        )
+    ),
+
+    p_(p),
+    pe_(pe),
+    T_(T),
+    species_(species)
+    
+{
+    DijModels_.setSize(0.5*species.size()*(species.size()+1));
+    Dij_.setSize(DijModels_.size());
+           
+    forAll(species, i)
+    {
+        for(label j=i; j < species.size(); j++)
+        {
+            const label k = species.size()*i+j-0.5*i*(i+1);
+            
+            DijModels_.set
+            (
+                k,
+                binaryDiffusivityModel::New
+                (
+                    species[i],
+                    species[j],
+                    dictThermo_,
+                    dictTransport_,
+                    p_,
+                    pe_,
+                    T_
                 )
             );
 
@@ -113,11 +191,11 @@ Foam::diffusivityModel::diffusivityModel
 
 void Foam::diffusivityModel::update()
 {    
-    for(label i=0; i < species_.size(); i++)
+    forAll(species_, i)
     {
         for(label j=i; j < species_.size(); j++)
         {
-            label k = species_.size()*i+j-0.5*i*(i+1);
+            const label k = species_.size()*i+j-0.5*i*(i+1);
             Dij_[k] = DijModels_[k].D();
         }
     }

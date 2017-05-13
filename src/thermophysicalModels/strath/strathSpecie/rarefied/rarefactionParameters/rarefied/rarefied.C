@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2012 OpenFOAM Foundation
+    \\  /    A nd           | Copyright held by original author
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -200,7 +200,7 @@ void Foam::rarefied<ThermoType>::correct(const volVectorField& U)
                             pInnerSum[facei] += max(pnDj[facei]*innerQuantity(speciei, speciej, pT[facei]), Foam::VSMALL);
                         }
                     }
-                }
+                }// end speciej loop
                 
                 forAll(T, celli)
                 {

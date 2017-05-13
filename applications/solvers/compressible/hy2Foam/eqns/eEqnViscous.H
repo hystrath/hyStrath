@@ -30,5 +30,5 @@ else
     thermo.correct2T();
     thermo.correctOverallTemperature();
 }
-Info<< "\e[1;32meCorrect time" << tab << (runTime.elapsedCpuTime() - timer) << " s\e[0m" << endl;
+Info<< "\e[1;32mcorrectThermo" << tab << (runTime.elapsedCpuTime() - timer) << " s\e[0m" << endl;
 

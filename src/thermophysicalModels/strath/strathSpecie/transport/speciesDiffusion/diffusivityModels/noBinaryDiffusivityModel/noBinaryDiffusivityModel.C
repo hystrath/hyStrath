@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2012 OpenFOAM Foundation
+    \\  /    A nd           | Copyright held by original author
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -53,77 +53,11 @@ Foam::binaryDiffusivityModels::noBinaryDiffusivityModel::noBinaryDiffusivityMode
     const dictionary& dictThermo,
     const dictionary& dictTransport,
     const volScalarField& p,
+    const volScalarField& pe,
     const volScalarField& T
 )
 :
-    binaryDiffusivityModel(name1, name2, dictThermo, dictTransport, p, T)
-{
-    Dvalue_ = 0;
-}
-
-
-// * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
-
-Foam::tmp<Foam::volScalarField>
-Foam::binaryDiffusivityModels::noBinaryDiffusivityModel::D() const
-{
-    const fvMesh& mesh = this->T_.mesh();
-
-    tmp<volScalarField> tD
-    (
-        new volScalarField
-        (
-            IOobject
-            (
-                "rhoD_" + name1_ + "_" + name2_,
-                mesh.time().timeName(),
-                mesh,
-                IOobject::NO_READ,
-                IOobject::NO_WRITE
-            ),
-            mesh,
-            dimArea/dimTime
-        )
-    );
-
-    volScalarField& d = tD();
-
-    forAll(this->T_, celli)
-    {
-        d[celli] = Dvalue_;
-    }
-
-    forAll(this->T_.boundaryField(), patchi)
-    {
-        const fvPatchScalarField& pT = this->T_.boundaryField()[patchi];
-        fvPatchScalarField& pD = d.boundaryField()[patchi];
-
-        forAll(pT, facei)
-        {
-            pD[facei] = Dvalue_;
-        }
-    }
-
-    return tD;
-}
-
-
-Foam::tmp<Foam::scalarField> Foam::binaryDiffusivityModels::noBinaryDiffusivityModel::D
-(
-    const scalarField& p,
-    const scalarField& T,
-    const label patchi
-) const
-{
-    tmp<scalarField> tD(new scalarField(T.size()));
-    scalarField& d = tD();
-
-    forAll(T, facei)
-    {
-        d[facei] = Dvalue_;
-    }
-
-    return tD;
-}
+    binaryDiffusivityModel(name1, name2, dictThermo, dictTransport, p, pe, T)
+{}
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2012 OpenFOAM Foundation
+    \\  /    A nd           | Copyright held by original author
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -77,6 +77,7 @@ public:
             const dictionary& dictThermo,
             const dictionary& dictTransport,
             const volScalarField& p,
+            const volScalarField& pe,
             const volScalarField& T
         );
 
@@ -96,6 +97,15 @@ public:
         virtual tmp<scalarField> D
         (
             const scalarField& p,
+            const scalarField& T,
+            const label patchi
+        ) const;
+        
+        //- Binary diffusion coefficient for patch [m^2/s]
+        virtual tmp<scalarField> D
+        (
+            const scalarField& p,
+            const scalarField& pe,
             const scalarField& T,
             const label patchi
         ) const;

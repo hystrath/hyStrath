@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2012 OpenFOAM Foundation
+    \\  /    A nd           | Copyright held by original author
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -84,8 +84,6 @@ class Stephani
         
         inline scalar omegaNeutral1(const scalar T) const 
         {
-            /*return pi*sqr(dref_)/2.0*pow(Tref_/T, omegaref_ - 0.5)*
-                sqrt(kB*T/(2.0*pi*mStar_))*tgamma(3.5-omegaref_)/tgamma(2.5-omegaref_);*/
             return constantOmegaNeutral1_*pow(T, 1.0-omegaref_);    
         }    
 
@@ -106,6 +104,7 @@ public:
             const dictionary& dictThermo,
             const dictionary& dictTransport,
             const volScalarField& p,
+            const volScalarField& pe,
             const volScalarField& T
         );
 

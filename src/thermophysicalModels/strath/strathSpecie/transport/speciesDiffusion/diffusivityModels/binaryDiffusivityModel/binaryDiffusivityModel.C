@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2012 OpenFOAM Foundation
+    \\  /    A nd           | Copyright held by original author
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -52,10 +52,49 @@ Foam::binaryDiffusivityModel::binaryDiffusivityModel
     name2_(name2),
     dictThermo_(dictThermo),
     dictTransport_(dictTransport),    
-    p_(p),   
+    p_(p),
+    pe_(p*0.0),  
     T_(T)
 {}
 
+
+Foam::binaryDiffusivityModel::binaryDiffusivityModel
+(
+    const word& name1,
+    const word& name2,
+    const dictionary& dictThermo,
+    const dictionary& dictTransport,
+    const volScalarField& p,
+    const volScalarField& pe,
+    const volScalarField& T
+)
+:
+    name1_(name1),    
+    name2_(name2),
+    dictThermo_(dictThermo),
+    dictTransport_(dictTransport),    
+    p_(p),  
+    pe_(pe),  
+    T_(T)
+{
+    if(name1_[-1] == '-')
+    {
+        if(name2_[-1] == '-') collisionType_ = 4;
+        else if(name2_[-1] == '+') collisionType_ = 3;
+        else collisionType_ = 1;
+    }
+    else if(name1_[-1] == '+')
+    {
+        if(name2_[-1] == '-') collisionType_ = 3;
+        else if(name2_[-1] == '+') collisionType_ = 2;
+        else collisionType_ = 1;
+    }
+    else
+    {
+        if(name2_[-1] == '-' or name2_[-1] == '+') collisionType_ = 1;
+        else collisionType_ = 0;    
+    }
+}
 
 // * * * * * * * * * * * * * * * * * Selectors * * * * * * * * * * * * * * * //
 
@@ -69,7 +108,11 @@ Foam::autoPtr<Foam::binaryDiffusivityModel> Foam::binaryDiffusivityModel::New
     const volScalarField& T
 )
 {
-    word binaryDiffusivityModelTypeName(dictTransport.subDict("transportModels").lookup("binaryDiffusivityModel"));
+    word binaryDiffusivityModelTypeName
+         (
+            dictTransport.subDict("transportModels")
+                .lookup("binaryDiffusivityModel")
+         );
 
     dictionaryConstructorTable::iterator cstrIter =
         dictionaryConstructorTablePtr_->find(binaryDiffusivityModelTypeName);
@@ -88,7 +131,129 @@ Foam::autoPtr<Foam::binaryDiffusivityModel> Foam::binaryDiffusivityModel::New
     }
 
     return autoPtr<binaryDiffusivityModel>
-        (cstrIter()(name1, name2, dictThermo, dictTransport, p, T));
+        (cstrIter()(name1, name2, dictThermo, dictTransport, p, p*0.0, T));
+}
+
+
+Foam::autoPtr<Foam::binaryDiffusivityModel> Foam::binaryDiffusivityModel::New
+(
+    const word& name1,
+    const word& name2,
+    const dictionary& dictThermo,
+    const dictionary& dictTransport,
+    const volScalarField& p,
+    const volScalarField& pe,
+    const volScalarField& T
+)
+{
+    word binaryDiffusivityModelTypeName
+         (
+            dictTransport.subDict("transportModels")
+                .lookup("binaryDiffusivityModel")
+         );
+
+    dictionaryConstructorTable::iterator cstrIter =
+        dictionaryConstructorTablePtr_->find(binaryDiffusivityModelTypeName);
+
+    if (cstrIter == dictionaryConstructorTablePtr_->end())
+    {
+        FatalErrorIn
+        (
+            "DiffusivityModel::New(const volVectorField&, "
+            "const surfaceScalarField&)"
+        )   << "Unknown binaryDiffusivityModel type "
+            << binaryDiffusivityModelTypeName << endl << endl
+            << "Valid  binaryDiffusivityModels are : " << endl
+            << dictionaryConstructorTablePtr_->toc()
+            << exit(FatalError);
+    }
+
+    return autoPtr<binaryDiffusivityModel>
+        (cstrIter()(name1, name2, dictThermo, dictTransport, p, pe, T));
+}
+
+
+// * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
+
+Foam::tmp<Foam::volScalarField> Foam::binaryDiffusivityModel::D() const
+{
+    const fvMesh& mesh = T_.mesh();
+
+    tmp<volScalarField> tD
+    (
+        new volScalarField
+        (
+            IOobject
+            (
+                "D_" + name1_ + "_" + name2_,
+                mesh.time().timeName(),
+                mesh,
+                IOobject::NO_READ,
+                IOobject::NO_WRITE
+            ),
+            mesh,
+            dimensionSet(0, 2, -1, 0, 0)
+        )
+    );
+
+    volScalarField& d = tD();
+
+    forAll(T_, celli)
+    {
+        d[celli] = Foam::VSMALL;
+    }
+
+    forAll(T_.boundaryField(), patchi)
+    {
+        const fvPatchScalarField& pT = T_.boundaryField()[patchi];
+        fvPatchScalarField& pD = d.boundaryField()[patchi];
+
+        forAll(pT, facei)
+        {
+            pD[facei] = Foam::VSMALL;
+        }
+    }
+
+    return tD;
+}
+
+
+Foam::tmp<Foam::scalarField> Foam::binaryDiffusivityModel::D
+(
+    const scalarField& p,
+    const scalarField& T,
+    const label patchi
+) const
+{
+    tmp<scalarField> tD(new scalarField(T.size()));
+    scalarField& d = tD();
+
+    forAll(T, facei)
+    {
+        d[facei] = Foam::VSMALL;
+    }
+
+    return tD;
+}
+
+
+Foam::tmp<Foam::scalarField> Foam::binaryDiffusivityModel::D
+(
+    const scalarField& p,
+    const scalarField& pe,
+    const scalarField& T,
+    const label patchi
+) const
+{
+    tmp<scalarField> tD(new scalarField(T.size()));
+    scalarField& d = tD();
+
+    forAll(T, facei)
+    {
+        d[facei] = Foam::VSMALL;
+    }
+
+    return tD;
 }
 
 

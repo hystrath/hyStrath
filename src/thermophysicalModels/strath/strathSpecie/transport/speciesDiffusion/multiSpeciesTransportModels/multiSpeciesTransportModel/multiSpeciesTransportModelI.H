@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2012 OpenFOAM Foundation
+    \\  /    A nd           | Copyright held by original author
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -39,9 +39,16 @@ Foam::multiSpeciesTransportModel::rhoD(label i) const
 
 
 inline const Foam::volScalarField&
-Foam::multiSpeciesTransportModel::D(label i) const
+Foam::multiSpeciesTransportModel::Di(label i) const
 {
     return rhoD(i)/thermo_.rho();
+}
+
+
+inline const Foam::surfaceScalarField&
+Foam::multiSpeciesTransportModel::speciesMassFlux(const label i) const
+{
+    return spMassFlux_[i];
 }
 
 
@@ -49,6 +56,27 @@ inline const Foam::volVectorField&
 Foam::multiSpeciesTransportModel::J(const label i) const
 {
     return JnonCorrected_[i];
+}
+
+
+inline const Foam::volVectorField&
+Foam::multiSpeciesTransportModel::JGradp(const label i) const
+{
+    return JGradp_[i];
+}
+
+
+inline const Foam::volVectorField&
+Foam::multiSpeciesTransportModel::JGradT(const label i) const
+{
+    return JGradT_[i];
+}
+
+
+inline const Foam::volVectorField
+Foam::multiSpeciesTransportModel::Jcorr(const label i) const
+{
+    return Jcorrected(i);
 }
 
 
@@ -71,13 +99,5 @@ Foam::multiSpeciesTransportModel::species() const
 {
     return thermo_.composition().species();
 }
-
-
-inline const Foam::surfaceScalarField&
-Foam::multiSpeciesTransportModel::speciesMassFlux(const label i) const
-{
-    return spMassFlux_[i];
-}
-
 
 // ************************************************************************* //

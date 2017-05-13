@@ -30,7 +30,12 @@ if(!inviscid)
         
         if(speciesDiffusionName != "noSpeciesDiffusion")
         {
-            evEqnViscous += fvc::div(speciesDiffusion().Jcorrected(speciei)*hevk[speciei], "div(diffusiveFluxes)");
+            evEqnViscous += 
+                fvc::div
+                (
+                    speciesDiffusion().Jcorrected(speciei)*hevk[speciei],
+                    "div(diffusiveFluxes)"
+                );
         }
         
         evEqnViscous.setValues(removedCellsFromMatrix, valuesToImpose); // NEW VINCENT 29/12/2016

@@ -25,7 +25,7 @@ Class
     Foam::decoupledEnergyModesThermo
 
 Description
-    uEM tables based thermodynamics package templated
+    DEM tables based thermodynamics package templated
     into the equation of state.
 
 SourceFiles

@@ -437,6 +437,54 @@ inline const Foam::volScalarField& Foam::basic2MultiComponentMixture::hevel
 }
 
 
+//----                               h                                  -----//
+inline Foam::PtrList<Foam::volScalarField>&
+Foam::basic2MultiComponentMixture::enthalpy()
+{
+    return h_;
+}
+
+
+inline const Foam::PtrList<Foam::volScalarField>&
+Foam::basic2MultiComponentMixture::enthalpy() const
+{
+    return h_;
+}
+
+
+inline Foam::volScalarField& Foam::basic2MultiComponentMixture::enthalpy(const label i)
+{
+    return h_[i];
+}
+
+
+inline const Foam::volScalarField& Foam::basic2MultiComponentMixture::enthalpy
+(
+    const label i
+) const
+{
+    return h_[i];
+}
+
+
+inline Foam::volScalarField& Foam::basic2MultiComponentMixture::enthalpy
+(
+    const word& specieName
+)
+{
+    return h_[species_[specieName]];
+}
+
+
+inline const Foam::volScalarField& Foam::basic2MultiComponentMixture::enthalpy
+(
+    const word& specieName
+) const
+{
+    return h_[species_[specieName]];
+}
+
+
 //----                               hevel_mode                           -----// TODO ONGOING WORK 
 /*inline Foam::PtrList<Foam::PtrList<Foam::volScalarField> >&
 Foam::basic2MultiComponentMixture::hevel_mode()
@@ -770,6 +818,18 @@ inline const Foam::volScalarField& Foam::basic2MultiComponentMixture::zetael
 ) const
 {
     return zetaElec_[species_[specieName]];
+}
+
+
+inline Foam::volScalarField& Foam::basic2MultiComponentMixture::Wmix()
+{
+    return Wmix_;
+}
+
+
+inline const Foam::volScalarField& Foam::basic2MultiComponentMixture::Wmix() const
+{
+    return Wmix_;
 }
 // END NEW VINCENT ************************************************************
 

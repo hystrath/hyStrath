@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2012 OpenFOAM Foundation
+    \\  /    A nd           | Copyright held by original author
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,7 +24,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "Hirschfelder.H"
+#include "GuptaD.H"
 #include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
@@ -33,11 +33,11 @@ namespace Foam
 {
     namespace binaryDiffusivityModels
     {
-        defineTypeNameAndDebug(Hirschfelder, 0);
+        defineTypeNameAndDebug(GuptaD, 0);
         addToRunTimeSelectionTable
         (
             binaryDiffusivityModel,
-            Hirschfelder, 
+            GuptaD, 
             dictionary
         );
     }
@@ -46,48 +46,60 @@ namespace Foam
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::binaryDiffusivityModels::Hirschfelder::Hirschfelder
+Foam::binaryDiffusivityModels::GuptaD::GuptaD
 (
     const word& name1,
     const word& name2,
     const dictionary& dictThermo,
     const dictionary& dictTransport,
     const volScalarField& p,
+    const volScalarField& pe,
     const volScalarField& T
 )
 :
-    binaryDiffusivityModel(name1, name2, dictThermo, dictTransport, p, T),
-
-    W1_(readScalar(dictThermo.subDict(name1).subDict("specie").lookup("molWeight"))*1.0e-3),
-    W2_(readScalar(dictThermo.subDict(name2).subDict("specie").lookup("molWeight"))*1.0e-3),
-    pi(Foam::constant::mathematical::pi),
-    kB(Foam::constant::physicoChemical::k.value()),
-    Runi(Foam::constant::physicoChemical::R.value())
+    binaryDiffusivityModel(name1, name2, dictThermo, dictTransport, p, pe, T)
 {
-    if (dictTransport.subDict("collisionIntegrals").subDict("involvingNeutral")
-           .subDict("Omega11").found(name1+"_"+name2))
+    word year = word::null;
+    
+    if(dictTransport.subDict("transportModels")
+        .subDict("diffusiveFluxesParameters").found("yearGuptaModel"))
     {
-        piOmega_ = dictTransport.subDict("collisionIntegrals").subDict("involvingNeutral")
-           .subDict("Omega11").lookup(name1+"_"+name2);    
-    }
-    else if (dictTransport.subDict("collisionIntegrals").subDict("involvingNeutral")
-            .subDict("Omega11").found(name2+"_"+name1))
-    {
-        piOmega_ = dictTransport.subDict("collisionIntegrals").subDict("involvingNeutral")
-            .subDict("Omega11").lookup(name2+"_"+name1);    
+        year = word(dictTransport.subDict("transportModels")
+            .subDict("diffusiveFluxesParameters").lookup("yearGuptaModel"));
     }
     else
     {
-        FatalErrorIn("void Foam::binaryDiffusivityModels::Hirschfelder::Hirschfelder(...)")
+        FatalErrorIn("void Foam::binaryDiffusivityModels::GuptaD::GuptaD(...)")
+            << "Entry 'yearGuptaModel' is missing in transportModels/diffusiveFluxesParameters."
+            << exit(FatalError);
+    }
+    
+    if(dictTransport.subDict("collisionData").subDict("neutralNeutralInteractions")
+           .subDict("Gupta"+year+"D").subDict("Dbar").found(name1+"_"+name2))
+    {
+        Dbar_ = dictTransport.subDict("collisionData").subDict("neutralNeutralInteractions")
+           .subDict("Gupta"+year+"D").subDict("Dbar").lookup(name1+"_"+name2);    
+    }
+    else if(dictTransport.subDict("collisionData").subDict("neutralNeutralInteractions")
+           .subDict("Gupta"+year+"D").subDict("Dbar").found(name2+"_"+name1))
+    {
+        Dbar_ = dictTransport.subDict("collisionData").subDict("neutralNeutralInteractions")
+           .subDict("Gupta"+year+"D").subDict("Dbar").lookup(name2+"_"+name1);    
+    }
+    else
+    {
+        FatalErrorIn("void Foam::binaryDiffusivityModels::GuptaD::GuptaD(...)")
             << "Collision integral data missing for species couple (" << name1 << ", " << name2 << ")."
             << exit(FatalError);
     }
+    
+    Dbar_[3] = 1.01325e5*exp(Dbar_[3])/1.0e4;
 }
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
 Foam::tmp<Foam::volScalarField>
-Foam::binaryDiffusivityModels::Hirschfelder::D() const
+Foam::binaryDiffusivityModels::GuptaD::D() const
 {
     const fvMesh& mesh = this->T_.mesh();
 
@@ -112,20 +124,19 @@ Foam::binaryDiffusivityModels::Hirschfelder::D() const
 
     forAll(this->T_, celli)
     {
-        d[celli] = kB*this->T_[celli]
-            /(this->p_[celli]*collisionIntegralNeutral1(this->T_[celli]));
+        d[celli] = DijBar(this->T_[celli], this->pe_[celli])/this->p_[celli];
     }
 
     forAll(this->T_.boundaryField(), patchi)
     {
         const fvPatchScalarField& pT = this->T_.boundaryField()[patchi];
 	      const fvPatchScalarField& pp = this->p_.boundaryField()[patchi];
+	      const fvPatchScalarField& ppe = this->pe_.boundaryField()[patchi];
         fvPatchScalarField& pD = d.boundaryField()[patchi];
 
         forAll(pT, facei)
         {
-            pD[facei] = kB*pT[facei]
-                /(pp[facei]*collisionIntegralNeutral1(pT[facei]));
+            pD[facei] = DijBar(pT[facei], ppe[facei])/pp[facei];
         }
     }
 
@@ -133,7 +144,8 @@ Foam::binaryDiffusivityModels::Hirschfelder::D() const
 }
 
 
-Foam::tmp<Foam::scalarField> Foam::binaryDiffusivityModels::Hirschfelder::D
+Foam::tmp<Foam::scalarField> 
+Foam::binaryDiffusivityModels::GuptaD::D
 (
     const scalarField& p,
     const scalarField& T,
@@ -145,8 +157,28 @@ Foam::tmp<Foam::scalarField> Foam::binaryDiffusivityModels::Hirschfelder::D
 
     forAll(T, facei)
     {
-        d[facei] = kB*T[facei]
-            /(p[facei]*collisionIntegralNeutral1(T[facei]));
+        d[facei] = DijBar(T[facei])/p[facei];
+    }
+
+    return tD;
+}
+
+
+Foam::tmp<Foam::scalarField> 
+Foam::binaryDiffusivityModels::GuptaD::D
+(
+    const scalarField& p,
+    const scalarField& pe,
+    const scalarField& T,
+    const label patchi
+) const
+{
+    tmp<scalarField> tD(new scalarField(T.size()));
+    scalarField& d = tD();
+
+    forAll(T, facei)
+    {
+        d[facei] = DijBar(T[facei], pe[facei])/p[facei];
     }
 
     return tD;

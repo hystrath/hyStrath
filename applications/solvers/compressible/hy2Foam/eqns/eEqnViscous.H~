@@ -30,15 +30,5 @@ else
     thermo.correct2T();
     thermo.correctOverallTemperature();
 }
-Info<< "\e[1;32meCorrect time" << tab << (runTime.elapsedCpuTime() - timer) << " s\e[0m" << endl;
+Info<< "\e[1;32meCorrectThermo" << tab << (runTime.elapsedCpuTime() - timer) << " s\e[0m" << endl;
 
-
-
-
-
-scalar timee = runTime.elapsedCpuTime();
-if(speciesDiffusionName != "noSpeciesDiffusion")
-{
-    speciesDiffusion().correct();
-}
-Info<< "\e[1;32mcorrectSpeciesDiffusion time" << tab << (runTime.elapsedCpuTime() - timee) << " s\e[0m" << endl;

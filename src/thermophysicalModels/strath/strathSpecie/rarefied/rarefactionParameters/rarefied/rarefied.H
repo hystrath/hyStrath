@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2012 OpenFOAM Foundation
+    \\  /    A nd           | Copyright held by original author
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -102,19 +102,19 @@ public:
             return speciesThermo_[i].mu(p, Tt);
         }
         
-        //- Molecular mass of a specie given by index.
+        //- Molecular weight [g/mol] of a specie given by index.
         inline scalar W(label i) const
         {
             return speciesThermo_[i].W();
         }
         
-        //- Molecular mass ratio for a pair of species given by index.
+        //- Molecular weight ratio for a pair of species given by index.
         inline scalar ratioW(label i, label j) const
         {
             return W(i)/W(j);
         }
         
-        //- Temperature-viscosity coefficient of a specie given by index.
+        //- Temperature exponent of viscosity for a specie given by index.
         inline scalar omega(label i) const
         {
             return speciesThermo_[i].omega();

@@ -10,15 +10,14 @@ if (!inviscid)
     
     if(speciesDiffusionName != "noSpeciesDiffusion")
     {
-        forAll(Y, speciei)
+        volVectorField sumJsByevs = speciesDiffusion().Jcorr(0)*hevk[0];
+        
+        for(int speciei = 1; speciei < Y.size(); speciei++)
         {
-            evEqnViscous += 
-                fvc::div
-                (
-                    speciesDiffusion().Jcorrected(speciei)*hevk[speciei],
-                    "div(diffusiveFluxes)"
-                );
+            sumJsByevs += speciesDiffusion().Jcorr(speciei)*hevk[speciei];
         }
+        
+        evEqnViscous += fvc::div(sumJsByevs, "div(diffusiveFluxes)");
     }
     
     evEqnViscous.solve();

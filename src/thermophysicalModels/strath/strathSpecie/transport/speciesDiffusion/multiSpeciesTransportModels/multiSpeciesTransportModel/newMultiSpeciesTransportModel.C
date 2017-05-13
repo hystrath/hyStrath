@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2012 OpenFOAM Foundation
+    \\  /    A nd           | Copyright held by original author
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -35,9 +35,9 @@ Foam::multiSpeciesTransportModel::New
     const compressible::turbulenceModel2& turbulence
 )
 {
-    word partialModelName = word(thermo.transportDictionary().subDict("transportModels").lookup("multiSpeciesTransport"));
+    const word partialModelName = word(thermo.transportDictionary().subDict("transportModels").lookup("multiSpeciesTransport"));
         
-    word modelName = partialModelName + '<' + thermo.partialThermoName() + '>';
+    const word modelName = partialModelName + '<' + thermo.partialThermoName() + '>';
     
     Info<< "Loading the multispecies transport model:" << tab << partialModelName << "\n" << endl;
 

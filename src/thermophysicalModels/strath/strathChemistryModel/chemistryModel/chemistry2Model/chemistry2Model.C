@@ -1404,6 +1404,7 @@ Foam::scalar Foam::chemistry2Model<CompType, ThermoType>::solve
     const DeltaTType& deltaT
 )
 {
+    //Info << "B: chemistry2Model::solve" << endl;
     // PRINTED = TRUE, WITH OR WOUT CHEMISTRY
     CompType::correct();
 
@@ -1445,6 +1446,7 @@ Foam::scalar Foam::chemistry2Model<CompType, ThermoType>::solve
 
     forAll(rho, celli)
     {
+        //Info << "for cell " << tab << celli<< endl;
         const scalar rhoi = rho[celli];
         scalar pi = p[celli];
         scalar Ti = T[celli];
@@ -1501,11 +1503,12 @@ Foam::scalar Foam::chemistry2Model<CompType, ThermoType>::solve
 
         deltaTMin = min(this->deltaTChem_[celli], deltaTMin);
 
+        //Info << "Pt1" << endl;
         for (label i=0; i<nSpecie_; i++)
         {
             RR_[i][celli] = (c[i] - c0[i])*specieThermo_[i].W()/deltaT[celli];
             RRf_[i][celli] = (cfwd[i] - c0[i])*specieThermo_[i].W()/deltaT[celli]; // NEW VINCENT 25/03/2016
-            
+            //Info << "Pt2." << i << endl;
             // NEW VINCENT 22/02/2017 *********************************************
             if(this->thermo().composition().species()[i] == "N+")
             {
@@ -1522,6 +1525,7 @@ Foam::scalar Foam::chemistry2Model<CompType, ThermoType>::solve
     }
 
     //Info<< "deltaTMin : " << deltaTMin << endl;
+    //Info << "E: chemistry2Model::solve" << endl;
     return deltaTMin;
 }
 

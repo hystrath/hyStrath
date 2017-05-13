@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2012 OpenFOAM Foundation
+    \\  /    A nd           | Copyright held by original author
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -25,8 +25,7 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "Fick.H"
-#include "fvm.H"
-#include <ctime>
+//#include <ctime>
 
 // * * * * * * * * * * * * * Protected Member Functions  * * * * * * * * * * //
 
@@ -46,13 +45,12 @@ void Foam::Fick<ThermoType>::updateCoefficients()
                 tmpSum += thermo_.composition().X(speciej) / Dij(speciei, speciej);
             }
         }
-        
-        volScalarField& Xi = thermo_.composition().X(speciei);
+
+        const volScalarField& Xi = thermo_.composition().X(speciei);
         
         D_[speciei] = thermo_.rho()*(1.0 - Xi) 
             / (tmpSum + dimensionedScalar("VSMALL", dimTime/dimArea, Foam::VSMALL));   
 
-        
         forAll(D_[speciei], celli)
         {
             if (1.0 - Xi[celli] < miniXs_)
@@ -92,7 +90,7 @@ Foam::Fick<ThermoType>::Fick
             (this->thermo_).speciesData()
     ),
     
-    miniXs_(1.0e-4)
+    miniXs_(1.0e-12)
 {    
     D_.setSize(species().size());
     
@@ -126,6 +124,16 @@ void Foam::Fick<ThermoType>::correct()
 {
     updateCoefficients();
 
+    if(addPressureGradientTerm_)
+    {
+        pressureGradientContributionToSpeciesMassFlux();
+    }
+    
+    if(addTemperatureGradientTerm_)
+    {
+        temperatureGradientContributionToSpeciesMassFlux();
+    }
+    
     forAll(species(), speciei)
     {
         calculateJ(speciei);

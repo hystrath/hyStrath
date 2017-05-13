@@ -4,6 +4,15 @@ rarefactionParameters().write();
 transport().write();
 composition.write();
 
+//- Write diffusion fluxes
+volVectorField sumDiffusiveFluxes = speciesDiffusion().sumDiffusiveFluxes();
+sumDiffusiveFluxes.write();
+forAll(Y, speciei) 
+{
+    volVectorField Jnc = speciesDiffusion().J(speciei);
+    Jnc.write();
+}   
+         
 if(not downgradeSingleT)
 {
     if(not hyLight) 
@@ -17,7 +26,7 @@ if(not downgradeSingleT)
     }
 }
 
-if()
+if(downgradeSingleTv)
 {
     thermo.Tv().write();
 }
@@ -59,24 +68,6 @@ if(writeWallHeatFlux)
 
     const surfaceScalarField::GeometricBoundaryField& patchHeatFlux = heatFlux.boundaryField();
 
-    Info<< "\nWall heat fluxes [W]" << endl;
-    forAll(patchHeatFlux, patchi)
-    {
-        if (isA<wallFvPatch>(mesh.boundary()[patchi]))
-        {
-            Info<< "Patch " << patchi
-                << " named " << patchHeatFlux[patchi].patch().name()
-                << ": "
-                << gSum
-                   (
-                       mesh.magSf().boundaryField()[patchi]
-                      *patchHeatFlux[patchi]
-                   )
-                << endl;
-        }
-    }
-    
-    Info<< endl;
 
     volScalarField wallHeatFlux
     (
@@ -90,10 +81,25 @@ if(writeWallHeatFlux)
         dimensionedScalar("wallHeatFlux", dimensionSet(1, 0, -3, 0, 0), 0.0)
     );
 
-    forAll(wallHeatFlux.boundaryField(), patchi)
+    Info<< "\nWall heat fluxes [W]" << endl;
+    forAll(patchHeatFlux, patchi)
     {
-        wallHeatFlux.boundaryField()[patchi] = patchHeatFlux[patchi];
+        if (isA<wallFvPatch>(mesh.boundary()[patchi]))
+        {
+            wallHeatFlux.boundaryField()[patchi] = patchHeatFlux[patchi];
+
+            Info<< "Patch " << patchi
+                << " named " << patchHeatFlux[patchi].patch().name()
+                << ": "
+                << gSum
+                   (
+                       mesh.magSf().boundaryField()[patchi]
+                      *patchHeatFlux[patchi]
+                   )
+                << endl;
+        }
     }
+    Info<< endl;
 
     wallHeatFlux.write();
 }

@@ -264,6 +264,7 @@ void Foam::Euler2Implicit<Chemistry2Model>::solve
     scalar& subDeltaT
 ) const
 {
+    //Info << "B: Euler2Implicit::solve" << endl;
     // PRINTED = YES
     const label nSpecie = this->nSpecie();
     simpleMatrix<scalar> RR(nSpecie, 0, 0);
@@ -344,6 +345,8 @@ void Foam::Euler2Implicit<Chemistry2Model>::solve
         // END NEW VINCENT 22/02/2017 *********************************************
     }
     
+    //Info << "Pt1: Euler2Implicit::solve" << endl;
+    
     // Calculate the stable/accurate time-step
     scalar tMin = GREAT;
 
@@ -366,9 +369,13 @@ void Foam::Euler2Implicit<Chemistry2Model>::solve
             tMin = min(tMin, cm/d);
         }
     }
+    
+    //Info << "Pt2: Euler2Implicit::solve " << deltaT << endl;
 
     subDeltaT = cTauChem_*tMin;
     deltaT = min(deltaT, subDeltaT);
+    
+    //Info << "Pt2.5: Euler2Implicit::solve " << deltaT << endl;
 
     // Add the diagonal and source contributions from the time-derivative
     for (label i=0; i<nSpecie; i++)
@@ -384,10 +391,15 @@ void Foam::Euler2Implicit<Chemistry2Model>::solve
         RReiiO[i][i] += 1.0/deltaT; // NEW VINCENT 25/03/2016
         RReiiO.source()[i] = ceiiO[i]/deltaT; // NEW VINCENT 25/03/2016
     }
+    
+    //Info << "Pt3: Euler2Implicit::solve" << endl;
 
     // Solve for the new composition
     c = RR.LUsolve();
+    //Info << "Pt4: Euler2Implicit::solve" << endl;
     cfwd = RRfwd.LUsolve(); // NEW VINCENT 25/03/2016
+    
+    //Info << "Pt5: Euler2Implicit::solve" << endl;
 
     // Limit the composition
     for (label i=0; i<nSpecie; i++)
@@ -398,6 +410,10 @@ void Foam::Euler2Implicit<Chemistry2Model>::solve
 
     // Update the temperatures
     cTot = sum(c);
+    
+    //Info << "E: Euler2Implicit::solve " << endl;
+    
+    
     /*Info << "3) Tt: " << T << " and ht: " << mixture.HEt(p, T) << endl;
     mixture = (c[0]/cTot)*this->specieThermo_[0];
     for (label i=1; i<nSpecie; i++)

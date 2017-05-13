@@ -147,11 +147,11 @@ protected:
         //- Calculate the fields from DSMC inputs
         void calculateFromDSMC
         (
-            PtrList<volScalarField>& fixedY,
-            volScalarField& fixedTt,
-            PtrList<volScalarField>& fixedTv,
-            volScalarField& fixedRho,
-            word& regionName
+            const PtrList<volScalarField>& fixedY,
+            const volScalarField& fixedTt,
+            const PtrList<volScalarField>& fixedTv,
+            const volScalarField& fixedRho,
+            const word& regionName
         );
         
         //- Calculate the thermo variables
@@ -252,6 +252,15 @@ public:
         //- Reset temperature bounding info
         void temperatureBoundingReport()
         {
+            //- Parallel communication
+            if(Pstream::parRun())
+            {
+                reduce(temperatureFieldOutOfRange, sumOp<bool>());
+                reduce(minMaxTemperatureFieldOutOfRange[0], sumOp<scalar>());
+                reduce(minMaxTemperatureFieldOutOfRange[1], sumOp<scalar>());
+                reduce(noCellsWithTemperatureFieldOutOfRange, sumOp<scalar>());
+            }
+            
             if(temperatureFieldOutOfRange)
             {
                 bool printedHeader = false;
@@ -282,6 +291,12 @@ public:
         //- Return info about hasCrashedButRecovered bool
         static void hasCrashedButRecoveredReport()
         {
+            //- Parallel communication
+            if(Pstream::parRun())
+            {
+                reduce(hasCrashedButRecovered, sumOp<bool>());
+            }
+            
             if(hasCrashedButRecovered)
             {
                 Info<< "\e[1;31mThe simulation should have crashed, extra"
@@ -302,11 +317,11 @@ public:
         //- Update the fields from DSMC inputs
         virtual void correctFromDSMC
         (
-            PtrList<volScalarField>& fixedY,
-            volScalarField& fixedTt,
-            PtrList<volScalarField>& fixedTv,
-            volScalarField& fixedRho,
-            word& regionName
+            const PtrList<volScalarField>& fixedY,
+            const volScalarField& fixedTt,
+            const PtrList<volScalarField>& fixedTv,
+            const volScalarField& fixedRho,
+            const word& regionName
         );
         
         //- Update properties

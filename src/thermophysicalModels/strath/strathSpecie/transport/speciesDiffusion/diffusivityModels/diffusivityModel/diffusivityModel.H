@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2012 OpenFOAM Foundation
+    \\  /    A nd           | Copyright held by original author
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -26,7 +26,7 @@ Class
     Foam::diffusivityModel
 
 Description
-    Diffusivity model for multispecies binary diffusion coefficients 
+    Diffusivity model for species binary diffusion coefficients 
 
 SourceFiles
     diffusivityModel.C
@@ -63,11 +63,14 @@ protected:
 
         //- Pressure [Pa]
         const volScalarField& p_;
+        
+        //- Electron pressure [Pa]
+        const volScalarField& pe_;
 
         //- Temperature [K]
         const volScalarField& T_;
 
-        //- Species
+        //- List of species
         wordList species_;
 
         //- Binary diffusivity models 
@@ -102,6 +105,17 @@ public:
             const volScalarField& T,
             const wordList& species
         );
+        
+        //- Construct from components
+        diffusivityModel
+        (
+            const word transportPropertiesDictName,
+            const word thermoSpeciesDictName,
+            const volScalarField& p,
+            const volScalarField& pe,
+            const volScalarField& T,
+            const wordList& species
+        );
 
 
     // Destructor
@@ -112,11 +126,11 @@ public:
 
     // Member Functions
 
-        inline const volScalarField& D(label i, label j) const
+        inline const volScalarField& D(const label i, const label j) const
         {
-            label iStar = min(i,j);
-            label jStar = max(i,j);
-            label k = species_.size()*iStar+jStar-0.5*iStar*(iStar+1);
+            const label iStar = min(i,j);
+            const label jStar = max(i,j);
+            const label k = species_.size()*iStar+jStar-0.5*iStar*(iStar+1);
             return Dij_[k];
         }
 

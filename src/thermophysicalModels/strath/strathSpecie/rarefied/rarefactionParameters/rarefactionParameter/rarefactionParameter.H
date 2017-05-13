@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2012 OpenFOAM Foundation
+    \\  /    A nd           | Copyright held by original author
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -75,10 +75,10 @@ protected:
         //- Reference to the turbulence model
         const compressible::turbulenceModel2& turbulence_;
         
-        //- Compute the rarefaction parameters?
+        //- Compute the rarefaction parameters
         bool computeRarefaction_;
         
-        //- Only compute the overall mean free path at the boundaries?
+        //- Compute the overall mean free path at the boundaries
         bool computeMfpBoundaries_;
         
         //- Temporary stuff for the definition of the overall mean free path
@@ -96,16 +96,16 @@ protected:
         //- Mean free path, gas mixture [m]
         volScalarField mfpMix_;
         
-        //- Overall Knudsen number [-]
+        //- Overall Knudsen number
         volScalarField Knov_;
         
         //- Characteristic length [m]
         scalar characteristicLength_;
         
-        //- Gradient-length local Knudsen number [-]
+        //- Gradient-length local Knudsen number
         volScalarField KnGLL_;
         
-        //- Gradient-length local Knudsen number, components [-]
+        //- Gradient-length local Knudsen number, components
         PtrList<volScalarField> KnsGLL_;
         
         //- Write the mean free path species/mixture?

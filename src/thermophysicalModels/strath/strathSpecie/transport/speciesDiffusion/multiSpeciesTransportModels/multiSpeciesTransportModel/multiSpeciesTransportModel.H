@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2012 OpenFOAM Foundation
+    \\  /    A nd           | Copyright held by original author
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -89,8 +89,49 @@ protected:
         //  equation as an explicit divergence term [kg/m^2/s]
         volVectorField sumDiffusiveFluxes_;
         
+        //- Species diffusive fluxes due to the gradient of pressure [kg/m^2/s]
+        PtrList<volVectorField> JGradp_;
+        
+        //- Species diffusive fluxes due to the gradient of temperature
+        // [kg/m^2/s]
+        PtrList<volVectorField> JGradT_;
+        
         //- Use the non-corrected version of the mass diffusion term
         bool useNonCorrected_;
+        
+        //- Use the gradient of molar fraction in the species and transport equation
+        //  and use the gradient of mass fraction if disabled
+        //  Always true for the SCEBD model
+        bool solvingForX_;
+        
+        //- Account of the effect of the gradient of pressure on mass diffusion
+        bool addPressureGradientTerm_;
+        
+        //- Account of the effect of the gradient of temperature on mass 
+        //  diffusion (Soret effect)
+        bool addTemperatureGradientTerm_;
+        
+        
+    // Protected member functions
+        
+        //- Calculates and stores the non-corrected diffusive mass flux field
+        //  for a specie given by index
+        virtual void calculateJ(const label i);
+        
+        //- Summation of the diffusive fluxes to later ensure mass conservation
+        virtual void calculateSumDiffusiveFluxes();
+        
+        //- Return the corrected diffusive mass flux field for a specie given
+        //  by index
+        virtual volVectorField Jcorrected(const label i) const;
+        
+        //- Calculates the contribution of the pressure gradient for each
+        //  species and stores it into JGradp_
+        void pressureGradientContributionToSpeciesMassFlux();
+        
+        //- Calculates the contribution of the temperature gradient for each
+        //  species and stores it into JGradT_
+        void temperatureGradientContributionToSpeciesMassFlux();
 
 private:
   
@@ -154,18 +195,7 @@ public:
 
 
     // Member Functions
-
-        //- Calculates and stores the non-corrected diffusive mass flux field
-        //  for a specie given by index
-        void calculateJ(const label i);
-        
-        //- Summation of the diffusive fluxes to later ensure mass conservation
-        void calculateSumDiffusiveFluxes();
-        
-        //- Return the constant corrected diffusive mass flux field for a 
-        //  specie given by index
-        volVectorField Jcorrected(const label i) const;
-        
+    
         //- Term in the total energy equation due to diffusive fluxes
         volVectorField multiSpeciesHeatSource() const;
 
@@ -181,6 +211,18 @@ public:
         
         // Access   
            
+            //- Return the state of the solvingForX_ boolean
+            inline bool solvingForX() const
+            {
+                return solvingForX_;
+            }
+            
+            //- Return the state of the useNonCorrected_ boolean
+            inline bool useNonCorrected() const
+            {
+                return useNonCorrected_;
+            }
+            
             //- Return the const binary diffusion coefficient field
             inline const volScalarField& Dij(label i, label j) const;
             
@@ -190,7 +232,7 @@ public:
             
             //- Return the const effective diffusion coefficient field for
             //  species i in a mixture
-            inline const volScalarField& D(label i) const;
+            inline const volScalarField& Di(label i) const;
 
             //- Return the table of species
             inline const speciesTable& species() const;
@@ -201,6 +243,18 @@ public:
             //- Return the constant non-corrected diffusive mass flux field for 
             //  a specie given by index
             inline const volVectorField& J(const label i) const;
+            
+            //- Return the constant diffusive mass flux field due to the
+            //  gradient of pressure for a specie given by index
+            inline const volVectorField& JGradp(const label i) const;
+            
+            //- Return the constant diffusive mass flux field due to the
+            //  gradient of temperature for a specie given by index
+            inline const volVectorField& JGradT(const label i) const;
+            
+            //- Return the const corrected diffusive mass flux field for a
+            //  specie given by index
+            inline const volVectorField Jcorr(const label i) const;
             
             //- Return the constant sum of the diffusive mass fluxes field
             inline const volVectorField& sumDiffusiveFluxes() const;

@@ -3,8 +3,8 @@ binaryDiffusivityModel/binaryDiffusivityModel.C
 
 noBinaryDiffusivityModel/noBinaryDiffusivityModel.C
 constant/constant.C
-Hirschfelder/Hirschfelder.C
-Gupta/GuptaDiffCoeff.C
+Gupta/GuptaO.C
+Gupta/GuptaD.C
 Stephani/Stephani.C
 
 diffusivityModel/diffusivityModel.C

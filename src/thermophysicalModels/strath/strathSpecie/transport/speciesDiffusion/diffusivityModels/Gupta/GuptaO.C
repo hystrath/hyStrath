@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2012 OpenFOAM Foundation
+    \\  /    A nd           | Copyright held by original author
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,7 +24,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "GuptaDiffCoeff.H"
+#include "GuptaO.H"
 #include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
@@ -33,53 +33,70 @@ namespace Foam
 {
     namespace binaryDiffusivityModels
     {
-        defineTypeNameAndDebug(GuptaDiffCoeff, 0);
+        defineTypeNameAndDebug(GuptaO, 0);
         addToRunTimeSelectionTable
         (
             binaryDiffusivityModel,
-            GuptaDiffCoeff, 
+            GuptaO, 
             dictionary
         );
     }
 }
 
-
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::binaryDiffusivityModels::GuptaDiffCoeff::GuptaDiffCoeff
+Foam::binaryDiffusivityModels::GuptaO::GuptaO
 (
     const word& name1,
     const word& name2,
     const dictionary& dictThermo,
     const dictionary& dictTransport,
     const volScalarField& p,
+    const volScalarField& pe,
     const volScalarField& T
 )
 :
-    binaryDiffusivityModel(name1, name2, dictThermo, dictTransport, p, T),
+    binaryDiffusivityModel(name1, name2, dictThermo, dictTransport, p, pe, T),
 
     W1_(readScalar(dictThermo.subDict(name1).subDict("specie").lookup("molWeight"))*1.0e-3),
     W2_(readScalar(dictThermo.subDict(name2).subDict("specie").lookup("molWeight"))*1.0e-3),
     pi(Foam::constant::mathematical::pi),
     kB(Foam::constant::physicoChemical::k.value()),
-    Runi(Foam::constant::physicoChemical::R.value())
+    Runi(Foam::constant::physicoChemical::R.value()),
+    constantFactorInCollisionTerm_(8.0e-20*sqrt(2.0*W1_*W2_/(pi*Runi*(W1_+W2_)))),
+    e4OverkB2_(pow(4.8032e-10, 4.0)/sqr(kB))
 {
-    if (dictTransport.subDict("collisionIntegrals").subDict("involvingNeutral")
-           .subDict("GuptaDiffCoeff_Omega11").found(name1+"_"+name2))
+    word year = word::null;
+    
+    if(dictTransport.subDict("transportModels")
+        .subDict("diffusiveFluxesParameters").found("yearGuptaModel"))
     {
-        piOmega_ = dictTransport.subDict("collisionIntegrals").subDict("involvingNeutral")
-           .subDict("GuptaDiffCoeff_Omega11").lookup(name1+"_"+name2);    
-    }
-    else if (dictTransport.subDict("collisionIntegrals").subDict("involvingNeutral")
-            .subDict("GuptaDiffCoeff_Omega11").found(name2+"_"+name1))
-    {
-        piOmega_ = dictTransport.subDict("collisionIntegrals").subDict("involvingNeutral")
-            .subDict("GuptaDiffCoeff_Omega11").lookup(name2+"_"+name1);    
+        year = word(dictTransport.subDict("transportModels")
+            .subDict("diffusiveFluxesParameters").lookup("yearGuptaModel"));
     }
     else
     {
-        FatalErrorIn("void Foam::binaryDiffusivityModels::GuptaDiffCoeff::GuptaDiffCoeff(...)")
-            << "Collision integral data missing for species couple (" << name1 << ", " << name2 << ")."
+        FatalErrorIn("void Foam::binaryDiffusivityModels::GuptaO::GuptaO(...)")
+            << "Entry 'yearGuptaModel' is missing in transportModels/diffusiveFluxesParameters."
+            << exit(FatalError);
+    }
+    
+    if(dictTransport.subDict("collisionData").subDict("neutralNeutralInteractions")
+           .subDict("Gupta"+year+"O").subDict("Omega11").found(name1+"_"+name2))
+    {
+        piOmega1_ = dictTransport.subDict("collisionData").subDict("neutralNeutralInteractions")
+           .subDict("Gupta"+year+"O").subDict("Omega11").lookup(name1+"_"+name2);    
+    }
+    else if(dictTransport.subDict("collisionData").subDict("neutralNeutralInteractions")
+           .subDict("Gupta"+year+"O").subDict("Omega11").found(name2+"_"+name1))
+    {
+        piOmega1_ = dictTransport.subDict("collisionData").subDict("neutralNeutralInteractions")
+           .subDict("Gupta"+year+"O").subDict("Omega11").lookup(name2+"_"+name1);    
+    }
+    else
+    {
+        FatalErrorIn("void Foam::binaryDiffusivityModels::GuptaO::GuptaO(...)")
+            << "Gupta's 1990 curve fit data missing for species couple (" << name1 << ", " << name2 << ")."
             << exit(FatalError);
     }
 }
@@ -87,7 +104,7 @@ Foam::binaryDiffusivityModels::GuptaDiffCoeff::GuptaDiffCoeff
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
 Foam::tmp<Foam::volScalarField>
-Foam::binaryDiffusivityModels::GuptaDiffCoeff::D() const
+Foam::binaryDiffusivityModels::GuptaO::D() const
 {
     const fvMesh& mesh = this->T_.mesh();
 
@@ -112,18 +129,21 @@ Foam::binaryDiffusivityModels::GuptaDiffCoeff::D() const
 
     forAll(this->T_, celli)
     {
-        d[celli] = DijBar(this->T_[celli])/this->p_[celli];
+        d[celli] = kB*this->T_[celli]
+            /(this->p_[celli]*collisionTerm1(this->T_[celli], this->pe_[celli]));
     }
 
     forAll(this->T_.boundaryField(), patchi)
     {
         const fvPatchScalarField& pT = this->T_.boundaryField()[patchi];
 	      const fvPatchScalarField& pp = this->p_.boundaryField()[patchi];
+	      const fvPatchScalarField& ppe = this->pe_.boundaryField()[patchi];
         fvPatchScalarField& pD = d.boundaryField()[patchi];
 
         forAll(pT, facei)
         {
-            pD[facei] = DijBar(pT[facei])/pp[facei];
+            pD[facei] = kB*pT[facei]
+                /(pp[facei]*collisionTerm1(pT[facei], ppe[facei]));
         }
     }
 
@@ -131,7 +151,7 @@ Foam::binaryDiffusivityModels::GuptaDiffCoeff::D() const
 }
 
 
-Foam::tmp<Foam::scalarField> Foam::binaryDiffusivityModels::GuptaDiffCoeff::D
+Foam::tmp<Foam::scalarField> Foam::binaryDiffusivityModels::GuptaO::D
 (
     const scalarField& p,
     const scalarField& T,
@@ -143,7 +163,29 @@ Foam::tmp<Foam::scalarField> Foam::binaryDiffusivityModels::GuptaDiffCoeff::D
 
     forAll(T, facei)
     {
-        d[facei] = DijBar(T[facei])/p[facei];
+        d[facei] = kB*T[facei]
+            /(p[facei]*collisionTerm1(T[facei]));
+    }
+
+    return tD;
+}
+
+
+Foam::tmp<Foam::scalarField> Foam::binaryDiffusivityModels::GuptaO::D
+(
+    const scalarField& p,
+    const scalarField& pe,
+    const scalarField& T,
+    const label patchi
+) const
+{
+    tmp<scalarField> tD(new scalarField(T.size()));
+    scalarField& d = tD();
+
+    forAll(T, facei)
+    {
+        d[facei] = kB*T[facei]
+            /(p[facei]*collisionTerm1(T[facei], pe[facei]));
     }
 
     return tD;

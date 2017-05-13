@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2012 OpenFOAM Foundation
+    \\  /    A nd           | Copyright held by original author
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -25,6 +25,7 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "LewisNumber.H"
+//#include <time.h>
 
 // * * * * * * * * * * * * * Protected Member Functions  * * * * * * * * * * //
 
@@ -32,7 +33,19 @@ template<class ThermoType>
 void Foam::LewisNumber<ThermoType>::updateCoefficients()
 {
     // rho*Ds = Le*kappa_tr/Cp_tr - NEW VINCENT 16/05/2016
-    this->D_[0] = Le_*this->turbulence_.kappaEff() / this->thermo_.Cp_t();
+    /*std::clock_t start;
+    double duration;*/
+    
+    this->D_[0] = this->turbulence_.kappaEff()*Le_ / this->thermo_.Cp_t();
+    
+    /*start = std::clock();
+    volScalarField kk = this->turbulence_.kappaEff();
+    duration = (std::clock() - start) / double(CLOCKS_PER_SEC);
+    Info << "timer kappa load: " << duration << endl;
+    start = std::clock();
+    volScalarField Cpt = this->thermo_.Cp_t();
+    duration = (std::clock() - start) / double(CLOCKS_PER_SEC);
+    Info << "timer Cpt load: " << duration << endl;*/
     
     if(this->thermo_.composition().particleType(0) == 3)
     {
@@ -62,8 +75,8 @@ Foam::LewisNumber<ThermoType>::LewisNumber
 :
     Fick<ThermoType>(thermo, turbulence),
     
-    Le_(readScalar(IOdictionary::subDict("transportModels").lookup("LewisNumber"))) 
+    Le_(readScalar(IOdictionary::subDict("transportModels")
+        .subDict("diffusiveFluxesParameters").lookup("LewisNumber"))) 
 {}
- 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
