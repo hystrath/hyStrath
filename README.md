@@ -50,7 +50,7 @@ the direct simulation Monte Carlo code from the Universities of Strathclyde and 
   
 + **HYPRO**  
 the Propulsion system modelling code from the University of Strathclyde
-  - hosted by Dr Alessandro Mogavero: https://github.com/strath-ace/HyPro
+  - developed by Dr Alessandro Mogavero: https://github.com/strath-ace/HyPro
   - HYPRO can be used to model any kind of propulsion system thanks to its modular structure. It is designed to be fast in order to be easily included within optimization loops.
 
 
