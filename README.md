@@ -42,10 +42,16 @@ About us: http://www.jwfl.org.uk/
 <br></p></div>
 
 ---  
-### You may also be interested in: *dsmcFoam+*
-###### the direct simulation Monte Carlo code from the University of Strathclyde  
- + hosted by Dr Craig White: https://github.com/MicroNanoFlows/OpenFOAM-2.4.0-MNF/tree/devel-craig (OpenFOAM 2.4.0-MNF)  
- + code, manuals, tutorials and support available via [distance learning](http://onlineshop.strath.ac.uk/product-catalogue/engineering-faculty/mechanical-aerospace-engineering/courses/direct-simulation-monte-carlo-dsmc-distance-learning-course)
+### You may also be interested in:  
++ **_dsmcFoam+_**  
+###### the direct simulation Monte Carlo code from the Universities of Strathclyde and Glasgow
+  - hosted by Dr Craig White: https://github.com/MicroNanoFlows/OpenFOAM-2.4.0-MNF/tree/devel-craig (OpenFOAM 2.4.0-MNF)  
+  - code, manuals, tutorials and support available via [distance learning](http://onlineshop.strath.ac.uk/product-catalogue/engineering-faculty/mechanical-aerospace-engineering/courses/direct-simulation-monte-carlo-dsmc-distance-learning-course)
+ 
++ **HYPRO**   
+###### the Propulsion system modelling code from the University of Strathclyde 
+  - hosted by Dr Alessandro Mogavero: https://github.com/strath-ace/HyPro
+  - HYPRO can be used to model any kind of propulsion system thanks to its modular structure. It is designed to be fast in order to be easily included within optimization loops.
 
 
 
