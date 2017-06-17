@@ -1,0 +1,187 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.3.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      hTCReactionsMars74;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// John S. Evans, Charles J. Schexnayder Jr., and William L. Grose
+// Effects of Nonequilibrium Ablation Chemistry on Viking Radio Blackout
+// J. SPACECRAFT
+// Vol.11, No.2, Feb. 1974
+    
+species
+(
+    O2
+    CO2
+    CO
+    O
+    C
+);
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Units
+// A: m^3 kmol^-1 s^-1
+// Ta: K
+  
+reactions
+{
+    // Reaction no 4
+    carbonDioxideTBReaction
+    {
+        type     nonEquilibriumReversiblethirdBodyArrheniusReaction;
+        reaction "CO2 + M = CO + O + M";
+        controlT dissociation;
+        forward
+        {
+            A        1.2e08;
+            beta     0.5;
+            Ta       34340;
+            defaultEfficiency 1.0;
+        }
+        reverse
+        {
+            A        2.0e03;
+            beta     1.25;
+            Ta       -28400;
+            defaultEfficiency 1.0;
+        }
+    }
+    
+    // Reaction no 1
+    carbonMonoxideTBReaction
+    {
+        type     nonEquilibriumReversiblethirdBodyArrheniusReaction;
+        reaction "CO + M = C + O + M";
+        controlT dissociation;
+        forward
+        {
+            A        4.48e16;
+            beta     -1.0;
+            Ta       128900;
+            defaultEfficiency 1.0;
+        }
+        reverse
+        {
+            A        1.0e15;
+            beta     -1.0;
+            Ta       0.0;
+            defaultEfficiency 1.0;
+        }
+    }
+    
+    // Reaction no 5
+    oxygenTBReaction
+    {
+        type     nonEquilibriumReversiblethirdBodyArrheniusReaction;
+        reaction "O2 + M = O + O + M";
+        controlT dissociation;
+        forward
+        {
+            A        9.05e15;
+            beta     -1.0;
+            Ta       59370;
+            defaultEfficiency 1.0;
+        }
+        reverse
+        {
+            A        9.0e12;
+            beta     -0.5;
+            Ta       0.0;
+            defaultEfficiency 1.0;
+        }
+    }
+    
+    // Reaction no 2
+    /*nitrogenTBReaction
+    {
+        type     nonEquilibriumReversiblethirdBodyArrheniusReaction;
+        reaction "N2 + M = N + N + M";
+        controlT dissociation;
+        forward
+        {
+            A        2.46e16;
+            beta     -1.0;
+            Ta       113200;
+            defaultEfficiency 1.0;
+        }
+        reverse
+        {
+            A        1.5e15;
+            beta     -1.0;
+            Ta       0.0;
+            defaultEfficiency 1.0;
+        }
+    }*/
+    
+    // Reaction no 7
+    carbonMonoxideExchangeReaction
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "CO + CO = CO2 + C";
+        controlT exchange;
+        forward
+        {
+            A        2.33e06;
+            beta     0.5;
+            Ta       65710;
+        }
+        reverse
+        {
+            A        4.6e09;
+            beta     -0.25;
+            Ta       0.0;
+        }
+    }
+    
+    // Reaction no 8
+    carbonMonoxideOxygenAtomReaction
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "CO + O = C + O2";
+        controlT exchange;
+        forward
+        {
+            A        2.73e09;
+            beta     0.5;
+            Ta       69540;
+        }
+        reverse
+        {
+            A        9.4e09;
+            beta     0.25;
+            Ta       0.0;
+        }
+    }
+    
+    // Reaction no 12
+    carbonDioxideOxygenAtomReaction
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "CO2 + O = O2 + CO";
+        controlT exchange;
+        forward
+        {
+            A        2.54e08;
+            beta     0.5;
+            Ta       27690;
+        }
+        reverse
+        {
+            A        5.0e05;
+            beta     1.0;
+            Ta       23900;
+        }
+    }
+}

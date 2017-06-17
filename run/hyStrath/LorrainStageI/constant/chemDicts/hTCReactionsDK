@@ -1,0 +1,219 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.3.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      hTCReactionsDK;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// M. G. Dunn and S.-W. Kang
+// Theoretical and Experiemnetal Studies of Reentry Plasmas
+// NASA CR-2232
+// 1973
+
+species
+(
+    N2
+    //O2
+    //NO
+    //N2+
+    //O2+
+    //NO+
+    //N
+    //O
+    //N+
+    //O+
+    //e-
+);
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+/* REACTIONS NO 1 TO 15              -> DISSOCIATION
+   REACTIONS NO 16 AND 17            -> EXCHANGE                             */
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Units
+// A: m^3 kmol^-1 s^-1
+// Ta: K
+
+reactions
+{
+
+    /*// Reaction no 1
+    oxygenAtomicNitrogenReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "O2 + N = 2O + N";
+        A        3.6e15;
+        beta     -1.0;
+        Ta       59782;
+    }
+
+    // Reaction no 2
+    oxygenNitricoxideReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "O2 + NO = 2O + NO";
+        A        3.6e15;
+        beta     -1.0;
+        Ta       59782;
+    }*/
+    
+    // Reaction no 3
+    /*oxygenNitrogenReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "O2 + N2 = 2O + N2";
+        A        7.2e15;
+        beta     -1.0;
+        Ta       59883;
+    }*/
+    
+    // Reaction no 4
+    /*oxygenReaction
+    {
+        type      irreversibleArrheniusReaction;
+        reaction "O2 + O2 = 2O + O2";
+        A        3.24e16;
+        beta     -1.0;
+        Ta       59883;
+    }
+    
+    // Reaction no 5
+    oxygenAtomicOxygenReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "O2 + O = 2O + O";
+        A        9.0e16;
+        beta     -1.0;
+        Ta       59883;
+    }*/
+    
+    // Reaction no 6
+    /*nitrogenAtomicOxygenReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "N2 + O = 2N + O";
+        A        1.9e17;
+        beta     -0.5;
+        Ta       113728;
+    }*/
+    
+    // Reaction no 7
+    /*nitrogenOxygenReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "N2 + O2 = 2N + O2";
+        A        1.9e14;
+        beta     -0.5;
+        Ta       113728;
+    }
+       
+    // Reaction no 8
+    nitrogenNitricoxideReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "N2 + NO = 2N + NO";
+        A        1.9e14;
+        beta     -0.5;
+        Ta       113728;
+    }*/
+    
+    // Reaction no 9
+    /*nitrogenReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "N2 + N2 = 2N + N2";
+        A        4.7e14;
+        beta     -0.5;
+        Ta       113728;
+    }*/
+    
+    // Reaction no 10
+    /*nitrogenAtomicNitrogenReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "N2 + N = 2N + N";
+        A        4.085e19;
+        beta     -1.5;
+        Ta       113728;
+    }
+
+    // Reaction no 11
+    nitricoxideNitrogenReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "NO + N2 = N + O + N2";
+        A        3.9e17;
+        beta     -1.5;
+        Ta       75986;
+    }
+     
+    // Reaction no 12
+    nitricoxideOxygenReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "NO + O2 = N + O + O2";
+        A        3.9e17;
+        beta     -1.5;
+        Ta       75986;
+    }    
+    // Reaction no 13
+    nitricoxideReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "NO + NO = N + O + NO";
+        A        7.8e17;
+        beta     -1.5;
+        Ta       75986;
+    }
+    
+    // Reaction no 14
+    nitricoxideAtomicOxygenReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "NO + O = N + 2O";
+        A        7.8e17;
+        beta     -1.5;
+        Ta       75986;
+    }
+    
+    // Reaction no 15
+    nitricoxideAtomicNitrogenReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "NO + N = O + 2N";
+        A        7.8e17;
+        beta     -1.5;
+        Ta       75986;
+    }
+    
+    // Reaction no 16
+    nitricoxideAtomicOxygenExchangeReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "NO + O = O2 + N";
+        A        3.20e6;
+        beta     1.0;
+        Ta       19827;
+    }
+    
+    // Reaction no 17
+    nitrogenAtomicOxygenExchangeReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "N2 + O = NO + N";
+        A        7.0e10;
+        beta     0;
+        Ta       19827;
+    }*/  
+    
+}
