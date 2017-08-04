@@ -34,9 +34,9 @@ Installation: ./install.sh
 ---  
 **Enquiries: hy2Foam@gmail.com**
 
-Contributors: Vincent Casseau, Daniel E.R. Espinoza and Dr Thomas J. Scanlon              
+Contributors: Dr Vincent Casseau, Daniel E.R. Espinoza and Dr Thomas J. Scanlon              
 Acknowledgements: Jimmy-John O.E. Hoste, Dr Rodrigo C. Palharini and Prof Richard E. Brown       
-About us: http://www.jwfl.org.uk/
+About us: http://www.jwfl.ac.uk/
 
 <div class="paragraph"><p><br>
 <br></p></div>
