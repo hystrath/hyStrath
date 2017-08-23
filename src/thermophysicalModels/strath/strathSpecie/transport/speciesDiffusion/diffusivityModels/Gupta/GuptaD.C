@@ -124,19 +124,19 @@ Foam::binaryDiffusivityModels::GuptaD::D() const
 
     forAll(this->T_, celli)
     {
-        d[celli] = DijBar(this->T_[celli], this->pe_[celli])/this->p_[celli];
+        d[celli] = DijBar(this->T_[celli], 0/*this->pe_[celli]*/)/this->p_[celli];
     }
 
     forAll(this->T_.boundaryField(), patchi)
     {
         const fvPatchScalarField& pT = this->T_.boundaryField()[patchi];
 	      const fvPatchScalarField& pp = this->p_.boundaryField()[patchi];
-	      const fvPatchScalarField& ppe = this->pe_.boundaryField()[patchi];
+	      //const fvPatchScalarField& ppe = this->pe_.boundaryField()[patchi];
         fvPatchScalarField& pD = d.boundaryField()[patchi];
 
         forAll(pT, facei)
         {
-            pD[facei] = DijBar(pT[facei], ppe[facei])/pp[facei];
+            pD[facei] = DijBar(pT[facei], 0/*ppe[facei]*/)/pp[facei];
         }
     }
 
