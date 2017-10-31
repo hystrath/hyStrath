@@ -1,7 +1,7 @@
 # hyStrath
 
 ##### Hypersonic code developments in OpenFOAM
-####### Hosting the *hyFoam* (supersonic combusting flows) and *hy2Foam* (hypersonic reacting flows) CFD solvers
+###### Hosting the *hyFoam* (supersonic combusting flows) and *hy2Foam* (hypersonic reacting flows) CFD solvers
 
 ---  
 ## Available for OpenFOAM versions
