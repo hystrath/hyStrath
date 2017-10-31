@@ -39,7 +39,7 @@ Installation: ./install.sh
 ---  
 **Enquiries: hy2Foam@gmail.com**
 
-Lead developer: Dr Vincent Casseau
+Lead developer: Dr Vincent Casseau    
 Contributors: Daniel E.R. Espinoza and Dr Thomas J. Scanlon              
 Acknowledgements: Jimmy-John O.E. Hoste, Dr Rodrigo C. Palharini and Prof Richard E. Brown       
 
