@@ -2,7 +2,7 @@
 
 ##### Hypersonic code developments in OpenFOAM
 ###### Hosting the *hyFoam* (supersonic combusting flows) and *hy2Foam* (hypersonic reacting flows) CFD solvers  
-###### Hosting the *dsmcFoam+* (Direct Simulation Monte Carlo) solver  
+###### Hosting the *dsmcFoam+* (direct simulation Monte Carlo) solver  
 
 ---  
 ## Available for OpenFOAM versions
@@ -23,7 +23,7 @@
 
 
 ###### Installation
-CFD: ./install-CFD.sh
+CFD: ./install-CFD.sh  
 DSMC: ./install-DSMC.sh (soon available) 
 
 
@@ -39,7 +39,10 @@ DSMC: ./install-DSMC.sh (soon available)
 
 ---  
 ## [Release history](https://github.com/vincentcasseau/hyStrath/wiki/Release-history)  
-### 13 May 2017: Release 1.1
+### 02-10 Nov 2017: Release 'Cairn', br. master
++ Introduction of the DSMC solver for OF-v1612+
+
+### 13 May 2017: Release 1.1, br. OF-2.4.0
 + [How-tos added](https://github.com/vincentcasseau/hyStrath/wiki/How-to) to replace the manuals  
 + Fixes and new diffusion models
 
