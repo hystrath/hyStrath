@@ -51,7 +51,6 @@ DSMC: ./install-DSMC.sh (soon available)
 <br></p></div>
 
 ---  
-**Enquiries: hy2Foam@gmail.com**
 
 ###### CFD  
 Lead developer: Dr Vincent Casseau    
@@ -61,9 +60,12 @@ Acknowledgements: Jimmy-John O.E. Hoste, Dr Rodrigo C. Palharini and Prof Richar
    
 ###### DSMC        
 Current developers: Dr Craig White and Dr Vincent Casseau    
-Contributors: Daniel E.R. Espinoza and Dr Thomas J. Scanlon
+Contributors: Daniel E.R. Espinoza and Dr Thomas J. Scanlon  
 Acknowledgements: Dr Rodrigo C. Palharini
 
+
+
+**Enquiries: hy2Foam@gmail.com**
 
 <div class="paragraph"><p><br>
 <br></p></div>
