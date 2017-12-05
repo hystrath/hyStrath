@@ -1,0 +1,550 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.6                                   |
+|   \\  /    A nd           | Web:      http://www.OpenFOAM.org               |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      fieldPropertiesDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// WATER FIELDS
+
+polyFields
+(
+    // output in screen
+
+    field
+    {
+        fieldModel      polyOutputProperties;
+
+        timeProperties
+        {
+            timeOption      write;
+        }
+    }
+    
+    //measurements in zones liquid
+    field
+    {
+        fieldModel              polyPropertiesZone;
+
+        timeProperties
+        {
+            timeOption          write;
+            resetAtOutput       off;
+        }
+        timePropertiesForVelocity
+        {
+            timeOption          general;
+            nSamples            1;
+            nAverages           20;
+        }
+        polyPropertiesZoneProperties
+        {
+            fieldName               cumul_liq;
+            zoneName                mdZone;
+            molIds                  (water);
+        }
+    }
+
+    field
+    {
+        fieldModel              polyPropertiesZone;
+
+        timeProperties
+        {
+            timeOption          write;
+            resetAtOutput       on;
+        }
+        timePropertiesForVelocity
+        {
+            timeOption          general;
+            nSamples            1;
+            nAverages           20;
+        }
+        polyPropertiesZoneProperties
+        {
+            fieldName               instant_liq;
+            zoneName                mdZone;
+            molIds                  (water);
+        }
+    }
+
+    // gas
+    field
+    {
+        fieldModel              polyPropertiesZone;
+
+        timeProperties
+        {
+            timeOption          write;
+            resetAtOutput       off;
+        }
+        timePropertiesForVelocity
+        {
+            timeOption          general;
+            nSamples            1;
+            nAverages           20;
+        }
+        polyPropertiesZoneProperties
+        {
+            fieldName               cumul_gas;
+            zoneName                mdZone;
+            molIds                  (waterg);
+        }
+    }
+
+    field
+    {
+        fieldModel              polyPropertiesZone;
+
+        timeProperties
+        {
+            timeOption          write;
+            resetAtOutput       on;
+        }
+        timePropertiesForVelocity
+        {
+            timeOption          general;
+            nSamples            1;
+            nAverages           20;
+        }
+        polyPropertiesZoneProperties
+        {
+            fieldName               instant_gas;
+            zoneName                mdZone;
+            molIds                  (waterg);
+        }
+    }
+
+    // NaCl
+    
+    field
+    {
+        fieldModel              polyPropertiesZone;
+
+        timeProperties
+        {
+            timeOption          write;
+            resetAtOutput       off;
+        }
+        timePropertiesForVelocity
+        {
+            timeOption          general;
+            nSamples            1;
+            nAverages           20;
+        }
+        polyPropertiesZoneProperties
+        {
+            fieldName               cumul_NaCl;
+            zoneName                mdZone;
+            molIds                  (Na Cl);
+        }
+    }
+
+    field
+    {
+        fieldModel              polyPropertiesZone;
+
+        timeProperties
+        {
+            timeOption          write;
+            resetAtOutput       on;
+        }
+        timePropertiesForVelocity
+        {
+            timeOption          general;
+            nSamples            1;
+            nAverages           20;
+        }
+        polyPropertiesZoneProperties
+        {
+            fieldName               instant_NaCl;
+            zoneName                mdZone;
+            molIds                  (Na Cl);
+        }
+    }
+
+    // Pt in thermostat zone;
+
+     field
+    {
+        fieldModel              polyPropertiesZone;
+
+        timeProperties
+        {
+            timeOption          write;
+            resetAtOutput       off;
+        }
+        timePropertiesForVelocity
+        {
+            timeOption          general;
+            nSamples            1;
+            nAverages           20;
+        }
+        polyPropertiesZoneProperties
+        {
+            fieldName               cumul_Pt;
+            zoneName                flexibleWall;
+            molIds                  (Pt);
+        }
+    }
+
+    field
+    {
+        fieldModel              polyPropertiesZone;
+
+        timeProperties
+        {
+            timeOption          write;
+            resetAtOutput       on;
+        }
+        timePropertiesForVelocity
+        {
+            timeOption          general;
+            nSamples            1;
+            nAverages           20;
+        }
+        polyPropertiesZoneProperties
+        {
+            fieldName               instant_Pt;
+            zoneName                flexibleWall;
+            molIds                  (Pt);
+        }
+    }
+
+    // bins
+/*
+    field
+    {
+        fieldModel              polyBinsMethod;
+
+        timeProperties
+        {
+            timeOption          write;
+            resetAtOutput       off;
+        }
+        timePropertiesForVelocity
+        {
+            timeOption          write;
+        }
+        
+        polyBinsMethodProperties
+        {
+            fieldName               y_cumul_average;
+            zoneName                wallRegion;
+            molIds                  (Pt);
+
+            binModel                uniformBins;
+            
+            uniformBinsProperties
+            {
+               startPoint           (29.82 0 29.82);
+               endPoint             (29.82 4.5 29.82);
+               nBins                4;
+               area                 3556.9296;    
+            }
+        }
+    }
+    
+    field
+    {
+        fieldModel              polyBinsMethod;
+
+        timeProperties
+        {
+            timeOption          write;
+            resetAtOutput       on;
+        }
+        timePropertiesForVelocity
+        {
+            timeOption          general;
+            nSamples            1;
+            nAverages           20;
+        }
+        
+        polyBinsMethodProperties
+        {
+            fieldName               y_instant_average;
+            zoneName                wallRegion;
+            molIds                  (Pt);
+
+            binModel                uniformBins;
+            
+            uniformBinsProperties
+            {
+               startPoint           (29.82 0 29.82);
+               endPoint             (29.82 4.5 29.82);
+               nBins                4;
+               area                 3556.9296;    
+            }
+        }
+    }
+
+*/
+    // density
+
+     field
+     {
+        fieldModel              polyDensityMOB2DRadialCOM;
+ 
+        timeProperties
+        {
+            timeOption          write;
+            resetAtOutput	on;
+        }
+ 
+        polyDensityMOB2DRadialCOMProperties
+        {
+            zoneName                mdZone;
+            fieldName               densityClinder_instans;
+            startPoint              (29.82 4.35 29.82);
+            endPoint                (29.82 18.35 29.82);
+            nBinsX                  15;
+            nBinsY                  30;
+            radius                  24;
+            molIds                  (water Cl Na);
+
+        }
+     }
+
+    
+    field
+     {
+        fieldModel              polyDensityMOB2DRadialCOM;
+
+        timeProperties
+        {
+            timeOption          write;
+            resetAtOutput       off;
+        }
+
+        polyDensityMOB2DRadialCOMProperties
+        {
+            zoneName                mdZone;
+            fieldName               densityClinder_cumul;
+            startPoint              (29.82 4.35 29.82);
+            endPoint                (29.82 18.35 29.82);
+            nBinsX                  15;
+            nBinsY                  30;
+            radius                  24;
+            molIds                  (water Cl Na);
+            oneSpecie               yes;
+        }
+     }
+
+   // properties in cylindrical bins
+
+     field
+     {
+ 	fieldModel              polyPropertiesCylindricalBins;
+ 
+ 	timeProperties
+ 	{
+ 	    timeOption          write;
+ 	    resetAtOutput	on;
+ 	}
+ 
+ 	polyPropertiesCylindricalBinsProperties
+ 	{
+ 	    zoneName                mdZone;
+ 	    fieldName               propertiesCylinder_all;
+ 	    startPoint              (29.82 4.35 29.82);
+ 	    endPoint                (29.82 18.35 29.82);
+ 	    nBinsX                  15;
+ 	    nBinsY                  30;
+ 	    radius		    24;
+ 	    molIds                  (water Cl Na);
+ 	    oneSpecie               yes;
+ 	}
+     }
+
+     field
+     {
+        fieldModel              polyPropertiesCylindricalBins;
+
+        timeProperties
+        {
+            timeOption          write;
+            resetAtOutput       on;
+        }
+
+        polyPropertiesCylindricalBinsProperties
+        {
+            zoneName                mdZone;
+            fieldName               propertiesCylinder_water;
+            startPoint              (29.82 4.35 29.82);
+            endPoint                (29.82 18.35 29.82);
+            nBinsX                  15;
+            nBinsY                  30;
+            radius                  24;
+            molIds                  (water);
+            oneSpecie               yes;
+        }
+     }
+
+     field
+     {
+        fieldModel              polyPropertiesCylindricalBins;
+
+        timeProperties
+        {
+            timeOption          write;
+            resetAtOutput       on;
+        }
+
+        polyPropertiesCylindricalBinsProperties
+        {
+            zoneName                mdZone;
+            fieldName               propertiesCylinder_salt;
+            startPoint              (29.82 4.35 29.82);
+            endPoint                (29.82 18.35 29.82);
+            nBinsX                  15;
+            nBinsY                  30;
+            radius                  24;
+            molIds                  (Cl Na);
+            oneSpecie               yes;
+        }
+     }
+
+// PDB
+/*
+  field
+
+    {
+        fieldModel              polyPDB;
+        timeProperties
+        {
+              timeOption          write;
+        }
+        polyPDBProperties
+        {
+            fieldName               vapour;
+            zoneName                mdZone;
+            variableMols            yes;
+            molEstimate             20128;
+            outsidePosition         (30 0.5 30);
+            molIds                  (waterg);
+            sitesToExclude          ();
+            numberOfFiles            1;
+	    numberOfOutputSteps      1000;
+        }
+    } 
+
+    field
+
+    {
+        fieldModel              polyPDB;
+        timeProperties
+        {
+              timeOption          write;
+        }
+        polyPDBProperties
+        {
+            fieldName               liquid;
+            zoneName                mdZone;
+            variableMols            yes;
+            molEstimate             20128;
+            outsidePosition         (30 0.5 30);
+            molIds                  (water);
+            sitesToExclude          ();
+            numberOfFiles            1;
+	    numberOfOutputSteps      1000;
+        }
+    }
+
+     field
+
+    {
+        fieldModel              polyPDB;
+        timeProperties
+        {
+              timeOption          write;
+        }
+        polyPDBProperties
+        {
+            fieldName               solid;
+            zoneName                mdZone;
+            molIds                  (Pt);
+            sitesToExclude          ();
+            numberOfFiles            1;
+	    numberOfOutputSteps      1000;
+        }
+    }   
+
+         field
+
+    {
+        fieldModel              polyPDB;
+        timeProperties
+        {
+              timeOption          write;
+        }
+        polyPDBProperties
+        {
+            fieldName               Na;
+            zoneName                mdZone;
+            molIds                  (Na);
+            sitesToExclude          ();
+            numberOfFiles            1;
+	    numberOfOutputSteps      1000;
+        }
+    } 
+
+         field
+
+    {
+        fieldModel              polyPDB;
+        timeProperties
+        {
+              timeOption          write;
+        }
+        polyPDBProperties
+        {
+            fieldName               Cl;
+            zoneName                mdZone;
+            molIds                  (Cl);
+            sitesToExclude          ();
+            numberOfFiles            1;
+	    numberOfOutputSteps      1000;
+        }
+    } 
+*/
+    // RDF
+
+/*  
+    field
+
+    {
+        fieldModel          polyZoneRdf;
+
+        timeProperties
+        {
+            timeOption          write;
+        }
+
+        polyZoneRdfProperties
+        {
+            zoneName                mdZone;
+            rdfName                 Rdf_ArAr;
+            rMax                    3.15;
+            nBins                   60;
+            molIdA                  Ar;
+            molIdB                  Ar;
+            cellPoint               (13 4 13);
+        }
+    }
+
+*/
+
+);
+
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

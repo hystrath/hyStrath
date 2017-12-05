@@ -1,6 +1,0 @@
-multiSpeciesTransportModel/multiSpeciesTransportModel.C
-multiSpeciesTransportModel/newMultiSpeciesTransportModel.C
-
-multiSpeciesTransportModel/multiSpeciesTransportModels.C
-
-LIB = $(FOAM_USER_LIBBIN)/libmultiSpeciesTransportModels

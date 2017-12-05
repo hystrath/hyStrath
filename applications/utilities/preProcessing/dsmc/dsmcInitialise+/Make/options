@@ -1,0 +1,22 @@
+EXE_INC = \
+    -I$(LIB_SRC)/finiteVolume/lnInclude \
+    -I$(WM_PROJECT_USER_DIR)/src/lagrangian/basic/lnInclude \
+    -I$(WM_PROJECT_USER_DIR)/src/lagrangian/dsmc/lnInclude \
+    -I$(WM_PROJECT_USER_DIR)/src/lagrangian/hybrid/lnInclude \
+    -I$(LIB_SRC)/meshTools/lnInclude \
+    -I$(WM_PROJECT_USER_DIR)/src/lagrangian/molecularDynamics/general/lnInclude \
+    -I$(LIB_SRC)/parallel/decompose/decompositionMethods/lnInclude \
+    -I$(LIB_SRC)/dynamicMesh/lnInclude \
+    -I$(LIB_SRC)/dynamicFvMesh/lnInclude
+
+EXE_LIBS = \
+    -L$(FOAM_USER_LIBBIN) \
+    -lmeshTools \
+    -lfiniteVolume \
+    -llagrangian+ \
+    -ldecompositionMethods \
+    -ldsmcFoam+ \
+    -lhybridStrath+ \
+    -lgeneralMolecule \
+    -ldynamicMesh \
+    -ldynamicFvMesh

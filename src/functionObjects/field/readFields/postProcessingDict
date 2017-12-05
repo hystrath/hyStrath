@@ -1,0 +1,53 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  plus                                  |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      postProcessingDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+functions
+{
+    readFields1
+    {
+        type            readFields;
+        libs            ("libfieldFunctionObjects.so");
+        enabled         true;
+        writeControl    timeStep;
+        writeInterval   1;
+
+        fields
+        (
+            interpolateU
+        );
+    }
+
+    faceObj2
+    {
+        type            surfaceFieldValue;
+        libs            ("libfieldFunctionObjects.so");
+        enabled         true;
+        writeControl    timeStep;
+        writeInterval   1;
+        log             true;
+        writeFields     true;
+        regionType      faceZone;
+        name            f0;
+        operation       areaAverage;
+
+        fields
+        (
+            interpolateU
+        );
+    }
+}
+
+// ************************************************************************* //

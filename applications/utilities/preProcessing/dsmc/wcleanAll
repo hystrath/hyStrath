@@ -1,0 +1,27 @@
+#!/bin/sh
+
+printUsage () {
+cat << EOF
+   Usage: $0 
+   Applies wclean to all utilities
+EOF
+}
+
+if ! [ $# -eq 0 ] ; then
+    printUsage
+    exit 1
+fi
+
+
+#----------------------------------------------------------------------
+
+cases="dsmcInitialise+ dsmcInitialisevar+"
+
+for case in $cases
+do
+  echo ""
+  cd $case
+  echo "wclean $case"
+  wclean
+  cd ../
+done

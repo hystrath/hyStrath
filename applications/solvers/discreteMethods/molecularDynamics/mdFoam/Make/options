@@ -1,0 +1,16 @@
+EXE_INC = \
+    -I$(WM_PROJECT_USER_DIR)/src/lagrangian/molecularDynamics/molecule/lnInclude \
+    -I$(WM_PROJECT_USER_DIR)/src/lagrangian/molecularDynamics/potential/lnInclude \
+    -I$(WM_PROJECT_USER_DIR)/src/lagrangian/molecularDynamics/molecularMeasurements/lnInclude \
+    -I$(LIB_SRC)/finiteVolume/lnInclude \
+    -I$(WM_PROJECT_USER_DIR)/src/lagrangian/basic/lnInclude \
+    -I$(LIB_SRC)/meshTools/lnInclude
+
+EXE_LIBS = \
+    -L$(FOAM_USER_LIBBIN) \
+    -lmeshTools \
+    -lfiniteVolume \
+    -llagrangian+ \
+    -lmolecule \
+    -lpotential \
+    -lmolecularMeasurements

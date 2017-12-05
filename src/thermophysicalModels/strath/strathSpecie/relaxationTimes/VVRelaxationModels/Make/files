@@ -1,7 +1,0 @@
-
-VVRelaxationModel/VVRelaxationModel.C
-VVModel/VVModel.C
-
-Knab/Knab.C
-
-LIB = $(FOAM_USER_LIBBIN)/libVVRelaxationModels

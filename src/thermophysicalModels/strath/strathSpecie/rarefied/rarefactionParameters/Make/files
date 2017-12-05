@@ -1,5 +1,0 @@
-rarefactionParameter/rarefactionParameter.C
-rarefactionParameter/newRarefactionParameter.C
-rarefactionParameter/rarefactionParameters.C
-
-LIB = $(FOAM_USER_LIBBIN)/librarefactionParameters

@@ -1,3 +1,0 @@
-StantonNumber.C
-
-EXE = $(FOAM_APPBIN)/StantonNumber

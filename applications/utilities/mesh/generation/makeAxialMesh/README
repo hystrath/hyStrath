@@ -1,0 +1,23 @@
+Description
+===========
+A utility that converts a planar (pseudo-2d) grid to an axial-symmetric mesh
+
+Original Author
+===============
+Bernhard Gschaider (bgschaid@ice-sf.at)
+
+Contributors
+============
+David P. Schmidt
+E David Huckaby
+Dominik Christ (Porting to OF-1.5)
+
+Documentation
+=============
+See: http://openfoamwiki.net/index.php/Contrib_MakeAxialMesh 
+
+The dictionary rotationDict is also used by setRadialBC
+
+Directory Contents
+==================
+makeAxialMesh: the sources for the application

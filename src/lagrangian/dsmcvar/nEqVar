@@ -1,0 +1,77 @@
+./clouds/dsmcCloud.C:            scalar rhoMMeanElectron = rhoMMeanElectron_[c]*nParticle_/V;
+./clouds/dsmcCloud.C:            scalar rhoNMeanElectron = rhoNMeanElectron_[c]*nParticle_/V;
+./clouds/dsmcCloud.C:            scalar linearKEMeanElectron = (0.5*linearKEMeanElectron_[c]*nParticle_)/V;
+./clouds/dsmcCloud.C:    //nParticle_(mesh_.nCells(), readScalar(particleProperties_.lookup("nEquivalentParticles"))),
+./clouds/dsmcCloud.C:    nParticle_(readScalar(particleProperties_.lookup("nEquivalentParticles"))),
+./clouds/dsmcCloud.C:    nParticle_(readScalar(particleProperties_.lookup("nEquivalentParticles"))),
+./clouds/dsmcCloud.C:    scalar nMol = nDsmcParticles*nParticle_;
+./clouds/dsmcCloudI.H:    return nParticle_;
+./clouds/dsmcCloudI.H:    return nParticle_[celli];
+./clouds/dsmcCloudI.H:    infoMeasurements[0] *= nParticle_;
+./clouds/dsmcCloudI.H:    infoMeasurements[1] *= nParticle_;
+./clouds/dsmcCloudI.H:    infoMeasurements[2] *= nParticle_;
+./clouds/dsmcCloudI.H:    infoMeasurements[3] *= nParticle_;
+./clouds/dsmcCloudI.H:    infoMeasurements[4] *= nParticle_;*/
+./clouds/dsmcCloudI.H://     return nParticle_*linearMomentum;
+./clouds/dsmcCloudI.H://     return nParticle_*linearKineticEnergy;
+./clouds/dsmcCloudI.H://         rotationalEnergy += nParticle_*p.ERot();
+./clouds/dsmcCloudI.H://             vibrationalEnergy += nParticle_*physicoChemical::k.value()*p.vibLevel()[i]*cP.thetaV()[i];
+./clouds/dsmcCloudI.H://         electronicEnergy += nParticle_*cP.electronicEnergyList()[p.ELevel()];
+./clouds/dsmcCloud.H:        //scalar nParticle_;
+./clouds/dsmcCloud.H:        scalarField nParticle_;
+
+
+
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.H:        scalarField rhoNMeanXnParticle_;
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.H:        scalarField rhoMMeanXnParticle_;
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.H:        scalarField linearKEMeanXnParticle_;
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.H:        vectorField momentumMeanXnParticle_;
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.H:        List<scalarField> nParcelsXnParticle_;
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:    rhoNMeanXnParticle_(mesh_.nCells(), 0.0),
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:    rhoMMeanXnParticle_(mesh_.nCells(), 0.0),
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:    linearKEMeanXnParticle_(mesh_.nCells(), 0.0),
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:    momentumMeanXnParticle_(mesh.nCells(), vector::zero),
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:    nParcelsXnParticle_(),
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:    nParcelsXnParticle_.setSize(typeIds_.size());
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:    forAll(nParcelsXnParticle_, i)
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:        //nParcelsXnParticle_[i].setSize(mesh_.nCells());
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:        nParcelsXnParticle_[i].setSize(mesh_.nCells(), 0.0); // NEW VINCENT
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                    rhoNMeanXnParticle_[cell] += (RWF*nParticle);
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                    rhoMMeanXnParticle_[cell] += (mass*RWF*nParticle);
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                    rhoNMeanXnParticle_[cell] += nParticle;
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                    rhoMMeanXnParticle_[cell] += (mass*nParticle);
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                    nParcelsXnParticle_[iD][cell] += (RWF*nParticle);
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                    rhoNMeanXnParticle_[cell] += (RWF*nParticle);
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                    rhoMMeanXnParticle_[cell] += (mass*RWF*nParticle);
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                    momentumMeanXnParticle_[cell] += (mass*(p.U())*RWF*nParticle);
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                    linearKEMeanXnParticle_[cell] += (mass*(p.U() & p.U())*RWF*nParticle);
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                    nParcelsXnParticle_[iD][cell] += nParticle;
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                    rhoNMeanXnParticle_[cell] += nParticle;
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                    rhoMMeanXnParticle_[cell] += (mass*nParticle);
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                    momentumMeanXnParticle_[cell] += (mass*(p.U())*nParticle);
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                    linearKEMeanXnParticle_[cell] += (mass*(p.U() & p.U())*nParticle);
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                    rhoN_[cell] = (rhoNMeanXnParticle_[cell])/(nAvTimeSteps*cellVolume);
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                    rhoM_[cell] = (rhoMMeanXnParticle_[cell])/(nAvTimeSteps*cellVolume);
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                    rhoN_[cell] = (rhoNMeanXnParticle_[cell])/(nAvTimeSteps*cellVolume);
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                    rhoM_[cell] = (rhoMMeanXnParticle_[cell])/(nAvTimeSteps*cellVolume);
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                    scalar rhoMMean = rhoMMeanXnParticle_[cell]/(cellVolume*nAvTimeSteps);
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                    UMean_[cell] = momentumMeanXnParticle_[cell] / (rhoMMean*cellVolume*nAvTimeSteps);
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                    scalar linearKEMean = 0.5*linearKEMeanXnParticle_[cell] 
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                    scalar rhoNMean = rhoNMeanXnParticle_[cell]/(cellVolume*nAvTimeSteps);
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                                scalar nDensQ = (nParcelsXnParticle_[qspec][cell])/(mesh_.cellVolumes()[cell]*nTimeSteps_);
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                            scalar nDensP = (nParcelsXnParticle_[iD][cell])/(mesh_.cellVolumes()[cell]*nTimeSteps_);
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                rhoNMeanXnParticle_[c] = scalar(0.0);
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                rhoMMeanXnParticle_[c] = scalar(0.0);
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                momentumMeanXnParticle_[c] = vector::zero;
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                linearKEMeanXnParticle_[c] = scalar(0.0);
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:                    nParcelsXnParticle_[iD][cell] = 0.0;
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:    rhoNMeanXnParticle_.clear();
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:    rhoMMeanXnParticle_.clear();
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:    momentumMeanXnParticle_.clear();
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:    linearKEMeanXnParticle_.clear();
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:    rhoNMeanXnParticle_.setSize(mesh_.nCells(), 0.0);
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:    rhoMMeanXnParticle_.setSize(mesh_.nCells(), 0.0);
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:    momentumMeanXnParticle_.setSize(mesh_.nCells(), vector::zero);
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:    linearKEMeanXnParticle_.setSize(mesh_.nCells(), 0.0);
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:        nParcelsXnParticle_[iD].clear();
+./macroscopicProperties/derived/combined/dsmcVolFields/dsmcVolFields.C:        nParcelsXnParticle_[iD].setSize(mesh_.nCells(), 0.0);

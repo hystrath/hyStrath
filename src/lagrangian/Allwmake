@@ -1,0 +1,16 @@
+#!/bin/sh
+cd ${0%/*} || exit 1    # Run from this directory
+
+# Parse arguments for library compilation
+targetType=libso
+. $WM_PROJECT_DIR/wmake/scripts/AllwmakeParseArguments
+set -x
+
+wmake $targetType basic
+
+molecularDynamics/Allwmake $targetType $*
+wmake $targetType dsmc
+wmake $targetType dsmcvar
+wmake $targetType hybrid
+
+#------------------------------------------------------------------------------

@@ -1,0 +1,201 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  dev                                   |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+version		2.0;
+format		ascii;
+
+root		"";
+case		"";
+instance	"";
+local		"";
+
+class		dictionary;
+object		controllersDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dsmcStateControllers
+(
+
+	// linear region top
+	controller
+	{
+		controllerProperties
+		{
+			zoneName				channelRegion;
+			controlSwitch				on;
+			readStateFromFile			yes;
+			timeProperties
+			{
+				nSamples			1;
+				nControls			1;
+				nAverages			1;
+				initialTimePeriod		0;
+				decoupledFromWriteInterval	yes;
+			}
+		}
+		stateControllerModel 			gravitationalController;
+		
+		gravitationalControllerProperties
+		{
+			model			uniformForceBoundBox;
+			
+			
+			uniformForceBoundBoxProperties
+			{
+			    acceleration	(1e10 0 0);
+			    
+			    box
+			    {
+			        startPoint		(-45e-6 39.5e-6 -0.005e-6);
+			        endPoint		(-40e-6 40.5e-6 0.005e-6);
+			    }
+			}
+		}
+
+	}
+
+
+	// three angular regions
+	controller
+	{
+		controllerProperties
+		{
+			zoneName				channelRegion;
+			controlSwitch				on;
+			readStateFromFile			yes;
+			timeProperties
+			{
+				nSamples			1;
+				nControls			1;
+				nAverages			1;
+				initialTimePeriod		0;
+				decoupledFromWriteInterval	yes;
+			}
+		}
+		stateControllerModel 			gravitationalController;
+		
+		gravitationalControllerProperties
+		{
+			model			radialForceBoundBox;
+			
+			
+			radialForceBoundBoxProperties
+			{
+			    accelerationScalar		1e10;
+			    rotationalAxis		(0 0 -1);
+			    rotationalPoint		(-40e-6 20e-6 0);
+			    referenceVectorX		(1 0 0);
+			    referenceVectorY		(0 1 0);
+			    angleStart			0;
+			    angleEnd			90;
+			    
+			    box
+			    {
+			        startPoint		(-40e-6 20e-6 -0.005e-6);
+			        endPoint		(-10e-6 40.5e-6 0.005e-6);
+			    }
+			}
+		}
+
+	}
+
+
+	controller
+	{
+		controllerProperties
+		{
+			zoneName				channelRegion;
+			controlSwitch				on;
+			readStateFromFile			yes;
+			timeProperties
+			{
+				nSamples			1;
+				nControls			1;
+				nAverages			1;
+				initialTimePeriod		0;
+				decoupledFromWriteInterval	yes;
+			}
+		}
+		stateControllerModel 			gravitationalController;
+		
+		gravitationalControllerProperties
+		{
+			model			radialForceBoundBox;
+			
+			
+			radialForceBoundBoxProperties
+			{
+			    accelerationScalar		1e10;
+			    rotationalAxis		(0 0 1);
+			    rotationalPoint		(0 -20e-6 0);
+			    referenceVectorX		(1 0 0);
+			    referenceVectorY		(0 1 0);
+			    angleStart			90;
+			    angleEnd			270;
+			    
+			    box
+			    {
+			        startPoint		(-30e-6 -40.5e-6 -0.005e-6);
+			        endPoint		(30e-6 -20e-6 0.005e-6);
+			    }
+			}
+		}
+
+	}
+	
+
+	controller
+	{
+		controllerProperties
+		{
+			zoneName				channelRegion;
+			controlSwitch				on;
+			readStateFromFile			yes;
+			timeProperties
+			{
+				nSamples			1;
+				nControls			1;
+				nAverages			1;
+				initialTimePeriod		0;
+				decoupledFromWriteInterval	yes;
+			}
+		}
+		stateControllerModel 			gravitationalController;
+		
+		gravitationalControllerProperties
+		{
+			model			radialForceBoundBox;
+			
+			
+			radialForceBoundBoxProperties
+			{
+			    accelerationScalar		1e10;
+			    rotationalAxis		(0 0 -1);
+			    rotationalPoint		(40e-6 20e-6 0);
+			    referenceVectorX		(1 0 0);
+			    referenceVectorY		(0 1 0);
+			    angleStart			270;
+			    angleEnd			360;
+			    
+			    box
+			    {
+			        startPoint		(10e-6 20e-6 -0.005e-6);
+			        endPoint		(40e-6 40.5e-6 0.005e-6);
+			    }
+			}
+		}
+
+	}	
+);
+dsmcFluxControllers
+(
+);
+
+// ************************************************************************* //

@@ -1,0 +1,9 @@
+    gravitationalAccelerationController
+    gravitationalAccelerationController.C
+#ifndef gravitationalAccelerationController_H
+#define gravitationalAccelerationController_H
+                           Class gravitationalAccelerationController Declaration
+class gravitationalAccelerationController
+    TypeName("gravitationalAccelerationController");
+        gravitationalAccelerationController
+        ~gravitationalAccelerationController();
