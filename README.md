@@ -82,7 +82,7 @@ Acknowledgements: Dr Rodrigo C. Palharini
 
 ---  
 ### You may also be interested in:  
-+ **_dsmcFoam+_** in OF-2.4.0-MNF 
++ **_dsmcFoam+_** in OF-2.4.0-MNF   
 the direct simulation Monte Carlo code from the Universities of Strathclyde and Glasgow
   - hosted by Dr Craig White: https://github.com/MicroNanoFlows/OpenFOAM-2.4.0-MNF/tree/devel-craig (OpenFOAM 2.4.0-MNF)  
   - code, manuals, tutorials and support available via [distance learning](http://onlineshop.strath.ac.uk/product-catalogue/engineering-faculty/mechanical-aerospace-engineering/courses/direct-simulation-monte-carlo-dsmc-distance-learning-course)
