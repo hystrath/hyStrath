@@ -22,9 +22,15 @@
 **Pre-requirements: Good knowledge of OpenFOAM and the rhoCentralFoam/reactingFoam solvers**  
 
 
-###### Installation
-CFD: ./install-CFD.sh  
-DSMC: ./install-DSMC.sh (soon available) 
+###### Installation  
+**v1612+**:  
++ git clone https://github.com/vincentcasseau/hyStrath.git --branch master --single-branch  
++ DSMC: ./install-DSMC.sh  
++ CFD: ./install-CFD.sh (soon available in v1612+)   
+
+**2.4.0-MNF, 2.4.0, 2.3.0**:  
++ git clone https://github.com/vincentcasseau/hyStrath.git --branch OF-2.4.0 --single-branch  
++ CFD: ./install.sh
 
 
 <div class="paragraph"><p><br>
@@ -39,7 +45,7 @@ DSMC: ./install-DSMC.sh (soon available)
 
 ---  
 ## [Release history](https://github.com/vincentcasseau/hyStrath/wiki/Release-history)  
-### 02-10 Nov 2017: Release 'Cairn', br. master
+### 5 Dec 2017: Release 'Cairn', br. master
 + Introduction of the DSMC solver for OF-v1612+
 
 ### 13 May 2017: Release 1.1, br. OF-2.4.0
