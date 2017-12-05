@@ -30,7 +30,7 @@
 OF-v1612+:  
 + git clone https://github.com/vincentcasseau/hyStrath.git --branch master --single-branch  
 + DSMC: ./install-DSMC.sh  
-+ CFD: ./install-CFD.sh (soon available in v1612+)   
++ CFD: ./install-CFD.sh (soon available)   
 
 OF-2.4.0-MNF, OF-2.4.0, OF-2.3.0:  
 + git clone https://github.com/vincentcasseau/hyStrath.git --branch OF-2.4.0 --single-branch  
@@ -84,7 +84,7 @@ Acknowledgements: Dr Rodrigo C. Palharini
 ### You may also be interested in:  
 + **_dsmcFoam+_** in OF-2.4.0-MNF   
 the direct simulation Monte Carlo code from the Universities of Strathclyde and Glasgow
-  - hosted by Dr Craig White: https://github.com/MicroNanoFlows/OpenFOAM-2.4.0-MNF/tree/devel-craig (OpenFOAM 2.4.0-MNF)  
+  - hosted by Dr Craig White: https://github.com/MicroNanoFlows/OpenFOAM-2.4.0-MNF/tree/devel-craig 
   - code, manuals, tutorials and support available via [distance learning](http://onlineshop.strath.ac.uk/product-catalogue/engineering-faculty/mechanical-aerospace-engineering/courses/direct-simulation-monte-carlo-dsmc-distance-learning-course)
   
 
