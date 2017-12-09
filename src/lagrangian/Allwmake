@@ -11,6 +11,5 @@ wmake $targetType basic
 molecularDynamics/Allwmake $targetType $*
 wmake $targetType dsmc
 wmake $targetType dsmcvar
-wmake $targetType hybrid
 
 #------------------------------------------------------------------------------
