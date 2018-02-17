@@ -1,0 +1,67 @@
+cellSetOption/cellSetOption.C
+cellSetOption/cellSetOptionIO.C
+
+interRegionOption/interRegionOption.C
+interRegionOption/interRegionOptionIO.C
+
+
+/* Sources */
+
+generalSources=sources/general
+$(generalSources)/codedSource/codedSource.C
+$(generalSources)/semiImplicitSource/semiImplicitSource.C
+
+derivedSources=sources/derived
+$(derivedSources)/acousticDampingSource/acousticDampingSource.C
+$(derivedSources)/actuationDiskSource/actuationDiskSource.C
+$(derivedSources)/buoyancyForce/buoyancyForce.C
+$(derivedSources)/buoyancyForce/buoyancyForceIO.C
+$(derivedSources)/buoyancyEnergy/buoyancyEnergy.C
+$(derivedSources)/buoyancyEnergy/buoyancyEnergyIO.C
+$(derivedSources)/directionalPressureGradientExplicitSource/directionalPressureGradientExplicitSource.C
+$(derivedSources)/directionalPressureGradientExplicitSource/directionalPressureGradientExplicitSourceIO.C
+$(derivedSources)/effectivenessHeatExchangerSource/effectivenessHeatExchangerSource.C
+$(derivedSources)/explicitPorositySource/explicitPorositySource.C
+$(derivedSources)/meanVelocityForce/meanVelocityForce.C
+$(derivedSources)/meanVelocityForce/meanVelocityForceIO.C
+$(derivedSources)/meanVelocityForce/patchMeanVelocityForce/patchMeanVelocityForce.C
+$(derivedSources)/radialActuationDiskSource/radialActuationDiskSource.C
+$(derivedSources)/rotorDiskSource/rotorDiskSource.C
+$(derivedSources)/rotorDiskSource/bladeModel/bladeModel.C
+$(derivedSources)/rotorDiskSource/profileModel/profileModel.C
+$(derivedSources)/rotorDiskSource/profileModel/profileModelList.C
+$(derivedSources)/rotorDiskSource/profileModel/lookup/lookupProfile.C
+$(derivedSources)/rotorDiskSource/profileModel/series/seriesProfile.C
+$(derivedSources)/rotorDiskSource/trimModel/trimModel/trimModel.C
+$(derivedSources)/rotorDiskSource/trimModel/trimModel/trimModelNew.C
+$(derivedSources)/rotorDiskSource/trimModel/fixed/fixedTrim.C
+$(derivedSources)/rotorDiskSource/trimModel/targetCoeff/targetCoeffTrim.C
+$(derivedSources)/solidificationMeltingSource/solidificationMeltingSource.C
+$(derivedSources)/solidificationMeltingSource/solidificationMeltingSourceIO.C
+$(derivedSources)/tabulatedAccelerationSource/tabulatedAccelerationSource.C
+$(derivedSources)/tabulatedAccelerationSource/tabulated6DoFAcceleration/tabulated6DoFAcceleration.C
+
+interRegion = sources/interRegion
+$(interRegion)/interRegionHeatTransfer/interRegionHeatTransferModel/interRegionHeatTransferModel.C
+$(interRegion)/interRegionHeatTransfer/interRegionHeatTransferModel/interRegionHeatTransferModelIO.C
+$(interRegion)/interRegionHeatTransfer/constantHeatTransfer/constantHeatTransfer.C
+$(interRegion)/interRegionHeatTransfer/tabulatedHeatTransfer/tabulatedHeatTransfer.C
+$(interRegion)/interRegionHeatTransfer/tabulatedNTUHeatTransfer/tabulatedNTUHeatTransfer.C
+$(interRegion)/interRegionHeatTransfer/variableHeatTransfer/variableHeatTransfer.C /*NOTE VINCENT: ONLY MODIF MADE IS HERE*/
+$(interRegion)/interRegionExplicitPorositySource/interRegionExplicitPorositySource.C
+
+
+/* Constraints */
+generalConstraints=constraints/general
+$(generalConstraints)/fixedValueConstraint/fixedValueConstraints.C
+
+derivedConstraints=constraints/derived
+$(derivedConstraints)/fixedTemperatureConstraint/fixedTemperatureConstraint.C
+$(derivedConstraints)/velocityDampingConstraint/velocityDampingConstraint.C
+
+/* Corrections */
+
+corrections/limitTemperature/limitTemperature.C
+corrections/limitVelocity/limitVelocity.C
+
+LIB = $(FOAM_USER_LIBBIN)/libstrathFvOptions

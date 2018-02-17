@@ -15,7 +15,7 @@ fi
 
 #----------------------------------------------------------------------
 
-cases="dsmcFoam+ dsmcvarFoam+"
+cases="dsmcFoam+"
 
 for case in $cases
 do

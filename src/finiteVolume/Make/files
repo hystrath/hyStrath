@@ -1,0 +1,7 @@
+fvPatchFields = fields/fvPatchFields
+derivedFvPatchFields = $(fvPatchFields)/derived
+
+$(derivedFvPatchFields)/rampInlet/rampInletFvPatchFields.C
+$(derivedFvPatchFields)/nonCatalytic/nonCatalyticFvPatchFields.C
+
+LIB = $(FOAM_USER_LIBBIN)/libstrathFiniteVolume

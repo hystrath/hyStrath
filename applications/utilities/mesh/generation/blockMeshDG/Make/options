@@ -1,0 +1,12 @@
+EXE_INC = \
+    -I./lib/lnInclude \
+    -I$(LIB_SRC)/meshTools/lnInclude \
+    -I$(LIB_SRC)/dynamicMesh/lnInclude
+
+EXE_LIBS = \
+    -L$(FOAM_USER_LIBBIN) \
+    -L$(FOAM_USER_LIBBIN) \
+    -lblockMeshDG \
+    -lmeshTools \
+    -ldynamicMesh
+

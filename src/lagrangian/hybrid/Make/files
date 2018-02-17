@@ -1,0 +1,35 @@
+/* INITIALISE DSMC */
+initialiseDsmcParcels/derived/dsmcMeshFillHybridMultispecies/dsmcMeshFillHybridMultispecies.C
+initialiseDsmcParcels/derived/dsmcMeshFillFromCFDHybrid2_diff_qv/dsmcMeshFillFromCFDHybrid2_diff_qv.C
+/*initialiseDsmcParcels/derived/dsmcMeshFillFromCFD/dsmcMeshFillFromCFD.C
+initialiseDsmcParcels/derived/dsmcMeshFillFromCFDHybrid/dsmcMeshFillFromCFDHybrid.C
+initialiseDsmcParcels/derived/dsmcMeshFillFromCFDHybridMulti/dsmcMeshFillFromCFDHybridMulti.C
+initialiseDsmcParcels/derived/dsmcMeshFillFromCFD_s/dsmcMeshFillFromCFD_s.C
+initialiseDsmcParcels/derived/dsmcMeshFillHybridMax/dsmcMeshFillHybridMax.C
+initialiseDsmcParcels/derived/dsmcMeshFillHybridMultispeciesTra/dsmcMeshFillHybridMultispeciesTra.C
+initialiseDsmcParcels/derived/dsmcMeshFillHybridMultispecies2/dsmcMeshFillHybridMultispecies2.C*/
+
+/* DELETE PARCELS */
+molsToDel/derived/delFromHybridZone/delFromHybridZone.C
+
+/* PATCH BOUNDARY MODELS */
+boundaries/derived/patchBoundaries/dsmcSpecularTWallPatch/dsmcSpecularTWallPatch.C
+boundaries/derived/patchBoundaries/dsmcDiffuseWallMultiTPatch/dsmcDiffuseWallMultiTPatch.C
+boundaries/derived/patchBoundaries/dsmcDiffuseWallZeroGradMultiTPatch/dsmcDiffuseWallZeroGradMultiTPatch.C
+boundaries/derived/patchBoundaries/dsmcShockPatch/dsmcShockPatch.C
+
+/* GENERAL BOUNDARY MODELS */
+boundaries/derived/generalBoundaries/dsmcShockGeneralPatch/dsmcShockGeneralPatch.C
+
+/* MACROSCOPIC PROPERTIES - COMBINED */
+macroscopicProperties/derived/combined/dsmcVolFieldsFromFields/dsmcVolFieldsFromFields.C
+/*macroscopicProperties/derived/combined/dsmcVolFields2/dsmcVolFields2.C
+macroscopicProperties/derived/combined/dsmcHybridFields/dsmcHybridFields.C
+macroscopicProperties/derived/combined/hybridVolFields/hybridVolFields.C
+macroscopicProperties/derived/combined/hybridSubrelax/hybridSubrelax.C
+macroscopicProperties/derived/combined/hybridSubrelaxTest/hybridSubrelaxTest.C
+macroscopicProperties/derived/combined/dsmcSubrelax/dsmcSubrelax.C
+macroscopicProperties/derived/combined/dsmcSubrelax2/dsmcSubrelax2.C*/
+
+
+LIB = $(FOAM_USER_LIBBIN)/libhybridStrath+

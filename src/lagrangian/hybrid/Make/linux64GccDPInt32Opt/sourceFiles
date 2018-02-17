@@ -1,0 +1,10 @@
+SOURCE = \
+initialiseDsmcParcels/derived/dsmcMeshFillHybridMultispecies/dsmcMeshFillHybridMultispecies.C \
+initialiseDsmcParcels/derived/dsmcMeshFillFromCFDHybrid2_diff_qv/dsmcMeshFillFromCFDHybrid2_diff_qv.C \
+molsToDel/derived/delFromHybridZone/delFromHybridZone.C \
+boundaries/derived/patchBoundaries/dsmcSpecularTWallPatch/dsmcSpecularTWallPatch.C \
+boundaries/derived/patchBoundaries/dsmcDiffuseWallMultiTPatch/dsmcDiffuseWallMultiTPatch.C \
+boundaries/derived/patchBoundaries/dsmcDiffuseWallZeroGradMultiTPatch/dsmcDiffuseWallZeroGradMultiTPatch.C \
+boundaries/derived/patchBoundaries/dsmcShockPatch/dsmcShockPatch.C \
+boundaries/derived/generalBoundaries/dsmcShockGeneralPatch/dsmcShockGeneralPatch.C \
+macroscopicProperties/derived/combined/dsmcVolFieldsFromFields/dsmcVolFieldsFromFields.C 

@@ -1,0 +1,10 @@
+HOW TO INSTALL THIS UTILITY AS A ROOT :
+---------------------------------------
+
+1) sudo -s
+2) wclean
+3) ./Allwmake
+4) cp OpenFOAM/root-2.1.x/platform/.../*.so /opt/OpenFOAM-2.1.x/platform.../lib/
+5) rm -r OpenFOAM/root-2.1.x
+6) wmake
+7) enjoy

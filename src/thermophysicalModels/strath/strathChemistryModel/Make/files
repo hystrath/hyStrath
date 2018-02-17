@@ -1,0 +1,10 @@
+chemistryModel/basic2ChemistryModel/basic2ChemistryModel.C
+
+chemistryModel/rho2ChemistryModel/rho2ChemistryModel.C
+chemistryModel/rho2ChemistryModel/rho2ChemistryModels.C
+
+chemistrySolver/chemistry2Solver/make2ChemistrySolvers.C
+
+functionObjects/specieReactionRates/specieReactionRates.C
+
+LIB = $(FOAM_USER_LIBBIN)/libstrathChemistryModel

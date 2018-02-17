@@ -1,0 +1,24 @@
+EXE_INC = \
+    -I$(LIB_SRC)/finiteVolume/lnInclude \
+    -I$(LIB_SRC)/meshTools/lnInclude \
+    -I$(LIB_SRC)/sampling/lnInclude \
+    -I$(LIB_SRC)/thermophysicalModels/solidThermo/lnInclude \
+    -I$(LIB_SRC)/transportModels \
+    -I$(LIB_SRC)/transportModels/compressible/lnInclude \
+    -I$(LIB_SRC)/transportModels/incompressible/lnInclude \
+    -I$(LIB_SRC)/thermophysicalModels/specie/lnInclude \
+    -I$(LIB_SRC)/thermophysicalModels/basic/lnInclude \
+    -I$(WM_PROJECT_USER_DIR)/src/thermophysicalModels/strath/strathSpecie/lnInclude \
+    -I$(WM_PROJECT_USER_DIR)/src/thermophysicalModels/strath/strathReactionThermo/lnInclude \
+    -I$(LIB_SRC)/TurbulenceModels/turbulenceModels/lnInclude \
+    -I$(WM_PROJECT_USER_DIR)/src/TurbulenceModels/compressible/lnInclude \
+    -I$(LIB_SRC)/TurbulenceModels/incompressible/lnInclude
+
+LIB_LIBS = \
+    -L$(FOAM_USER_LIBBIN) \
+    -lfiniteVolume \
+    -lsampling \
+    -lmeshTools \
+    -lturbulenceModels \
+    -lincompressibleTurbulenceModels \
+    -lstrathCompressibleTurbulenceModels

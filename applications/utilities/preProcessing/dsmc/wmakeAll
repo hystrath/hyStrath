@@ -15,7 +15,7 @@ fi
 
 #----------------------------------------------------------------------
 
-cases="dsmcInitialise+ dsmcInitialisevar+"
+cases="dsmcInitialise+"
 
 for case in $cases
 do

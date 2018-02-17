@@ -1,0 +1,3 @@
+DEShybrid/DEShybrid.C
+
+LIB = $(FOAM_USER_LIBBIN)/libstrathTurbulenceModelSchemes

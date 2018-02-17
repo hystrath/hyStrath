@@ -1,0 +1,37 @@
+/* basic folder -------------------------------------------------------------------------------- */
+
+basic/basic2Thermo/basic2Thermo.C
+basic/fluid2Thermo/fluid2Thermo.C
+
+basic/multi2Thermo/multi2Thermo.C
+
+basic/rho2Thermo/rho2Thermo.C
+basic/rho2Thermo/rho2Thermos.C
+
+basic/derivedFvPatchFields/fixedRho/fixedRhoFvPatchScalarField.C
+basic/derivedFvPatchFields/fixedTREnergy/fixed2TREnergyFvPatchScalarField.C
+basic/derivedFvPatchFields/gradientTREnergy/gradient2TREnergyFvPatchScalarField.C
+basic/derivedFvPatchFields/mixedTREnergy/mixed2TREnergyFvPatchScalarField.C
+
+basic/derivedFvPatchFields/fixedVELMixEnergy/fixed2VELMixEnergyFvPatchScalarField.C
+basic/derivedFvPatchFields/gradientVELMixEnergy/gradient2VELMixEnergyFvPatchScalarField.C
+basic/derivedFvPatchFields/mixedVELMixEnergy/mixed2VELMixEnergyFvPatchScalarField.C
+
+
+/* reactionThermo folder------------------------------------------------------------------------ */
+
+reactionThermo/chemistryReaders/chemistry2Reader/make2ChemistryReaders.C
+reactionThermo/mixtures/basic2MultiComponentMixture/basic2MultiComponentMixture.C
+
+reactionThermo/rho2ReactionThermo/rho2ReactionThermo.C
+reactionThermo/rho2ReactionThermo/rho2ReactionThermos.C
+
+reactionThermo/derivedFvPatchFields/fixedVELEnergy/fixed2VELEnergyFvPatchScalarField.C
+reactionThermo/derivedFvPatchFields/gradientVELEnergy/gradient2VELEnergyFvPatchScalarField.C
+reactionThermo/derivedFvPatchFields/mixedVELEnergy/mixed2VELEnergyFvPatchScalarField.C
+reactionThermo/derivedFvPatchFields/fixedEnergy/fixed2EnergyFvPatchScalarField.C
+reactionThermo/derivedFvPatchFields/gradientEnergy/gradient2EnergyFvPatchScalarField.C
+reactionThermo/derivedFvPatchFields/mixedEnergy/mixed2EnergyFvPatchScalarField.C
+
+
+LIB = $(FOAM_USER_LIBBIN)/libstrathReactionThermophysicalModels

@@ -1,0 +1,8 @@
+SOURCE = \
+hTC2Model/hTC2Model.C \
+rho2HTCModel/rho2HTCModel/rho2HTCModel.C \
+rho2HTCModel/rho2HTCModel/rho2HTCModelNew.C \
+rho2HTCModel/rho2ThermoHTC/rho2ThermoHTC.C \
+rho2HTCModel/rho2ChemistryHTC/rho2ChemistryHTC.C \
+noHTC/noHTC2s.C \
+laminar/laminar2s.C 

@@ -7,17 +7,17 @@
 ---  
 ## Available for OpenFOAM versions
 
-###### DSMC, master branch
+###### Master branch (CFD and DSMC)  
 + v1612+: https://www.openfoam.com/releases/openfoam-v1612+/ 
 
-###### CFD, branch OF-2.4.0   
+###### OF-2.4.0 branch (CFD only)   
 + 2.4.0-MNF: https://github.com/MicroNanoFlows/OpenFOAM-2.4.0-MNF  
 + 2.4.0: http://openfoam.org/download/2-4-0-ubuntu/  
 + 2.3.0: http://openfoam.org/download/2-3-0-ubuntu/  
 
 
 
-**Please check out the _hyStrath_ Wiki page:** https://github.com/vincentcasseau/hyStrath/wiki  
+**Please check out the [_hyStrath_ Wiki page](https://github.com/vincentcasseau/hyStrath/wiki)**   
 
 **Pre-requirements: Good knowledge of OpenFOAM and the rhoCentralFoam/reactingFoam solvers**  
 
@@ -29,8 +29,10 @@
 ###### Installation  
 OF-v1612+:  
 + git clone https://github.com/vincentcasseau/hyStrath.git --branch master --single-branch  
-+ DSMC: ./install-DSMC.sh  
-+ CFD: ./install-CFD.sh (soon available)   
++ CFD & DSMC: ./install-all.sh > logInstall &
++ CFD: ./install-CFD.sh > logInstall &
++ DSMC: ./install-DSMC.sh > logInstall &
+ 
 
 OF-2.4.0-MNF, OF-2.4.0, OF-2.3.0:  
 + git clone https://github.com/vincentcasseau/hyStrath.git --branch OF-2.4.0 --single-branch  
@@ -49,12 +51,11 @@ OF-2.4.0-MNF, OF-2.4.0, OF-2.3.0:
 
 ---  
 ## [Release history](https://github.com/vincentcasseau/hyStrath/wiki/Release-history)  
-### 5 Dec 2017: Release 'Cairn', br. master
-+ Introduction of the _dsmcFoam+_ solver
+### 17 Feb 2018: 'Concordia' release, Master branch  
++ CFD upgrade  
 
-### 13 May 2017: Release 1.1, br. OF-2.4.0
-+ [How-tos added](https://github.com/vincentcasseau/hyStrath/wiki/How-to) to replace the manuals  
-+ Fixes and new diffusion models
+### 5 Dec 2017: 'Cairn' release, Master branch  
++ Introduction of the _dsmcFoam+_ solver  
 
 
 <div class="paragraph"><p><br>
@@ -83,9 +84,16 @@ Acknowledgements: Dr Rodrigo C. Palharini
 ---  
 ### You may also be interested in:  
 + **_dsmcFoam+_** in OF-2.4.0-MNF   
-the direct simulation Monte Carlo code from the Universities of Strathclyde and Glasgow
-  - hosted by Dr Craig White: https://github.com/MicroNanoFlows/OpenFOAM-2.4.0-MNF/tree/devel-craig 
-  - code, manuals, tutorials and support available via [distance learning](http://onlineshop.strath.ac.uk/product-catalogue/engineering-faculty/mechanical-aerospace-engineering/courses/direct-simulation-monte-carlo-dsmc-distance-learning-course)
-  
+the direct simulation Monte Carlo code from the Universities of Strathclyde and Glasgow  
+hosted by Dr Craig White: https://github.com/MicroNanoFlows/OpenFOAM-2.4.0-MNF/tree/devel-craig
+
+
+<div class="paragraph"><p><br>
+<br></p></div>
+
+---  
+### hyStrath also features:  
++ **_blockMeshDG_** by Akidess (https://openfoamwiki.net/index.php/Contrib_blockMeshDG)  
++ **_makeAxialMesh_** by Bernhard Gschaider (http://openfoamwiki.net/index.php/Contrib/MakeAxialMesh)
 
 
