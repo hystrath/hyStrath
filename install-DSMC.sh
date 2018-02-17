@@ -13,7 +13,7 @@ mkdir -p $sendingDir
 # copy new files --------------------------------------------------------------
 cp -r $currentDir/src $sendingDir/
 cp -r $currentDir/applications $sendingDir/
-#cp -r $currentDir/run $sendingDir/
+cp -r $currentDir/run $sendingDir/
 
 # compile new libraries -------------------------------------------------------
 cd $sendingDir/src/lagrangian/
