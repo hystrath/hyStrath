@@ -14,6 +14,8 @@ Twall     297.2;
 pressureInlet  21.9139;
 pressureField  $pressureInlet;
 
+rhoInlet       0.00051131;
+
 velocityInlet  2764.5;
 velocityField  (0 0 0);
 velocityWall   (0 0 0);
