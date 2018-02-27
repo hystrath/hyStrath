@@ -9,6 +9,5 @@ runApplication checkMesh
 
 runApplication hy2Foam
 
-echo "Testing vs. solution"
-SOL_PATH="gnuplot/solution"
+runApplication postProcess -func singleGraph -time '0.0001 0.0002'
 
