@@ -1,27 +1,16 @@
 #!/bin/sh
+cd ${0%/*} || exit 1    # Run from this directory
 
-printUsage () {
-cat << EOF
-   Usage: $0 
-   Applies wmake to all utilities
-EOF
-}
-
-if ! [ $# -eq 0 ] ; then
-    printUsage
-    exit 1
-fi
-
-
-#----------------------------------------------------------------------
+# Parse arguments for library compilation
+targetType=libso
+. $WM_PROJECT_DIR/wmake/scripts/AllwmakeParseArguments
+set -x
 
 cases="pressureCoeff frictionCoeff2T StantonNumber yPlus2T"
 
 for case in $cases
 do
-  echo ""
   cd $case
-  echo "wmake $case"
-   wmake
+  wmake $targetType
   cd ../
 done
