@@ -1,4 +1,8 @@
-#!/bin/bash
+#!/bin/sh
+cd ${0%/*} || exit 1    # Run from this directory
+
+# Parse arguments for library compilation
+. $WM_PROJECT_DIR/wmake/scripts/AllwmakeParseArguments
 
 set -e
 
@@ -6,6 +10,11 @@ userName=`whoami`
 
 currentDir=`pwd`
 sendingDir="$HOME/$WM_PROJECT/$userName-$WM_PROJECT_VERSION"
+
+nProcs=1
+if [ $# -ne 0 ]
+  then nProcs=$1;
+fi
 
 mkdir -p $sendingDir
 
@@ -18,59 +27,59 @@ cp -r $currentDir/run $sendingDir/
 # compile new libraries -------------------------------------------------------
 cd $sendingDir/src/thermophysicalModels/strath/
 wclean all
-./Allwmake
+./Allwmake -j$nProcs
 
 cd $sendingDir/src/TurbulenceModels/
 wclean all
 cd $sendingDir/src/TurbulenceModels/compressible
-wmake libso
+wmake -j$nProcs libso
 cd $sendingDir/src/TurbulenceModels/schemes
-wmake libso
+wmake -j$nProcs libso
 
 cd $sendingDir/src/thermophysicalModels/strath/
-./AllwmakeBis
+./AllwmakeBis -j$nProcs
 
 cd $sendingDir/src/hTCModels
 wclean libso
-wmake libso
+wmake -j$nProcs libso
 
 cd $sendingDir/src/finiteVolume
 wclean libso
-wmake libso
+wmake -j$nProcs libso
 
 cd $sendingDir/src/functionObjects/forces
 wclean libso
 cd $sendingDir/src/functionObjects
-./Allwmake-hyStrath
+./Allwmake-hyStrath -j$nProcs
 
 cd $sendingDir/src/fvOptions
 wclean libso
-wmake libso
+wmake -j$nProcs libso
 
 
 # compile new executables ------------------------------------------------------
 #---- solvers ----
 cd $sendingDir/applications/solvers/compressible/hy2Foam/
 ./Allwclean
-./Allwmake
+./Allwmake -j$nProcs
 
 #---- utilities ----
 cd $sendingDir/applications/utilities/mesh/generation/makeAxialMesh
 wclean
-wmake
+wmake -j$nProcs
 
 cd $sendingDir/applications/utilities/mesh/generation/blockMeshDG
 wclean all
-./Allwmake
+./Allwmake -j$nProcs
 
 cd $sendingDir/applications/utilities/postProcessing/wall/
 ./wcleanAll
-./wmakeAll
+./wmakeAll -j$nProcs
 
 
 # re-set to the initial directory ---------------------------------------------
 cd $currentDir
 
-echo -e "
+echo "
 cfdStrath_$WM_PROJECT_VERSION compiled successfully. Hope you'll enjoy it, $userName :)
 "

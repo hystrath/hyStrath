@@ -29,11 +29,9 @@
 ###### Installation  
 OF-v1612+:  
 + git clone https://github.com/vincentcasseau/hyStrath.git --branch master --single-branch && cd hyStrath/   
-+ CFD & DSMC: ./install-all.sh > logInstall &
-+ CFD: ./install-CFD.sh > logInstall &
-+ DSMC: ./install-DSMC.sh > logInstall &  
-
-> NB: Build the code in parallel by typing ./install-DSMC.sh **8** > logInstall &   
++ CFD & DSMC: ./install-all.sh _#nCPUs_ > logInstall &
++ CFD: ./install-CFD.sh _#nCPUs_ > logInstall &
++ DSMC: ./install-DSMC.sh _#nCPUs_ > logInstall &   
  
 
 OF-2.4.0-MNF, OF-2.4.0, OF-2.3.0:  
