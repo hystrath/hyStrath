@@ -4,6 +4,15 @@
 ###### Hosting the *hyFoam* (supersonic combusting flows) and *hy2Foam* (hypersonic reacting flows) CFD solvers  
 ###### Hosting the *dsmcFoam+* (direct simulation Monte Carlo) solver  
 
+
+---
+
+**Please check out the [_hyStrath_ Wiki page](https://github.com/vincentcasseau/hyStrath/wiki)**   
+
+
+<div class="paragraph"><p><br>
+<br></p></div> 
+
 ---  
 ## Available for OpenFOAM versions
 
@@ -14,12 +23,6 @@
 + 2.4.0-MNF: https://github.com/MicroNanoFlows/OpenFOAM-2.4.0-MNF  
 + 2.4.0: http://openfoam.org/download/2-4-0-ubuntu  
 + 2.3.0: http://openfoam.org/download/2-3-0-ubuntu  
-
-
-
-**Please check out the [_hyStrath_ Wiki page](https://github.com/vincentcasseau/hyStrath/wiki)**   
-
-**Pre-requirements: Good knowledge of OpenFOAM and the rhoCentralFoam/reactingFoam solvers**  
 
 
 <div class="paragraph"><p><br>
@@ -98,13 +101,9 @@ Acknowledgements: Dr Rodrigo C. Palharini
 ### You may also be interested in:  
 + **_dsmcFoam+_** for OF-2.4.0-MNF   
 the direct simulation Monte Carlo code from the Universities of Strathclyde and Glasgow  
-hosted by Dr Craig White (https://github.com/MicroNanoFlows/OpenFOAM-2.4.0-MNF/tree/devel-craig)
+hosted by Dr Craig White (https://github.com/MicroNanoFlows/OpenFOAM-2.4.0-MNF/tree/devel-craig)  
 
-
-<div class="paragraph"><p><br>
-<br></p></div>
-
----  
+  
 ### _hyStrath_ also features:  
 + **_blockMeshDG_** by Akidess (https://openfoamwiki.net/index.php/Contrib_blockMeshDG)  
 + **_makeAxialMesh_** by Bernhard Gschaider (http://openfoamwiki.net/index.php/Contrib/MakeAxialMesh)

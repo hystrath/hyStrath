@@ -17,9 +17,29 @@ mkdir -p $sendingDir
 
 
 # copy new files --------------------------------------------------------------
-cp -r $currentDir/src $sendingDir/
-cp -r $currentDir/applications $sendingDir/
+foldersSrc="thermophysicalModels TurbulenceModels hTCModels finiteVolume fvOptions functionObjects/forces"
+filesInFolderSrc="functionObjects"
+foldersApp="solvers/compressible/hy2Foam utilities/mesh/generation/makeAxialMesh utilities/mesh/generation/blockMeshDG utilities/postProcessing/wall"
+
+for folder in $foldersSrc
+do
+  mkdir -p $sendingDir/src/$folder
+  cp -r $currentDir/src/$folder $sendingDir/src/`dirname $folder`
+done
+
+for filesInFolder in $filesInFolderSrc
+do
+  find $currentDir/src/$filesInFolder/ -maxdepth 1 -type f | xargs cp -t $sendingDir/src/$filesInFolder
+done
+
+for folder in $foldersApp
+do
+  mkdir -p $sendingDir/applications/$folder
+  cp -r $currentDir/applications/$folder $sendingDir/applications/`dirname $folder`
+done
+
 cp -r $currentDir/run $sendingDir/
+
 
 # compile new libraries -------------------------------------------------------
 cd $sendingDir/src/thermophysicalModels/strath/
