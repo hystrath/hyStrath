@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/bin/sh
+cd ${0%/*} || exit 1    # Run from this directory
 
 set -e
 
@@ -6,6 +7,11 @@ userName=`whoami`
 
 currentDir=`pwd`
 sendingDir="$HOME/$WM_PROJECT/$userName-$WM_PROJECT_VERSION"
+
+nProcs=1
+if [ $# -ne 0 ]
+  then nProcs=$1;
+fi
 
 mkdir -p $sendingDir
 
@@ -18,71 +24,71 @@ cp -r $currentDir/run $sendingDir/
 # compile new libraries -------------------------------------------------------
 cd $sendingDir/src/lagrangian/
 wclean all
-./Allwmake
+./Allwmake -j$nProcs
 
 cd $sendingDir/src/parallel/decompose/decompose/
 wclean libso
-wmake libso
+wmake -j$nProcs libso
 
 cd $sendingDir/src/parallel/reconstruct/
 wclean all
-./Allwmake
+./Allwmake -j$nProcs
 
 cd $sendingDir/src/functionObjects/field
 wclean libso
 cd $sendingDir/src/functionObjects/lagrangian
 wclean libso
 cd $sendingDir/src/functionObjects/
-./Allwmake-dsmcStrath
+./Allwmake-dsmcStrath -j$nProcs
 
 
 # compile new executables ------------------------------------------------------
 #---- solvers ----
 cd $sendingDir/applications/solvers/discreteMethods/dsmc/
 ./wcleanAll
-./wmakeAll
+./wmakeAll -j$nProcs
 
 cd $sendingDir/applications/solvers/discreteMethods/molecularDynamics/mdEquilibrationFoam/
 wclean
-wmake
+wmake -j$nProcs
 
 cd $sendingDir/applications/solvers/discreteMethods/molecularDynamics/mdFoam/
 wclean
-wmake
+wmake -j$nProcs
 
 #---- utilities ----
 cd $sendingDir/applications/utilities/preProcessing/mapFields
 wclean
-wmake
+wmake -j$nProcs
 
 cd $sendingDir/applications/utilities/preProcessing/mapFieldsPar
 wclean
-wmake
+wmake -j$nProcs
 
 cd $sendingDir/applications/utilities/preProcessing/dsmc/
 ./wcleanAll
-./wmakeAll
+./wmakeAll -j$nProcs
 
 cd $sendingDir/applications/utilities/parallelProcessing/
 wclean all
-wmake all
+wmake  -j$nProcs all
 
 cd $sendingDir/applications/utilities/postProcessing/miscellaneous/foamListTimes/
 wclean
-wmake
+wmake -j$nProcs
 
 cd $sendingDir/applications/utilities/mesh/generation/makeAxialMesh
 wclean
-wmake
+wmake -j$nProcs
 
 cd $sendingDir/applications/utilities/mesh/generation/blockMeshDG
 wclean all
-./Allwmake
+./Allwmake -j$nProcs
 
 
 # re-set to the initial directory ---------------------------------------------
 cd $currentDir
 
-echo -e "
+echo "
 dsmcStrath_$WM_PROJECT_VERSION compiled successfully. Hope you'll enjoy it, $userName :)
 "
