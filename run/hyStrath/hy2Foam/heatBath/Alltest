@@ -1,0 +1,18 @@
+#!/bin/sh
+cd ${0%/*} || exit 1    # run from this directory
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+echo "Testing vs. solution"
+RES_PATH="postProcessing/probes/0"
+SOL_PATH="gnuplot/solution"
+FILES_TO_TEST="Tt Tv_N2 N2 N p rho nD_N2"
+
+for FILE in $FILES_TO_TEST
+do
+  if [ `diff $RES_PATH/$FILE $SOL_PATH/$FILE | wc -l` -ne 0 ]; 
+  then echo "TEST FAILED: $FILE"; 
+  fi
+done
+

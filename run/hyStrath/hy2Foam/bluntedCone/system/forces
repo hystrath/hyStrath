@@ -21,8 +21,7 @@ forces
     functionObjectLibs ("libstrathForces.so");
     log false;
     writeFields false;
-    // edit accordingly
-    patches (cone);
+    patches (cone); // edit accordingly
     CofR (0 0 0);
     dragDir (1 0 0);
     liftDir (0 1 0);
@@ -37,8 +36,7 @@ forceCoeffs
     functionObjectLibs ("libstrathForces.so");
     log false;
     writeFields false;
-    // edit accordingly
-    patches (cone); 
+    patches (cone); // edit accordingly
     rho rhoInf;
     rhoInf $rhoInlet;
     magUInf $velocityInlet;
