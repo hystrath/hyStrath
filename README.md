@@ -10,9 +10,6 @@
 **Please check out the [_hyStrath_ Wiki page](https://github.com/vincentcasseau/hyStrath/wiki)**   
 
 
-<div class="paragraph"><p><br>
-<br></p></div> 
-
 ---  
 ## Available for OpenFOAM versions
 
