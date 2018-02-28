@@ -12,7 +12,6 @@ if [ $# -ne 0 ]
   then nProcs=$1;
 fi
 
-mkdir -p $sendingDir
 
 # synchronize folders and compile new libraries -------------------------------
 rsync -rtvuc $currentDir/src/thermophysicalModels/strath/ $sendingDir/src/thermophysicalModels/strath/
@@ -53,12 +52,12 @@ cd $sendingDir/applications/solvers/compressible/hy2Foam/
 ./Allwmake -j$nProcs 
 
 #---- utilities ----
-rsync -rtvuc $currentDir/applications/utilities/generation/makeAxialMesh $sendingDir/applications/utilities/generation/makeAxialMesh
-cd $sendingDir/applications/utilities/generation/makeAxialMesh
+rsync -rtvuc $currentDir/applications/utilities/mesh/generation/makeAxialMesh $sendingDir/applications/utilities/mesh/generation/makeAxialMesh
+cd $sendingDir/applications/utilities/mesh/generation/makeAxialMesh
 wmake -j$nProcs 
 
-rsync -rtvuc $currentDir/applications/utilities/generation/blockMeshDG $sendingDir/applications/utilities/generation/blockMeshDG
-cd $sendingDir/applications/utilities/generation/blockMeshDG
+rsync -rtvuc $currentDir/applications/utilities/mesh/generation/blockMeshDG $sendingDir/applications/utilities/mesh/generation/blockMeshDG
+cd $sendingDir/applications/utilities/mesh/generation/blockMeshDG
 ./Allwmake -j$nProcs 
 
 rsync -rtvuc $currentDir/applications/utilities/postProcessing/wall $sendingDir/applications/utilities/postProcessing/wall

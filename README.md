@@ -36,7 +36,18 @@ OF-v1612+:
 
 OF-2.4.0-MNF, OF-2.4.0, OF-2.3.0:  
 + git clone https://github.com/vincentcasseau/hyStrath.git --branch OF-2.4.0 --single-branch && cd hyStrath/   
-+ CFD: ./install.sh
++ CFD: ./install.sh  
+
+<div class="paragraph"><p><br>
+<br></p></div>
+
+
+###### Synchronisation
+OF-v1612+:  
++ git pull origin master   
++ CFD & DSMC: ./resync-all.sh _#nCPUs_ > logSync &
++ CFD: ./resync-CFD.sh _#nCPUs_ > logSync &
++ DSMC: ./resync-DSMC.sh _#nCPUs_ > logSync & 
 
 
 <div class="paragraph"><p><br>
@@ -62,6 +73,8 @@ OF-2.4.0-MNF, OF-2.4.0, OF-2.3.0:
 <br></p></div>
 
 ---  
+
+## People and Contact
 
 ###### CFD  
 Lead developer: Dr Vincent Casseau    
