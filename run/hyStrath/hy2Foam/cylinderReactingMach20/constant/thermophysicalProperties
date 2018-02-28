@@ -28,8 +28,8 @@ thermoType
 
 hyLight yes;
 
-downgradeToSingleTv no;
-downgradeToSingleTemperature yes;
+downgradeToSingleTv yes;
+downgradeToSingleTemperature no;
 
 chemistryReader foam2ChemistryReader;
 

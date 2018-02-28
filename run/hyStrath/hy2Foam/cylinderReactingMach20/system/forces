@@ -15,38 +15,36 @@ FoamFile
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include "../0/include/initialConditions"
-
 forces
 {
     type forces;
     functionObjectLibs ("libstrathForces.so");
-    outputControl timeStep;
-    outputInterval 50;
-    patches (cylinder); // edit accordingly
-    rhoName rho;
-    rhoInf 1.363e-05; // edit accordingly
     log false;
+    writeFields false;
+    patches (cylinder); // edit accordingly
     CofR (0 0 0);
+    dragDir (1 0 0);
+    liftDir (0 1 0);
     pitchAxis (0 0 1);
 }
 
 forceCoeffs
 {
+    #include "../0/include/initialConditions"
+    
     type forceCoeffs;
     functionObjectLibs ("libstrathForces.so");
-    outputControl timeStep;
-    outputInterval 10;
+    log false;
+    writeFields false;
     patches (cylinder); // edit accordingly
-    rhoName rho;
-    rhoInf 1.363e-05; // edit accordingly
+    rho rhoInf;
+    rhoInf $rhoInlet;
     magUInf $UxInlet;
-    log true;
     CofR (0 0 0);
     dragDir (1 0 0);
     liftDir (0 1 0);
     pitchAxis (0 0 1);
-    lRef 2.0; // edit accordingly: see constant/transportProperties/rarefiedParameters/characteristicLength
-    Aref 0.2; // edit accordingly: Aref = lRef*spanwiseThickness
+    lRef 2.0; // see constant/transportProperties/rarefiedParameters/characteristicLength
+    Aref 0.2; // Aref = lRef*spanwiseThickness
 }
 

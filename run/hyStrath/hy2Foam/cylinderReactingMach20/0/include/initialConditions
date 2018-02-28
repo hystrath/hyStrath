@@ -5,6 +5,15 @@
 |   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
 |    \\/     M anipulation  |                                                 |
 \*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      initialConditions;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 Ttr       220;
 Tve       $Ttr;
@@ -12,6 +21,8 @@ TveAtom   0;
 Twall     1000;
 
 pressure  0.89;
+
+rhoInlet  0.00001363;
 
 UxInlet 6047.0;
 velocityInlet  ($UxInlet 0 0);

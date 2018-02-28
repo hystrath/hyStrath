@@ -20,7 +20,7 @@ rarefiedParameters
     computeFieldAndBoundaries      on;
     computeMfpBoundaries           on;
     
-    mfpModel                       variableHardSphere;
+    mfpModel                       hardSphere;
     writeMfpSpecies                off;
     writeMfpMixture                on;
     
