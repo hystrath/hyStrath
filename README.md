@@ -54,19 +54,30 @@ OF-v1612+:
 <br></p></div>
 
 ---  
-## [Release history](https://github.com/vincentcasseau/hyStrath/wiki/Release-history)  
+## Release history  
 ### 17 Feb 2018: 'Concordia' release, Master branch  
 + CFD upgrade  
 
 #### 5 Dec 2017: 'Cairn' release, Master branch  
 + Introduction of the _dsmcFoam+_ solver  
 
+##### [View more](https://github.com/vincentcasseau/hyStrath/wiki/Release-history)  
+
 
 <div class="paragraph"><p><br>
 <br></p></div>
 
----
+---  
+
 ## [Publications](https://github.com/vincentcasseau/hyStrath/wiki/Publications)
+
+## Latest journal article:
+  - V. Casseau _et al._, 12/2016: [A Two-Temperature Open-Source CFD Model for Hypersonic Reacting Flows, Part Two: Multi-Dimensional Analysis](http://www.mdpi.com/2226-4310/3/4/45/html)  
+
+## Latest conference paper:
+  - J.-J. O.E. Hoste _et al._, 03/2017: [Numerical Modeling and Simulation of Supersonic Flows in Propulsion Systems by Open-Source Solvers](http://eprints.gla.ac.uk/140369/1/140369.pdf)  
+
+##### [View more](https://github.com/vincentcasseau/hyStrath/wiki/Publications)  
 
 
 <div class="paragraph"><p><br>
