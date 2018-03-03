@@ -1,0 +1,71 @@
+#!/bin/bash
+cd ${0%/*} || exit 1    # run from this directory
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+echo "Testing vs. solution"
+
+TOLERANCE=0.01
+
+
+# Stagnation line data
+
+RES_PATH="postProcessing/singleGraph/5e-05"
+SOL_PATH="gnuplot/solution/singleGraph/5e-05"
+FILES_TO_TEST="line_U.xy line_p_rho_Tt.xy"
+
+for FILE in $FILES_TO_TEST
+do
+  NLINES=`wc -l $RES_PATH/$FILE | awk '{print $1}'`
+  
+  for LINE in $NLINES
+  do
+    RES_LINEVALUE=`sed "${LINE}{q;d}" $RES_PATH/$FILE | awk '{print $2}'`
+    SOL_LINEVALUE=`sed "${LINE}{q;d}" $SOL_PATH/$FILE | awk '{print $2}'`
+    
+    RES_LINEVALUE=`awk '{ print +$1 }' <<< $RES_LINEVALUE`
+    SOL_LINEVALUE=`awk '{ print +$1 }' <<< $SOL_LINEVALUE`
+
+    if [ `echo "$SOL_LINEVALUE*(1.0+$TOLERANCE) < $RES_LINEVALUE" | bc -l` -eq 1 ] || [ `echo "$SOL_LINEVALUE*(1.0-$TOLERANCE) > $RES_LINEVALUE" | bc -l` -eq 1 ]; 
+    then echo "TEST FAILED: $FILE, line $LINE"; 
+    fi
+  done
+done
+
+
+# Drag coefficient
+
+RES_PATH="postProcessing/forceCoeffs/0"
+SOL_PATH="gnuplot/solution/forceCoeffs/0"
+FILE_TO_TEST="coefficient.dat"
+
+RES_LASTVALUE=`tail -1 $RES_PATH/$FILE_TO_TEST | awk '{print $3}'`
+SOL_LASTVALUE=`tail -1 $SOL_PATH/$FILE_TO_TEST | awk '{print $3}'`
+
+RES_LASTVALUE=`awk '{ print +$1 }' <<< $RES_LASTVALUE`
+SOL_LASTVALUE=`awk '{ print +$1 }' <<< $SOL_LASTVALUE`
+
+if [ `echo "$SOL_LASTVALUE*(1.0+$TOLERANCE) < $RES_LASTVALUE" | bc -l` -eq 1 ] || [ `echo "$SOL_LASTVALUE*(1.0-$TOLERANCE) > $RES_LASTVALUE" | bc -l` -eq 1 ]; 
+then echo "TEST FAILED: $FILE_TO_TEST"; 
+fi
+
+
+# Integrated wall heat flux
+
+RES_PATH="postProcessing/"
+SOL_PATH="gnuplot/solution/"
+FILE_TO_TEST="logIntegratedWallHeatFlux"
+
+cat log.hy2Foam | grep -e 'named plate:' -e '^Time =' | awk '/^Time =/,/^Time =/ {lastc = $0; next}{ if ( lastc != \"\") { print lastc; lastc = \"\"; } print }' $1 | cut -d ':' -f 2 | cut -d '=' -f 2 | paste -d ' ' - - > $RES_PATH/$FILE_TO_TEST
+
+RES_LASTVALUE=`tail -1 $RES_PATH/$FILE_TO_TEST | awk '{print $2}'`
+SOL_LASTVALUE=`tail -1 $SOL_PATH/$FILE_TO_TEST | awk '{print $2}'`
+
+RES_LASTVALUE=`awk '{ print +$1 }' <<< $RES_LASTVALUE`
+SOL_LASTVALUE=`awk '{ print +$1 }' <<< $SOL_LASTVALUE`
+
+if [ `echo "$SOL_LASTVALUE*(1.0+$TOLERANCE) < $RES_LASTVALUE" | bc -l` -eq 1 ] || [ `echo "$SOL_LASTVALUE*(1.0-$TOLERANCE) > $RES_LASTVALUE" | bc -l` -eq 1 ]; 
+then echo "TEST FAILED: $FILE_TO_TEST"; 
+fi
+
