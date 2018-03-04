@@ -1,0 +1,77 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.3.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     hy2Foam;
+
+startFrom       latestTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         0.0155;
+
+deltaT          1e-07;
+
+writeControl    adjustableRunTime;
+
+writeInterval   1e-6;
+
+purgeWrite      10;
+
+writeFormat     ascii;
+
+writePrecision  10;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   10;
+
+runTimeModifiable true;
+
+adjustTimeStep  yes;
+
+maxCo           0.5;
+
+maxDeltaT       5.0e-6;
+
+libs ("libstrathFiniteVolume.so");
+
+functions
+{
+    //#include "probes"
+    
+    #include "forces"
+    /*forces
+    {
+        type forces;
+        functionObjectLibs ("libstrathForces.so");
+        outputControl timeStep;
+        outputInterval 50;
+        patches (OF_wall_00);
+        rhoName rho;
+        rhoInf 4.86e-3;
+        log true;
+        CofR (0 0 0);
+        pitchAxis (0 1 0);
+    }*/
+}
+
+
+// ************************************************************************* //

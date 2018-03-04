@@ -1,0 +1,21 @@
+set key opaque at graph 0.65, 0.65 right top
+unset grid
+
+angle = 4.6
+
+set style line 1 dashtype 1 lc rgb "black"
+
+set output "gnuplot/integratedWallHeatFlux.eps"
+
+set size 0.95,0.47
+set origin 0.03,0.53
+set xlabel "Time  [sec]"
+set ylabel "Integrated wall heat flux  [kW]"
+set format x "%.1t&{i}x&{i}10^{%T}"
+#set xtics 5e-5
+set xtics add ("0" 0)
+set rmargin 4
+
+plot \
+"< cat log.hyFoam | grep -e 'named HB2:' -e '^Time =' | awk '/^Time =/,/^Time =/ {lastc = $0; next}{ if ( lastc != \"\") { print lastc; lastc = \"\"; } print }' $1 | cut -d ':' -f 2 | cut -d '=' -f 2 | paste -d ' ' - -" u ($1):($2/1000.0*360.0/angle) w l ls 1 lw 1.8 not
+

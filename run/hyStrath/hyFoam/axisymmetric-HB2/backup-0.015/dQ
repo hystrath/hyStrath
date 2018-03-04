@@ -1,0 +1,58 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1612+-hyStrath                       |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    location    "0.015";
+    object      dQ;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [1 2 -3 0 0 0 0];
+
+internalField   uniform 0;
+
+boundaryField
+{
+    lWedge
+    {
+        type            wedge;
+    }
+    
+		rWedge
+    {
+        type            wedge;
+    }
+    
+		inlet
+    {
+        type            calculated;
+        value           uniform 0;
+    }
+    
+		outlet
+    {
+        type            calculated;
+        value           uniform 0;
+    }
+    
+		HB2
+    {
+        type            calculated;
+        value           uniform 0;
+    }
+    OF_symmetry_00
+    {
+        type            symmetry;
+    }
+}
+
+
+// ************************************************************************* //
