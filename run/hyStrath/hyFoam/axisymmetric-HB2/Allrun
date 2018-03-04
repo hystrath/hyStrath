@@ -7,7 +7,7 @@ cd ${0%/*} || exit 1    # run from this directory
 cp -r ./constant/backup-polyMesh ./constant/polyMesh
 runApplication checkMesh
 
-cp -r ./backup-0.015 ./0.015
+cp -r ./backup-0.016 ./0.016
 
 hy2Foam > log.hyFoam
 
