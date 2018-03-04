@@ -19,7 +19,7 @@ thermoType
 {
     type            heRho2Thermo;
     mixture         reacting2Mixture;
-    transport       BlottnerEucken;
+    transport       SutherlandEucken;
     thermo          decoupledEnergyModes;
     energy          sensible2InternalEnergy;
     equationOfState perfect2Gas;
