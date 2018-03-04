@@ -89,18 +89,17 @@ J.-J. O.E. Hoste _et al._, 03/2017: [Numerical Modeling and Simulation of Supers
 
 ###### CFD  
 Lead developer: Dr Vincent Casseau    
-Contributors: Daniel E.R. Espinoza and Dr Thomas J. Scanlon              
-Acknowledgements: Jimmy-John O.E. Hoste, Dr Rodrigo C. Palharini and Prof Richard E. Brown
+Contributors: Daniel E.R. Espinoza, Jimmy-John O.E. Hoste and Dr Thomas J. Scanlon              
+Acknowledgements: Dr Rodrigo C. Palharini and Prof Richard E. Brown
   
    
 ###### DSMC        
 Current developers: Dr Craig White and Dr Vincent Casseau    
 Contributors: Daniel E.R. Espinoza and Dr Thomas J. Scanlon  
-Acknowledgements: Dr Rodrigo C. Palharini
+Acknowledgements: Dr Rodrigo C. Palharini  
 
+**Enquiries: hy2Foam@gmail.com**  
 
-
-**Enquiries: hy2Foam@gmail.com**
 
 <div class="paragraph"><p><br>
 <br></p></div>
