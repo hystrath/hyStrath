@@ -34,13 +34,13 @@ wallShearStress
     log             no;
 }
 
-frictionCoefficient
+/*frictionCoefficient
 {
     type            frictionCoefficient;
     libs            ("libstrathFieldFunctionObjects.so");
     writeControl    outputTime;
     log             no;
-}
+}*/
 
 pressureCoefficient
 {
