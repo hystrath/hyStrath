@@ -1,3 +1,0 @@
-frictionCoeff2T.C
-
-EXE = $(FOAM_USER_APPBIN)/frictionCoeff2T

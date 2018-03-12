@@ -173,7 +173,7 @@ volScalarField bulkToShearRatio
         runTime.timeName(),
         mesh,
         IOobject::NO_READ,
-        IOobject::NO_WRITE // TODO
+        IOobject::NO_WRITE
     ),
     mesh,
     dimensionedScalar("scalarZero", dimless, 0.0)

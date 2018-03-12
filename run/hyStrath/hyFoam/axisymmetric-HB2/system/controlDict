@@ -55,22 +55,9 @@ libs ("libstrathFiniteVolume.so");
 
 functions
 {
-    //#include "probes"
-    
     #include "forces"
-    /*forces
-    {
-        type forces;
-        functionObjectLibs ("libstrathForces.so");
-        outputControl timeStep;
-        outputInterval 50;
-        patches (OF_wall_00);
-        rhoName rho;
-        rhoInf 4.86e-3;
-        log true;
-        CofR (0 0 0);
-        pitchAxis (0 1 0);
-    }*/
+    
+    #include "surfaceQuantities"
 }
 
 

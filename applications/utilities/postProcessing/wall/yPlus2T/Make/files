@@ -1,3 +1,0 @@
-yPlus2T.C
-
-EXE = $(FOAM_USER_APPBIN)/yPlus2T

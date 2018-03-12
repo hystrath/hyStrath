@@ -1,20 +1,12 @@
-// --- upwind interpolation of primitive fields on faces
-surfaceScalarField rho_pos
-(
-    "rho_pos",
-    fvc::interpolate(rho, pos, "reconstruct(rho)")
-);
-surfaceScalarField rho_neg
-(
-    "rho_neg",
-    fvc::interpolate(rho, neg, "reconstruct(rho)")
-);
+// --- Directed interpolation of primitive fields onto faces
 
-// NEW VINCENT ********************************************07/11/2015**********
+surfaceScalarField rho_pos(interpolate(rho, pos));
+surfaceScalarField rho_neg(interpolate(rho, neg));
+
 PtrList<surfaceScalarField> pD_pos(noSolvedVibEq);
 PtrList<surfaceScalarField> pD_neg(noSolvedVibEq);
 
-if(downgradeSingleT or downgradeSingleTv) // NEW VINCENT 05-16/08/2016
+if(downgradeSingleT or downgradeSingleTv)
 {
     pD_pos.clear();
     pD_neg.clear();
@@ -29,7 +21,7 @@ else
             new surfaceScalarField
             (
                 "pD_pos_" + Y[speciei].name(),
-                fvc::interpolate(pD[speciei], pos, "reconstruct(rho)")
+                interpolate(pD[speciei], pos, rho.name())
             )
         );
     }
@@ -42,54 +34,27 @@ else
             new surfaceScalarField
             (
                 "pD_neg_" + Y[speciei].name(),
-                fvc::interpolate(pD[speciei], neg, "reconstruct(rho)")
+                interpolate(pD[speciei], neg, rho.name())
             )
         );
     }
 }
 
-// END NEW VINCENT ****************************************07/11/2015**********
 
-surfaceVectorField rhoU_pos
-(
-    "rhoU_pos",
-    fvc::interpolate(rhoU, pos, "reconstruct(U)")
-);
-surfaceVectorField rhoU_neg
-(
-    "rhoU_neg",
-    fvc::interpolate(rhoU, neg, "reconstruct(U)")
-);
+surfaceVectorField rhoU_pos(interpolate(rhoU, pos, U.name()));
+surfaceVectorField rhoU_neg(interpolate(rhoU, neg, U.name()));
 
 volScalarField rPsi(1.0/psi);
+surfaceScalarField rPsi_pos(interpolate(rPsi, pos, "T"));
+surfaceScalarField rPsi_neg(interpolate(rPsi, neg, "T"));
 
-surfaceScalarField rPsi_pos
-(
-    "rPsi_pos",
-    fvc::interpolate(rPsi, pos, "reconstruct(T)")
-);
-surfaceScalarField rPsi_neg
-(
-    "rPsi_neg",
-    fvc::interpolate(rPsi, neg, "reconstruct(T)")
-);
+surfaceScalarField e_pos(interpolate(e, pos, "T"));
+surfaceScalarField e_neg(interpolate(e, neg, "T"));
 
-surfaceScalarField e_pos
-(
-    "e_pos",
-    fvc::interpolate(e, pos, "reconstruct(T)")
-);
-surfaceScalarField e_neg
-(
-    "e_neg",
-    fvc::interpolate(e, neg, "reconstruct(T)")
-);
-
-// NEW VINCENT ****************************************************************
 PtrList<surfaceScalarField> evk_pos(noSolvedVibEq);
 PtrList<surfaceScalarField> evk_neg(noSolvedVibEq);
 
-if(downgradeSingleT) // NEW VINCENT 05-16/08/2016
+if(downgradeSingleT)
 {
     evk_pos.clear();
     evk_neg.clear();  
@@ -105,7 +70,7 @@ else if(downgradeSingleTv)
         new surfaceScalarField
         (
             "ev_pos",
-            fvc::interpolate(ev, pos, "reconstruct(T)")
+            interpolate(ev, pos, "T")
         )
     );
     
@@ -115,7 +80,7 @@ else if(downgradeSingleTv)
         new surfaceScalarField
         (
             "ev_neg",
-            fvc::interpolate(ev, neg, "reconstruct(T)")
+            interpolate(ev, neg, "T")
         )
     );
 }
@@ -129,7 +94,7 @@ else
             new surfaceScalarField
             (
                 "evk_pos_" + Y[speciei].name(),
-                fvc::interpolate(hevk[speciei], pos, "reconstruct(T)")
+                interpolate(hevk[speciei], pos, "T")
             )
         );
     }
@@ -142,12 +107,11 @@ else
             new surfaceScalarField
             (
                 "evk_neg_" + Y[speciei].name(),
-                fvc::interpolate(hevk[speciei], neg, "reconstruct(T)")
+                interpolate(hevk[speciei], neg, "T")
             )
         );
     }
 }
-// END NEW VINCENT ************************************************************
 
 volScalarField gammatr("gammatr", thermo.Cp_t()/thermo.Cv_t()); // NEW VINCENT (also useful for bdry cdts)
 volScalarField c(sqrt(gammatr*rPsi)); // NEW VINCENT (see Candler 2009)
@@ -162,10 +126,10 @@ surfaceScalarField p_neg("p_neg", rho_neg*rPsi_neg);
 surfaceScalarField cSf_pos //- Intermediate quantity to appear in Eq.8a
 (
     "cSf_pos",
-    fvc::interpolate(c, pos, "reconstruct(T)")*mesh.magSf()
+    interpolate(c, pos, "T")*mesh.magSf()
 );
 surfaceScalarField cSf_neg //- Intermediate quantity to appear in Eq.8b
 (
     "cSf_neg",
-    fvc::interpolate(c, neg, "reconstruct(T)")*mesh.magSf()
+    interpolate(c, neg, "T")*mesh.magSf()
 );

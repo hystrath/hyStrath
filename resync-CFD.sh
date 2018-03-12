@@ -38,7 +38,7 @@ wmake -j$nProcs libso
 
 rsync -rtvuc $currentDir/src/functionObjects/ $sendingDir/src/functionObjects/
 cd $sendingDir/src/functionObjects
-./Allwmake-hyStrath -j$nProcs
+./Allwmake-cfdStrath -j$nProcs
 
 rsync -rtvuc $currentDir/src/fvOptions/ $sendingDir/src/fvOptions/
 cd $sendingDir/src/fvOptions
@@ -59,10 +59,6 @@ wmake -j$nProcs
 rsync -rtvuc $currentDir/applications/utilities/mesh/generation/blockMeshDG $sendingDir/applications/utilities/mesh/generation/blockMeshDG
 cd $sendingDir/applications/utilities/mesh/generation/blockMeshDG
 ./Allwmake -j$nProcs 
-
-rsync -rtvuc $currentDir/applications/utilities/postProcessing/wall $sendingDir/applications/utilities/postProcessing/wall
-cd $sendingDir/applications/utilities/postProcessing/wall
-./wmakeAll -j$nProcs 
 
 
 # re-set to the initial directory ---------------------------------------------

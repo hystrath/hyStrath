@@ -19,7 +19,7 @@ mkdir -p $sendingDir
 # copy new files --------------------------------------------------------------
 foldersSrc="thermophysicalModels TurbulenceModels hTCModels finiteVolume fvOptions functionObjects/forces"
 filesInFolderSrc="functionObjects"
-foldersApp="solvers/compressible/hy2Foam utilities/mesh/generation/makeAxialMesh utilities/mesh/generation/blockMeshDG utilities/postProcessing/wall"
+foldersApp="solvers/compressible/hy2Foam utilities/mesh/generation/makeAxialMesh utilities/mesh/generation/blockMeshDG"
 
 for folder in $foldersSrc
 do
@@ -67,7 +67,7 @@ wmake -j$nProcs libso
 cd $sendingDir/src/functionObjects/forces
 wclean libso
 cd $sendingDir/src/functionObjects
-./Allwmake-hyStrath -j$nProcs
+./Allwmake-cfdStrath -j$nProcs
 
 cd $sendingDir/src/fvOptions
 wclean libso
@@ -88,10 +88,6 @@ wmake -j$nProcs
 cd $sendingDir/applications/utilities/mesh/generation/blockMeshDG
 wclean all
 ./Allwmake -j$nProcs
-
-cd $sendingDir/applications/utilities/postProcessing/wall/
-./wcleanAll
-./wmakeAll -j$nProcs
 
 
 # re-set to the initial directory ---------------------------------------------

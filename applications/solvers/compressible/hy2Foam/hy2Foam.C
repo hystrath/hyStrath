@@ -61,6 +61,7 @@ Description
 #include "rarefactionParameter.H"
 
 // --- Numerical flux functions
+#include "numerics/directionInterpolate.H"
 #include "numerics/AUSM_functions.H"
 #include "numerics/KNP-KT.H"
 #include "numerics/KFVS.H"
@@ -86,6 +87,9 @@ bool run
 
 int main(int argc, char *argv[])
 {
+    #define NO_CONTROL
+    #include "postProcess.H"
+    
     #include "setRootCase.H"
     #include "createTime.H"
     #include "createMesh.H"
@@ -221,7 +225,7 @@ bool run
             #include "LTS/setrDeltaT.H"
         }
         
-        // --- Re-set the switch/counter that serve as a warning if the 
+        // --- Re-set the switch/counter that serves as a warning if the 
         //     temperature goes unbounded
         thermo.resetTemperatureBoundingInfo();
         

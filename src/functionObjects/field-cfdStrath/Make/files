@@ -1,0 +1,7 @@
+frictionCoefficient/frictionCoefficient.C
+pressureCoefficient/pressureCoefficient.C
+StantonNo/StantonNo.C
+yPlus/yPlus.C
+wallShearStress/wallShearStress.C
+
+LIB = $(FOAM_USER_LIBBIN)/libstrathFieldFunctionObjects

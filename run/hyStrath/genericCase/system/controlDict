@@ -55,9 +55,7 @@ libs ("libstrathFiniteVolume.so");
 
 functions
 {
-    //#include "probes"
-    
-    //#include "forces"
+
 }
 
 

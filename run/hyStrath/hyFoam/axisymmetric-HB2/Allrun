@@ -10,5 +10,3 @@ runApplication checkMesh
 cp -r ./backup-0.016 ./0.016
 
 hy2Foam > log.hyFoam
-
-runApplication pressureCoeff -latestTime
