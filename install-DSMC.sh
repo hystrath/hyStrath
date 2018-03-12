@@ -17,7 +17,7 @@ mkdir -p $sendingDir
 
 
 # copy new files --------------------------------------------------------------
-foldersSrc="lagrangian parallel functionObjects/field functionObjects/lagrangian"
+foldersSrc="lagrangian parallel functionObjects/field-dsmcStrath functionObjects/lagrangian"
 filesInFolderSrc="functionObjects"
 foldersApp="solvers/discreteMethods utilities/preProcessing/mapFields utilities/preProcessing/mapFieldsPar utilities/preProcessing/dsmc utilities/parallelProcessing utilities/postProcessing/miscellaneous/foamListTimes utilities/mesh/generation/makeAxialMesh utilities/mesh/generation/blockMeshDG"
 

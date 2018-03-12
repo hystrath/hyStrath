@@ -1,6 +1,6 @@
 # hyStrath
 
-##### Hypersonic code developments in OpenFOAM released under license GPL-3.0
+##### OpenFOAM hypersonic code developments released under license GPL-3.0
 ###### Hosting the *hyFoam* (supersonic combusting flows) and *hy2Foam* (hypersonic reacting flows) CFD solvers  
 ###### Hosting the *dsmcFoam+* (direct simulation Monte Carlo) solver  
 
