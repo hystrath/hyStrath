@@ -10,6 +10,8 @@ runApplication checkMesh
 
 runApplication hy2Foam
 
+hy2Foam -postProcess -dict 'system/surfaceCoefficients' -latestTime
+
 runApplication postProcess -func singleGraph -latestTime
 
 

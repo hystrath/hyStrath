@@ -15,16 +15,6 @@ FoamFile
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-StantonNumber
-{
-    type            StantonNo;
-    //- see constant/transportProperties/transportModels: writeWallHeatFlux
-    wallHeatFlux    "wallHeatFlux"; 
-    libs            ("libstrathFieldFunctionObjects.so");
-    writeControl    outputTime;
-    log             no;
-}
-
 wallShearStress
 {
     type            wallShearStress;
@@ -34,19 +24,4 @@ wallShearStress
     log             no;
 }
 
-/*frictionCoefficient
-{
-    type            frictionCoefficient;
-    libs            ("libstrathFieldFunctionObjects.so");
-    writeControl    outputTime;
-    log             no;
-}*/
-
-pressureCoefficient
-{
-    type            pressureCoefficient;
-    libs            ("libstrathFieldFunctionObjects.so");
-    writeControl    outputTime;
-    log             no;
-}
 
