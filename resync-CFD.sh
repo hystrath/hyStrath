@@ -19,11 +19,9 @@ cd $sendingDir/src/thermophysicalModels/strath/
 ./Allwmake -j$nProcs
 
 rsync -rtvuc $currentDir/src/TurbulenceModels/compressible/ $sendingDir/src/TurbulenceModels/compressible/
-cd $sendingDir/src/TurbulenceModels/compressible
-wmake -j$nProcs libso
 rsync -rtvuc $currentDir/src/TurbulenceModels/schemes/ $sendingDir/src/TurbulenceModels/schemes/
-cd $sendingDir/src/TurbulenceModels/schemes
-wmake -j$nProcs libso
+cd $sendingDir/src/TurbulenceModels/
+./Allwmake -j$nProcs
 
 cd $sendingDir/src/thermophysicalModels/strath/
 ./AllwmakeBis -j$nProcs

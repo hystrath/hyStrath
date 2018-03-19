@@ -1,0 +1,8 @@
+/* Wall function BCs */
+wallFunctions = derivedFvPatchFields/wallFunctions
+
+omegaWallFunctions = $(wallFunctions)/omegaWallFunctions
+$(omegaWallFunctions)/omegaLowReWallFunction/omegaLowReWallFunctionFvPatchScalarField.C
+
+
+LIB = $(FOAM_USER_LIBBIN)/libstrathTurbulenceModels

@@ -183,14 +183,12 @@ inline Foam::scalar Foam::CEATransport<Thermo>::alphatr
 {
     if (this->Cv_t(p, Tt) != 0.0)
     {
-        //Info << "Hi 2.0" << endl;
         //Info << "kappatr(p, Tt): " << kappatr(p, Tt) << endl;
         //Info << "this->Cv_t(p, Tt): " << this->Cv_t(p, Tt) << endl;
         return kappatr(p, Tt)/this->Cv_t(p, Tt);
     }
     else
     {
-        //Info << "Hi 3.0" << endl;
         return 0.0;
     } 
 }
@@ -237,42 +235,7 @@ inline void Foam::CEATransport<Thermo>::operator+=
     const CEATransport<Thermo>& ceat
 )
 {
-    scalar molr1 = this->nMoles();
-
     Thermo::operator+=(ceat);
-
-    molr1 /= this->nMoles();
-    scalar molr2 = ceat.nMoles()/this->nMoles();
-
-    temp_ = molr1*temp_ + molr2*ceat.temp_;
-
-    for
-    (
-        register label coefLabel=0;
-        coefLabel<ceat.mu_.size();
-        coefLabel++
-    )
-    {
-        for
-        (
-            register label coefLabelj=0;
-            coefLabelj<CEATransport<Thermo>::nCoeffs_;
-            coefLabelj++
-        )
-        {
-            mu_[coefLabel][coefLabelj] =
-                molr1*mu_[coefLabel][coefLabelj]
-              + molr2*ceat.mu_[coefLabel][coefLabelj];
-
-            kappa_[coefLabel][coefLabelj] =
-                molr1*kappa_[coefLabel][coefLabelj]
-              + molr2*ceat.kappa_[coefLabel][coefLabelj];
-        }
-    }
-    
-    
-    //mu_ = molr1*mu_ + molr2*ceat.mu_;
-    //kappa_ = molr1*kappa_ + molr2*ceat.kappa_;
 }
 
 
@@ -282,40 +245,7 @@ inline void Foam::CEATransport<Thermo>::operator-=
     const CEATransport<Thermo>& ceat
 )
 {
-    scalar molr1 = this->nMoles();
-
     Thermo::operator-=(ceat);
-
-    molr1 /= this->nMoles();
-    scalar molr2 = ceat.nMoles()/this->nMoles();
-
-    temp_ = molr1*temp_ - molr2*ceat.temp_;
-
-    for
-    (
-        register label coefLabel=0;
-        coefLabel<ceat.mu_.size();
-        coefLabel++
-    )
-    {
-        for
-        (
-            register label coefLabelj=0;
-            coefLabelj<CEATransport<Thermo>::nCoeffs_;
-            coefLabelj++
-        )
-        {
-            mu_[coefLabel][coefLabelj] =
-                molr1*mu_[coefLabel][coefLabelj]
-              - molr2*ceat.mu_[coefLabel][coefLabelj];
-
-            kappa_[coefLabel][coefLabelj] =
-                molr1*kappa_[coefLabel][coefLabelj]
-              - molr2*ceat.kappa_[coefLabel][coefLabelj];
-        }
-    }
-    //mu_ = molr1*mu_ - molr2*ceat.mu_;
-    //kappa_ = molr1*kappa_ - molr2*ceat.kappa_;
 }
 
 
@@ -346,30 +276,7 @@ inline Foam::CEATransport<Thermo> Foam::operator+
     scalar molr1 = ceat1.nMoles()/t.nMoles();
     scalar molr2 = ceat2.nMoles()/t.nMoles();
 
-    DynamicList<FixedList<scalar, Foam::CEATransport<Thermo>::nCoeffs_> > mu, kappa;
-    /*for
-    (
-        register label coefLabel=0;
-        coefLabel<ceat1.mu_.size();
-        coefLabel++
-    )
-    {
-        for
-        (
-            register label coefLabelj=0;
-            coefLabelj<CEATransport<Thermo>::nCoeffs_;
-            coefLabelj++
-        )
-        {
-            mu[coefLabel][coefLabelj] =
-                molr1*ceat1.mu_[coefLabel][coefLabelj]
-              + molr2*ceat2.mu_[coefLabel][coefLabelj];
-
-            kappa[coefLabel][coefLabelj] =
-                molr1*ceat1.kappa_[coefLabel][coefLabelj]
-              + molr2*ceat2.kappa_[coefLabel][coefLabelj];
-        }
-    }*/
+    DynamicList<FixedList<scalar, Foam::CEATransport<Thermo>::nCoeffs_>> mu, kappa;
     
     return CEATransport<Thermo>
     (
@@ -396,30 +303,7 @@ inline Foam::CEATransport<Thermo> Foam::operator-
     scalar molr1 = ceat1.nMoles()/t.nMoles();
     scalar molr2 = ceat2.nMoles()/t.nMoles();
     
-    DynamicList<FixedList<scalar, Foam::CEATransport<Thermo>::nCoeffs_> > mu, kappa;
-    /*for
-    (
-        register label coefLabel=0;
-        coefLabel<ceat1.mu_.size();
-        coefLabel++
-    )
-    {
-        for
-        (
-            register label coefLabelj=0;
-            coefLabelj<CEATransport<Thermo>::nCoeffs_;
-            coefLabelj++
-        )
-        {
-            mu[coefLabel][coefLabelj] =
-                molr1*ceat1.mu_[coefLabel][coefLabelj]
-              - molr2*ceat2.mu_[coefLabel][coefLabelj];
-
-            kappa[coefLabel][coefLabelj] =
-                molr1*ceat1.kappa_[coefLabel][coefLabelj]
-              - molr2*ceat2.kappa_[coefLabel][coefLabelj];
-        }
-    }*/
+    DynamicList<FixedList<scalar, Foam::CEATransport<Thermo>::nCoeffs_>> mu, kappa;
 
     return CEATransport<Thermo>
     (

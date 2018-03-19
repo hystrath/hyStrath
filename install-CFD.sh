@@ -48,10 +48,7 @@ wclean all
 
 cd $sendingDir/src/TurbulenceModels/
 wclean all
-cd $sendingDir/src/TurbulenceModels/compressible
-wmake -j$nProcs libso
-cd $sendingDir/src/TurbulenceModels/schemes
-wmake -j$nProcs libso
+./Allwmake -j$nProcs
 
 cd $sendingDir/src/thermophysicalModels/strath/
 ./AllwmakeBis -j$nProcs
