@@ -1,3 +1,0 @@
-SOURCE = \
-decompositionModel.C \
-fvFieldDecomposer.C 

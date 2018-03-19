@@ -1,6 +1,0 @@
-potential = potential
-pairPotential = pairPotential
-energyScalingFunction = energyScalingFunction
-tetherPotential = tetherPotential
-electrostaticPotential = electrostaticPotential
-LIB = $(FOAM_USER_LIBBIN)/libpotential
