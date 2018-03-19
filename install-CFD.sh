@@ -17,7 +17,7 @@ mkdir -p $sendingDir
 
 
 # copy new files --------------------------------------------------------------
-foldersSrc="thermophysicalModels TurbulenceModels hTCModels finiteVolume fvOptions functionObjects/forces"
+foldersSrc="thermophysicalModels TurbulenceModels hTCModels finiteVolume fvOptions functionObjects/forces functionObjects/field-cfdStrath"
 filesInFolderSrc="functionObjects"
 foldersApp="solvers/compressible/hy2Foam utilities/mesh/generation/makeAxialMesh utilities/mesh/generation/blockMeshDG"
 
@@ -62,6 +62,8 @@ wclean libso
 wmake -j$nProcs libso
 
 cd $sendingDir/src/functionObjects/forces
+wclean libso
+cd $sendingDir/src/functionObjects/field-cfdStrath
 wclean libso
 cd $sendingDir/src/functionObjects
 ./Allwmake-cfdStrath -j$nProcs

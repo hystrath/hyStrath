@@ -26,7 +26,7 @@ rsync -rtvuc $currentDir/src/parallel/reconstruct/ $sendingDir/src/parallel/reco
 cd $sendingDir/src/parallel/reconstruct/
 ./Allwmake -j$nProcs
 
-rsync -rtvuc $currentDir/src/functionObjects/field $sendingDir/src/functionObjects/field
+rsync -rtvuc $currentDir/src/functionObjects/field-dsmcStrath $sendingDir/src/functionObjects/field-dsmcStrath
 rsync -rtvuc $currentDir/src/functionObjects/lagrangian $sendingDir/src/functionObjects/lagrangian
 cd $sendingDir/src/functionObjects/
 ./Allwmake-dsmcStrath -j$nProcs

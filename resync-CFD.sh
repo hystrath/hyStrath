@@ -33,7 +33,8 @@ rsync -rtvuc $currentDir/src/finiteVolume/ $sendingDir/src/finiteVolume/
 cd $sendingDir/src/finiteVolume
 wmake -j$nProcs libso
 
-rsync -rtvuc $currentDir/src/functionObjects/ $sendingDir/src/functionObjects/
+rsync -rtvuc $currentDir/src/functionObjects/forces $sendingDir/src/functionObjects/forces
+rsync -rtvuc $currentDir/src/functionObjects/field-cfdStrath $sendingDir/src/functionObjects/field-cfdStrath
 cd $sendingDir/src/functionObjects
 ./Allwmake-cfdStrath -j$nProcs
 

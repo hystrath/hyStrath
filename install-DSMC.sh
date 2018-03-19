@@ -54,7 +54,7 @@ cd $sendingDir/src/parallel/reconstruct/
 wclean all
 ./Allwmake -j$nProcs
 
-cd $sendingDir/src/functionObjects/field
+cd $sendingDir/src/functionObjects/field-dsmcStrath
 wclean libso
 cd $sendingDir/src/functionObjects/lagrangian
 wclean libso
