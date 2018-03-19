@@ -18,8 +18,7 @@ rsync -rtvuc $currentDir/src/thermophysicalModels/strath/ $sendingDir/src/thermo
 cd $sendingDir/src/thermophysicalModels/strath/
 ./Allwmake -j$nProcs
 
-rsync -rtvuc $currentDir/src/TurbulenceModels/compressible/ $sendingDir/src/TurbulenceModels/compressible/
-rsync -rtvuc $currentDir/src/TurbulenceModels/schemes/ $sendingDir/src/TurbulenceModels/schemes/
+rsync -rtvuc $currentDir/src/TurbulenceModels/ $sendingDir/src/TurbulenceModels/
 cd $sendingDir/src/TurbulenceModels/
 ./Allwmake -j$nProcs
 
