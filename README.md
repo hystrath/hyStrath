@@ -99,6 +99,7 @@ Contributors: Daniel E.R. Espinoza and Dr Thomas J. Scanlon
 Acknowledgements: Dr Rodrigo C. Palharini  
 
 **Enquiries: hy2Foam@gmail.com**  
+**Consultancy services: [MTS-CFD](https://www.mts-cfd.com/)**  
 
 
 <div class="paragraph"><p><br>
