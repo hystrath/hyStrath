@@ -5,7 +5,9 @@ cd ${0%/*} || exit 1    # run from this directory
 . $WM_PROJECT_DIR/bin/tools/RunFunctions
 
 cp -r ./constant/backup-polyMesh ./constant/polyMesh
+cp -r ./backup-0.00127 ./0.00127
+
 runApplication checkMesh
 
-#hy2Foam > log.hyFoam
+hy2Foam > log.hyFoam
 

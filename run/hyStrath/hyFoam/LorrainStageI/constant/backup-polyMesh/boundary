@@ -17,31 +17,35 @@ FoamFile
 
 5
 (
-    FrontBack
+    frontAndBack
     {
         type            empty;
         nFaces          644160;
         startFace       641122;
     }
-    OF_inlet_00
+    
+    inlet
     {
         type            patch;
         nFaces          110;
         startFace       1285282;
     }
-    OF_outlet_00
+    
+    outlet
     {
         type            patch;
         nFaces          110;
         startFace       1285392;
     }
-    OF_wall_00
+    
+    wall
     {
         type            wall;
         nFaces          2928;
         startFace       1285502;
     }
-    OF_symmetry_00
+    
+    symmetry
     {
         type            symmetry;
         nFaces          2928;

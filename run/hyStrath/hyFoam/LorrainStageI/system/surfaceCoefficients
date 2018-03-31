@@ -1,0 +1,45 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.1                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      surfaceCoefficients;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+functions
+{
+    frictionCoefficient
+    {
+        type            frictionCoefficient;
+        libs            ("libstrathFieldFunctionObjects.so");
+        writeControl    outputTime;
+        log             no;
+    }
+
+    pressureCoefficient
+    {
+        type            pressureCoefficient;
+        libs            ("libstrathFieldFunctionObjects.so");
+        writeControl    outputTime;
+        log             no;
+    }
+
+    yPlus
+    {
+        type            yPlus;
+        libs            ("libstrathFieldFunctionObjects.so");
+        writeControl    outputTime;
+        log             no;
+    }
+}
+
+

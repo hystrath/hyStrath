@@ -23,7 +23,7 @@ startTime       0;
 
 stopAt          endTime;
 
-endTime         1.0e-1;
+endTime         0.0013;
 
 deltaT          1.0e-10;
 
@@ -51,8 +51,11 @@ maxCo           0.1;
 
 maxDeltaT       2.0e-5;
 
+libs ("libstrathTurbulenceModels.so");
+
 functions
 {
+    #include "surfaceQuantities"
 }
 
 // ************************************************************************* //
