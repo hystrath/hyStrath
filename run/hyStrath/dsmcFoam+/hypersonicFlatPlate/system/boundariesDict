@@ -1,0 +1,100 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.3                                   |
+|   \\  /    A nd           | Web:      http://www.openfoam.org               |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      boundariesDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dsmcPatchBoundaries
+( 
+    boundary
+    {
+        patchBoundaryProperties
+        {
+            patchName     plate;
+        }
+
+        boundaryModel        dsmcDiffuseWallPatch;
+
+        dsmcDiffuseWallPatchProperties
+        {
+            velocity             (0 0 0);
+            temperature            290;
+        }
+    }
+
+    boundary
+    {
+        patchBoundaryProperties
+        {
+            patchName            defaultFaces;
+        }
+
+        boundaryModel        dsmcSpecularWallPatch;
+
+        dsmcSpecularWallPatchProperties
+        {
+        }
+    }
+
+    boundary
+    {
+        patchBoundaryProperties
+        {
+         patchName                           inlet;
+        }
+
+        boundaryModel   dsmcDeletionPatch;
+
+        dsmcDeletionPatchProperties
+        {
+            allSpecies		yes;
+        }
+    }
+);
+
+dsmcCyclicBoundaries
+(
+
+);
+
+dsmcGeneralBoundaries
+(
+    boundary
+    {
+        generalBoundaryProperties
+        {
+            patchName                           inlet;
+        }
+
+        boundaryModel   dsmcFreeStreamInflowPatch;
+
+        dsmcFreeStreamInflowPatchProperties
+        {
+			      translationalTemperature			13.32;
+			      rotationalTemperature			    13.32;
+			      vibrationalTemperature			    0;
+                  electronicTemperature               0;
+			      velocity			                (1503 0 0);
+			      typeIds				                (N2);
+			      numberDensities
+			      {
+				         N2		3.716e20;
+			      }
+	      }
+    }
+     
+);
+
+
+// ************************************************************************* //

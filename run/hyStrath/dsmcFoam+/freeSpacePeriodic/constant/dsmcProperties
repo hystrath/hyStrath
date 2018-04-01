@@ -1,0 +1,100 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  3.0.x                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      dsmcProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+// General Properties
+// ~~~~~~~~~~~~~~~~~~
+
+nEquivalentParticles            1e12;
+
+// Axisymmetric Properties
+// ~~~~~~~~~~~~~~~~~~
+
+axisymmetricSimulation      false;
+
+
+
+// Binary Collision Model
+// ~~~~~~~~~~~~~~~~~~~~~~
+
+BinaryCollisionModel            LarsenBorgnakkeVariableHardSphere;
+
+LarsenBorgnakkeVariableHardSphereCoeffs
+{
+    Tref                        	        273;
+    rotationalRelaxationCollisionNumber   5.0;
+    electronicRelaxationCollisionNumber   500.0;
+}
+
+
+// Collision Partner Selection Model
+// ~~~~~~~~~~~~~~~~~~~~~~
+
+collisionPartnerSelectionModel   		 noTimeCounter;
+
+
+
+// Molecular species
+// ~~~~~~~~~~~~~~~~~
+
+typeIdList                      (N2 O2);
+
+moleculeProperties
+{
+    N2
+    {
+        mass                           			46.5e-27;
+        diameter                        		4.17e-10;
+        rotationalDegreesOfFreedom             		 2;
+        vibrationalModes            			         1;
+        omega                               		0.74;
+        alpha						                         1.0;
+        characteristicVibrationalTemperature		(3371);
+        dissociationTemperature            		(113500);
+        ionisationTemperature            		1135000000;
+        charDissQuantumLevel				              (33);
+        Zref 						                    (52560);
+        referenceTempForZref				         (3371);
+        charge                                  0;
+        numberOfElectronicLevels                1;
+        electronicEnergyList                    (0);
+        degeneracyList                          (1);
+    }
+
+  	O2
+    {
+        mass                           			53.12e-27;
+        diameter                        		4.07e-10;
+        rotationalDegreesOfFreedom	             	2;
+        vibrationalModes            			         1;
+        omega                           	    	0.77;
+        alpha						                         1.0;
+        characteristicVibrationalTemperature		(2256);
+        dissociationTemperature            		(59500);
+        ionisationTemperature            		1135000000;
+        charDissQuantumLevel				               (26);
+        Zref 						                     (17900);
+        referenceTempForZref				          (2256);
+        charge                                  0;
+        numberOfElectronicLevels                1;
+        electronicEnergyList                    (0);
+        degeneracyList                          (1);
+    }
+}
+
+
+// ************************************************************************* //

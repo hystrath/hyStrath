@@ -1,0 +1,988 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | NpenFNAM: The Npen Source CFD Toolbox           |
+|  \\    /   N peration     | Version:  1.7.1                                 |
+|   \\  /    A nd           | Web:      www.NpenFNAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      chemReactDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+reactions
+(
+
+	oxygenDissociationIonisation
+	{
+		reactionModel		dissociationIonisationTypeISameSpecies;
+
+		dissociationIonisationTypeISameSpeciesProperties
+		{
+			reactionName					oxygenDissociationIonisation1;
+		    reactantMolecules	            (O2 O2);
+		    productsOfDissociatedMolecule	(O O);
+            productsOfIonisedMolecule	    (O2+ E-);
+			heatOfReactionDissociation	    -59500; //in Kelvin, converted to Joules in the code
+            heatOfReactionIonisation	    -140066;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+    nitrogenDissociationIonisation
+	{
+		reactionModel		dissociationIonisationTypeISameSpecies;
+
+		dissociationIonisationTypeISameSpeciesProperties
+		{
+			reactionName					nitrogenDissociationIonisation1;
+		    reactantMolecules	            (N2 N2);
+		    productsOfDissociatedMolecule	(N N);
+            productsOfIonisedMolecule	    (N2+ E-);
+			heatOfReactionDissociation	    -113500; //in Kelvin, converted to Joules in the code
+            heatOfReactionIonisation	    -180798;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+    nitricOxideDissociationIonisation
+	{
+		reactionModel		dissociationIonisationTypeISameSpecies;
+
+		dissociationIonisationTypeISameSpeciesProperties
+		{
+			reactionName					nitricOxideDissociationIonisation;
+		    reactantMolecules	            (NO NO);
+		    productsOfDissociatedMolecule	(N O);
+            productsOfIonisedMolecule	    (NO+ E-);
+			heatOfReactionDissociation	    -75500; //in Kelvin, converted to Joules in the code
+            heatOfReactionIonisation	    -107457;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+    oxygenDissociationIonisation2
+	{
+		reactionModel		dissociationIonisationTypeIDissimilarSpecies;
+
+		dissociationIonisationTypeIDissimilarSpeciesProperties
+		{
+			reactionName					oxygenDissociationIonisation2;
+		    reactantMolecules	            (O2 N2);
+		    productsOfDissociatedMolecule	((O O) (N N));
+            productsOfIonisedMolecule	    ((O2+ E-) (N2+ E-));
+			heatOfReactionDissociationAB	-59500;
+            heatOfReactionIonisationAB	    -140066;
+            heatOfReactionDissociationCD	-113500;
+            heatOfReactionIonisationCD	    -180798;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+    oxygenDissociationIonisation3
+	{
+		reactionModel		dissociationIonisationTypeIDissimilarSpecies;
+
+		dissociationIonisationTypeIDissimilarSpeciesProperties
+		{
+			reactionName					oxygenDissociationIonisation3;
+		    reactantMolecules	            (O2 NO);
+		    productsOfDissociatedMolecule	((O O) (N O));
+            productsOfIonisedMolecule	    ((O2+ E-) (NO+ E-));
+			heatOfReactionDissociationAB	-59500;
+            heatOfReactionIonisationAB	    -140066;
+            heatOfReactionDissociationCD	-75500;
+            heatOfReactionIonisationCD	    -107457;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+    nitrogenDissociationIonisation2
+	{
+		reactionModel		dissociationIonisationTypeIDissimilarSpecies;
+
+		dissociationIonisationTypeIDissimilarSpeciesProperties
+		{
+			reactionName					nitrogenDissociationIonisation2;
+		    reactantMolecules	            (N2 NO);
+		    productsOfDissociatedMolecule	((N N) (N O));
+            productsOfIonisedMolecule	    ((N2+ E-) (NO+ E-));
+			heatOfReactionDissociationAB	-113500;
+            heatOfReactionIonisationAB	    -180798;
+            heatOfReactionDissociationCD	-75500;
+            heatOfReactionIonisationCD	    -107457;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+    nitrogenDissociationIonisation3
+	{
+		reactionModel		moleculeAtomDissociationIonisation;
+
+		moleculeAtomDissociationIonisationProperties
+		{
+			reactionName					    nitrogenDissociationIonisation3;
+		    reactants       	                (N2 N);
+		    productsOfDissociatedMolecule	    (N N);
+            productsOfIonisedMolecule	        (N2+ E-);
+            productsOfIonisedAtom               (N+ E-);
+			heatOfReactionDissociation  	    -113500;
+            heatOfReactionIonisationMolecule	-180798;
+            heatOfReactionIonisationAtom	    -168613;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+    oxygenDissociationIonisation4
+	{
+		reactionModel		moleculeAtomDissociationIonisation;
+
+		moleculeAtomDissociationIonisationProperties
+		{
+			reactionName					oxygenDissociationIonisation4;
+		    reactants       	                (O2 O);
+		    productsOfDissociatedMolecule	    (O O);
+            productsOfIonisedMolecule	        (O2+ E-);
+            productsOfIonisedAtom               (O+ E-);
+			heatOfReactionDissociation  	    -59500;
+            heatOfReactionIonisationMolecule	-140066;
+            heatOfReactionIonisationAtom	    -158053;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+	exchangeReaction1
+	{
+		reactionModel		dissociationIonisationExchange;
+
+		dissociationIonisationExchangeProperties
+		{
+			reactionName				    forwardExchange1;
+		    reactantMolecules			    (N2 O);
+            chargedAtom                     no;
+            chargedMolecule                 no;
+            chargeExchange                  no;
+		    productsOfExchangeReaction	    (NO N);
+			productsOfDissociatedMolecule   (N N);
+            productsOfIonisedMolecule       (N2+ E-);
+            productsOfIonisedAtom           (O+ E-);
+		    heatOfReactionDiss			-113500; //in Kelvin, converted to Joules in the code
+		    heatOfReactionExch			-37483; //in Kelvin, converted to Joules in the code
+            heatOfReactionIonP          -180798;
+            heatOfReactionIonQ          -158053;
+			aCoeff						0.15; //from QKRates
+			bCoeff						0.15; //from QKRates
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+	exchangeReaction2
+	{
+		reactionModel		dissociationIonisationExchange;
+
+		dissociationIonisationExchangeProperties
+		{
+			reactionName				    forwardExchange2;
+		    reactantMolecules			    (NO O);
+            chargedAtom                     no;
+            chargedMolecule                 no;
+            chargeExchange                  no;
+		    productsOfExchangeReaction	    (O2 N);
+			productsOfDissociatedMolecule   (N O);
+            productsOfIonisedMolecule       (NO+ E-);
+            productsOfIonisedAtom           (O+ E-);
+		    heatOfReactionDiss			-75500; //in Kelvin, converted to Joules in the code
+		    heatOfReactionExch			-19693; //in Kelvin, converted to Joules in the code
+            heatOfReactionIonP          -107457;
+            heatOfReactionIonQ          -158053;
+			aCoeff						0.085; //from QKRates
+			bCoeff						0.65; //from QKRates
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+	exchangeReaction3
+	{
+		reactionModel		dissociationIonisationExchange;
+
+		dissociationIonisationExchangeProperties
+		{
+			reactionName				    reverseExchange1;
+		    reactantMolecules			    (NO N);
+            chargedAtom                     no;
+            chargedMolecule                 no;
+            chargeExchange                  no;
+		    productsOfExchangeReaction	    (N2 O);
+			productsOfDissociatedMolecule   (N O);
+            productsOfIonisedMolecule       (NO+ E-);
+            productsOfIonisedAtom           (N+ E-);
+		    heatOfReactionDiss			-75544; //in Kelvin, converted to Joules in the code
+		    heatOfReactionExch			37483; //in Kelvin, converted to Joules in the code
+            heatOfReactionIonP          -107457;
+            heatOfReactionIonQ          -168613;
+			aCoeff						0.033; //from QKRates
+			bCoeff						0.8; //from QKRates
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+	exchangeReaction4
+	{
+		reactionModel		dissociationIonisationExchange;
+
+		dissociationIonisationExchangeProperties
+		{
+			reactionName				    reverseExchange2;
+		    reactantMolecules			    (O2 N);
+            chargedAtom                     no;
+            chargedMolecule                 no;
+            chargeExchange                  no;
+		    productsOfExchangeReaction	    (NO O);
+			productsOfDissociatedMolecule   (O O);
+            productsOfIonisedMolecule       (O2+ E-);
+            productsOfIonisedAtom           (N+ E-);
+		    heatOfReactionDiss			-59500; //in Kelvin, converted to Joules in the code
+		    heatOfReactionExch			19400; //in Kelvin, converted to Joules in the code
+            heatOfReactionIonP          -140066;
+            heatOfReactionIonQ          -168613;
+			aCoeff						0.1; //from QKRates
+			bCoeff						0.1; //from QKRates
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+   nitrogenDissociationIonisation4
+	{
+		reactionModel		moleculeElectronDissociationIonisation;
+
+		moleculeElectronDissociationIonisationProperties
+		{
+			reactionName					nitrogenDissociationIonisation4;
+		    reactants       	            (N2 E-);
+		    productsOfDissociatedMolecule   (N N);
+            productsOfIonisedMolecule	    (N2+ E-);
+			heatOfReactionDissociation      -113500;
+            heatOfReactionIonisation	    -180798;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+    oxygenDissociationIonisation5
+	{
+		reactionModel		moleculeElectronDissociationIonisation;
+
+		moleculeElectronDissociationIonisationProperties
+		{
+			reactionName					oxygenDissociationIonisation5;
+		    reactants       	            (O2 E-);
+		    productsOfDissociatedMolecule   (O O);
+            productsOfIonisedMolecule	    (O2+ E-);
+			heatOfReactionDissociation      -59500;
+            heatOfReactionIonisation	    -140066;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+    niticOxideDissociationIonisation2
+	{
+		reactionModel		moleculeElectronDissociationIonisation;
+
+		moleculeElectronDissociationIonisationProperties
+		{
+			reactionName					niticOxideDissociationIonisation2;
+		    reactants       	            (NO E-);
+		    productsOfDissociatedMolecule   (N O);
+            productsOfIonisedMolecule	    (NO+ E-);
+			heatOfReactionDissociation      -75500;
+            heatOfReactionIonisation	    -107457;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+    atomicNitrogenIonisation
+	{
+		reactionModel		atomElectronIonisation;
+
+		atomElectronIonisationProperties
+		{
+			reactionName					atomicNitrogenIonisation;
+		    reactants       	            (N E-);
+            productsOfIonisedAtom   	    (N+ E-);
+            heatOfReactionIonisation	    -168613;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+    atomicOxygenIonisation
+	{
+		reactionModel		atomElectronIonisation;
+
+		atomElectronIonisationProperties
+		{
+			reactionName					atomicOxygenIonisation;
+		    reactants       	            (O E-);
+            productsOfIonisedAtom   	    (O+ E-);
+            heatOfReactionIonisation	    -158053;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+    atomicNitrogenIonisation2
+	{
+		reactionModel		atomAtomIonisationDissimilarSpecies;
+
+		atomAtomIonisationDissimilarSpeciesProperties
+		{
+			reactionName					atomicNitrogenIonisation2;
+		    reactants       	            (N N+);
+            chargedAtom                     yes;
+            productsOfIonisedAtom   	    (N+ E-);
+            heatOfReactionIonisation	    -168613;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+    atomicNitrogenIonisation3
+	{
+		reactionModel		atomAtomIonisationDissimilarSpecies;
+
+		atomAtomIonisationDissimilarSpeciesProperties
+		{
+			reactionName					atomicNitrogenIonisation2;
+		    reactants       	            (N O+);
+            chargedAtom                     yes;
+            productsOfIonisedAtom   	    (N+ E-);
+            heatOfReactionIonisation	    -168613;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+    atomicOxygenIonisation2
+	{
+		reactionModel		atomAtomIonisationDissimilarSpecies;
+
+		atomAtomIonisationDissimilarSpeciesProperties
+		{
+			reactionName					atomicOxygenIonisation2;
+		    reactants       	            (O N+);
+            chargedAtom                     yes;
+            productsOfIonisedAtom   	    (O+ E-);
+            heatOfReactionIonisation	    -158053;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+    atomicOxygenIonisation3
+	{
+		reactionModel		atomAtomIonisationDissimilarSpecies;
+
+		atomAtomIonisationDissimilarSpeciesProperties
+		{
+			reactionName					atomicOxygenIonisation3;
+		    reactants       	            (O O+);
+            chargedAtom                     yes;
+            productsOfIonisedAtom   	    (O+ E-);
+            heatOfReactionIonisation	    -158053;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+	oxygenDissociationIonisation6
+	{
+		reactionModel		moleculeIonDissociationIonisation;
+
+		moleculeIonDissociationIonisationProperties
+		{
+			reactionName					oxygenDissociationIonisation6;
+		    reactants       	            (O2 O2+);
+		    productsOfDissociatedMolecule	(O O);
+            productsOfIonisedMolecule	    (O2+ E-);
+			heatOfReactionDissociation	    -59500; //in Kelvin, converted to Joules in the code
+            heatOfReactionIonisation	    -140066;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+    nitrogenDissociationIonisation5
+	{
+		reactionModel		moleculeIonDissociationIonisation;
+
+		moleculeIonDissociationIonisationProperties
+		{
+			reactionName					nitrogenDissociationIonisation5;
+		    reactants       	            (N2 N2+);
+		    productsOfDissociatedMolecule	(N N);
+            productsOfIonisedMolecule	    (N2+ E-);
+			heatOfReactionDissociation	    -113500; //in Kelvin, converted to Joules in the code
+            heatOfReactionIonisation	    -180798;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+    nitrogenDissociationIonisation6
+	{
+		reactionModel		moleculeIonDissociationIonisation;
+
+		moleculeIonDissociationIonisationProperties
+		{
+			reactionName					nitrogenDissociationIonisation6;
+		    reactants       	            (N2 NO+);
+		    productsOfDissociatedMolecule	(N N);
+            productsOfIonisedMolecule	    (N2+ E-);
+			heatOfReactionDissociation	    -113500; //in Kelvin, converted to Joules in the code
+            heatOfReactionIonisation	    -180798;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+    nitricOxideDissociationIonisation2
+	{
+		reactionModel		moleculeIonDissociationIonisation;
+
+		moleculeIonDissociationIonisationProperties
+		{
+			reactionName					nitricOxideDissociationIonisation2;
+		    reactants       	            (NO NO+);
+		    productsOfDissociatedMolecule	(N O);
+            productsOfIonisedMolecule	    (NO+ E-);
+			heatOfReactionDissociation	    -75500; //in Kelvin, converted to Joules in the code
+            heatOfReactionIonisation	    -107457;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+    nitricOxideDissociationIonisation4
+	{
+		reactionModel		moleculeIonDissociationIonisation;
+
+		moleculeIonDissociationIonisationProperties
+		{
+			reactionName					nitricOxideDissociationIonisation4;
+		    reactants       	            (NO N2+);
+		    productsOfDissociatedMolecule	(N O);
+            productsOfIonisedMolecule	    (NO+ E-);
+			heatOfReactionDissociation	    -75500; //in Kelvin, converted to Joules in the code
+            heatOfReactionIonisation	    -107457;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+    nitricOxideDissociationIonisation4
+	{
+		reactionModel		moleculeIonDissociationIonisation;
+
+		moleculeIonDissociationIonisationProperties
+		{
+			reactionName					nitricOxideDissociationIonisation4;
+		    reactants       	            (NO N+);
+		    productsOfDissociatedMolecule	(N O);
+            productsOfIonisedMolecule	    (NO+ E-);
+			heatOfReactionDissociation	    -75500; //in Kelvin, converted to Joules in the code
+            heatOfReactionIonisation	    -107457;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+    exchangeReaction5
+	{
+		reactionModel		dissociationIonisationExchange;
+
+		dissociationIonisationExchangeProperties
+		{
+			reactionName				    forwardExchange3;
+		    reactantMolecules			    (NO+ N);
+            chargedAtom                     no;
+            chargedMolecule                 yes;
+            chargeExchange                  no;
+		    productsOfExchangeReaction	    (N2+ O);
+            productsOfIonisedAtom           (N+ E-);
+		    heatOfReactionExch			-35501; //in Kelvin, converted to Joules in the code
+            heatOfReactionIonQ          -168613;
+			aCoeff						0.05; //from QKRates
+			bCoeff						0.0; //from QKRates
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+    exchangeReaction6
+	{
+		reactionModel		dissociationIonisationExchange;
+
+		dissociationIonisationExchangeProperties
+		{
+			reactionName				    forwardExchange4;
+		    reactantMolecules			    (NO O+);
+            chargedAtom                     yes;
+            chargedMolecule                 no;
+            chargeExchange                  no;
+		    productsOfExchangeReaction	    (O2 N+);
+            productsOfDissociatedMolecule   (N O);
+            productsOfIonisedMolecule       (NO+ E-);
+		    heatOfReactionExch			-7720; //in Kelvin, converted to Joules in the code
+            heatOfReactionDiss          -75500;
+            heatOfReactionIonP          -107457;
+/*            heatOfReactionExch			0; //in Kelvin, converted to Joules in the code*/
+/*            heatOfReactionDiss          0;*/
+/*            heatOfReactionIonP          0;*/
+			aCoeff						0.0; //from QKRates
+			bCoeff						0.0; //from QKRates
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+    exchangeReaction7
+	{
+		reactionModel		dissociationIonisationExchange;
+
+		dissociationIonisationExchangeProperties
+		{
+			reactionName				        reverseExchange3;
+		    reactantMolecules			        (N2+ O);
+            chargedAtom                         no;
+            chargedMolecule                     yes;
+            chargeExchange                      yes;
+		    productsOfExchangeReaction	        (NO+ N);
+            productsOfChargeExchangeReaction    (N2 O+);
+            productsOfIonisedAtom               (O+ E-);
+		    heatOfReactionExch			    35501; //in Kelvin, converted to Joules in the code
+            heatOfReactionChargeExch        22800;
+            heatOfReactionIonQ              -158053;
+/*		    heatOfReactionExch			    0; //in Kelvin, converted to Joules in the code*/
+/*            heatOfReactionChargeExch        0;*/
+/*            heatOfReactionIonQ              0;*/
+			aCoeff						    0.02; //from QKRates
+			bCoeff						    0.8; //from QKRates
+            aCoeffChargeExchange            0.6;
+            bCoeffChargeExchange            0.35;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+    exchangeReaction8
+	{
+		reactionModel		dissociationIonisationExchange;
+
+		dissociationIonisationExchangeProperties
+		{
+			reactionName				        reverseExchange4;
+		    reactantMolecules			        (N2 O+);
+            chargedAtom                         yes;
+            chargedMolecule                     no;
+            chargeExchange                      yes;
+		    productsOfExchangeReaction	        (NO+ N);
+            productsOfChargeExchangeReaction    (N2+ O);
+            productsOfDissociatedMolecule   (N N);
+            productsOfIonisedMolecule       (N2+ E-);
+		    heatOfReactionExch			    12767; //in Kelvin, converted to Joules in the code
+            heatOfReactionChargeExch        -22800;
+            heatOfReactionDiss              -113500;
+            heatOfReactionIonP              -180798;
+/*            heatOfReactionExch			    0; //in Kelvin, converted to Joules in the code*/
+/*            heatOfReactionChargeExch        0;*/
+/*            heatOfReactionDiss              0;*/
+/*            heatOfReactionIonP              0;*/
+			aCoeff						    0.0; //from QKRates
+			bCoeff						    0.0; //from QKRates
+            aCoeffChargeExchange            0.5;
+            bCoeffChargeExchange            0.2;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+    exchangeReaction9
+	{
+		reactionModel		dissociationIonisationExchange;
+
+		dissociationIonisationExchangeProperties
+		{
+			reactionName				        reverseExchange5;
+		    reactantMolecules			        (O2+ N);
+            chargedAtom                         no;
+            chargedMolecule                     yes;
+            chargeExchange                      yes;
+		    productsOfExchangeReaction	        (NO+ O);
+            productsOfChargeExchangeReaction    (O2 N+);
+            productsOfIonisedAtom               (N+ E-);
+		    heatOfReactionExch			    28574; //in Kelvin, converted to Joules in the code
+            heatOfReactionChargeExch        -28601;
+            heatOfReactionIonQ              -168613;
+/*            heatOfReactionExch			    0; //in Kelvin, converted to Joules in the code*/
+/*            heatOfReactionChargeExch        0;*/
+/*            heatOfReactionIonQ              0;*/
+			aCoeff						    0.0; //from QKRates
+			bCoeff						    0.0; //from QKRates
+            aCoeffChargeExchange            0.02;
+            bCoeffChargeExchange            0.1;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+    exchangeReaction10
+	{
+		reactionModel		dissociationIonisationExchange;
+
+		dissociationIonisationExchangeProperties
+		{
+			reactionName				        reverseExchange6;
+		    reactantMolecules			        (O2 N+);
+            chargedAtom                         yes;
+            chargedMolecule                     no;
+            chargeExchange                      yes;
+		    productsOfExchangeReaction	        (NO O+);
+            productsOfChargeExchangeReaction    (O2+ N);
+            productsOfDissociatedMolecule       (O O);
+            productsOfIonisedMolecule           (O2+ E-);
+		    heatOfReactionExch			    26600; //in Kelvin, converted to Joules in the code
+            heatOfReactionChargeExch        28601;
+            heatOfReactionDiss              -59500;
+            heatOfReactionIonP              -140066;
+/*            heatOfReactionExch			    0; //in Kelvin, converted to Joules in the code*/
+/*            heatOfReactionChargeExch        0;*/
+/*            heatOfReactionDiss              0;*/
+/*            heatOfReactionIonP              0;*/
+			aCoeff						    0.15; //from QKRates
+			bCoeff						    0.4; //from QKRates
+            aCoeffChargeExchange            0.0;
+            bCoeffChargeExchange            0.0;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+	associativeIonisation1
+	{
+		reactionModel		forwardAssociativeIonisation;
+
+		forwardAssociativeIonisationProperties
+		{
+			reactionName					        forwardAssociativeIonisation1;
+		    reactantAtoms              	            (N N);
+		    productsOfAssociativeIonisation	        (N2+ E-);
+            productsOfIonisation                   (N+ E-);   
+            intermediateMolecule                    N2;
+			heatOfReactionRecombination		        113550; //in Kelvin, converted to Joules in the code
+            heatOfReactionIntermediateIonisation	-180798.3; //in Kelvin, converted to Joules in the code
+            heatOfReactionIonisation                -168613;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+	associativeIonisation2
+	{
+		reactionModel		forwardAssociativeIonisation;
+
+		forwardAssociativeIonisationProperties
+		{
+			reactionName					        forwardAssociativeIonisation2;
+		    reactantAtoms              	            (O O);
+		    productsOfAssociativeIonisation	        (O2+ E-);
+            productsOfIonisation                    (O+ E-);   
+            intermediateMolecule                    O2;
+			heatOfReactionRecombination		        59500; //in Kelvin, converted to Joules in the code
+            heatOfReactionIntermediateIonisation	-140066; //in Kelvin, converted to Joules in the code
+            heatOfReactionIonisation                -158053;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+	associativeIonisation3
+	{
+		reactionModel		forwardAssociativeIonisationDissimilarSpecies;
+
+		forwardAssociativeIonisationDissimilarSpeciesProperties
+		{
+			reactionName					        forwardAssociativeIonisation3;
+		    reactantAtoms              	            (N O);
+		    productsOfAssociativeIonisation	        (NO+ E-);
+            productsOfIonisationP                   (N+ E-);
+            productsOfIonisationQ                   (O+ E-);
+            intermediateMolecule                    NO;
+			heatOfReactionRecombination		        75500; //in Kelvin, converted to Joules in the code
+            heatOfReactionIntermediateIonisation	-107457.8; //in Kelvin, converted to Joules in the code
+            heatOfReactionIonisationP               -168613;
+            heatOfReactionIonisationQ               -158053;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+	associativeIonisation4
+	{
+		reactionModel		reverseAssociativeIonisation;
+
+		reverseAssociativeIonisationProperties
+		{
+			reactionName					reverseAssociativeIonisation1;
+		    reactants                 	    (NO+ E-);
+		    productsOfAssociativeIonisation	(N O);
+            intermediateMolecule            NO;
+			heatOfReactionDissociation		-75500; //in Kelvin, converted to Joules in the code
+            heatOfReactionRecombination		107457.8; //in Kelvin, converted to Joules in the code
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+	associativeIonisation5
+	{
+		reactionModel		reverseAssociativeIonisation;
+
+		reverseAssociativeIonisationProperties
+		{
+			reactionName					reverseAssociativeIonisation2;
+		    reactants              	        (O2+ E-);
+		    productsOfAssociativeIonisation	(O O);
+            intermediateMolecule            O2;
+			heatOfReactionDissociation		-59500; //in Kelvin, converted to Joules in the code
+            heatOfReactionRecombination		140066.5; //in Kelvin, converted to Joules in the code
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+	associativeIonisation6
+	{
+		reactionModel		reverseAssociativeIonisation;
+
+		reverseAssociativeIonisationProperties
+		{
+			reactionName					reverseAssociativeIonisation3;
+		    reactants                 	    (N2+ E-);
+		    productsOfAssociativeIonisation	(N N);
+            intermediateMolecule            N2;
+			heatOfReactionDissociation		-113550; //in Kelvin, converted to Joules in the code
+            heatOfReactionRecombination		180798.3; //in Kelvin, converted to Joules in the code
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+	chargeExchange1
+	{
+		reactionModel		chargeExchange;
+
+		chargeExchangeProperties
+		{
+			reactionName					forwardChargeExchange1;
+		    reactants              	        (N2 O2+);
+		    chargeExchangeProducts          (O2 N2+);
+            dissociationProducts            (N N);
+            ionisationProducts              (N2+ E-);
+			heatOfReactionExchange  		-40699; //in Kelvin, converted to Joules in the code
+            dissociationPossible            yes;
+            heatOfReactionDissociation      -113500;
+            heatOfReactionIonisation	    -180798;
+            aCoeff                          0.05;
+            bCoeff                          0.55;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+	chargeExchange2
+	{
+		reactionModel		chargeExchange;
+
+		chargeExchangeProperties
+		{
+			reactionName					forwardChargeExchange2;
+		    reactants              	        (N2 N+);
+		    chargeExchangeProducts          (N2+ N);
+            dissociationProducts            (N N);
+            ionisationProducts              (N2+ E-);
+			heatOfReactionExchange  		-12200; //in Kelvin, converted to Joules in the code
+            dissociationPossible            yes;
+            heatOfReactionDissociation      -113500;
+            heatOfReactionIonisation	    -180798;
+            aCoeff                          0.4;
+            bCoeff                          0.1;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+	chargeExchange3
+	{
+		reactionModel		chargeExchange;
+
+		chargeExchangeProperties
+		{
+			reactionName					forwardChargeExchange3;
+		    reactants              	        (O2 NO+);
+		    chargeExchangeProducts          (NO O2+);
+            dissociationProducts            (O O);
+            ionisationProducts              (O2+ E-);
+			heatOfReactionExchange  		-32601; //in Kelvin, converted to Joules in the code
+            dissociationPossible            yes;
+            heatOfReactionDissociation      -59500;
+            heatOfReactionIonisation	    -140066;
+            aCoeff                          0.0;
+            bCoeff                          0.0;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+	chargeExchange4
+	{
+		reactionModel		chargeExchange;
+
+		chargeExchangeProperties
+		{
+			reactionName					forwardChargeExchange4;
+		    reactants              	        (O O2+);
+		    chargeExchangeProducts          (O2 O+);
+            ionisationProducts              (O+ E-);
+            dissociationPossible             no;
+			heatOfReactionExchange  		-18000; //in Kelvin, converted to Joules in the code
+            heatOfReactionIonisation	    -158053;
+            aCoeff                          0.7;
+            bCoeff                          0.15;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+	chargeExchange5
+	{
+		reactionModel		chargeExchange;
+
+		chargeExchangeProperties
+		{
+			reactionName					reverseChargeExchange1;
+		    reactants              	        (O2 N2+);
+		    chargeExchangeProducts          (N2 O2+);
+            dissociationProducts            (O O);
+            ionisationProducts              (O2+ E-);
+            dissociationPossible             yes;
+			heatOfReactionExchange  		40699; //in Kelvin, converted to Joules in the code
+            heatOfReactionDissociation      -59500;
+            heatOfReactionIonisation	    -140066;
+            aCoeff                          0.2;
+            bCoeff                          0.3;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+	chargeExchange6
+	{
+		reactionModel		chargeExchange;
+
+		chargeExchangeProperties
+		{
+			reactionName					reverseChargeExchange2;
+		    reactants              	        (N N2+);
+            chargeExchangeProducts          (N2 N+);
+            ionisationProducts              (N+ E-);
+            dissociationPossible             no;
+			heatOfReactionExchange  		12200; //in Kelvin, converted to Joules in the code
+            heatOfReactionIonisation	    -168613;
+            aCoeff                          0.4;
+            bCoeff                          0.25;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+	chargeExchange7
+	{
+		reactionModel		chargeExchange;
+
+		chargeExchangeProperties
+		{
+			reactionName					reverseChargeExchange3;
+		    reactants              	        (NO O2+);
+		    chargeExchangeProducts          (O2 NO+);
+            dissociationProducts            (N O);
+            ionisationProducts              (NO+ E-);
+            dissociationPossible             yes;
+			heatOfReactionExchange  		39119; //in Kelvin, converted to Joules in the code
+            heatOfReactionDissociation      -75500;
+            heatOfReactionIonisation	    -107457;
+            aCoeff                          0.07;
+            bCoeff                          0.5;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+	chargeExchange5
+	{
+		reactionModel		chargeExchange;
+
+		chargeExchangeProperties
+		{
+			reactionName					reverseChargeExchange1;
+		    reactants              	        (O2 O+);
+		    chargeExchangeProducts          (O2+ O);
+            dissociationProducts            (O O);
+            ionisationProducts              (O2+ E-);
+            dissociationPossible             yes;
+			heatOfReactionExchange  		18000; //in Kelvin, converted to Joules in the code
+            heatOfReactionDissociation      -59500;
+            heatOfReactionIonisation	    -140066;
+            aCoeff                          0.5;
+            bCoeff                          0.1;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+
+
+	atomIonIonisation1
+	{
+		reactionModel		atomIonIonisation;
+
+		atomIonIonisationProperties
+		{
+			reactionName					atomIonIonisation1;
+		    reactants              	        (O NO+);
+		    productsOfIonisedAtom           (O+ E-);
+            heatOfReactionIonisation	    -158053;
+		    allowSplitting			yes;
+			writeRatesToTerminal	no;
+       }
+	}
+);
+
+

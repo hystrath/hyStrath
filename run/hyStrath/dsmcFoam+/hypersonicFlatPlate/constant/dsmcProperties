@@ -1,0 +1,80 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.6                                   |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      dsmcProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+// General Properties
+// ~~~~~~~~~~~~~~~~~~
+
+nEquivalentParticles            4.645e9;
+
+
+// Binary Collision Model
+// ~~~~~~~~~~~~~~~~~~~~~~
+
+BinaryCollisionModel            LarsenBorgnakkeVariableHardSphere;
+
+LarsenBorgnakkeVariableHardSphereCoeffs
+{
+    Tref                        	        273;
+    rotationalRelaxationCollisionNumber     5.0;
+    electronicRelaxationCollisionNumber     500.0;
+}
+
+// Collision Partner Selection Model
+// ~~~~~~~~~~~~~~~~~~~~~~
+
+collisionPartnerSelectionModel   		noTimeCounter;  
+
+
+// Axisymmetric Properties
+// ~~~~~~~~~~~~~~~~~~~~~~
+
+axisymmetricSimulation          no;
+
+
+
+// Molecular species
+// ~~~~~~~~~~~~~~~~~
+
+typeIdList                      (N2);
+
+moleculeProperties
+
+{
+    N2
+    {
+        mass                              		46.5e-27;
+        diameter                          		4.17e-10;
+        rotationalDegreesOfFreedom        		2;
+        vibrationalModes       		            0;
+        omega                             		0.74;
+        alpha                                   1.0;
+        characteristicVibrationalTemperature	();
+		charDissQuantumLevel					();
+        dissociationTemperature					();
+        ionisationTemperature                   0;
+        numberOfElectronicLevels                1;
+        electronicEnergyList                    (0);
+        degeneracyList                          (1);
+        charge                                  0;
+        Zref									(); //calculated from the Zuppardi2010 paper = 52500
+        referenceTempForZref                    ();
+    } 
+}
+
+
+// ************************************************************************* //

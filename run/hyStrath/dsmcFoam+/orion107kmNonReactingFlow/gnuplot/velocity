@@ -1,0 +1,24 @@
+set term post enh color eps "Times-Roman" 24
+set output "gnuplot/velocityNonReacting.eps"
+
+set size 1,1
+set origin 0,0
+
+set style line 1 lt 1 lw 3 pt 7 lc rgb "black"
+set style line 2 lt 2 lw 3 pt 7 lc rgb "black"
+
+set key font "Times-Roman, 18"
+
+set key at -1.4,6000
+
+set xlabel "X (m)" font "Times-Roman,24"
+set ylabel "Velocity magnitude (m/s)" font "Times-Roman,24"
+
+set xrange[-3.7:-1.35]
+set yrange[0:7000]
+
+set mxtics 5
+set mytics 5
+
+
+plot "velocity.dat" u 1:2 axis x1y1 w l ls 1 t "{/Times-Italic dsmcFoam+}"

@@ -1,0 +1,75 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  dev                                   |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      dsmcProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+// General Properties
+// ~~~~~~~~~~~~~~~~~~
+
+nEquivalentParticles            0.6e12;
+
+
+// Axisymmetric Properties
+// ~~~~~~~~~~~~~~~~~~
+
+axisymmetricSimulation      false;
+
+
+// Binary Collision Model
+// ~~~~~~~~~~~~~~~~~~~~~~
+
+BinaryCollisionModel            VariableHardSphere;
+
+VariableHardSphereCoeffs
+{
+    Tref        273;
+}
+
+// Collision Partner Selection Model
+// ~~~~~~~~~~~~~~~~~~~~~~~
+
+collisionPartnerSelectionModel   		 noTimeCounter;
+
+
+// Molecular species
+// ~~~~~~~~~~~~~~~~~
+
+typeIdList                      (Ar);
+
+moleculeProperties
+{
+    Ar
+    {
+        mass                            		66.3e-27;
+        diameter                        		4.17e-10;
+        rotationalDegreesOfFreedom        		     0;
+		    vibrationalModes        				           0;    
+        omega                           		    0.81;
+        alpha                                   1.0;
+		    characteristicVibrationalTemperature	  ();
+        dissociationTemperature            		  ();
+        ionisationTemperature            		     0;
+		    charDissQuantumLevel			          		();
+		    Zref 									                  ();
+		    referenceTempForZref                    ();
+        charge                                  0;
+        numberOfElectronicLevels                1;
+        electronicEnergyList                    (0);
+        degeneracyList                          (1);
+    }
+}
+
+// ************************************************************************* //
