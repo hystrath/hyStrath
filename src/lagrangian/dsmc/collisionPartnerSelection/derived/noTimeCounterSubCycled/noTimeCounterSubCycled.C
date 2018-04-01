@@ -143,7 +143,7 @@ void noTimeCounterSubCycled::collide()
 
                 scalar sigmaTcRMax = cloud_.sigmaTcRMax()[cellI];
 
-                const scalar& RWF = cloud_.getRWF_cell(cellI);
+                const scalar RWF = cloud_.RWF(cellI, true);
                 
                 scalar selectedPairs =
                     cloud_.collisionSelectionRemainder()[cellI]

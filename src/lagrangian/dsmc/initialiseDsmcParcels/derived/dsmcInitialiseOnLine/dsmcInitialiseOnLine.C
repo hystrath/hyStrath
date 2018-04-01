@@ -176,7 +176,7 @@ void dsmcInitialiseOnLine::setInitialConfiguration()
 
             U += velocity;
             
-            label newParcel = 0;
+            label newParcel = -1;
             
             label classification = 0;
             
@@ -283,7 +283,7 @@ void dsmcInitialiseOnLine::setInitialConfiguration()
 // 
 //                     U += velocity;
 //                     
-//                     label newParcel = 0;
+//                     label newParcel = -1;
 //                     
 //                     label classification = 0;
 // 

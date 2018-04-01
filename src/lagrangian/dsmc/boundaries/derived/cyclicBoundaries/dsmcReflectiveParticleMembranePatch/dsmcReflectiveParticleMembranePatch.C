@@ -37,12 +37,138 @@ namespace Foam
 
 defineTypeNameAndDebug(dsmcReflectiveParticleMembranePatch, 0);
 
-addToRunTimeSelectionTable(dsmcCyclicBoundary, dsmcReflectiveParticleMembranePatch, dictionary);
+addToRunTimeSelectionTable
+(
+    dsmcCyclicBoundary,
+    dsmcReflectiveParticleMembranePatch,
+    dictionary
+);
 
+
+// * * * * * * * * * * * Protected member functions  * * * * * * * * * * * * //
 
 void dsmcReflectiveParticleMembranePatch::readProperties()
 {
-    p_ = (readScalar(propsDict_.lookup("reflectionProbability")));
+    /*specularReflectionProb_ = 
+        readScalar(propsDict_.lookup("reflectionProbability"));*/
+}
+
+
+void dsmcReflectiveParticleMembranePatch::setProperties()
+{
+    const List<word> molecules (propsDict_.lookup("typeIds"));
+
+    if(molecules.size() == 0)
+    {
+         FatalErrorIn("dsmcReflectiveParticleMembranePatch::setProperties()")
+            << "Cannot have zero typeIds." << nl << "in: "
+            << mesh_.time().system()/"boundariesDict"
+            << exit(FatalError);
+    }
+
+    DynamicList<word> moleculesReduced(0);
+
+    forAll(molecules, i)
+    {
+        const word& moleculeName(molecules[i]);
+
+        if(findIndex(moleculesReduced, moleculeName) == -1)
+        {
+            moleculesReduced.append(moleculeName);
+        }
+    }
+
+    moleculesReduced.shrink();
+
+    typeIds_.setSize(moleculesReduced.size(), -1);
+
+    forAll(moleculesReduced, i)
+    {
+        const word& moleculeName(moleculesReduced[i]);
+
+        const label typeId(findIndex(cloud_.typeIdList(), moleculeName));
+
+        if(typeId == -1)
+        {
+            FatalErrorIn
+            (
+                "dsmcReflectiveParticleMembranePatch::setProperties()"
+            )
+                << "Cannot find typeId: " << moleculeName << nl << "in: "
+                << mesh_.time().system()/"boundariesDict"
+                << exit(FatalError);
+        }
+
+        typeIds_[i] = typeId;
+    }
+    
+    specularReflectionProbs_.clear();
+
+    specularReflectionProbs_.setSize(typeIds_.size(), 0.0);
+
+    forAll(specularReflectionProbs_, i)
+    {
+        specularReflectionProbs_[i] = readScalar
+        (
+            propsDict_.subDict("reflectionProbabilities")
+                .lookup(moleculesReduced[i])
+        );
+    }
+}
+
+
+vector dsmcReflectiveParticleMembranePatch::findOriginalPosition
+(
+    const dsmcParcel& p, 
+    const label fI
+)
+{
+    const polyPatch& patch = mesh_.boundaryMesh()[patchId_];
+    const polyPatch& patchN = mesh_.boundaryMesh()[neighbPatchId_];
+    
+    //Info << "patchId_ " << tab << patchId_ << tab << "neighbPatchId_ " << tab << neighbPatchId_ << endl;
+    //Info << "fC " << tab << patch.faceCentres()[fB] << tab << "fCnei " << tab << patchN.faceCentres()[fB] << endl;
+    
+    vector orgPosition = p.position();
+                
+    // Limitation: the cyclic patches face centre locations must
+    // only differ by one component
+                
+    if
+    (
+        patchN.faceCentres()[fI].x() != 
+            patch.faceCentres()[fI].x()
+     && 
+        patchN.faceCentres()[fI].x() !=  
+            p.tracked().currentPosition().x()
+    )
+    {
+        orgPosition.x() = patch.faceCentres()[fI].x();
+    }
+    else if
+    (
+        patchN.faceCentres()[fI].y() != 
+            patch.faceCentres()[fI].y()
+      && 
+        patchN.faceCentres()[fI].y() !=  
+            p.tracked().currentPosition().y()      
+    )
+    {
+        orgPosition.y() = patch.faceCentres()[fI].y();
+    }
+    else if
+    (
+        patchN.faceCentres()[fI].z() != 
+            patch.faceCentres()[fI].z()
+      && 
+        patchN.faceCentres()[fI].z() !=  
+            p.tracked().currentPosition().z() 
+    )
+    {
+        orgPosition.z() = patch.faceCentres()[fI].z();
+    }
+
+    return orgPosition;
 }
 
 
@@ -59,13 +185,20 @@ dsmcReflectiveParticleMembranePatch::dsmcReflectiveParticleMembranePatch
 :
     dsmcCyclicBoundary(t, mesh, cloud, dict),
     propsDict_(dict.subDict(typeName + "Properties")),
-    p_(readScalar(propsDict_.lookup("reflectionProbability"))),
+    typeIds_(),
+    specularReflectionProb_
+    (
+        0 //readScalar(propsDict_.lookup("reflectionProbability"))
+    ),
+    specularReflectionProbs_(),
     nReflections_(0),
     nRejections_(0)
 
 {
     writeInTimeDir_ = false;
     writeInCase_ = false;
+    
+    setProperties();
 }
 
 
@@ -77,7 +210,6 @@ dsmcReflectiveParticleMembranePatch::~dsmcReflectiveParticleMembranePatch()
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
-
 
 void dsmcReflectiveParticleMembranePatch::calculateProperties()
 {
@@ -94,118 +226,167 @@ void dsmcReflectiveParticleMembranePatch::calculateProperties()
     {
         Info<< "no Reflections: " << nReflections 
             << ", no Rejections: " << nRejections
-            << " ratio relfections/(reflections+rejections):" 
+            << ", ratio reflections/(reflections+rejections): " 
             << scalar(nReflections)/scalar(nReflections+nRejections)
             << endl;
     }
 }
 
+
+
 void dsmcReflectiveParticleMembranePatch::initialConfiguration()
 {}
 
 
-
 void dsmcReflectiveParticleMembranePatch::controlMol
 (
-    dsmcParcel& mol,
+    dsmcParcel& p,
     dsmcParcel::trackingData& td
 )
 {
-    const label& faceI = mol.face();
+    const label& iD = findIndex(typeIds_, p.typeId()); // NEW VINCENT
+    
+    const label faceI = p.face();
 
     vector nF = mesh_.faceAreas()[faceI];
-//     const vector& fC  = mesh_.faceCentres()[faceI];
-//     const label f = findIndex(controlPatch(), faceI);
-
-//     bool reflect = false;
-
-//     label f = findIndex(faces_, faceI);
-    label fA = findIndex(coupledFacesA_, faceI);
-    label fB = findIndex(coupledFacesB_, faceI);
-
     nF /= mag(nF);
+
+    const label fA = findIndex(coupledFacesA_, faceI);
+    const label fB = findIndex(coupledFacesB_, faceI);
+    
+    //Info << "fA " << tab << fA << tab << "fB " << tab << fB << endl;
 
     Random& rndGen = cloud_.rndGen();
 
-    scalar d = nF & mol.U();
-
-/*            Info<< "parcel to reflect at pos: " 
-                << mol.position() << ", nF: " << nF
-                << " old velocity: " << mol.U() 
-                << " faceI: " << faceI
-                << " fA: " << fA
-                << " fB: " << fB
-                << " fB: " << fB
-                << endl; */   
-
+    const scalar d = nF & p.U();
 
     if(d > 0) // processor boundary
     {
+        //Info << "processor boundary" << endl;
+        
         if(fA != -1)
         {
-            scalar pRandom = rndGen.scalar01();
+            const scalar pRandom = rndGen.scalar01();
 
-            if( pRandom <= p_ ) // reflect molecule
+            //if(specularReflectionProb_ > pRandom)
+            if(specularReflectionProbs_[iD] > pRandom)
             {
-                scalar Un = mol.U() & nF;
+                //- particle specularly reflected
+                const scalar Un = p.U() & nF;
     
-                mol.U() -= 2.0*Un*nF;
+                p.U() -= 2.0*Un*nF;
 
                 td.switchProcessor = false;
 
                 nReflections_++;
-
-//                 Pout<< "Reflected!!: mol at pos: " 
-//                     << mol.position() << ", nF: " << nF
-//                     << " tracking number: " << mol.trackingNumber()
-//                     << " new velocity: " << mol.v()
-//                     << endl;
-
+                
+                if (cloud_.measureInstantaneousMSD()) // TODO
+                {
+                    Info << "Incorrect calculation" << endl;
+                    if (p.isTracked())
+                    {
+                        if (p.tracked().inPatchId() == -1)
+                        {
+                            const vector& orgPosition = findOriginalPosition(p, fA);
+                            
+                            p.tracked().updateDistanceTravelled(orgPosition);
+                            
+                            p.tracked().performSpecularReflectionOnDistanceTravelled(nF);
+                        }
+                    }
+                }
             }
             else
             {
-
+                //- particle passing through the membrane
                 nRejections_++;
+                
+                if (cloud_.measureInstantaneousMSD())
+                {
+                    if (p.isTracked())
+                    {
+                        if (p.tracked().inPatchId() == -1)
+                        {
+                            const vector& orgPosition = findOriginalPosition(p, fA);
+                            
+                            p.tracked().updateDistanceTravelled(orgPosition);
+                            
+                            p.tracked().updateCurrentPosition(p.position());
+                        }
+                    }
+                }
             }
         }
     }
-    else if (d < 0) // cyclic (non-processor boundary)
+    else if(d < 0) // cyclic (non-processor boundary)
     {
         if(fB != -1)
         {    
-//             Info<< " to reflect mol at pos: " 
-//                 << mol.position() << ", nF: " << nF
-//                 << " old velocity: " << mol.U() 
-//                 << " faceI: " << faceI
-//                 << " fA: " << fA
-//                 << " fB: " << fB
-//                 << endl;
+            const scalar pRandom = rndGen.scalar01();
 
-            scalar pRandom = rndGen.scalar01();
-
-            if( pRandom <= p_ ) // reflect molecule
+            //if(specularReflectionProb_ > pRandom)
+            if(specularReflectionProbs_[iD] > pRandom)
             {
-                scalar Un = mol.U() & nF;
+                //- particle specularly reflected
+                const scalar Un = p.U() & nF;
     
-                mol.U() -= 2.0*Un*nF;
+                p.U() -= 2.0*Un*nF;
 
                 nReflections_++;
-
-//                 Info<< "Reflected!!: mol at pos: " 
-//                     << mol.position() 
-//                     << " new velocity: " << mol.U()
-//                     << endl;
+                
+                if (cloud_.measureInstantaneousMSD()) // TODO
+                {
+                    Info << "Incorrect calculation" << endl;
+                    if (p.isTracked())
+                    {
+                        if (p.tracked().inPatchId() == -1)
+                        {
+                            const vector& orgPosition = findOriginalPosition(p, fB);
+                            
+                            /*Info << "cur " << tab << p.tracked().currentPosition() << tab 
+                                 << "org " << tab << orgPosition << tab
+                                 << "pos " << tab << p.position() << endl;*/
+                            
+                            p.tracked().updateDistanceTravelled(orgPosition);
+                            
+                            //p.tracked().performSpecularReflectionOnDistanceTravelled(nF);
+                        }
+                    }
+                }
             }
             else
             {
-
+                //- particle passing through the membrane
                 nRejections_++;
+                
+                if (cloud_.measureInstantaneousMSD())
+                {
+                    if (p.isTracked())
+                    {
+                        if (p.tracked().inPatchId() == -1)
+                        {
+                            const vector& orgPosition = findOriginalPosition(p, fB);
+                            
+                            //Info << "pos " << tab << p.position() << endl;
+                            //Info << "orgPosition " << tab << orgPosition << endl;
+                            
+                            p.tracked().updateDistanceTravelled(orgPosition);
+                            
+                            p.tracked().updateCurrentPosition(p.position());
+                        }
+                    }
+                }
             }
         }
+        /*else // NEW VINCENT
+        {
+            if(p.isTracked())
+            {
+                p.deleteTracked();
+            }
+        }*/
     }
-
 }
-
 
 
 void dsmcReflectiveParticleMembranePatch::output
@@ -213,20 +394,19 @@ void dsmcReflectiveParticleMembranePatch::output
     const fileName& fixedPathName,
     const fileName& timePath
 )
-{
-
-}
+{}
 
 
-void dsmcReflectiveParticleMembranePatch::updateProperties(const dictionary& newDict)
+void dsmcReflectiveParticleMembranePatch::updateProperties
+(
+    const dictionary& newDict
+)
 {
     //- the main properties should be updated first
     updateBoundaryProperties(newDict);
 
     readProperties();
 }
-
-
 
 
 } // End namespace Foam

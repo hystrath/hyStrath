@@ -79,6 +79,31 @@ inline Foam::scalar Foam::dsmcCloud::maxRWF() const
 }
 
 
+inline Foam::scalar Foam::dsmcCloud::RWF
+(
+    const label celli,
+    const bool mixedRWM
+) const
+{
+    if (rWMethod_ == "mixed" and mixedRWM)
+    {
+        return getRWF_cell(celli, mixedRWM);
+    }
+    
+    return RWF_[celli];
+}
+
+
+inline Foam::scalar Foam::dsmcCloud::pRWF
+(
+    const label patchi,
+    const label facei
+) const
+{
+    return RWF_.boundaryField()[patchi][facei];
+}
+
+
 inline bool Foam::dsmcCloud::axisymmetric() const
 {
     return axisymmetric_;
@@ -226,12 +251,8 @@ inline Foam::dsmcReactions& Foam::dsmcCloud::reactions()
 
 inline Foam::scalarList Foam::dsmcCloud::infoMeasurements()
 {
-    scalarList infoMeasurements(9, 0.0);
+    scalarList infoMeasurements(7, 0.0);
 
-    label counterTracked = 0;
-    scalar mSD = 0.0;
-    scalar Deff = 0.0;
-    
     forAllIter(dsmcCloud, *this, iter)
     {
         dsmcParcel& p = iter();
@@ -261,34 +282,11 @@ inline Foam::scalarList Foam::dsmcCloud::infoMeasurements()
         {
             infoMeasurements[6]++;
         }
-        
-        if(measureEffectiveDiffusivity_)
-        {    
-            mSD += measureMeanSquareDisplacement(p);
-            Deff += measureEffectiveDiffusivity(counterTracked, p);
-        }
     }
     
     for(int iM=0; iM<=6; iM++)
     {
         infoMeasurements[iM] *= nParticle_;
-    }
-    
-    if(measureEffectiveDiffusivity_)
-    {
-        Info << "mSD:: " << mSD << endl;
-        Info << "counterTracked:: " << counterTracked << endl;
-        //reduce(mSD, sumOp<scalar>());
-        reduce(counterTracked, sumOp<label>());
-        
-        Info << "mSD:: " << mSD << endl;
-        Info << "counterTracked:: " << counterTracked << endl;
-        
-        infoMeasurements[7] = mSD/max(counterTracked, 1);
-        
-        Info << "infoMeasurements[7]:: " << infoMeasurements[7] << endl;
-        
-        infoMeasurements[8] = Deff/max(counterTracked, 1);
     }
     
     return infoMeasurements;
@@ -384,6 +382,18 @@ inline const Foam::cellMeasurements&
 Foam::dsmcCloud::cellPropMeasurements() const
 {
     return cellMeas_;
+}
+
+
+inline bool Foam::dsmcCloud::measureMediumProperties() const
+{
+    return measureMediumProperties_;
+}
+
+
+inline bool Foam::dsmcCloud::measureInstantaneousMSD() const
+{
+    return measureInstantaneousMSD_;
 }
 
 

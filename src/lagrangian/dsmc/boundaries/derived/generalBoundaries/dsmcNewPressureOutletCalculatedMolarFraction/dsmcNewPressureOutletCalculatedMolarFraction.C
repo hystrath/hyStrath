@@ -316,9 +316,9 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsBeforeMove()
                 
                 label ELevel = 0.0;
                 
-                label newParcel = 1;
+                label newParcel = patchId();
                 
-                const scalar& RWF = cloud_.getRWF_cell(cellI);
+                const scalar& RWF = cloud_.RWF(cellI); //cloud_.getRWF_cell(cellI);
               
                 cloud_.addNewParcel
                 (
@@ -634,7 +634,7 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsAfterCollisions
             )
             /(2.0*sqrtPi*cloud_.nParticle());   */ 
 
-            const scalar& RWF = cloud_.getRWF_face(faceI);
+            const scalar& RWF = cloud_.pRWF(patchId_, f); //cloud_.getRWF_face(faceI);
                 
             accumulatedParcelsToInsert_[iD][f] += 
             moleFractions_[iD][f]*

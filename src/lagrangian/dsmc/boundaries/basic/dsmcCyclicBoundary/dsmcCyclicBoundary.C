@@ -101,7 +101,7 @@ dsmcCyclicBoundary::dsmcCyclicBoundary
     }
 
     const cyclicPolyPatch& cyclicPatch =
-                    refCast<const cyclicPolyPatch>(patch);
+        refCast<const cyclicPolyPatch>(patch);
 
     neighbPatchName_ = cyclicPatch.neighbPatchName();
 
@@ -118,7 +118,6 @@ dsmcCyclicBoundary::dsmcCyclicBoundary
 
 void dsmcCyclicBoundary::getCoupledFaces(const polyMesh& mesh)
 {
-
     // in parallel, openFOAM replaces cyclic boundaries with processor boundaries
     // if processor boundaries coincide with cyclic boundaries. We therefore need
     // to do the following corrections to get the correct faces on the selected
@@ -287,9 +286,9 @@ autoPtr<dsmcCyclicBoundary> dsmcCyclicBoundary::New
     }
 
     return autoPtr<dsmcCyclicBoundary>
-	(
-		cstrIter()(t, mesh, cloud, dict)
-	);
+	  (
+		    cstrIter()(t, mesh, cloud, dict)
+	  );
 }
 
 
@@ -297,6 +296,7 @@ autoPtr<dsmcCyclicBoundary> dsmcCyclicBoundary::New
 
 dsmcCyclicBoundary::~dsmcCyclicBoundary()
 {}
+
 
 void dsmcCyclicBoundary::updateBoundaryProperties
 (
@@ -306,9 +306,10 @@ void dsmcCyclicBoundary::updateBoundaryProperties
     boundaryDict_ = newDict.subDict("cyclicBoundaryProperties");
 }
 
+
 void dsmcCyclicBoundary::setNewBoundaryFields()
 {
-const word patchName = boundaryDict_.lookup("patchName");
+    const word patchName = boundaryDict_.lookup("patchName");
     patchName_ = patchName;
 
     //- confirm that the patch exists on the mesh

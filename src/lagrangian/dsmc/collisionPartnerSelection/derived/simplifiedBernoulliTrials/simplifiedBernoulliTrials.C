@@ -113,7 +113,7 @@ void simplifiedBernoulliTrials::collide()
         {   
             scalar nParticle = cloud_.nParticle();
             
-            const scalar& RWF = cloud_.getRWF_cell(cellI);
+            const scalar RWF = cloud_.RWF(cellI, true);
             
             nParticle *= RWF;
             

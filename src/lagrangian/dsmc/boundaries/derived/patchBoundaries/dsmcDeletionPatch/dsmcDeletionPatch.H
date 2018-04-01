@@ -107,16 +107,16 @@ public:
 
         //- Construct from components
         dsmcDeletionPatch
-		(
+		    (
             Time& t,
             const polyMesh& mesh,
             dsmcCloud& cloud,
             const dictionary& dict
-		);
+		    );
 
     // Destructor
 
-	~dsmcDeletionPatch();
+	    ~dsmcDeletionPatch();
 
 
     // Member Functions
@@ -141,7 +141,7 @@ public:
 
 
 
-        // Access
+    // Access
 
 
 

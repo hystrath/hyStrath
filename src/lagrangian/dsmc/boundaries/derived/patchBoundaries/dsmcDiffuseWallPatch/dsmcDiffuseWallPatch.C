@@ -127,13 +127,24 @@ void dsmcDiffuseWallPatch::performDiffuseReflection
             typeId
         );   
     
-    if(localVelocity != vector::zero)
+    if (localVelocity != vector::zero)
     {
         U += localVelocity;
     }
     else
     {
         U += velocity_;
+    }
+    
+    if (cloud_.measureMediumProperties())
+    {
+        if (p.isTracked())
+        {
+            if (p.tracked().inPatchId() != -1)
+            {
+                p.tracked().updateTotalDistanceTravelled(p.position());
+            }
+        }
     }
 }
 

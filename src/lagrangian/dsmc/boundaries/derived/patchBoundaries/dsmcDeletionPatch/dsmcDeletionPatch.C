@@ -150,7 +150,10 @@ void dsmcDeletionPatch::controlParticle
         //const scalar& massI = constProp.mass();
         //massFlux_ += massI;
 
+        cloud_.updateMediumPropertiesMeasurement(p, patchId());
+        
         td.keepParticle = false;
+        
 //     }
 //     else // reflect
 //     {

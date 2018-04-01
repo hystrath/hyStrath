@@ -102,35 +102,73 @@ private:
         //- Number of real atoms/molecules represented by a parcel
         scalar nParticle_;
         
+        
       //- Axisymmetric data
       
         //- Bool to identify if this is an axisymmetric simulation
         //  Movements dealt with differently if true
         bool axisymmetric_;
         
-        //- Bool to indicate the radial weighting method 
-        //  True: particle based, False: cell-centre based (default)
-        bool rWMethod_; 
+        //- Radial weighting method employed
+        //  Default: "cell", other options: "particle", "mixed"
+        word rWMethod_; 
         
-        //- Axis of revolution in the case of an axisymmetric simulation
+        //- Axis of revolution
         //  Default: x-axis, i.e., component 0
         label revolutionAxis_;
         
-        //- Radial extent of the domain, needed for axisymmetric
-        //  simulations
+        //- Polar axis
+        //  Default: (revolutionAxis_ + 1)%3
+        label polarAxis_;
+        
+        //- Angular coordinate
+        //  Default: (revolutionAxis_ + 2)%3
+        label angularCoordinate_;
+        
+        //- Radial extent of the domain
         scalar radialExtent_;
         
-        //- Maximum radial scaling factor, needed for axisymmetric
-        //  simulations
+        //- Maximum radial scaling factor
         scalar maxRWF_;
         
+        //- Radial weighting factor field
+        volScalarField RWF_;
         
-        //- Bool to identify is the effective diffusivity should be computed
-        //  and scalar to indicate the fraction of the dsmcCloud that should 
-        //  be used
-        bool measureEffectiveDiffusivity_;
         
-        scalar seedTrackingProbability_;
+    //- Porous medium properties and mean squared displacement measurements
+    
+        //- Bool to start measuring macroscopic medium properties
+        //  (mean distance travelled, transit time, tortuosity)
+        bool measureMediumProperties_;
+        
+        //- Bool to start measuring the instantaneous mean squared displacement
+        bool measureInstantaneousMSD_;
+        
+        //- Indicate the fraction of the dsmcCloud that should be used
+        scalar trackingProbability_;
+        
+        //- Map associating inflow patches with relevant outflow patches
+        wordHashSet tracerPatchNamesMap_;
+        
+        //- Dimensionality of the problem (i.e., 1: 1D, 2: 2D or 1: 3D)
+        label dimensionality_;
+        
+        //- Average flow transit time for all tracked parcels recorded 
+        scalar mediumTransitTime_;
+        
+        //- Average total distance travelled by all tracked parcels recorded
+        scalar mediumTotalDistanceTravelled_;
+        
+        //- Average tortuosity measured from all tracked parcels recorded
+        scalar mediumTortuosity_;
+        
+        //- Number of tracked parcels exiting through wrong patches
+        label nLooping_;
+        
+        //- Time spent by the tracked parcels referred to as 'looping'
+        scalar timeLooping_;
+        
+
         
         //- Write out the information to terminal every nTerminalOutputs
         label nTerminalOutputs_;
@@ -177,38 +215,39 @@ private:
         //- Random number generator
         Random rndGen_;
 
-        //- controllers
+        //- Controllers
         dsmcControllers controllers_;
         
-        //- load balancing
+        //- Load balancing
         dsmcDynamicLoadBalancing dynamicLoadBalancing_;
 
-        //- boundary measurements
+        //- Boundary measurements
         boundaryMeasurements boundaryMeas_;
         
-        //- measurement fields
+        //- Measurement fields
         //dsmcStandardFields standardFields_;
         
         dsmcFieldProperties fields_; 
 
-        //- boundaries
+        //- Boundaries
         dsmcBoundaries boundaries_;
 
-
-        // flux-face tracking 
+        //- Flux-face tracking 
         dsmcFaceTracker trackingInfo_;
 
-        // References to the cloud sub-models
+
+      // References to the cloud sub-models
 
         //- Binary collision model
         autoPtr<BinaryCollisionModel> binaryCollisionModel_;
         
-        // - Collision selection routine model
+        //- Collision selection routine model
         autoPtr<collisionPartnerSelection> collisionPartnerSelectionModel_;
 
+        //- Chemical reactions
         dsmcReactions reactions_;
         
-        //used to calculate mean collision separation
+        //- Calculation of the mean collision separation
         cellMeasurements cellMeas_;
 
         
@@ -221,7 +260,7 @@ private:
             DynamicList<label>& candidatesInCell
         );
 
-        // whenever you pick from the candidate list 
+        // Whenever you pick from the candidate list 
         // always update the candidate sublist
         void updateCandidateSubList
         (
@@ -253,10 +292,10 @@ private:
         //- When mesh has changed, update the measurement tools
         void resetMeasurementTools();
         
-        // - Remove electrons after adding their velocities to a DynamicList
+        //- Remove electrons after adding their velocities to a DynamicList
         void removeElectrons();
         
-        // Add an electron where an ion is found, after the move function
+        //- Add an electron where an ion is found, after the move function
         void addElectrons();
         
         //- Calculate collisions between molecules
@@ -357,7 +396,16 @@ public:
         //- Return the RWF for axisymmetric cases
         inline scalar maxRWF() const;
         
-         //- Return the bool to identify if this is an axisymmetric simulation
+        //- Return the local RWF for a given cell
+        //  Locally in the code, the radialWeightingMethod (RWM) can be
+        //  changed from "cell"- to "particle"-based if rWMethod is set to
+        //  mixed and the method call uses mixedRWM = true (e.g., nTC)
+        inline scalar RWF(const label celli, const bool mixedRWM = false) const;
+        
+        //- Return the local RWF for a given face
+        inline scalar pRWF(const label patchi, const label facei) const;
+        
+        //- Return the bool to identify if this is an axisymmetric simulation
         //- Measurements, etc dealt with differently if true
         inline bool axisymmetric() const;
         
@@ -595,14 +643,20 @@ public:
             
             void axisymmetricWeighting();
             
-            //- Return the radial weightning factor for a face
-            scalar getRWF_face(const label faceI) const;
+            //- Update the radial weighting factor field
+            void updateRWF();
             
-            //- Return the radial weightning factor for a cell
+            //- Return the radial weighting factor for a given patch/face
+            scalar getRWF_face(const label patchI, const label faceI) const;
+            
+            //- Return the radial weighting factor for a cell
+            //  Locally in the code, the radialWeightingMethod (RWM) can be
+            //  changed from "cell"- to "particle"-based if rWMethod is set to
+            //  mixed and the method call uses mixedRWM = true (e.g., nTC)
             scalar getRWF_cell
             (
                 const label cellI, 
-                const bool overwriteUserInput = false
+                const bool mixedRWM = false
             ) const;
 
 
@@ -725,22 +779,40 @@ public:
                 wordList& zonesToReset
             );*/
             
-            // Function to help with steady normal shock wave simulation
+            //- Function to help with steady normal shock wave simulation
             void shockReset();
             // END NEW DANIEL
             
-            //- Measure the mean square displacement for randomly-chosen
-            //  parcels.
-            scalar measureMeanSquareDisplacement
+            //- Return const access to the measureMediumProperties switch
+            bool measureMediumProperties() const;
+            
+            //- Return const access to the measureInstantaneousMSD switch
+            bool measureInstantaneousMSD() const;
+            
+            //- Update the medium properties on a deletion patch
+            void updateMediumPropertiesMeasurement
             (
-                dsmcParcel& p
+                dsmcParcel& p,
+                const label& delPatchId
             );
             
-            //- Measure the effective diffusivity
-            scalar measureEffectiveDiffusivity(label& counter, dsmcParcel& p);
+            //- Update the medium properties on a cyclic patch
+            void updateMediumPropertiesMeasurement_cyclic
+            (
+                dsmcParcel& p,
+                const label& neiPatchId,
+                const label& orgPatchId,
+                const vector& orgPosition
+            );
 
             //- Clear the Cloud
-            inline void clear();
+            void clear();
+            
+            
+          // I-O
+
+            //- Update properties from given dictionary
+            bool read();
 };
 
 

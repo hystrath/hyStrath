@@ -143,7 +143,7 @@ void noTimeCounter::collide()
             
             //scalar selectedPairs = 0.0;
             
-            const scalar& RWF = cloud_.getRWF_cell(cellI, true);
+            const scalar RWF = cloud_.RWF(cellI, true);
                 
             scalar selectedPairs =
                 cloud_.collisionSelectionRemainder()[cellI]

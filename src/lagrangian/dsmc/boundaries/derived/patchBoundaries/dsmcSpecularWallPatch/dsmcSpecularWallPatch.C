@@ -60,6 +60,30 @@ void dsmcSpecularWallPatch::performSpecularReflection(dsmcParcel& p)
     {
         U -= 2.0*U_dot_nw*nw;
     }
+    
+    if (cloud_.measureInstantaneousMSD())
+    {
+        if (p.isTracked())
+        {
+            if (p.tracked().inPatchId() == -1)
+            {
+                p.tracked().updateDistanceTravelled(p.position());
+            
+                p.tracked().performSpecularReflectionOnDistanceTravelled(nw);
+            }
+        }
+    }
+    
+    if (cloud_.measureMediumProperties())
+    {
+        if (p.isTracked())
+        {
+            if (p.tracked().inPatchId() != -1)
+            {
+                p.tracked().updateTotalDistanceTravelled(p.position());
+            }
+        }
+    }
 }
 
 
@@ -99,7 +123,11 @@ void dsmcSpecularWallPatch::calculateProperties()
 {}
 
 
-void dsmcSpecularWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::trackingData& td)
+void dsmcSpecularWallPatch::controlParticle
+(
+    dsmcParcel& p, 
+    dsmcParcel::trackingData& td
+)
 {
     measurePropertiesBeforeControl(p);
 

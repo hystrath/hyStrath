@@ -450,9 +450,7 @@ void dsmcPatchBoundary::measurePropertiesAfterControl
     
         scalar nParticle = cloud_.nParticle();
         
-        const scalar RWF = cloud_.getRWF_face(wppLocalFace);
-        
-        nParticle *= RWF;
+        nParticle *= cloud_.pRWF(wppIndex, wppLocalFace); //cloud_.getRWF_face(wppIndex, wppLocalFace);
         
         const scalar deltaQ = nParticle
             * (preIE_ - postIE + (heatOfReaction*physicoChemical::k.value()))

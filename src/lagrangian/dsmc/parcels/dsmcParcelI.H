@@ -162,7 +162,8 @@ inline Foam::dsmcParcel::dsmcParcel
     ELevel_(ELevel),
     typeId_(typeId),
     newParcel_(newParcel),
-    tracked_(nullptr),
+    //tracked_(nullptr), // TODO TO BE REINTRODUCED
+    tracked_(),
     classification_(classification),
     stuck_(nullptr),
     vibLevel_(vibLevel)
@@ -325,18 +326,22 @@ inline const Foam::label& Foam::dsmcParcel::newParcel() const
 
 inline const Foam::dsmcParcel::TrackedParcel& Foam::dsmcParcel::tracked() const
 {
-    return *tracked_;
+    //return *tracked_; // TODO TO BE REINTRODUCED
+    return tracked_;
 }
 
 
 inline bool Foam::dsmcParcel::isTracked() const
 {
-    if(tracked_)
+    /*if(tracked_)
     {
         return true;
-    }
+    } 
     
-    return false;
+    return false;*/// TODO TO BE REINTRODUCED
+    
+    return tracked_.tracked();
+    
 }
 
 
@@ -418,43 +423,66 @@ inline Foam::label& Foam::dsmcParcel::newParcel()
 
 inline Foam::dsmcParcel::TrackedParcel& Foam::dsmcParcel::tracked()
 {
-    return *tracked_;
+    //return *tracked_; // TODO TO BE REINTRODUCED
+    return tracked_;
 }
 
 
 inline void Foam::dsmcParcel::setTracked()
 {
-    tracked_ = new dsmcParcel::TrackedParcel();
+    //tracked_ = new dsmcParcel::TrackedParcel(); // TODO TO BE REINTRODUCED
+    tracked_ = dsmcParcel::TrackedParcel();
 }
 
 
 inline void Foam::dsmcParcel::setTracked
 (
     const bool& tracked,
+    const label& inPatchId,
     const scalar& initialTime,
     const vector& initialPosition
 )
 {
-    tracked_ = new dsmcParcel::TrackedParcel
+    /*tracked_ = new dsmcParcel::TrackedParcel
         (
             tracked,
+            inPatchId,
             initialTime,
             initialPosition
-        );
+        );*/ // TODO TO BE REINTRODUCED
+    
+    tracked_ = dsmcParcel::TrackedParcel
+        (
+            tracked,
+            inPatchId,
+            initialTime,
+            initialPosition
+        );    
 }
 
 
 inline void Foam::dsmcParcel::setTracked
 (
     const bool& tracked,
+    const label& inPatchId,
     const bool& storePositions,
     const scalar& initialTime,
     const vector& initialPosition
 )
 {
-    tracked_ = new dsmcParcel::TrackedParcel
+    /*tracked_ = new dsmcParcel::TrackedParcel
         (
             tracked,
+            inPatchId,
+            storePositions,
+            initialTime,
+            initialPosition
+        );*/ // TODO TO BE REINTRODUCED
+        
+    tracked_ = dsmcParcel::TrackedParcel
+        (
+            tracked,
+            inPatchId,
             storePositions,
             initialTime,
             initialPosition
@@ -465,40 +493,71 @@ inline void Foam::dsmcParcel::setTracked
 inline void Foam::dsmcParcel::setTracked
 (
     const bool& tracked,
+    const label& inPatchId,
     const scalar& initialTime,
     const Foam::vector& initialPosition,
-    const Foam::vector& meanSquareDisplacement
+    const Foam::vector& distanceTravelled
 )
 {
-    tracked_ = new dsmcParcel::TrackedParcel
+    /*tracked_ = new dsmcParcel::TrackedParcel
         (
             tracked,
+            inPatchId,
             initialTime,
             initialPosition,
-            meanSquareDisplacement
-        );
+            distanceTravelled
+        );*/ // TODO TO BE REINTRODUCED
+        
+    tracked_ = dsmcParcel::TrackedParcel
+        (
+            tracked,
+            inPatchId,
+            initialTime,
+            initialPosition,
+            distanceTravelled
+        );    
 }
 
 
 inline void Foam::dsmcParcel::setTracked
 (
     const bool& tracked,
+    const label& inPatchId,
     const bool& storePositions,
     const scalar& initialTime,
     const Foam::vector& initialPosition,
-    const Foam::vector& meanSquareDisplacement,
-    const DynamicList<FixedList<scalar, 4>>& parcelTrajectory
+    const Foam::vector& distanceTravelled/*,
+    const DynamicList<FixedList<scalar, 4>>& parcelTrajectory*/
 )
 {
-    tracked_ = new dsmcParcel::TrackedParcel
+    /*tracked_ = new dsmcParcel::TrackedParcel
         (
             tracked,
+            inPatchId,
             storePositions,
             initialTime,
             initialPosition,
-            meanSquareDisplacement,
-            parcelTrajectory
-        );
+            distanceTravelled//,
+            //parcelTrajectory
+        );*/  // TODO TO BE REINTRODUCED
+        
+    tracked_ = dsmcParcel::TrackedParcel
+        (
+            tracked,
+            inPatchId,
+            storePositions,
+            initialTime,
+            initialPosition,
+            distanceTravelled/*,
+            parcelTrajectory*/
+        );    
+}
+
+
+inline void Foam::dsmcParcel::deleteTracked()
+{
+    //delete tracked_; // TODO TO BE REINTRODUCED
+    //tracked_ = nullptr; // TODO TO BE REINTRODUCED
 }
 
 

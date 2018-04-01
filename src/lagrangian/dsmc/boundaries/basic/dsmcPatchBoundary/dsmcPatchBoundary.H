@@ -27,8 +27,8 @@ Class
 
 Description
 
-    Used for applying instantaneous actions on dsmcParcels colliding with a boundary
-    patch.
+    Used for applying instantaneous actions on dsmcParcels colliding with a 
+    boundary patch.
 
 SourceFiles
     dsmcPatchBoundaryI.H
@@ -258,6 +258,8 @@ public:
 
         //- return the name of the control patch
         const word& patchName() const;
+        
+        //- return the ID of the control patch
         const label& patchId() const;
 
         //- return the targeted fields 

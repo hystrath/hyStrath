@@ -32,8 +32,6 @@ License
 
 Foam::label Foam::dsmcParcel::TrackedParcel::nDELETED = 0;
 
-Foam::scalar Foam::dsmcParcel::TrackedParcel::D_EFF = 0.0;
-
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
@@ -51,12 +49,11 @@ bool Foam::dsmcParcel::move
         const polyMesh& mesh = td.cloud().pMesh();
         const polyBoundaryMesh& pbMesh = mesh.boundaryMesh();
 
-        if(newParcel() == 1)
+        if(newParcel() != -1)
         {
             stepFraction() = td.cloud().rndGen().scalar01(); 
-            newParcel() = 0;
+            newParcel() = -1;
         }
-        
         
         scalar tEnd = (1.0 - stepFraction())*trackTime;
         const scalar dtMax = tEnd;
@@ -95,10 +92,7 @@ bool Foam::dsmcParcel::move
             if( face() != -1 )
             {
                 //--  measure flux properties
-                td.cloud().tracker().updateFields
-                (
-                    *this
-                );
+                td.cloud().tracker().updateFields(*this);
             }
 
             if (onBoundary() && td.keepParticle)
@@ -210,12 +204,13 @@ void Foam::dsmcParcel::transformProperties
     const vector& separation
 )
 {
-  particle::transformProperties(separation);
+    particle::transformProperties(separation);
 }
 
 
 // * * * * * * * * * * * * * * * *  IOStream operators * * * * * * * * * * * //
 
 #include "dsmcParcelIO.C"
+
 
 // ************************************************************************* //

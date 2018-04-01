@@ -686,7 +686,7 @@ void atomAtomIonisationDissimilarSpecies::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationP,
                     vibLevel
                 );
@@ -819,7 +819,7 @@ void atomAtomIonisationDissimilarSpecies::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationQ,
                     vibLevel
                 );
@@ -1057,7 +1057,7 @@ void atomAtomIonisationDissimilarSpecies::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationP,
                     vibLevel
                 );
@@ -1189,7 +1189,7 @@ void atomAtomIonisationDissimilarSpecies::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationQ,
                     vibLevel
                 );
@@ -1365,7 +1365,7 @@ void atomAtomIonisationDissimilarSpecies::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationP,
                     vibLevel
                 );
@@ -1539,7 +1539,7 @@ void atomAtomIonisationDissimilarSpecies::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationQ,
                     vibLevel
                 );

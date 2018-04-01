@@ -662,7 +662,7 @@ void dissociationIonisationTypeISameSpecies::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationP,
                     vibLevel
                 );
@@ -820,7 +820,7 @@ void dissociationIonisationTypeISameSpecies::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationQ,
                     vibLevel
                 );
@@ -957,7 +957,7 @@ void dissociationIonisationTypeISameSpecies::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationP,
                     vibLevel
                 );
@@ -999,7 +999,7 @@ void dissociationIonisationTypeISameSpecies::reaction
                     tetFace2,
                     tetPt2,
                     typeId2,
-                    0,
+                    -1,
                     classificationQ,
                     vibLevel2
                 );
@@ -1161,7 +1161,7 @@ void dissociationIonisationTypeISameSpecies::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationP,
                     vibLevel
                 );
@@ -1324,7 +1324,7 @@ void dissociationIonisationTypeISameSpecies::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationQ,
                     vibLevel
                 );
@@ -1463,7 +1463,7 @@ void dissociationIonisationTypeISameSpecies::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationP,
                     vibLevel
                 );
@@ -1510,7 +1510,7 @@ void dissociationIonisationTypeISameSpecies::reaction
                     tetFace2,
                     tetPt2,
                     typeId2,
-                    0,
+                    -1,
                     classificationQ,
                     vibLevel2
                 );
@@ -1651,7 +1651,7 @@ void dissociationIonisationTypeISameSpecies::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationP,
                     vibLevel
                 );
@@ -1698,7 +1698,7 @@ void dissociationIonisationTypeISameSpecies::reaction
                     tetFace2,
                     tetPt2,
                     typeId4,
-                    0,
+                    -1,
                     classificationQ,
                     vibLevel2
                 );
@@ -1844,7 +1844,7 @@ void dissociationIonisationTypeISameSpecies::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationP,
                     vibLevel
                 );
@@ -1886,7 +1886,7 @@ void dissociationIonisationTypeISameSpecies::reaction
                     tetFace2,
                     tetPt2,
                     typeId4,
-                    0,
+                    -1,
                     classificationQ,
                     vibLevel2
                 );

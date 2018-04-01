@@ -365,15 +365,16 @@ public:
               //- Number of tracked parcels having exited the domain
               static label nDELETED;
               
-              //- Effective diffusivity for all tracked parcels
-              static scalar D_EFF;
-        
+
         protected:
         
             // Protected data
             
               //- Is the parcel being tracked
               bool tracked_;
+              
+              //- Patch iD of the boundary where the parcel is being added
+              label inPatchId_;
               
               //- Record the parcel's trajectory
               bool storePositions_;
@@ -384,32 +385,22 @@ public:
               //- Parcel's initial position
               vector initialPosition_;
               
-              //- Mean square displacement
-              vector msd_;
+              //- Parcel's current position
+              vector currentPosition_;
               
-              //- Effective diffusivity
-              scalar deff_;
+              //- Distance travelled
+              vector distanceTravelled_;
+              
+              //- Mean squared displacement
+              vector msd_;
               
               //- A data structure holding the position of the tracked parcel
               //  versus time
-              DynamicList<FixedList<scalar, 4>> parcelTrajectory_;
+              //DynamicList<FixedList<scalar, 4>> parcelTrajectory_;
             
             
             // Protected member functions
             
-              //- Calculation of the parcel's mean square displacement
-              void msd(const vector& currentPos)
-              {
-                  const vector& diffPos = currentPos - initialPosition_;
-                    
-                  msd_ = vector
-                      (
-                          sqr(diffPos.component(0)), 
-                          sqr(diffPos.component(1)), 
-                          sqr(diffPos.component(2))
-                      );
-              }
-              
               //- Construct and return a clone
               TrackedParcel* clone() const
               {
@@ -426,96 +417,113 @@ public:
                 TrackedParcel()
                 :
                     tracked_(false),
+                    inPatchId_(-2),
                     storePositions_(false),
                     t0_(0.0),
                     initialPosition_(vector::zero),
-                    msd_(vector::zero),
-                    deff_(0.0),
-                    parcelTrajectory_()
+                    currentPosition_(vector::zero),
+                    distanceTravelled_(vector::zero),
+                    msd_(vector::zero)//,
+                    //parcelTrajectory_()
                 {}
                 
                 TrackedParcel
                 (
+                    const label& inPatchId,
                     const scalar& initialTime,
                     const vector& initialPosition
                 )
                 :
                     tracked_(true),
+                    inPatchId_(inPatchId),
                     storePositions_(false),
                     t0_(initialTime),
                     initialPosition_(initialPosition),
-                    msd_(vector::zero),
-                    deff_(0.0),
-                    parcelTrajectory_()
+                    currentPosition_(initialPosition),
+                    distanceTravelled_(vector::zero),
+                    msd_(vector::zero)//,
+                    //parcelTrajectory_()
                 {}
                 
                 TrackedParcel
                 (
                     const bool& tracked,
+                    const label& inPatchId,
                     const scalar& initialTime,
                     const vector& initialPosition
                 )
                 :
                     tracked_(tracked),
+                    inPatchId_(inPatchId),
                     storePositions_(false),
                     t0_(initialTime),
                     initialPosition_(initialPosition),
-                    msd_(vector::zero),
-                    deff_(0.0),
-                    parcelTrajectory_()
+                    currentPosition_(initialPosition),
+                    distanceTravelled_(vector::zero),
+                    msd_(vector::zero)//,
+                    //parcelTrajectory_()
                 {}
                 
                 TrackedParcel
                 (
                     const bool& tracked,
+                    const label& inPatchId,
                     const bool& storePositions,
                     const scalar& initialTime,
                     const vector& initialPosition
                 )
                 :
                     tracked_(tracked),
+                    inPatchId_(inPatchId),
                     storePositions_(storePositions),
                     t0_(initialTime),
                     initialPosition_(initialPosition),
-                    msd_(vector::zero),
-                    deff_(0.0),
-                    parcelTrajectory_()
+                    currentPosition_(initialPosition),
+                    distanceTravelled_(vector::zero),
+                    msd_(vector::zero)//,
+                    //parcelTrajectory_()
                 {}
                 
                 TrackedParcel
                 (
                     const bool& tracked,
+                    const label& inPatchId,
                     const scalar& initialTime,
                     const vector& initialPosition,
-                    const vector& msd
+                    const vector& distanceTravelled
                 )
                 :
                     tracked_(tracked),
+                    inPatchId_(inPatchId),
                     storePositions_(false),
                     t0_(initialTime),
                     initialPosition_(initialPosition),
-                    msd_(msd),
-                    deff_(0.0),
-                    parcelTrajectory_()
+                    currentPosition_(initialPosition),
+                    distanceTravelled_(distanceTravelled),
+                    msd_(vector::zero)//,
+                    //parcelTrajectory_()
                 {}
                 
                 TrackedParcel
                 (
                     const bool& tracked,
+                    const label& inPatchId,
                     const bool& storePositions,
                     const scalar& initialTime,
                     const vector& initialPosition,
-                    const vector& msd,
-                    const DynamicList<FixedList<scalar, 4>>& parcelTrajectory
+                    const vector& distanceTravelled//,
+                    //const DynamicList<FixedList<scalar, 4>>& parcelTrajectory
                 )
                 :
                     tracked_(tracked),
+                    inPatchId_(inPatchId),
                     storePositions_(storePositions),
                     t0_(initialTime),
                     initialPosition_(initialPosition),
-                    msd_(msd),
-                    deff_(0.0),
-                    parcelTrajectory_(parcelTrajectory)
+                    currentPosition_(initialPosition),
+                    distanceTravelled_(distanceTravelled),
+                    msd_(vector::zero)//,
+                    //parcelTrajectory_(parcelTrajectory)
                 {}
                 
                 //- Copy constructor
@@ -525,33 +533,40 @@ public:
                 )
                 :
                     tracked_(tP.tracked_),
+                    inPatchId_(tP.inPatchId_),
                     storePositions_(tP.storePositions_),
                     t0_(tP.t0_),
                     initialPosition_(tP.initialPosition_),
-                    msd_(tP.msd_),
-                    deff_(tP.deff_),
-                    parcelTrajectory_(tP.parcelTrajectory_)
+                    currentPosition_(tP.currentPosition_),
+                    distanceTravelled_(tP.distanceTravelled_),
+                    msd_(tP.msd_)//,
+                    //parcelTrajectory_(tP.parcelTrajectory_)
                 {}
                 
                 //- Construct from Istream
                 TrackedParcel(Istream& is)
                 :
                     tracked_(false),
+                    inPatchId_(-2),
                     storePositions_(false),
                     t0_(0.0),
                     initialPosition_(vector::zero),
-                    msd_(vector::zero),
-                    deff_(0.0),
-                    parcelTrajectory_()
+                    currentPosition_(vector::zero),
+                    distanceTravelled_(vector::zero),
+                    msd_(vector::zero)//,
+                    //parcelTrajectory_()
                 {
                     if (is.format() == IOstream::ASCII)
                     {
                         tracked_ = readBool(is);
+                        inPatchId_ = readLabel(is);
                         storePositions_ = readBool(is);
                         t0_ = readScalar(is);
-                        is >> initialPosition_ >> msd_;
-                        deff_ = readScalar(is);
-                        is >> parcelTrajectory_;
+                        is >> initialPosition_
+                           >> currentPosition_ 
+                           >> distanceTravelled_ 
+                           >> msd_;
+                        //is >> parcelTrajectory_;
                     }
                     else
                     {
@@ -559,13 +574,20 @@ public:
                         (
                             reinterpret_cast<char*>(&initialPosition_),
                             sizeof(tracked_)
+                            + sizeof(inPatchId_)
                             + sizeof(storePositions_)
                             + sizeof(t0_)
                             + sizeof(initialPosition_)
-                            + sizeof(deff_)
+                            //+ sizeof(currentPosition_) // careful
+                            //+ sizeof(distanceTravelled_) // careful
+                            //+ sizeof(msd_) // careful
                         );
                         
-                        is >> parcelTrajectory_;
+                        is >> currentPosition_ 
+                           >> distanceTravelled_ 
+                           >> msd_;
+                        
+                        //is>> parcelTrajectory_;
                     }
                     
                     // Check state of Istream
@@ -575,18 +597,7 @@ public:
             
             // Destructor
                 
-                ~TrackedParcel()
-                {
-                    if(msd_[0] >= 0.99)
-                    {
-                        nDELETED++;
-                    
-                        D_EFF += deff_;
-                        
-                        Info << "deff porous medium: " << D_EFF/nDELETED << endl;
-                    }
-                }
-
+                ~TrackedParcel(){}
                 
             
             // Member functions
@@ -594,25 +605,27 @@ public:
                 //- Set the initial parcel info
                 void setInitialParcelInfo
                 (
-                    const bool& tracked = true,
-                    const scalar& t0 = 0.0,
-                    const vector& iniPos = vector::zero,
-                    const vector& msd = vector::zero
+                    const label& inPatchId,
+                    const scalar& t0,
+                    const vector& iniPos
                 )
                 {
-                    tracked_ = tracked;
+                    inPatchId_ = inPatchId;
                     t0_ = t0;
                     initialPosition_ = iniPos;
-                    msd_ = msd;
+                    currentPosition_ = initialPosition_;
                 }
                 
                 //- Set the initial position of the parcel
                 void setInitialParcelPosition
                 (
+                    const scalar& t0 = 0.0,
                     const vector& iniPos = vector::zero
                 )
                 {
+                    t0_ = t0;
                     initialPosition_ = iniPos;
+                    currentPosition_ = initialPosition_;
                 }
                 
                 //- Update the parcel's trajectory
@@ -623,7 +636,7 @@ public:
                     sF[1] = pos[0];
                     sF[2] = pos[1];
                     sF[3] = pos[2];
-                    parcelTrajectory_.append(sF);
+                    //parcelTrajectory_.append(sF);
                 }
             
             
@@ -634,6 +647,12 @@ public:
                 {
                     return tracked_;
                 }
+                
+                //- Return const access to inPatchId
+                inline label inPatchId() const
+                {
+                    return inPatchId_;
+                };
                 
                 //- Return const access to storePositions
                 inline const bool& storePositions() const
@@ -653,40 +672,45 @@ public:
                     return initialPosition_;
                 }
                 
-                //- Return the parcel's mean square displacement
-                inline scalar meanSquareDisplacement() const
+                //- Return const access to the parcel's current position
+                inline const vector& currentPosition() const
+                {
+                    return currentPosition_;
+                }
+                
+                //- Return const access to the distance travelled by the parcel
+                inline scalar distanceTravelled() const
+                {
+                    return mag(distanceTravelled_);
+                }
+                
+                //- Return const access to the parcel's mean squared 
+                //  displacement
+                inline scalar meanSquaredDisplacement() const
                 {
                     return msd_[0] + msd_[1] + msd_[2];
                 }
                 
-                //- Return the parcel's mean square displacement
-                //  given the parcel's current location
-                scalar meanSquareDisplacement(const vector& currentPosition)
+                //- Return const access to the distance travelled by the parcel
+                //  in vector form
+                inline const vector& distanceTravelledVector() const
                 {
-                    msd(currentPosition);
-                    
-                    return meanSquareDisplacement();
+                    return distanceTravelled_;
                 }
                 
-                //- Return const access to the parcel's mean square 
+                //- Return const access to the parcel's mean squared 
                 //  displacement in vector form
-                inline const vector& meanSquareDisplacementVector() const
+                inline const vector& meanSquaredDisplacementVector() const
                 {
                     return msd_;
                 }
                 
-                //- Return const access to the parcel's effective diffusivity
-                inline const scalar& deff() const
-                {
-                    return deff_;
-                }
-                
                 //- Return const access to the full parcel's trajectory
-                inline const DynamicList<FixedList<scalar, 4>>& 
+                /*inline const DynamicList<FixedList<scalar, 4>>& 
                 parcelTrajectory() const
                 {
                     return parcelTrajectory_;
-                }
+                }*/
             
             
             // Edit
@@ -696,6 +720,12 @@ public:
                 {
                     return tracked_;
                 }
+                
+                //- Return access to inPatchId
+                inline label& inPatchId()
+                {
+                    return inPatchId_;
+                };
                 
                 //- Return access to storePositions
                 inline bool& storePositions()
@@ -715,24 +745,84 @@ public:
                     return initialPosition_;
                 }
                 
-                //- Return access to the parcel's mean square displacement in
+                //- Return access to the parcel's current position
+                inline vector& currentPosition()
+                {
+                    return currentPosition_;
+                }
+                
+                //- Update the current position of the parcel
+                void updateCurrentPosition(const vector& currentPos)
+                {
+                    currentPosition_ = currentPos;
+                }
+                
+                //- Return access to the distance travelled by the parcel in
                 //  vector form
-                inline vector& meanSquareDisplacementVector()
+                inline vector& distanceTravelledVector()
+                {
+                    return distanceTravelled_;
+                }
+                
+                //- Update the distance travelled by the parcel
+                void updateDistanceTravelled(const vector& newPos)
+                {
+                    distanceTravelled_ += newPos - currentPosition_;
+                    
+                    updateCurrentPosition(newPos);
+                }
+                
+                //- Update the total distance travelled by the parcel
+                void updateTotalDistanceTravelled(const vector& newPos)
+                {
+                    distanceTravelled_ += vector
+                        (
+                            mag(newPos[0] - currentPosition_[0]), 
+                            mag(newPos[1] - currentPosition_[1]), 
+                            mag(newPos[2] - currentPosition_[2])
+                        );
+                        
+                    updateCurrentPosition(newPos);
+                }
+                
+                //- Update the distance travelled by the parcel
+                void performSpecularReflectionOnDistanceTravelled
+                (
+                    const vector& nw
+                )
+                {
+                    forAll(nw, dim)
+                    {
+                        if(abs(nw[dim]) > SMALL)
+                        {
+                            distanceTravelled_[dim] *= -1;
+                        }
+                    }
+                }
+                
+                //- Return access to the parcel's mean squared displacement in
+                //  vector form
+                inline vector& meanSquaredDisplacementVector()
                 {
                     return msd_;
                 }
                 
-                //- Return access to the parcel's effective diffusivity
-                inline scalar& deff()
+                //- Update the parcel's mean squared displacement
+                void updateMeanSquaredDisplacement()
                 {
-                    return deff_;
+                    msd_ = vector
+                        (
+                            sqr(distanceTravelled_[0]), 
+                            sqr(distanceTravelled_[1]), 
+                            sqr(distanceTravelled_[2])
+                        ); 
                 }
                 
                 //- Return access to the parcel's full trajectory
-                inline DynamicList<FixedList<scalar, 4>>& parcelTrajectory()
+                /*inline DynamicList<FixedList<scalar, 4>>& parcelTrajectory()
                 {
                     return parcelTrajectory_;
-                }
+                }*/
                 
                 
             // Operators
@@ -741,12 +831,14 @@ public:
                 TrackedParcel& operator=(const TrackedParcel& tP)
                 {
                      tracked_ = tP.tracked_;
+                     inPatchId_ = tP.inPatchId_;
                      storePositions_ = tP.storePositions_;
                      t0_ = tP.t0_;
                      initialPosition_ = tP.initialPosition_;
+                     currentPosition_ = tP.currentPosition_;
+                     distanceTravelled_ = tP.distanceTravelled_;
                      msd_ = tP.msd_;
-                     deff_ = tP.deff_;
-                     parcelTrajectory_ = tP.parcelTrajectory_;
+                     //parcelTrajectory_ = tP.parcelTrajectory_;
                      
                      return *this;
                 }
@@ -761,11 +853,14 @@ public:
                     if (is.format() == IOstream::ASCII)
                     {
                         tP.tracked_ = readBool(is);
+                        tP.inPatchId_ = readLabel(is);
                         tP.storePositions_ = readBool(is);
                         tP.t0_ = readScalar(is);
-                        is >> tP.initialPosition_;
-                        tP.deff_ = readScalar(is);
-                        is >> tP.parcelTrajectory_;
+                        is >> tP.initialPosition_ 
+                           >> tP.currentPosition_
+                           >> tP.distanceTravelled_ 
+                           >> tP.msd_;
+                        //is >> tP.parcelTrajectory_;
                     }
                     else
                     {
@@ -773,13 +868,20 @@ public:
                         (
                             reinterpret_cast<char*>(&tP.initialPosition_),
                             sizeof(tP.tracked())
+                            + sizeof(tP.inPatchId())
                             + sizeof(tP.storePositions())
                             + sizeof(tP.initialTime())
                             + sizeof(tP.initialPosition())
-                            + sizeof(tP.deff_)
+                            //+ sizeof(tP.currentPosition()) // careful
+                            //+ sizeof(tP.distanceTravelledVector()) // careful
+                            //+ sizeof(tP.meanSquaredDisplacementVector()) // careful
                         );
                         
-                        is >> tP.parcelTrajectory_;
+                        is >> tP.currentPosition_
+                           >> tP.distanceTravelled_
+                           >> tP.msd_;
+                        
+                        //is >> tP.parcelTrajectory_;
                     }
                     
                     // Check state of Istream
@@ -802,11 +904,14 @@ public:
                     if (os.format() == IOstream::ASCII)
                     {
                         os << tP.tracked_ << token::SPACE
+                           << tP.inPatchId_ << token::SPACE
                            << tP.storePositions_ << token::SPACE
                            << tP.t0_ << token::SPACE
                            << tP.initialPosition_ << token::SPACE
-                           << tP.deff_ << token::SPACE
-                           << tP.parcelTrajectory_;
+                           << tP.currentPosition_ << token::SPACE
+                           << tP.distanceTravelled_ << token::SPACE
+                           << tP.msd_ //<< token::SPACE
+                           /*<< tP.parcelTrajectory_*/;
                     }
                     else
                     {
@@ -815,13 +920,20 @@ public:
                             reinterpret_cast<const char*>
                                 (&tP.initialPosition_),
                             sizeof(tP.tracked())
+                            + sizeof(tP.inPatchId())
                             + sizeof(tP.storePositions())
                             + sizeof(tP.initialTime())
                             + sizeof(tP.initialPosition())
-                             + sizeof(tP.deff_)
+                            //+ sizeof(tP.currentPosition()) // careful
+                            //+ sizeof(tP.distanceTravelledVector()) // careful
+                            //+ sizeof(tP.meanSquaredDisplacementVector()) // careful
                         );
                         
-                        os << tP.parcelTrajectory_;
+                        os << tP.currentPosition_
+                           << tP.distanceTravelled_
+                           << tP.msd_;
+                           
+                        //os << tP.parcelTrajectory_;
                     }
                        
                     // Check state of Ostream
@@ -879,12 +991,15 @@ private:
             //- Parcel type id
             label typeId_;
             
-            //- newly inserted parcel
+            //- Patch iD of newly inserted parcel (default: -1)
             label newParcel_;
             
             //- Pointer to TrackedParcel object containing tracking info if the
-            //  parcel is being selected
-            TrackedParcel* tracked_;
+            //  parcel is being selected -> TO BE REINTRODUCED
+            //TrackedParcel* tracked_;
+            //- TrackedParcel object containing tracking info if the
+            //  parcel is being selected -> TEMPORARY
+            TrackedParcel tracked_;
             
             //- see W.F.N. Santos, "Physical and computational aspects
             //  of shock waves over power-law leading edges",
@@ -962,16 +1077,17 @@ public:
             ELevel_(dP.ELevel_),
             typeId_(dP.typeId_),
             newParcel_(dP.newParcel_),
-            tracked_(nullptr),
+            //tracked_(nullptr), // TODO TO BE REINTRODUCED
+            tracked_(dP.tracked_),
             classification_(dP.classification_),
             stuck_(nullptr),
             vibLevel_(dP.vibLevel_)
         {
-            if(dP.tracked_)
+            /*if(dP.tracked_)
             {
                 setTracked();
                 *tracked_ = *(dP.tracked_);
-            }
+            }*/ // TODO TO BE REINTRODUCED
             
             if(dP.stuck_)
             {
@@ -985,11 +1101,9 @@ public:
                 
         ~dsmcParcel()
         {
-            delete tracked_;
-            tracked_ = nullptr;
+            //deleteTracked(); // TODO TO BE REINTRODUCED
             
-            delete stuck_;
-            stuck_ = nullptr;
+            deleteStuck();
         }
 
 
@@ -1096,6 +1210,7 @@ public:
             inline void setTracked
             (
                 const bool& tracked,
+                const label& inPatchId,
                 const scalar& initialTime,
                 const vector& initialPosition
             );
@@ -1103,6 +1218,7 @@ public:
             inline void setTracked
             (
                 const bool& tracked,
+                const label& inPatchId,
                 const bool& storePositions,
                 const scalar& initialTime,
                 const vector& initialPosition
@@ -1111,21 +1227,25 @@ public:
             inline void setTracked
             (
                 const bool& tracked,
+                const label& inPatchId,
                 const scalar& initialTime,
                 const vector& initialPosition,
-                const vector& meanSquareDisplacement
+                const vector& distanceTravelled
             );
             
-            //- Construct the TrackedParcel object pointed by tracked_
             inline void setTracked
             (
                 const bool& tracked,
+                const label& inPatchId,
                 const bool& storePositions,
                 const scalar& initialTime,
                 const vector& initialPosition,
-                const vector& meanSquareDisplacement,
-                const DynamicList<FixedList<scalar, 4>>& parcelTrajectory
+                const vector& distanceTravelled/*,
+                const DynamicList<FixedList<scalar, 4>>& parcelTrajectory*/
             );
+            
+            //- Delete the TrackedParcel pointer and set it to NULL
+            inline void deleteTracked();
             
             //- Return access to parcel classification 
             //  see Santos W.F., Physical and computational 
@@ -1227,7 +1347,8 @@ public:
             typeId_ = dP.typeId_;
             newParcel_ = dP.newParcel_;
             
-            if (dP.isTracked())
+            tracked_ = dP.tracked_;
+            /*if (dP.isTracked())
             {
                 setTracked();
                 *tracked_ = *(dP.tracked_);
@@ -1235,7 +1356,7 @@ public:
             else
             {
                 tracked_ = nullptr;
-            }
+            }*/ // TODO TO BE REINTRODUCED
             
             classification_ = dP.classification_;
             

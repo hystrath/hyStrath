@@ -695,7 +695,7 @@ void forwardAssociativeIonisationDissimilarSpecies::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationP,
                     vibLevel
                 );
@@ -826,7 +826,7 @@ void forwardAssociativeIonisationDissimilarSpecies::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationQ,
                     vibLevel
                 );
@@ -1232,7 +1232,7 @@ void forwardAssociativeIonisationDissimilarSpecies::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationQ,
                     vibLevel
                 );
@@ -1363,7 +1363,7 @@ void forwardAssociativeIonisationDissimilarSpecies::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationP,
                     vibLevel
                 );

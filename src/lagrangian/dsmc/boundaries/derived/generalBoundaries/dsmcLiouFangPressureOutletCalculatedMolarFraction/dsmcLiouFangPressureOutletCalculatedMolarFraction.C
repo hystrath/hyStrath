@@ -323,9 +323,9 @@ void dsmcLiouFangPressureOutletCalculatedMolarFraction::controlParcelsBeforeMove
                         typeId
                     );
                     
-                    label newParcel = 1;
+                    label newParcel = patchId();
                     
-                    const scalar& RWF = cloud_.getRWF_cell(cellI);
+                    const scalar& RWF = cloud_.RWF(cellI); //cloud_.getRWF_cell(cellI);
                 
                     cloud_.addNewParcel
                     (
@@ -603,7 +603,7 @@ void dsmcLiouFangPressureOutletCalculatedMolarFraction::controlParcelsAfterColli
             
             scalar sCosTheta = (outletVelocity_[f] & -sF/fA )/mostProbableSpeed;
             
-            const scalar& RWF = cloud_.getRWF_face(faceI);
+            const scalar& RWF = cloud_.pRWF(patchId_, f); //cloud_.getRWF_face(faceI);
             
             // From Bird eqn 4.22
             accumulatedParcelsToInsert_[iD][f] += 

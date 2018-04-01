@@ -668,7 +668,7 @@ void moleculeAtomDissociationIonisation::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationP,
                     vibLevel
                 );
@@ -802,7 +802,7 @@ void moleculeAtomDissociationIonisation::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationP,
                     vibLevel
                 );
@@ -936,7 +936,7 @@ void moleculeAtomDissociationIonisation::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationQ,
                     vibLevel
                 );
@@ -1198,7 +1198,7 @@ void moleculeAtomDissociationIonisation::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationQ,
                     vibLevel
                 );
@@ -1333,7 +1333,7 @@ void moleculeAtomDissociationIonisation::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationP,
                     vibLevel
                 );
@@ -1468,7 +1468,7 @@ void moleculeAtomDissociationIonisation::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationP,
                     vibLevel
                 );

@@ -309,7 +309,7 @@ void densityController::insertParcelWithinDSMC(const label& c)
         tetFace,
         tetPt,
         typeId_,
-        0,
+        -1,
         0,
         vibLevel
     );

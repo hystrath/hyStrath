@@ -257,7 +257,7 @@ void noTimeCounterAdaptiveSubcelling::collide()
 //               + 0.5*nC*(nC - 1)*cloud_.nParticle()*sigmaTcRMax*deltaT
 //                /mesh.cellVolumes()[cellI];
             
-            const scalar& RWF = cloud_.getRWF_cell(cellI);
+            const scalar RWF = cloud_.RWF(cellI, true);
             
             scalar selectedPairs =
                 cloud_.collisionSelectionRemainder()[cellI]

@@ -220,7 +220,7 @@ void dsmcZoneFill::setInitialConfiguration()
 
                         U += velocity;
                         
-                        label newParcel = 0;
+                        label newParcel = -1;
                         
                         label classification = 0;
                         

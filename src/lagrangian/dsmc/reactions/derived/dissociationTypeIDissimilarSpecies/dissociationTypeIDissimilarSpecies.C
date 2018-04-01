@@ -514,7 +514,7 @@ void dissociationTypeIDissimilarSpecies::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationP
                 );
             }
@@ -722,7 +722,7 @@ void dissociationTypeIDissimilarSpecies::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationQ
                 );
             }
@@ -909,7 +909,7 @@ void dissociationTypeIDissimilarSpecies::reaction
                     tetFaceP,
                     tetPtP,
                     typeId2,
-                    0,
+                    -1,
                     classificationP
                 );
 
@@ -950,7 +950,7 @@ void dissociationTypeIDissimilarSpecies::reaction
                     tetFaceQ,
                     tetPtQ,
                     typeId4,
-                    0,
+                    -1,
                     classificationQ
                 );
             }
@@ -1240,7 +1240,7 @@ void dissociationTypeIDissimilarSpecies::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationP
                 );
             }
@@ -1423,7 +1423,7 @@ void dissociationTypeIDissimilarSpecies::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationQ
                 );
             }
@@ -1564,7 +1564,7 @@ void dissociationTypeIDissimilarSpecies::reaction
                     tetFaceP,
                     tetPtP,
                     typeId2,
-                    0,
+                    -1,
                     classificationP
                 );
 
@@ -1604,7 +1604,7 @@ void dissociationTypeIDissimilarSpecies::reaction
                     tetFaceQ,
                     tetPtQ,
                     typeId4,
-                    0,
+                    -1,
                     classificationQ
                 );
             }

@@ -512,7 +512,7 @@ void atomIonIonisation::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationP,
                     vibLevel
                 );
@@ -743,7 +743,7 @@ void atomIonIonisation::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationQ,
                     vibLevel
                 );

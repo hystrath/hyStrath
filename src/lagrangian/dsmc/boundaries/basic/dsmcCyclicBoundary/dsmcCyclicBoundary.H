@@ -56,7 +56,7 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                           Class dsmcCyclicBoundary Declaration
+                      Class dsmcCyclicBoundary Declaration
 \*---------------------------------------------------------------------------*/
 
 class dsmcCyclicBoundary
@@ -99,15 +99,14 @@ protected:
         labelList cellsB_;
 
         //- set all the properties below from model if required
-            
-            scalarField densities_;
-            vectorField velocities_;
-            scalarField temperatures_;
-            tensor strainRate_;
-            
-            //- writing out properties
-            bool writeInTimeDir_;
-            bool writeInCase_;
+        scalarField densities_;
+        vectorField velocities_;
+        scalarField temperatures_;
+        tensor strainRate_;
+        
+        //- writing out properties
+        bool writeInTimeDir_;
+        bool writeInCase_;
 
 
     // Private Member Functions
@@ -172,7 +171,7 @@ public:
         //- control the molecule
         virtual void controlMol
         (
-            dsmcParcel& mol,
+            dsmcParcel& p,
             dsmcParcel::trackingData& td
         ) = 0;
 

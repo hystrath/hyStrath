@@ -740,7 +740,7 @@ void chargeExchange::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationP,
                     vibLevel
                 );
@@ -934,7 +934,7 @@ void chargeExchange::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationP,
                     vibLevel
                 );
@@ -1440,7 +1440,7 @@ void chargeExchange::reaction
                     tetFace,
                     tetPt,
                     typeId1,
-                    0,
+                    -1,
                     classificationQ,
                     vibLevel
                 );
@@ -1634,7 +1634,7 @@ void chargeExchange::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationQ,
                     vibLevel
                 );

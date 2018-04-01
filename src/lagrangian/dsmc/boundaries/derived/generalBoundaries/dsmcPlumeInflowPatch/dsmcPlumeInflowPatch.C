@@ -345,7 +345,7 @@ void dsmcPlumeInflowPatch::controlParcelsBeforeMove()
                 );
 
             
-                label newParcel = 1;      
+                label newParcel = patchId();    
 
                 cloud_.addNewParcel
                 (

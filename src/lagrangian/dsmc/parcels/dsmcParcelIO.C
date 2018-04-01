@@ -43,8 +43,9 @@ Foam::dsmcParcel::dsmcParcel
     ERot_(0.0),
     ELevel_(0),
     typeId_(-1),
-    newParcel_(0),
-    tracked_(nullptr),
+    newParcel_(-1),
+    //tracked_(nullptr), // TODO TO BE REINTRODUCED
+    tracked_(),
     classification_(0),
     stuck_(nullptr),
     vibLevel_(0)
@@ -88,15 +89,27 @@ Foam::dsmcParcel::dsmcParcel
     
     if (tP.tracked())
     {
-        tracked_ = new dsmcParcel::TrackedParcel
+        /*tracked_ = new dsmcParcel::TrackedParcel
             (
                 tP.tracked(),
+                tP.inPatchId(),
                 tP.storePositions(),
                 tP.initialTime(),
                 tP.initialPosition(),
-                tP.meanSquareDisplacementVector(),
-                tP.parcelTrajectory()
-            );
+                tP.distanceTravelledVector()//,
+                //tP.parcelTrajectory()
+            );*/ // TODO TO BE REINTRODUCED
+            
+        tracked_ = dsmcParcel::TrackedParcel
+            (
+                tP.tracked(),
+                tP.inPatchId(),
+                tP.storePositions(),
+                tP.initialTime(),
+                tP.initialPosition(),
+                tP.distanceTravelledVector()//,
+                //tP.parcelTrajectory()
+            );  
     }
     
     if (sP.wallTemperature()[0] != 0.0)
@@ -233,6 +246,17 @@ void Foam::dsmcParcel::readFields(Cloud<dsmcParcel>& c)
     );
     c.checkFieldIOobject(c, isTracked);
     
+    IOField<label> inPatchId
+    (
+        c.fieldIOobject
+        (
+            "inPatchId", 
+            IOobject::READ_IF_PRESENT
+        ),
+        labelField(c.size(), -1)
+    );
+    c.checkFieldIOobject(c, inPatchId);
+    
     IOField<scalar> tracerInitialTime
     (
         c.fieldIOobject
@@ -295,7 +319,13 @@ void Foam::dsmcParcel::readFields(Cloud<dsmcParcel>& c)
         
         if(isTracked[i])
         {
-            p.setTracked(true, tracerInitialTime[i], tracerInitialPosition[i]);
+            p.setTracked
+            (
+                isTracked[i],
+                inPatchId[i],
+                tracerInitialTime[i],
+                tracerInitialPosition[i]
+            );
         }
         
         p.vibLevel_ = vibLevel[i];
@@ -325,8 +355,11 @@ void Foam::dsmcParcel::writeFields(const Cloud<dsmcParcel>& c)
     IOField<vectorField> wallVectors(c.fieldIOobject("wallVectors", IOobject::NO_READ), np);
     
     IOField<label> isTracked(c.fieldIOobject("isTracked", IOobject::NO_READ), np);
+    IOField<label> inPatchId(c.fieldIOobject("inPatchId", IOobject::NO_READ), np);
     IOField<scalar> tracerInitialTime(c.fieldIOobject("tracerInitialTime", IOobject::NO_READ), np);
     IOField<vector> tracerInitialPosition(c.fieldIOobject("tracerInitialPosition", IOobject::NO_READ), np);
+    IOField<vector> tracerCurrentPosition(c.fieldIOobject("tracerCurrentPosition", IOobject::NO_READ), np);
+    IOField<vector> tracerDistanceTravelled(c.fieldIOobject("tracerDistanceTravelled", IOobject::NO_READ), np);
 
     label i = 0;
     forAllConstIter(dsmcCloud, c, iter)
@@ -352,8 +385,19 @@ void Foam::dsmcParcel::writeFields(const Cloud<dsmcParcel>& c)
         isTracked[i] = p.isTracked();
         if(isTracked[i])
         {
+            inPatchId[i] = p.tracked().inPatchId();
             tracerInitialTime[i] = p.tracked().initialTime();
             tracerInitialPosition[i] = p.tracked().initialPosition();
+            tracerCurrentPosition[i] = p.tracked().currentPosition();
+            tracerDistanceTravelled[i] = p.tracked().distanceTravelledVector();
+        }
+        else
+        {
+            inPatchId[i] = -1;
+            tracerInitialTime[i] = 0;
+            tracerInitialPosition[i] = vector::zero;
+            tracerCurrentPosition[i] = vector::zero;
+            tracerDistanceTravelled[i] = vector::zero;
         }
         
         i++;
@@ -389,6 +433,17 @@ void Foam::dsmcParcel::writeFields(const Cloud<dsmcParcel>& c)
         stuckToWall.write();
         wallTemperature.write(); 
         wallVectors.write();
+    }
+    
+    if(gSum(isTracked) > 0)
+    {
+        //- there is at least one tracked parcel in the domain
+        isTracked.write();
+        inPatchId.write(); 
+        tracerInitialTime.write();
+        tracerInitialPosition.write();
+        tracerCurrentPosition.write();
+        tracerDistanceTravelled.write();
     }
     
     vibLevel.write();

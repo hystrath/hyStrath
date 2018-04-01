@@ -368,7 +368,7 @@ void densityControlZone::controlParcelsAfterCollisions()
                     tetFace,
                     tetPt,
                     typeId,
-                    0,
+                    -1,
                     0,
                     vibLevel
                 );

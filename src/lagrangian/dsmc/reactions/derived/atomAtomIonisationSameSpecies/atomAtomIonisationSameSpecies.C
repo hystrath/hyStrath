@@ -495,7 +495,7 @@ void atomAtomIonisationSameSpecies::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationP,
                     vibLevel
                 );
@@ -636,7 +636,7 @@ void atomAtomIonisationSameSpecies::reaction
 //                     tetFace,
 //                     tetPt,
 //                     typeId2,
-//                     0,
+//                     -1,
 //                     classificationQ,
 //                     vibLevel
 //                 );

@@ -953,7 +953,7 @@ void dsmcVolFields::calculateField()
                     rhoNMean_[cell] += 1.0;
                     rhoNInstantaneous_[cell] += 1.0;
                     
-                    const scalar& RWF = cloud_.getRWF_cell(cell);
+                    const scalar& RWF = cloud_.RWF(cell); //cloud_.getRWF_cell(cell);
                     
                     rhoNMeanXnParticle_[cell] += (RWF*nParticle);
                     rhoMMeanXnParticle_[cell] += (mass*RWF*nParticle);
@@ -1007,7 +1007,7 @@ void dsmcVolFields::calculateField()
                     nParcels_[iD][cell] += 1.0;
                     mccSpecies_[iD][cell] += massBySqMagU;
                     
-                    const scalar& RWF = cloud_.getRWF_cell(cell);
+                    const scalar& RWF = cloud_.RWF(cell); //cloud_.getRWF_cell(cell);
                     
                     nParcelsXnParticle_[iD][cell] += (RWF*nParticle);
                     rhoNMeanXnParticle_[cell] += (RWF*nParticle);
@@ -2181,8 +2181,8 @@ void dsmcVolFields::calculateField()
             }
             // END NEW VINCENT
             
-            // reset boundary information
             
+            // reset boundary information
             forAll(rhoNBF_, j)
             {
                 rhoNBF_[j] = 0.0;

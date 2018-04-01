@@ -691,7 +691,7 @@ void mixedTypeIIDissociationReverseExchange::reaction
 //                         tetFaceI,
 //                         tetPtI,
 //                         typeId1,
-//                         0
+//                         -1
 //                     );
                     
                     p.typeId() = typeId1;
@@ -710,7 +710,7 @@ void mixedTypeIIDissociationReverseExchange::reaction
                         tetFaceI,
                         tetPtI,
                         typeId2,
-                        0
+                        -1
                     );
                 }
             } // end of allowSplitting_
@@ -1088,7 +1088,7 @@ void mixedTypeIIDissociationReverseExchange::reaction
 //                         tetFaceI,
 //                         tetPtI,
 //                         typeId1,
-//                         0
+//                         -1
 //                     );
                     
                     q.typeId() = typeId1;
@@ -1107,7 +1107,7 @@ void mixedTypeIIDissociationReverseExchange::reaction
                         tetFaceI,
                         tetPtI,
                         typeId2,
-                        0
+                        -1
                     );
                 }
             } // end of allowSplitting_

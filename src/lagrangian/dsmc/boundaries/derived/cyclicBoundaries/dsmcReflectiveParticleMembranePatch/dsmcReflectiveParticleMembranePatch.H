@@ -27,7 +27,11 @@ Class
 
 Description
 
-    RPM technique Li et al.
+    RPM method.
+    
+    Li J, Liao DY, Yip S (1998) Coupling continuum to molecular-dynamics 
+    simulation: reflecting particle method and the field estimator. 
+    Phys Rev E 57(6):7259
 
 
 SourceFiles
@@ -52,7 +56,7 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                           Class dsmcReflectiveParticleMembranePatch Declaration
+              Class dsmcReflectiveParticleMembranePatch Declaration
 \*---------------------------------------------------------------------------*/
 
 class dsmcReflectiveParticleMembranePatch
@@ -63,18 +67,35 @@ class dsmcReflectiveParticleMembranePatch
 private:
 
     // Private data
+    
         dictionary propsDict_;
 
-        scalar p_;
+        //- typeIds to be adsorbed
+        labelList typeIds_;
+        
+        //- Probability a particle has of being specularly reflected when 
+        //  stricking the membrane
+        scalar specularReflectionProb_;
+        
+        //- Probability a particle of a given species has of being specularly
+        //  reflected when stricking the membrane
+        scalarList specularReflectionProbs_;
 
+        //- Cumulative number of specular reflections
         label nReflections_;
+        
+        //- Cumulative number of particle passing through the interface
         label nRejections_;
-
 
 
     // Private Member Functions
 
+        void setProperties();
+        
         void readProperties();
+        
+        //- Find the position on which the particle initially striked
+        vector findOriginalPosition(const dsmcParcel& p, const label fI);
 
 
 public:
@@ -86,20 +107,19 @@ public:
 
         //- Construct from components
         dsmcReflectiveParticleMembranePatch
-		(
+		    (
             Time& t,
             const polyMesh& mesh,
             dsmcCloud& cloud,
             const dictionary& dict
-		);
+		    );
 
     // Destructor
 
- 		~dsmcReflectiveParticleMembranePatch();
+ 		    ~dsmcReflectiveParticleMembranePatch();
 
 
     // Member Functions
-
 
         void calculateProperties();
 
@@ -109,7 +129,7 @@ public:
         //- control the molecules
         void controlMol
         (
-            dsmcParcel& mol,
+            dsmcParcel& p,
             dsmcParcel::trackingData& td
         );
 
@@ -124,9 +144,7 @@ public:
         void updateProperties(const dictionary&);
 
 
-        // Access
-
-
+    // Access
 
 
 

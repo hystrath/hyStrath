@@ -580,7 +580,7 @@ void densityZoneController::insertParcels(const label& nMols, const label& c)
             tetFace,
             tetPt,
             typeId_,
-            0,
+            -1,
             0,
             vibLevel
         );

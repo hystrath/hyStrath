@@ -491,7 +491,7 @@ void mixedTypeIIDissociationReverseExchange::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationP
                 );
             }
@@ -858,7 +858,7 @@ void mixedTypeIIDissociationReverseExchange::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationQ
                 );
             }

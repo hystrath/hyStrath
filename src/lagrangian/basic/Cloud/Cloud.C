@@ -446,9 +446,9 @@ void Foam::Cloud<ParticleType>::move(TrackData& td, const scalar trackTime)
 
                     newp.correctAfterParallelTransfer(patchI, td);
 
-                    //addParticle(newParticles.remove(&newp));
-                    addParticle(new ParticleType(newp));
-                    delete(newParticles.remove(&newp));
+                    addParticle(newParticles.remove(&newp));
+                    //addParticle(new ParticleType(newp));
+                    //delete(newParticles.remove(&newp));
                 }
             }
         }
@@ -713,9 +713,9 @@ void Foam::Cloud<ParticleType>::move(TrackData& td, const scalarField& trackTime
 
                     newp.correctAfterParallelTransfer(patchI, td);
                     
-                    //addParticle(newParticles.remove(&newp));
-                    addParticle(new ParticleType(newp));
-                    delete(newParticles.remove(&newp));
+                    addParticle(newParticles.remove(&newp));
+                    //addParticle(new ParticleType(newp));
+                    //delete(newParticles.remove(&newp));
                 }
             }
         }

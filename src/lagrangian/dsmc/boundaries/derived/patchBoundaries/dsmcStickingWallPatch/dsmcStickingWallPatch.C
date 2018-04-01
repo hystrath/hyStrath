@@ -221,7 +221,7 @@ void dsmcStickingWallPatch::adsorbParticle
 void dsmcStickingWallPatch::testForDesorption(dsmcParcel& p)
 { 
     //- Calculate the probability that this particle will be released
-    const label& iD = p.typeId(); //findIndex(residenceTime_, p.typeId());
+    const label& iD = p.typeId(); //findIndex(typeIds_, p.typeId());
     
     /*Info << "p.typeId() " << p.typeId() << endl;
     Info << "iD " << iD << endl;*/
@@ -361,9 +361,7 @@ void dsmcStickingWallPatch::measurePropertiesAfterDesorption
         
         scalar nParticle = cloud_.nParticle();
         
-        const scalar& RWF = cloud_.getRWF_face(wppLocalFace);
-        
-        nParticle *= RWF;
+        nParticle *= cloud_.pRWF(wppIndex, wppLocalFace); //cloud_.getRWF_face(wppIndex, wppLocalFace);
 
         const scalar deltaQ = nParticle
             *(preIE - postIE  + (heatOfReaction*physicoChemical::k.value()))

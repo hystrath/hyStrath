@@ -688,7 +688,7 @@ void mixedTypeIIDissociationForwardExchange::reaction
                         tetFaceI,
                         tetPtI,
                         typeId2,
-                        0
+                        -1
                     );
                 }
             }
@@ -1087,7 +1087,7 @@ void mixedTypeIIDissociationForwardExchange::reaction
                         tetFaceI,
                         tetPtI,
                         typeId2,
-                        0
+                        -1
                     );
                 }
             } // end of allowSplitting_

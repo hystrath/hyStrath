@@ -623,7 +623,7 @@ void forwardAssociativeIonisation::reaction
                     tetFace,
                     tetPt,
                     typeId2,
-                    0,
+                    -1,
                     classificationP,
                     vibLevel
                 );
