@@ -840,7 +840,10 @@ Foam::dsmcCloud::dsmcCloud
              << tab << "- maxRadialWeightingFactor" << tab << maxRWF_ << nl
              << endl;
              
-         updateRWF();
+         if (rWMethod_ != "particle")
+         {
+            updateRWF();
+         }
     }
     
     reactions_.initialConfiguration();
