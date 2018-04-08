@@ -1,71 +1,53 @@
 # hyStrath
 
-##### OpenFOAM hypersonic code developments released under license GPL-3.0
-###### Hosting the *hyFoam* (supersonic combusting flows) and *hy2Foam* (hypersonic reacting flows) CFD solvers  
-###### Hosting the *dsmcFoam+* (direct simulation Monte Carlo) solver  
+#### Hypersonics / Rarefied gas dynamics code developments released under license GPL-3.0 
+#### The only platform to conjointly host open-source CFD and DSMC codes designed for atmospheric re-entry analysis
 
+#### Includes:
++ *hyFoam* CFD solver (supersonic combusting flows)  
++ *hy2Foam* CFD solver (hypersonic reacting flows)  
++ *dsmcFoam+* code (direct simulation Monte Carlo)  
 
----
+#### Please visit the [_hyStrath_ Wiki page](https://github.com/vincentcasseau/hyStrath/wiki)  
 
-**Please check out the [_hyStrath_ Wiki page](https://github.com/vincentcasseau/hyStrath/wiki)**   
-
+<br><br>
 
 ---  
-## Compatibility, Installation and Updates
+## Compatibility, Maintenance, Installation and Sync
 
-###### Master branch (CFD and DSMC)  
-+ OF-v1612+: https://www.openfoam.com/releases/openfoam-v1612+  
+### Master branch (CFD and DSMC)  
 
-###### OF-2.4.0 branch (CFD only)   
-+ OF-2.4.0-MNF: https://github.com/MicroNanoFlows/OpenFOAM-2.4.0-MNF  
-+ OF-2.4.0: http://openfoam.org/download/2-4-0-ubuntu  
-+ OF-2.3.0: http://openfoam.org/download/2-3-0-ubuntu  
+#### Compatibility  
++ OF-v1612+: https://www.openfoam.com/releases/openfoam-v1612+ 
 
+#### Installation  
+```sh
+git clone https://github.com/vincentcasseau/hyStrath.git --branch master --single-branch && cd hyStrath/
+```   
++ CFD & DSMC:
+```sh 
+./install-all.sh nCPUs > logInstall &
+```
 
-<div class="paragraph"><p><br>
-<br></p></div>
+where _nCPUs_ is the number of processors to be used during the installation.  
 
+#### [View more](https://github.com/vincentcasseau/hyStrath/wiki/Compatibility,-Maintenance,-Installation-and-Sync)  
 
-###### Installation  
-OF-v1612+:  
-+ git clone https://github.com/vincentcasseau/hyStrath.git --branch master --single-branch && cd hyStrath/   
-+ CFD & DSMC: ./install-all.sh _#nCPUs_ > logInstall &
-+ CFD: ./install-CFD.sh _#nCPUs_ > logInstall &
-+ DSMC: ./install-DSMC.sh _#nCPUs_ > logInstall &   
- 
-
-OF-2.4.0-MNF, OF-2.4.0, OF-2.3.0:  
-+ git clone https://github.com/vincentcasseau/hyStrath.git --branch OF-2.4.0 --single-branch && cd hyStrath/   
-+ CFD: ./install.sh  
-
-<div class="paragraph"><p><br>
-<br></p></div>
-
-
-###### Synchronisation
-OF-v1612+:  
-+ git pull origin master   
-+ CFD & DSMC: ./resync-all.sh _#nCPUs_ > logSync &
-+ CFD: ./resync-CFD.sh _#nCPUs_ > logSync &
-+ DSMC: ./resync-DSMC.sh _#nCPUs_ > logSync & 
-
-
-<div class="paragraph"><p><br>
-<br></p></div>
+<br><br>
 
 ---  
 ## Release history  
-### 17 Feb 2018: 'Concordia' release, Master branch  
+#### 17 Feb 2018: 'Concordia' release, Master branch  
 + CFD upgrade  
++ DSMC update 
 
-#### 5 Dec 2017: 'Cairn' release, Master branch  
+##### 5 Dec 2017: 'Cairn' release, Master branch  
 + Introduction of the _dsmcFoam+_ solver  
 
 #### [View more](https://github.com/vincentcasseau/hyStrath/wiki/Release-history)  
 
 
-<div class="paragraph"><p><br>
-<br></p></div>
+<br><br>
 
 ---  
 
@@ -80,20 +62,21 @@ J.-J. O.E. Hoste _et al._, 03/2017: [Numerical Modeling and Simulation of Supers
 #### [View more](https://github.com/vincentcasseau/hyStrath/wiki/Publications)  
 
 
-<div class="paragraph"><p><br>
-<br></p></div>
+<br><br>
 
 ---  
 
 ## People and Contact
 
-###### CFD  
+#### _hyStrath_ platform  
+GitHub coordinator: Dr Vincent Casseau  
+
+#### CFD  
 Lead developer: Dr Vincent Casseau    
 Contributors: Daniel E.R. Espinoza, Jimmy-John O.E. Hoste and Dr Thomas J. Scanlon              
 Acknowledgements: Dr Rodrigo C. Palharini and Prof Richard E. Brown
-  
-   
-###### DSMC        
+     
+#### DSMC        
 Current developers: Dr Craig White and Dr Vincent Casseau    
 Contributors: Daniel E.R. Espinoza and Dr Thomas J. Scanlon  
 Acknowledgements: Dr Rodrigo C. Palharini  
@@ -102,15 +85,12 @@ Acknowledgements: Dr Rodrigo C. Palharini
 **Consultancy services: [MTS-CFD](https://www.mts-cfd.com/)**  
 
 
-<div class="paragraph"><p><br>
-<br></p></div>
+<br><br>
 
 ---  
-### _hyStrath_ also features:  
+### _hyStrath_ also features  
 + **_dsmcFoam+_** for OF-2.4.0-MNF   
 the direct simulation Monte Carlo code from the Universities of Strathclyde and Glasgow  
 hosted by Dr Craig White (https://github.com/MicroNanoFlows/OpenFOAM-2.4.0-MNF/tree/devel-craig)  
 + **_blockMeshDG_** by Akidess (https://openfoamwiki.net/index.php/Contrib_blockMeshDG)  
 + **_makeAxialMesh_** by Bernhard Gschaider (http://openfoamwiki.net/index.php/Contrib/MakeAxialMesh)
-
-
