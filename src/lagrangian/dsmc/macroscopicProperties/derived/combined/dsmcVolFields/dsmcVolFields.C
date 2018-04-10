@@ -46,6 +46,41 @@ defineTypeNameAndDebug(dsmcVolFields, 0);
 addToRunTimeSelectionTable(dsmcField, dsmcVolFields, dictionary);
 
 
+// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
+
+void dsmcVolFields::calculateWallUnitVectors()
+{
+    forAll(n_, patchi)
+    {
+        const polyPatch& pPatch = mesh_.boundaryMesh()[patchi];
+        
+        if(isA<wallPolyPatch>(pPatch))
+        {
+            const vectorField& fC = pPatch.faceCentres();
+            
+            forAll(n_[patchi], facei)
+            {
+                n_[patchi][facei] = pPatch.faceAreas()[facei]
+                    /mag(pPatch.faceAreas()[facei]);
+                
+                //- Wall tangential unit vector. Use the direction between the
+                // face centre and the first vertex in the list
+                t1_[patchi][facei] = fC[facei] - mesh_.points()[mesh_.faces()[pPatch.start() + facei][0]];
+                t1_[patchi][facei] /= mag(t1_[patchi][facei]);
+                
+                //- Other tangential unit vector.  Rescaling in case face is not
+                //  flat and n and t1 aren't perfectly orthogonal
+                t2_[patchi][facei] = n_[patchi][facei]^t1_[patchi][facei]; 
+                t2_[patchi][facei] /= mag(t2_[patchi][facei]);
+            }
+            
+            //Info << "n_[patchi]: " << n_[patchi] << endl;
+            //Info << "t1_[patchi]: " << t1_[patchi] << endl;
+            //Info << "t2_[patchi]: " << t2_[patchi] << endl;
+        }
+    }
+}
+
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
@@ -578,6 +613,9 @@ dsmcVolFields::dsmcVolFields
     mccSpeciesBF_(),
     vibTBF_(),
     vDofBF_(),
+    n_(),
+    t1_(),
+    t2_(),
     averagingAcrossManyRuns_(false),
     measureClassifications_(false),
     measureMeanFreePath_(false),
@@ -737,6 +775,10 @@ dsmcVolFields::dsmcVolFields
     totalvDofBF_.setSize(mesh_.boundaryMesh().size());
     speciesRhoNIntBF_.setSize(mesh_.boundaryMesh().size());
     speciesRhoNElecBF_.setSize(mesh_.boundaryMesh().size());
+    
+    n_.setSize(mesh_.boundaryMesh().size());
+    t1_.setSize(mesh_.boundaryMesh().size());
+    t2_.setSize(mesh_.boundaryMesh().size());
         
     forAll(rhoNBF_, j)
     {
@@ -754,7 +796,13 @@ dsmcVolFields::dsmcVolFields
         totalvDofBF_[j].setSize(patch.size(), 0.0);
         speciesRhoNIntBF_[j].setSize(patch.size(), 0.0);
         speciesRhoNElecBF_[j].setSize(patch.size(), 0.0);
+        
+        n_[j].setSize(patch.size(), vector::zero);
+        t1_[j].setSize(patch.size(), vector::zero);
+        t2_[j].setSize(patch.size(), vector::zero);
     }
+    
+    calculateWallUnitVectors();
     
     vibrationalEBF_.setSize(typeIds_.size());
     electronicEBF_.setSize(typeIds_.size());
@@ -1728,7 +1776,7 @@ void dsmcVolFields::calculateField()
             forAll(rhoNBF_, j)
             {
                 const polyPatch& patch = mesh_.boundaryMesh()[j];
-                const vectorField& fC = patch.faceCentres();
+                //const vectorField& fC = patch.faceCentres();
 
                 vibTBF[j].setSize(patch.size(), 0.0);
                 molecularMassBoundary[j].setSize(patch.size(), 0.0);
@@ -1932,9 +1980,9 @@ void dsmcVolFields::calculateField()
 //                         rhoM_.boundaryFieldRef()[j][k] = rhoM_[boundaryCells_[j][k]];
                     }
                     
-                    p_.boundaryFieldRef()[j] =
-                        fD_.boundaryField()[j]
-                    & (patch.faceAreas()/mag(patch.faceAreas()));
+                    /*p_.boundaryFieldRef()[j] = fD_.boundaryField()[j]
+                        & (patch.faceAreas()/mag(patch.faceAreas()));
+                    
 
                     // Wall tangential unit vector. Use the direction between the
                     // face centre and the first vertex in the list
@@ -1973,6 +2021,19 @@ void dsmcVolFields::calculateField()
                     tau_.boundaryFieldRef()[j] = sqrt(
                         sqr(fD_.boundaryField()[j] & t1)
                         + sqr(fD_.boundaryField()[j] & t2));
+                    */ // DELETED VINCENT 10/04/2018
+                    
+                    forAll(p_.boundaryField()[j], facei)
+                    {
+                        p_.boundaryFieldRef()[j][facei] = 
+                            fD_.boundaryField()[j][facei] & n_[j][facei];
+                        
+                        tau_.boundaryFieldRef()[j] = sqrt
+                            (
+                                sqr(fD_.boundaryField()[j][facei] & t1_[j][facei])
+                              + sqr(fD_.boundaryField()[j][facei] & t2_[j][facei])
+                            );
+                    }
                 }
             }
             
@@ -1984,29 +2045,66 @@ void dsmcVolFields::calculateField()
                 {
                     if(!isA<emptyPolyPatch>(patch))
                     {
-                        if(!isA<cyclicPolyPatch>(patch))
+                        if(!isA<cyclicPolyPatch>(patch)) 
                         {
-                            forAll(boundaryCells_[j], k)
-                            {       
-                                translationalT_.boundaryFieldRef()[j][k] = translationalT_[boundaryCells_[j][k]];
-                                rotationalT_.boundaryFieldRef()[j][k] = rotationalT_[boundaryCells_[j][k]];
-                                vibrationalT_.boundaryFieldRef()[j][k] = vibrationalT_[boundaryCells_[j][k]];
-                                overallT_.boundaryFieldRef()[j][k] = overallT_[boundaryCells_[j][k]];
-                                dsmcRhoNMean_.boundaryFieldRef()[j][k] = dsmcRhoNMean_[boundaryCells_[j][k]];
-                                rhoN_.boundaryFieldRef()[j][k] = rhoN_[boundaryCells_[j][k]];
-                                rhoM_.boundaryFieldRef()[j][k] = rhoM_[boundaryCells_[j][k]];
-                                p_.boundaryFieldRef()[j][k] = p_[boundaryCells_[j][k]];
-                                Ma_.boundaryFieldRef()[j][k] = Ma_[boundaryCells_[j][k]];
-                                UMean_.boundaryFieldRef()[j][k] = UMean_[boundaryCells_[j][k]];
+                            if(!isA<wallPolyPatch>(patch))
+                            {
+                                forAll(boundaryCells_[j], k)
+                                {       
+                                    translationalT_.boundaryFieldRef()[j][k] = translationalT_[boundaryCells_[j][k]];
+                                    rotationalT_.boundaryFieldRef()[j][k] = rotationalT_[boundaryCells_[j][k]];
+                                    vibrationalT_.boundaryFieldRef()[j][k] = vibrationalT_[boundaryCells_[j][k]];
+                                    overallT_.boundaryFieldRef()[j][k] = overallT_[boundaryCells_[j][k]];
+                                    dsmcRhoNMean_.boundaryFieldRef()[j][k] = dsmcRhoNMean_[boundaryCells_[j][k]];
+                                    rhoN_.boundaryFieldRef()[j][k] = rhoN_[boundaryCells_[j][k]];
+                                    rhoM_.boundaryFieldRef()[j][k] = rhoM_[boundaryCells_[j][k]];
+                                    p_.boundaryFieldRef()[j][k] = p_[boundaryCells_[j][k]];
+                                    Ma_.boundaryFieldRef()[j][k] = Ma_[boundaryCells_[j][k]];
+                                    UMean_.boundaryFieldRef()[j][k] = UMean_[boundaryCells_[j][k]];
+                                }
+                            }
+                            
+                            if(measureMeanFreePath_)
+                            {
+                                forAll(boundaryCells_[j], k)
+                                {
+                                    meanFreePath_.boundaryFieldRef()[j][k] = meanFreePath_[boundaryCells_[j][k]];
+                                    SOF_.boundaryFieldRef()[j][k] = SOF_[boundaryCells_[j][k]];
+                                    mfpCellRatio_.boundaryFieldRef()[j][k] = mfpCellRatio_[boundaryCells_[j][k]];
+                                    meanCollisionRate_.boundaryFieldRef()[j][k] = meanCollisionRate_[boundaryCells_[j][k]];
+                                    meanCollisionTime_.boundaryFieldRef()[j][k] = meanCollisionTime_[boundaryCells_[j][k]];
+                                    meanCollisionTimeTimeStepRatio_.boundaryFieldRef()[j][k] = meanCollisionTimeTimeStepRatio_[boundaryCells_[j][k]];
+                                }
+                            }
+                            
+                            if(measureHeatFluxShearStress_)
+                            {
+                                forAll(boundaryCells_[j], k)
+                                {
+                                    shearStressTensor_.boundaryFieldRef()[j][k] = shearStressTensor_[boundaryCells_[j][k]];
+                                    heatFluxVector_.boundaryFieldRef()[j][k] = heatFluxVector_[boundaryCells_[j][k]];
+                                    pressureTensor_.boundaryFieldRef()[j][k] = pressureTensor_[boundaryCells_[j][k]];
+                                }
+                            }
+                            
+                            if(measureClassifications_)
+                            {
+                                forAll(boundaryCells_[j], k)
+                                {
+                                    classIDistribution_.boundaryFieldRef()[j][k] = classIDistribution_[boundaryCells_[j][k]];
+                                    classIIDistribution_.boundaryFieldRef()[j][k] = classIIDistribution_[boundaryCells_[j][k]];
+                                    classIIIDistribution_.boundaryFieldRef()[j][k] = classIIIDistribution_[boundaryCells_[j][k]];
+                                }
                             }
                         }
                     }
                 }
-                if(measureMeanFreePath_)
+                
+                /*if(measureMeanFreePath_)
                 {
                     if(!isA<emptyPolyPatch>(patch))
                     {
-                        if(!isA<cyclicPolyPatch>(patch))
+                        if(!(isA<cyclicPolyPatch>(patch) or isA<wallPolyPatch>(patch)))
                         {
                             forAll(boundaryCells_[j], k)
                             {
@@ -2020,13 +2118,14 @@ void dsmcVolFields::calculateField()
                         }
                     }
                 }
+                
                 if(measureClassifications_)
                 {
                     if(isA<polyPatch>(patch))
                     {
                         if(!isA<emptyPolyPatch>(patch))
                         {
-                            if(!isA<cyclicPolyPatch>(patch))
+                            if(!(isA<cyclicPolyPatch>(patch) or isA<wallPolyPatch>(patch)))
                             {
                                 forAll(boundaryCells_[j], k)
                                 {
@@ -2038,13 +2137,14 @@ void dsmcVolFields::calculateField()
                         }
                     }
                 }
+                
                 if(measureHeatFluxShearStress_)
                 { 
                     if(isA<polyPatch>(patch))
                     {
                         if(!isA<emptyPolyPatch>(patch))
                         {
-                            if(!isA<cyclicPolyPatch>(patch))
+                            if(!(isA<cyclicPolyPatch>(patch) or isA<wallPolyPatch>(patch)))
                             {
                                 forAll(boundaryCells_[j], k)
                                 {
@@ -2055,8 +2155,8 @@ void dsmcVolFields::calculateField()
                             }
                         }
                     }
-                }
-            }
+                }*/ // DELETED VINCENT 10/04/2018
+            } // end loop boundary cells for generalPatches
             
             if(measureMeanFreePath_)
             {
@@ -2111,39 +2211,39 @@ void dsmcVolFields::calculateField()
             
             forAll(rhoNMean_, c)
             {
-                rhoNMean_[c] = scalar(0.0);
-                rhoNInstantaneous_[c] = scalar(0.0); // NEW VINCENT 03/06/2017
-                rhoMMean_[c] = scalar(0.0);
-                linearKEMean_[c] = scalar(0.0);
+                rhoNMean_[c] = 0.0;
+                rhoNInstantaneous_[c] = 0.0; // NEW VINCENT 03/06/2017
+                rhoMMean_[c] = 0.0;
+                linearKEMean_[c] = 0.0;
                 momentumMean_[c] = vector::zero;
-                rotationalEMean_[c] = scalar(0.0);
-                rotationalDofMean_[c] = scalar(0.0);
-                rhoNMeanInt_[c] = scalar(0.0);
+                rotationalEMean_[c] = 0.0;
+                rotationalDofMean_[c] = 0.0;
+                rhoNMeanInt_[c] = 0.0;
                 molsElec_[c] = scalar(0.0),
-                nClassI_[c] = scalar(0.0);
-                nClassII_[c] = scalar(0.0);
-                nClassIII_[c] = scalar(0.0);
-                collisionSeparation_[c] = scalar(0.0);
-                nColls_[c] = scalar(0.0);
-                muu_[c] = scalar(0.0);
-                muv_[c] = scalar(0.0);
-                muw_[c] = scalar(0.0);
-                mvv_[c] = scalar(0.0);
-                mvw_[c] = scalar(0.0);
-                mww_[c] = scalar(0.0);
-                mcc_[c] = scalar(0.0);
-                mccu_[c] = scalar(0.0);
-                mccv_[c] = scalar(0.0);
-                mccw_[c] = scalar(0.0);
-                eu_[c] = scalar(0.0);
-                ev_[c] = scalar(0.0);
-                ew_[c] = scalar(0.0);
-                e_[c] = scalar(0.0);
-                totalvDof_[c] = scalar(0.0); // NEW VINCENT 03/06/2017
-                rhoNMeanXnParticle_[c] = scalar(0.0);
-                rhoMMeanXnParticle_[c] = scalar(0.0);
+                nClassI_[c] = 0.0;
+                nClassII_[c] = 0.0;
+                nClassIII_[c] = 0.0;
+                collisionSeparation_[c] = 0.0;
+                nColls_[c] = 0.0;
+                muu_[c] = 0.0;
+                muv_[c] = 0.0;
+                muw_[c] = 0.0;
+                mvv_[c] = 0.0;
+                mvw_[c] = 0.0;
+                mww_[c] = 0.0;
+                mcc_[c] = 0.0;
+                mccu_[c] = 0.0;
+                mccv_[c] = 0.0;
+                mccw_[c] = 0.0;
+                eu_[c] = 0.0;
+                ev_[c] = 0.0;
+                ew_[c] = 0.0;
+                e_[c] = 0.0;
+                totalvDof_[c] = 0.0; // NEW VINCENT 03/06/2017
+                rhoNMeanXnParticle_[c] = 0.0;
+                rhoMMeanXnParticle_[c] = 0.0;
                 momentumMeanXnParticle_[c] = vector::zero;
-                linearKEMeanXnParticle_[c] = scalar(0.0);
+                linearKEMeanXnParticle_[c] = 0.0;
             }
 
             // NEW VINCENT
@@ -2368,6 +2468,10 @@ void dsmcVolFields::resetField()
         speciesRhoNIntBF_[j].clear();
         speciesRhoNElecBF_[j].clear();
         
+        n_[j].clear();
+        t1_[j].clear();
+        t2_[j].clear();
+        
         rhoNBF_[j].setSize(patch.size(), 0.0);
         rhoMBF_[j].setSize(patch.size(), 0.0);
         linearKEBF_[j].setSize(patch.size(), 0.0);
@@ -2380,6 +2484,10 @@ void dsmcVolFields::resetField()
         totalvDofBF_[j].setSize(patch.size(), 0.0);
         speciesRhoNIntBF_[j].setSize(patch.size(), 0.0);
         speciesRhoNElecBF_[j].setSize(patch.size(), 0.0);
+        
+        n_[j].setSize(patch.size(), vector::zero);
+        t1_[j].setSize(patch.size(), vector::zero);
+        t2_[j].setSize(patch.size(), vector::zero);
     }
     
 

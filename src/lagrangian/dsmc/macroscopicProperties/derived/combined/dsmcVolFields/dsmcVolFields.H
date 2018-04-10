@@ -52,7 +52,7 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                           Class dsmcVolFields Declaration
+                        Class dsmcVolFields Declaration
 \*---------------------------------------------------------------------------*/
 
 class dsmcVolFields
@@ -63,6 +63,7 @@ class dsmcVolFields
 private:
 
     // Private data
+    
         dictionary propsDict_;
         
         label sampleInterval_;
@@ -168,12 +169,17 @@ private:
         List<vectorField> momentumBF_;
         List<vectorField> fDBF_;
         
-        List< List < scalarField > > vibrationalEBF_;
-        List< List < scalarField > > electronicEBF_;
-        List< List < scalarField > > speciesRhoNBF_;   
-        List< List < scalarField > > mccSpeciesBF_;
-        List< List < scalarField > > vibTBF_;
-        List< List < scalarField > > vDofBF_;
+        List<List<scalarField>> vibrationalEBF_;
+        List<List<scalarField>> electronicEBF_;
+        List<List<scalarField>> speciesRhoNBF_;   
+        List<List<scalarField>> mccSpeciesBF_;
+        List<List<scalarField>> vibTBF_;
+        List<List<scalarField>> vDofBF_;
+        
+        //- Wall unit vectors - temporary storage, should be done in boundaries/patch
+        List<vectorField> n_;
+        List<vectorField> t1_;
+        List<vectorField> t2_;
         
         bool averagingAcrossManyRuns_;
         bool measureClassifications_;
@@ -187,6 +193,8 @@ private:
         void readIn();
 
         void writeOut();
+        
+        void calculateWallUnitVectors();
 
 
 public:
@@ -197,13 +205,13 @@ public:
     // Constructors
 
         //- Construct from components
-    dsmcVolFields
-    (
-        Time& t,
-        const polyMesh& mesh,
-        dsmcCloud& cloud,
-        const dictionary& dict
-    );
+        dsmcVolFields
+        (
+            Time& t,
+            const polyMesh& mesh,
+            dsmcCloud& cloud,
+            const dictionary& dict
+        );
 
     // Destructor
 
@@ -212,20 +220,20 @@ public:
 
     // Member Functions
 
-    //- create initial field
-    void createField();
+      //- create initial field
+      void createField();
 
-    //- calculate field
-    void calculateField();
-    
-    //reset field if mesh has changed
-    void resetField();
+      //- calculate field
+      void calculateField();
+      
+      //- reset field if mesh has changed
+      void resetField();
 
-    //- write field
-    void writeField();
+      //- write field
+      void writeField();
 
-//         const propertyField& fields() const;
-    void updateProperties(const dictionary& dict);
+  //         const propertyField& fields() const;
+      void updateProperties(const dictionary& dict);
 };
 
 
