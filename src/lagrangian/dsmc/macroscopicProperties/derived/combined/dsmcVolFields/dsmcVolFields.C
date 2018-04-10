@@ -2028,7 +2028,7 @@ void dsmcVolFields::calculateField()
                         p_.boundaryFieldRef()[j][facei] = 
                             fD_.boundaryField()[j][facei] & n_[j][facei];
                         
-                        tau_.boundaryFieldRef()[j] = sqrt
+                        tau_.boundaryFieldRef()[j][facei] = sqrt
                             (
                                 sqr(fD_.boundaryField()[j][facei] & t1_[j][facei])
                               + sqr(fD_.boundaryField()[j][facei] & t2_[j][facei])
