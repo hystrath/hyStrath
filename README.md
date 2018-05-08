@@ -56,7 +56,7 @@ where _nCPUs_ is the number of processors to be used during the installation.
 
 #### Latest conference paper:  
 [*__ARC__*] V. Renato _et al._, 09/2017: [Multi-dimensional Ablation and Thermal Response Program for Martian Entry
-Analysis](https://strathprints.strath.ac.uk/62926  
+Analysis](https://strathprints.strath.ac.uk/62926)  
 
 #### [View more](https://github.com/vincentcasseau/hyStrath/wiki/Publications)  
 
