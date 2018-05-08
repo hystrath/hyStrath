@@ -1,3 +1,4 @@
+#include <numeric>
 
 //------------------------------------------------------------------------------
 // Code adapted from Praveen Chandrashekar's solver gFoam
