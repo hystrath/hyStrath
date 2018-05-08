@@ -185,6 +185,20 @@ if(max(mu.primitiveField()) > 0.0)
     inviscid = false;
 }
 
+//- Wall heat flux
+volScalarField wallHeatFlux
+(
+    IOobject
+    (
+        "wallHeatFlux",
+        runTime.timeName(),
+        mesh
+    ),
+    mesh,
+    dimensionedScalar("wallHeatFlux", dimensionSet(1, 0, -3, 0, 0), 0.0)
+);
+
+
 //---------------------------------------------------------
 // Definition of the rarefaction parameters
 //---------------------------------------------------------
@@ -198,9 +212,11 @@ autoPtr<rarefactionParameter> rarefactionParameters
 );
 rarefactionParameters->correct(U);
 
+   
 //---------------------------------------------------------
 // Heat flux vectors
 //---------------------------------------------------------
+
 bool writeHeatFluxes = thermo.transportDictionary().subDict("transportModels").lookupOrDefault<bool>("writeHeatFluxes", false);
 bool writeWallHeatFlux = thermo.transportDictionary().subDict("transportModels").lookupOrDefault<bool>("writeWallHeatFlux", false);
 

@@ -68,19 +68,6 @@ if(writeWallHeatFlux)
 
     const surfaceScalarField::Boundary& patchHeatFlux = heatFlux.boundaryField();
 
-
-    volScalarField wallHeatFlux
-    (
-        IOobject
-        (
-            "wallHeatFlux",
-            runTime.timeName(),
-            mesh
-        ),
-        mesh,
-        dimensionedScalar("wallHeatFlux", dimensionSet(1, 0, -3, 0, 0), 0.0)
-    );
-
     Info<< "\nWall heat fluxes [W]" << endl;
     forAll(patchHeatFlux, patchi)
     {
