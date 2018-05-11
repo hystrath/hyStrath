@@ -75,11 +75,11 @@ Lead developer: Dr Vincent Casseau
 Contributors: Daniel E.R. Espinoza, Jimmy-John O.E. Hoste and Dr Thomas J. Scanlon              
 Acknowledgements: Dr Rodrigo C. Palharini and Prof Richard E. Brown
      
-### DSMC        
+#### DSMC        
 Current developer: Dr Vincent Casseau    
 Contributors: Daniel E.R. Espinoza, Dr Craig White and Dr Thomas J. Scanlon  
 
-### ARC  
+#### ARC  
 Lead developer: Dr Viola Renato  
 
 **Enquiries: hy2Foam@gmail.com**  

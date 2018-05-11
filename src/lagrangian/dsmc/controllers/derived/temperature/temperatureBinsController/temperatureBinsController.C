@@ -217,12 +217,8 @@ void temperatureBinsController::calculateProperties()
                     if(findIndex(typeIds_, p->typeId()) != -1)
                     {
 
-                        scalar nParticle = cloud_.nParticle();
+                        const scalar nParticle = cloud_.nParticles(cellI);
                     
-                        const scalar& RWF = cloud_.getRWF_cell(cellI);
-                        
-                        nParticle *= RWF;
-                        
                         const scalar mass = cloud_.constProps(p->typeId()).mass()*nParticle;
                         
                         massV_[n] += mass;
@@ -325,12 +321,8 @@ void temperatureBinsController::calculateProperties()
                 {
                     if(findIndex(typeIds_, p->typeId()) != -1)
                     {
-                        scalar nParticle = cloud_.nParticle();
+                        const scalar nParticle = cloud_.nParticles(cell);
                     
-                        const scalar& RWF = cloud_.getRWF_cell(cell);
-                        
-                        nParticle *= RWF;
-                        
                         const scalar mass = cloud_.constProps(p->typeId()).mass()*nParticle;
                         
                         mcc_[n] += mass*mag(p->U())*mag(p->U());

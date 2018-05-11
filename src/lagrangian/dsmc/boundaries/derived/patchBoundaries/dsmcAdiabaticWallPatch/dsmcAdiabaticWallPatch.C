@@ -113,13 +113,15 @@ void dsmcAdiabaticWallPatch::initialConfiguration()
 
 void dsmcAdiabaticWallPatch::calculateProperties()
 {            
-    const scalar deltaT = mesh_.time().deltaTValue();
+    const scalar deltaT = mesh_.time().deltaTValue(); //TODO cloud_.deltaTValue(p.cell());
     
     const List<DynamicList<dsmcParcel*> >& cellOccupancy = cloud_.cellOccupancy();
     
     forAll(cells_, c)
     {
-        const List<dsmcParcel*>& parcelsInCell = cellOccupancy[cells_[c]];
+        const label celli = cells_[c];
+        
+        const List<dsmcParcel*>& parcelsInCell = cellOccupancy[celli];
                   
         forAll(parcelsInCell, pIC)
         {
@@ -128,13 +130,13 @@ void dsmcAdiabaticWallPatch::calculateProperties()
             const dsmcParcel::constantProperties& constProp 
                 = cloud_.constProps(p->typeId());
                                 
-            const scalar& mass = constProp.mass()*cloud_.nParticle();
+            const scalar& mass = constProp.mass()*cloud_.nParticles(celli);
                         
             totalMass_ += mass;
             totalMols_ += 1.0;
             mcc_ += mass*mag(p->U())*mag(p->U());
-            incidentMomentum_ += cloud_.nParticle()*cloud_.constProps(p->typeId()).mass()*p->U();
-            incidentMass_ += cloud_.nParticle()*cloud_.constProps(p->typeId()).mass();
+            incidentMomentum_ += cloud_.nParticles(celli)*cloud_.constProps(p->typeId()).mass()*p->U();
+            incidentMass_ += cloud_.nParticles(celli)*cloud_.constProps(p->typeId()).mass();
                                 
             //check if particle is heading towards the surface
             vector nw = p->normal();
@@ -185,12 +187,12 @@ void dsmcAdiabaticWallPatch::calculateProperties()
         gasVelocity_ = incidentMomentum/incidentMass;
     
         const scalar gasTemperature = (1.0/(3.0*physicoChemical::k.value()))
-                                *(
-                                    ((mcc/(totalMols*cloud_.nParticle())))
-                                    - (
-                                        (totalMass/(totalMols*cloud_.nParticle())
-                                        )*mag(gasVelocity_)*mag(gasVelocity_))
-                                );
+            *(
+                ((mcc/(totalMols*cloud_.nParticle())))
+                - (
+                    (totalMass/(totalMols*cloud_.nParticle())
+                    )*mag(gasVelocity_)*mag(gasVelocity_))
+            );
         
         Info << "gasVelocity = " << gasVelocity_ << endl;
         Info << "gasTemperature = " << gasTemperature << endl;
@@ -288,9 +290,6 @@ void dsmcAdiabaticWallPatch::controlParticle
         
     U += velocity_;
 
-//     incidentMomentum_ += cloud_.nParticle()*cloud_.constProps(p.typeId()).mass()*p.U();
-//     incidentMass_ += cloud_.nParticle()*cloud_.constProps(p.typeId()).mass();
-    
     measurePropertiesAfterControl(p, 0.0);
 }
 

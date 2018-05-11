@@ -22,12 +22,6 @@ FoamFile
 nEquivalentParticles            0.6e12;
 
 
-// Axisymmetric Properties
-// ~~~~~~~~~~~~~~~~~~
-
-axisymmetricSimulation      false;
-
-
 // Binary Collision Model
 // ~~~~~~~~~~~~~~~~~~~~~~
 
@@ -54,21 +48,9 @@ moleculeProperties
     Ar
     {
         mass                            		66.3e-27;
-        diameter                        		4.17e-10;
-        rotationalDegreesOfFreedom        		     0;
-		    vibrationalModes        				           0;    
+        diameter                        		4.17e-10;    
         omega                           		    0.81;
-        alpha                                   1.0;
-		    characteristicVibrationalTemperature	  ();
-        dissociationTemperature            		  ();
-        ionisationTemperature            		     0;
-		    charDissQuantumLevel			          		();
-		    Zref 									                  ();
-		    referenceTempForZref                    ();
-        charge                                  0;
-        numberOfElectronicLevels                1;
-        electronicEnergyList                    (0);
-        degeneracyList                          (1);
+        alpha                                    1.0;
     }
 }
 

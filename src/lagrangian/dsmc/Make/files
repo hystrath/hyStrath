@@ -4,6 +4,16 @@ parcels/dsmcParcel.C
 /* CLOUD */
 clouds/dsmcCloud.C
 
+/* COORDINATE SYSTEM */
+coordinateSystem/basic/dsmcCoordinateSystem.C
+coordinateSystem/derived/Cartesian/dsmcCartesian.C
+coordinateSystem/derived/axisymmetric/dsmcAxisymmetric.C
+coordinateSystem/derived/spherical/dsmcSpherical.C
+
+coordinateSystem/timeStepModel/basic/dsmcTimeStepModel.C
+coordinateSystem/timeStepModel/derived/constantTimeStepModel/dsmcConstantTimeStepModel.C
+coordinateSystem/timeStepModel/derived/variableTimeStepModel/dsmcVariableTimeStepModel.C
+
 /* LOAD BALANCING */
 dynamicLoadBalancing/dsmcDynamicLoadBalancing.C
 
@@ -15,7 +25,7 @@ initialiseDsmcParcels/derived/dsmcZoneFill/dsmcZoneFill.C
 initialiseDsmcParcels/derived/dsmcInitialiseOnLine/dsmcInitialiseOnLine.C
 initialiseDsmcParcels/derived/dsmcLaserHeatingFill/dsmcLaserHeatingFill.C
 
-/* DELETE PARCELS*/
+/* DELETE PARCELS */
 molsToDel/basic/molsToDelete/molsToDelete.C
 molsToDel/basic/molsToDeleteModel/molsToDeleteModel.C
 molsToDel/derived/delFromCylinder/delFromCylinder.C
@@ -27,6 +37,7 @@ molsToDel/derived/delFromZone/delFromZone.C
 /* REACTIONS */
 reactions/basic/dsmcReactions/dsmcReactions.C
 reactions/basic/dsmcReaction/dsmcReaction.C
+reactions/derived/vincent_dissociation/dissociationQK.C
 reactions/derived/moleculeAtomDissociationIonisation/moleculeAtomDissociationIonisation.C
 reactions/derived/moleculeElectronDissociationIonisation/moleculeElectronDissociationIonisation.C
 reactions/derived/atomElectronIonisation/atomElectronIonisation.C
@@ -64,6 +75,12 @@ faceTracker/dsmcFaceTracker.C
 boundaryMeasurements/boundaryMeasurements.C
 cellMeasurements/cellMeasurements.C
 
+/* POROUS MEDIA MEASUREMENTS */
+porousMeasurements/basic/porousMeasurements.C
+porousMeasurements/derived/no/dsmcNoPorousMediumMeasurements.C
+porousMeasurements/derived/instantaneous/dsmcInstantaneousPorousMediumMeasurements.C
+porousMeasurements/derived/global/dsmcGlobalPorousMediumMeasurements.C
+
 /* BOUNDARIES */
 boundaries/basic/dsmcBoundaries/dsmcBoundaries.C
 
@@ -78,7 +95,7 @@ boundaries/derived/patchBoundaries/dsmcRotationPatchBoundary/dsmcRotationPatchBo
 boundaries/derived/patchBoundaries/dsmcSphericalPatchBoundary/dsmcSphericalPatchBoundary.C
 
 boundaries/derived/patchBoundaries/dsmcAbsorbingWallPatch/dsmcAbsorbingWallPatch.C
-boundaries/derived/patchBoundaries/dsmcAdiabaticWallPatch/dsmcAdiabaticWallPatch.C
+/*boundaries/derived/patchBoundaries/dsmcAdiabaticWallPatch/dsmcAdiabaticWallPatch.C*/
 boundaries/derived/patchBoundaries/dsmcCatalyticWallPatch/dsmcCatalyticWallPatch.C
 
 boundaries/derived/patchBoundaries/dsmcCLLWallPatch/dsmcCLLWallPatch.C
@@ -88,16 +105,16 @@ boundaries/derived/patchBoundaries/dsmcDiffuseWallPatch/dsmcDiffuseWallPatch.C
 boundaries/derived/patchBoundaries/dsmcSpecularWallPatch/dsmcSpecularWallPatch.C
 boundaries/derived/patchBoundaries/dsmcStickingWallPatch/dsmcStickingWallPatch.C
 
-boundaries/derived/patchBoundaries/dsmcRadiationWallPatch/dsmcRadiationWallPatch.C
+/*boundaries/derived/patchBoundaries/dsmcRadiationWallPatch/dsmcRadiationWallPatch.C*/
 
 boundaries/derived/patchBoundaries/dsmcDiffuseWallClassificationPatch/dsmcDiffuseWallClassificationPatch.C
 boundaries/derived/patchBoundaries/dsmcDiffuseWallHeatFluxPatch/dsmcDiffuseWallHeatFluxPatch.C
 boundaries/derived/patchBoundaries/dsmcAdiabaticWallRotationPatch/dsmcAdiabaticWallRotationPatch.C
-boundaries/derived/patchBoundaries/dsmcRadiationWallFieldPatch/dsmcRadiationWallFieldPatch.C
+/*boundaries/derived/patchBoundaries/dsmcRadiationWallFieldPatch/dsmcRadiationWallFieldPatch.C*/
 boundaries/derived/patchBoundaries/dsmcCLLWallFieldPatch/dsmcCLLWallFieldPatch.C
 boundaries/derived/patchBoundaries/dsmcCLLWallBirdFieldPatch/dsmcCLLWallBirdFieldPatch.C
 boundaries/derived/patchBoundaries/dsmcFixedHeatFluxFieldPatch/dsmcFixedHeatFluxFieldPatch.C
-boundaries/derived/patchBoundaries/dsmcFixedHeatFluxWallPatch/dsmcFixedHeatFluxWallPatch.C
+/*boundaries/derived/patchBoundaries/dsmcFixedHeatFluxWallPatch/dsmcFixedHeatFluxWallPatch.C*/
 
 
 /* MIXED PATCH BOUNDARY MODELS */
@@ -132,6 +149,7 @@ boundaries/derived/generalBoundaries/dsmcWangPressureInlet/dsmcWangPressureInlet
 boundaries/derived/generalBoundaries/dsmcMassFlowRateInlet/dsmcMassFlowRateInlet.C
 
 /* CYCLIC BOUNDARY MODELS */
+boundaries/derived/cyclicBoundaries/dsmcReflectiveParticleMembranePatch/dsmcReflectiveParticleMembranePatch.C
 
 
 /* COMBINED */
@@ -174,9 +192,9 @@ controllers/basic/dsmcStateController/dsmcStateController.C
 controllers/basic/dsmcFluxController/dsmcFluxController.C
 
 /* DENSITY*/
-controllers/derived/density/densityController/densityController.C
+/*controllers/derived/density/densityController/densityController.C
 controllers/derived/density/densityZoneController/densityZoneController.C
-controllers/derived/density/densityControlZone/densityControlZone.C
+controllers/derived/density/densityControlZone/densityControlZone.C*/
 
 
 /* TEMPERATURE*/

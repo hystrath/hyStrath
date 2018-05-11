@@ -93,30 +93,26 @@ void simplifiedBernoulliTrials::collide()
     // Temporary storage for subCells
     List<DynamicList<label> > subCells(8);
 
-    scalar deltaT = cloud_.mesh().time().deltaTValue();
-
     label collisionCandidates = 0;
 
     label collisions = 0;
 	
-	const List<DynamicList<dsmcParcel*> > cellOccupancy = cloud_.cellOccupancy();
+    const List<DynamicList<dsmcParcel*> > cellOccupancy = cloud_.cellOccupancy();
 
     const polyMesh& mesh = cloud_.mesh();
 
     forAll(cellOccupancy, cellI)
     {
+        const scalar deltaT = cloud_.deltaTValue(cellI);
+        
+        const scalar nParticle = cloud_.nParticles(cellI, true);
+        
         const DynamicList<dsmcParcel*>& cellParcels(cellOccupancy[cellI]);
 
         label nC(cellParcels.size());
 
         if (nC > 1)
         {   
-            scalar nParticle = cloud_.nParticle();
-            
-            const scalar RWF = cloud_.RWF(cellI, true);
-            
-            nParticle *= RWF;
-            
             scalar prob1 = (nParticle*deltaT)/(mesh.cellVolumes()[cellI]);
             label k = -1;
             label candidateP = -1;

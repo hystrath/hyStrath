@@ -113,7 +113,7 @@ void dsmcFixedHeatFluxWallPatch::calculateProperties()
 {
     stepCounter_++;
 
-    const scalar deltaT = mesh_.time().deltaTValue();
+    const scalar deltaT = mesh_.time().deltaTValue(); //TODO cloud_.deltaTValue(p.cell());
     
     EcTotSum_ += EcTot_;
     EcTot_ = 0.0;

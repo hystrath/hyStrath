@@ -44,54 +44,66 @@ bool Foam::dsmcParcel::move
     td.switchProcessor = false;
     td.keepParticle = true;
 
-    if(isFree())
+    if (isFree())
     {
         const polyMesh& mesh = td.cloud().pMesh();
         const polyBoundaryMesh& pbMesh = mesh.boundaryMesh();
 
-        if(newParcel() != -1)
+        if (newParcel() != -1)
         {
             stepFraction() = td.cloud().rndGen().scalar01(); 
             newParcel() = -1;
         }
         
-        scalar tEnd = (1.0 - stepFraction())*trackTime;
-        const scalar dtMax = tEnd;
-                    
+        //scalar tEnd = (1.0 - stepFraction())*trackTime; // OLD FORMULATION
+        label orgCell = cell(); // NEW VINCENT
+        scalar tEnd = (1.0 - stepFraction())*td.cloud().deltaTValue(orgCell); // NEW VINCENT
+        //const scalar dtMax = tEnd; // OLD FORMULATION
+        
         // For reduced-D cases, the velocity used to track needs to be
         // constrained, but the actual U_ of the parcel must not be
-        // altered or used, as it is altered by patch interactions an
+        // altered or used, as it is altered by patch interactions one
         // needs to retain its 3D value for collision purposes.
         vector Utracking = U_;
             
         while (td.keepParticle && !td.switchProcessor && tEnd > ROOTVSMALL)
         {
             Utracking = U_;
-
-            if(!td.cloud().axisymmetric())
+            
+            if (td.cloud().coordSystem().type() == "dsmcCartesian")
             {
                 // Apply correction to position for reduced-D cases, 
-                // but not axisymmetric cases
+                // but not for axisymmetric cases
                 meshTools::constrainToMeshCentre(mesh, position());
                 
                 // Apply correction to velocity to constrain tracking for
-                // reduced-D cases,  but not axisymmetric cases
+                // reduced-D cases,  but not for axisymmetric cases
                 meshTools::constrainDirection(mesh, mesh.solutionD(), Utracking);
             }
 
             //- Set the Lagrangian time-step
-            scalar dt = min(dtMax, tEnd);
-
-            dt *= trackToFace(position() + dt*Utracking, td, true/*, td.cloud().faceTree()*/);
+            //scalar dt = min(dtMax, tEnd); // OLD FORMULATION
+            scalar dt = tEnd; // NEW VINCENT
+            
+            orgCell = cell(); // NEW VINCENT
+            dt *= trackToFace(position() + dt*Utracking, td, true);
+            const label destCell = cell(); // NEW VINCENT
 
             tEnd -= dt;
 
-            stepFraction() = 1.0 - tEnd/trackTime;
+            stepFraction() = 1.0 - tEnd/td.cloud().deltaTValue(orgCell); // NEW VINCENT
+            //stepFraction() = 1.0 - tEnd/trackTime; // OLD FORMULATION
+            
+            /*if (destCell != orgCell)
+            {
+                tEnd *= td.cloud().deltaTValue(destCell)
+                    /td.cloud().deltaTValue(orgCell);
+            } // NEW VINCENT*/
                 
             //- face tracking info
-            if( face() != -1 )
+            if (face() != -1)
             {
-                //--  measure flux properties
+                //- measure flux properties
                 td.cloud().tracker().updateFields(*this);
             }
 
@@ -106,7 +118,7 @@ bool Foam::dsmcParcel::move
                 {
                     const labelList& faces = td.cloud().boundaries().cyclicBoundaryModels()[c]->allFaces();
 
-                    if(findIndex(faces, this->face()) != -1)
+                    if (findIndex(faces, this->face()) != -1)
                     {
                         td.cloud().boundaries().cyclicBoundaryModels()[c]->controlMol(*this, td);
                     }
@@ -114,13 +126,13 @@ bool Foam::dsmcParcel::move
             }
         }
     }
-    else // NEW VINCENT
+    else
     {
         //- The stuck particle is considered for desorption
-        // NOTE: there should be a better way to locate the patch than looping through them all
+        //  NOTE: there should be a better way to locate the patch than looping through them all
         forAll(td.cloud().boundaries().patchBoundaryModels(), c)
         {
-            if(td.cloud().boundaries().patchBoundaryModels()[c]->patchId() == stuck().wallTemperature()[1])
+            if (td.cloud().boundaries().patchBoundaryModels()[c]->patchId() == stuck().wallTemperature()[1])
             {
                 // then this patch is the "dsmc*Sticking*WallPatch" the particle is stuck on
                 td.cloud().boundaries().patchBoundaryModels()[c]->controlParticle(*this, td);

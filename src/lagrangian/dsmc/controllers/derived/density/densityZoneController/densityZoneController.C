@@ -153,7 +153,7 @@ void densityZoneController::calculateProperties()
                 
                 if(p->typeId() == typeId_)
                 {
-                    const scalar& RWF = cloud_.getRWF_cell(cellI);
+                    const scalar& RWF = cloud_.coordSystem().recalculateRWF(cellI);
                     
                     measuredParcels_ += RWF;
                 }
@@ -567,7 +567,7 @@ void densityZoneController::insertParcels(const label& nMols, const label& c)
             tetPt
         );
         
-        const scalar& RWF = cloud_.getRWF_cell(cellI);
+        const scalar& RWF = cloud_.coordSystem().recalculateRWF(cellI);
 
         cloud_.addNewParcel
         (

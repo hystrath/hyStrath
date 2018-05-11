@@ -204,8 +204,6 @@ void noTimeCounterAdaptiveSubcelling::collide()
         return;
     }
 
-    scalar deltaT = cloud_.mesh().time().deltaTValue();
-
     label collisionCandidates = 0;
 
     label collisions = 0;
@@ -221,6 +219,8 @@ void noTimeCounterAdaptiveSubcelling::collide()
 
     forAll(cellOccupancy, cellI)
     {
+        const scalar deltaT = cloud_.deltaTValue(cellI);
+        
         const DynamicList<dsmcParcel*>& cellParcels(cellOccupancy[cellI]);
 
         label nC(cellParcels.size());
@@ -252,16 +252,9 @@ void noTimeCounterAdaptiveSubcelling::collide()
 
             scalar sigmaTcRMax = cloud_.sigmaTcRMax()[cellI];
 
-//             scalar selectedPairs =
-//                 cloud_.collisionSelectionRemainder()[cellI]
-//               + 0.5*nC*(nC - 1)*cloud_.nParticle()*sigmaTcRMax*deltaT
-//                /mesh.cellVolumes()[cellI];
-            
-            const scalar RWF = cloud_.RWF(cellI, true);
-            
             scalar selectedPairs =
                 cloud_.collisionSelectionRemainder()[cellI]
-                + 0.5*nC*(nC - 1)*cloud_.nParticle()*RWF*sigmaTcRMax*deltaT
+                + 0.5*nC*(nC - 1)*cloud_.nParticles(cellI, true)*sigmaTcRMax*deltaT
                 /mesh.cellVolumes()[cellI];
                
             label nCandidates(selectedPairs);

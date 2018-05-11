@@ -319,7 +319,7 @@ void dsmcYePressureOutletCalculatedMolarFraction::controlParcelsBeforeMove()
                 
                 label newParcel = patchId();
                 
-                const scalar& RWF = cloud_.getRWF_cell(cellI);
+                const scalar& RWF = cloud_.coordSystem().recalculateRWF(cellI);
               
                 cloud_.addNewParcel
                 (
@@ -355,8 +355,6 @@ void dsmcYePressureOutletCalculatedMolarFraction::controlParcelsAfterCollisions(
 {    
     nTimeSteps_ += 1.0;
     
-    const scalar& deltaT = mesh_.time().deltaTValue();
-
     const scalar sqrtPi = sqrt(pi);
            
     scalarField molecularMass(cells_.size(), 0.0);
@@ -414,14 +412,18 @@ void dsmcYePressureOutletCalculatedMolarFraction::controlParcelsAfterCollisions(
     
     forAll(cells_, c)
     {
-        const List<dsmcParcel*>& parcelsInCell = cellOccupancy[cells_[c]];
+        const label celli = cells_[c];
+        
+        const List<dsmcParcel*>& parcelsInCell = cellOccupancy[celli];
+        
+        const scalar deltaT = cloud_.deltaTValue(celli);
                   
         forAll(parcelsInCell, pIC)
         {
             dsmcParcel* p = parcelsInCell[pIC];
                         
-            momentum[c] += cloud_.nParticle()*cloud_.constProps(p->typeId()).mass()*p->U();
-            mass[c] += cloud_.nParticle()*cloud_.constProps(p->typeId()).mass();
+            momentum[c] += cloud_.nParticles(celli)*cloud_.constProps(p->typeId()).mass()*p->U();
+            mass[c] += cloud_.nParticles(celli)*cloud_.constProps(p->typeId()).mass();
             nParcels[c] += 1.0;
             rotationalEnergy[c] += p->ERot();
             rotationalDof[c] += cloud_.constProps(p->typeId()).rotationalDegreesOfFreedom();
@@ -596,6 +598,8 @@ void dsmcYePressureOutletCalculatedMolarFraction::controlParcelsAfterCollisions(
             const label& faceI = faces_[f];
             const vector& sF = mesh_.faceAreas()[faceI];
             const scalar fA = mag(sF);
+            
+            const scalar deltaT = cloud_.deltaTValue(mesh_.boundaryMesh()[patchId_].faceCells()[faceI]);
 
             scalar mass = cloud_.constProps(typeId).mass();              
 
@@ -615,7 +619,7 @@ void dsmcYePressureOutletCalculatedMolarFraction::controlParcelsAfterCollisions(
             
             scalar sCosTheta = (outletVelocity_[f] & -sF/fA )/mostProbableSpeed;
             
-            const scalar& RWF = cloud_.pRWF(patchId_, f); //cloud_.getRWF_face(faceI);
+            //const scalar& RWF = cloud_.coordSystem().pRWF(patchId_, f);
             
             // From Bird eqn 4.22
             accumulatedParcelsToInsert_[iD][f] += 
@@ -627,7 +631,7 @@ void dsmcYePressureOutletCalculatedMolarFraction::controlParcelsAfterCollisions(
                         exp(-sqr(sCosTheta)) + sqrtPi*sCosTheta*(1 + erf(sCosTheta))
                     )
                 )
-                /(2.0*sqrtPi*cloud_.nParticle()*RWF);
+                /(2.0*sqrtPi*cloud_.nParticles(patchId_, f));
         } 
     }
 

@@ -89,8 +89,6 @@ void noTimeCounter::collide()
     // Temporary storage for subCells
     List<DynamicList<label>> subCells(8);
 
-    const scalar& deltaT = cloud_.mesh().time().deltaTValue();
-
     label collisionCandidates = 0;
 
     label collisions = 0;
@@ -101,7 +99,10 @@ void noTimeCounter::collide()
 
     forAll(cellOccupancy, cellI)
     {
+        const scalar deltaT = cloud_.deltaTValue(cellI);
+        
         const DynamicList<dsmcParcel*>& cellParcels(cellOccupancy[cellI]);
+        
         const scalar& cellVolume = mesh.cellVolumes()[cellI];
 
         const label nC(cellParcels.size());
@@ -143,11 +144,9 @@ void noTimeCounter::collide()
             
             //scalar selectedPairs = 0.0;
             
-            const scalar RWF = cloud_.RWF(cellI, true);
-                
             scalar selectedPairs =
                 cloud_.collisionSelectionRemainder()[cellI]
-                + 0.5*nC*(nC - 1)*cloud_.nParticle()*RWF*sigmaTcRMax*deltaT
+                + 0.5*nC*(nC - 1)*cloud_.nParticles(cellI, true)*sigmaTcRMax*deltaT
                 /cellVolume;
                
             const label nCandidates(selectedPairs);

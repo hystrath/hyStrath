@@ -150,7 +150,9 @@ void dsmcDeletionPatch::controlParticle
         //const scalar& massI = constProp.mass();
         //massFlux_ += massI;
 
-        cloud_.updateMediumPropertiesMeasurement(p, patchId());
+        //cloud_.updateMediumPropertiesMeasurement(p, patchId());
+        
+        cloud_.porousMeas().deletionInteraction(p, patchId());
         
         td.keepParticle = false;
         

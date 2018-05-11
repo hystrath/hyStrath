@@ -331,7 +331,7 @@ void dsmcWangPressureInlet::controlParcelsBeforeMove()
                 
                 label newParcel = patchId();
                 
-                const scalar& RWF = cloud_.RWF(cellI); //cloud_.getRWF_cell(cellI);
+                const scalar& RWF = cloud_.coordSystem().RWF(cellI);
               
                 cloud_.addNewParcel
                 (
@@ -395,8 +395,6 @@ void dsmcWangPressureInlet::controlParcelsAfterCollisions()
 {    
     nTimeSteps_ += 1.0;
     
-    const scalar deltaT = mesh_.time().deltaTValue(); // time step size
-
     const scalar sqrtPi = sqrt(pi);
         
     scalar molecularMass = 0.0;
@@ -433,7 +431,9 @@ void dsmcWangPressureInlet::controlParcelsAfterCollisions()
         
     forAll(cells_, c)
     {
-        const List<dsmcParcel*>& parcelsInCell = cellOccupancy[cells_[c]];
+        const label celli = cells_[c];
+        
+        const List<dsmcParcel*>& parcelsInCell = cellOccupancy[celli];
         
         forAll(parcelsInCell, pIC)
         {
@@ -442,9 +442,9 @@ void dsmcWangPressureInlet::controlParcelsAfterCollisions()
                 
             if(iD != -1)
             {
-                momentum[c] += cloud_.nParticle()*cloud_.constProps(p->typeId()).mass()*p->U();
-                mass[c] += cloud_.nParticle()*cloud_.constProps(p->typeId()).mass();
-                mcc[c] += cloud_.nParticle()*cloud_.constProps(p->typeId()).mass()*mag(p->U())*mag(p->U());
+                momentum[c] += cloud_.nParticles(celli)*cloud_.constProps(p->typeId()).mass()*p->U();
+                mass[c] += cloud_.nParticles(celli)*cloud_.constProps(p->typeId()).mass();
+                mcc[c] += cloud_.nParticles(celli)*cloud_.constProps(p->typeId()).mass()*mag(p->U())*mag(p->U());
                 nParcels[c] += 1.0;
                 UCollected[c] += p->U();
             }
@@ -469,12 +469,12 @@ void dsmcWangPressureInlet::controlParcelsAfterCollisions()
             UMean_[c] = UCollected_[c]/nTotalParcels_[c];
 
             translationalTemperature[c] = (1.0/(3.0*physicoChemical::k.value()))
-                                        *(
-                                            ((mcc_[c]/(nTotalParcels_[c]*cloud_.nParticle())))
-                                            - (
-                                                (mass[c]/(nTotalParcels_[c]*cloud_.nParticle())
-                                                )*mag(UMean_[c])*mag(UMean_[c]))
-                                        );
+                *(
+                    ((mcc_[c]/(nTotalParcels_[c]*cloud_.nParticles(celli))))
+                    - (
+                        (mass[c]/(nTotalParcels_[c]*cloud_.nParticles(celli))
+                        )*mag(UMean_[c])*mag(UMean_[c]))
+                );
                                         
             if(translationalTemperature[c] < VSMALL)
             {
@@ -527,7 +527,9 @@ void dsmcWangPressureInlet::controlParcelsAfterCollisions()
         {
             const label& faceI = faces_[f];
             const vector& sF = mesh_.faceAreas()[faceI];
-            const scalar fA = mag(sF);           
+            const scalar fA = mag(sF);  
+            
+            const scalar deltaT = cloud_.deltaTValue(mesh_.boundaryMesh()[patchId_].faceCells()[faceI]);         
 
             scalar mostProbableSpeed
             (
@@ -545,19 +547,17 @@ void dsmcWangPressureInlet::controlParcelsAfterCollisions()
             
             scalar sCosTheta = (inletVelocity_[f] & -sF/fA )/mostProbableSpeed;
             
-            const scalar& RWF = cloud_.pRWF(patchId_, f); //cloud_.getRWF_face(faceI);
-            
             // From Bird eqn 4.22
             accumulatedParcelsToInsert_[iD][f] += 
-            moleFractions_[iD]*
-            (
-                fA*n_*deltaT*mostProbableSpeed
-                *
+                moleFractions_[iD]*
                 (
-                    exp(-sqr(sCosTheta)) + sqrtPi*sCosTheta*(1 + erf(sCosTheta))
+                    fA*n_*deltaT*mostProbableSpeed
+                    *
+                    (
+                        exp(-sqr(sCosTheta)) + sqrtPi*sCosTheta*(1 + erf(sCosTheta))
+                    )
                 )
-            )
-            /(2.0*sqrtPi*cloud_.nParticle()*RWF);
+                /(2.0*sqrtPi*cloud_.nParticles(patchId_, f));
         } 
     } 
 }

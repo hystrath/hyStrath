@@ -223,16 +223,12 @@ void temperatureBerendsenBins::calculateProperties()
             {
                 if(findIndex(typeIds_, p->typeId()) != -1)
                 {
-                    const dsmcParcel::constantProperties& constProp 
-                                    = cloud_.constProps(p->typeId());
+                    const dsmcParcel::constantProperties& constProp = 
+                        cloud_.constProps(p->typeId());
                                     
-                    scalar nParticle = cloud_.nParticle();
+                    const scalar nParticle = cloud_.nParticles(cellI);
                     
-                    const scalar& RWF = cloud_.getRWF_cell(cellI);
-                    
-                    nParticle *= RWF;
-                    
-                    const scalar& mass = constProp.mass()*nParticle;
+                    const scalar mass = constProp.mass()*nParticle;
 
                     mols_[n] += nParticle;
                     dsmcMols_[n] += 1.0;

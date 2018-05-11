@@ -91,7 +91,7 @@ void dsmcRadiationWallFieldPatch::calculateProperties()
     time_++;
     time2_++;
 
-    const scalar deltaT = mesh_.time().deltaTValue();
+    const scalar deltaT = mesh_.time().deltaTValue(); // TODO cloud_.deltaTValue(p.cell());
     
     Info << "Outside loop" << endl;
 

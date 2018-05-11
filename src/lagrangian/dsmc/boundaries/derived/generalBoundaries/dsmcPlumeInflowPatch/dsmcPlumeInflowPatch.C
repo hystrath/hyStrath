@@ -95,9 +95,8 @@ void dsmcPlumeInflowPatch::calculateProperties()
 void dsmcPlumeInflowPatch::controlParcelsBeforeMove()
 {
     Random& rndGen = cloud_.rndGen();
-    const scalar deltaT = mesh_.time().deltaTValue();
 
-    scalar sqrtPi = sqrt(pi);
+    const scalar sqrtPi = sqrt(pi);
 
 
     // compute parcels to insert
@@ -111,6 +110,8 @@ void dsmcPlumeInflowPatch::controlParcelsBeforeMove()
             const label& faceI = faces_[f];
             const vector& sF = mesh_.faceAreas()[faceI];
             const scalar fA = mag(sF);
+            
+            const scalar deltaT = cloud_.deltaTValue(mesh_.boundaryMesh()[patchId_].faceCells()[faceI]);
 
             scalar mostProbableSpeed
             (
@@ -144,7 +145,7 @@ void dsmcPlumeInflowPatch::controlParcelsBeforeMove()
                    exp(-sqr(sCosTheta)) + sqrtPi*sCosTheta*(1 + erf(sCosTheta))
                 )
             )
-            /(2.0*sqrtPi*cloud_.nParticle());
+            /(2.0*sqrtPi*cloud_.nParticles(patchId_, f));
         }
     }
 

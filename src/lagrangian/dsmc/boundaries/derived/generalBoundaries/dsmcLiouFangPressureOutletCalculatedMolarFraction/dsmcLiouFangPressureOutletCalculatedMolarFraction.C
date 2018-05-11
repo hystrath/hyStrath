@@ -325,7 +325,7 @@ void dsmcLiouFangPressureOutletCalculatedMolarFraction::controlParcelsBeforeMove
                     
                     label newParcel = patchId();
                     
-                    const scalar& RWF = cloud_.RWF(cellI); //cloud_.getRWF_cell(cellI);
+                    const scalar& RWF = cloud_.coordSystem().RWF(cellI);
                 
                     cloud_.addNewParcel
                     (
@@ -395,8 +395,6 @@ void dsmcLiouFangPressureOutletCalculatedMolarFraction::controlParcelsAfterColli
 {    
     nTimeSteps_ += 1.0;
     
-    const scalar& deltaT = mesh_.time().deltaTValue();
-
     const scalar sqrtPi = sqrt(pi);
            
     scalarField molecularMass(cells_.size(), 0.0);
@@ -445,7 +443,9 @@ void dsmcLiouFangPressureOutletCalculatedMolarFraction::controlParcelsAfterColli
     
     forAll(cells_, c)
     {
-        const List<dsmcParcel*>& parcelsInCell = cellOccupancy[cells_[c]];
+        const label celli = cells_[c];
+        
+        const List<dsmcParcel*>& parcelsInCell = cellOccupancy[celli];
                   
         forAll(parcelsInCell, pIC)
         {
@@ -455,9 +455,9 @@ void dsmcLiouFangPressureOutletCalculatedMolarFraction::controlParcelsAfterColli
             
             if(iD != -1)
             {
-                momentum[c] += cloud_.nParticle()*cloud_.constProps(p->typeId()).mass()*p->U();
-                mass[c] += cloud_.nParticle()*cloud_.constProps(p->typeId()).mass();
-                mcc[c] += cloud_.nParticle()*cloud_.constProps(p->typeId()).mass()*mag(p->U())*mag(p->U());
+                momentum[c] += cloud_.nParticles(celli)*cloud_.constProps(p->typeId()).mass()*p->U();
+                mass[c] += cloud_.nParticles(celli)*cloud_.constProps(p->typeId()).mass();
+                mcc[c] += cloud_.nParticles(celli)*cloud_.constProps(p->typeId()).mass()*mag(p->U())*mag(p->U());
                 nParcels[c] += 1.0;
                 rotationalEnergy[c] += p->ERot();
                 rotationalDof[c] += cloud_.constProps(p->typeId()).rotationalDegreesOfFreedom();
@@ -499,12 +499,12 @@ void dsmcLiouFangPressureOutletCalculatedMolarFraction::controlParcelsAfterColli
             UMean_[c] = UCollected_[c]/nTotalParcels_[c];
 
             translationalTemperature[c] = (1.0/(3.0*physicoChemical::k.value()))
-                                                *(
-                                                    ((mcc_[c]/(nTotalParcels_[c]*cloud_.nParticle())))
-                                                    - (
-                                                        (mass[c]/(nTotalParcels_[c]*cloud_.nParticle())
-                                                      )*mag(UMean_[c])*mag(UMean_[c]))
-                                                );
+                  *(
+                      ((mcc_[c]/(nTotalParcels_[c]*cloud_.nParticles(celli))))
+                      - (
+                          (mass[c]/(nTotalParcels_[c]*cloud_.nParticles(celli))
+                        )*mag(UMean_[c])*mag(UMean_[c]))
+                  );
 
              
             if(translationalTemperature[c] < VSMALL)
@@ -584,6 +584,8 @@ void dsmcLiouFangPressureOutletCalculatedMolarFraction::controlParcelsAfterColli
             const label& faceI = faces_[f];
             const vector& sF = mesh_.faceAreas()[faceI];
             const scalar fA = mag(sF);
+            
+            const scalar deltaT = cloud_.deltaTValue(mesh_.boundaryMesh()[patchId_].faceCells()[faceI]);
 
             scalar mass = cloud_.constProps(typeId).mass();              
 
@@ -603,7 +605,7 @@ void dsmcLiouFangPressureOutletCalculatedMolarFraction::controlParcelsAfterColli
             
             scalar sCosTheta = (outletVelocity_[f] & -sF/fA )/mostProbableSpeed;
             
-            const scalar& RWF = cloud_.pRWF(patchId_, f); //cloud_.getRWF_face(faceI);
+            //const scalar& RWF = cloud_.coordSystem().pRWF(patchId_, f);
             
             // From Bird eqn 4.22
             accumulatedParcelsToInsert_[iD][f] += 
@@ -615,7 +617,7 @@ void dsmcLiouFangPressureOutletCalculatedMolarFraction::controlParcelsAfterColli
                         exp(-sqr(sCosTheta)) + sqrtPi*sCosTheta*(1 + erf(sCosTheta))
                     )
                 )
-                /(2.0*sqrtPi*cloud_.nParticle()*RWF);
+                /(2.0*sqrtPi*cloud_.nParticles(patchId_, f));
         } 
     }
 }

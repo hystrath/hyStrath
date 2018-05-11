@@ -124,14 +124,42 @@ void dsmcStickingWallPatch::setProperties()
     forAll(saturationLimit_, facei)
     {
         saturationLimit_[facei] = 
-            saturationLimitPerSquareMeters*facesArea[facei]/cloud_.nParticle();
+            saturationLimitPerSquareMeters*facesArea[facei]
+           /cloud_.nParticles(patchId(), facei);
     }
+}
+
+
+void dsmcStickingWallPatch::readPatchField()
+{
+    tmp<volScalarField> tnStuckParcels
+    (
+        new volScalarField
+        (
+            IOobject
+            (
+                "nStuckParcels",
+                mesh_.time().timeName(),
+                mesh_,
+                IOobject::READ_IF_PRESENT,
+                IOobject::NO_WRITE
+            ),
+            mesh_,
+            dimensionedScalar("nStuckParcels", dimless, 0.0)
+        )
+    );
+    
+    volScalarField& nStuckParcels = tnStuckParcels.ref();
+    
+    nStuckParcels_ = nStuckParcels.boundaryField()[patchId()];
+
+    cloud_.boundaryFluxMeasurements().setBoundarynStuckParcels(patchId(), nStuckParcels_);
 }
 
 
 bool dsmcStickingWallPatch::isNotSaturated(const label facei)
 {
-    if(nStuckParcels(facei) < saturationLimit(facei))
+    if(saturationLimit(facei) - nStuckParcels(facei) > 1e-6)
     {
         return true;
     }
@@ -228,7 +256,7 @@ void dsmcStickingWallPatch::testForDesorption(dsmcParcel& p)
     
     if(iD != -1)
     {
-        const scalar& deltaT = mesh_.time().deltaTValue();
+        const scalar deltaT = cloud_.deltaTValue(p.cell());
 
         Random& rndGen = cloud_.rndGen();
 
@@ -276,7 +304,7 @@ void dsmcStickingWallPatch::measurePropertiesAfterDesorption
 
         const scalar fA = mag(wpp.faceAreas()[wppLocalFace]);
 
-        const scalar deltaT = mesh_.time().deltaTValue();
+        const scalar deltaT = cloud_.deltaTValue(p.cell());
 
         const dsmcParcel::constantProperties& 
             constProps(cloud_.constProps(p.typeId()));
@@ -359,9 +387,9 @@ void dsmcStickingWallPatch::measurePropertiesAfterDesorption
         const scalar preIE = p.stuck().wallTemperature()[3];
         const vector preIMom = p.stuck().wallVectors()[3];
         
-        scalar nParticle = cloud_.nParticle();
+        scalar nParticle = cloud_.nParticles(wppIndex, wppLocalFace);
         
-        nParticle *= cloud_.pRWF(wppIndex, wppLocalFace); //cloud_.getRWF_face(wppIndex, wppLocalFace);
+        //nParticle *= cloud_.coordSystem().pRWF(wppIndex, wppLocalFace);
 
         const scalar deltaQ = nParticle
             *(preIE - postIE  + (heatOfReaction*physicoChemical::k.value()))
@@ -402,6 +430,8 @@ dsmcStickingWallPatch::dsmcStickingWallPatch
     measurePropertiesAtWall_ = true;
     
     setProperties();
+    
+    readPatchField();
 }
 
 

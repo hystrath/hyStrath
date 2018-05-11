@@ -90,10 +90,8 @@ void dsmcFreeStreamInflowPatch::calculateProperties()
 void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
 {
     Random& rndGen = cloud_.rndGen();
-    const scalar deltaT = mesh_.time().deltaTValue();
 
     const scalar sqrtPi = sqrt(pi);
-
 
     // compute parcels to insert
     forAll(accumulatedParcelsToInsert_, i)
@@ -106,6 +104,8 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
             const label faceI = faces_[f];
             const vector sF = mesh_.faceAreas()[faceI];
             const scalar fA = mag(sF);
+            
+            const scalar deltaT = cloud_.deltaTValue(mesh_.boundaryMesh()[patchId_].faceCells()[faceI]);
 
             scalar mostProbableSpeed
             (
@@ -123,7 +123,7 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
 
             scalar sCosTheta = (velocity_ & -sF/fA )/mostProbableSpeed;
 
-            const scalar RWF = cloud_.pRWF(patchId_, f); //cloud_.getRWF_face(faceI);
+            //const scalar RWF = cloud_.coordSystem().pRWF(patchId_, f);
             
             // From Bird eqn 4.22
             accumulatedParcelsToInsert_[i][f] += 
@@ -134,7 +134,7 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
                         exp(-sqr(sCosTheta)) + sqrtPi*sCosTheta*(1 + erf(sCosTheta))
                     )
                 )
-                /(2.0*sqrtPi*cloud_.nParticle()*RWF);
+                /(2.0*sqrtPi*cloud_.nParticles(patchId_, f));
         }
     }
 
@@ -344,7 +344,7 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
                 
                 label newParcel = patchId();
                 
-                const scalar RWF = cloud_.RWF(cellI); //cloud_.getRWF_cell(cellI);
+                const scalar RWF = cloud_.coordSystem().RWF(cellI);
               
                 cloud_.addNewParcel
                 (
@@ -375,7 +375,7 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
             reduce(parcelsToAdd[m], sumOp<scalar>());
             reduce(parcelsInserted[m], sumOp<scalar>());
 
-            Info<< "Specie: " << typeIds_[m] 
+            Info<< "Patch " << patchName_ << ", Specie: " << typeIds_[m] 
                 << ", target parcels to insert: " << parcelsToAdd[m]
                 <<", inserted parcels: " << parcelsInserted[m]
                 << endl;
@@ -385,7 +385,7 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
     {
         forAll(parcelsInserted, m)
         {
-            Info<< "Specie: " << typeIds_[m] 
+            Info<< "Patch " << patchName_ << ", Specie: " << typeIds_[m] 
                 << ", target parcels to insert: " << parcelsToAdd[m]
                 <<", inserted parcels: " << parcelsInserted[m]
                 << endl;
@@ -424,9 +424,9 @@ void dsmcFreeStreamInflowPatch::setProperties()
 {
     velocity_ = propsDict_.lookup("velocity");
     translationalTemperature_ = readScalar(propsDict_.lookup("translationalTemperature"));
-    rotationalTemperature_ = readScalar(propsDict_.lookup("rotationalTemperature"));
-    vibrationalTemperature_ = readScalar(propsDict_.lookup("vibrationalTemperature"));
-    electronicTemperature_ = readScalar(propsDict_.lookup("electronicTemperature"));
+    rotationalTemperature_ = propsDict_.lookupOrDefault<scalar>("rotationalTemperature", 0.0);
+    vibrationalTemperature_ = propsDict_.lookupOrDefault<scalar>("vibrationalTemperature", 0.0);
+    electronicTemperature_ = propsDict_.lookupOrDefault<scalar>("electronicTemperature", 0.0);
 
     //  read in the type ids
 

@@ -170,6 +170,20 @@ public:
             const vectorList& pboundaryU
         );
         
+        //- set the number of stuck parcels on patchi
+        void setBoundarynStuckParcels
+        (
+            const label patchi,
+            const scalarList& pnStuckParcels
+        );
+        
+        //- set the number of absorbed parcels on patchi
+        void setBoundarynAbsorbedParcels
+        (
+            const label patchi,
+            const scalarList& pnAbsorbedParcels
+        );
+        
         void clean();
 
         void reset();

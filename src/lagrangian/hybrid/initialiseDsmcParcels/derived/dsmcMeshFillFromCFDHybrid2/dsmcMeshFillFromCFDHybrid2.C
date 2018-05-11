@@ -576,15 +576,7 @@ void dsmcMeshFillFromCFDHybrid2::setInitialConfiguration()
                     
                     vectorField wallVectors(4, vector::zero);
                     
-                    scalar RWF = 1.0;
-                    
-                    if(cloud_.axisymmetric())
-                    {                      
-                        const point& cC = cloud_.mesh().cellCentres()[cellI];
-                        scalar radius = cC.y();
-                        
-                        RWF = 1.0 + cloud_.maxRWF()*(radius/cloud_.radialExtent());
-                    }
+                    const scalar& RWF = cloud_.coordSystem().recalculateRWF(cellI);
 
                     cloud_.addNewParcel
                     (

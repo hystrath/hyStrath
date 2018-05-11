@@ -268,7 +268,6 @@ void dsmcReflectiveParticleMembranePatch::controlMol
         {
             const scalar pRandom = rndGen.scalar01();
 
-            //if(specularReflectionProb_ > pRandom)
             if(specularReflectionProbs_[iD] > pRandom)
             {
                 //- particle specularly reflected
@@ -280,7 +279,9 @@ void dsmcReflectiveParticleMembranePatch::controlMol
 
                 nReflections_++;
                 
-                if (cloud_.measureInstantaneousMSD()) // TODO
+                //const vector& orgPosition = findOriginalPosition(p, fA);
+                //cloud_.porousMeas().cyclicReflectionInteraction(p, orgPosition, nF);
+                /*if (cloud_.measureInstantaneousMSD()) // TODO
                 {
                     Info << "Incorrect calculation" << endl;
                     if (p.isTracked())
@@ -294,27 +295,15 @@ void dsmcReflectiveParticleMembranePatch::controlMol
                             p.tracked().performSpecularReflectionOnDistanceTravelled(nF);
                         }
                     }
-                }
+                }*/
             }
             else
             {
                 //- particle passing through the membrane
                 nRejections_++;
                 
-                if (cloud_.measureInstantaneousMSD())
-                {
-                    if (p.isTracked())
-                    {
-                        if (p.tracked().inPatchId() == -1)
-                        {
-                            const vector& orgPosition = findOriginalPosition(p, fA);
-                            
-                            p.tracked().updateDistanceTravelled(orgPosition);
-                            
-                            p.tracked().updateCurrentPosition(p.position());
-                        }
-                    }
-                }
+                const vector& orgPosition = findOriginalPosition(p, fA);
+                cloud_.porousMeas().cyclicMembraneInteraction(p, orgPosition);
             }
         }
     }
@@ -324,7 +313,6 @@ void dsmcReflectiveParticleMembranePatch::controlMol
         {    
             const scalar pRandom = rndGen.scalar01();
 
-            //if(specularReflectionProb_ > pRandom)
             if(specularReflectionProbs_[iD] > pRandom)
             {
                 //- particle specularly reflected
@@ -334,7 +322,7 @@ void dsmcReflectiveParticleMembranePatch::controlMol
 
                 nReflections_++;
                 
-                if (cloud_.measureInstantaneousMSD()) // TODO
+                /*if (cloud_.measureInstantaneousMSD()) // TODO
                 {
                     Info << "Incorrect calculation" << endl;
                     if (p.isTracked())
@@ -343,39 +331,24 @@ void dsmcReflectiveParticleMembranePatch::controlMol
                         {
                             const vector& orgPosition = findOriginalPosition(p, fB);
                             
-                            /*Info << "cur " << tab << p.tracked().currentPosition() << tab 
-                                 << "org " << tab << orgPosition << tab
-                                 << "pos " << tab << p.position() << endl;*/
+                            //Info << "cur " << tab << p.tracked().currentPosition() << tab 
+                            //     << "org " << tab << orgPosition << tab
+                            //     << "pos " << tab << p.position() << endl;
                             
                             p.tracked().updateDistanceTravelled(orgPosition);
                             
                             //p.tracked().performSpecularReflectionOnDistanceTravelled(nF);
                         }
                     }
-                }
+                }*/
             }
             else
             {
                 //- particle passing through the membrane
                 nRejections_++;
                 
-                if (cloud_.measureInstantaneousMSD())
-                {
-                    if (p.isTracked())
-                    {
-                        if (p.tracked().inPatchId() == -1)
-                        {
-                            const vector& orgPosition = findOriginalPosition(p, fB);
-                            
-                            //Info << "pos " << tab << p.position() << endl;
-                            //Info << "orgPosition " << tab << orgPosition << endl;
-                            
-                            p.tracked().updateDistanceTravelled(orgPosition);
-                            
-                            p.tracked().updateCurrentPosition(p.position());
-                        }
-                    }
-                }
+                const vector& orgPosition = findOriginalPosition(p, fB);
+                cloud_.porousMeas().cyclicMembraneInteraction(p, orgPosition);
             }
         }
         /*else // NEW VINCENT

@@ -17,7 +17,7 @@ thermo.validate(args.executable(), "h", "e");
 //---------------------------------------------------------
 bool hyLight = thermo.hyLight();
 
-if(hyLight) thermo.initialise2T_Light();
+if (hyLight) thermo.initialise2T_Light();
 else thermo.initialise2T();
 
 bool downgradeSingleVibMode = thermo.downgradeSingleVibMode();
@@ -180,24 +180,10 @@ volScalarField bulkToShearRatio
 );
 
 bool inviscid(true);
-if(max(mu.primitiveField()) > 0.0)
+if (max(mu.primitiveField()) > 0.0)
 {
     inviscid = false;
 }
-
-//- Wall heat flux
-volScalarField wallHeatFlux
-(
-    IOobject
-    (
-        "wallHeatFlux",
-        runTime.timeName(),
-        mesh
-    ),
-    mesh,
-    dimensionedScalar("wallHeatFlux", dimensionSet(1, 0, -3, 0, 0), 0.0)
-);
-
 
 //---------------------------------------------------------
 // Definition of the rarefaction parameters
@@ -220,9 +206,29 @@ rarefactionParameters->correct(U);
 bool writeHeatFluxes = thermo.transportDictionary().subDict("transportModels").lookupOrDefault<bool>("writeHeatFluxes", false);
 bool writeWallHeatFlux = thermo.transportDictionary().subDict("transportModels").lookupOrDefault<bool>("writeWallHeatFlux", false);
 
+//- Wall heat flux
+volScalarField wallHeatFlux
+(
+    IOobject
+    (
+        "wallHeatFlux",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("wallHeatFlux", dimensionSet(1, 0, -3, 0, 0), 0.0)
+);
+
+if (writeWallHeatFlux)
+{
+    wallHeatFlux.writeOpt() = IOobject::AUTO_WRITE;
+}
+
 volVectorField *heatFluxVector = 0, *convectiveHeatFlux = 0, *diffusiveHeatFlux = 0;
 
-if(hyDev)
+if (hyDev)
 {
     heatFluxVector = new volVectorField
     (
@@ -239,7 +245,7 @@ if(hyDev)
     );
 }
 
-if(writeHeatFluxes)
+if (writeHeatFluxes)
 {
     convectiveHeatFlux = new volVectorField 
     (

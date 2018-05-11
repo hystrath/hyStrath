@@ -63,50 +63,45 @@ inline const Foam::List<Foam::word>& Foam::dsmcCloud::typeIdList() const
 
 inline Foam::scalar Foam::dsmcCloud::nParticle() const
 {
-    return nParticle_;
+    return coordSystem().nParticlesOrg();
 }
 
 
-inline Foam::scalar Foam::dsmcCloud::radialExtent() const
+inline const Foam::volScalarField& Foam::dsmcCloud::nParticles() const
 {
-    return radialExtent_;
+    return coordSystem().nParticles();
 }
 
 
-inline Foam::scalar Foam::dsmcCloud::maxRWF() const
-{
-    return maxRWF_;
-}
-
-
-inline Foam::scalar Foam::dsmcCloud::RWF
+inline Foam::scalar Foam::dsmcCloud::nParticles
 (
     const label celli,
-    const bool mixedRWM
+    const bool mixedRWMethod
 ) const
 {
-    if (rWMethod_ == "mixed" and mixedRWM)
-    {
-        return getRWF_cell(celli, mixedRWM);
-    }
-    
-    return RWF_[celli];
+    return coordSystem().nParticles(celli, mixedRWMethod);
 }
 
 
-inline Foam::scalar Foam::dsmcCloud::pRWF
+inline Foam::scalar Foam::dsmcCloud::nParticles
 (
     const label patchi,
     const label facei
 ) const
 {
-    return RWF_.boundaryField()[patchi][facei];
+    return coordSystem().nParticles(patchi, facei);
 }
 
 
-inline bool Foam::dsmcCloud::axisymmetric() const
+inline const Foam::scalarField& Foam::dsmcCloud::deltaTField() const
 {
-    return axisymmetric_;
+    return coordSystem().dtModel().deltaTField();
+}
+
+
+inline Foam::scalar Foam::dsmcCloud::deltaTValue(const label celli) const
+{
+    return coordSystem().dtModel().deltaTValue(celli);
 }
 
 
@@ -177,13 +172,13 @@ inline Foam::BinaryCollisionModel& Foam::dsmcCloud::binaryCollision()
 }
 
 
-inline const  Foam::dsmcBoundaries&  Foam::dsmcCloud::boundaries() const
+inline const Foam::dsmcBoundaries& Foam::dsmcCloud::boundaries() const
 {
     return  boundaries_;
 }
 
 
-inline  Foam::dsmcBoundaries&  Foam::dsmcCloud::boundaries()
+inline Foam::dsmcBoundaries& Foam::dsmcCloud::boundaries()
 {
     return  boundaries_;
 }
@@ -225,6 +220,31 @@ inline Foam::dsmcDynamicLoadBalancing& Foam::dsmcCloud::dynamicLoadBalancing()
 }
 
 
+inline const Foam::dsmcCoordinateSystem& Foam::dsmcCloud::coordSystem() const
+{
+    return dsmcCoordinateSystem_;
+}
+
+
+inline Foam::dsmcCoordinateSystem& Foam::dsmcCloud::coordSystem()
+{
+    return dsmcCoordinateSystem_();
+}
+
+
+inline const Foam::porousMeasurements&
+Foam::dsmcCloud::porousMeas() const
+{
+    return porousMeasurements_;
+}
+
+
+inline Foam::porousMeasurements& Foam::dsmcCloud::porousMeas()
+{
+    return porousMeasurements_();
+}
+
+
 inline const Foam::dsmcFaceTracker& Foam::dsmcCloud::tracker() const
 {
     return trackingInfo_;
@@ -258,35 +278,32 @@ inline Foam::scalarList Foam::dsmcCloud::infoMeasurements()
         dsmcParcel& p = iter();
         
         const dsmcParcel::constantProperties& cP = constProps(p.typeId());
+        
+        const scalar nParticles = this->nParticles(p.cell());
 
-        infoMeasurements[0] += cP.mass();
-        infoMeasurements[1] += 0.5*cP.mass()*(p.U() & p.U());
-        infoMeasurements[2] += p.ERot();
+        infoMeasurements[0] += cP.mass()*nParticles;
+        infoMeasurements[1] += 0.5*cP.mass()*(p.U() & p.U())*nParticles;
+        infoMeasurements[2] += p.ERot()*nParticles;
         
         if(cP.vibrationalDegreesOfFreedom() > 0)
         {
             forAll(p.vibLevel(), i)
             {
                 infoMeasurements[3] += physicoChemical::k.value()
-                    *p.vibLevel()[i]*cP.thetaV()[i];
+                    *p.vibLevel()[i]*cP.thetaV()[i]*nParticles;
             }
         }
         
-        infoMeasurements[4] += cP.electronicEnergyList()[p.ELevel()];
+        infoMeasurements[4] += cP.electronicEnergyList()[p.ELevel()]*nParticles;
         
         if(p.isStuck())
         {
-            infoMeasurements[5]++;
+            infoMeasurements[5] += nParticles;
         }
         else
         {
-            infoMeasurements[6]++;
+            infoMeasurements[6] += nParticles;
         }
-    }
-    
-    for(int iM=0; iM<=6; iM++)
-    {
-        infoMeasurements[iM] *= nParticle_;
     }
     
     return infoMeasurements;
@@ -383,18 +400,5 @@ Foam::dsmcCloud::cellPropMeasurements() const
 {
     return cellMeas_;
 }
-
-
-inline bool Foam::dsmcCloud::measureMediumProperties() const
-{
-    return measureMediumProperties_;
-}
-
-
-inline bool Foam::dsmcCloud::measureInstantaneousMSD() const
-{
-    return measureInstantaneousMSD_;
-}
-
 
 // ************************************************************************* //

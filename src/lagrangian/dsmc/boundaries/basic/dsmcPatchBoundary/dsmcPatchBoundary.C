@@ -367,7 +367,7 @@ void dsmcPatchBoundary::measurePropertiesAfterControl
     
         const scalar fA = mag(wpp.faceAreas()[wppLocalFace]);
     
-        const scalar deltaT = mesh_.time().deltaTValue();
+        const scalar deltaT = cloud_.deltaTValue(p.cell());
     
         const dsmcParcel::constantProperties& 
             constProps(cloud_.constProps(p.typeId()));
@@ -448,9 +448,7 @@ void dsmcPatchBoundary::measurePropertiesAfterControl
         //- post-interaction momentum
         const vector& postIMom = m*p.U();
     
-        scalar nParticle = cloud_.nParticle();
-        
-        nParticle *= cloud_.pRWF(wppIndex, wppLocalFace); //cloud_.getRWF_face(wppIndex, wppLocalFace);
+        const scalar nParticle = cloud_.nParticles(wppIndex, wppLocalFace);
         
         const scalar deltaQ = nParticle
             * (preIE_ - postIE + (heatOfReaction*physicoChemical::k.value()))

@@ -300,6 +300,32 @@ void boundaryMeasurements::setBoundaryU
 }
 
 
+void boundaryMeasurements::setBoundarynStuckParcels
+(
+    const label patchi,
+    const scalarList& pnStuckParcels
+)
+{
+    forAll(pnStuckParcels, facei)
+    {
+        nParcelsOnStickingBoundaries_[patchi][facei] = pnStuckParcels[facei];
+    }    
+}
+
+
+void boundaryMeasurements::setBoundarynAbsorbedParcels
+(
+    const label patchi,
+    const scalarList& pnAbsorbedParcels
+)
+{
+    forAll(pnAbsorbedParcels, facei)
+    {
+        nAbsorbedParcels_[patchi][facei] = pnAbsorbedParcels[facei];
+    }    
+}
+
+
 void boundaryMeasurements::outputResults()
 {
     if(mesh_.time().outputTime())

@@ -288,8 +288,8 @@ void dissociationIonisationTypeISameSpecies::reaction
     dsmcParcel& q
 )
 {
-    label typeIdP = p.typeId();
-    label typeIdQ = q.typeId();
+    const label typeIdP = p.typeId();
+    const label typeIdQ = q.typeId();
     
     if(typeIdP == typeIdQ && typeIdP == reactantIds_[0]) // same species and desired species to measure rate for
     { 
@@ -303,43 +303,43 @@ void dissociationIonisationTypeISameSpecies::reaction
         
         scalar ERotP = p.ERot();
         scalar ERotQ = q.ERot();
-        scalar EVibP = p.vibLevel()[0]*cloud_.constProps(typeIdP).thetaV()[0]*physicoChemical::k.value();
-        scalar EVibQ = q.vibLevel()[0]*cloud_.constProps(typeIdQ).thetaV()[0]*physicoChemical::k.value();
-        scalar EEleP = cloud_.constProps(typeIdP).electronicEnergyList()[p.ELevel()];
-        scalar EEleQ = cloud_.constProps(typeIdQ).electronicEnergyList()[q.ELevel()];
+        const scalar EVibP = p.vibLevel()[0]*cloud_.constProps(typeIdP).thetaV()[0]*physicoChemical::k.value();
+        const scalar EVibQ = q.vibLevel()[0]*cloud_.constProps(typeIdQ).thetaV()[0]*physicoChemical::k.value();
+        const scalar EEleP = cloud_.constProps(typeIdP).electronicEnergyList()[p.ELevel()];
+        const scalar EEleQ = cloud_.constProps(typeIdQ).electronicEnergyList()[q.ELevel()];
 
-        scalar mP = cloud_.constProps(typeIdP).mass();
-        scalar mQ = cloud_.constProps(typeIdQ).mass();
+        const scalar mP = cloud_.constProps(typeIdP).mass();
+        const scalar mQ = cloud_.constProps(typeIdQ).mass();
         
-        scalar thetaVP = cloud_.constProps(typeIdP).thetaV()[0];
-        scalar thetaVQ = cloud_.constProps(typeIdQ).thetaV()[0];
+        const scalar thetaVP = cloud_.constProps(typeIdP).thetaV()[0];
+        const scalar thetaVQ = cloud_.constProps(typeIdQ).thetaV()[0];
         
-        scalar thetaDQ = cloud_.constProps(typeIdQ).thetaD()[0];
+        const scalar thetaDQ = cloud_.constProps(typeIdQ).thetaD()[0];
         
-        label idP = cloud_.constProps(typeIdP).charDissQuantumLevel()[0];
-        label idQ = cloud_.constProps(typeIdQ).charDissQuantumLevel()[0];
+        const label idP = cloud_.constProps(typeIdP).charDissQuantumLevel()[0];
+        const label idQ = cloud_.constProps(typeIdQ).charDissQuantumLevel()[0];
 
-        scalar ZrefQ = cloud_.constProps(typeIdQ).Zref()[0];
+        const scalar ZrefQ = cloud_.constProps(typeIdQ).Zref()[0];
 
-        scalar refTempZvQ = cloud_.constProps(typeIdQ).TrefZv()[0];
+        const scalar refTempZvQ = cloud_.constProps(typeIdQ).TrefZv()[0];
         
-        scalar rotationalDofQ = cloud_.constProps(typeIdQ).rotationalDegreesOfFreedom();
+        const scalar rotationalDofQ = cloud_.constProps(typeIdQ).rotationalDegreesOfFreedom();
         
-        List<label> gListP = cloud_.constProps(typeIdP).degeneracyList();
-        List<scalar> EElistP = cloud_.constProps(typeIdP).electronicEnergyList();
+        const List<label>& gListP = cloud_.constProps(typeIdP).degeneracyList();
+        const List<scalar>& EElistP = cloud_.constProps(typeIdP).electronicEnergyList();
         
-        label jMaxQ = cloud_.constProps(typeIdQ).numberOfElectronicLevels();
-        List<label> gListQ = cloud_.constProps(typeIdQ).degeneracyList();
-        List<scalar> EElistQ = cloud_.constProps(typeIdQ).electronicEnergyList();
+        const label jMaxQ = cloud_.constProps(typeIdQ).numberOfElectronicLevels();
+        const List<label>& gListQ = cloud_.constProps(typeIdQ).degeneracyList();
+        const List<scalar>& EElistQ = cloud_.constProps(typeIdQ).electronicEnergyList();
 
-        scalar mR = mP*mQ/(mP + mQ);
-        scalar cRsqr = magSqr(UP - UQ);
+        const scalar mR = mP*mQ/(mP + mQ);
+        const scalar cRsqr = magSqr(UP - UQ);
         scalar translationalEnergy = 0.5*mR*cRsqr;
 
-        scalar heatOfReactionIonisationJoules = heatOfReactionIonisation_*physicoChemical::k.value();
-        scalar heatOfReactionDissociationJoules = heatOfReactionDissociation_*physicoChemical::k.value();
+        const scalar heatOfReactionIonisationJoules = heatOfReactionIonisation_*physicoChemical::k.value();
+        const scalar heatOfReactionDissociationJoules = heatOfReactionDissociation_*physicoChemical::k.value();
 
-        scalar omegaPQ =
+        const scalar omegaPQ =
             0.5
             *(
                     cloud_.constProps(typeIdP).omega()

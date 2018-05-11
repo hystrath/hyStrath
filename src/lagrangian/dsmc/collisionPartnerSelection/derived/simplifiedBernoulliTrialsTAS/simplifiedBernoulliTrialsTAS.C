@@ -210,16 +210,14 @@ void simplifiedBernoulliTrialsTAS::collide()
         return;
     }
 
-    scalar deltaT = cloud_.mesh().time().deltaTValue();
-
     label collisionCandidates = 0;
 
     label collisions = 0;
 	
-	const List<DynamicList<dsmcParcel*> > cellOccupancy = cloud_.cellOccupancy();
+	  const List<DynamicList<dsmcParcel*> > cellOccupancy = cloud_.cellOccupancy();
 
     const polyMesh& mesh = cloud_.mesh();
-	label nX;
+	  label nX;
     label nY;
     label nZ;
     label subCell;
@@ -227,14 +225,15 @@ void simplifiedBernoulliTrialsTAS::collide()
 
     forAll(cellOccupancy, cellI)
     {
+        const scalar deltaT = cloud_.deltaTValue(cellI);
+        
         const DynamicList<dsmcParcel*>& cellParcels(cellOccupancy[cellI]);
 
         label nC(cellParcels.size());
 
         if (nC > 1)
         {
-
-			const point& cC = mesh.cellCentres()[cellI];
+			      const point& cC = mesh.cellCentres()[cellI];
 
             List<DynamicList<label> > subCells(nSubCells_[cellI]);
 
@@ -252,13 +251,12 @@ void simplifiedBernoulliTrialsTAS::collide()
         
             }
 
-        
-            scalar prob1 = (cloud_.nParticle()*deltaT)/(mesh.cellVolumes()[cellI]/nSubCells_[cellI]);
+            scalar prob1 = (cloud_.nParticles(cellI, true)*deltaT)/(mesh.cellVolumes()[cellI]/nSubCells_[cellI]);
             label k = -1;
             label candidateP = -1;
             label candidateQ = -1;
         
-        // loop over sub cells
+            // loop over sub cells
             forAll(subCells, i)
             {
                 subCells[i].shrink();

@@ -109,7 +109,7 @@ void dsmcRadiationWallFieldPatch::calculateProperties()
 {
     stepCounter_++;
 
-    const scalar deltaT = mesh_.time().deltaTValue();
+    const scalar deltaT = mesh_.time().deltaTValue(); // TODO cloud_.deltaTValue(p.cell());
 
     forAll(TwallRad_, f)
     {

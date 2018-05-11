@@ -98,15 +98,15 @@ void dsmcRadiationWallPatch::calculateProperties()
 {
     stepCounter_++;
 
-    const scalar deltaT = mesh_.time().deltaTValue();
-
+    const scalar deltaT = mesh_.time().deltaTValue(); // TODO cloud_.deltaTValue(p.cell());
+    
     scalar TwallRad = temperature_;
 
     TwallRad = 
-    pow
-    (
-        alpha_*cloud_.nParticle()*EcTotPrev_/(deltaT*epsilonSigma_*totalPatchSurfaceArea_), 0.25
-    ); 
+        pow
+        (
+            alpha_*cloud_.nParticle()*EcTotPrev_/(deltaT*epsilonSigma_*totalPatchSurfaceArea_), 0.25
+        ); 
 
     scalar EcTot = EcTot_;
 
@@ -117,8 +117,8 @@ void dsmcRadiationWallPatch::calculateProperties()
     }
 
     TwallRadCumul_ += TwallRad 
-                      + (1/thermalCapacity_)*deltaT*((cloud_.nParticle()*EcTot/deltaT) 
-                      - (totalPatchSurfaceArea_*epsilonSigma_*(pow(TwallRad, 4.0))));
+        + (1/thermalCapacity_)*deltaT*((cloud_.nParticle()*EcTot/deltaT) 
+        - (totalPatchSurfaceArea_*epsilonSigma_*(pow(TwallRad, 4.0))));
 
 
     TwallRad_ = TwallRadCumul_/stepCounter_;

@@ -106,23 +106,21 @@ dsmcFreeStreamInflowFieldPatch::~dsmcFreeStreamInflowFieldPatch()
 {}
 
 
-
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
+
 void dsmcFreeStreamInflowFieldPatch::initialConfiguration()
 {}
 
-void dsmcFreeStreamInflowFieldPatch::calculateProperties()
-{
 
-}
+void dsmcFreeStreamInflowFieldPatch::calculateProperties()
+{}
+
 
 void dsmcFreeStreamInflowFieldPatch::controlParcelsBeforeMove()
 {
     Random& rndGen = cloud_.rndGen();
-    const scalar deltaT = mesh_.time().deltaTValue();
 
-    scalar sqrtPi = sqrt(pi);
-
+    const scalar sqrtPi = sqrt(pi);
 
     // compute parcels to insert
     forAll(accumulatedParcelsToInsert_, i)
@@ -135,6 +133,8 @@ void dsmcFreeStreamInflowFieldPatch::controlParcelsBeforeMove()
             const label& faceI = faces_[f];
             const vector& sF = mesh_.faceAreas()[faceI];
             const scalar fA = mag(sF);
+            
+            const scalar deltaT = cloud_.deltaTValue(mesh_.boundaryMesh()[patchId_].faceCells()[faceI]);
 
             scalar mostProbableSpeed
             (
@@ -150,9 +150,9 @@ void dsmcFreeStreamInflowFieldPatch::controlParcelsBeforeMove()
             // negated), dividing by the most probable speed to form
             // molecularSpeedRatio * cosTheta
 
-            scalar sCosTheta = (inletVelocities_[f] & -sF/fA )/mostProbableSpeed;
+            scalar sCosTheta = (inletVelocities_[f] & -sF/fA)/mostProbableSpeed;
 
-            const scalar RWF = cloud_.pRWF(patchId_, f); //cloud_.getRWF_face(faceI);
+            //const scalar RWF = cloud_.coordSystem().pRWF(patchId_, f);
             // From Bird eqn 4.22
             accumulatedParcelsToInsert_[i][f] += 
                 (
@@ -162,10 +162,9 @@ void dsmcFreeStreamInflowFieldPatch::controlParcelsBeforeMove()
                     exp(-sqr(sCosTheta)) + sqrtPi*sCosTheta*(1 + erf(sCosTheta))
                     )
                 )
-                /(2.0*sqrtPi*cloud_.nParticle()*RWF);
+                /(2.0*sqrtPi*cloud_.nParticles(patchId_, f));
         }
     }
-
 
     labelField parcelsInserted(typeIds_.size(), 0);
     labelField parcelsToAdd(typeIds_.size(), 0);
@@ -191,7 +190,7 @@ void dsmcFreeStreamInflowFieldPatch::controlParcelsBeforeMove()
             cellI
         );
 
-        //         Cumulative triangle area fractions
+        // Cumulative triangle area fractions
         List<scalar> cTriAFracs(faceTets.size(), 0.0);
 
         scalar previousCummulativeSum = 0.0;
@@ -207,22 +206,22 @@ void dsmcFreeStreamInflowFieldPatch::controlParcelsBeforeMove()
             previousCummulativeSum = cTriAFracs[triI];
         }
 
-        //         Force the last area fraction value to 1.0 to avoid any
-        //         rounding/non-flat face errors giving a value < 1.0
+        // Force the last area fraction value to 1.0 to avoid any
+        // rounding/non-flat face errors giving a value < 1.0
         cTriAFracs.last() = 1.0;
 
-        //         Normal unit vector *negative* so normal is pointing into the
-        //         domain
+        // Normal unit vector *negative* so normal is pointing into the
+        // domain
         vector n = sF;
         n /= -mag(n);
 
-        //         Wall tangential unit vector. Use the direction between the
-        //         face centre and the first vertex in the list
+        // Wall tangential unit vector. Use the direction between the
+        // face centre and the first vertex in the list
         vector t1 = fC - mesh_.points()[mesh_.faces()[faceI][0]]; 
         t1 /= mag(t1);
 
-        //         Other tangential unit vector.  Rescaling in case face is not
-        //         flat and n and t1 aren't perfectly orthogonal
+        // Other tangential unit vector.  Rescaling in case face is not
+        // flat and n and t1 aren't perfectly orthogonal
         vector t2 = n^t1;
         t2 /= mag(t2);
 
@@ -251,7 +250,6 @@ void dsmcFreeStreamInflowFieldPatch::controlParcelsBeforeMove()
             {
                 // Choose a triangle to insert on, based on their relative
                 // area
-
                 scalar triSelection = rndGen.scalar01();
 
                 // Selected triangle
@@ -268,13 +266,11 @@ void dsmcFreeStreamInflowFieldPatch::controlParcelsBeforeMove()
                 }
 
                 // Randomly distribute the points on the triangle.
-
                 const tetIndices& faceTetIs = faceTets[selectedTriI];
 
                 point p = faceTetIs.faceTri(mesh_).randomPoint(rndGen);
 
                 // Velocity generation
-
                 scalar mostProbableSpeed
                 (
                     cloud_.maxwellianMostProbableSpeed
@@ -365,7 +361,7 @@ void dsmcFreeStreamInflowFieldPatch::controlParcelsBeforeMove()
             
                 label newParcel = patchId();
                 
-                const scalar& RWF = cloud_.RWF(cellI); //cloud_.getRWF_cell(cellI);
+                const scalar& RWF = cloud_.coordSystem().RWF(cellI);
               
                 cloud_.addNewParcel
                 (
@@ -388,58 +384,51 @@ void dsmcFreeStreamInflowFieldPatch::controlParcelsBeforeMove()
         }
     }
 
+    forAll(parcelsInserted, m)
+    {
+       reduce(parcelsToAdd[m], sumOp<scalar>());
+       reduce(parcelsInserted[m], sumOp<scalar>());
 
-//     if (Pstream::parRun())
-//     {
-//         forAll(parcelsInserted, m)
-//         {
-//             reduce(parcelsToAdd[m], sumOp<scalar>());
-//             reduce(parcelsInserted[m], sumOp<scalar>());
-// 
-//             Info<< "Specie: " << typeIds_[m] 
-//                 << ", target parcels to insert: " << parcelsToAdd[m]
-//                 <<", inserted parcels: " << parcelsInserted[m]
-//                 << endl;
-//         }
-//     }
+       Info<< "Patch " << patchId() << ", specie: " << typeIds_[m] 
+           << ", target parcels to insert: " << parcelsToAdd[m]
+           <<", inserted parcels: " << parcelsInserted[m]
+           << endl;
+    }
 }
+
 
 void dsmcFreeStreamInflowFieldPatch::controlParcelsBeforeCollisions()
-{
+{}
 
-}
 
 void dsmcFreeStreamInflowFieldPatch::controlParcelsAfterCollisions()
-{
-}
+{}
+
 
 void dsmcFreeStreamInflowFieldPatch::output
 (
     const fileName& fixedPathName,
     const fileName& timePath
 )
-{
-}
+{}
+
 
 void dsmcFreeStreamInflowFieldPatch::updateProperties(const dictionary& newDict)
 {
     //- the main properties should be updated first
     updateBoundaryProperties(newDict);
-
 }
-
 
 
 void dsmcFreeStreamInflowFieldPatch::setProperties()
 {
-    //  read in the type ids
-
+    //- read in the type ids
     const List<word> molecules (propsDict_.lookup("typeIds"));
 
     if(molecules.size() == 0)
     {
         FatalErrorIn("dsmcFreeStreamInflowFieldPatch::dsmcFreeStreamInflowFieldPatch()")
-            << "Cannot have zero typeIds being inserd." << nl << "in: "
+            << "Cannot have zero typeIds being inserted." << nl << "in: "
             << mesh_.time().system()/"boundariesDict"
             << exit(FatalError);
     }
@@ -458,8 +447,7 @@ void dsmcFreeStreamInflowFieldPatch::setProperties()
 
     moleculesReduced.shrink();
 
-    //  set the type ids
-
+    //- set the type ids
     typeIds_.setSize(moleculesReduced.size(), -1);
 
     forAll(moleculesReduced, i)
@@ -479,8 +467,7 @@ void dsmcFreeStreamInflowFieldPatch::setProperties()
         typeIds_[i] = typeId;
     }
 
-    // read in the mass density per specie
-    
+    //- read in the mass density per specie
 //     const dictionary& numberDensitiesDict
 //     (
 //         propsDict_.subDict("numberDensities")
@@ -498,8 +485,7 @@ void dsmcFreeStreamInflowFieldPatch::setProperties()
 //         );
 //     }
 
-    // set the accumulator
-
+    //- set the accumulator
     accumulatedParcelsToInsert_.setSize(typeIds_.size());
 
     forAll(accumulatedParcelsToInsert_, m)
@@ -508,7 +494,6 @@ void dsmcFreeStreamInflowFieldPatch::setProperties()
     }
     
     inletTemperatures_.setSize(nFaces_, vector::zero);
-
     inletVelocities_.setSize(nFaces_, vector::zero);
 
     forAll(inletTemperatures_, f)
@@ -559,11 +544,9 @@ void dsmcFreeStreamInflowFieldPatch::setProperties()
     }
 }
 
+
 void dsmcFreeStreamInflowFieldPatch::setNewBoundaryFields()
-{
-
-}
-
+{}
 
 
 } // End namespace Foam

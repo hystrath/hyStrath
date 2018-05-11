@@ -118,7 +118,7 @@ void dsmcFixedHeatFluxFieldPatch::calculateProperties()
     stepCounter_++;
     nSamplesAverage_++;
 
-    const scalar deltaT = mesh_.time().deltaTValue();
+    const scalar deltaT = mesh_.time().deltaTValue(); //TODO cloud_.deltaTValue(p.cell());
     
     forAll(EcTotSum_, f)
     {
@@ -309,7 +309,7 @@ void dsmcFixedHeatFluxFieldPatch::controlParticle(dsmcParcel& p, dsmcParcel::tra
 //                         typeId
 //                     );
     
-    EcTot_[faceId] += cloud_.nParticle()*(preIE - postIE);
+    EcTot_[faceId] += cloud_.nParticles(patchId(), faceId)*(preIE - postIE);
 }
 
 void dsmcFixedHeatFluxFieldPatch::output

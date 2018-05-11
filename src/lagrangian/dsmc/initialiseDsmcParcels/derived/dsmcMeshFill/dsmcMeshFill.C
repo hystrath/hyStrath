@@ -100,9 +100,9 @@ void dsmcMeshFill::setInitialConfiguration()
         dsmcInitialiseDict_.subDict("numberDensities")
     );
 
-    List<word> molecules(numberDensitiesDict.toc());
+    wordList molecules(numberDensitiesDict.toc());
 
-    Field<scalar> numberDensities(molecules.size());
+    scalarList numberDensities(molecules.size());
 
     forAll(molecules, i)
     {
@@ -111,8 +111,6 @@ void dsmcMeshFill::setInitialConfiguration()
             numberDensitiesDict.lookup(molecules[i])
         );
     }
-
-    numberDensities /= cloud_.nParticle();
 
     forAll(mesh_.cells(), cellI)
     {
@@ -150,8 +148,7 @@ void dsmcMeshFill::setInitialConfiguration()
                 // Calculate the number of particles required
                 scalar particlesRequired = numberDensity*tetVolume;
                 
-                const scalar& RWF = cloud_.getRWF_cell(cellI);
-                particlesRequired /= RWF;
+                particlesRequired /= cloud_.nParticles(cellI);
 
                 // Only integer numbers of particles can be inserted
                 label nParticlesToInsert = label(particlesRequired);
@@ -204,7 +201,8 @@ void dsmcMeshFill::setInitialConfiguration()
                     
                     label classification = 0;
                     
-                    const scalar& RWF = cloud_.getRWF_cell(cellI);
+                    const scalar& RWF = 
+                        cloud_.coordSystem().recalculateRWF(cellI);
 
                     cloud_.addNewParcel
                     (

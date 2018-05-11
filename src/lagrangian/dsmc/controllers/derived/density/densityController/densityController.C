@@ -101,7 +101,7 @@ void densityController::calculateProperties()
                 
                 if(p->typeId() == typeId_)
                 {
-                    const scalar& RWF = cloud_.getRWF_cell(cellI);
+                    const scalar& RWF = cloud_.coordSystem().recalculateRWF(cellI);
                     
                     parcels_[c] += RWF;
                 }
@@ -296,7 +296,7 @@ void densityController::insertParcelWithinDSMC(const label& c)
         tetPt
     );
     
-    const scalar& RWF = cloud_.getRWF_cell(cellI);
+    const scalar& RWF = cloud_.coordSystem().recalculateRWF(cellI);
 
     cloud_.addNewParcel
     (

@@ -52,6 +52,8 @@ SourceFiles
 #include "dsmcFieldProperties.H"
 #include "dsmcFaceTracker.H"
 #include "dsmcControllers.H"
+#include "dsmcCoordinateSystem.H"
+#include "porousMeasurements.H"
 #include "dsmcDynamicLoadBalancing.H"
 
 #include "dsmcReactions.H"
@@ -90,7 +92,7 @@ private:
         //- Dictionary of particle properties
         IOdictionary particleProperties_;
         
-        //- Dictionary of particle properties
+        //- Dictionary of simulation properties
         IOdictionary controlDict_;
 
         //- A list of unique instances of molecule types in the
@@ -99,83 +101,18 @@ private:
         //  (N2 O2 CO2) N2 has typeId label = 0, O2 = 1, CO2 = 2.
         List<word> typeIdList_;
 
-        //- Number of real atoms/molecules represented by a parcel
-        scalar nParticle_;
+        //- Coordinate system model: Cartesian, axisymmetric, spherical
+        autoPtr<dsmcCoordinateSystem> dsmcCoordinateSystem_;
         
-        
-      //- Axisymmetric data
-      
-        //- Bool to identify if this is an axisymmetric simulation
-        //  Movements dealt with differently if true
-        bool axisymmetric_;
-        
-        //- Radial weighting method employed
-        //  Default: "cell", other options: "particle", "mixed"
-        word rWMethod_; 
-        
-        //- Axis of revolution
-        //  Default: x-axis, i.e., component 0
-        label revolutionAxis_;
-        
-        //- Polar axis
-        //  Default: (revolutionAxis_ + 1)%3
-        label polarAxis_;
-        
-        //- Angular coordinate
-        //  Default: (revolutionAxis_ + 2)%3
-        label angularCoordinate_;
-        
-        //- Radial extent of the domain
-        scalar radialExtent_;
-        
-        //- Maximum radial scaling factor
-        scalar maxRWF_;
-        
-        //- Radial weighting factor field
-        volScalarField RWF_;
-        
-        
-    //- Porous medium properties and mean squared displacement measurements
-    
-        //- Bool to start measuring macroscopic medium properties
-        //  (mean distance travelled, transit time, tortuosity)
-        bool measureMediumProperties_;
-        
-        //- Bool to start measuring the instantaneous mean squared displacement
-        bool measureInstantaneousMSD_;
-        
-        //- Indicate the fraction of the dsmcCloud that should be used
-        scalar trackingProbability_;
-        
-        //- Map associating inflow patches with relevant outflow patches
-        wordHashSet tracerPatchNamesMap_;
-        
-        //- Dimensionality of the problem (i.e., 1: 1D, 2: 2D or 1: 3D)
-        label dimensionality_;
-        
-        //- Average flow transit time for all tracked parcels recorded 
-        scalar mediumTransitTime_;
-        
-        //- Average total distance travelled by all tracked parcels recorded
-        scalar mediumTotalDistanceTravelled_;
-        
-        //- Average tortuosity measured from all tracked parcels recorded
-        scalar mediumTortuosity_;
-        
-        //- Number of tracked parcels exiting through wrong patches
-        label nLooping_;
-        
-        //- Time spent by the tracked parcels referred to as 'looping'
-        scalar timeLooping_;
-        
-
+        //- Porous measurements model: no, instantaneous, global
+        autoPtr<porousMeasurements> porousMeasurements_;
         
         //- Write out the information to terminal every nTerminalOutputs
         label nTerminalOutputs_;
 
         //- A data structure holding which particles are in which cell
         //List<DynamicList<dsmcParcel*> > cellOccupancy_;
-        DynamicList<DynamicList<dsmcParcel*> > cellOccupancy_; // EDITED VINCENT
+        DynamicList<DynamicList<dsmcParcel*>> cellOccupancy_; // EDITED VINCENT
         
         //- A data structure holding electron number density
         scalarList rhoNMeanElectron_;
@@ -386,28 +323,32 @@ public:
         //- Return the idList
         inline const List<word>& typeIdList() const;
 
-        //- Return the number of real particles represented by one
-        //  parcel
+        //- Return the number of real particles represented by one parcel
         inline scalar nParticle() const;
         
-        //- Return the radius of the domain for axisymmetric cases
-        inline scalar radialExtent() const;
+        //- Return the number of real particles represented by one parcel
+        inline const volScalarField& nParticles() const;
         
-        //- Return the RWF for axisymmetric cases
-        inline scalar maxRWF() const;
-        
-        //- Return the local RWF for a given cell
+        //- Return the number of real particles represented by one parcel for
+        //  a given cell
         //  Locally in the code, the radialWeightingMethod (RWM) can be
         //  changed from "cell"- to "particle"-based if rWMethod is set to
         //  mixed and the method call uses mixedRWM = true (e.g., nTC)
-        inline scalar RWF(const label celli, const bool mixedRWM = false) const;
+        inline scalar nParticles
+        (
+            const label celli,
+            const bool mixedRWMethod = false
+        ) const;
         
-        //- Return the local RWF for a given face
-        inline scalar pRWF(const label patchi, const label facei) const;
+        //- Return the number of real particles represented by one parcel for
+        //  a given patch/face couple
+        inline scalar nParticles(const label patchi, const label facei) const;
         
-        //- Return the bool to identify if this is an axisymmetric simulation
-        //- Measurements, etc dealt with differently if true
-        inline bool axisymmetric() const;
+        //- Return the DSMC time-step field
+        inline const scalarField& deltaTField() const;
+        
+        //- Return the DSMC time-step for a given cell
+        inline scalar deltaTValue(const label celli = 0) const;
         
         //- Return the number of timesteps to write out to terminal at
         inline label nTerminalOutputs() const;
@@ -591,6 +532,18 @@ public:
         inline const dsmcControllers& controllers() const;
         inline dsmcControllers& controllers();
         
+        //- Return reference to coordinate system model
+        inline const dsmcCoordinateSystem& coordSystem() const;
+        
+        //- Return non-const reference to coordinate system model
+        inline dsmcCoordinateSystem& coordSystem();
+        
+        //- Return reference to porous measurements model
+        inline const porousMeasurements& porousMeas() const;
+        
+        //- Return non-const reference to porous measurements model
+        inline porousMeasurements& porousMeas();
+        
         inline const dsmcDynamicLoadBalancing& dynamicLoadBalancing() const;
         inline dsmcDynamicLoadBalancing& dynamicLoadBalancing();
 
@@ -640,24 +593,6 @@ public:
             );
 
             void reBuildCellOccupancy();
-            
-            void axisymmetricWeighting();
-            
-            //- Update the radial weighting factor field
-            void updateRWF();
-            
-            //- Return the radial weighting factor for a given patch/face
-            scalar getRWF_face(const label patchI, const label faceI) const;
-            
-            //- Return the radial weighting factor for a cell
-            //  Locally in the code, the radialWeightingMethod (RWM) can be
-            //  changed from "cell"- to "particle"-based if rWMethod is set to
-            //  mixed and the method call uses mixedRWM = true (e.g., nTC)
-            scalar getRWF_cell
-            (
-                const label cellI, 
-                const bool mixedRWM = false
-            ) const;
 
 
         // Cloud evolution functions
@@ -782,28 +717,6 @@ public:
             //- Function to help with steady normal shock wave simulation
             void shockReset();
             // END NEW DANIEL
-            
-            //- Return const access to the measureMediumProperties switch
-            bool measureMediumProperties() const;
-            
-            //- Return const access to the measureInstantaneousMSD switch
-            bool measureInstantaneousMSD() const;
-            
-            //- Update the medium properties on a deletion patch
-            void updateMediumPropertiesMeasurement
-            (
-                dsmcParcel& p,
-                const label& delPatchId
-            );
-            
-            //- Update the medium properties on a cyclic patch
-            void updateMediumPropertiesMeasurement_cyclic
-            (
-                dsmcParcel& p,
-                const label& neiPatchId,
-                const label& orgPatchId,
-                const vector& orgPosition
-            );
 
             //- Clear the Cloud
             void clear();

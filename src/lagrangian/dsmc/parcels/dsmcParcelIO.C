@@ -45,12 +45,12 @@ Foam::dsmcParcel::dsmcParcel
     typeId_(-1),
     newParcel_(-1),
     //tracked_(nullptr), // TODO TO BE REINTRODUCED
-    tracked_(),
+    //tracked_(0,0.0,vector::zero),
     classification_(0),
     stuck_(nullptr),
     vibLevel_(0)
 {
-    dsmcParcel::TrackedParcel tP = dsmcParcel::TrackedParcel();
+    //dsmcParcel::TrackedParcel tP = dsmcParcel::TrackedParcel(); // TODO uncomment vincent  11/05/2018
     dsmcParcel::StuckParcel sP = dsmcParcel::StuckParcel();
     
     if (readFields)
@@ -63,7 +63,7 @@ Foam::dsmcParcel::dsmcParcel
             ELevel_ = readLabel(is);
             typeId_ = readLabel(is);
             newParcel_ = readLabel(is);
-            is >> tP;
+            is >> tracked_; //tP; // TODO VINCENT  11/05/2018
             classification_ = readLabel(is);
             is >> sP;
             is >> vibLevel_;
@@ -81,13 +81,13 @@ Foam::dsmcParcel::dsmcParcel
                 + sizeof(newParcel_)
                 + sizeof(classification_)
             );
-            is >> tP;
+            is >> tracked_; //tP;  // TODO VINCENT  11/05/2018
             is >> sP;
             is >> vibLevel_;
         }
     }
     
-    if (tP.tracked())
+    if (false) // tP.tracked())
     {
         /*tracked_ = new dsmcParcel::TrackedParcel
             (
@@ -100,7 +100,7 @@ Foam::dsmcParcel::dsmcParcel
                 //tP.parcelTrajectory()
             );*/ // TODO TO BE REINTRODUCED
             
-        tracked_ = dsmcParcel::TrackedParcel
+        /*tracked_ = dsmcParcel::TrackedParcel
             (
                 tP.tracked(),
                 tP.inPatchId(),
@@ -109,7 +109,7 @@ Foam::dsmcParcel::dsmcParcel
                 tP.initialPosition(),
                 tP.distanceTravelledVector()//,
                 //tP.parcelTrajectory()
-            );  
+            );  */ // TODO uncomment vincent  11/05/2018
     }
     
     if (sP.wallTemperature()[0] != 0.0)
@@ -204,7 +204,7 @@ void Foam::dsmcParcel::readFields(Cloud<dsmcParcel>& c)
         )
     );
     
-    if(wallTemperature.size() != c.size())
+    if (wallTemperature.size() != c.size())
     {
         wallTemperature.setSize(c.size());
         forAll(wallTemperature, i)
@@ -224,7 +224,7 @@ void Foam::dsmcParcel::readFields(Cloud<dsmcParcel>& c)
         )
     );
     
-    if(wallVectors.size() != c.size())
+    if (wallVectors.size() != c.size())
     {
         wallVectors.setSize(c.size());
         forAll(wallVectors, i)
@@ -288,7 +288,7 @@ void Foam::dsmcParcel::readFields(Cloud<dsmcParcel>& c)
         )
     );
     
-    if(vibLevel.size() != c.size())
+    if (vibLevel.size() != c.size())
     {
         vibLevel.setSize(c.size());
         forAll(vibLevel, i)
@@ -312,12 +312,12 @@ void Foam::dsmcParcel::readFields(Cloud<dsmcParcel>& c)
         p.newParcel_ = newParcel[i];
         p.classification_ = classification[i];
         
-        if(stuckToWall[i])
+        if (stuckToWall[i])
         {
             p.setStuck(wallTemperature[i], wallVectors[i]);
         }
         
-        if(isTracked[i])
+        if (isTracked[i])
         {
             p.setTracked
             (
@@ -376,14 +376,14 @@ void Foam::dsmcParcel::writeFields(const Cloud<dsmcParcel>& c)
         classification[i] = p.classification();
         
         stuckToWall[i] = p.isStuck();
-        if(stuckToWall[i])
+        if (stuckToWall[i])
         {
             wallTemperature[i] = p.stuck().wallTemperature();
             wallVectors[i] = p.stuck().wallVectors();
         }
         
         isTracked[i] = p.isTracked();
-        if(isTracked[i])
+        if (isTracked[i])
         {
             inPatchId[i] = p.tracked().inPatchId();
             tracerInitialTime[i] = p.tracked().initialTime();
@@ -405,19 +405,19 @@ void Foam::dsmcParcel::writeFields(const Cloud<dsmcParcel>& c)
 
     U.write();
     
-    if(gMax(RWF) > 1.0)
+    if (gMax(RWF) > 1.0)
     {
-        //- this is an axisymmetric simulation
+        //- this is an axi/spherically -symmetric simulation
         RWF.write();
     }
     
-    if(gMax(ERot) > 0.0)
+    if (gMax(ERot) > 0.0)
     {
         //- there is at least one molecule
         ERot.write();
     }
 
-    if(gMax(ELevel) > 0)
+    if (gMax(ELevel) > 0)
     {
         //- the electronic mode is activated
         ELevel.write();
@@ -427,7 +427,7 @@ void Foam::dsmcParcel::writeFields(const Cloud<dsmcParcel>& c)
     newParcel.write();
     classification.write();
     
-    if(gSum(stuckToWall) > 0)
+    if (gSum(stuckToWall) > 0)
     {
         //- there is at least one stickingWallPatch with a particle stuck on it
         stuckToWall.write();
@@ -435,7 +435,7 @@ void Foam::dsmcParcel::writeFields(const Cloud<dsmcParcel>& c)
         wallVectors.write();
     }
     
-    if(gSum(isTracked) > 0)
+    if (gSum(isTracked) > 0)
     {
         //- there is at least one tracked parcel in the domain
         isTracked.write();
@@ -458,14 +458,14 @@ Foam::Ostream& Foam::operator<<
     const dsmcParcel& p
 )
 {
-    dsmcParcel::TrackedParcel tP = dsmcParcel::TrackedParcel();
-    if(p.isTracked())
+    /*dsmcParcel::TrackedParcel tP = dsmcParcel::TrackedParcel();
+    if (p.isTracked())
     {
         tP = p.tracked();
-    }
+    }*/ //TODO vincent 11/05/2018
     
     dsmcParcel::StuckParcel sP = dsmcParcel::StuckParcel();
-    if(p.isStuck())
+    if (p.isStuck())
     {
         sP = p.stuck();
     }
@@ -479,7 +479,7 @@ Foam::Ostream& Foam::operator<<
             << token::SPACE << p.ELevel()
             << token::SPACE << p.typeId()
             << token::SPACE << p.newParcel()
-            << token::SPACE << tP
+            << token::SPACE << p.tracked() //tP; // TODO vincent  11/05/2018
             << token::SPACE << p.classification()
             << token::SPACE << sP
             << token::SPACE << p.vibLevel();
@@ -500,7 +500,7 @@ Foam::Ostream& Foam::operator<<
             + sizeof(p.classification())
         );
         
-        os << tP;
+        os << p.tracked(); //tP; // TODO vincent  11/05/2018
         os << sP; 
         os << p.vibLevel();
     }

@@ -595,6 +595,19 @@ dsmcVolFields::dsmcVolFields
     vDof_(),
     mfp_(),
     mcr_(),
+    cr_
+    (
+        IOobject
+        (
+            "measuredCollisionRate",
+            mesh_.time().timeName(),
+            mesh_,
+            IOobject::NO_READ,
+            IOobject::NO_WRITE
+        ),
+        mesh_,
+        dimensionedScalar("zero",  dimensionSet(0, -3, -1, 0, 0), 0.0)
+    ),
     rhoNBF_(),
     rhoMBF_(),
     linearKEBF_(),
@@ -969,7 +982,7 @@ void dsmcVolFields::createField()
         
         forAll(vibrationalETotal_[i], j)
         {
-            vibrationalETotal_[i][j].setSize(mesh_.nCells(),0.0);
+            vibrationalETotal_[i][j].setSize(mesh_.nCells(), 0.0);
         }
     }
 }
@@ -979,7 +992,6 @@ void dsmcVolFields::calculateField()
 { 
     sampleCounter_++;
     
-    const scalar& nParticle = cloud_.nParticle();
     rhoNInstantaneous_ = 0.0;
     
     if(sampleInterval_ <= sampleCounter_)
@@ -995,16 +1007,15 @@ void dsmcVolFields::calculateField()
 
                 if(iD != -1 && p.isFree())
                 {
-                    const label& cell = p.cell();
-                    const scalar& mass = cloud_.constProps(p.typeId()).mass();
+                    const label cell = p.cell();
+                    const scalar nParticles = cloud_.nParticles(cell);
+                    const scalar mass = cloud_.constProps(p.typeId()).mass();
 
                     rhoNMean_[cell] += 1.0;
                     rhoNInstantaneous_[cell] += 1.0;
                     
-                    const scalar& RWF = cloud_.RWF(cell); //cloud_.getRWF_cell(cell);
-                    
-                    rhoNMeanXnParticle_[cell] += (RWF*nParticle);
-                    rhoMMeanXnParticle_[cell] += (mass*RWF*nParticle);
+                    rhoNMeanXnParticle_[cell] += nParticles;
+                    rhoMMeanXnParticle_[cell] += mass*nParticles;
                 }
             }
         }
@@ -1019,11 +1030,12 @@ void dsmcVolFields::calculateField()
 
                 if(iD != -1 && p.isFree())
                 {
-                    const label& cell = p.cell();
-                    const scalar& mass = cloud_.constProps(p.typeId()).mass();
-                    const scalar& massBySqMagU = mass*(p.U() & p.U());
+                    const label cell = p.cell();
+                    const scalar nParticles = cloud_.nParticles(cell);
+                    const scalar mass = cloud_.constProps(p.typeId()).mass();
+                    const scalar massBySqMagU = mass*(p.U() & p.U());
                     const scalarList& electronicEnergies = cloud_.constProps(typeIds_[iD]).electronicEnergyList();
-                    const scalar& rotationalDof = cloud_.constProps(p.typeId()).rotationalDegreesOfFreedom();
+                    const scalar rotationalDof = cloud_.constProps(p.typeId()).rotationalDegreesOfFreedom();
 
                     scalarList EVib
                     (
@@ -1055,15 +1067,11 @@ void dsmcVolFields::calculateField()
                     nParcels_[iD][cell] += 1.0;
                     mccSpecies_[iD][cell] += massBySqMagU;
                     
-                    const scalar& RWF = cloud_.RWF(cell); //cloud_.getRWF_cell(cell);
-                    
-                    nParcelsXnParticle_[iD][cell] += (RWF*nParticle);
-                    rhoNMeanXnParticle_[cell] += (RWF*nParticle);
-                    rhoMMeanXnParticle_[cell] += (mass*RWF*nParticle);
-                    momentumMeanXnParticle_[cell] += 
-                        (mass*(p.U())*RWF*nParticle);
-                    linearKEMeanXnParticle_[cell] += 
-                        (massBySqMagU*RWF*nParticle);
+                    nParcelsXnParticle_[iD][cell] += nParticles;
+                    rhoNMeanXnParticle_[cell] += nParticles;
+                    rhoMMeanXnParticle_[cell] += mass*nParticles;
+                    momentumMeanXnParticle_[cell] += mass*(p.U())*nParticles;
+                    linearKEMeanXnParticle_[cell] += massBySqMagU*nParticles;
                                                         
                     
                     muu_[cell] += mass*sqr(p.U().x());
@@ -1603,24 +1611,23 @@ void dsmcVolFields::calculateField()
                 {
                     forAll(mfp_, iD)
                     {
-                        label qspec = 0;
-                        
-                        for (qspec=0; qspec<typeIds_.size(); qspec++)
+                        forAll(typeIds_, qspec)
                         {
-                            scalar dPQ = 0.5*(cloud_.constProps(typeIds_[iD]).d() + cloud_.constProps(typeIds_[qspec]).d());
-                            scalar omegaPQ = 0.5*(cloud_.constProps(typeIds_[iD]).omega() + cloud_.constProps(typeIds_[qspec]).omega());
-                            scalar massRatio = cloud_.constProps(typeIds_[iD]).mass()/cloud_.constProps(typeIds_[qspec]).mass();
+                            const scalar dPQ = 0.5*(cloud_.constProps(typeIds_[iD]).d() + cloud_.constProps(typeIds_[qspec]).d());
+                            const scalar omegaPQ = 0.5*(cloud_.constProps(typeIds_[iD]).omega() + cloud_.constProps(typeIds_[qspec]).omega());
+                            const scalar massRatio = cloud_.constProps(typeIds_[iD]).mass()/cloud_.constProps(typeIds_[qspec]).mass();
+                            const scalar symmFactor = (iD == qspec ? 1.0 : 2.0);
                             
-                            if(nParcels_[qspec][cell] > VSMALL && translationalT_[cell] > VSMALL)
+                            if(nParcels_[qspec][cell] > SMALL && translationalT_[cell] > SMALL)
                             {
-                                scalar nDensQ = (nParcelsXnParticle_[qspec][cell])/(mesh_.cellVolumes()[cell]*nTimeSteps_);
-                                scalar reducedMass = (cloud_.constProps(typeIds_[iD]).mass()*cloud_.constProps(typeIds_[qspec]).mass())
-                                                    / (cloud_.constProps(typeIds_[iD]).mass()+cloud_.constProps(typeIds_[qspec]).mass());
+                                const scalar nDensQ = nParcelsXnParticle_[qspec][cell]/(mesh_.cellVolumes()[cell]*nTimeSteps_);
+                                const scalar reducedMass = (cloud_.constProps(typeIds_[iD]).mass()*cloud_.constProps(typeIds_[qspec]).mass())
+                                    / (cloud_.constProps(typeIds_[iD]).mass()+cloud_.constProps(typeIds_[qspec]).mass());
                                 
-                                mfp_[iD][cell] += (pi*dPQ*dPQ*nDensQ*pow(mfpReferenceTemperature_/translationalT_[cell],omegaPQ-0.5)*sqrt(1.0+massRatio)); //Bird, eq (4.76)
+                                mfp_[iD][cell] += pi*dPQ*dPQ*nDensQ*pow(mfpReferenceTemperature_/translationalT_[cell],omegaPQ-0.5)*sqrt(1.0+massRatio); //Bird, eq (4.76)
                                 
-                                mcr_[iD][cell] += (2.0*sqrt(pi)*dPQ*dPQ*nDensQ*pow(translationalT_[cell]/mfpReferenceTemperature_,1.0-omegaPQ)
-                                                    *sqrt(2.0*physicoChemical::k.value()*mfpReferenceTemperature_/reducedMass)); // Bird, eq (4.74)
+                                mcr_[iD][cell] += symmFactor*sqrt(pi)*dPQ*dPQ*nDensQ*pow(translationalT_[cell]/mfpReferenceTemperature_,1.0-omegaPQ)
+                                                    *sqrt(2.0*physicoChemical::k.value()*mfpReferenceTemperature_/reducedMass); // Bird, eq (4.74)
                             }
                         }
                         
@@ -1629,7 +1636,7 @@ void dsmcVolFields::calculateField()
                             mfp_[iD][cell] = 1.0/mfp_[iD][cell];
                         }
                     }
-
+                    
                     meanFreePath_[cell] = 0.0;
                     mfpCellRatio_[cell] = 0.0;
                     cellMfpRatio_[cell] = 0.0;
@@ -1646,6 +1653,11 @@ void dsmcVolFields::calculateField()
                     {
                        meanCollisionSeparation_[cell] = GREAT; 
                     }
+                    
+                    const scalar deltaT = cloud_.deltaTValue(cell);
+                    
+                    cr_[cell] = nColls_[cell]*cloud_.nParticles(cell)
+                        /(rhoN_[cell]*mesh_.cellVolumes()[cell]*nTimeSteps_*deltaT); // NEW VINCENT 16/04/2018
                     
                     forAll(mfp_, iD)
                     {
@@ -1664,8 +1676,6 @@ void dsmcVolFields::calculateField()
                         meanFreePath_[cell] = GREAT;
                     }
     
-                    const scalar& deltaT = mesh_.time().deltaTValue();
-
                     if(meanCollisionRate_[cell] > VSMALL)
                     {
                         meanCollisionTime_[cell] = 1.0/meanCollisionRate_[cell];
@@ -1681,6 +1691,7 @@ void dsmcVolFields::calculateField()
                     {
                         mfp_[iD][cell] = 0.0;
                         mcr_[iD][cell] = 0.0;
+                        
                     }
                     
                     if(meanFreePath_[cell] != GREAT)
@@ -1788,26 +1799,28 @@ void dsmcVolFields::calculateField()
                 {                               
                     forAll(rhoN_.boundaryField()[j], k)
                     {                        
-                        rhoN_.boundaryFieldRef()[j][k] = rhoNBF_[j][k]*nParticle/nAvTimeSteps;
-                        rhoM_.boundaryFieldRef()[j][k] = rhoMBF_[j][k]*nParticle/nAvTimeSteps;
+                        const scalar nParticles = cloud_.nParticles(j, k);
+                        
+                        rhoN_.boundaryFieldRef()[j][k] = rhoNBF_[j][k]*nParticles/nAvTimeSteps;
+                        rhoM_.boundaryFieldRef()[j][k] = rhoMBF_[j][k]*nParticles/nAvTimeSteps;
                         
                         if(rhoM_.boundaryFieldRef()[j][k] > VSMALL)
                         {
-                            UMean_.boundaryFieldRef()[j][k] = momentumBF_[j][k]*nParticle/(rhoM_.boundaryField()[j][k]*nAvTimeSteps);
+                            UMean_.boundaryFieldRef()[j][k] = momentumBF_[j][k]*nParticles/(rhoM_.boundaryField()[j][k]*nAvTimeSteps);
                         }
                         else
                         {
                             UMean_.boundaryFieldRef()[j][k] = vector::zero;
                         }
                             
-                        scalar rhoMMean = rhoMBF_[j][k]*nParticle/nAvTimeSteps;
-                        scalar linearKEMean = linearKEBF_[j][k]*nParticle/nAvTimeSteps;
-                        scalar rhoNMean = rhoNBF_[j][k]*nParticle/nAvTimeSteps;
+                        scalar rhoMMean = rhoMBF_[j][k]*nParticles/nAvTimeSteps;
+                        scalar linearKEMean = linearKEBF_[j][k]*nParticles/nAvTimeSteps;
+                        scalar rhoNMean = rhoNBF_[j][k]*nParticles/nAvTimeSteps;
                         
                         if(rhoNMean > VSMALL)
                         {
                             translationalT_.boundaryFieldRef()[j][k] = 2.0/(3.0*physicoChemical::k.value()*rhoNMean)
-                                            *(linearKEMean - 0.5*rhoMMean*(UMean_.boundaryField()[j][k] & UMean_.boundaryField()[j][k]));
+                                *(linearKEMean - 0.5*rhoMMean*(UMean_.boundaryField()[j][k] & UMean_.boundaryField()[j][k]));
                         }
                         else
                         {
@@ -2167,6 +2180,7 @@ void dsmcVolFields::calculateField()
                 meanCollisionTimeTimeStepRatio_.write();
                 meanCollisionSeparation_.write();
                 SOF_.write();
+                cr_.write();
             }
             
             if(measureClassifications_)
@@ -2244,6 +2258,8 @@ void dsmcVolFields::calculateField()
                 rhoMMeanXnParticle_[c] = 0.0;
                 momentumMeanXnParticle_[c] = vector::zero;
                 linearKEMeanXnParticle_[c] = 0.0;
+                
+                cr_[c] = 0.0; // NEW VINCENT 16/04/2018
             }
 
             // NEW VINCENT
@@ -2406,6 +2422,8 @@ void dsmcVolFields::resetField()
     rhoMMeanXnParticle_.setSize(mesh_.nCells(), 0.0);
     momentumMeanXnParticle_.setSize(mesh_.nCells(), vector::zero);
     linearKEMeanXnParticle_.setSize(mesh_.nCells(), 0.0);
+    
+    cr_.setSize(mesh_.nCells(), 0.0); // NEW VINCENT 16/04/2018
     
     forAll(nParcels_, iD)
     {

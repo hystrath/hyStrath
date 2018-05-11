@@ -320,7 +320,7 @@ void dsmcMassFlowRateInlet::controlParcelsBeforeMove()
                 
                 label newParcel = patchId();
                 
-                const scalar& RWF = cloud_.RWF(cellI); //cloud_.getRWF_cell(cellI);
+                const scalar& RWF = cloud_.coordSystem().RWF(cellI);
               
                 cloud_.addNewParcel
                 (
@@ -373,8 +373,6 @@ void dsmcMassFlowRateInlet::controlParcelsBeforeCollisions()
 
 void dsmcMassFlowRateInlet::controlParcelsAfterCollisions()
 {
-    const scalar deltaT = mesh_.time().deltaTValue(); // time step size
-    
     const scalar sqrtPi = sqrt(pi);
     
 //     vectorField momentum(faces_.size(), vector::zero);
@@ -385,14 +383,16 @@ void dsmcMassFlowRateInlet::controlParcelsAfterCollisions()
     
     forAll(cells_, c)
     {
-        const List<dsmcParcel*>& parcelsInCell = cellOccupancy[cells_[c]];
+        const label celli = cells_[c];
+        
+        const List<dsmcParcel*>& parcelsInCell = cellOccupancy[celli];
                   
         forAll(parcelsInCell, pIC)
         {
             dsmcParcel* p = parcelsInCell[pIC];
                         
-            momentum_[c] += cloud_.nParticle()*cloud_.constProps(p->typeId()).mass()*p->U();
-            mass_[c] += cloud_.nParticle()*cloud_.constProps(p->typeId()).mass();
+            momentum_[c] += cloud_.nParticles(celli)*cloud_.constProps(p->typeId()).mass()*p->U();
+            mass_[c] += cloud_.nParticles(celli)*cloud_.constProps(p->typeId()).mass();
         }
 
 //         newInletVelocity[c] = momentum[c]/mass[c];
@@ -454,6 +454,8 @@ void dsmcMassFlowRateInlet::controlParcelsAfterCollisions()
             const vector& sF = mesh_.faceAreas()[faceI];
             const scalar fA = mag(sF);
             
+            const scalar deltaT = cloud_.deltaTValue(mesh_.boundaryMesh()[patchId_].faceCells()[faceI]);
+            
             scalar mass = cloud_.constProps(typeId).mass();
             
             n_[iD][f] = (massFractions[iD]*massFlowRate_)/
@@ -475,7 +477,7 @@ void dsmcMassFlowRateInlet::controlParcelsAfterCollisions()
             
             scalar sCosTheta = (inletVelocity_[f] & -sF/fA )/mostProbableSpeed;
             
-            const scalar RWF = cloud_.pRWF(patchId_, f); //cloud_.getRWF_face(faceI);
+            //const scalar RWF = cloud_.coordSystem().pRWF(patchId_, f);
             
             // From Bird eqn 4.22
             accumulatedParcelsToInsert_[iD][f] += 
@@ -487,7 +489,7 @@ void dsmcMassFlowRateInlet::controlParcelsAfterCollisions()
                         exp(-sqr(sCosTheta)) + sqrtPi*sCosTheta*(1 + erf(sCosTheta))
                     )
                 )
-                /(2.0*sqrtPi*cloud_.nParticle()*RWF);
+                /(2.0*sqrtPi*cloud_.nParticles(patchId_, f));
         } 
     }
 }

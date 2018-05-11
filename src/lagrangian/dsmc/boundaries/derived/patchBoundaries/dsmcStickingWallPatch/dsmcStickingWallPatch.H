@@ -95,6 +95,9 @@ protected:
     
         virtual void setProperties();
         
+        //- Read the number of stuck particles on the patch
+        void readPatchField();
+        
         //- Check if adsorption can be still operated on this face
         bool isNotSaturated(const label facei);
         
@@ -194,14 +197,14 @@ public:
         //- Return const access to the surface coverage
         const scalarList& surfaceCoverage() const
         {
-            return nStuckParcels()/saturationLimit()*cloud_.nParticle();
+            return nStuckParcels()/saturationLimit()*cloud_.nParticles();
         }
         
         //- Return const access to the surface coverage for a given face
         scalar surfaceCoverage(const label& facei) const
         {
             return nStuckParcels(facei)/saturationLimit(facei)
-                *cloud_.nParticle();
+                *cloud_.nParticles(patchId(), facei);
         }
         
         //- Return const access to the patch saturation limit

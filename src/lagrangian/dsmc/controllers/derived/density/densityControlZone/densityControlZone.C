@@ -206,7 +206,7 @@ void densityControlZone::controlParcelsAfterCollisions()
                 
                 if(findIndex(typeIds_, typeId) != -1) 
                 {
-                    const scalar& RWF = cloud_.getRWF_cell(cell);
+                    const scalar& RWF = cloud_.coordSystem().recalculateRWF(cell);
                     
                     nParcels += RWF;
                 }
@@ -355,7 +355,7 @@ void densityControlZone::controlParcelsAfterCollisions()
                     typeId
                 );
                 
-                const scalar& RWF = cloud_.getRWF_cell(cell);
+                const scalar& RWF = cloud_.coordSystem().recalculateRWF(cell);
               
                 cloud_.addNewParcel
                 (

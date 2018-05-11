@@ -270,9 +270,6 @@ public:
             template<class TrackData>
             void move(TrackData& td, const scalar trackTime);
             
-            template<class TrackData>
-            void move(TrackData& td, const scalarField& trackTime);
-
             //- Remap the cells of particles corresponding to the
             //  mesh topology change
             template<class TrackData>

@@ -315,7 +315,7 @@ void dsmcLiouFangPressureInlet::controlParcelsBeforeMove()
                 
                 label newParcel = patchId();
                 
-                const scalar& RWF = cloud_.RWF(cellI); //cloud_.getRWF_cell(cellI);
+                const scalar& RWF = cloud_.coordSystem().RWF(cellI);
               
                 cloud_.addNewParcel
                 (
@@ -364,8 +364,6 @@ void dsmcLiouFangPressureInlet::controlParcelsBeforeCollisions()
 
 void dsmcLiouFangPressureInlet::controlParcelsAfterCollisions()
 {
-    const scalar deltaT = mesh_.time().deltaTValue(); // time step size
-    
     const scalar sqrtPi = sqrt(pi);
     
     vectorField momentum(faces_.size(), vector::zero);
@@ -377,14 +375,16 @@ void dsmcLiouFangPressureInlet::controlParcelsAfterCollisions()
     
     forAll(cells_, c)
     {
-        const List<dsmcParcel*>& parcelsInCell = cellOccupancy[cells_[c]];
+        const label celli = cells_[c];
+        
+        const List<dsmcParcel*>& parcelsInCell = cellOccupancy[celli];
                   
         forAll(parcelsInCell, pIC)
         {
             dsmcParcel* p = parcelsInCell[pIC];
                         
-            momentum[c] += cloud_.nParticle()*cloud_.constProps(p->typeId()).mass()*p->U();
-            mass[c] += cloud_.nParticle()*cloud_.constProps(p->typeId()).mass();
+            momentum[c] += cloud_.nParticles(celli)*cloud_.constProps(p->typeId()).mass()*p->U();
+            mass[c] += cloud_.nParticles(celli)*cloud_.constProps(p->typeId()).mass();
         }
 
         newInletVelocity[c] = momentum[c]/mass[c];
@@ -407,6 +407,8 @@ void dsmcLiouFangPressureInlet::controlParcelsAfterCollisions()
             const label& faceI = faces_[f];
             const vector& sF = mesh_.faceAreas()[faceI];
             const scalar fA = mag(sF);
+            
+            const scalar deltaT = cloud_.deltaTValue(mesh_.boundaryMesh()[patchId_].faceCells()[faceI]);
 
                 scalar mass = cloud_.constProps(typeId).mass();              
 
@@ -426,7 +428,7 @@ void dsmcLiouFangPressureInlet::controlParcelsAfterCollisions()
                 
                 scalar sCosTheta = (inletVelocity_[f] & -sF/fA )/mostProbableSpeed;
                 
-                const scalar& RWF = cloud_.pRWF(patchId_, f); //cloud_.getRWF_face(faceI);
+                //const scalar& RWF = cloud_.coordSystem().pRWF(patchId_, f); //cloud_.coordSystem().recalculatepRWF(faceI);
                 
                 // From Bird eqn 4.22
                 accumulatedParcelsToInsert_[iD][f] += 
@@ -438,7 +440,7 @@ void dsmcLiouFangPressureInlet::controlParcelsAfterCollisions()
                         exp(-sqr(sCosTheta)) + sqrtPi*sCosTheta*(1 + erf(sCosTheta))
                     )
                 )
-                /(2.0*sqrtPi*cloud_.nParticle()*RWF);
+                /(2.0*sqrtPi*cloud_.nParticles(patchId_, f));
         } 
     }
 }

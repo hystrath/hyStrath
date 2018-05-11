@@ -34,8 +34,8 @@ namespace Foam
     defineTemplateTypeNameAndDebug(Cloud<dsmcParcel>, 0);
 };
 
-// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
+// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
 void Foam::dsmcCloud::buildConstProps()
 {
@@ -125,14 +125,14 @@ void Foam::dsmcCloud::removeElectrons()
                                 
             const label& charge = constProp.charge();
             
-            const scalar& RWF = getRWF_cell(c);
+            const scalar& RWF = coordSystem().RWF(c);
             
             const scalar mass = constProps(p->typeId()).mass();
             
             momentumMean_[c] += mass*RWF*p->U();
             rhoMMean_[c] += mass*RWF;
             
-            if(charge == -1)
+            if (charge == -1)
             {
                 rhoNMeanElectron_[c] += 1.0*RWF;
                 rhoMMeanElectron_[c] += mass*RWF;
@@ -155,7 +155,7 @@ void Foam::dsmcCloud::addElectrons()
     {
         const label& particleCharge = constProps_[cP].charge();
         
-        if(particleCharge == -1)
+        if (particleCharge == -1)
         {
             electronTypeId = cP;
             break;
@@ -164,15 +164,15 @@ void Foam::dsmcCloud::addElectrons()
     
     forAll(cellOccupancy_, c)
     {                
-        if(rhoMMeanElectron_[c] > VSMALL)
+        if (rhoMMeanElectron_[c] > VSMALL)
         {
             scalar V = mesh_.cellVolumes()[c];
                 
-            scalar rhoMMeanElectron = rhoMMeanElectron_[c]*nParticle_/V;
-            scalar rhoNMeanElectron = rhoNMeanElectron_[c]*nParticle_/V;
+            scalar rhoMMeanElectron = rhoMMeanElectron_[c]*nParticles(c)/V;
+            scalar rhoNMeanElectron = rhoNMeanElectron_[c]*nParticles(c)/V;
             vector UElectron = momentumMeanElectron_[c] /(rhoMMeanElectron*V);
             scalar linearKEMeanElectron = 
-		            (0.5*linearKEMeanElectron_[c]*nParticle_)/V;
+		            (0.5*linearKEMeanElectron_[c]*nParticles(c))/V;
             
             electronTemperature_[c] = 2.0/(3.0*physicoChemical::k.value()
                 * rhoNMeanElectron)*(linearKEMeanElectron 
@@ -191,7 +191,7 @@ void Foam::dsmcCloud::addElectrons()
                                 
             label charge = constProp.charge();
         
-            if(charge == 1)
+            if (charge == 1)
             {
                 const label& cellI = p->cell();
                 
@@ -200,11 +200,11 @@ void Foam::dsmcCloud::addElectrons()
                 //- electron temperature will be zero if there have been no
                 //  electrons in the cell during the simulation
                 
-                if(electronTemperature_[cellI] < VSMALL)
+                if (electronTemperature_[cellI] < VSMALL)
                 {
                     electronTemperature_[cellI] = 6000.0;
                 }
-                if(electronTemperature_[cellI] > 8.0e4)
+                if (electronTemperature_[cellI] > 8.0e4)
                 {
                     electronTemperature_[cellI] = 30000.0;
                 }
@@ -216,7 +216,7 @@ void Foam::dsmcCloud::addElectrons()
                         constProps_[electronTypeId].mass()
                     );
                 
-                if(rhoMMean_[cellI] > VSMALL)
+                if (rhoMMean_[cellI] > VSMALL)
                 {
                     cellVelocity_[cellI] = momentumMean_[cellI]
                         /rhoMMean_[cellI];
@@ -254,7 +254,7 @@ void Foam::dsmcCloud::addElectrons()
 //                             
 //         label charge = constProp.charge();
 //         
-//         if(charge  == 1)
+//         if (charge  == 1)
 //         {
 //             //found an ion, add an electron here
 //             
@@ -267,11 +267,11 @@ void Foam::dsmcCloud::addElectrons()
 //             label tetFaceI = p.tetFace();
 //             label tetPtI = p.tetPt();
 //             
-//             if(electronTemperature_[cellI] < VSMALL)
+//             if (electronTemperature_[cellI] < VSMALL)
 //             {
 //                 electronTemperature_[cellI] = 6000.0;
 //             }
-//             if(electronTemperature_[cellI] > 8.0e4)
+//             if (electronTemperature_[cellI] > 8.0e4)
 //             {
 //                 electronTemperature_[cellI] = 30000.0;
 //             }
@@ -283,7 +283,7 @@ void Foam::dsmcCloud::addElectrons()
 //                     constProps_[electronTypeId].mass()
 //                 );
 //               
-//             if(rhoMMean_[cellI] > VSMALL)
+//             if (rhoMMean_[cellI] > VSMALL)
 //             {
 //                 cellVelocity_[cellI] = momentumMean_[cellI]/rhoMMean_[cellI];
 //             }
@@ -322,7 +322,7 @@ Foam::label Foam::dsmcCloud::pickFromCandidateList
     label entry = -1;
     label size = candidatesInCell.size();
 
-    if(size > 0)
+    if (size > 0)
     {
         // choose a random number between 0 and the size of the candidateList
         label randomIndex = rndGen_.integer(0, size - 1);
@@ -333,7 +333,7 @@ Foam::label Foam::dsmcCloud::pickFromCandidateList
     
         forAll(candidatesInCell, i)
         {
-            if(i != randomIndex)
+            if (i != randomIndex)
             {
                 newCandidates.append(candidatesInCell[i]);
             }
@@ -361,7 +361,7 @@ void Foam::dsmcCloud::updateCandidateSubList
 
     forAll(candidatesInSubCell, i)
     {
-        if(i != newIndex)
+        if (i != newIndex)
         {
             newCandidates.append(candidatesInSubCell[i]);
         }
@@ -388,7 +388,7 @@ Foam::label Foam::dsmcCloud::pickFromCandidateSubList
     label entry = -1;
     label subCellSize = candidatesInSubCell.size();
     
-    if(subCellSize > 0)
+    if (subCellSize > 0)
     {
         label randomIndex = rndGen_.integer(0, subCellSize - 1);
         entry = candidatesInSubCell[randomIndex];
@@ -400,7 +400,7 @@ Foam::label Foam::dsmcCloud::pickFromCandidateSubList
 
         forAll(candidatesInSubCell, i)
         {
-            if(i != randomIndex)
+            if (i != randomIndex)
             {
                 newSubCellList.append(candidatesInSubCell[i]);
             }
@@ -417,7 +417,7 @@ Foam::label Foam::dsmcCloud::pickFromCandidateSubList
     
         forAll(candidatesInCell, i)
         {
-            if(i != newIndex)
+            if (i != newIndex)
             {
                 newList.append(candidatesInCell[i]);
             }
@@ -437,7 +437,6 @@ void Foam::dsmcCloud::collisions()
     collisionPartnerSelectionModel_->collide();
 }
 
-// * * * * * * * * * * * Protected Member Functions  * * * * * * * * * * * * //
 
 void Foam::dsmcCloud::addNewParcel
 (
@@ -472,19 +471,7 @@ void Foam::dsmcCloud::addNewParcel
         vibLevel
     );
     
-    if(measureMediumProperties_ and newParcel != -1)
-    {
-        if(trackingProbability_ > rndGen_.scalar01())
-        {
-            pPtr->setTracked
-            (
-                true, 
-                newParcel,
-                mesh_.time().value(), 
-                pPtr->position()
-            );
-        }
-    }
+    porousMeas().additionInteraction(*pPtr, newParcel);
     
     addParticle(pPtr);
 }
@@ -618,36 +605,8 @@ Foam::dsmcCloud::dsmcCloud
         )
     ),
     typeIdList_(particleProperties_.lookup("typeIdList")),
-    nParticle_(readScalar(particleProperties_.lookup("nEquivalentParticles"))),
-    axisymmetric_(particleProperties_.lookupOrDefault<Switch>("axisymmetricSimulation", false)),
-    rWMethod_(word::null),
-    revolutionAxis_(0),
-    polarAxis_(1),
-    angularCoordinate_(2),
-    radialExtent_(0.0),
-    maxRWF_(1.0),
-    RWF_
-    (
-        IOobject
-        (
-            "RWF",
-            mesh_.time().timeName(),
-            mesh_,
-            IOobject::NO_READ,
-            IOobject::AUTO_WRITE
-        ),
-        mesh_,
-        dimensionedScalar("RWF", dimless, 1.0)
-    ),
-    measureMediumProperties_(particleProperties_.lookupOrDefault<Switch>("measureMediumProperties", false)),
-    measureInstantaneousMSD_(particleProperties_.lookupOrDefault<Switch>("measureInstantaneousMSD", false)),
-    trackingProbability_(0),
-    tracerPatchNamesMap_(),
-    dimensionality_(3),
-    mediumTransitTime_(0.0),
-    mediumTotalDistanceTravelled_(0.0),
-    mediumTortuosity_(0.0),
-    timeLooping_(0.0),
+    dsmcCoordinateSystem_(dsmcCoordinateSystem::New(t, mesh, *this)),
+    porousMeasurements_(porousMeasurements::New(t, mesh, *this)),
     nTerminalOutputs_(controlDict_.lookupOrDefault<label>("nTerminalOutputs", 1)),
     cellOccupancy_(/*mesh_.nCells()*/), // EDITED VINCENT
     rhoNMeanElectron_(mesh_.nCells(), 0.0),
@@ -699,152 +658,8 @@ Foam::dsmcCloud::dsmcCloud
 
     buildConstProps();
     
-    if(axisymmetric_)
-    {
-        rWMethod_ = particleProperties_.subDict("axisymmetricProperties")
-            .lookupOrDefault<word>("radialWeightingMethod", "cell");
-        
-        if
-        (
-            rWMethod_ != "cell" and rWMethod_ != "particle"
-                and rWMethod_ != "mixed"
-        )
-        {
-            FatalErrorIn
-                (
-                    "dsmcCloud::dsmcCloud(Time& t, const word& cloudName, "
-                        "const dynamicFvMesh& mesh, bool readFields)"
-                )
-                    << "The radial weighting method is badly defined. Choices "
-                          "in constant/dsmcProperties are cell, particle, or "
-                          "mixed. Please edit the entry: radialWeightingMethod"
-                    << exit(FatalError);
-        }
-        
-        const word& revolutionAxis = 
-            particleProperties_.subDict("axisymmetricProperties")
-                .lookupOrDefault<word>("revolutionAxis", word::null);
-            
-        const word& polarAxis = 
-            particleProperties_.subDict("axisymmetricProperties")
-                .lookupOrDefault<word>("polarAxis", word::null);
-            
-        if(revolutionAxis == "z")
-        {
-            revolutionAxis_ = 2;
-            
-            if(polarAxis == word::null) 
-            {
-                polarAxis_ = (revolutionAxis_ + 1)%3;
-                angularCoordinate_ = (revolutionAxis_ + 2)%3;
-            }
-            else if(polarAxis == "y")
-            {
-                polarAxis_ = 1;
-                angularCoordinate_ = 0;
-            }
-            else if(polarAxis == "x")
-            {
-                polarAxis_ = 0;
-                angularCoordinate_ = 1;
-            }
-            else
-            {
-                FatalErrorIn
-                (
-                    "dsmcCloud::dsmcCloud(Time& t, const word& cloudName, "
-                        "const dynamicFvMesh& mesh, bool readFields)"
-                )
-                    << "Revolution and polar axes are badly defined in "
-                          "constant/dsmcProperties axisymmetricProperties{}"
-                    << exit(FatalError);
-            }
-        }
-        else if(revolutionAxis == "y")
-        {
-            revolutionAxis_ = 1;
-            
-            if(polarAxis == word::null) 
-            {
-                polarAxis_ = (revolutionAxis_ + 1)%3;
-                angularCoordinate_ = (revolutionAxis_ + 2)%3;
-            }
-            else if(polarAxis == "x")
-            {
-                polarAxis_ = 0;
-                angularCoordinate_ = 2;
-            }
-            else if(polarAxis == "z")
-            {
-                polarAxis_ = 2;
-                angularCoordinate_ = 0;
-            }
-            else
-            {
-                FatalErrorIn
-                (
-                    "dsmcCloud::dsmcCloud(Time& t, const word& cloudName, "
-                        "const dynamicFvMesh& mesh, bool readFields)"
-                )
-                    << "Revolution and polar axes are badly defined in "
-                          "constant/dsmcProperties axisymmetricProperties{}"
-                    << exit(FatalError);
-            }
-        }
-        else if(revolutionAxis == "x")
-        {
-            if(polarAxis == "z")
-            {
-                polarAxis_ = 2;
-                angularCoordinate_ = 1;
-            }
-            else if(polarAxis != "y")
-            {
-                FatalErrorIn
-                (
-                    "dsmcCloud::dsmcCloud(Time& t, const word& cloudName, "
-                        "const dynamicFvMesh& mesh, bool readFields)"
-                )
-                    << "Revolution and polar axes are badly defined in "
-                          "constant/dsmcProperties axisymmetricProperties{}"
-                    << exit(FatalError);
-            }
-        }
-        
-        radialExtent_ = gMax
-            (
-                mesh_.faceCentres().component(polarAxis_)
-            );
-            
-        if(!(radialExtent_ > 0))
-        {
-            radialExtent_ = -gMin
-            (
-                mesh_.faceCentres().component(polarAxis_)
-            );
-        }
-            
-        maxRWF_ = readScalar
-            (
-                particleProperties_.subDict("axisymmetricProperties")
-                    .lookup("maxRadialWeightingFactor")
-            );
-            
-        Info << nl << "Axisymmetric simulation:" << nl
-             << tab << "- revolutionAxis label" << tab << revolutionAxis_ << nl
-             << tab << "- polarAxis label" << tab << polarAxis_ << nl
-             << tab << "- angularCoordinate label" << tab << angularCoordinate_
-             << nl << tab << "- radial weighting method" << tab << rWMethod_ 
-             << "-based" << nl
-             << tab << "- radialExtent" << tab << radialExtent_ << nl
-             << tab << "- maxRadialWeightingFactor" << tab << maxRWF_ << nl
-             << endl;
-             
-         if (rWMethod_ != "particle")
-         {
-            updateRWF();
-         }
-    }
+    coordSystem().checkCoordinateSystemInputs();
+    porousMeas().checkPorousMeasurementsInputs();
     
     reactions_.initialConfiguration();
 
@@ -869,146 +684,11 @@ Foam::dsmcCloud::dsmcCloud
     fields_.createFields();
     boundaries_.setInitialConfig();
     controllers_.initialConfig();
-    
-    dsmcParcel::TrackedParcel::nDELETED = 0;
-    nLooping_ = 0;
-    
-    if(particleProperties_.isDict("tracerProperties"))
-    {
-        wordList trackFromPatchNames;
-        List<wordList> trackToPatchNames;
-        
-        if
-        (
-            particleProperties_.subDict("tracerProperties")
-              .found("inflowPatchNames")
-        )
-        {
-            particleProperties_.subDict("tracerProperties")
-                .lookup("inflowPatchNames") >> trackFromPatchNames;
-        }
-            
-        if
-        (
-            particleProperties_.subDict("tracerProperties")
-              .found("outflowPatchNames")
-        )
-        {
-            particleProperties_.subDict("tracerProperties")
-               .lookup("outflowPatchNames") >> trackToPatchNames;
-        }
-            
-        
-        if(trackFromPatchNames.size() != trackToPatchNames.size())
-        {
-            FatalErrorIn
-            (
-                "dsmcCloud::dsmcCloud(Time& t, const word& cloudName, "
-                    "const dynamicFvMesh& mesh, bool readFields)"
-            )
-                << "Lists inflowPatchNames and outflowPatchNames defined"
-                << " in constant/dsmcProperties must be of the same size." << nl
-                << "inflowPatchNames: size " << trackFromPatchNames.size() << nl
-                << "outflowPatchNames: size " << trackToPatchNames.size()
-                << exit(FatalError);
-        }    
-            
-        label noCombinations = 0;
-        
-        forAll(trackFromPatchNames, inflowPatch)
-        {
-            if(mesh_.boundaryMesh().findPatchID(trackFromPatchNames[inflowPatch]) == -1)
-            {
-                FatalErrorIn
-                (
-                    "dsmcCloud::dsmcCloud(Time& t, const word& cloudName, "
-                        "const dynamicFvMesh& mesh, bool readFields)"
-                )
-                    << "The tracers inflow patch " << trackFromPatchNames[inflowPatch]
-                    << " defined in constant/dsmcProperties does not exist"
-                    << exit(FatalError);
-            }
-            
-            forAll(trackToPatchNames[inflowPatch], outflowPatch)
-            {
-                if(mesh_.boundaryMesh().findPatchID(trackToPatchNames[inflowPatch][outflowPatch]) == -1)
-                {
-                    FatalErrorIn
-                    (
-                        "dsmcCloud::dsmcCloud(Time& t, const word& cloudName, "
-                            "const dynamicFvMesh& mesh, bool readFields)"
-                    )
-                        << "The tracers outflow patch "
-                        << trackToPatchNames[inflowPatch][outflowPatch]
-                        << " corresponding to the inflow patch "
-                        << trackFromPatchNames[inflowPatch]
-                        << " and defined in constant/dsmcProperties does not exist"
-                        << exit(FatalError);
-                }
-                
-                noCombinations++;
-            }
-        } 
-        
-        tracerPatchNamesMap_.resize(noCombinations);
-        
-        forAll(trackFromPatchNames, inflowPatch)
-        {
-            forAll(trackToPatchNames[inflowPatch], outflowPatch)
-            {
-                const word key = std::to_string(mesh_.boundaryMesh().findPatchID(trackFromPatchNames[inflowPatch]))
-                    + std::to_string(mesh_.boundaryMesh().findPatchID(trackToPatchNames[inflowPatch][outflowPatch]));
-                
-                tracerPatchNamesMap_.insert(key);
-            }
-        }
-        
-        trackingProbability_ = particleProperties_
-            .subDict("tracerProperties")
-            .lookupOrDefault<scalar>("trackingProbability", 0.1);
-            
-        dimensionality_ = particleProperties_.subDict("tracerProperties")
-            .lookupOrDefault<label>("dimensionality", 3);
-    }
-    else
-    {
-        if (measureMediumProperties_ or measureInstantaneousMSD_)
-        {
-            WarningIn
-            (
-                "dsmcCloud::dsmcCloud(Time& t, const word& cloudName, "
-                    "const dynamicFvMesh& mesh, bool readFields)"
-            )
-                << "Subdictionary tracerProperties is missing in "
-                      "constant/dsmcProperties"
-                << endl;
-        }
-    }
-    
-    if(measureInstantaneousMSD_)
-    {
-        forAllIter(dsmcCloud, *this, iter)
-        {
-            if(not iter().isTracked())
-            {
-                if(trackingProbability_ > rndGen_.scalar01())
-                {
-                    iter().setTracked
-                    (
-                        true,
-                        -1,
-                        mesh_.time().value(), 
-                        iter().position()
-                    );
-                }
-            }
-        }
-    }
 }
 
 
 
-// running dsmcIntialise+
+// running dsmcInitialise+
 Foam::dsmcCloud::dsmcCloud
 (
     Time& t,
@@ -1017,7 +697,7 @@ Foam::dsmcCloud::dsmcCloud
     const IOdictionary& dsmcInitialiseDict,
     const bool& clearFields
 )
-    :
+:
     Cloud<dsmcParcel>(mesh, cloudName, false),
     cloudName_(cloudName),
     mesh_(mesh),
@@ -1044,36 +724,8 @@ Foam::dsmcCloud::dsmcCloud
         )
     ),
     typeIdList_(particleProperties_.lookup("typeIdList")),
-    nParticle_(readScalar(particleProperties_.lookup("nEquivalentParticles"))),
-    axisymmetric_(particleProperties_.lookupOrDefault<Switch>("axisymmetricSimulation",false)),
-    rWMethod_(word::null),
-    revolutionAxis_(0),
-    polarAxis_(1),
-    angularCoordinate_(2),
-    radialExtent_(0.0),
-    maxRWF_(1.0),
-    RWF_
-    (
-        IOobject
-        (
-            "RWF",
-            mesh_.time().timeName(),
-            mesh_,
-            IOobject::NO_READ,
-            IOobject::NO_WRITE
-        ),
-        mesh_,
-        dimensionedScalar("RWF", dimless, 1.0)
-    ),
-    measureMediumProperties_(false),
-    measureInstantaneousMSD_(false),
-    trackingProbability_(0),
-    tracerPatchNamesMap_(),
-    dimensionality_(3),
-    mediumTransitTime_(0.0),
-    mediumTotalDistanceTravelled_(0.0),
-    mediumTortuosity_(0.0),
-    timeLooping_(0.0),
+    dsmcCoordinateSystem_(dsmcCoordinateSystem::New(t, mesh, *this)),
+    porousMeasurements_(porousMeasurements::New(t, mesh, *this)),
     nTerminalOutputs_(controlDict_.lookupOrDefault<label>("nTerminalOutputs", 1)),
     cellOccupancy_(),
     rhoNMeanElectron_(),
@@ -1112,7 +764,7 @@ Foam::dsmcCloud::dsmcCloud
     reactions_(t, mesh),
     cellMeas_(mesh, *this)
 {
-    if(!clearFields)
+    if (!clearFields)
     {
         dsmcParcel::readFields(*this);
     }
@@ -1124,7 +776,7 @@ Foam::dsmcCloud::dsmcCloud
         reduce(initialParcels, sumOp<label>());
     }
 
-    if(clearFields)
+    if (clearFields)
     {
         Info << "clearing existing field of parcels " << endl;
 
@@ -1133,150 +785,7 @@ Foam::dsmcCloud::dsmcCloud
         initialParcels = 0;
     }
     
-    if(axisymmetric_)
-    {
-        rWMethod_ = particleProperties_.subDict("axisymmetricProperties")
-            .lookupOrDefault<word>("radialWeightingMethod", "cell");
-        
-        if
-        (
-            rWMethod_ != "cell" and rWMethod_ != "particle"
-                and rWMethod_ != "mixed"
-        )
-        {
-            FatalErrorIn
-                (
-                    "dsmcCloud::dsmcCloud(Time& t, const word& cloudName, "
-                        "const dynamicFvMesh& mesh, bool readFields)"
-                )
-                    << "The radial weighting method is badly defined. Choices "
-                          "in constant/dsmcProperties are cell, particle, or "
-                          "mixed. Please edit the entry: radialWeightingMethod"
-                    << exit(FatalError);
-        }
-        
-        const word& revolutionAxis = 
-            particleProperties_.subDict("axisymmetricProperties")
-                .lookupOrDefault<word>("revolutionAxis", word::null);
-            
-        const word& polarAxis = 
-            particleProperties_.subDict("axisymmetricProperties")
-                .lookupOrDefault<word>("polarAxis", word::null);
-            
-        if(revolutionAxis == "z")
-        {
-            revolutionAxis_ = 2;
-            
-            if(polarAxis == word::null) 
-            {
-                polarAxis_ = (revolutionAxis_ + 1)%3;
-                angularCoordinate_ = (revolutionAxis_ + 2)%3;
-            }
-            else if(polarAxis == "y")
-            {
-                polarAxis_ = 1;
-                angularCoordinate_ = 0;
-            }
-            else if(polarAxis == "x")
-            {
-                polarAxis_ = 0;
-                angularCoordinate_ = 1;
-            }
-            else
-            {
-                FatalErrorIn
-                (
-                    "dsmcCloud::dsmcCloud(Time& t, const word& cloudName, "
-                        "const dynamicFvMesh& mesh, bool readFields)"
-                )
-                    << "Revolution and polar axes are badly defined in "
-                          "constant/dsmcProperties axisymmetricProperties{}"
-                    << exit(FatalError);
-            }
-        }
-        else if(revolutionAxis == "y")
-        {
-            revolutionAxis_ = 1;
-            
-            if(polarAxis == word::null) 
-            {
-                polarAxis_ = (revolutionAxis_ + 1)%3;
-                angularCoordinate_ = (revolutionAxis_ + 2)%3;
-            }
-            else if(polarAxis == "x")
-            {
-                polarAxis_ = 0;
-                angularCoordinate_ = 2;
-            }
-            else if(polarAxis == "z")
-            {
-                polarAxis_ = 2;
-                angularCoordinate_ = 0;
-            }
-            else
-            {
-                FatalErrorIn
-                (
-                    "dsmcCloud::dsmcCloud(Time& t, const word& cloudName, "
-                        "const dynamicFvMesh& mesh, bool readFields)"
-                )
-                    << "Revolution and polar axes are badly defined in "
-                          "constant/dsmcProperties axisymmetricProperties{}"
-                    << exit(FatalError);
-            }
-        }
-        else if(revolutionAxis == "x")
-        {
-            if(polarAxis == "z")
-            {
-                polarAxis_ = 2;
-                angularCoordinate_ = 1;
-            }
-            else if(polarAxis != "y")
-            {
-                FatalErrorIn
-                (
-                    "dsmcCloud::dsmcCloud(Time& t, const word& cloudName, "
-                        "const dynamicFvMesh& mesh, bool readFields)"
-                )
-                    << "Revolution and polar axes are badly defined in "
-                          "constant/dsmcProperties axisymmetricProperties{}"
-                    << exit(FatalError);
-            }
-        }
-        
-        radialExtent_ = gMax
-            (
-                mesh_.faceCentres().component(polarAxis_)
-            );
-            
-        if(!(radialExtent_ > 0))
-        {
-            radialExtent_ = -gMin
-            (
-                mesh_.faceCentres().component(polarAxis_)
-            );
-        }
-            
-        maxRWF_ = readScalar
-            (
-                particleProperties_.subDict("axisymmetricProperties")
-                    .lookup("maxRadialWeightingFactor")
-            );
-            
-        Info << nl << "Axisymmetric initialisation:" << nl
-             << tab << "- revolutionAxis label" << tab << revolutionAxis_ << nl
-             << tab << "- polarAxis label" << tab << polarAxis_ << nl
-             << tab << "- angularCoordinate label" << tab << angularCoordinate_
-             << nl << tab << "- radial weighting method" << tab << rWMethod_ 
-             << "-based" << nl
-             << tab << "- radialExtent" << tab << radialExtent_ << nl
-             << tab << "- maxRadialWeightingFactor" << tab << maxRWF_ << nl
-             << endl;
-             
-        // "particle" cannot be used in dsmcInitialise+, "cell" is thus employed
-        rWMethod_ = "cell";     
-    }
+    coordSystem().checkCoordinateSystemInputs(true);
 
     buildConstProps();
     dsmcAllConfigurations conf(dsmcInitialiseDict, *this);
@@ -1326,10 +835,9 @@ void Foam::dsmcCloud::evolve()
     //buildCellOccupancy();
     
     //- Move the particles ballistically with their current velocities
-    scalar timer = mesh_.time().elapsedCpuTime(); 
-    Cloud<dsmcParcel>::move(td, mesh_.time().deltaTValue());
-    Info<< "move" << tab << mesh_.time().elapsedCpuTime() - timer 
-        << " s" << endl; 
+    scalar timer = mesh_.time().elapsedCpuTime();
+    Cloud<dsmcParcel>::move(td, deltaTValue());
+    Info<< "move" << tab << mesh_.time().elapsedCpuTime() - timer << " s" << endl; 
     
     //- Add electrons back after the move function
     //addElectrons();
@@ -1337,20 +845,10 @@ void Foam::dsmcCloud::evolve()
     //- Update cell occupancy
     timer = mesh_.time().elapsedCpuTime();
     buildCellOccupancy();
-    Info<< "buildCellOccupancy" << tab << mesh_.time().elapsedCpuTime() - timer
-        << " s " << endl;
+    Info<< "buildCellOccupancy" << tab << mesh_.time().elapsedCpuTime() - timer << " s " << endl;
      
-    //- Radial weighting for axially symmetric flows
-    if (axisymmetric_)
-    {
-        if (rWMethod_ == "particle")
-        {
-            updateRWF();
-        }
-        
-        axisymmetricWeighting();
-        buildCellOccupancy();
-    }
+    //- Radial weighting for non-Cartesian flows (e.g., axisymmetric)
+    coordSystem().evolve();
     
     controllers_.controlBeforeCollisions();
     boundaries_.controlBeforeCollisions();
@@ -1358,11 +856,10 @@ void Foam::dsmcCloud::evolve()
     //- Calculate new velocities via stochastic collisions
     timer = mesh_.time().elapsedCpuTime();
     collisions();
-    Info<< "collisions" << tab << mesh_.time().elapsedCpuTime() - timer
-        << " s" << endl;
+    Info<< "collisions" << tab << mesh_.time().elapsedCpuTime() - timer << " s" << endl;
     
     //- Reactions may have changed cell occupancy, update if any reaction
-    if(reactions_.nReactions() != 0)
+    if (reactions_.nReactions() != 0)
     {
         buildCellOccupancy();
     }
@@ -1376,8 +873,7 @@ void Foam::dsmcCloud::evolve()
     
     timer = mesh_.time().elapsedCpuTime();   
     fields_.writeFields();
-    Info<< "fields W" << tab << mesh_.time().elapsedCpuTime() - timer
-        << " s" << endl;
+    Info<< "fields W" << tab << mesh_.time().elapsedCpuTime() - timer << " s" << endl;
 
     controllers_.calculateProps();
     controllers_.outputResults();
@@ -1389,14 +885,7 @@ void Foam::dsmcCloud::evolve()
 
     trackingInfo_.clean();
     boundaryMeas_.clean();
-    cellMeas_.clean(); 
-    
-    //- Run-time editable entries
-    measureMediumProperties_ = particleProperties_
-        .lookupOrDefault<Switch>("measureMediumProperties", false);
-        
-    measureInstantaneousMSD_ = particleProperties_
-        .lookupOrDefault<Switch>("measureInstantaneousMSD", false);    
+    cellMeas_.clean();   
 }
 
 Foam::label Foam::dsmcCloud::nTerminalOutputs()
@@ -1436,9 +925,9 @@ void Foam::dsmcCloud::info()
     if (nDsmcParticles > VSMALL)
     {
        Info << "    Number of stuck particles       = "
-            << stuckMolecules/nParticle_ << nl
+            << stuckMolecules/nParticle() << nl
             << "    Number of free particles        = "
-            << nMol/nParticle_ << nl
+            << nMol/nParticle() << nl
             << "    Average linear kinetic energy   = "
             << linearKineticEnergy/nMol << nl
             << "    Average rotational energy       = "
@@ -1452,79 +941,7 @@ void Foam::dsmcCloud::info()
                 + vibrationalEnergy + electronicEnergy)
             << endl;
             
-            if (tracerPatchNamesMap_.size() != 0)
-            {
-                const scalar nDel = 
-                    dsmcParcel::TrackedParcel::nDELETED + SMALL;
-                const scalar nLooping = nLooping_ + SMALL;
-                
-                scalar weightingFactor = 0.0;
-                
-                if(dsmcParcel::TrackedParcel::nDELETED > 0)
-                {
-                    weightingFactor = nLooping_/nDel;
-                }
-                
-                const scalar mediumSpatialExtension = 1.0;
-                
-                mediumTortuosity_ = mediumTotalDistanceTravelled_
-                    /(nDel*mediumSpatialExtension);
-                
-                Info << "    Tracked parcels recorded        = " 
-                     << dsmcParcel::TrackedParcel::nDELETED << nl
-                     << "    Mean particle displacement      = " 
-                     << mediumTotalDistanceTravelled_/nDel << nl
-                     << "    Medium tortuosity               = " 
-                     << mediumTortuosity_ << nl
-                     << "    Recorded flow transit time      = "
-                     << mediumTransitTime_/nDel << nl
-                     << "    Looping parcels recorded        = " 
-                     << nLooping_ << nl
-                     << "    Flow time penalty               = "
-                     << timeLooping_/nLooping << nl 
-                     << "    Corrected flow transit time     = "
-                     << mediumTransitTime_/nDel 
-                        + weightingFactor*timeLooping_/nLooping
-                     << endl;
-             }
-             
-             if (measureInstantaneousMSD_)
-             {
-                  vector iMSDvector = vector::zero;
-                  label cmpt = 0;
-                  
-                  forAllIter(dsmcCloud, *this, iter)
-                  {
-                      dsmcParcel& p = iter();
-                      
-                      if (p.isTracked())
-                      {
-                          if (p.tracked().inPatchId() == -1)
-                          {
-                              p.tracked().updateDistanceTravelled(p.position());
-                              
-                              p.tracked().updateMeanSquaredDisplacement();
-                              
-                              iMSDvector += 
-                                  p.tracked().meanSquaredDisplacementVector();
-                              
-                              cmpt++;
-                          }
-                      }
-                  }
-                  
-                  scalar iMSD = iMSDvector[0] + iMSDvector[1] + iMSDvector[2];
-                    
-                  Info<< "    Instantaneous msd               = " 
-                      << iMSD/(cmpt + SMALL) << " (" << cmpt << ")" << nl
-                      << "    IMSDx                           = " 
-                      << iMSDvector[0]/(cmpt + SMALL) << nl
-                      << "    IMSDy                           = " 
-                      << iMSDvector[1]/(cmpt + SMALL) << nl
-                      << "    IMSDz                           = " 
-                      << iMSDvector[2]/(cmpt + SMALL)
-                      << endl;
-             }
+        porousMeas().writePorousMeasurementsInfo();
     }
 }
 
@@ -1547,6 +964,8 @@ void Foam::dsmcCloud::autoMap(const mapPolyMesh& mapper)
 
     //Cloud<dsmcParcel>::autoMap(td, mapper, true);
     Cloud<dsmcParcel>::autoMap(td, mapper);
+    
+    coordSystem().dtModel().update();
 
     buildCellOccupancyFromScratch();
     buildCollisionSelectionRemainderFromScratch();
@@ -1639,7 +1058,7 @@ void Foam::dsmcCloud::generalisedChapmanEnskog
     
     scalar epsVibAv = 0.0;
     
-    if(vibDOF > 0 && vibrationalTemperature > SMALL)
+    if (vibDOF > 0 && vibrationalTemperature > SMALL)
     {
         forAll(vibLevel, i)
         {
@@ -1674,7 +1093,7 @@ void Foam::dsmcCloud::generalisedChapmanEnskog
 
         epsRot = ERot/(k*translationalTemperature);
         
-        if(vibDOF > 0 && vibrationalTemperature > SMALL)
+        if (vibDOF > 0 && vibrationalTemperature > SMALL)
         {
             forAll(vibLevel, i)
             {
@@ -1801,7 +1220,7 @@ Foam::label Foam::dsmcCloud::equipartitionElectronicLevel
 //         return EEle;
         return 0;
     }
-    if(temperature < VSMALL)
+    if (temperature < VSMALL)
     {
         return jDash;
     }
@@ -1856,7 +1275,7 @@ Foam::scalar Foam::dsmcCloud::postCollisionRotationalEnergy
 {
     scalar energyRatio = 0.0;
     
-    if(rotationalDof == 2.0)
+    if (rotationalDof == 2.0)
     {
         energyRatio = 1.0 - pow(rndGen_.scalar01(),(1.0/ChiB));
     }
@@ -1929,7 +1348,7 @@ Foam::label Foam::dsmcCloud::postCollisionVibrationalEnergyLevel
 {   
     label iDash = vibLevel;
     
-    if(postReaction)
+    if (postReaction)
     {
         // post-collision quantum number
 //         label iDash = 0; 
@@ -1978,7 +1397,7 @@ Foam::label Foam::dsmcCloud::postCollisionVibrationalEnergyLevel
             inverseVibrationalCollisionNumber = 1.0/fixedZv;
         }
         
-        if(inverseVibrationalCollisionNumber > rndGen_.scalar01())
+        if (inverseVibrationalCollisionNumber > rndGen_.scalar01())
         {
             // post-collision quantum number
             scalar func = 0.0;
@@ -2012,7 +1431,7 @@ Foam::label Foam::dsmcCloud::postCollisionElectronicEnergyLevel
     label nPossStates = 0;
     label ELevel = -1;
         
-    if(jMax == 1)
+    if (jMax == 1)
     {
         nPossStates = gList[0];
     }
@@ -2020,7 +1439,7 @@ Foam::label Foam::dsmcCloud::postCollisionElectronicEnergyLevel
     {
         forAll(EElist, n)
         {
-            if(Ec > EElist[n])
+            if (Ec > EElist[n])
             {
                 nPossStates += gList[n];
             }
@@ -2039,17 +1458,17 @@ Foam::label Foam::dsmcCloud::postCollisionElectronicEnergyLevel
         {
             nAvailableStates += gList[n];
             
-            if(nState <= nAvailableStates && nLevel < 0)
+            if (nState <= nAvailableStates && nLevel < 0)
             {
                 nLevel = n;
             }
         }
 
-        if(Ec > EElist[nLevel])
+        if (Ec > EElist[nLevel])
         {
             scalar prob = pow(1.0 - (EElist[nLevel]/Ec), 1.5-omega);
             
-            if(prob > rndGen_.scalar01())
+            if (prob > rndGen_.scalar01())
             {
                 II = 1;
                 ELevel = nLevel;
@@ -2149,178 +1568,6 @@ void Foam::dsmcCloud::reBuildCellOccupancy()
 }
 
 
-void Foam::dsmcCloud::axisymmetricWeighting()
-{
-    forAll(cellOccupancy_, c)
-    {
-        const DynamicList<dsmcParcel*>& molsInCell = cellOccupancy_[c];
-
-        forAll(molsInCell, mIC)
-        {
-            dsmcParcel* p = molsInCell[mIC];
-            
-            const scalar oldRadialWeight = p->RWF();
-                        
-            const scalar newRadialWeight = RWF(c); // getRWF_cell(c);
-
-            p->RWF() = newRadialWeight;
-            
-            if(oldRadialWeight > newRadialWeight) 
-            {
-                //- particle might be cloned
-                scalar prob = (oldRadialWeight/newRadialWeight) - 1.0;
-                
-                while(prob > 1.0)
-                {
-                    //- add a particle and reduce prob by 1.0
-                    vector U = p->U();
-                    
-                    //U.z() *= -1.0;
-                    U.component(angularCoordinate_) *= -1.0;
-                    
-                    addNewParcel
-                    (
-                        p->position(),
-                        U,
-                        p->RWF(),
-                        p->ERot(),
-                        p->ELevel(),
-                        p->cell(),
-                        p->tetFace(),
-                        p->tetPt(),
-                        p->typeId(),
-                        p->newParcel(),
-                        p->classification(),
-                        p->vibLevel()
-                    );
-                    
-                    prob -= 1.0;
-                }
-                
-                if(prob > rndGen_.scalar01())
-                {
-                    vector U = p->U();
-                    
-                    //U.z() *= -1.0;
-                    U.component(angularCoordinate_) *= -1.0;
-
-                    addNewParcel
-                    (
-                        p->position(),
-                        U,
-                        p->RWF(),
-                        p->ERot(),
-                        p->ELevel(),
-                        p->cell(),
-                        p->tetFace(),
-                        p->tetPt(),
-                        p->typeId(),
-                        p->newParcel(),
-                        p->classification(),
-                        p->vibLevel()
-                    );
-                }
-            }
-            else if(newRadialWeight > oldRadialWeight)
-            {           
-                //- particle might be deleted
-                if((oldRadialWeight/newRadialWeight) < rndGen_.scalar01())
-                {
-                    deleteParticle(*p);
-                } 
-            } 
-        }
-    }
-}
-
-
-void Foam::dsmcCloud::updateRWF()
-{
-    forAll(RWF_, celli)
-    {
-        RWF_[celli] = getRWF_cell(celli);
-    }
-    
-    forAll(RWF_.boundaryField(), patchi)
-    {
-        fvPatchScalarField& pRWF = RWF_.boundaryFieldRef()[patchi];
-        
-        forAll(pRWF, facei)
-        {
-            pRWF[facei] = getRWF_face(patchi, facei);
-        }
-    }
-}
-
-
-Foam::scalar Foam::dsmcCloud::getRWF_face
-(
-    const label patchI,
-    const label faceI
-) const
-{
-    scalar RWF = 1.0;
-    
-    if(axisymmetric_)
-    {
-        const point& fC = mesh_.boundaryMesh()[patchI].faceCentres()[faceI];
-        const scalar radius = mag(fC.component(polarAxis_));
-        
-        RWF += (maxRWF() - 1.0)*radius/radialExtent();
-    }
-
-    return RWF;    
-}
-
-
-Foam::scalar Foam::dsmcCloud::getRWF_cell
-(
-    const label cellI, 
-    const bool mixedRWM
-) const
-{
-    scalar RWF = 1.0;
-    
-    if(axisymmetric_)
-    {
-        if(rWMethod_ == "particle" or (mixedRWM and rWMethod_ == "mixed"))
-        {
-            const DynamicList<dsmcParcel*>& cellParcels(cellOccupancy_[cellI]);
-            
-            RWF = 0.0;
-            label nMols = 0;
-            
-            forAll(cellParcels, i)
-            {
-                const dsmcParcel& p = *cellParcels[i];
-                
-                const scalar radius = 
-                    sqrt
-                    (
-                        sqr(p.position().component(polarAxis_))
-                      + sqr(p.position().component(angularCoordinate_))
-                    );
-
-                RWF += 1.0 + (maxRWF() - 1.0)*radius/radialExtent();
-                
-                nMols++;
-            }
-            
-            RWF /= max(nMols, 1);
-        }
-        else
-        {
-            const point& cC = mesh_.cellCentres()[cellI];
-            const scalar radius = mag(cC.component(polarAxis_));
-        
-            RWF += (maxRWF() - 1.0)*radius/radialExtent();
-        }
-    }
-    
-    return RWF;    
-}
-
-
 void Foam::dsmcCloud::insertParcelInCellOccupancy(dsmcParcel* p)
 {
     cellOccupancy_[p->cell()].append(p);
@@ -2338,7 +1585,7 @@ void Foam::dsmcCloud::removeParcelFromCellOccupancy
 
     forAll(cellOccupancy_[cell], c)
     {
-        if(c != cellMolId)
+        if (c != cellMolId)
         {
             molsInCell.append(cellOccupancy_[cell][c]);
         }
@@ -2373,7 +1620,7 @@ void Foam::dsmcCloud::removeParcelFromCellOccupancy
         word regionName(zonesToReset[zoneToResetI]);
         label zoneId = cellZones.findZoneID(regionName);
 
-        if(zoneId == -1)
+        if (zoneId == -1)
         {
             FatalErrorIn("resetHybrid")
                 << "Cannot find region: " << regionName << nl << "in: "
@@ -2508,7 +1755,7 @@ void Foam::dsmcCloud::resetHybrid2
         word regionName(zonesToReset[zoneToResetI]);
         label zoneId = cellZones.findZoneID(regionName);
 
-        if(zoneId == -1)
+        if (zoneId == -1)
         {
             FatalErrorIn("resetHybrid")
                 << "Cannot find region: " << regionName << nl << "in: "
@@ -2639,7 +1886,7 @@ void Foam::dsmcCloud::resetHybridMax
         word regionName(zonesToReset[zoneToReset]);
         label zoneId = cellZones.findZoneID(regionName);
 
-        if(zoneId == -1)
+        if (zoneId == -1)
         {
             FatalErrorIn("resetHybridChapEnsk")
                 << "Cannot find region: " << regionName << nl << "in: "
@@ -2770,7 +2017,7 @@ void Foam::dsmcCloud::resetHybridTra
         word regionName(zonesToReset[zoneToReset]);
         label zoneId = cellZones.findZoneID(regionName);
 
-        if(zoneId == -1)
+        if (zoneId == -1)
         {
             FatalErrorIn("resetHybridChapEnsk")
                 << "Cannot find region: " << regionName << nl << "in: "
@@ -2912,7 +2159,7 @@ void Foam::dsmcCloud::resetHybridTraRotVib
         word regionName(zonesToReset[zoneToResetI]);
         label zoneId = cellZones.findZoneID(regionName);
 
-        if(zoneId == -1)
+        if (zoneId == -1)
         {
             FatalErrorIn("resetHybrid")
                 << "Cannot find region: " << regionName << nl << "in: "
@@ -3011,7 +2258,7 @@ void Foam::dsmcCloud::resetHybridTraRotVib
             
                             label classification = 0;
                             
-                            const scalar& RWF = RWF_[cellI]; //getRWF_cell(cellI);
+                            const scalar& RWF = coordSystem().RWF(cellI);
 
                             addNewParcel
                             (
@@ -3037,14 +2284,15 @@ void Foam::dsmcCloud::resetHybridTraRotVib
         forAll(typeIdList_, i)
         {
             scalar mass = this->constProps(i).mass();
-            massToIntroduce[i] *= mass * nParticle_;
-            massIntroduced[i] *= mass * nParticle_;
+            massToIntroduce[i] *= mass * nParticle();
+            massIntroduced[i] *= mass * nParticle();
             Info << "    For specie " << i << ", mTI: "
                 << massToIntroduce[i] << "; mI: " << massIntroduced[i]
                 << nl << "        (diff of " << 100.0 * (massIntroduced[i]
                 / (massToIntroduce[i] + VSMALL) - 1.0) << "%)" << endl;
         }
     }
+    
     buildCellOccupancy();
 }
 
@@ -3073,7 +2321,7 @@ void Foam::dsmcCloud::resetHybridTraRotVib
         word regionName(zonesToReset[zoneToResetI]);
         label zoneId = cellZones.findZoneID(regionName);
 
-        if(zoneId == -1)
+        if (zoneId == -1)
         {
             FatalErrorIn("resetHybrid")
                 << "Cannot find region: " << regionName << nl << "in: "
@@ -3219,16 +2467,18 @@ void Foam::dsmcCloud::shockReset()
         << nl << "updating:" << (mag(deltaParticles) >= maxDeltaParticles)
         << endl;
     
-    scalar deltaX = deltaParticles * nParticle_ * this->constProps(0).mass()
+    scalar deltaXTonParticles = deltaParticles * this->constProps(0).mass()
         / areaTube / (rhoRight - rhoLeft);
-    Info << "deltaX: " << deltaX << endl;
+    Info << "deltaX/nEqParticles: " << deltaXTonParticles << endl;
 
-    if(mag(deltaParticles) >= maxDeltaParticles)
+    if (mag(deltaParticles) >= maxDeltaParticles)
     {
         forAll(mesh_.cells(), cellI)
         {
             const List<dsmcParcel*>& parcelsInCell
                 = cellOccupancy_[cellI];
+                
+            scalar deltaX = deltaXTonParticles*nParticles(cellI); // NEW VINCENT
 
             forAll(parcelsInCell, pIC)
             {
@@ -3264,9 +2514,9 @@ void Foam::dsmcCloud::shockReset()
             }
             else
             {
-                p.position().x() += deltaX;
+                p.position().x() += deltaXTonParticles*nParticles(p.cell()); // NEW VINCENT
                 
-                if((p.position().x() > xRight) || (p.position().x() < xLeft))
+                if ((p.position().x() > xRight) || (p.position().x() < xLeft))
                 {
                     deleteParticle(p);
                 }
@@ -3279,139 +2529,9 @@ void Foam::dsmcCloud::shockReset()
 // END NEW DANIEL *************************************************************
 
 
-void Foam::dsmcCloud::updateMediumPropertiesMeasurement
-(
-    dsmcParcel& p,
-    const label& delPatchId
-)
-{
-    if(measureMediumProperties_)
-    {
-        if(p.isTracked())
-        {
-            if (p.tracked().inPatchId() != -1)
-            {
-                p.tracked().updateTotalDistanceTravelled(p.position());
-                
-                const word patchesKey = std::to_string(p.tracked().inPatchId()) 
-                    + std::to_string(delPatchId);
-                
-                if(tracerPatchNamesMap_.found(patchesKey))
-                {
-                    //- The deletion patch is in the list of outflow patches of the
-                    //  tracer inflow patch
-                    dsmcParcel::TrackedParcel::nDELETED++;
-                    
-                    mediumTotalDistanceTravelled_ += 
-                        p.tracked().distanceTravelled();
-                    
-                    mediumTransitTime_ += mesh_.time().value()
-                        - p.tracked().initialTime();
-                }
-                else if(patchesKey[0] == patchesKey[1])
-                {
-                    //- The deletion patch is NOT in the list of outflow patches of
-                    //  the tracer inflow patch. Add a time penalty
-                    nLooping_++;
-                    
-                    timeLooping_ += mesh_.time().value() 
-                        - p.tracked().initialTime();
-                }
-            }
-        }
-    }
-}
-
-
-void Foam::dsmcCloud::updateMediumPropertiesMeasurement_cyclic
-(
-    dsmcParcel& p,
-    const label& neiPatchId,
-    const label& orgPatchId,
-    const vector& orgPosition
-)
-{
-    /*if(measureMediumProperties_)
-    {
-        if(p.isTracked())
-        {
-            // orgPatchId is the id of the patch on which the particle strikes, i.e., the 'deletion' patch
-            // neiPatchId is the id of the neighbouring patch, i.e., the patch of reintroduction
-            
-            // TODO update mediumTotalDistanceTravelled_
-            
-            if(orgPatchId != p.tracked().inPatchId())
-            {
-                //- The cyclic patch is different from the patch of insertion
-                //Info << "inP: " << p.tracked().inPatchId() << tab << "orgP: " << orgPatchId << tab << "neiP: " << neiPatchId << endl;
-                dsmcParcel::TrackedParcel::nDELETED++;
-                
-                mediumTotalDistanceTravelled_ += p.tracked().distanceTravelled();
-                    
-                mediumTransitTime_ += mesh_.time().value() - p.tracked().initialTime();
-                
-                if(trackingProbability_ > rndGen_.scalar01())
-                {
-                    //- Since the DSMC parcel is not physically deleted,
-                    //  the TrackedParcel is reset.
-                    p.tracked().setInitialParcelInfo
-                    (
-                        neiPatchId,
-                        mesh_.time().value(),
-                        p.position()
-                    );
-                }
-                else
-                {
-                    //- Otherwise, the tracked data is deleted
-                    p.deleteTracked();
-                }
-            }
-            else
-            {
-                //- The patch of deletion is identical to the patch of insertion
-                //  1) Check if this cyclic patch is present in the list of inflow patches
-                label patchNameCounter = 0;
-                do
-                {
-                    if(orgPatchId == mesh_.boundaryMesh().findPatchID(trackFromPatchNames_[patchNameCounter]))
-                    {
-                        // 1.1) If so, add a time penalty
-                        nLooping_++;
-                        timeLooping_ += mesh_.time().value() - p.tracked().initialTime();
-                        break;
-                    }
-                    
-                    patchNameCounter++;
-                    
-                } while(patchNameCounter < trackFromPatchNames_.size());
-                
-                // 2) Delete the tracked data
-                p.deleteTracked();
-            }
-        }
-        else
-        {
-            //- Every particle crossing a cyclic patch has a chance to be 
-            //  tracked since there is no inlet for that purpose.
-            if(trackingProbability_ > rndGen_.scalar01())
-            {   
-                p.setTracked
-                (
-                    true, 
-                    neiPatchId,
-                    mesh_.time().value(),
-                    p.position()
-                );
-            }
-        }
-    }*/
-}
-
-
 bool Foam::dsmcCloud::read()
 {
-    if(regIOobject::read())
+    if (regIOobject::read())
     {
         return true;
     }

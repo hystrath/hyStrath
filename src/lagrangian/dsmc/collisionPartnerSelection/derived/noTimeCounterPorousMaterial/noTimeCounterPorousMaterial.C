@@ -90,8 +90,6 @@ void noTimeCounterPorousMaterial::collide()
     // Temporary storage for subCells
     List<DynamicList<label> > subCells(8);
 
-    scalar deltaT = cloud_.mesh().time().deltaTValue();
-
     label collisionCandidates = 0;
 
     label collisions = 0;
@@ -102,6 +100,8 @@ void noTimeCounterPorousMaterial::collide()
 
     forAll(cellOccupancy, cellI)
     {
+        const scalar deltaT = cloud_.deltaTValue(cellI);
+        
         const DynamicList<dsmcParcel*>& cellParcels(cellOccupancy[cellI]);
 
         label nC(cellParcels.size());
@@ -143,7 +143,7 @@ void noTimeCounterPorousMaterial::collide()
 
             scalar selectedPairs =
                 cloud_.collisionSelectionRemainder()[cellI]
-              + 0.5*nC*(nC - 1)*cloud_.nParticle()*sigmaTcRMax*deltaT
+              + 0.5*nC*(nC - 1)*cloud_.nParticles(cellI, true)*sigmaTcRMax*deltaT
                /mesh.cellVolumes()[cellI];
 
             label nCandidates(selectedPairs);

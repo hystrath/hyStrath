@@ -100,10 +100,8 @@ void dsmcChapmanEnskogFreeStreamInflowPatch::calculateProperties()
 void dsmcChapmanEnskogFreeStreamInflowPatch::controlParcelsBeforeMove()
 {
     Random& rndGen = cloud_.rndGen();
-    const scalar deltaT = mesh_.time().deltaTValue();
 
-    scalar sqrtPi = sqrt(pi);
-
+    const scalar sqrtPi = sqrt(pi);
 
     // compute parcels to insert
     forAll(accumulatedParcelsToInsert_, i)
@@ -116,6 +114,8 @@ void dsmcChapmanEnskogFreeStreamInflowPatch::controlParcelsBeforeMove()
             const label& faceI = faces_[f];
             const vector& sF = mesh_.faceAreas()[faceI];
             const scalar fA = mag(sF);
+            
+            const scalar deltaT = cloud_.deltaTValue(mesh_.boundaryMesh()[patchId_].faceCells()[faceI]);
             
             scalar mostProbableSpeed
             (
@@ -133,13 +133,12 @@ void dsmcChapmanEnskogFreeStreamInflowPatch::controlParcelsBeforeMove()
 
             scalar sCosTheta = (velocity_ & -sF/fA )/mostProbableSpeed;
 
-            const scalar& RWF = cloud_.pRWF(patchId_, f); //cloud_.getRWF_face(faceI);
+            //const scalar& RWF = cloud_.coordSystem().pRWF();
             // From Bird eqn 4.22
-            
             accumulatedParcelsToInsert_[i][f] += fA*numberDensities_[i]
                 *deltaT*mostProbableSpeed
                 *(exp(-sqr(sCosTheta)) + sqrtPi*sCosTheta*(1 + erf(sCosTheta)))
-                /(2.0*sqrtPi*cloud_.nParticle()*RWF);
+                /(2.0*sqrtPi*cloud_.nParticles(patchId_, f));
         }
     }
 
@@ -397,7 +396,7 @@ void dsmcChapmanEnskogFreeStreamInflowPatch::controlParcelsBeforeMove()
                 
                 label newParcel = patchId();
                 
-                const scalar& RWF = cloud_.RWF(cellI); //cloud_.getRWF_cell(cellI);
+                const scalar& RWF = cloud_.coordSystem().RWF(cellI);
               
                 cloud_.addNewParcel
                 (

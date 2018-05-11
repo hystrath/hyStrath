@@ -182,11 +182,7 @@ void temperatureZoneController::calculateProperties()
                 
                 if(findIndex(typeIds_, p->typeId()) != -1)
                 {
-                    scalar nParticle = cloud_.nParticle();
-                    
-                    const scalar& RWF = cloud_.getRWF_cell(cellI);
-                    
-                    nParticle *= RWF;
+                    scalar nParticle = cloud_.nParticles(cellI);
                     
                     const scalar mass = cloud_.constProps(p->typeId()).mass()*nParticle;
                     
@@ -269,11 +265,7 @@ void temperatureZoneController::calculateProperties()
                 
                 if(findIndex(typeIds_, p->typeId()) != -1)
                 {
-                    scalar nParticle = cloud_.nParticle();
-                    
-                    const scalar& RWF = cloud_.getRWF_cell(cell);
-                    
-                    nParticle *= RWF;
+                    const scalar nParticle = cloud_.nParticles(cell);
                     
                     const scalar mass = cloud_.constProps(p->typeId()).mass()*nParticle;
                     

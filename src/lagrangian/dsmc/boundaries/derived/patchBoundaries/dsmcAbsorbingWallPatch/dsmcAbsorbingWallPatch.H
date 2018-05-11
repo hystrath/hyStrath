@@ -91,6 +91,9 @@ protected:
     
         virtual void setProperties();
         
+        //- Read the number of absorbed particles on the patch
+        void readPatchField();
+        
         //- Check if absorption can be still operated on this patch/face
         bool isNotSaturated(const label patchi, const label facei);
         

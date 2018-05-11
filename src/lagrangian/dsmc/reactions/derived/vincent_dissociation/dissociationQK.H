@@ -23,133 +23,125 @@ License
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 Class
-    temperatureBinsController
+    dissociationQK
 
 Description
 
 
 SourceFiles
-    temperatureBinsController.C
+    dissociationQK.C
 
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef temperatureBinsController_H
-#define temperatureBinsController_H
+#ifndef dissociationQK_H
+#define dissociationQK_H
 
-#include "dsmcStateController.H"
+#include "dsmcReaction.H"
 #include "vector.H"
 #include "fvMesh.H"
 #include "volFields.H"
 #include "dsmcCloud.H"
+
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                           Class temperatureBinsController Declaration
+                      Class dissociationQK Declaration
 \*---------------------------------------------------------------------------*/
 
-class temperatureBinsController
+class dissociationQK
 :
-   public dsmcStateController
+   public virtual dsmcReaction
 {
 
-private:
-    // Private data
+protected:
 
-        //- subDictionary containing the properties
+    // Protected data
+
+        //- Sub-dictionary containing the properties
         dictionary propsDict_;
+
+        List<label> reactantIds_;
+
+        List<label> productIdsDissociation_;
         
-        dictionary timeDictVel_;
-        timeDataMeas timeVel_;
+        word reactionName_;
+        
+        label nTotDissociationReactions_;
+        label nDissociationReactionsPerTimeStep_;
+       
+        scalar heatOfReactionDissociationJoules_;
 
-        //- time constant
-        scalar tauT_;
+        bool relax_;
 
-        // component control
-
-        bool componentControl_;
-        bool X_;
-        bool Y_;
-        bool Z_;
-
-
-        vector startPoint_;
-        vector endPoint_;
-
-        vector unitVector_;
-        label nBins_;
-        scalar binWidth_;
-
-        labelList typeIds_;
+        // remove if not used for heat bath
+        bool allowSplitting_;
+        bool writeRatesToTerminal_;
+        scalar volume_;
+        List<scalar> numberDensities_;
 
 
-        scalarField magRadii_;
+    // Protected Member Functions
 
-        //- measurements
-        scalarField massV_;
-        vectorField momV_;
-        vectorField UMean_;
-		scalarField mcc_;
-        scalarField m_;
-        scalarField nParcels_;
+        void setProperties();
+        
+        void dissociateParticleByPartner(dsmcParcel& p, dsmcParcel& q);
 
-        scalarField measuredTranslationalTemperature_;
-
-		//- velocity rescaling term
-		scalarField chi_;
-
-
-    // Private Member Functions
-
-        void readProperties();
-
-        void setRadii();
-
-		void setProperties();
 
 public:
 
     //- Runtime type information
-    TypeName("temperatureBinsController");
+    TypeName("dissociationQK");
 
     // Constructors
 
         //- Construct from components
-        temperatureBinsController
+        dissociationQK
         (
             Time& t,
             dsmcCloud& cloud,
             const dictionary& dict
         );
     
-        // Destructor
-        ~temperatureBinsController();
+    
+    // Destructor
+    
+        ~dissociationQK();
+    
     
     // Member Functions
-    
+
+        //- initial configuration - read in properties from chemReactDict
         void initialConfiguration();
 
-        void controlParcelsBeforeMove();
-        void controlParcelsBeforeCollisions();
-        void controlParcelsAfterCollisions();
-    
-        //- calculate any required properties
-        void calculateProperties();
-
-        //- output data
-        void output
+        //- apply a reaction between parcel p and q
+        void reaction
         (
-	        const fileName& fixedPathName, 
-	        const fileName& timePath
+            dsmcParcel& p,
+            dsmcParcel& q,
+            const DynamicList<label>& candidateList,
+            const List<DynamicList<label> >& candidateSubList,
+            const label& candidateP,
+            const List<label>& whichSubCell
         );
-    
-        //- update properties from a modified dictionary
-        void updateProperties(const dictionary&);
 
-        // Access
+        void reaction(dsmcParcel& p, dsmcParcel& q);
+
+        //- Return bool if molecules belong to this reaction model
+        virtual bool tryReactMolecules(const label &typeIdP, const label& typeIdQ);
+
+      // Access
+
+        // return bool for relax = true (run normal collision model)
+        // relax = false (apply reaction to molecules)
+        const bool& relax() const;
+
+        void outputResults(const label& counterIndex);
+
 };
 
 

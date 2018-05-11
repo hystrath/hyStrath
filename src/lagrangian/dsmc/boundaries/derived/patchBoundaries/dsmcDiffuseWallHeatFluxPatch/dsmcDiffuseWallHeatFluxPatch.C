@@ -102,11 +102,11 @@ void dsmcDiffuseWallHeatFluxPatch::controlParticle(dsmcParcel& p, dsmcParcel::tr
 
     const polyPatch& patch = mesh_.boundaryMesh()[wppIndex];
 
-    label wppLocalFace = patch.whichFace(p.face());
+    const label wppLocalFace = patch.whichFace(p.face());
 
     const dsmcParcel::constantProperties& constProps(cloud_.constProps(p.typeId()));
 
-    const scalar deltaT = mesh_.time().deltaTValue();
+    const scalar deltaT = cloud_.deltaTValue(p.cell());
 
     scalar m = constProps.mass();
 
@@ -193,7 +193,8 @@ void dsmcDiffuseWallHeatFluxPatch::controlParticle(dsmcParcel& p, dsmcParcel::tr
         postIE_ += p.vibLevel()[i]*constProps.thetaV()[i]*physicoChemical::k.value();
     }
     
-    deltaQ_[wppLocalFace] += cloud_.nParticle()*(preIE_ - postIE_)/(deltaT*faceAreas_[wppLocalFace]);
+    deltaQ_[wppLocalFace] += cloud_.nParticles(patchId(), wppLocalFace)
+        *(preIE_ - postIE_)/(deltaT*faceAreas_[wppLocalFace]);
     
     mUnUp_[wppLocalFace] += ((cloud_.constProps(typeId).mass()/U_dot_nw)*Ut.x());
     
@@ -209,7 +210,7 @@ void dsmcDiffuseWallHeatFluxPatch::output
     const fileName& timePath
 )
 {
-    const scalar deltaT = mesh_.time().deltaTValue();
+    const scalar deltaT = mesh_.time().deltaTValue(); //TODO cloud_.deltaTValue(p.cell());
     scalar currentTime = mesh_.time().timeOutputValue();
     
     resetCounter_++;

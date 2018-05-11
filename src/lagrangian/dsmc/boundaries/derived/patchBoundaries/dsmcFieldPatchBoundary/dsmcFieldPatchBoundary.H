@@ -95,12 +95,12 @@ public:
 
         //- Construct from components
         dsmcFieldPatchBoundary
-	(
+        (
             Time& t,
             const polyMesh& mesh,
             dsmcCloud& cloud,
             const dictionary& dict
-	);
+	      );
 
     // Destructor
 

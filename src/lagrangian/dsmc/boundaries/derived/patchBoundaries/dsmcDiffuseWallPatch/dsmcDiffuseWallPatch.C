@@ -136,16 +136,7 @@ void dsmcDiffuseWallPatch::performDiffuseReflection
         U += velocity_;
     }
     
-    if (cloud_.measureMediumProperties())
-    {
-        if (p.isTracked())
-        {
-            if (p.tracked().inPatchId() != -1)
-            {
-                p.tracked().updateTotalDistanceTravelled(p.position());
-            }
-        }
-    }
+    cloud_.porousMeas().diffuseInteraction(p);
 }
 
 

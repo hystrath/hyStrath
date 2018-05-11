@@ -21,12 +21,6 @@ FoamFile
 
 nEquivalentParticles            1e12;
 
-// Axisymmetric Properties
-// ~~~~~~~~~~~~~~~~~~
-
-axisymmetricSimulation      false;
-
-
 
 // Binary Collision Model
 // ~~~~~~~~~~~~~~~~~~~~~~

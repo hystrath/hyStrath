@@ -101,8 +101,38 @@ void dsmcAbsorbingWallPatch::setProperties()
     forAll(saturationLimit_, facei)
     {
         saturationLimit_[facei] = 
-            saturationLimitPerSquareMeters*facesArea[facei]/cloud_.nParticle();
+            saturationLimitPerSquareMeters*facesArea[facei]
+           /cloud_.nParticles(patchId(), facei);
     }
+}
+
+
+void dsmcAbsorbingWallPatch::readPatchField()
+{
+    tmp<volScalarField> tnAbsorbedParcels
+    (
+        new volScalarField
+        (
+            IOobject
+            (
+                "nAbsorbedParcels",
+                mesh_.time().timeName(),
+                mesh_,
+                IOobject::READ_IF_PRESENT,
+                IOobject::NO_WRITE
+            ),
+            mesh_,
+            dimensionedScalar("nAbsorbedParcels", dimless, 0.0)
+        )
+    );
+    
+    volScalarField& nAbsorbedParcels = tnAbsorbedParcels.ref();
+    
+    cloud_.boundaryFluxMeasurements().setBoundarynAbsorbedParcels
+    (
+        patchId(),
+        nAbsorbedParcels.boundaryField()[patchId()]
+    );
 }
 
 
@@ -114,9 +144,8 @@ bool dsmcAbsorbingWallPatch::isNotSaturated
 {
     if
     (
-        cloud_.boundaryFluxMeasurements()
-            .pnAbsorbedParcels(patchi)[facei]
-          < saturationLimit(facei)
+        saturationLimit(facei) - cloud_.boundaryFluxMeasurements()
+            .pnAbsorbedParcels(patchi)[facei] > 1e-6
     )
     {
         return true;
@@ -198,6 +227,8 @@ dsmcAbsorbingWallPatch::dsmcAbsorbingWallPatch
     measurePropertiesAtWall_ = true;
     
     setProperties();
+    
+    readPatchField();
 }
 
 

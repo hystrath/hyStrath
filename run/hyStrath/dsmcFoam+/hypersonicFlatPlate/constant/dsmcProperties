@@ -40,13 +40,6 @@ LarsenBorgnakkeVariableHardSphereCoeffs
 collisionPartnerSelectionModel   		noTimeCounter;  
 
 
-// Axisymmetric Properties
-// ~~~~~~~~~~~~~~~~~~~~~~
-
-axisymmetricSimulation          no;
-
-
-
 // Molecular species
 // ~~~~~~~~~~~~~~~~~
 

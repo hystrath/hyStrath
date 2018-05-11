@@ -148,10 +148,17 @@ private:
         List<scalarField> nGroundElectronicLevel_;
         List<scalarField> nFirstElectronicLevel_;
 
-        // effective degrees of freedom 
+        //- Effective degrees of freedom 
         List<scalarField> vDof_;
-        List<scalarField> mfp_; // mean free path
-        List<scalarField> mcr_; // mean collision rate
+        
+        //- Mean free path
+        List<scalarField> mfp_; 
+        
+        //- Mean collision rate
+        List<scalarField> mcr_;
+        
+        //- Measured local collision rate 
+        volScalarField cr_; 
         
 
         // boundary measurements

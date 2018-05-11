@@ -41,20 +41,20 @@ inline Foam::dsmcParcel::constantProperties::constantProperties
 :
     mass_(readScalar(dict.lookup("mass"))),
     d_(readScalar(dict.lookup("diameter"))),
-    rotationalDegreesOfFreedom_(readScalar(dict.lookup("rotationalDegreesOfFreedom"))),
-    vibrationalDegreesOfFreedom_(readScalar(dict.lookup("vibrationalModes"))),
+    rotationalDegreesOfFreedom_(dict.lookupOrDefault<scalar>("rotationalDegreesOfFreedom", 0)),
+    vibrationalDegreesOfFreedom_(dict.lookupOrDefault<scalar>("vibrationalModes", 0)),
     omega_(readScalar(dict.lookup("omega"))),
-    alpha_(readScalar(dict.lookup("alpha"))),
-    thetaV_(readList<scalar>(dict.lookup("characteristicVibrationalTemperature"))),
-    thetaD_(readList<scalar>(dict.lookup("dissociationTemperature"))),
-    Zref_(readList<scalar>(dict.lookup("Zref"))),
-    TrefZv_(readList<scalar>(dict.lookup("referenceTempForZref"))),
-    charDissQuantumLevel_(readList<label>(dict.lookup("charDissQuantumLevel"))),
-    ionisationTemperature_(readScalar(dict.lookup("ionisationTemperature"))),
-    numberOfElectronicLevels_(readLabel(dict.lookup("numberOfElectronicLevels"))),
-    charge_(readLabel(dict.lookup("charge"))),
-    electronicEnergyList_(readList<scalar>(dict.lookup("electronicEnergyList"))),
-    degeneracyList_(readList<label>(dict.lookup("degeneracyList")))
+    alpha_(dict.lookupOrDefault<scalar>("alpha", 1.0)),
+    thetaV_(dict.lookupOrDefault<scalarList>("characteristicVibrationalTemperature", scalarList())),
+    thetaD_(dict.lookupOrDefault<scalarList>("dissociationTemperature", scalarList())),
+    Zref_(dict.lookupOrDefault<scalarList>("Zref", scalarList())),
+    TrefZv_(dict.lookupOrDefault<scalarList>("referenceTempForZref", scalarList())),
+    charDissQuantumLevel_(dict.lookupOrDefault<labelList>("charDissQuantumLevel", labelList())),
+    ionisationTemperature_(dict.lookupOrDefault<scalar>("ionisationTemperature", 1e10)),
+    numberOfElectronicLevels_(dict.lookupOrDefault<label>("numberOfElectronicLevels", 1)),
+    charge_(dict.lookupOrDefault<label>("charge", 0)),
+    electronicEnergyList_(dict.lookupOrDefault<scalarList>("electronicEnergyList", scalarList(1, 0.0))),
+    degeneracyList_(dict.lookupOrDefault<labelList>("degeneracyList", labelList(1, 1.0)))
 {
     if(thetaV_.size() != vibrationalDegreesOfFreedom_)
     {
@@ -548,8 +548,8 @@ inline void Foam::dsmcParcel::setTracked
             storePositions,
             initialTime,
             initialPosition,
-            distanceTravelled/*,
-            parcelTrajectory*/
+            distanceTravelled//,
+            //parcelTrajectory
         );    
 }
 

@@ -417,7 +417,7 @@ public:
                 TrackedParcel()
                 :
                     tracked_(false),
-                    inPatchId_(-2),
+                    inPatchId_(-1),
                     storePositions_(false),
                     t0_(0.0),
                     initialPosition_(vector::zero),
@@ -425,7 +425,9 @@ public:
                     distanceTravelled_(vector::zero),
                     msd_(vector::zero)//,
                     //parcelTrajectory_()
-                {}
+                {
+                    //Info << "Construct from components" << endl;
+                }
                 
                 TrackedParcel
                 (
@@ -547,7 +549,7 @@ public:
                 TrackedParcel(Istream& is)
                 :
                     tracked_(false),
-                    inPatchId_(-2),
+                    inPatchId_(-1),
                     storePositions_(false),
                     t0_(0.0),
                     initialPosition_(vector::zero),
@@ -556,6 +558,7 @@ public:
                     msd_(vector::zero)//,
                     //parcelTrajectory_()
                 {
+                    Info << "Construct from Istream obj" << endl;
                     if (is.format() == IOstream::ASCII)
                     {
                         tracked_ = readBool(is);

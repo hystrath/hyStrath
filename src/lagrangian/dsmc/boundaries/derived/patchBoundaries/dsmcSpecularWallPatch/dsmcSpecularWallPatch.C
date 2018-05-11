@@ -43,8 +43,6 @@ addToRunTimeSelectionTable
     dictionary
 );
 
-
-
 // * * * * * * * * * * * Protected member functions  * * * * * * * * * * * * //
 
 void dsmcSpecularWallPatch::performSpecularReflection(dsmcParcel& p)
@@ -61,29 +59,7 @@ void dsmcSpecularWallPatch::performSpecularReflection(dsmcParcel& p)
         U -= 2.0*U_dot_nw*nw;
     }
     
-    if (cloud_.measureInstantaneousMSD())
-    {
-        if (p.isTracked())
-        {
-            if (p.tracked().inPatchId() == -1)
-            {
-                p.tracked().updateDistanceTravelled(p.position());
-            
-                p.tracked().performSpecularReflectionOnDistanceTravelled(nw);
-            }
-        }
-    }
-    
-    if (cloud_.measureMediumProperties())
-    {
-        if (p.isTracked())
-        {
-            if (p.tracked().inPatchId() != -1)
-            {
-                p.tracked().updateTotalDistanceTravelled(p.position());
-            }
-        }
-    }
+    cloud_.porousMeas().specularInteraction(p, nw);
 }
 
 
