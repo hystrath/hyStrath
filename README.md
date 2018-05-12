@@ -83,7 +83,7 @@ Contributors: Daniel E.R. Espinoza, Dr Craig White and Dr Thomas J. Scanlon
 Lead developer: Dr Viola Renato  
 
 #### External contributors   
-[View more](https://github.com/vincentcasseau/hyStrath/wiki/Contributions#list-of-external-contributors)  
+[View more](https://github.com/vincentcasseau/hyStrath/wiki/Contributions)  
 
 **Enquiries: hy2Foam@gmail.com**  
 **Consultancy services: [MTS-CFD](https://www.mts-cfd.com/)**  
