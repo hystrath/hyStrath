@@ -96,7 +96,7 @@ void polyFrictionForce::setRadius()
             {
                 const int proc = p;
                 {
-                    OPstream toNeighbour(Pstream::blocking, proc);
+                    OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << R;
                 }
             }
@@ -111,7 +111,7 @@ void polyFrictionForce::setRadius()
 
                 const int proc = p;
                 {
-                    IPstream fromNeighbour(Pstream::blocking, proc);
+                    IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> Rproc;
                 }
                 
@@ -370,7 +370,7 @@ void polyFrictionForce::createField()
             {
                 const int proc = p;
                 {
-                    OPstream toNeighbour(Pstream::blocking, proc);
+                    OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << fluidMols_;
                 }
             }
@@ -386,7 +386,7 @@ void polyFrictionForce::createField()
 
                 const int proc = p;
                 {
-                    IPstream fromNeighbour(Pstream::blocking, proc);
+                    IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> fluidMolsProc;
                 }
                 

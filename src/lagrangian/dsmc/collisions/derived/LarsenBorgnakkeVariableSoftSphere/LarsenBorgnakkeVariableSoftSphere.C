@@ -258,7 +258,7 @@ void Foam::LarsenBorgnakkeVariableSoftSphere::collide
     // serial application of the LB method, as per the INELRS subroutine in 
     // Bird's DSMC0R.FOR
     
-    if(inverseElectronicCollisionNumber > rndGen.scalar01())
+    if(inverseElectronicCollisionNumber > rndGen.sample01<scalar>())
     { 
 
         // collision energy of particle P = relative translational energy + 
@@ -317,7 +317,7 @@ void Foam::LarsenBorgnakkeVariableSoftSphere::collide
 
     if (rotationalDofP > 0)
     {
-        if (inverseRotationalCollisionNumber > rndGen.scalar01())
+        if (inverseRotationalCollisionNumber > rndGen.sample01<scalar>())
         {
             scalar EcP = translationalEnergy + preCollisionERotP;
             
@@ -330,7 +330,7 @@ void Foam::LarsenBorgnakkeVariableSoftSphere::collide
         }
     }
     
-    if(inverseElectronicCollisionNumber > rndGen.scalar01())
+    if(inverseElectronicCollisionNumber > rndGen.sample01<scalar>())
     {
 
         // collision energy of particle Q = relative translational energy + 
@@ -389,7 +389,7 @@ void Foam::LarsenBorgnakkeVariableSoftSphere::collide
 
     if (rotationalDofQ > 0)
     {
-        if (inverseRotationalCollisionNumber > rndGen.scalar01())
+        if (inverseRotationalCollisionNumber > rndGen.sample01<scalar>())
         {
             scalar EcQ = translationalEnergy + preCollisionERotQ;
             
@@ -411,11 +411,11 @@ void Foam::LarsenBorgnakkeVariableSoftSphere::collide
     
     cR = A;
    
-    scalar cosTheta = (2.0*pow(rndGen.scalar01(),(1.0/alphaPQ))) - 1.0;
+    scalar cosTheta = (2.0*pow(rndGen.sample01<scalar>(),(1.0/alphaPQ))) - 1.0;
 
     scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
 
-    scalar phi = twoPi*rndGen.scalar01();
+    scalar phi = twoPi*rndGen.sample01<scalar>();
     
     scalar D = sqrt(pow(cRComponents.y(),2.0) + pow(cRComponents.z(),2.0));
 

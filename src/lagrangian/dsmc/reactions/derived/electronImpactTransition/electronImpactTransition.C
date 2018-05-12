@@ -242,7 +242,7 @@ void electronImpactTransition::reaction
             jDash = cloud_.rndGen().integer(0,maxLev);
             func = gListP[jDash]*pow((EcPP - EElistP[jDash]), (1.5 - omegaPQ))/denomMax;
 
-        } while( !(func > cloud_.rndGen().scalar01()));
+        } while( !(func > cloud_.rndGen().sample01<scalar>()));
 
         if (ELevelP == 1 && jDash == 2)
         {
@@ -328,7 +328,7 @@ void electronImpactTransition::reaction
             jDash = cloud_.rndGen().integer(0,maxLev);
             func = gListQ[jDash]*pow((EcPQ - EElistQ[jDash]), (1.5 - omegaPQ))/denomMax;
 
-        } while( !(func > cloud_.rndGen().scalar01()));
+        } while( !(func > cloud_.rndGen().sample01<scalar>()));
 
         if (ELevelQ == 1 && jDash == 2)
         {

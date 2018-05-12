@@ -267,7 +267,7 @@ void densityControlZone::controlParcelsAfterCollisions()
             {
                 const int proc = p;
                 {
-                    OPstream toNeighbour(Pstream::blocking, proc);
+                    OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << parcelPositionToInsert;
                 }
             }
@@ -282,7 +282,7 @@ void densityControlZone::controlParcelsAfterCollisions()
 
                 const int proc = p;
                 {
-                    IPstream fromNeighbour(Pstream::blocking, proc);
+                    IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> parcelPositionToInsertProc;
                 }
 
@@ -325,9 +325,9 @@ void densityControlZone::controlParcelsAfterCollisions()
         
                 vector U
                 (
-                    sigma*rndGen_.GaussNormal(),
-                    sigma*rndGen_.GaussNormal(),
-                    sigma*rndGen_.GaussNormal()
+                    sigma*rndGen_.GaussNormal<scalar>(),
+                    sigma*rndGen_.GaussNormal<scalar>(),
+                    sigma*rndGen_.GaussNormal<scalar>()
                 );
                 
                 U += velocity_;

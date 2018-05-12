@@ -33,7 +33,7 @@ Type Foam::cachedRandomMD::sample01()
     Type value;
     for (direction cmpt=0; cmpt<pTraits<Type>::nComponents; cmpt++)
     {
-        value.component(cmpt) = scalar01();
+        value.component(cmpt) = sample01<scalar>();
     }
 
     return value;
@@ -47,7 +47,7 @@ Type Foam::cachedRandomMD::position(const Type& start, const Type& end)
     for (direction cmpt=0; cmpt<pTraits<Type>::nComponents; cmpt++)
     {
         value.component(cmpt) +=
-            scalar01()*(end.component(cmpt) - start.component(cmpt));
+            sample01<scalar>()*(end.component(cmpt) - start.component(cmpt));
     }
 
     return value;

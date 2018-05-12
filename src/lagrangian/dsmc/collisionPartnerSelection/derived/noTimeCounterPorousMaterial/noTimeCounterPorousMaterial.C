@@ -156,27 +156,27 @@ void noTimeCounterPorousMaterial::collide()
             
             for (label c = 0; c < nCandidates; c++)
             {
-                if(cloud_.rndGen().scalar01() > porosity_)
+                if(cloud_.rndGen().sample01<scalar>() > porosity_)
                 {
-                    label candidateP = rndGen_.integer(0, nC - 1);
+                    label candidateP = rndGen_.position<label>(0, nC - 1);
                     
                     dsmcParcel& p = *cellParcels[candidateP];
                     
                     scalar mass = cloud_.constProps(p.typeId()).mass();
                     
-//                     scalar rand1 = cloud_.rndGen().scalar01();
-//                     scalar rand2 = cloud_.rndGen().scalar01();
-//                     scalar rand3 = cloud_.rndGen().scalar01();
+//                     scalar rand1 = cloud_.rndGen().sample01<scalar>();
+//                     scalar rand2 = cloud_.rndGen().sample01<scalar>();
+//                     scalar rand3 = cloud_.rndGen().sample01<scalar>();
 //                     
-//                     if(cloud_.rndGen().scalar01() > 0.5)
+//                     if(cloud_.rndGen().sample01<scalar>() > 0.5)
 //                     {
 //                        rand1 *= -1.0; 
 //                     }
-//                     if(cloud_.rndGen().scalar01() > 0.5)
+//                     if(cloud_.rndGen().sample01<scalar>() > 0.5)
 //                     {
 //                        rand2 *= -1.0; 
 //                     }
-//                     if(cloud_.rndGen().scalar01() > 0.5)
+//                     if(cloud_.rndGen().sample01<scalar>() > 0.5)
 //                     {
 //                        rand3 *= -1.0; 
 //                     }
@@ -185,9 +185,9 @@ void noTimeCounterPorousMaterial::collide()
                     p.U() = sqrt(physicoChemical::k.value()*temperature_/mass)
                             *vector
                             (
-                                rndGen_.GaussNormal(),
-                                rndGen_.GaussNormal(),
-                                rndGen_.GaussNormal()
+                                rndGen_.GaussNormal<scalar>(),
+                                rndGen_.GaussNormal<scalar>(),
+                                rndGen_.GaussNormal<scalar>()
                             );
                             
 //                     Info << "Velocity after control = " << p->U() << endl;
@@ -204,7 +204,7 @@ void noTimeCounterPorousMaterial::collide()
                 // subCell candidate selection procedure
 
                 // Select the first collision candidate
-                label candidateP = rndGen_.integer(0, nC - 1);
+                label candidateP = rndGen_.position<label>(0, nC - 1);
 
                 // Declare the second collision candidate
                 label candidateQ = -1;
@@ -221,7 +221,7 @@ void noTimeCounterPorousMaterial::collide()
 
                     do
                     {
-                        candidateQ = subCellPs[rndGen_.integer(0, nSC - 1)];
+                        candidateQ = subCellPs[rndGen_.position<label>(0, nSC - 1)];
 
                     } while (candidateP == candidateQ);
                 }
@@ -233,7 +233,7 @@ void noTimeCounterPorousMaterial::collide()
 
                     do
                     {
-                        candidateQ = rndGen_.integer(0, nC - 1);
+                        candidateQ = rndGen_.position<label>(0, nC - 1);
 
                     } while (candidateP == candidateQ);
                 }
@@ -242,15 +242,15 @@ void noTimeCounterPorousMaterial::collide()
                 // uniform candidate selection procedure
 
                 // // Select the first collision candidate
-                // label candidateP = rndGen_.integer(0, nC-1);
+                // label candidateP = rndGen_.position<label>(0, nC-1);
 
                 // // Select a possible second collision candidate
-                // label candidateQ = rndGen_.integer(0, nC-1);
+                // label candidateQ = rndGen_.position<label>(0, nC-1);
 
                 // // If the same candidate is chosen, choose again
                 // while (candidateP == candidateQ)
                 // {
-                //     candidateQ = rndGen_.integer(0, nC-1);
+                //     candidateQ = rndGen_.position<label>(0, nC-1);
                 // }
 
                 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -274,7 +274,7 @@ void noTimeCounterPorousMaterial::collide()
                     cloud_.sigmaTcRMax()[cellI] = sigmaTcR;
                 }
 
-                if ((sigmaTcR/sigmaTcRMax) > rndGen_.scalar01())
+                if ((sigmaTcR/sigmaTcRMax) > rndGen_.sample01<scalar>())
                 {
                     // chemical reactions
 

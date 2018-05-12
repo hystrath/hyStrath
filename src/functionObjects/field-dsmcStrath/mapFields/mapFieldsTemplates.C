@@ -40,8 +40,8 @@ void Foam::functionObjects::mapFields::evaluateConstraintTypes
 
     if
     (
-        Pstream::defaultCommsType == Pstream::blocking
-     || Pstream::defaultCommsType == Pstream::nonBlocking
+        Pstream::defaultCommsType == Pstream::commsTypes::blocking
+     || Pstream::defaultCommsType == Pstream::commsTypes::nonBlocking
     )
     {
         label nReq = Pstream::nRequests();
@@ -64,7 +64,7 @@ void Foam::functionObjects::mapFields::evaluateConstraintTypes
         if
         (
             Pstream::parRun()
-         && Pstream::defaultCommsType == Pstream::nonBlocking
+         && Pstream::defaultCommsType == Pstream::commsTypes::nonBlocking
         )
         {
             Pstream::waitRequests(nReq);
@@ -84,7 +84,7 @@ void Foam::functionObjects::mapFields::evaluateConstraintTypes
             }
         }
     }
-    else if (Pstream::defaultCommsType == Pstream::scheduled)
+    else if (Pstream::defaultCommsType == Pstream::commsTypes::scheduled)
     {
         const lduSchedule& patchSchedule =
             fld.mesh().globalData().patchSchedule();
@@ -102,11 +102,11 @@ void Foam::functionObjects::mapFields::evaluateConstraintTypes
             {
                 if (patchSchedule[patchEvali].init)
                 {
-                    tgtField.initEvaluate(Pstream::scheduled);
+                    tgtField.initEvaluate(Pstream::commsTypes::scheduled);
                 }
                 else
                 {
-                    tgtField.evaluate(Pstream::scheduled);
+                    tgtField.evaluate(Pstream::commsTypes::scheduled);
                 }
             }
         }

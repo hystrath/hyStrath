@@ -530,7 +530,7 @@ void polyPropertyFields::setVolumeMeasurements()
                 {
                     const int proc = p;
                     {
-                        OPstream toNeighbour(Pstream::blocking, proc);
+                        OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << mesh_.nCells();
                     }
                 }
@@ -545,7 +545,7 @@ void polyPropertyFields::setVolumeMeasurements()
     
                     const int proc = p;
                     {
-                        IPstream fromNeighbour(Pstream::blocking, proc);
+                        IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> nCellsProc;
                     }
     
@@ -573,7 +573,7 @@ void polyPropertyFields::setVolumeMeasurements()
                 {
                     const int proc = p;
                     {
-                        OPstream toNeighbour(Pstream::blocking, proc);
+                        OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << volumes;
                     }
                 }
@@ -588,7 +588,7 @@ void polyPropertyFields::setVolumeMeasurements()
     
                     const int proc = p;
                     {
-                        IPstream fromNeighbour(Pstream::blocking, proc);
+                        IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> volumesProc;
                     }
     
@@ -706,7 +706,7 @@ void polyPropertyFields::setCoarseGrainedMeasurements()
             {
                 const int proc = p;
                 {
-                    OPstream toNeighbour(Pstream::blocking, proc);
+                    OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << mesh_.nCells();
                 }
             }
@@ -721,7 +721,7 @@ void polyPropertyFields::setCoarseGrainedMeasurements()
 
                 const int proc = p;
                 {
-                    IPstream fromNeighbour(Pstream::blocking, proc);
+                    IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> nCellsProc;
                 }
 
@@ -750,7 +750,7 @@ void polyPropertyFields::setCoarseGrainedMeasurements()
             {
                 const int proc = p;
                 {
-                    OPstream toNeighbour(Pstream::blocking, proc);
+                    OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << mass;
                 }
             }
@@ -765,7 +765,7 @@ void polyPropertyFields::setCoarseGrainedMeasurements()
 
                 const int proc = p;
                 {
-                    IPstream fromNeighbour(Pstream::blocking, proc);
+                    IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> massProc;
                 }
 

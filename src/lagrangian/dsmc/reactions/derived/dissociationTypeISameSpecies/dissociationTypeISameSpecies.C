@@ -367,7 +367,7 @@ void dissociationTypeISameSpecies::reaction
 
         //Decide if a reaction is to occur
         
-        if(totalReactionProbability > cloud_.rndGen().scalar01())
+        if(totalReactionProbability > cloud_.rndGen().sample01<scalar>())
         {
             //A chemical reaction is to occur, choose which one
             
@@ -383,7 +383,7 @@ void dissociationTypeISameSpecies::reaction
                 {
                     cumulativeProbability += normalisedProbabilities[i];
                     
-                    if(cumulativeProbability > cloud_.rndGen().scalar01())
+                    if(cumulativeProbability > cloud_.rndGen().sample01<scalar>())
                     {
                         //Current reaction is to occur
                         
@@ -486,11 +486,11 @@ void dissociationTypeISameSpecies::reaction
                 vector Ucm = (mP*UP + mQ*UQ)/(mP + mQ);
 
                 // Variable Hard Sphere collision part for collision of molecules
-                scalar cosTheta = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                scalar cosTheta = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
             
                 scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
             
-                scalar phi = twoPi*cloud_.rndGen().scalar01();
+                scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
             
                 vector postCollisionRelU =
                     relVelNonDissoMol
@@ -589,11 +589,11 @@ void dissociationTypeISameSpecies::reaction
                 scalar cRatoms = sqrt(2.0*translationalEnergy/mRatoms);
                 
                 // Variable Hard Sphere collision part for atoms
-                cosTheta = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                cosTheta = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
             
                 sinTheta = sqrt(1.0 - cosTheta*cosTheta);
             
-                phi = twoPi*cloud_.rndGen().scalar01();
+                phi = twoPi*cloud_.rndGen().sample01<scalar>();
             
                 vector postCollisionRelU2 = cRatoms
                 *vector

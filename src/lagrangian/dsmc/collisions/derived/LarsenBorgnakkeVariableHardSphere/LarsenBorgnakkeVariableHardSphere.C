@@ -260,7 +260,7 @@ void Foam::LarsenBorgnakkeVariableHardSphere::collide
 //     application of the LB method, as per the INELRS subroutine in Bird's
 //     DSMC0R.FOR
     
-    if(inverseElectronicCollisionNumber > rndGen.scalar01())
+    if(inverseElectronicCollisionNumber > rndGen.sample01<scalar>())
     { 
 //         if( jMaxP > 1) // Only neutrals and ions have more than 1 electronic energy level
 //         {
@@ -329,7 +329,7 @@ void Foam::LarsenBorgnakkeVariableHardSphere::collide
             
 //         Info << "particleProbabilityP = " << particleProbabilityP << endl;
         
-        if (inverseRotationalCollisionNumber /*particleProbabilityP*/ > rndGen.scalar01())
+        if (inverseRotationalCollisionNumber /*particleProbabilityP*/ > rndGen.sample01<scalar>())
         {
             scalar EcP = translationalEnergy + preCollisionERotP;
             
@@ -341,7 +341,7 @@ void Foam::LarsenBorgnakkeVariableHardSphere::collide
         }
     }   
     
-    if(inverseElectronicCollisionNumber > rndGen.scalar01())
+    if(inverseElectronicCollisionNumber > rndGen.sample01<scalar>())
     {
 //         if( jMaxQ > 1) // Only neutrals and ions have more than 1 electronic energy level
 //         {
@@ -410,7 +410,7 @@ void Foam::LarsenBorgnakkeVariableHardSphere::collide
             
 //         Info << "particleProbabilityQ = " << particleProbabilityQ << endl;
         
-        if (inverseRotationalCollisionNumber /*particleProbabilityQ*/ > rndGen.scalar01())
+        if (inverseRotationalCollisionNumber /*particleProbabilityQ*/ > rndGen.sample01<scalar>())
         {
             scalar EcQ = translationalEnergy + preCollisionERotQ;
             
@@ -427,11 +427,11 @@ void Foam::LarsenBorgnakkeVariableHardSphere::collide
 
     // Variable Hard Sphere collision part
 
-    scalar cosTheta = 2.0*rndGen.scalar01() - 1.0;
+    scalar cosTheta = 2.0*rndGen.sample01<scalar>() - 1.0;
 
     scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
 
-    scalar phi = 2.0*pi*rndGen.scalar01();
+    scalar phi = 2.0*pi*rndGen.sample01<scalar>();
 
     vector postCollisionRelU =
         cR

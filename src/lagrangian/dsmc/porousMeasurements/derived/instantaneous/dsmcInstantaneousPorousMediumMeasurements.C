@@ -116,7 +116,7 @@ void dsmcInstantaneousPorousMediumMeasurements::checkPorousMeasurementsInputs()
     {
         if(not iter().isTracked())
         {
-            if(trackingProbability_ > cloud_.rndGen().scalar01())
+            if(trackingProbability_ > cloud_.rndGen().sample01<scalar>())
             {
                 iter().setTracked
                 (

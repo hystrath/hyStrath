@@ -507,7 +507,7 @@ void dsmcMeshFillHybridMultispecies::setInitialConfiguration()
                 // remainder of taking the integer part of particlesRequired
                 if
                 (
-                    (particlesRequired - nParticlesToInsert) > rndGen_.scalar01()
+                    (particlesRequired - nParticlesToInsert) > rndGen_.sample01<scalar>()
                 )
                 {
                     nParticlesToInsert++;

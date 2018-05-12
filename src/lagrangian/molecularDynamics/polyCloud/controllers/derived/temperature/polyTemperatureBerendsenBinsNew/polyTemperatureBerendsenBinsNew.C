@@ -221,7 +221,7 @@ void polyTemperatureBerendsenBinsNew::initialConfiguration()
             {
                 const int proc = p;
                 {
-                    OPstream toNeighbour(Pstream::blocking, proc);
+                    OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << mass << momentum;
                 }
             }
@@ -237,7 +237,7 @@ void polyTemperatureBerendsenBinsNew::initialConfiguration()
 
                 const int proc = p;
                 {
-                    IPstream fromNeighbour(Pstream::blocking, proc);
+                    IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> massProc >> momProc;
                 }
     
@@ -399,7 +399,7 @@ void polyTemperatureBerendsenBinsNew::calculateProperties()
                 {
                     const int proc = p;
                     {
-                        OPstream toNeighbour(Pstream::blocking, proc);
+                        OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << mass << momentum;
                     }
                 }
@@ -415,7 +415,7 @@ void polyTemperatureBerendsenBinsNew::calculateProperties()
 
                     const int proc = p;
                     {
-                        IPstream fromNeighbour(Pstream::blocking, proc);
+                        IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> massProc >> momProc;
                     }
         
@@ -493,7 +493,7 @@ void polyTemperatureBerendsenBinsNew::calculateProperties()
                 {
                     const int proc = p;
                     {
-                        OPstream toNeighbour(Pstream::blocking, proc);
+                        OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << kE << angularKe << dof;
                     }
                 }
@@ -510,7 +510,7 @@ void polyTemperatureBerendsenBinsNew::calculateProperties()
 
                     const int proc = p;
                     {
-                        IPstream fromNeighbour(Pstream::blocking, proc);
+                        IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> kEProc >>angularKeProc >> dofProc;
                     }
 

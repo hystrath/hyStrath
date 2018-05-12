@@ -124,7 +124,7 @@ void simplifiedBernoulliTrials::collide()
                 candidateP = p;
             
                 k = nC-1 - p;
-                label random = rndGen_.integer(1, k);
+                label random = rndGen_.position<label>(1, k);
                 candidateQ = p + random;
                 
                 dsmcParcel& parcelP = *cellParcels[candidateP];
@@ -138,7 +138,7 @@ void simplifiedBernoulliTrials::collide()
             
                 scalar Probability = k*prob1*sigmaTcR;
 
-                if (Probability > rndGen_.scalar01())
+                if (Probability > rndGen_.sample01<scalar>())
                 {
                     // chemical reactions
 

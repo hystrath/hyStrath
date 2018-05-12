@@ -391,12 +391,12 @@ void mixedTypeIIDissociationForwardExchange::reaction
         }
 
 
-        if( (2.0*cloud_.rndGen().scalar01()) < (P_diss + P_exch))
-//         if( (cloud_.rndGen().scalar01()) < (P_diss + P_exch))
+        if( (2.0*cloud_.rndGen().sample01<scalar>()) < (P_diss + P_exch))
+//         if( (cloud_.rndGen().sample01<scalar>()) < (P_diss + P_exch))
         {
             scalar P_react = (P_exch / (P_exch + P_diss));
 
-            if(P_react > (0.5*cloud_.rndGen().scalar01()))            
+            if(P_react > (0.5*cloud_.rndGen().sample01<scalar>()))            
             {
                 // EXCHANGE REACTION //
 
@@ -464,9 +464,9 @@ void mixedTypeIIDissociationForwardExchange::reaction
                     
                     do
                     {
-                        psiV = label(((label(rel)) +1)*cloud_.rndGen().scalar01())/rel;
+                        psiV = label(((label(rel)) +1)*cloud_.rndGen().sample01<scalar>())/rel;
                         func = pow((1.0-psiV),expo);
-                    } while (func < cloud_.rndGen().scalar01());
+                    } while (func < cloud_.rndGen().sample01<scalar>());
 
                     Evib2 = psiV* EcTot;
 
@@ -488,14 +488,14 @@ void mixedTypeIIDissociationForwardExchange::reaction
 
                     do
                     {
-                        rPSIm = cloud_.rndGen().scalar01();
+                        rPSIm = cloud_.rndGen().sample01<scalar>();
                         prob = pow(h1,h1)/(pow(h2,h2)*pow(h3,h3))*pow(rPSIm,h2)*pow(1.0-rPSIm,h3);
 
-                    } while (prob < cloud_.rndGen().scalar01());
+                    } while (prob < cloud_.rndGen().sample01<scalar>());
 
                     if (DOFm == DOFtot) rPSIm = 1.0;
 
-                    if (DOFm == 2.0 && DOFtot == 4.0) rPSIm = cloud_.rndGen().scalar01();
+                    if (DOFm == 2.0 && DOFtot == 4.0) rPSIm = cloud_.rndGen().sample01<scalar>();
 
                     if (DOFtot < 4.0 ) rPSIm = (DOFm/DOFtot);
 
@@ -508,11 +508,11 @@ void mixedTypeIIDissociationForwardExchange::reaction
 
                     // Variable Hard Sphere collision part for collision of molecules
             
-                    scalar cosTheta = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                    scalar cosTheta = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
                 
                     scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
                 
-                    scalar phi = twoPi*cloud_.rndGen().scalar01();
+                    scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
                 
                     vector postCollisionRelU =
                         relVelExchMol
@@ -584,14 +584,14 @@ void mixedTypeIIDissociationForwardExchange::reaction
 
                     do
                     {
-                        rPSIm = cloud_.rndGen().scalar01();
+                        rPSIm = cloud_.rndGen().sample01<scalar>();
                         prob = pow(h1,h1)/(pow(h2,h2)*pow(h3,h3))*pow(rPSIm,h2)*pow(1.0-rPSIm,h3);
 
-                    } while (prob < cloud_.rndGen().scalar01());
+                    } while (prob < cloud_.rndGen().sample01<scalar>());
 
                     if (DOFm == DOFtot) rPSIm = 1.0;
 
-                    if (DOFm == 2.0 && DOFtot == 4.0) rPSIm = cloud_.rndGen().scalar01();
+                    if (DOFm == 2.0 && DOFtot == 4.0) rPSIm = cloud_.rndGen().sample01<scalar>();
 
                     if (DOFtot < 4.0 ) rPSIm = (DOFm/DOFtot);
 
@@ -607,11 +607,11 @@ void mixedTypeIIDissociationForwardExchange::reaction
 
                     // Variable Hard Sphere collision part
 
-                    scalar cosTheta = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                    scalar cosTheta = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
                 
                     scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
                 
-                    scalar phi = twoPi*cloud_.rndGen().scalar01();
+                    scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
                 
                     vector postCollisionRelU =
                         relVelNonDissoMol
@@ -646,11 +646,11 @@ void mixedTypeIIDissociationForwardExchange::reaction
 
                     // Variable Hard Sphere collision part
                 
-                    scalar cosTheta2 = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                    scalar cosTheta2 = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
                 
                     scalar sinTheta2 = sqrt(1.0 - cosTheta2*cosTheta2);
                 
-                    scalar phi2 = twoPi*cloud_.rndGen().scalar01();
+                    scalar phi2 = twoPi*cloud_.rndGen().sample01<scalar>();
                 
                     vector postCollisionRelU2 = cRatoms
                     *vector
@@ -778,12 +778,12 @@ void mixedTypeIIDissociationForwardExchange::reaction
         }
 
 
-        if ( (2.0*cloud_.rndGen().scalar01()) < (P_diss + P_exch))
-//         if ( (cloud_.rndGen().scalar01()) < (P_diss + P_exch))
+        if ( (2.0*cloud_.rndGen().sample01<scalar>()) < (P_diss + P_exch))
+//         if ( (cloud_.rndGen().sample01<scalar>()) < (P_diss + P_exch))
         {
             scalar P_react = (P_exch / (P_exch + P_diss));
 
-            if (P_react > (0.5*cloud_.rndGen().scalar01()))
+            if (P_react > (0.5*cloud_.rndGen().sample01<scalar>()))
             {   
                 // EXCHANGE REACTION //
 
@@ -851,9 +851,9 @@ void mixedTypeIIDissociationForwardExchange::reaction
                     
                     do
                     {
-                        psiV = label(((label(rel)) +1)*cloud_.rndGen().scalar01())/rel;
+                        psiV = label(((label(rel)) +1)*cloud_.rndGen().sample01<scalar>())/rel;
                         func = pow((1.0-psiV),expo);
-                    } while (func < cloud_.rndGen().scalar01());
+                    } while (func < cloud_.rndGen().sample01<scalar>());
 
                     Evib2 = psiV* EcTot;
 
@@ -876,14 +876,14 @@ void mixedTypeIIDissociationForwardExchange::reaction
 
                     do
                     {
-                        rPSIm = cloud_.rndGen().scalar01();
+                        rPSIm = cloud_.rndGen().sample01<scalar>();
                         prob = pow(h1,h1)/(pow(h2,h2)*pow(h3,h3))*pow(rPSIm,h2)*pow(1.0-rPSIm,h3);
 
-                    } while (prob < cloud_.rndGen().scalar01());
+                    } while (prob < cloud_.rndGen().sample01<scalar>());
 
                     if (DOFm == DOFtot) rPSIm = 1.0;
 
-                    if (DOFm == 2.0 && DOFtot == 4.0) rPSIm = cloud_.rndGen().scalar01();
+                    if (DOFm == 2.0 && DOFtot == 4.0) rPSIm = cloud_.rndGen().sample01<scalar>();
 
                     if (DOFtot < 4.0 ) rPSIm = (DOFm/DOFtot);
 
@@ -896,11 +896,11 @@ void mixedTypeIIDissociationForwardExchange::reaction
 
                     // Variable Hard Sphere collision part for collision of molecules
             
-                    scalar cosTheta = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                    scalar cosTheta = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
                 
                     scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
                 
-                    scalar phi = twoPi*cloud_.rndGen().scalar01();
+                    scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
                 
                     vector postCollisionRelU =
                         relVelExchMol
@@ -972,14 +972,14 @@ void mixedTypeIIDissociationForwardExchange::reaction
 
                     do
                     {
-                        rPSIm = cloud_.rndGen().scalar01();
+                        rPSIm = cloud_.rndGen().sample01<scalar>();
                         prob = pow(h1,h1)/(pow(h2,h2)*pow(h3,h3))*pow(rPSIm,h2)*pow(1.0-rPSIm,h3);
 
-                    } while (prob < cloud_.rndGen().scalar01());
+                    } while (prob < cloud_.rndGen().sample01<scalar>());
 
                     if (DOFm == DOFtot) rPSIm = 1.0;
 
-                    if (DOFm == 2.0 && DOFtot == 4.0) rPSIm = cloud_.rndGen().scalar01();
+                    if (DOFm == 2.0 && DOFtot == 4.0) rPSIm = cloud_.rndGen().sample01<scalar>();
 
                     if (DOFtot < 4.0 ) rPSIm = (DOFm/DOFtot);
 
@@ -996,11 +996,11 @@ void mixedTypeIIDissociationForwardExchange::reaction
 
                     // Variable Hard Sphere collision part
             
-                    scalar cosTheta = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                    scalar cosTheta = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
                 
                     scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
                 
-                    scalar phi = twoPi*cloud_.rndGen().scalar01();
+                    scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
                 
                     vector postCollisionRelU =
                         relVelNonDissoMol
@@ -1019,11 +1019,11 @@ void mixedTypeIIDissociationForwardExchange::reaction
 
                     // Variable Hard Sphere collision part
                 
-                    scalar cosTheta2 = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                    scalar cosTheta2 = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
                 
                     scalar sinTheta2 = sqrt(1.0 - cosTheta2*cosTheta2);
                 
-                    scalar phi2 = twoPi*cloud_.rndGen().scalar01();
+                    scalar phi2 = twoPi*cloud_.rndGen().sample01<scalar>();
                 
                     vector postCollisionRelU2 = cRatoms
                     *vector

@@ -155,7 +155,7 @@ void trackPolyMolecule::createField()
             {
                 const int proc = p;
                 {
-                    OPstream toNeighbour(Pstream::blocking, proc);
+                    OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << trackingNumber << shortestDistance << startingMolPosition;
                 }
             }
@@ -172,7 +172,7 @@ void trackPolyMolecule::createField()
 
                 const int proc = p;
                 {
-                    IPstream fromNeighbour(Pstream::blocking, proc);
+                    IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> trackingNumberProc >> shortestDistanceProc >> startingMolPositionProc;
                 }
 
@@ -264,7 +264,7 @@ void trackPolyMolecule::calculateField()
                 {
                     const int proc = p;
                     {
-                        OPstream toNeighbour(Pstream::blocking, proc);
+                        OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << trackingPosition << cell 
                                     << trackingMolSitePositions << trackingQ 
                                     << trackingPi << trackingLinMom;
@@ -286,7 +286,7 @@ void trackPolyMolecule::calculateField()
 
                     const int proc = p;
                     {
-                        IPstream fromNeighbour(Pstream::blocking, proc);
+                        IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> trackingPositionProc >> cellProc 
                                       >> trackingMolSitePositionsProc >> trackingQProc 
                                       >> trackingPiProc >> trackingLinMomProc;

@@ -37,7 +37,7 @@ Description
     Simultaneous communication and computation is possible using:
 
     \verbatim
-    PstreamBuffers pBufs(Pstream::nonBlocking);
+    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
     label startOfRequests = Pstream::nRequests();
     il_.sendReferredData(cellOccupancy_, pBufs);
     // Do other things

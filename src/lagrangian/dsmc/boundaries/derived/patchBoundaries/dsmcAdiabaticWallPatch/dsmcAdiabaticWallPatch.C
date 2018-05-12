@@ -281,8 +281,8 @@ void dsmcAdiabaticWallPatch::controlParticle
 
     Random& rndGen(cloud_.rndGen()); 
 
-    const scalar Rf1 = rndGen.scalar01();
-    const scalar Rf2 = rndGen.scalar01();
+    const scalar Rf1 = rndGen.sample01<scalar>();
+    const scalar Rf2 = rndGen.sample01<scalar>();
     
     U =  -magUInitial*nw*sqrt(Rf1)
         + magUInitial*sqrt(1.0 - Rf1)*tw1*cos(twoPi*Rf2)

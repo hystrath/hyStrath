@@ -93,7 +93,7 @@ void Foam::dsmcSpherical::sphericalWeighting()
                     prob -= 1.0;
                 }
                 
-                if (prob > cloud_.rndGen().scalar01())
+                if (prob > cloud_.rndGen().sample01<scalar>())
                 {
                     vector U = p->U();
                     
@@ -117,7 +117,7 @@ void Foam::dsmcSpherical::sphericalWeighting()
             else if (newRadialWeight > oldRadialWeight)
             {           
                 //- particle might be deleted
-                if ((oldRadialWeight/newRadialWeight) < cloud_.rndGen().scalar01())
+                if ((oldRadialWeight/newRadialWeight) < cloud_.rndGen().sample01<scalar>())
                 {
                     cloud_.deleteParticle(*p);
                 } 

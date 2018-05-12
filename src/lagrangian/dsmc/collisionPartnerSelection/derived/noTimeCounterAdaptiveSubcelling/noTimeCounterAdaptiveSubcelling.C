@@ -269,7 +269,7 @@ void noTimeCounterAdaptiveSubcelling::collide()
                 // subCell candidate selection procedure
 
                 // Select the first collision candidate
-                label candidateP = rndGen_.integer(0, nC - 1);
+                label candidateP = rndGen_.position<label>(0, nC - 1);
 
                 // Declare the second collision candidate
                 label candidateQ = -1;
@@ -286,7 +286,7 @@ void noTimeCounterAdaptiveSubcelling::collide()
 
                     do
                     {
-                        candidateQ = subCellPs[rndGen_.integer(0, nSC - 1)];
+                        candidateQ = subCellPs[rndGen_.position<label>(0, nSC - 1)];
 
                     } while (candidateP == candidateQ);
                 }
@@ -298,7 +298,7 @@ void noTimeCounterAdaptiveSubcelling::collide()
 
                     do
                     {
-                        candidateQ = rndGen_.integer(0, nC - 1);
+                        candidateQ = rndGen_.position<label>(0, nC - 1);
 
                     } while (candidateP == candidateQ);
                 }
@@ -307,15 +307,15 @@ void noTimeCounterAdaptiveSubcelling::collide()
                 // uniform candidate selection procedure
 
                 // // Select the first collision candidate
-                // label candidateP = rndGen_.integer(0, nC-1);
+                // label candidateP = rndGen_.position<label>(0, nC-1);
 
                 // // Select a possible second collision candidate
-                // label candidateQ = rndGen_.integer(0, nC-1);
+                // label candidateQ = rndGen_.position<label>(0, nC-1);
 
                 // // If the same candidate is chosen, choose again
                 // while (candidateP == candidateQ)
                 // {
-                //     candidateQ = rndGen_.integer(0, nC-1);
+                //     candidateQ = rndGen_.position<label>(0, nC-1);
                 // }
 
                 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -338,7 +338,7 @@ void noTimeCounterAdaptiveSubcelling::collide()
                     cloud_.sigmaTcRMax()[cellI] = sigmaTcR;
                 }
 
-                if ((sigmaTcR/sigmaTcRMax) > rndGen_.scalar01())
+                if ((sigmaTcR/sigmaTcRMax) > rndGen_.sample01<scalar>())
                 {
                     // chemical reactions
 

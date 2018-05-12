@@ -143,14 +143,14 @@ void dsmcAbsorbingStickingDiffuseWallFieldPatch::controlParticle
                 const scalar sumAbsAdsProbabilities = absorptionProbability 
                     + adsorptionProbability;
                 
-                if(sumAbsAdsProbabilities > cloud_.rndGen().scalar01())
+                if(sumAbsAdsProbabilities > cloud_.rndGen().sample01<scalar>())
                 {
                     //- Either absorption or adsorption must be operated.
                     //  The probability of adsorption is rescaled
                     if
                     (
                         adsorptionProbability/sumAbsAdsProbabilities 
-                            > cloud_.rndGen().scalar01()
+                            > cloud_.rndGen().sample01<scalar>()
                     )
                     {
                         //- particle is adsorbed
@@ -179,7 +179,7 @@ void dsmcAbsorbingStickingDiffuseWallFieldPatch::controlParticle
                 //- Either one or both bounding mechanism are saturated
                 if(dsmcStickingWallPatch::isNotSaturated(wppLocalFace))
                 {
-                    if(adsorptionProbability > cloud_.rndGen().scalar01())
+                    if(adsorptionProbability > cloud_.rndGen().sample01<scalar>())
                     {
                         //- particle is adsorbed
                         dsmcStickingWallPatch::adsorbParticle
@@ -202,7 +202,7 @@ void dsmcAbsorbingStickingDiffuseWallFieldPatch::controlParticle
                     )
                 )
                 {
-                    if(absorptionProbability > cloud_.rndGen().scalar01())
+                    if(absorptionProbability > cloud_.rndGen().sample01<scalar>())
                     {
                         //- absorb particle
                         dsmcAbsorbingWallPatch::absorbParticle

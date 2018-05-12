@@ -112,7 +112,7 @@ void randomPointsInSquareZone:: setInitialConfiguration
             {
                 const int proc = p;
                 {
-                    OPstream toNeighbour(Pstream::blocking, proc);
+                    OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << XMin << XMax << YMin
                                  << YMax << ZMin << ZMax /*<< zoneOnMesh*/;
                 }
@@ -135,7 +135,7 @@ void randomPointsInSquareZone:: setInitialConfiguration
 
                 const int proc = p;
                 {
-                    IPstream fromNeighbour(Pstream::blocking, proc);
+                    IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> XMinP >> XMaxP >> YMinP 
                                     >> YMaxP >> ZMinP >> ZMaxP /*>> zoneOnMeshP*/;
                 }
@@ -293,9 +293,9 @@ vector randomPointsInSquareZone::randomPoint()
 {
     vector pointI
     (
-        deltaX_*rndGen_.scalar01() + XMin_,
-        deltaY_*rndGen_.scalar01() + YMin_,
-        deltaZ_*rndGen_.scalar01() + ZMin_
+        deltaX_*rndGen_.sample01<scalar>() + XMin_,
+        deltaY_*rndGen_.sample01<scalar>() + YMin_,
+        deltaZ_*rndGen_.sample01<scalar>() + ZMin_
     );
 
     return pointI;

@@ -355,7 +355,7 @@ void polyBinsMethod::createField()
             {
                 const int proc = p;
                 {
-                    OPstream toNeighbour(Pstream::blocking, proc);
+                    OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << mols << mass << mom << angularSpeed;
                 }
             }
@@ -373,7 +373,7 @@ void polyBinsMethod::createField()
 
                 const int proc = p;
                 {
-                    IPstream fromNeighbour(Pstream::blocking, proc);
+                    IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> molsProc >> massProc >> momProc >> angularSpeedProc;
                 }
 
@@ -453,7 +453,7 @@ void polyBinsMethod::calculateField()
                 {
                     const int proc = p;
                     {
-                        OPstream toNeighbour(Pstream::blocking, proc);
+                        OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << mols << mass << mom << angularSpeed;
                     }
                 }
@@ -471,7 +471,7 @@ void polyBinsMethod::calculateField()
     
                     const int proc = p;
                     {
-                        IPstream fromNeighbour(Pstream::blocking, proc);
+                        IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> molsProc >> massProc >> momProc >> angularSpeedProc;
                     }
     
@@ -561,7 +561,7 @@ void polyBinsMethod::calculateField()
             {
                 const int proc = p;
                 {
-                    OPstream toNeighbour(Pstream::blocking, proc);
+                    OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << mass << mom;
                 }
             }
@@ -577,7 +577,7 @@ void polyBinsMethod::calculateField()
 
                 const int proc = p;
                 {
-                    IPstream fromNeighbour(Pstream::blocking, proc);
+                    IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour  >> massProc >> momProc;
                 }
     
@@ -616,7 +616,7 @@ void polyBinsMethod::calculateField()
                 {
                     const int proc = p;
                     {
-                        OPstream toNeighbour(Pstream::blocking, proc);
+                        OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
 
                         toNeighbour << mols << mass << mom 
                                     << kE << angularKeSum << dof << kineticTensor 
@@ -641,7 +641,7 @@ void polyBinsMethod::calculateField()
 
                     const int proc = p;
                     {
-                        IPstream fromNeighbour(Pstream::blocking, proc);
+                        IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour  >> molsProc >> massProc >> momProc 
                                     >> kEProc >> angularKeSumProc >> dofProc >> kineticTensorProc
                                     >> virialTensorProc;

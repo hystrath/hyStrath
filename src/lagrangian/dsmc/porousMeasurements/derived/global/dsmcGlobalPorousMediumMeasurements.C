@@ -116,7 +116,7 @@ void dsmcGlobalPorousMediumMeasurements::updateMediumPropertiesMeasurement_cycli
                     
                 mediumTransitTime_ += mesh_.time().value() - p.tracked().initialTime();
                 
-                if (trackingProbability_ > rndGen_.scalar01())
+                if (trackingProbability_ > rndGen_.sample01<scalar>())
                 {
                     //- Since the DSMC parcel is not physically deleted,
                     //  the TrackedParcel is reset.
@@ -160,7 +160,7 @@ void dsmcGlobalPorousMediumMeasurements::updateMediumPropertiesMeasurement_cycli
         {
             //- Every particle crossing a cyclic patch has a chance to be 
             //  tracked since there is no inlet for that purpose.
-            if (trackingProbability_ > rndGen_.scalar01())
+            if (trackingProbability_ > rndGen_.sample01<scalar>())
             {   
                 p.setTracked
                 (
@@ -398,7 +398,7 @@ void dsmcGlobalPorousMediumMeasurements::additionInteraction
 {
     if (patchId != -1)
     {
-        if (trackingProbability_ > cloud_.rndGen().scalar01())
+        if (trackingProbability_ > cloud_.rndGen().sample01<scalar>())
         {
             p.setTracked
             (

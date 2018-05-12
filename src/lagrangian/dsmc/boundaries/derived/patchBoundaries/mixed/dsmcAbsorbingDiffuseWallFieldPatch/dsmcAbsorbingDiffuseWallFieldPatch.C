@@ -118,7 +118,7 @@ void dsmcAbsorbingDiffuseWallFieldPatch::controlParticle
                 
         if
         (
-            absorptionProbability > cloud_.rndGen().scalar01()
+            absorptionProbability > cloud_.rndGen().sample01<scalar>()
          && dsmcAbsorbingWallPatch::isNotSaturated(wppIndex, wppLocalFace)
         )
         {

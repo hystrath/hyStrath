@@ -361,7 +361,7 @@ void polyPropertiesCylindricalBins::calculateField()
                 {
                     const int proc = p;
                     {
-                        OPstream toNeighbour(Pstream::blocking, proc);
+                        OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << mass << centreOfMass;
                     }
                 }
@@ -377,7 +377,7 @@ void polyPropertiesCylindricalBins::calculateField()
 
                     const int proc = p;
                     {
-                        IPstream fromNeighbour(Pstream::blocking, proc);
+                        IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> massProc >> centreOfMassProc;
                     }
                     mass += massProc;
@@ -550,7 +550,7 @@ void polyPropertiesCylindricalBins::calculateField()
                 {
                     const int proc = p;
                     {
-                        OPstream toNeighbour(Pstream::blocking, proc);
+                        OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << mols << mass << momX << momY 
                                     << sqrMomX << sqrMomY << dof;
                     }
@@ -572,7 +572,7 @@ void polyPropertiesCylindricalBins::calculateField()
 
                     const int proc = p;
                     {
-                        IPstream fromNeighbour(Pstream::blocking, proc);
+                        IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> molsProc >> massProc >> momXProc >> momYProc 
                                       >> sqrMomXProc >> sqrMomYProc >> dofProc;
                     }

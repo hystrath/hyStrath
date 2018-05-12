@@ -171,11 +171,11 @@ void dsmcMassFlowRateInlet::controlParcelsBeforeMove()
             
             const scalar target= exp(-accumulatedParcelsToInsert_[iD][f]);
             
-            scalar p = rndGen.scalar01();
+            scalar p = rndGen.sample01<scalar>();
             
             while (p > target)
             {
-                p *= rndGen.scalar01();
+                p *= rndGen.sample01<scalar>();
                 k += 1;
             }
             
@@ -185,7 +185,7 @@ void dsmcMassFlowRateInlet::controlParcelsBeforeMove()
 
 //             label nParcelsToInsert = label(accumulatedParcelsToInsert_[iD][f]);
 //             
-//             if ((nParcelsToInsert - accumulatedParcelsToInsert_[iD][f]) > rndGen.scalar01())
+//             if ((nParcelsToInsert - accumulatedParcelsToInsert_[iD][f]) > rndGen.sample01<scalar>())
 //             {
 //                 nParcelsToInsert++;
 //             }
@@ -202,7 +202,7 @@ void dsmcMassFlowRateInlet::controlParcelsBeforeMove()
                 // Choose a triangle to insert on, based on their relative
                 // area
 
-                scalar triSelection = rndGen.scalar01();
+                scalar triSelection = rndGen.sample01<scalar>();
 
                 // Selected triangle
                 label selectedTriI = -1;
@@ -266,7 +266,7 @@ void dsmcMassFlowRateInlet::controlParcelsBeforeMove()
                     do
                     {
                         uNormalThermal =
-                            randomScaling*(2.0*rndGen.scalar01() - 1);
+                            randomScaling*(2.0*rndGen.sample01<scalar>() - 1);
 
                         uNormal = uNormalThermal + sCosTheta;
 
@@ -280,18 +280,18 @@ void dsmcMassFlowRateInlet::controlParcelsBeforeMove()
                                 *exp(uNormProbCoeffB - sqr(uNormalThermal));
                         }
 
-                    } while (P < rndGen.scalar01());
+                    } while (P < rndGen.sample01<scalar>());
                 }
                 else
                 {
-                    uNormal = sqrt(-log(rndGen.scalar01()));
+                    uNormal = sqrt(-log(rndGen.sample01<scalar>()));
                 }
                 
                 vector U =
                     sqrt(physicoChemical::k.value()*faceTemperature/mass)
                     *(
-                        rndGen.GaussNormal()*t1
-                        + rndGen.GaussNormal()*t2
+                        rndGen.GaussNormal<scalar>()*t1
+                        + rndGen.GaussNormal<scalar>()*t2
                     )
                     + (t1 & faceVelocity)*t1
                     + (t2 & faceVelocity)*t2

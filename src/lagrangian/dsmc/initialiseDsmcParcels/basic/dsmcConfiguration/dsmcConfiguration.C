@@ -112,9 +112,9 @@ dsmcConfiguration::~dsmcConfiguration()
 // {
 //     return sqrt(molCloud_.redUnits().kB()*temperature/mass)*vector
 //     (
-//         rndGen_.GaussNormal(),
-//         rndGen_.GaussNormal(),
-//         rndGen_.GaussNormal()
+//         rndGen_.GaussNormal<scalar>(),
+//         rndGen_.GaussNormal<scalar>(),
+//         rndGen_.GaussNormal<scalar>()
 //     );
 // }
 

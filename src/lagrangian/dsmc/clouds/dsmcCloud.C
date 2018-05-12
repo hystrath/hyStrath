@@ -92,7 +92,7 @@ void Foam::dsmcCloud::buildCollisionSelectionRemainderFromScratch()
     // and 1.
     forAll(collisionSelectionRemainder_, cO)
     {
-        collisionSelectionRemainder_[cO] = rndGen_.scalar01();
+        collisionSelectionRemainder_[cO] = rndGen_.sample01<scalar>();
     }
 }
 
@@ -325,7 +325,7 @@ Foam::label Foam::dsmcCloud::pickFromCandidateList
     if (size > 0)
     {
         // choose a random number between 0 and the size of the candidateList
-        label randomIndex = rndGen_.integer(0, size - 1);
+        label randomIndex = rndGen_.position<label>(0, size - 1);
         entry = candidatesInCell[randomIndex];
 
         // build a new list without the chosen entry
@@ -390,7 +390,7 @@ Foam::label Foam::dsmcCloud::pickFromCandidateSubList
     
     if (subCellSize > 0)
     {
-        label randomIndex = rndGen_.integer(0, subCellSize - 1);
+        label randomIndex = rndGen_.position<label>(0, subCellSize - 1);
         entry = candidatesInSubCell[randomIndex];
 
 //         Info<< "random index: " << randomIndex <<" entry " 
@@ -489,7 +489,7 @@ Foam::scalar Foam::dsmcCloud::energyRatio
 
     if (ChiAMinusOne < SMALL && ChiBMinusOne < SMALL)
     {
-        return rndGen_.scalar01();
+        return rndGen_.sample01<scalar>();
     }
 
     scalar energyRatio;
@@ -500,7 +500,7 @@ Foam::scalar Foam::dsmcCloud::energyRatio
     {
         P = 0;
 
-        energyRatio = rndGen_.scalar01();
+        energyRatio = rndGen_.sample01<scalar>();
 
         if (ChiAMinusOne < SMALL)
         {
@@ -525,7 +525,7 @@ Foam::scalar Foam::dsmcCloud::energyRatio
                     ChiBMinusOne
                 );
         }
-    } while (P < rndGen_.scalar01());
+    } while (P < rndGen_.sample01<scalar>());
 
     return energyRatio;
 }
@@ -543,7 +543,7 @@ Foam::scalar Foam::dsmcCloud::PSIm
 
     if (DOFm == 2.0 && DOFtot == 4.0)
     {
-        return rndGen_.scalar01();
+        return rndGen_.sample01<scalar>();
     }
 
     if (DOFtot < 4.0)
@@ -560,9 +560,9 @@ Foam::scalar Foam::dsmcCloud::PSIm
 
     do
     {
-        rPSIm = rndGen_.scalar01();
+        rPSIm = rndGen_.sample01<scalar>();
         prob = pow(h1,h1)/(pow(h2,h2)*pow(h3,h3))*pow(rPSIm,h2)*pow(1.0-rPSIm,h3);
-    } while (prob < rndGen_.scalar01());
+    } while (prob < rndGen_.sample01<scalar>());
 
     return rPSIm;
 }
@@ -671,7 +671,7 @@ Foam::dsmcCloud::dsmcCloud
     // and 1.
     forAll(collisionSelectionRemainder_, i)
     {
-        collisionSelectionRemainder_[i] = rndGen_.scalar01();
+        collisionSelectionRemainder_[i] = rndGen_.sample01<scalar>();
     }
 
     collisionPartnerSelectionModel_ = autoPtr<collisionPartnerSelection>
@@ -983,9 +983,9 @@ Foam::vector Foam::dsmcCloud::equipartitionLinearVelocity
     return sqrt(physicoChemical::k.value()*temperature/mass)
        *vector
         (
-            rndGen_.GaussNormal(),
-            rndGen_.GaussNormal(),
-            rndGen_.GaussNormal()
+            rndGen_.GaussNormal<scalar>(),
+            rndGen_.GaussNormal<scalar>(),
+            rndGen_.GaussNormal<scalar>()
         );
 }
 
@@ -1007,17 +1007,12 @@ Foam::vector Foam::dsmcCloud::chapmanEnskogVelocity
     
     while (repeatTry)
     {
-        CTry = vector
-            (
-                rndGen_.GaussNormal(),
-                rndGen_.GaussNormal(),
-                rndGen_.GaussNormal()
-            ) / sqrt(2.0);
+        CTry = rndGen_.GaussNormal<vector>() / sqrt(2.0);
             
         scalar gammaTry = 1.0 + (q & CTry) * (0.4 * (CTry & CTry) - 1.0)
             - (CTry & (tau & CTry));
             
-        if (gammaTry >= A*rndGen_.scalar01())
+        if (gammaTry >= A*rndGen_.sample01<scalar>())
         {
             repeatTry = false;
         }
@@ -1105,12 +1100,7 @@ void Foam::dsmcCloud::generalisedChapmanEnskog
             epsVib /= (physicoChemical::k.value()*vibrationalTemperature);
         }
 
-        CTry = vector
-            (
-                rndGen_.GaussNormal(),
-                rndGen_.GaussNormal(),
-                rndGen_.GaussNormal()
-            ) / sqrt(2.0);
+        rndGen_.GaussNormal<vector>() / sqrt(2.0);
             
         scalar gammaTry = 1.0 + 2.0*(D & CTry) 
             + (qTra & CTry) * (0.4*(CTry & CTry) - 1.0) 
@@ -1118,7 +1108,7 @@ void Foam::dsmcCloud::generalisedChapmanEnskog
             + (qVib & CTry) * (epsVib - epsVibAv)
             - (CTry & (tau & CTry)); 
             
-        if (gammaTry >= A*rndGen_.scalar01())
+        if (gammaTry >= A*rndGen_.sample01<scalar>())
         {
             repeatTry = false;
         }
@@ -1143,7 +1133,7 @@ Foam::scalar Foam::dsmcCloud::equipartitionRotationalEnergy
     else if (rotationalDof < 2.0 + SMALL && rotationalDof > 2.0 - SMALL)
     {
         // Special case for rDof = 2, i.e. diatomics;
-        ERot = -log(rndGen_.scalar01())*physicoChemical::k.value()*temperature;
+        ERot = -log(rndGen_.sample01<scalar>())*physicoChemical::k.value()*temperature;
     }
     else
     {
@@ -1155,11 +1145,11 @@ Foam::scalar Foam::dsmcCloud::equipartitionRotationalEnergy
 
         do
         {
-            energyRatio = 10*rndGen_.scalar01();
+            energyRatio = 10*rndGen_.sample01<scalar>();
 
             P = pow((energyRatio/a), a)*exp(a - energyRatio);
 
-        } while (P < rndGen_.scalar01());
+        } while (P < rndGen_.sample01<scalar>());
 
         ERot = energyRatio*physicoChemical::k.value()*temperature;
     }
@@ -1185,7 +1175,7 @@ Foam::labelList Foam::dsmcCloud::equipartitionVibrationalEnergyLevel
     {  
         forAll(vibLevel, i)
         {
-            label j = -log(rndGen_.scalar01())*temperature/constProps(typeId).thetaV()[i];
+            label j = -log(rndGen_.sample01<scalar>())*temperature/constProps(typeId).thetaV()[i];
             vibLevel[i] = j;
         }
     }
@@ -1258,9 +1248,9 @@ Foam::label Foam::dsmcCloud::equipartitionElectronicLevel
         
         do // acceptance - rejection based on Eq. 3.1.2 of Liechty thesis.      
         {               
-            jDash = rndGen_.integer(0,jMax-1);
+            jDash = rndGen_.position<label>(0,jMax-1);
             func = degeneracyList[jDash]*exp((-electronicEnergyList[jDash]/EMax))/expMax;
-        } while( !(func > rndGen_.scalar01()));
+        } while( !(func > rndGen_.sample01<scalar>()));
     }
 
     return jDash;
@@ -1277,7 +1267,7 @@ Foam::scalar Foam::dsmcCloud::postCollisionRotationalEnergy
     
     if (rotationalDof == 2.0)
     {
-        energyRatio = 1.0 - pow(rndGen_.scalar01(),(1.0/ChiB));
+        energyRatio = 1.0 - pow(rndGen_.sample01<scalar>(),(1.0/ChiB));
     }
     else
     {
@@ -1289,7 +1279,7 @@ Foam::scalar Foam::dsmcCloud::postCollisionRotationalEnergy
 
         if (ChiAMinusOne < SMALL && ChiBMinusOne < SMALL)
         {
-            return rndGen_.scalar01();
+            return rndGen_.sample01<scalar>();
         }
 
         scalar energyRatio;
@@ -1300,7 +1290,7 @@ Foam::scalar Foam::dsmcCloud::postCollisionRotationalEnergy
         {
             P = 0;
 
-            energyRatio = rndGen_.scalar01();
+            energyRatio = rndGen_.sample01<scalar>();
 
             if (ChiAMinusOne < SMALL)
             {
@@ -1325,7 +1315,7 @@ Foam::scalar Foam::dsmcCloud::postCollisionRotationalEnergy
                         ChiBMinusOne
                     );
             }
-        } while (P < rndGen_.scalar01());
+        } while (P < rndGen_.sample01<scalar>());
     }
     
     return energyRatio; 
@@ -1357,13 +1347,13 @@ Foam::label Foam::dsmcCloud::postCollisionVibrationalEnergyLevel
 
         do // acceptance - rejection 
         {
-            iDash = rndGen_.integer(0,iMax);
+            iDash = rndGen_.position<label>(0,iMax);
             EVib = iDash*physicoChemical::k.value()*thetaV;
             
             // - equation 5.61, Bird
             func = pow((1.0 - (EVib / Ec)),(1.5 - omega));
 
-        } while( !(func > rndGen_.scalar01()) );
+        } while( !(func > rndGen_.sample01<scalar>()) );
     }
     else
     {
@@ -1397,7 +1387,7 @@ Foam::label Foam::dsmcCloud::postCollisionVibrationalEnergyLevel
             inverseVibrationalCollisionNumber = 1.0/fixedZv;
         }
         
-        if (inverseVibrationalCollisionNumber > rndGen_.scalar01())
+        if (inverseVibrationalCollisionNumber > rndGen_.sample01<scalar>())
         {
             // post-collision quantum number
             scalar func = 0.0;
@@ -1405,13 +1395,13 @@ Foam::label Foam::dsmcCloud::postCollisionVibrationalEnergyLevel
 
             do // acceptance - rejection 
             {
-                iDash = rndGen_.integer(0,iMax);
+                iDash = rndGen_.position<label>(0,iMax);
                 EVib = iDash*physicoChemical::k.value()*thetaV;
                 
                 // - equation 5.61, Bird
                 func = pow((1.0 - (EVib / Ec)),(1.5 - omega));
 
-            } while( !(func > rndGen_.scalar01()) );
+            } while( !(func > rndGen_.sample01<scalar>()) );
         }
     }
     
@@ -1450,7 +1440,7 @@ Foam::label Foam::dsmcCloud::postCollisionElectronicEnergyLevel
     
     do
     {
-        label nState = ceil(rndGen_.scalar01()*(nPossStates));
+        label nState = ceil(rndGen_.sample01<scalar>()*(nPossStates));
         label nAvailableStates = 0;
         label nLevel = -1;
         
@@ -1468,7 +1458,7 @@ Foam::label Foam::dsmcCloud::postCollisionElectronicEnergyLevel
         {
             scalar prob = pow(1.0 - (EElist[nLevel]/Ec), 1.5-omega);
             
-            if (prob > rndGen_.scalar01())
+            if (prob > rndGen_.sample01<scalar>())
             {
                 II = 1;
                 ELevel = nLevel;
@@ -1528,10 +1518,10 @@ Foam::label Foam::dsmcCloud::postCollisionElectronicEnergyLevel
 //         
 //     do // acceptance - rejection based on Eq. 3.1.8 of Liechty thesis.     
 //     {               
-//         jDash = rndGen_.integer(0,maxLev);
+//         jDash = rndGen_.position<label>(0,maxLev);
 //         prob = gList[jDash]*pow((Ec - EElist[jDash]), (1.5 - omega))/denomMax;
 // 
-//     } while( !(prob > rndGen_.scalar01()));          
+//     } while( !(prob > rndGen_.sample01<scalar>()));          
 //     
 //     ELevel = jDash;//post-collision Electronic energy.
 //     
@@ -1673,7 +1663,7 @@ void Foam::dsmcCloud::removeParcelFromCellOccupancy
                         if
                         (
                             (particlesRequired - nParticlesToInsert)
-                                > rndGen_.scalar01()
+                                > rndGen_.sample01<scalar>()
                         )
                         {
                             nParticlesToInsert++;
@@ -1808,7 +1798,7 @@ void Foam::dsmcCloud::resetHybrid2
                         if
                         (
                             (particlesRequired - nParticlesToInsert)
-                                > rndGen_.scalar01()
+                                > rndGen_.sample01<scalar>()
                         )
                         {
                             nParticlesToInsert++;
@@ -1939,7 +1929,7 @@ void Foam::dsmcCloud::resetHybridMax
                         if
                         (
                             (particlesRequired - nParticlesToInsert)
-                                > rndGen_.scalar01()
+                                > rndGen_.sample01<scalar>()
                         )
                         {
                             nParticlesToInsert++;
@@ -2070,7 +2060,7 @@ void Foam::dsmcCloud::resetHybridTra
                         if
                         (
                             (particlesRequired - nParticlesToInsert)
-                                > rndGen_.scalar01()
+                                > rndGen_.sample01<scalar>()
                         )
                         {
                             nParticlesToInsert++;
@@ -2213,7 +2203,7 @@ void Foam::dsmcCloud::resetHybridTraRotVib
                         if
                         (
                             (particlesRequired - nParticlesToInsert)
-                                > rndGen_.scalar01()
+                                > rndGen_.sample01<scalar>()
                         )
                         {
                             nParticlesToInsert++;
@@ -2374,7 +2364,7 @@ void Foam::dsmcCloud::resetHybridTraRotVib
                         if
                         (
                             (particlesRequired - nParticlesToInsert)
-                                > rndGen_.scalar01()
+                                > rndGen_.sample01<scalar>()
                         )
                         {
                             nParticlesToInsert++;

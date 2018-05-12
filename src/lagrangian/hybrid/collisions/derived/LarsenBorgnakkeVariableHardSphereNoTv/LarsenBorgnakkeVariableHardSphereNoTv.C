@@ -233,7 +233,7 @@ void Foam::LarsenBorgnakkeVariableHardSphereNoTv::collide
             
             scalar inverseVibrationalCollisionNumberP = 1.0/ZvP;
         
-            if(inverseVibrationalCollisionNumberP > rndGen.scalar01())
+            if(inverseVibrationalCollisionNumberP > rndGen.sample01<scalar>())
             {
                 // post-collision quantum number
                 label iDashP = 0; 
@@ -247,7 +247,7 @@ void Foam::LarsenBorgnakkeVariableHardSphereNoTv::collide
                     // - equation 5.61, Bird
                     func = pow((1.0 - (EVibP / EcP)),(1.5 - omegaPQ));
 
-                } while( !(func > rndGen.scalar01()) );
+                } while( !(func > rndGen.sample01<scalar>()) );
 
                 // relative translational energy after vibrational exchange
                 translationalEnergy = EcP - EVibP;
@@ -269,7 +269,7 @@ void Foam::LarsenBorgnakkeVariableHardSphereNoTv::collide
             
 //         Info << "particleProbabilityP = " << particleProbabilityP << endl;
         
-        if (inverseRotationalCollisionNumber /*particleProbabilityP*/ > rndGen.scalar01())
+        if (inverseRotationalCollisionNumber /*particleProbabilityP*/ > rndGen.sample01<scalar>())
         {
             scalar EcP = translationalEnergy + preCollisionERotP;
             
@@ -277,7 +277,7 @@ void Foam::LarsenBorgnakkeVariableHardSphereNoTv::collide
             
             if(rotationalDofP == 2.0)
             {
-                energyRatio = 1.0 - pow(rndGen.scalar01(),(1.0/ChiB));
+                energyRatio = 1.0 - pow(rndGen.sample01<scalar>(),(1.0/ChiB));
             }
             else
             {
@@ -317,7 +317,7 @@ void Foam::LarsenBorgnakkeVariableHardSphereNoTv::collide
                 
             scalar inverseVibrationalCollisionNumberQ = 1.0/ZvQ;
         
-            if(inverseVibrationalCollisionNumberQ > rndGen.scalar01())
+            if(inverseVibrationalCollisionNumberQ > rndGen.sample01<scalar>())
             {
                 label iDashQ = 0; // post-collision quantum number
                 scalar func = 0.0;
@@ -328,7 +328,7 @@ void Foam::LarsenBorgnakkeVariableHardSphereNoTv::collide
                     EVibQ = iDashQ*physicoChemical::k.value()*thetaVQ;
                     func = pow((1.0 - (EVibQ / EcQ)),(1.5 - omegaPQ));
             
-                } while( !(func > rndGen.scalar01()) );
+                } while( !(func > rndGen.sample01<scalar>()) );
         
                 translationalEnergy = EcQ - EVibQ;
             }
@@ -349,7 +349,7 @@ void Foam::LarsenBorgnakkeVariableHardSphereNoTv::collide
             
 //         Info << "particleProbabilityQ = " << particleProbabilityQ << endl;
         
-        if (inverseRotationalCollisionNumber /*particleProbabilityQ*/ > rndGen.scalar01())
+        if (inverseRotationalCollisionNumber /*particleProbabilityQ*/ > rndGen.sample01<scalar>())
         {
             scalar EcQ = translationalEnergy + preCollisionERotQ;
             
@@ -357,7 +357,7 @@ void Foam::LarsenBorgnakkeVariableHardSphereNoTv::collide
             
             if(rotationalDofQ == 2.0)
             {
-                energyRatio = 1.0 - pow(rndGen.scalar01(),(1.0/ChiB));   
+                energyRatio = 1.0 - pow(rndGen.sample01<scalar>(),(1.0/ChiB));   
             }
             else
             {
@@ -377,11 +377,11 @@ void Foam::LarsenBorgnakkeVariableHardSphereNoTv::collide
 
     // Variable Hard Sphere collision part
 
-    scalar cosTheta = 2.0*rndGen.scalar01() - 1.0;
+    scalar cosTheta = 2.0*rndGen.sample01<scalar>() - 1.0;
 
     scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
 
-    scalar phi = 2.0*pi*rndGen.scalar01();
+    scalar phi = 2.0*pi*rndGen.sample01<scalar>();
 
     vector postCollisionRelU =
         cR

@@ -184,11 +184,11 @@ void Foam::VariableSoftSphere::collide
     
     vector cRComponents = UP - UQ;
 
-    scalar cosTheta = 2.0*(pow(rndGen.scalar01(),(1.0/alphaPQ))) - 1.0;
+    scalar cosTheta = 2.0*(pow(rndGen.sample01<scalar>(),(1.0/alphaPQ))) - 1.0;
 
     scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
 
-    scalar phi = twoPi*rndGen.scalar01();
+    scalar phi = twoPi*rndGen.sample01<scalar>();
     
     scalar D = sqrt(cRComponents.y()*cRComponents.y() + cRComponents.z()*cRComponents.z());
     

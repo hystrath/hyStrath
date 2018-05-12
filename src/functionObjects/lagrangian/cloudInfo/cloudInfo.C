@@ -99,7 +99,7 @@ bool Foam::functionObjects::cloudInfo::read(const dictionary& dict)
             forAll(names(), i)
             {
                 Info<< "    " << names()[i] << nl;
-                writeFileHeader(file(i));
+                writeFileHeader(files(i));
             }
             Info<< endl;
         }
@@ -148,8 +148,8 @@ bool Foam::functionObjects::cloudInfo::write()
 
         if (writeToFile())
         {
-            writeTime(file(i));
-            file(i)
+            writeTime(files(i));
+            files(i)
                 << token::TAB
                 << nParcels << token::TAB
                 << massInSystem << token::TAB

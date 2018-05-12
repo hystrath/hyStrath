@@ -275,11 +275,11 @@ void polyPlaceMolecules::insertMolecule
 //     scalar psi = 0.0;
 
 /*
-    scalar phi(rndGen_.scalar01()*constant::mathematical::twoPi);
+    scalar phi(rndGen_.sample01<scalar>()*constant::mathematical::twoPi);
 
-    scalar theta(rndGen_.scalar01()*constant::mathematical::twoPi);
+    scalar theta(rndGen_.sample01<scalar>()*constant::mathematical::twoPi);
 
-    scalar psi(rndGen_.scalar01()*constant::mathematical::twoPi);*/
+    scalar psi(rndGen_.sample01<scalar>()*constant::mathematical::twoPi);*/
 
 //     Info << "phi:" << phi << endl;
 

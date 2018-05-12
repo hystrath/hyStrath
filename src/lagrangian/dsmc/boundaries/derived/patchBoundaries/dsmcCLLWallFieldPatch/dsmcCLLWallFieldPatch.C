@@ -155,9 +155,9 @@ void dsmcCLLWallFieldPatch::controlParticle(dsmcParcel& p, dsmcParcel::trackingD
 
         U = vector
         (
-            U.x()*(0.8 + 0.2*rndGen.scalar01()),
-            U.y()*(0.8 + 0.2*rndGen.scalar01()),
-            U.z()*(0.8 + 0.2*rndGen.scalar01())
+            U.x()*(0.8 + 0.2*rndGen.sample01<scalar>()),
+            U.y()*(0.8 + 0.2*rndGen.sample01<scalar>()),
+            U.z()*(0.8 + 0.2*rndGen.sample01<scalar>())
         );
 
         U_dot_nw = U & nw;
@@ -194,20 +194,20 @@ void dsmcCLLWallFieldPatch::controlParticle(dsmcParcel& p, dsmcParcel::trackingD
     
     //normal random number components
     
-    scalar thetaNormal = 2.0*pi*rndGen.scalar01();
+    scalar thetaNormal = 2.0*pi*rndGen.sample01<scalar>();
     
-    scalar rNormal = sqrt(-alphaN*log(rndGen.scalar01()));
+    scalar rNormal = sqrt(-alphaN*log(rndGen.sample01<scalar>()));
     
     
     //tangential random number components
     
-    scalar thetaTangential1 = 2.0*pi*rndGen.scalar01();
+    scalar thetaTangential1 = 2.0*pi*rndGen.sample01<scalar>();
     
-    scalar rTangential1 = sqrt(-alphaT*log(rndGen.scalar01()));
+    scalar rTangential1 = sqrt(-alphaT*log(rndGen.sample01<scalar>()));
     
-    scalar thetaTangential2 = 2.0*pi*rndGen.scalar01();
+    scalar thetaTangential2 = 2.0*pi*rndGen.sample01<scalar>();
     
-    scalar rTangential2 = sqrt(-alphaT*log(rndGen.scalar01()));
+    scalar rTangential2 = sqrt(-alphaT*log(rndGen.sample01<scalar>()));
     
     scalar normalisedIncidentTangentialVelocity1 = mag(normalisedTangentialVelocity);
     
@@ -274,9 +274,9 @@ void dsmcCLLWallFieldPatch::controlParticle(dsmcParcel& p, dsmcParcel::trackingD
 
     scalar om = sqrt( (ERot*(1.0 - rotationalEnergyAccommodationCoefficient_)) / (physicoChemical::k.value()*T));
 
-    scalar rRot = sqrt(-rotationalEnergyAccommodationCoefficient_*(log(max(1.0 - rndGen.scalar01(), VSMALL))));
+    scalar rRot = sqrt(-rotationalEnergyAccommodationCoefficient_*(log(max(1.0 - rndGen.sample01<scalar>(), VSMALL))));
 
-    scalar cosThetaRot = cos(2.0*pi*rndGen.scalar01());
+    scalar cosThetaRot = cos(2.0*pi*rndGen.sample01<scalar>());
 
     ERot = physicoChemical::k.value()*T*(pow(rRot,2.0) + pow(om,2.0) + (2.0*rRot*om*cosThetaRot));
     
