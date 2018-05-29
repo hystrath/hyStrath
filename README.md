@@ -27,7 +27,7 @@ git clone https://github.com/vincentcasseau/hyStrath.git --branch master --singl
 ```   
 + CFD & DSMC:
 ```sh 
-./install-all.sh nCPUs > logInstall &
+./install-all.sh nCPUs > logInstall 2>&1 &
 ```
 
 where _nCPUs_ is the number of processors to be used during the installation.  
@@ -65,28 +65,21 @@ Analysis](https://strathprints.strath.ac.uk/62926)
 
 ---  
 
-## People and Contact
+## People & Contact
 
-#### _hyStrath_ platform  
-GitHub coordinator: Dr Vincent Casseau  
+GitHub coordinator: Dr Vincent Casseau <a style="text-decoration: none" href="https://uk.linkedin.com/in/vincentcasseau" target="_blank"><img src="https://i2.wp.com/poxse.com/wp-content/uploads/2016/01/linkedin-logo.jpg?ssl=1" alt="LinkedIn profile" width="15"></a>
+<a style="text-decoration: none" href="https://www.researchgate.net/profile/Vincent_Casseau" target="_blank"><img src="https://www.wur.nl/upload_mm/2/8/5/9f59698c-e156-4f33-9520-405cb7f4d9c6_researchgate_56f72ad6_490x330.png" alt="ResearchGate profile" width="22"></a>   
 
-#### CFD  
-Lead developer: Dr Vincent Casseau    
-Contributors: Daniel E.R. Espinoza, Jimmy-John O.E. Hoste and Dr Thomas J. Scanlon              
-Acknowledgements: Dr Rodrigo C. Palharini and Prof Richard E. Brown
-     
-#### DSMC        
-Current developer: Dr Vincent Casseau    
-Contributors: Daniel E.R. Espinoza, Dr Craig White and Dr Thomas J. Scanlon  
+Lead CFD developer: Dr Vincent Casseau    
+Current DSMC developer: Dr Vincent Casseau    
+Lead ARC developer: Dr Viola Renato  
 
-#### ARC  
-Lead developer: Dr Viola Renato  
+Contributors: Daniel E.R. Espinoza, Jimmy-John O.E. Hoste, Dr Craig White and Dr Thomas J. Scanlon    
+External contributors: [View more](https://github.com/vincentcasseau/hyStrath/wiki/Contributions)  
 
-#### External contributors   
-[View more](https://github.com/vincentcasseau/hyStrath/wiki/Contributions)  
+**Enquiries: hy2Foam@gmail.com**   
 
-**Enquiries: hy2Foam@gmail.com**  
-**Consultancy services: [MTS-CFD](https://www.mts-cfd.com/)**  
+#### [View all](https://github.com/vincentcasseau/hyStrath/wiki/People-and-Contact)  
 
 
 <br><br>
