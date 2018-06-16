@@ -77,7 +77,7 @@ Lead ARC developer: Dr Viola Renato
 Contributors: Daniel E.R. Espinoza, Jimmy-John O.E. Hoste, Dr Craig White and Dr Thomas J. Scanlon    
 External contributors: [View more](https://github.com/vincentcasseau/hyStrath/wiki/Contributions)  
 
-**Enquiries: hy2Foam@gmail.com**   
+**Enquiries: hystrath@gmail.com**   
 
 #### [View all](https://github.com/vincentcasseau/hyStrath/wiki/People-and-Contact)  
 
