@@ -456,7 +456,6 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                     if(cumulativeProbability > cloud_.rndGen().sample01<scalar>())
                     {
                         //Current reaction is to occur
-                        
                         if(i == 0)
                         {
                             //Dissociation is to occur
@@ -601,7 +600,7 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 q.vibLevel()[0] = vibLevelQ;
                 q.ELevel() = ELevelQ;
 
-                // Molecule P will dissociation.
+                // Molecule P will dissociate.
                 vector position = p.position();
                 
                 label cell = -1;
@@ -760,7 +759,7 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 p.vibLevel()[0] = vibLevelP;
                 p.ELevel() = ELevelP;
 
-                // Molecule Q will dissociation.
+                // Molecule Q will dissociate.
                 vector position = q.position();
                 
                 label cell = -1;
@@ -918,7 +917,7 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 q.vibLevel()[0] = vibLevelQ;
                 q.ELevel() = ELevelQ;
 
-                // Molecule P will dissociation.
+                // Molecule P will dissociate.
                 vector position = p.position();
                 
                 label cell = -1;
@@ -935,7 +934,7 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 
                 p.typeId() = typeId1;
                 p.U() = uP1;
-                p.vibLevel().setSize(1,0);
+                p.vibLevel().setSize(0,0);
                 p.ERot() = 0.0;
                 p.ELevel() = 0;
                 
@@ -1094,7 +1093,7 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 
                 q.typeId() = typeId1;
                 q.U() = uQ1;
-                q.vibLevel().setSize(1,0);
+                q.vibLevel().setSize(0,0);
                 q.ERot() = 0.0;
                 q.ELevel() = 0;
                 
@@ -1373,8 +1372,8 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 UP = Ucm + (postCollisionRelU*mQ/(mP + mQ)); 
                 UQ = Ucm - (postCollisionRelU*mP/(mP + mQ));
 
-                const label& typeId1 = dissociationProducts_[1][0];
-                const label& typeId2 = dissociationProducts_[1][1];
+                const label typeId1 = dissociationProducts_[1][0];
+                const label typeId2 = dissociationProducts_[1][1];
                 
                 //Mass of Product one and two
                 scalar mP1 = cloud_.constProps(typeId1).mass();
@@ -1411,7 +1410,7 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 q.vibLevel()[0] = vibLevelQ;
                 q.ELevel() = ELevelQ;
 
-                // Molecule P will dissociation.
+                // Molecule P will dissociate.
                 vector position = p.position();
                 
                 label cell = -1;
@@ -1532,8 +1531,8 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 UP = Ucm + (postCollisionRelU*mQ/(mP + mQ)); // UP is the single atom
                 UQ = Ucm - (postCollisionRelU*mP/(mP + mQ)); // UQ is used as Ucm for atomic split.
 
-                const label& typeId1 = dissociationProducts_[0][0];
-                const label& typeId2 = dissociationProducts_[0][1];
+                const label typeId1 = dissociationProducts_[0][0];
+                const label typeId2 = dissociationProducts_[0][1];
                 
                 //Mass of Product one and two
                 scalar mP1 = cloud_.constProps(typeId1).mass();
@@ -1570,7 +1569,7 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 p.vibLevel()[0] = vibLevelP;
                 p.ELevel() = ELevelP;
 
-                // Molecule Q will dissociation.
+                // Molecule Q will dissociate.
                 vector position = q.position();
                 
                 label cell = -1;
@@ -1587,11 +1586,11 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 
                 q.typeId() = typeId1;
                 q.U() = uQ1;
-                q.vibLevel() = 0;
+                q.vibLevel().setSize(0,0);
                 q.ERot() = 0.0;
                 q.ELevel() = 0;
                 
-                label classificationP = q.classification();
+                label classificationQ = q.classification();
                 scalar RWF = q.RWF();
                 labelList vibLevel;
                 
@@ -1608,7 +1607,7 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                     tetPt,
                     typeId2,
                     -1,
-                    classificationP,
+                    classificationQ,
                     vibLevel
                 );
             }
@@ -1728,7 +1727,7 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 q.vibLevel()[0] = vibLevelQ;
                 q.ELevel() = ELevelQ;
 
-                // Molecule P will dissociation.
+                // Molecule P will dissociate.
                 vector position = p.position();
                 
                 label cell = -1;
@@ -1745,7 +1744,7 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 
                 p.typeId() = typeId1;
                 p.U() = uP1;
-                p.vibLevel().setSize(1,0);
+                p.vibLevel().setSize(0,0);
                 p.ERot() = 0.0;
                 p.ELevel() = 0;
                 
@@ -1887,7 +1886,7 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 p.vibLevel()[0] = vibLevelP;
                 p.ELevel() = ELevelP;
 
-                // Molecule Q will dissociation.
+                // Molecule Q will dissociate.
                 vector position = q.position();
                 
                 label cell = -1;
@@ -1904,7 +1903,7 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 
                 q.typeId() = typeId1;
                 q.U() = uQ1;
-                q.vibLevel().setSize(1,0);
+                q.vibLevel().setSize(0,0);
                 q.ERot() = 0.0;
                 q.ELevel() = 0;
                 
@@ -1944,7 +1943,7 @@ void  dissociationIonisationTypeIDissimilarSpecies::outputResults(const label& c
         volume_ = 0.0;
 
         List<label> mols;
-	mols.append(0); mols.append(0);
+	      mols.append(0); mols.append(0);
 
         forAll(cellOccupancy, c)
         {

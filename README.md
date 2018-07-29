@@ -86,8 +86,5 @@ External contributors: [View more](https://github.com/vincentcasseau/hyStrath/wi
 
 ---  
 ### _hyStrath_ also features  
-+ **_dsmcFoam+_** for OF-2.4.0-MNF   
-the direct simulation Monte Carlo code from the Universities of Strathclyde and Glasgow  
-hosted by Dr Craig White (https://github.com/MicroNanoFlows/OpenFOAM-2.4.0-MNF/tree/devel-craig)  
-+ **_blockMeshDG_** by Akidess (https://openfoamwiki.net/index.php/Contrib_blockMeshDG)  
++ **_blockMeshDG_** by Anton Kidess (https://openfoamwiki.net/index.php/Contrib_blockMeshDG)  
 + **_makeAxialMesh_** by Bernhard Gschaider (http://openfoamwiki.net/index.php/Contrib/MakeAxialMesh)
