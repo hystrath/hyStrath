@@ -23,12 +23,12 @@ if(!inviscid)
     rhoE = rho*(e + 0.5*magSqr(U));
 }
 
-scalar timer = runTime.elapsedCpuTime();
+//scalar timer = runTime.elapsedCpuTime();
 if(hyLight) thermo.correct2T_Light();
 else
 {
     thermo.correct2T();
     thermo.correctOverallTemperature();
 }
-Info<< "correctThermo" << tab << (runTime.elapsedCpuTime() - timer) << " s" << endl;
+//Info<< "correctThermo" << tab << (runTime.elapsedCpuTime() - timer) << " s" << endl;
 

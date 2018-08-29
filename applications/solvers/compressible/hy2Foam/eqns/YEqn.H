@@ -14,15 +14,15 @@ if(Y.size() > 1 and (speciesDiffusionName != "noSpeciesDiffusion" or reaction->a
 
     if(speciesDiffusionName != "noSpeciesDiffusion")
     {
-        scalar timee = runTime.elapsedCpuTime();
+        //scalar timee = runTime.elapsedCpuTime();
         speciesDiffusion().correct();
-        Info<< "correctSpeciesDiffusion" << tab << (runTime.elapsedCpuTime() - timee) << " s" << endl;
+        //Info<< "correctSpeciesDiffusion" << tab << (runTime.elapsedCpuTime() - timee) << " s" << endl;
     }
     
-    scalar timef = runTime.elapsedCpuTime();
+    //scalar timef = runTime.elapsedCpuTime();
     reaction->correct();
     dQ = reaction->dQ();
-    Info<< "correctReactions" << tab << (runTime.elapsedCpuTime() - timef) << " s" << endl;
+    //Info<< "correctReactions" << tab << (runTime.elapsedCpuTime() - timef) << " s" << endl;
 
     volScalarField Ytot(0.0*Y[0]);
     
@@ -166,7 +166,7 @@ thermo.correctFractions();
 if(hyLight) thermo.correct2T_Light();
 else thermo.correct2T();
 
-scalar timee = runTime.elapsedCpuTime();
+//scalar timee = runTime.elapsedCpuTime();
 transport().correct();
-Info<< "correctTransport" << tab << (runTime.elapsedCpuTime() - timee) << " s" << endl;
+//Info<< "correctTransport" << tab << (runTime.elapsedCpuTime() - timee) << " s" << endl;
 
