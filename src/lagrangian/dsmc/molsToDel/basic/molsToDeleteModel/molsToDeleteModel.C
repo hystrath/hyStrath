@@ -40,6 +40,7 @@ defineTypeNameAndDebug(molsToDeleteModel, 0);
 
 defineRunTimeSelectionTable(molsToDeleteModel, dictionary);
 
+
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 // Construct from components
@@ -51,9 +52,7 @@ molsToDeleteModel::molsToDeleteModel
 :
     mesh_(cloud.mesh()),
     cloud_(cloud)
-//     molsToDel_()
-{
-}
+{}
 
 
 // * * * * * * * * * * * * * * * * Selectors * * * * * * * * * * * * * * * * //
@@ -87,9 +86,9 @@ autoPtr<molsToDeleteModel> molsToDeleteModel::New
     }
 
     return autoPtr<molsToDeleteModel>
-	(
-		cstrIter()(cloud, dict)
-	);
+	  (
+		    cstrIter()(cloud, dict)
+	  );
 }
 
 
@@ -97,6 +96,7 @@ autoPtr<molsToDeleteModel> molsToDeleteModel::New
 
 molsToDeleteModel::~molsToDeleteModel()
 {}
+
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
@@ -114,6 +114,10 @@ void molsToDeleteModel::deleteMolFromMoleculeCloud
     //- remove molecule from cloud
     cloud_.deleteParticle(mol);
 }
+
+
+void molsToDeleteModel::update()
+{}
 
 
 } // End namespace Foam

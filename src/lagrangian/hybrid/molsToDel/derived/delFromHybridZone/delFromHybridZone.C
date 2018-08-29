@@ -46,6 +46,56 @@ addToRunTimeSelectionTable
 );
 
 
+// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
+
+void delFromHybridZone::findMolsToDel()
+{
+    const labelList& cells = mesh_.cellZones()[regionId_];
+
+    DynamicList<dsmcParcel*> molsToDel;
+
+    label initialSize = cloud_.size();
+
+    /*forAllIter(dsmcCloud, cloud_, p)
+    {
+        const label& cellI =  p().cell();
+
+        if(findIndex(cells, cellI) != -1)
+        {
+            if(findIndex(typeIds_, p().typeId()) != -1)
+            {
+                dsmcParcel* pI = &p();
+                molsToDel.append(pI);
+            }
+        }
+    }*/
+
+    forAll(cells, cellsI)
+    {
+        const label cell = cells[cellsI];
+        molsToDel.append(cloud_.cellOccupancy()[cell]);
+    }
+
+    molsToDel.shrink();
+
+    forAll(molsToDel, m)
+    {
+        deleteMolFromMoleculeCloud(*molsToDel[m]);
+    }
+
+    label molsKept = initialSize - molsToDel.size();
+
+    Info<< "  Zone: " << regionName_ << nl
+        << "    particles kept: " << molsKept
+        << ", particles removed: " << molsToDel.size() 
+        << endl;
+
+
+    // as a precaution: rebuild cell occupancy
+//     molCloud_.rebuildCellOccupancy();
+}
+
+
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 // Construct from components
@@ -61,18 +111,20 @@ delFromHybridZone::delFromHybridZone
     regionId_(-1),
     typeIds_()
 {
+    Info<< propsDict_.name() << endl;
+    
     const cellZoneMesh& cellZones = mesh_.cellZones();
     regionId_ = cellZones.findZoneID(regionName_);
 
     if(regionId_ == -1)
     {
-        FatalErrorIn("delFromHybridZone::delFromHybridZone()")
+        FatalErrorIn("delFromHybridZone::delFromHybridZone(...)")
             << "Cannot find region: " << regionName_ << nl << "in: "
-            << mesh_.time().system()/"hybridDict"
+            << mesh_.time().system()/"molsToDeleteDict"
             << exit(FatalError);
     }
 
-    // standard to reading typeIds ------------ 
+
     const List<word> molecules (propsDict_.lookup("typeIds"));
 
     DynamicList<word> moleculesReduced(0);
@@ -99,17 +151,14 @@ delFromHybridZone::delFromHybridZone
 
         if(typeId == -1)
         {
-            FatalErrorIn("dsmcInflowPatch::dsmcInflowPatch()")
+            FatalErrorIn("delFromHybridZone::delFromHybridZone(...)")
                 << "Cannot find typeId: " << moleculeName << nl << "in: "
-                << mesh_.time().system()/"hybridDict"
+                << mesh_.time().system()/"molsToDeleteDict"
                 << exit(FatalError);
         }
 
         typeIds_[i] = typeId;
     }
-    // ---------------------------------------------------
-
-    findMolsToDel();
 }
 
 
@@ -119,53 +168,11 @@ delFromHybridZone::~delFromHybridZone()
 {}
 
 
-
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
-void delFromHybridZone::findMolsToDel()
+
+void delFromHybridZone::update()
 {
-    const labelList& cells = mesh_.cellZones()[regionId_];
-
-    DynamicList<dsmcParcel*> molsToDel;
-
-    label initialSize = cloud_.size();
-
-    /*forAllIter(dsmcCloud, cloud_, p)
-    {
-        const label& cellI =  p().cell();
-
-        if(findIndex(cells, cellI) != -1)
-        {
-            if(findIndex(typeIds_, p().typeId()) != -1)
-            {
-                dsmcParcel* pI = &p();
-                molsToDel.append(pI);
-            }
-        }
-    }*/
-
-    forAll(cells, cellsI)
-    {
-        const label& cell = cells[cellsI];
-        molsToDel.append(cloud_.cellOccupancy()[cell]);
-    }
-
-    molsToDel.shrink();
-
-    forAll(molsToDel, m)
-    {
-        deleteMolFromMoleculeCloud(*molsToDel[m]);
-    }
-
-    label molsKept = initialSize - molsToDel.size();
-
-    Info<< tab << " initial molecules: " <<  initialSize 
-        << ", molecules kept: " <<  molsKept
-        << ", molecules removed: " << molsToDel.size() 
-        << endl;
-
-
-    // as a precaution: rebuild cell occupancy
-//     molCloud_.rebuildCellOccupancy();
+    findMolsToDel();
 }
 
 

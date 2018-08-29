@@ -59,15 +59,15 @@ private:
 
     // Private data
 
-        //- subDictionary containing the properties
-        dictionary propsDict_;
+      //- subDictionary containing the properties
+      dictionary propsDict_;
 
 
-        //- name of control zone
-        word regionName_;
-        label regionId_;
+      //- name of control zone
+      word regionName_;
+      label regionId_;
 
-        labelList typeIds_;
+      labelList typeIds_;
 
 
     // Private Member Functions
@@ -94,6 +94,8 @@ public:
 
 
     // Member Functions
+    
+      virtual void update();
 
  
 };

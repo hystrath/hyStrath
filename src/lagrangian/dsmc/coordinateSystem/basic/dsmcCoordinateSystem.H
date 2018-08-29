@@ -137,8 +137,8 @@ public:
 
       // Access
       
-        //- Return const access to the time-step value as given by the 
-        //  system/controlDict dictionary
+        //- Return const access to the time-step value given in the 
+        //  controlDict dictionary
         inline scalar deltaTValueOrg() const;
         
         //- Return const reference to time-step model

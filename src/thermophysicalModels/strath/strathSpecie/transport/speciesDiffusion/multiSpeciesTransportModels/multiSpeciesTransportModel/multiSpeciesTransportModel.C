@@ -184,10 +184,7 @@ Foam::multiSpeciesTransportModel::multiSpeciesTransportModel
 {  
     const word dictThermoPhy
     (
-        fileName(thermo.lookup("foamChemistryThermoFile")).substr
-        (
-            fileName(thermo.lookup("foamChemistryThermoFile")).find("constant/") + 9
-        )
+        fileName(thermo.lookup("foamChemistryThermoFile")).name()
     );
     
     const word partialModelName = word(thermo.transportDictionary()

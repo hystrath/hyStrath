@@ -64,12 +64,9 @@ Foam::relaxationTimeModelVV::relaxationTimeModelVV
     
 {  
     const word dict2T(IOdictionary::name()), dictThermoPhy
-        (
-            fileName(thermo.lookup("foamChemistryThermoFile")).substr
-            (
-                fileName(thermo.lookup("foamChemistryThermoFile")).find("constant/") + 9
-            )
-        );
+    (
+        fileName(thermo.lookup("foamChemistryThermoFile")).name()
+    );
     
     // Construct the relaxation time model
     tauVVijModel_.set

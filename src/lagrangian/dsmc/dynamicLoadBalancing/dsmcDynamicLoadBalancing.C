@@ -68,17 +68,6 @@ dsmcDynamicLoadBalancing::dsmcDynamicLoadBalancing
             IOobject::NO_WRITE
         )
     ),
-    /*controlDict_
-    (
-        IOobject
-        (
-            "controlDict",
-            time_.system(),
-            mesh,
-            IOobject::MUST_READ_IF_MODIFIED,
-            IOobject::NO_WRITE
-        )
-    ),*/
     performBalance_(false),
     enableBalancing_(Switch(dsmcLoadBalanceDict_.lookup("enableBalancing"))),
     originalEndTime_(time_.time().endTime().value()),

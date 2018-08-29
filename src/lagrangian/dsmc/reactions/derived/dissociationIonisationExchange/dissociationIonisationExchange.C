@@ -943,7 +943,7 @@ void dissociationIonisationExchange::reaction
                 // Molecule P will dissociate into 2 atoms.
                 vector position = p.position();
                 
-                label cell = -1;
+                /*label cell = -1;
                 label tetFace = -1;
                 label tetPt = -1;
 
@@ -953,7 +953,7 @@ void dissociationIonisationExchange::reaction
                     cell,
                     tetFace,
                     tetPt
-                );
+                );*/
                 
                 p.typeId() = typeId1;
                 p.U() = uP1;
@@ -963,7 +963,7 @@ void dissociationIonisationExchange::reaction
                 
                 label classificationP = p.classification();
                 scalar RWF = p.RWF();
-                labelList vibLevel;
+                labelList vibLevel = p.vibLevel();
                 
                 // insert new product 2
                 cloud_.addNewParcel
@@ -973,9 +973,9 @@ void dissociationIonisationExchange::reaction
                     RWF,
                     0.0,
                     0,
-                    cell,
-                    tetFace,
-                    tetPt,
+                    p.cell(),
+                    p.tetFace(),
+                    p.tetPt(),
                     typeId2,
                     -1,
                     classificationP,
@@ -984,7 +984,7 @@ void dissociationIonisationExchange::reaction
             }
         }
         
-        if(ionisationReactionP)
+        /*if(ionisationReactionP)
         {
             nTotIonisationReactionsP_++;
             nIonisationReactionsPPerTimeStep_++;
@@ -1625,7 +1625,8 @@ void dissociationIonisationExchange::reaction
                     keyElectronicLevel++;
                 }
                 
-                EcQ = translationalEnergy + EEleQ /*+ heatOfReactionExchJoules*/;
+                EcQ = translationalEnergy + EEleQ;
+                  //+ heatOfReactionExchJoules;
 
                 label trialELevel = cloud_.postCollisionElectronicEnergyLevel
                                 (
@@ -1690,11 +1691,11 @@ void dissociationIonisationExchange::reaction
                     }
                 }
             }
-        }
+        }*/
                
         //Decide if a reaction is to occur
         
-        if(totalReactionProbability > cloud_.rndGen().sample01<scalar>())
+        /*if(totalReactionProbability > cloud_.rndGen().sample01<scalar>())
         {
             //A chemical reaction is to occur, choose which one
             
@@ -1863,7 +1864,7 @@ void dissociationIonisationExchange::reaction
                 
                 label classificationQ = q.classification();
                 scalar RWF = q.RWF();
-                labelList vibLevel;
+                labelList vibLevel = q.vibLevel();
                 
                 // insert new product 2
                 cloud_.addNewParcel
@@ -1882,9 +1883,9 @@ void dissociationIonisationExchange::reaction
                     vibLevel
                 );
             }
-        }
+        }*/
         
-        if(ionisationReactionP)
+        /*if(ionisationReactionP)
         {
             //Molecule ionisation (Q is the molecule, P is used for measurement purposes)
             nTotIonisationReactionsP_++;
@@ -2154,7 +2155,7 @@ void dissociationIonisationExchange::reaction
                 
                 label classificationP = p.classification();
                 scalar RWF = p.RWF();
-                labelList vibLevel;
+                labelList vibLevel = p.vibLevel();
                 
                 // insert new product 2
                 cloud_.addNewParcel
@@ -2331,7 +2332,7 @@ void dissociationIonisationExchange::reaction
                 } 
                 q.ELevel() = 0;
             }
-        }
+        }*/
     }
 }
 

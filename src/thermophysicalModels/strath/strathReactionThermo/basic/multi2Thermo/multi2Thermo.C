@@ -214,10 +214,7 @@ Foam::multi2Thermo::multi2Thermo(const fvMesh& mesh, const word& phaseName)
         (
             phasePropertyName
             (
-                fileName(lookup("twoTemperatureDictFile")).substr
-                (
-                    fileName(lookup("twoTemperatureDictFile")).find("constant/") + 9
-                ),
+                fileName(lookup("twoTemperatureDictFile")).name(),
                 phaseName
             ),
             mesh.time().constant(),

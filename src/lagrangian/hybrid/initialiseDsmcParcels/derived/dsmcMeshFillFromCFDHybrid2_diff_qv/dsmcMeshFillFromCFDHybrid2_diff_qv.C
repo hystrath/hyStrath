@@ -92,7 +92,7 @@ void dsmcMeshFillFromCFDHybrid2_diff_qv::setInitialConfiguration()
     (
         IOobject
         (
-            "../meshCFD/U",
+            "../cfd/U",
             mesh_.time().timeName(),
             mesh_,
             IOobject::MUST_READ,
@@ -104,7 +104,7 @@ void dsmcMeshFillFromCFDHybrid2_diff_qv::setInitialConfiguration()
     (
         IOobject
         (
-            "../meshCFD/Tt",
+            "../cfd/Tt",
             mesh_.time().timeName(),
             mesh_,
             IOobject::MUST_READ,
@@ -116,7 +116,7 @@ void dsmcMeshFillFromCFDHybrid2_diff_qv::setInitialConfiguration()
     (
         IOobject
         (
-            "../meshCFD/p",
+            "../cfd/p",
             mesh_.time().timeName(),
             mesh_,
             IOobject::MUST_READ,
@@ -129,7 +129,7 @@ void dsmcMeshFillFromCFDHybrid2_diff_qv::setInitialConfiguration()
     (
         IOobject
         (
-            "../meshCFD/rho",
+            "../cfd/rho",
             mesh_.time().timeName(),
             mesh_,
             IOobject::MUST_READ,
@@ -142,7 +142,7 @@ void dsmcMeshFillFromCFDHybrid2_diff_qv::setInitialConfiguration()
     (
         IOobject
         (
-            "../meshCFD/nD",
+            "../cfd/nD",
             mesh_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
@@ -183,7 +183,7 @@ void dsmcMeshFillFromCFDHybrid2_diff_qv::setInitialConfiguration()
             (
                 IOobject
                 (
-                    "../meshCFD/nD_" + molecules[moleculeI],
+                    "../cfd/nD_" + molecules[moleculeI],
                     mesh_.time().timeName(),
                     mesh_,
                     IOobject::MUST_READ,
@@ -211,7 +211,7 @@ void dsmcMeshFillFromCFDHybrid2_diff_qv::setInitialConfiguration()
             (
                 IOobject
                 (
-                    "../meshCFD/Tv_" + molecules[moleculeI],
+                    "../cfd/Tv_" + molecules[moleculeI],
                     mesh_.time().timeName(),
                     mesh_,
                     IOobject::READ_IF_PRESENT,
@@ -229,7 +229,7 @@ void dsmcMeshFillFromCFDHybrid2_diff_qv::setInitialConfiguration()
             (
                 IOobject
                 (
-                    "../meshCFD/p_" + molecules[moleculeI],
+                    "../cfd/p_" + molecules[moleculeI],
                     mesh_.time().timeName(),
                     mesh_,
                     IOobject::NO_READ,
@@ -246,7 +246,7 @@ void dsmcMeshFillFromCFDHybrid2_diff_qv::setInitialConfiguration()
             (
                 IOobject
                 (
-                    "../meshCFD/kappatr_" + molecules[moleculeI],
+                    "../cfd/kappatr_" + molecules[moleculeI],
                     mesh_.time().timeName(),
                     mesh_,
                     IOobject::MUST_READ,
@@ -263,7 +263,7 @@ void dsmcMeshFillFromCFDHybrid2_diff_qv::setInitialConfiguration()
             (
                 IOobject
                 (
-                    "../meshCFD/kappave_" + molecules[moleculeI],
+                    "../cfd/kappave_" + molecules[moleculeI],
                     mesh_.time().timeName(),
                     mesh_,
                     IOobject::READ_IF_PRESENT,
@@ -281,7 +281,7 @@ void dsmcMeshFillFromCFDHybrid2_diff_qv::setInitialConfiguration()
             (
                 IOobject
                 (
-                    "../meshCFD/mu_" + molecules[moleculeI],
+                    "../cfd/mu_" + molecules[moleculeI],
                     mesh_.time().timeName(),
                     mesh_,
                     IOobject::MUST_READ,
@@ -298,7 +298,7 @@ void dsmcMeshFillFromCFDHybrid2_diff_qv::setInitialConfiguration()
             (
                 IOobject
                 (
-                    "../meshCFD/J_" + molecules[moleculeI],
+                    "../cfd/J_" + molecules[moleculeI],
                     mesh_.time().timeName(),
                     mesh_,
                     IOobject::READ_IF_PRESENT,

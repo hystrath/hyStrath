@@ -87,10 +87,10 @@ public:
 
         //- Construct from components
         delFromCylinder
-		(
+		    (
             dsmcCloud& cloud,
             const dictionary& dict
-		);
+		    );
 
     // Destructor
 
