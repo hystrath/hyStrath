@@ -35,9 +35,10 @@ where _8_ is the number of processors to be used during the installation.
 
 ---  
 ## Release history  
-#### 17 Feb 2018: 'Concordia' release, Master branch  
-+ CFD upgrade to OpenFOAM v1612+   
-+ DSMC update (the new features are listed [here](https://github.com/vincentcasseau/hyStrath/wiki)) 
+#### 29 Aug 2018: 'Concordia' release, Master branch  
++ Master branch ported to OpenFOAM v1706   
++ Minor DSMC corrections  
++ CFD and DSMC rearrangements for future integration of the hybrid solver  
 
 #### [View more](https://github.com/vincentcasseau/hyStrath/wiki/Release-history)  
 
@@ -47,6 +48,8 @@ where _8_ is the number of processors to be used during the installation.
 ---  
 
 ## Publications
+
+#### [How to cite our work](https://github.com/vincentcasseau/hyStrath/wiki/Publications#how-to-cite-our-work)  
 
 #### Latest journal article:  
 [*__hy2Foam__*] V. Casseau _et al._, 12/2016: [A Two-Temperature Open-Source CFD Model for Hypersonic Reacting Flows, Part Two: Multi-Dimensional Analysis](http://www.mdpi.com/2226-4310/3/4/45/html)  
@@ -64,11 +67,11 @@ Analysis](https://strathprints.strath.ac.uk/62926)
 
 ## People & Contact
 
-GitHub coordinator: Dr Vincent Casseau  
+__GitHub coordinator__: Dr Vincent Casseau  
 
-Contributors: Dr Vincent Casseau, Daniel E.R. Espinoza, Dr Jimmy-John O.E. Hoste, Dr Viola Renato, Dr Rodrigo C. Palharini, Dr Craig White, Dr Thomas J. Scanlon, Dr Richard E. Brown     
-External contributors: [View more](https://github.com/vincentcasseau/hyStrath/wiki/Contributions)  
+__Contributors__: Dr Vincent Casseau, Daniel E.R. Espinoza, Dr Jimmy-John O.E. Hoste, Dr Viola Renato, Dr Rodrigo C. Palharini, Dr Craig White, Dr Thomas J. Scanlon, Dr Richard E. Brown     
 
+__External contributors__: R.Tech Engineering   
 
 #### [View more](https://github.com/vincentcasseau/hyStrath/wiki/People-and-Contact)  
 
