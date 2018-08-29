@@ -91,7 +91,7 @@ void dsmcDiffuseSpecularWallFieldPatch::controlParticle
 {
     measurePropertiesBeforeControl(p);
     
-    if (diffuseFraction_ > cloud_.rndGen().scalar01())
+    if (diffuseFraction_ > cloud_.rndGen().sample01<scalar>())
     {
         //- Calculation of the local patch temperature
         const scalar& localPatchTemperature = 

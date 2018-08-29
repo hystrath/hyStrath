@@ -252,7 +252,7 @@ void Foam::Cloud<ParticleType>::move(TrackData& td, const scalar trackTime)
     );
 
     // Allocate transfer buffers
-    PstreamBuffers pBufs(Pstream::nonBlocking);
+    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
 
     // While there are particles to transfer
     while (true)

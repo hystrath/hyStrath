@@ -73,7 +73,7 @@ SourceFiles
 #include "fvMeshFunctionObject.H"
 #include "writeFile.H"
 #include "scalarField.H"
-#include "cachedRandom.H"
+#include "Random.H"
 #include "Tuple2.H"
 #include "writer.H"
 
@@ -107,7 +107,7 @@ protected:
         word tagFieldName_;
 
         //- Random number generator - used by distribution models
-        cachedRandom rndGen_;
+        Random rndGen_;
 
         //- Writer
         autoPtr<writer<scalar>> writerPtr_;

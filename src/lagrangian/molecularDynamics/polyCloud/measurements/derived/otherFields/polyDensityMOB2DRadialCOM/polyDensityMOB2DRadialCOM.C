@@ -330,7 +330,7 @@ void polyDensityMOB2DRadialCOM::calculateField()
                 {
                     const int proc = p;
                     {
-                        OPstream toNeighbour(Pstream::blocking, proc);
+                        OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << mass << centreOfMass;
                     }
                 }
@@ -346,7 +346,7 @@ void polyDensityMOB2DRadialCOM::calculateField()
 
                     const int proc = p;
                     {
-                        IPstream fromNeighbour(Pstream::blocking, proc);
+                        IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> massProc >> centreOfMassProc;
                     }
                     mass += massProc;
@@ -487,7 +487,7 @@ void polyDensityMOB2DRadialCOM::calculateField()
                 {
                     const int proc = p;
                     {
-                        OPstream toNeighbour(Pstream::blocking, proc);
+                        OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << mols;
                     }
                 }
@@ -502,7 +502,7 @@ void polyDensityMOB2DRadialCOM::calculateField()
 
                     const int proc = p;
                     {
-                        IPstream fromNeighbour(Pstream::blocking, proc);
+                        IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> molsProc;
                     }
 

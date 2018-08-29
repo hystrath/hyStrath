@@ -49,7 +49,7 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                           Class molsToDelete Declaration
+                        Class molsToDelete Declaration
 \*---------------------------------------------------------------------------*/
 
 class molsToDelete
@@ -75,9 +75,16 @@ public:
             dsmcCloud& cloud,
             const word& deleteType = word::null
         );
+        
+        
+    // Destructor
+
+        virtual ~molsToDelete();
 
 
     // Member Functions
+    
+      virtual void update();
 
 
         

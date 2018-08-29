@@ -101,7 +101,7 @@ void dsmcDiffuseSpecularWallPatch::controlParticle
 {
     measurePropertiesBeforeControl(p);
 
-    if (diffuseFraction_ > cloud_.rndGen().scalar01())
+    if (diffuseFraction_ > cloud_.rndGen().sample01<scalar>())
     {
         //- Diffuse reflection
         dsmcDiffuseWallPatch::performDiffuseReflection(p);

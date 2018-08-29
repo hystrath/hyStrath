@@ -141,7 +141,7 @@ void dsmcInitialiseOnLine::setInitialConfiguration()
         
         for (label pI = 0; pI < nParticlesToInsert; pI++)
         {
-            point p = startPosition_ + (rndGen_.scalar01()*lineLength*unitVector);
+            point p = startPosition_ + (rndGen_.sample01<scalar>()*lineLength*unitVector);
             
             vector& findCellIndex = p;
             
@@ -252,7 +252,7 @@ void dsmcInitialiseOnLine::setInitialConfiguration()
 //                 if
 //                 (
 //                     (particlesRequired - nParticlesToInsert)
-//                   > rndGen_.scalar01()
+//                   > rndGen_.sample01<scalar>()
 //                 )
 //                 {
 //                     nParticlesToInsert++;

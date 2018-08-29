@@ -422,7 +422,7 @@ void mixedTypeIIDissociationForwardExchange::reaction
         
         //Decide if a reaction is to occur
         
-        if(totalReactionProbability > cloud_.rndGen().scalar01())
+        if(totalReactionProbability > cloud_.rndGen().sample01<scalar>())
         {
             //A chemical reaction is to occur, choose which one
             
@@ -438,7 +438,7 @@ void mixedTypeIIDissociationForwardExchange::reaction
                 {
                     cumulativeProbability += normalisedProbabilities[i];
                     
-                    if(cumulativeProbability > cloud_.rndGen().scalar01())
+                    if(cumulativeProbability > cloud_.rndGen().sample01<scalar>())
                     {
                         //Current reaction is to occur
                         
@@ -479,11 +479,11 @@ void mixedTypeIIDissociationForwardExchange::reaction
 
                 // Variable Hard Sphere collision part
 
-                scalar cosTheta = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                scalar cosTheta = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
             
                 scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
             
-                scalar phi = twoPi*cloud_.rndGen().scalar01();
+                scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
             
                 vector postCollisionRelU =
                     relVelNonDissoMol
@@ -518,11 +518,11 @@ void mixedTypeIIDissociationForwardExchange::reaction
 
                 // Variable Hard Sphere collision part
             
-                scalar cosTheta2 = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                scalar cosTheta2 = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
             
                 scalar sinTheta2 = sqrt(1.0 - cosTheta2*cosTheta2);
             
-                scalar phi2 = twoPi*cloud_.rndGen().scalar01();
+                scalar phi2 = twoPi*cloud_.rndGen().sample01<scalar>();
             
                 vector postCollisionRelU2 = cRatoms
                 *vector
@@ -631,7 +631,7 @@ void mixedTypeIIDissociationForwardExchange::reaction
                         
                     scalar inverseVibrationalCollisionNumberQ = 1.0/ZvQ;
                 
-                    if(inverseVibrationalCollisionNumberQ > cloud_.rndGen().scalar01())
+                    if(inverseVibrationalCollisionNumberQ > cloud_.rndGen().sample01<scalar>())
                     {
                         label iDashQ = 0; // post-collision quantum number
                         scalar func = 0.0;
@@ -642,7 +642,7 @@ void mixedTypeIIDissociationForwardExchange::reaction
                             EVibQ = iDashQ*physicoChemical::k.value()*thetaV;
                             func = pow((1.0 - (EVibQ / EcQ)),(1.5 - omegaPQExch));
                     
-                        } while( !(func > cloud_.rndGen().scalar01()) );
+                        } while( !(func > cloud_.rndGen().sample01<scalar>()) );
                 
                         translationalEnergy = EcQ - EVibQ;
                     }
@@ -650,7 +650,7 @@ void mixedTypeIIDissociationForwardExchange::reaction
                 
                 scalar ERotQ = 0.0;
                 
-                if (0.2 > cloud_.rndGen().scalar01())
+                if (0.2 > cloud_.rndGen().sample01<scalar>())
                 {
                     scalar EcQ = translationalEnergy + ERotQ;
                     
@@ -658,7 +658,7 @@ void mixedTypeIIDissociationForwardExchange::reaction
                     
                     if(rotationalDofExch == 2.0)
                     {
-                        energyRatio = 1.0 - pow(cloud_.rndGen().scalar01(),(1.0/ChiBExch));
+                        energyRatio = 1.0 - pow(cloud_.rndGen().sample01<scalar>(),(1.0/ChiBExch));
                     }
                     else
                     {
@@ -676,11 +676,11 @@ void mixedTypeIIDissociationForwardExchange::reaction
                 
                 //Variable Hard Sphere collision part for collision of molecules
         
-                scalar cosTheta = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                scalar cosTheta = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
             
                 scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
             
-                scalar phi = twoPi*cloud_.rndGen().scalar01();
+                scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
             
                 vector postCollisionRelU =
                     relVelExchMol
@@ -808,7 +808,7 @@ void mixedTypeIIDissociationForwardExchange::reaction
             reactionProbabilities[1] = P_exch;
         }
         
-        if(totalReactionProbability > cloud_.rndGen().scalar01())
+        if(totalReactionProbability > cloud_.rndGen().sample01<scalar>())
         {
             //A chemical reaction is to occur, choose which one
             
@@ -824,7 +824,7 @@ void mixedTypeIIDissociationForwardExchange::reaction
                 {
                     cumulativeProbability += normalisedProbabilities[i];
                     
-                    if(cumulativeProbability > cloud_.rndGen().scalar01())
+                    if(cumulativeProbability > cloud_.rndGen().sample01<scalar>())
                     {
                         //Current reaction is to occur
                         if((i == 0))
@@ -865,11 +865,11 @@ void mixedTypeIIDissociationForwardExchange::reaction
 
                 // Variable Hard Sphere collision part
         
-                scalar cosTheta = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                scalar cosTheta = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
             
                 scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
             
-                scalar phi = twoPi*cloud_.rndGen().scalar01();
+                scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
             
                 vector postCollisionRelU =
                     relVelNonDissoMol
@@ -901,11 +901,11 @@ void mixedTypeIIDissociationForwardExchange::reaction
 
                 // Variable Hard Sphere collision part
             
-                scalar cosTheta2 = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                scalar cosTheta2 = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
             
                 scalar sinTheta2 = sqrt(1.0 - cosTheta2*cosTheta2);
             
-                scalar phi2 = twoPi*cloud_.rndGen().scalar01();
+                scalar phi2 = twoPi*cloud_.rndGen().sample01<scalar>();
             
                 vector postCollisionRelU2 = cRatoms
                 *vector
@@ -1014,7 +1014,7 @@ void mixedTypeIIDissociationForwardExchange::reaction
                         
                     scalar inverseVibrationalCollisionNumberP = 1.0/ZvP;
                 
-                    if(inverseVibrationalCollisionNumberP > cloud_.rndGen().scalar01())
+                    if(inverseVibrationalCollisionNumberP > cloud_.rndGen().sample01<scalar>())
                     {
                         label iDashP = 0; // post-collision quantum number
                         scalar func = 0.0;
@@ -1025,7 +1025,7 @@ void mixedTypeIIDissociationForwardExchange::reaction
                             EVibP = iDashP*physicoChemical::k.value()*thetaV;
                             func = pow((1.0 - (EVibP / EcP)),(1.5 - omegaPQExch));
                     
-                        } while( !(func > cloud_.rndGen().scalar01()) );
+                        } while( !(func > cloud_.rndGen().sample01<scalar>()) );
                 
                         translationalEnergy = EcP - EVibP;
                     }
@@ -1033,7 +1033,7 @@ void mixedTypeIIDissociationForwardExchange::reaction
                 
                 scalar ERotP = 0.0;
                 
-                if (0.2 > cloud_.rndGen().scalar01())
+                if (0.2 > cloud_.rndGen().sample01<scalar>())
                 {
                     scalar EcP = translationalEnergy + ERotP;
                     
@@ -1041,7 +1041,7 @@ void mixedTypeIIDissociationForwardExchange::reaction
                     
                     if(rotationalDofExch == 2.0)
                     {
-                        energyRatio = 1.0 - pow(cloud_.rndGen().scalar01(),(1.0/ChiBExch));
+                        energyRatio = 1.0 - pow(cloud_.rndGen().sample01<scalar>(),(1.0/ChiBExch));
                     }
                     else
                     {
@@ -1059,11 +1059,11 @@ void mixedTypeIIDissociationForwardExchange::reaction
 
                 // Variable Hard Sphere collision part for collision of molecules
         
-                scalar cosTheta = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                scalar cosTheta = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
             
                 scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
             
-                scalar phi = twoPi*cloud_.rndGen().scalar01();
+                scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
             
                 vector postCollisionRelU =
                     relVelExchMol

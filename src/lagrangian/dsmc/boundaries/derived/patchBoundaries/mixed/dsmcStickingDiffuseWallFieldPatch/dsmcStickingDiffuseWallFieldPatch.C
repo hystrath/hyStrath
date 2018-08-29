@@ -116,7 +116,7 @@ void dsmcStickingDiffuseWallFieldPatch::controlParticle
     
             if
             (
-                adsorbtionProbability > cloud_.rndGen().scalar01()
+                adsorbtionProbability > cloud_.rndGen().sample01<scalar>()
              && dsmcStickingWallPatch::isNotSaturated(wppLocalFace)
             )
             {

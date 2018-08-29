@@ -75,8 +75,8 @@ inline Foam::scalar Foam::cachedRandomMD::GaussNormal()
 
     	while(rsq >= 1.0 || rsq == 0.0)
     	{
-    		v1 = (2.0*scalar01())-1.0;
-			v2 = (2.0*scalar01())-1.0;
+    		v1 = (2.0*sample01<scalar>())-1.0;
+			v2 = (2.0*sample01<scalar>())-1.0;
 			rsq = (v1*v1)+(v2*v2);
     	}
 
@@ -239,21 +239,21 @@ Foam::label Foam::cachedRandomMD::integer(const label lower, const label upper)
 template<>
 Foam::label Foam::cachedRandomMD::sample01()
 {
-    return round(scalar01());
+    return round(sample01<scalar>());
 }
 
 
 template<>
 Foam::scalar Foam::cachedRandomMD::sample01()
 {
-    return scalar01();
+    return sample01<scalar>();
 }
 
 
 template<>
 Foam::label Foam::cachedRandomMD::position(const label& start, const label& end)
 {
-    return start + round(scalar01()*(end - start));
+    return start + round(sample01<scalar>()*(end - start));
 }
 
 
@@ -264,7 +264,7 @@ Foam::scalar Foam::cachedRandomMD::position
     const scalar& end
 )
 {
-    return start + scalar01()*(end - start);
+    return start + sample01<scalar>()*(end - start);
 }
 
 

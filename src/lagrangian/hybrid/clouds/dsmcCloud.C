@@ -86,7 +86,7 @@ Foam::label Foam::dsmcCloud::pickFromCandidateList
     if(size > 0)
     {
         // choose a random number between 0 and the size of the candidateList size
-        label randomIndex = rndGen_.integer(0, size - 1);
+        label randomIndex = rndGen_.position<label>(0, size - 1);
         entry = candidatesInCell[randomIndex];
 
         // build a new list without the chosen entry
@@ -151,7 +151,7 @@ Foam::label Foam::dsmcCloud::pickFromCandidateSubList
     
     if(subCellSize > 0)
     {
-        label randomIndex = rndGen_.integer(0, subCellSize - 1);
+        label randomIndex = rndGen_.position<label>(0, subCellSize - 1);
         entry = candidatesInSubCell[randomIndex];
 
 //         Info<< "random index: " << randomIndex <<" entry " 
@@ -245,7 +245,7 @@ Foam::scalar Foam::dsmcCloud::energyRatio
 
     if (ChiAMinusOne < SMALL && ChiBMinusOne < SMALL)
     {
-        return rndGen_.scalar01();
+        return rndGen_.sample01<scalar>();
     }
 
     scalar energyRatio;
@@ -256,7 +256,7 @@ Foam::scalar Foam::dsmcCloud::energyRatio
     {
         P = 0;
 
-        energyRatio = rndGen_.scalar01();
+        energyRatio = rndGen_.sample01<scalar>();
 
         if (ChiAMinusOne < SMALL)
         {
@@ -281,7 +281,7 @@ Foam::scalar Foam::dsmcCloud::energyRatio
                     ChiBMinusOne
                 );
         }
-    } while (P < rndGen_.scalar01());
+    } while (P < rndGen_.sample01<scalar>());
 
     return energyRatio;
 }
@@ -299,7 +299,7 @@ Foam::scalar Foam::dsmcCloud::PSIm
 
     if (DOFm == 2.0 && DOFtot == 4.0)
     {
-        return rndGen_.scalar01();
+        return rndGen_.sample01<scalar>();
     }
 
     if (DOFtot < 4.0)
@@ -316,9 +316,9 @@ Foam::scalar Foam::dsmcCloud::PSIm
 
     do
     {
-        rPSIm = rndGen_.scalar01();
+        rPSIm = rndGen_.sample01<scalar>();
         prob = pow(h1,h1)/(pow(h2,h2)*pow(h3,h3))*pow(rPSIm,h2)*pow(1.0-rPSIm,h3);
-    } while (prob < rndGen_.scalar01());
+    } while (prob < rndGen_.sample01<scalar>());
 
     return rPSIm;
 }
@@ -401,7 +401,7 @@ Foam::dsmcCloud::dsmcCloud
     // and 1.
     forAll(collisionSelectionRemainder_, i)
     {
-        collisionSelectionRemainder_[i] = rndGen_.scalar01();
+        collisionSelectionRemainder_[i] = rndGen_.sample01<scalar>();
     }
     
 	collisionPartnerSelectionModel_ = autoPtr<collisionPartnerSelection>
@@ -778,7 +778,7 @@ void Foam::dsmcCloud::resetHybrid
                         if
                         (
                             (particlesRequired - nParticlesToInsert)
-                                > rndGen_.scalar01()
+                                > rndGen_.sample01<scalar>()
                         )
                         {
                             nParticlesToInsert++;
@@ -913,7 +913,7 @@ void Foam::dsmcCloud::resetHybrid2
                         if
                         (
                             (particlesRequired - nParticlesToInsert)
-                                > rndGen_.scalar01()
+                                > rndGen_.sample01<scalar>()
                         )
                         {
                             nParticlesToInsert++;
@@ -1044,7 +1044,7 @@ void Foam::dsmcCloud::resetHybridMax
                         if
                         (
                             (particlesRequired - nParticlesToInsert)
-                                > rndGen_.scalar01()
+                                > rndGen_.sample01<scalar>()
                         )
                         {
                             nParticlesToInsert++;
@@ -1175,7 +1175,7 @@ void Foam::dsmcCloud::resetHybridTra
                         if
                         (
                             (particlesRequired - nParticlesToInsert)
-                                > rndGen_.scalar01()
+                                > rndGen_.sample01<scalar>()
                         )
                         {
                             nParticlesToInsert++;
@@ -1320,7 +1320,7 @@ void Foam::dsmcCloud::resetHybridTraRotVib
                         if
                         (
                             (particlesRequired - nParticlesToInsert)
-                                > rndGen_.scalar01()
+                                > rndGen_.sample01<scalar>()
                         )
                         {
                             nParticlesToInsert++;
@@ -1469,7 +1469,7 @@ void Foam::dsmcCloud::resetHybridTraRotVib2
                         if
                         (
                             (particlesRequired - nParticlesToInsert)
-                                > rndGen_.scalar01()
+                                > rndGen_.sample01<scalar>()
                         )
                         {
                             nParticlesToInsert++;
@@ -1627,9 +1627,9 @@ Foam::vector Foam::dsmcCloud::equipartitionLinearVelocity
         sqrt(physicoChemical::k.value()*temperature/mass)
        *vector
         (
-            rndGen_.GaussNormal(),
-            rndGen_.GaussNormal(),
-            rndGen_.GaussNormal()
+            rndGen_.GaussNormal<scalar>(),
+            rndGen_.GaussNormal<scalar>(),
+            rndGen_.GaussNormal<scalar>()
         );
 }
 
@@ -1648,7 +1648,7 @@ Foam::scalar Foam::dsmcCloud::equipartitionRotationalEnergy
     else if (rotationalDof < 2.0 + SMALL && rotationalDof > 2.0 - SMALL)
     {
         // Special case for rDof = 2, i.e. diatomics;
-        ERot = -log(rndGen_.scalar01())*physicoChemical::k.value()*temperature;
+        ERot = -log(rndGen_.sample01<scalar>())*physicoChemical::k.value()*temperature;
     }
     else
     {
@@ -1660,11 +1660,11 @@ Foam::scalar Foam::dsmcCloud::equipartitionRotationalEnergy
 
         do
         {
-            energyRatio = 10*rndGen_.scalar01();
+            energyRatio = 10*rndGen_.sample01<scalar>();
 
             P = pow((energyRatio/a), a)*exp(a - energyRatio);
 
-        } while (P < rndGen_.scalar01());
+        } while (P < rndGen_.sample01<scalar>());
 
         ERot = energyRatio*physicoChemical::k.value()*temperature;
     }
@@ -1687,7 +1687,7 @@ Foam::scalar Foam::dsmcCloud::equipartitionVibrationalEnergy
     }
     else
     {  
-        label i = -log(rndGen_.scalar01())*temperature/constProps(typeId).thetaV();
+        label i = -log(rndGen_.sample01<scalar>())*temperature/constProps(typeId).thetaV();
         EVib = i*physicoChemical::k.value()*constProps(typeId).thetaV();
     }
 
@@ -1709,9 +1709,9 @@ Foam::scalar Foam::dsmcCloud::equipartitionVibrationalEnergy2
     }
     else
     {  
-        label i = -log(rndGen_.scalar01())*temperature/constProps(typeId).thetaV();
+        label i = -log(rndGen_.sample01<scalar>())*temperature/constProps(typeId).thetaV();
         Info << "Real: " <<
-            -log(rndGen_.scalar01())*temperature/constProps(typeId).thetaV()
+            -log(rndGen_.sample01<scalar>())*temperature/constProps(typeId).thetaV()
             << ", i: " << i << endl;
         EVib = i*physicoChemical::k.value()*constProps(typeId).thetaV();
     }
@@ -1737,13 +1737,13 @@ Foam::vector Foam::dsmcCloud::chapmanEnskogVelocity
     {
         CTry = vector
             (
-                rndGen_.GaussNormal(),
-                rndGen_.GaussNormal(),
-                rndGen_.GaussNormal()
+                rndGen_.GaussNormal<scalar>(),
+                rndGen_.GaussNormal<scalar>(),
+                rndGen_.GaussNormal<scalar>()
             ) / sqrt(2.0);
         scalar gammaTry = 1.0 + (q & CTry) * (0.4 * (CTry & CTry) - 1.0)
             - (CTry & (tau & CTry));
-        scalar rn = rndGen_.scalar01();
+        scalar rn = rndGen_.sample01<scalar>();
         if (gammaTry >= A * rn) repeatTry = false;
     }
     return CTry * sqrt(2.0 * physicoChemical::k.value() * temperature / mass);
@@ -1766,13 +1766,13 @@ Foam::vector Foam::dsmcCloud::chapmanEnskogVelocityMiu
     {
         CTry = vector
             (
-                rndGen_.GaussNormal(),
-                rndGen_.GaussNormal(),
-                rndGen_.GaussNormal()
+                rndGen_.GaussNormal<scalar>(),
+                rndGen_.GaussNormal<scalar>(),
+                rndGen_.GaussNormal<scalar>()
             ) / sqrt(2.0);
         scalar gammaTry = 1.0 + (q & CTry) * (0.4 * (CTry & CTry) - 1.0)
             - (CTry & (tau & CTry));
-        scalar rn = rndGen_.scalar01();
+        scalar rn = rndGen_.sample01<scalar>();
         if (gammaTry >= A * rn) repeatTry = false;
     }
     return CTry * sqrt(2.0 * physicoChemical::k.value() * temperature / mass);
@@ -1841,14 +1841,14 @@ void Foam::dsmcCloud::generalisedChapmanEnskog
 
         CTry = vector
             (
-                rndGen_.GaussNormal(),
-                rndGen_.GaussNormal(),
-                rndGen_.GaussNormal()
+                rndGen_.GaussNormal<scalar>(),
+                rndGen_.GaussNormal<scalar>(),
+                rndGen_.GaussNormal<scalar>()
             ) / sqrt(2.0);
         scalar gammaTry = 1.0 + 2.0 * (D & CTry) + (qTra & CTry) * (0.4
             * (CTry & CTry) - 1.0) + (qRot & CTry) * (epsRot - epsRotAv)
             + (qVib & CTry) * (epsVib - epsVibAv) - (CTry & (tau & CTry));
-        scalar rn = rndGen_.scalar01();
+        scalar rn = rndGen_.sample01<scalar>();
         if (gammaTry >= A * rn) repeatTry = false;
     }
 
@@ -1916,14 +1916,14 @@ void Foam::dsmcCloud::generalisedChapmanEnskog2
     {
         CTry = vector
             (
-                rndGen_.GaussNormal(),
-                rndGen_.GaussNormal(),
-                rndGen_.GaussNormal()
+                rndGen_.GaussNormal<scalar>(),
+                rndGen_.GaussNormal<scalar>(),
+                rndGen_.GaussNormal<scalar>()
             ) / sqrt(2.0);
         gammaTry = 1.0 + 2.0 * (D & CTry) + (qTra & CTry) * (0.4
             * (CTry & CTry) - 1.0) + (qRot & CTry) * (epsRot - epsRotAv)
             + (qVib & CTry) * (epsVib - epsVibAv) - (CTry & (tau & CTry));
-        rn = rndGen_.scalar01();
+        rn = rndGen_.sample01<scalar>();
     } while (gammaTry >= A * rn);
 
     U = CTry * sqrt(2.0 * physicoChemical::k.value() * translationalTemperature

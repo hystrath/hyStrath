@@ -200,7 +200,7 @@ void dsmcLaserHeatingFill::setInitialConfiguration()
                     if
                     (
                         (particlesRequired - nParticlesToInsert)
-                            > rndGen_.scalar01()
+                            > rndGen_.sample01<scalar>()
                     )
                     {
                         nParticlesToInsert++;

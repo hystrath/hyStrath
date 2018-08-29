@@ -320,7 +320,7 @@ void recombination::reaction
         
         scalar pRec = rhoC_*VColl;
         
-        if(pRec > cloud_.rndGen().scalar01())
+        if(pRec > cloud_.rndGen().sample01<scalar>())
         {
             nReactionsPerTimeStep_++;
             nTotReactions_++;
@@ -416,11 +416,11 @@ void recombination::reaction
 
                 // Variable Hard Sphere collision part for collision of molecules
         
-                scalar cosTheta = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                scalar cosTheta = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
             
                 scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
             
-                scalar phi = twoPi*cloud_.rndGen().scalar01();
+                scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
             
                 vector postCollisionU =
                     recombMolVel
@@ -462,7 +462,7 @@ void recombination::reaction
                 
                 label classification = 0;
                 
-                if(cloud_.rndGen().scalar01() > 0.5)
+                if(cloud_.rndGen().sample01<scalar>() > 0.5)
                 {
                     classification = p.classification();
                 }

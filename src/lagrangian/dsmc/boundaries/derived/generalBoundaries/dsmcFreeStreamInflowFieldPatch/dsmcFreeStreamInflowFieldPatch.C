@@ -236,7 +236,7 @@ void dsmcFreeStreamInflowFieldPatch::controlParcelsBeforeMove()
 
             // Add another particle with a probability proportional to the
             // remainder of taking the integer part of faceAccumulator
-            if ((faceAccumulator - nI) > rndGen.scalar01())
+            if ((faceAccumulator - nI) > rndGen.sample01<scalar>())
             {
                 nI++;
             }
@@ -250,7 +250,7 @@ void dsmcFreeStreamInflowFieldPatch::controlParcelsBeforeMove()
             {
                 // Choose a triangle to insert on, based on their relative
                 // area
-                scalar triSelection = rndGen.scalar01();
+                scalar triSelection = rndGen.sample01<scalar>();
 
                 // Selected triangle
                 label selectedTriI = -1;
@@ -311,7 +311,7 @@ void dsmcFreeStreamInflowFieldPatch::controlParcelsBeforeMove()
                 do
                 {
                     uNormalThermal =
-                        randomScaling*(2.0*rndGen.scalar01() - 1);
+                        randomScaling*(2.0*rndGen.sample01<scalar>() - 1);
 
                     uNormal = uNormalThermal + sCosTheta;
 
@@ -325,13 +325,13 @@ void dsmcFreeStreamInflowFieldPatch::controlParcelsBeforeMove()
                             *exp(uNormProbCoeffB - sqr(uNormalThermal));
                     }
 
-                } while (P < rndGen.scalar01());
+                } while (P < rndGen.sample01<scalar>());
 
                 vector U =
                     sqrt(physicoChemical::k.value()*faceTranslationalTemperature/mass)
                     *(
-                        rndGen.GaussNormal()*t1
-                        + rndGen.GaussNormal()*t2
+                        rndGen.GaussNormal<scalar>()*t1
+                        + rndGen.GaussNormal<scalar>()*t2
                     )
                     + (t1 & faceVelocity)*t1
                     + (t2 & faceVelocity)*t2

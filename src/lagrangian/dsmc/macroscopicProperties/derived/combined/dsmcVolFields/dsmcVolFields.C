@@ -46,7 +46,7 @@ defineTypeNameAndDebug(dsmcVolFields, 0);
 addToRunTimeSelectionTable(dsmcField, dsmcVolFields, dictionary);
 
 
-// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
+// * * * * * * * * * * * * Protected Member Functions  * * * * * * * * * * * //
 
 void dsmcVolFields::calculateWallUnitVectors()
 {
@@ -149,7 +149,7 @@ dsmcVolFields::dsmcVolFields
             IOobject::AUTO_WRITE
         ),
         mesh_,
-        dimensionedScalar("0.0", dimless/dimVolume, 0.0)
+        dimensionedScalar("0.0", dimMass/dimVolume, 0.0)
     ),
     p_
     (
@@ -1021,7 +1021,7 @@ void dsmcVolFields::calculateField()
         }
         else
         {
-            scalar timer = mesh_.time().elapsedCpuTime();
+            //scalar timer = mesh_.time().elapsedCpuTime(); // TODO VINCENT
             
             forAllConstIter(dsmcCloud, cloud_, iter)
             {
@@ -1043,6 +1043,8 @@ void dsmcVolFields::calculateField()
                             .vibrationalDegreesOfFreedom()
                     );
                     
+                    scalar vibEn = 0.0;
+                    
                     if (EVib.size() > 0)
                     {
                         forAll(EVib, i)
@@ -1052,6 +1054,7 @@ void dsmcVolFields::calculateField()
                                  *cloud_.constProps(p.typeId()).thetaV()[i];
                             
                             vibrationalETotal_[iD][i][cell] += EVib[i];
+                            vibEn += EVib[i];
                         }
                     }
                                     
@@ -1086,20 +1089,10 @@ void dsmcVolFields::calculateField()
                     mccv_[cell] += massBySqMagU*(p.U().y());
                     mccw_[cell] += massBySqMagU*(p.U().z());
                     
-                    scalar vibEn = 0.0;
-
-                    if (EVib.size() > 0)
-                    {
-                        forAll(EVib, i)
-                        {
-                            vibEn += EVib[i];
-                        }
-                    }
-                    
-                    eu_[cell] += ( p.ERot() + vibEn )*(p.U().x());
-                    ev_[cell] += ( p.ERot() + vibEn )*(p.U().y());
-                    ew_[cell] += ( p.ERot() + vibEn )*(p.U().z());
-                    e_[cell] += ( p.ERot() + vibEn );
+                    eu_[cell] += (p.ERot() + vibEn)*p.U().x();
+                    ev_[cell] += (p.ERot() + vibEn)*p.U().y();
+                    ew_[cell] += (p.ERot() + vibEn)*p.U().z();
+                    e_[cell] += (p.ERot() + vibEn);
                     
                     if (rotationalDof > VSMALL)
                     {
@@ -1145,7 +1138,7 @@ void dsmcVolFields::calculateField()
                 }
             }
             
-            Info<< "fields myCal" << tab << mesh_.time().elapsedCpuTime() - timer << " s" << endl;
+            //Info<< "fields myCal" << tab << mesh_.time().elapsedCpuTime() - timer << " s" << endl; // TODO VINCENT
             
             // obtain collision quality measurements
             forAll(cloud_.cellPropMeasurements().collisionSeparation(), cell)

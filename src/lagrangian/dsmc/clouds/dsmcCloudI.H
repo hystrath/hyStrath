@@ -49,7 +49,7 @@ inline const Foam::IOdictionary& Foam::dsmcCloud::particleProperties() const
 }
 
 
-inline const Foam::IOdictionary& Foam::dsmcCloud::controlDict() const
+inline const Foam::dictionary& Foam::dsmcCloud::controlDict() const
 {
     return controlDict_;
 }

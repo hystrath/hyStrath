@@ -38,7 +38,7 @@ Description
     Note: the copy constructor cannot be used if count = -1.
 
     Functionality extended beyond the basic Foam::cachedRandom by allowing the
-    GaussNormal() and vector01() functions to be called on the cached values in
+   .GaussNormal<scalar>() and vector01() functions to be called on the cached values in
     the same manner as Foam::Random.
 
 SourceFiles

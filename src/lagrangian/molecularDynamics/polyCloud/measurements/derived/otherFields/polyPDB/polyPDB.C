@@ -461,7 +461,7 @@ void polyPDB::write()
         {
             const int proc = 0;
             {
-                OPstream toNeighbour(Pstream::blocking, proc);
+                OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                 toNeighbour << sites[myProc] << molIds[myProc];
             }
         }
@@ -478,7 +478,7 @@ void polyPDB::write()
 
                     const int proc = p;
                     {
-                        IPstream fromNeighbour(Pstream::blocking, proc);
+                        IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> sitesProc >> molIdsProc;
                     }
 

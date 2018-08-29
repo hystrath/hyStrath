@@ -123,9 +123,9 @@ void dsmcCLLWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::trackingData& 
 
         U = vector
         (
-            U.x()*(0.8 + 0.2*rndGen.scalar01()),
-            U.y()*(0.8 + 0.2*rndGen.scalar01()),
-            U.z()*(0.8 + 0.2*rndGen.scalar01())
+            U.x()*(0.8 + 0.2*rndGen.sample01<scalar>()),
+            U.y()*(0.8 + 0.2*rndGen.sample01<scalar>()),
+            U.z()*(0.8 + 0.2*rndGen.sample01<scalar>())
         );
 
         U_dot_nw = U & nw;
@@ -167,19 +167,19 @@ void dsmcCLLWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::trackingData& 
     
     //normal random number components
     
-    scalar thetaNormal = 2.0*pi*rndGen.scalar01();
+    scalar thetaNormal = 2.0*pi*rndGen.sample01<scalar>();
     
-    scalar rNormal = sqrt(-alphaN*log(rndGen.scalar01()));
+    scalar rNormal = sqrt(-alphaN*log(rndGen.sample01<scalar>()));
 
     //tangential random number components
 
-    scalar thetaTangential1 = 2.0*pi*rndGen.scalar01();
+    scalar thetaTangential1 = 2.0*pi*rndGen.sample01<scalar>();
     
-    scalar rTangential1 = sqrt(-alphaT*log(rndGen.scalar01()));
+    scalar rTangential1 = sqrt(-alphaT*log(rndGen.sample01<scalar>()));
     
-//     scalar thetaTangential2 = 2.0*pi*rndGen.scalar01();
+//     scalar thetaTangential2 = 2.0*pi*rndGen.sample01<scalar>();
     
-//     scalar rTangential2 = sqrt(-alphaT*log(rndGen.scalar01()));
+//     scalar rTangential2 = sqrt(-alphaT*log(rndGen.sample01<scalar>()));
 
     //selecting the reflected thermal velocities
     
@@ -256,8 +256,8 @@ void dsmcCLLWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::trackingData& 
     if(rotationalDof == 2)
     {
         scalar om = sqrt( (ERot*(1.0 - alphaR)) / (physicoChemical::k.value()*T));
-        scalar rRot = sqrt(-alphaR*(log(max(1.0 - rndGen.scalar01(), VSMALL))));
-        scalar thetaRot = 2.0*pi*rndGen.scalar01();
+        scalar rRot = sqrt(-alphaR*(log(max(1.0 - rndGen.sample01<scalar>(), VSMALL))));
+        scalar thetaRot = 2.0*pi*rndGen.sample01<scalar>();
         ERot = physicoChemical::k.value()*T*((rRot*rRot) + (om*om) + (2.0*rRot*om*cos(thetaRot)));
     }
     
@@ -268,13 +268,13 @@ void dsmcCLLWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::trackingData& 
         
         do
         {
-                X = 4.0*rndGen.scalar01();
+                X = 4.0*rndGen.sample01<scalar>();
                 A = 2.7182818*X*X*exp(-(X*X));
-        } while (A < rndGen.scalar01());
+        } while (A < rndGen.sample01<scalar>());
         
         scalar om = sqrt( (ERot*(1.0 - alphaR)) / (physicoChemical::k.value()*T));
         scalar rRot = sqrt(-alphaR)*X;
-        scalar thetaRot = 2.0*rndGen.scalar01() - 1.0;
+        scalar thetaRot = 2.0*rndGen.sample01<scalar>() - 1.0;
         ERot = physicoChemical::k.value()*T*((rRot*rRot) + (om*om) + (2.0*rRot*om*cos(thetaRot)));
     }
 	
@@ -282,15 +282,15 @@ void dsmcCLLWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::trackingData& 
 // 	
 // 	if(vibrationalDof > VSMALL)
 // 	{
-// 		scalar EVibStar = -log(1.0 - rndGen.scalar01() + rndGen.scalar01()*exp(-characteristicVibrationalTemperature*physicoChemical::k.value())); 
+// 		scalar EVibStar = -log(1.0 - rndGen.sample01<scalar>() + rndGen.sample01<scalar>()*exp(-characteristicVibrationalTemperature*physicoChemical::k.value())); 
 // 		
 // 		EVib += EVibStar;
 // 		
 // 		scalar vm = sqrt(1.0-alphaV)*sqrt(EVib);
 // 		
-// 		scalar thetaVib = 2.0*pi*rndGen.scalar01();
+// 		scalar thetaVib = 2.0*pi*rndGen.sample01<scalar>();
 // 		
-// 		scalar rVib = sqrt(-alphaV*log(rndGen.scalar01()));
+// 		scalar rVib = sqrt(-alphaV*log(rndGen.sample01<scalar>()));
 // 		
 // 		EVib = (
 // 					(rVib*rVib) 

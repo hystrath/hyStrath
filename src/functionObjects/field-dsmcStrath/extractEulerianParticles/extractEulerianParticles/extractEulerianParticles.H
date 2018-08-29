@@ -70,7 +70,7 @@ SourceFiles
 #include "surfaceFieldsFwd.H"
 #include "vectorList.H"
 #include "globalIndex.H"
-#include "cachedRandom.H"
+#include "Random.H"
 #include "eulerianParticle.H"
 #include "IOdictionary.H"
 #include "injectedParticleCloud.H"

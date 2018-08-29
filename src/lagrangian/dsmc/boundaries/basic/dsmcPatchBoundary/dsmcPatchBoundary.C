@@ -243,9 +243,9 @@ void dsmcPatchBoundary::calculateWallUnitVectors
 
         U = vector
         (
-            U.x()*(0.8 + 0.2*rndGen.scalar01()),
-            U.y()*(0.8 + 0.2*rndGen.scalar01()),
-            U.z()*(0.8 + 0.2*rndGen.scalar01())
+            U.x()*(0.8 + 0.2*rndGen.sample01<scalar>()),
+            U.y()*(0.8 + 0.2*rndGen.sample01<scalar>()),
+            U.z()*(0.8 + 0.2*rndGen.sample01<scalar>())
         );
 
         U_dot_nw = U & nw;

@@ -266,7 +266,7 @@ void dsmcReflectiveParticleMembranePatch::controlMol
         
         if(fA != -1)
         {
-            const scalar pRandom = rndGen.scalar01();
+            const scalar pRandom = rndGen.sample01<scalar>();
 
             if(specularReflectionProbs_[iD] > pRandom)
             {
@@ -311,7 +311,7 @@ void dsmcReflectiveParticleMembranePatch::controlMol
     {
         if(fB != -1)
         {    
-            const scalar pRandom = rndGen.scalar01();
+            const scalar pRandom = rndGen.sample01<scalar>();
 
             if(specularReflectionProbs_[iD] > pRandom)
             {

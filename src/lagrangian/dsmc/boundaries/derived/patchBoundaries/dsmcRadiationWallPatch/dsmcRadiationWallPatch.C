@@ -186,9 +186,9 @@ void dsmcRadiationWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::tracking
     
     U = sqrt(physicoChemical::k.value()*T/mass)
         *(
-            rndGen.GaussNormal()*tw1
-          + rndGen.GaussNormal()*tw2
-          - sqrt(-2.0*log(max(1 - rndGen.scalar01(), VSMALL)))*nw
+            rndGen.GaussNormal<scalar>()*tw1
+          + rndGen.GaussNormal<scalar>()*tw2
+          - sqrt(-2.0*log(max(1 - rndGen.sample01<scalar>(), VSMALL)))*nw
         );
 
     U += velocity_;

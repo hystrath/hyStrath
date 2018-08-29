@@ -29,9 +29,7 @@ Description
 
 
 SourceFiles
-    molsToDeleteModelI.H
     molsToDeleteModel.C
-    molsToDeleteModelIO.C
 
 \*---------------------------------------------------------------------------*/
 
@@ -55,7 +53,7 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                           Class molsToDeleteModel Declaration
+                      Class molsToDeleteModel Declaration
 \*---------------------------------------------------------------------------*/
 
 class molsToDeleteModel
@@ -65,17 +63,15 @@ protected:
 
     // Protected data
 
-
         const fvMesh& mesh_;
 
         dsmcCloud& cloud_;
 
-    // Private Member Functions
 
-        void deleteMolFromMoleculeCloud
-        (
-            dsmcParcel& mol
-        );
+    // Protected Member Functions
+
+        void deleteMolFromMoleculeCloud(dsmcParcel& mol);
+
 
 public:
 
@@ -83,6 +79,7 @@ public:
     TypeName("molsToDeleteModel");
 
     // Declare runtime constructor selection table
+    
         declareRunTimeSelectionTable
         (
             autoPtr,
@@ -120,9 +117,11 @@ public:
 
 
     // Member Functions
+    
+      virtual void update();
 
 
-        // Access
+    // Access
 
 //             const labelList& molsToDel() const;
 

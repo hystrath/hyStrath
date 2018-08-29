@@ -224,9 +224,9 @@ void dsmcStickingWallPatch::adsorbParticle
     U = vector::zero; 
        /*SMALL*sqrt(physicoChemical::k.value()*T/mass)
        *(
-            rndGen.GaussNormal()*tw1
-          + rndGen.GaussNormal()*tw2
-          - sqrt(-2.0*log(max(1 - rndGen.scalar01(), VSMALL)))*nw
+            rndGen.GaussNormal<scalar>()*tw1
+          + rndGen.GaussNormal<scalar>()*tw2
+          - sqrt(-2.0*log(max(1 - rndGen.sample01<scalar>(), VSMALL)))*nw
         );*/
     
     const label wppIndex = patchId();
@@ -260,7 +260,7 @@ void dsmcStickingWallPatch::testForDesorption(dsmcParcel& p)
 
         Random& rndGen = cloud_.rndGen();
 
-        if(rndGen.scalar01() < deltaT/residenceTime_[iD])
+        if(rndGen.sample01<scalar>() < deltaT/residenceTime_[iD])
         {
             const scalar mass = cloud_.constProps(iD).mass();
             
@@ -273,9 +273,9 @@ void dsmcStickingWallPatch::testForDesorption(dsmcParcel& p)
                   / mass
                 )
               * (
-                    rndGen.GaussNormal()*p.stuck().wallVectors()[0]
-                  + rndGen.GaussNormal()*p.stuck().wallVectors()[1]
-                  - sqrt(-2.0*log(max(1 - rndGen.scalar01(), VSMALL)))
+                    rndGen.GaussNormal<scalar>()*p.stuck().wallVectors()[0]
+                  + rndGen.GaussNormal<scalar>()*p.stuck().wallVectors()[1]
+                  - sqrt(-2.0*log(max(1 - rndGen.sample01<scalar>(), VSMALL)))
                         *p.stuck().wallVectors()[2]
                 );
                 

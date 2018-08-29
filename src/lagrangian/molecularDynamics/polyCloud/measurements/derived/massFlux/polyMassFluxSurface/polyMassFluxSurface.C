@@ -233,7 +233,7 @@ polyMassFluxSurface::polyMassFluxSurface
                 {
                     const int proc = p;
                     {
-                        OPstream toNeighbour(Pstream::blocking, proc);
+                        OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << zoneSurfaceArea_;
                     }
                 }
@@ -248,7 +248,7 @@ polyMassFluxSurface::polyMassFluxSurface
     
                     const int proc = p;
                     {
-                        IPstream fromNeighbour(Pstream::blocking, proc);
+                        IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> zoneSurfaceAreaProc;
                     }
         

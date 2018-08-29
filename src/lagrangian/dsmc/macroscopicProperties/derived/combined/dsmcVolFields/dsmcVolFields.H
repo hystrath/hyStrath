@@ -28,12 +28,8 @@ Class
 Description
     Geometric field for temperature, density, velocity, pressure.
 
-
-
 SourceFiles
-    dsmcVolFieldsI.H
     dsmcVolFields.C
-    dsmcVolFieldsIO.C
 
 \*---------------------------------------------------------------------------*/
 
@@ -60,9 +56,9 @@ class dsmcVolFields
 	public dsmcField
 {
 
-private:
+protected:
 
-    // Private data
+    // Protected data
     
         dictionary propsDict_;
         
@@ -195,7 +191,7 @@ private:
         bool densityOnly_;
         bool measureHeatFluxShearStress_;
         
-    // Private Member Functions
+    // Protected Member Functions
 
         void readIn();
 
@@ -228,19 +224,18 @@ public:
     // Member Functions
 
       //- create initial field
-      void createField();
+      virtual void createField();
 
       //- calculate field
-      void calculateField();
+      virtual void calculateField();
       
       //- reset field if mesh has changed
-      void resetField();
+      virtual void resetField();
 
       //- write field
-      void writeField();
+      virtual void writeField();
 
-  //         const propertyField& fields() const;
-      void updateProperties(const dictionary& dict);
+      virtual void updateProperties(const dictionary& dict);
 };
 
 

@@ -400,11 +400,11 @@ void atomAtomIonisationSameSpecies::reaction
 
                 // Variable Hard Sphere collision part
     
-                scalar cosTheta = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                scalar cosTheta = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
             
                 scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
             
-                scalar phi = twoPi*cloud_.rndGen().scalar01();
+                scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
             
                 vector postCollisionRelU =
                     relVelNonDissoMol
@@ -437,11 +437,11 @@ void atomAtomIonisationSameSpecies::reaction
 
                 // Variable Hard Sphere collision part
             
-                scalar cosTheta2 = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                scalar cosTheta2 = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
             
                 scalar sinTheta2 = sqrt(1.0 - cosTheta2*cosTheta2);
             
-                scalar phi2 = twoPi*cloud_.rndGen().scalar01();
+                scalar phi2 = twoPi*cloud_.rndGen().sample01<scalar>();
             
                 vector postCollisionRelU2 = cRatoms
                 *vector
@@ -542,11 +542,11 @@ void atomAtomIonisationSameSpecies::reaction
 // 
 //                 // Variable Hard Sphere collision part
 //     
-//                 scalar cosTheta = 2.0*cloud_.rndGen().scalar01() - 1.0;
+//                 scalar cosTheta = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
 //             
 //                 scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
 //             
-//                 scalar phi = twoPi*cloud_.rndGen().scalar01();
+//                 scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
 //             
 //                 vector postCollisionRelU =
 //                     relVelNonDissoMol
@@ -579,11 +579,11 @@ void atomAtomIonisationSameSpecies::reaction
 // 
 //                 // Variable Hard Sphere collision part
 //             
-//                 scalar cosTheta2 = 2.0*cloud_.rndGen().scalar01() - 1.0;
+//                 scalar cosTheta2 = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
 //             
 //                 scalar sinTheta2 = sqrt(1.0 - cosTheta2*cosTheta2);
 //             
-//                 scalar phi2 = twoPi*cloud_.rndGen().scalar01();
+//                 scalar phi2 = twoPi*cloud_.rndGen().sample01<scalar>();
 //             
 //                 vector postCollisionRelU2 = cRatoms
 //                 *vector

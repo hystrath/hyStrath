@@ -268,7 +268,7 @@ void simplifiedBernoulliTrialsTAS::collide()
                     candidateP = p;
                 
                     k = nCS - p - 1;
-                    candidateQ = p + rndGen_.integer(1, k);
+                    candidateQ = p + rndGen_.position<label>(1, k);
                     
                     dsmcParcel& parcelP = *cellParcels[subCells[i][candidateP]];
                     dsmcParcel& parcelQ = *cellParcels[subCells[i][candidateQ]];
@@ -281,7 +281,7 @@ void simplifiedBernoulliTrialsTAS::collide()
                 
                     scalar Probability = k*prob1*sigmaTcR*0.5;
 
-    // 					if (Probability > rndGen_.scalar01())
+    // 					if (Probability > rndGen_.sample01<scalar>())
     // 					{
     // 						binaryCollision().collide
     // 						(
@@ -291,7 +291,7 @@ void simplifiedBernoulliTrialsTAS::collide()
     // 
     // 						collisions++;
     // 					}
-                    if (Probability > rndGen_.scalar01())
+                    if (Probability > rndGen_.sample01<scalar>())
                     {
                         // chemical reactions
 

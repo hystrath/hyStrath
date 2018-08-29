@@ -51,7 +51,7 @@ bool Foam::dsmcParcel::move
 
         if (newParcel() != -1)
         {
-            stepFraction() = td.cloud().rndGen().scalar01(); 
+            stepFraction() = td.cloud().rndGen().sample01<scalar>(); 
             newParcel() = -1;
         }
         

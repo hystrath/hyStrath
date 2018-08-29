@@ -93,7 +93,7 @@ private:
         IOdictionary particleProperties_;
         
         //- Dictionary of simulation properties
-        IOdictionary controlDict_;
+        dictionary controlDict_;
 
         //- A list of unique instances of molecule types in the
         //  simulation.  The position of an entry in the list maps to
@@ -318,7 +318,7 @@ public:
         inline const IOdictionary& particleProperties() const;
         
         //- Return particle properties dictionary
-        inline const IOdictionary& controlDict() const;
+        inline const dictionary& controlDict() const;
 
         //- Return the idList
         inline const List<word>& typeIdList() const;
@@ -628,8 +628,14 @@ public:
                 scalar DOFtot
             );
 
-            //- Evolve the cloud (move, collide)
+            //- Evolve the cloud (move, collide, compute)
             void evolve();
+            
+            //- Evolve the cloud (move, collide)
+            void evolve_moveAndCollide();
+            
+            //- Evolve the cloud (compute)
+            void evolve_fields();
             
             // Return how often to write to terminal
             // (used for the solver to access this)
@@ -713,6 +719,22 @@ public:
                 word& typeOfReset,
                 wordList& zonesToReset
             );*/
+            
+            void resetHybridWhenUpdated
+            (
+                volVectorField& UInitial,
+                PtrList<volScalarField>& TtInitial,
+                PtrList<volScalarField>& TrInitial,
+                PtrList<volScalarField>& TvInitial,
+                PtrList<volScalarField>& numberDensitiesField,
+                PtrList<volVectorField>& DInitial,
+                PtrList<volVectorField>& qtInitial,
+                PtrList<volVectorField>& qrInitial,
+                PtrList<volVectorField>& qvInitial,
+                PtrList<volTensorField>& tauInitial,
+                word& typeOfReset,
+                word& zoneToReset
+            );
             
             //- Function to help with steady normal shock wave simulation
             void shockReset();

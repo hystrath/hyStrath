@@ -103,7 +103,7 @@ void densityZoneController::initialConfiguration()
             {
                 const int proc = p;
                 {
-                    OPstream toNeighbour(Pstream::blocking, proc);
+                    OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << controlVolume_;
                 }
             }
@@ -118,7 +118,7 @@ void densityZoneController::initialConfiguration()
 
                 const int proc = p;
                 {
-                    IPstream fromNeighbour(Pstream::blocking, proc);
+                    IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> controlVolumeProc;
                 }
 
@@ -300,7 +300,7 @@ void densityZoneController::nMolsToControl()
         
                     while(!foundCell)
                     {
-                        label cellId = rndGen_.integer(0, controlZone().size()-1);
+                        label cellId = rndGen_.position<label>(0, controlZone().size()-1);
 
                         if( findIndex(cellsChosen, cellId) == -1)
                         {
@@ -351,7 +351,7 @@ void densityZoneController::nMolsToControl()
     
                 while(!foundCell)
                 {
-                    label cellId = rndGen_.integer(0, controlZone().size()-1);
+                    label cellId = rndGen_.position<label>(0, controlZone().size()-1);
     
                     if( findIndex(cellsChosen, cellId) == -1)
                     {
@@ -507,15 +507,15 @@ void densityZoneController::insertParcels(const label& nMols, const label& c)
             //- select a random direction
             vector randDirection = vector
             (
-                rndGen_.GaussNormal(),
-                rndGen_.GaussNormal(),
-                rndGen_.GaussNormal()
+                rndGen_.GaussNormal<scalar>(),
+                rndGen_.GaussNormal<scalar>(),
+                rndGen_.GaussNormal<scalar>()
             );
 
             //- normalise the random vector (unit vector)
             randDirection /= mag(randDirection);
             
-            p = randDirection*rndGen_.scalar01()*maxDistance + cC;
+            p = randDirection*rndGen_.sample01<scalar>()*maxDistance + cC;
 
             if(mesh_.pointInCell(p, cellI))
             {
@@ -601,7 +601,7 @@ void densityZoneController::deleteParcels(const label& nMols, const label& c)
     
         if(molsInCell.size() > 0)
         {
-            label cellMolRemoveId = rndGen_.integer(0, molsInCell.size()-1);
+            label cellMolRemoveId = rndGen_.position<label>(0, molsInCell.size()-1);
             dsmcParcel* delParcel = molsInCell[cellMolRemoveId];
             
             //- delete molecule from cellOccupancy (before deleting it from cloud)

@@ -33,6 +33,11 @@ Description
 namespace Foam
 {
 
+// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
+
+
+// * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
+
 //- Constructor
 molsToDelete::molsToDelete
 (
@@ -56,14 +61,15 @@ molsToDelete::molsToDelete
 	  modelList_(molsToDeleteDict_.lookup("deleteMols" + deleteType)),
 	  delModels_(modelList_.size())
 {
-    if( delModels_.size() > 0 )
+    if (delModels_.size() > 0)
     {
         forAll(delModels_, dM)
         {
             const entry& molsToDeleteI = modelList_[dM];
             const dictionary& molsToDeleteIDict = molsToDeleteI.dict();
 
-            Info << nl << "Deleting molecules from model #: " << dM << endl;
+            Info<< nl << "Deleting particles from model " << deleteType 
+                << ": #" << dM << endl;
 
             delModels_[dM] = autoPtr<molsToDeleteModel>
             (
@@ -74,9 +80,21 @@ molsToDelete::molsToDelete
 }
 
 
-// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
+// * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
+
+molsToDelete::~molsToDelete()
+{}
+
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
+
+void molsToDelete::update()
+{
+    forAll(delModels_, dM)
+    {
+        delModels_[dM]->update();
+    }
+}
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

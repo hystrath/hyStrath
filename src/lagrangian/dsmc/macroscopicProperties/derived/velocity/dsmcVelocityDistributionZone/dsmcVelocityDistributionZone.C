@@ -302,7 +302,7 @@ void dsmcVelocityDistributionZone::writeField()
                 {
                     const int proc = p;
                     {
-                        OPstream toNeighbour(Pstream::blocking, proc);
+                        OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << xAxisX << yAxisX << xAxisY 
                                     << yAxisY << xAxisZ << yAxisZ;
                     }
@@ -323,7 +323,7 @@ void dsmcVelocityDistributionZone::writeField()
     
                     const int proc = p;
                     {
-                        IPstream fromNeighbour(Pstream::blocking, proc);
+                        IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> xAxisXProc >> yAxisXProc >> xAxisYProc 
                                     >> yAxisYProc >> xAxisZProc >> yAxisZProc;
                     }

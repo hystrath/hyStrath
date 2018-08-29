@@ -58,7 +58,7 @@ label noRepeatCollisions::pickFromCandidateList
     if(size > 0)
     {
         // choose a random number between 0 and the size of the candidateList size
-        label randomIndex = rndGen_.integer(0, size - 1);
+        label randomIndex = rndGen_.position<label>(0, size - 1);
         entry = candidatesInCell[randomIndex];
 
 //         Info<< "random index: " << randomIndex <<" entry " 
@@ -128,7 +128,7 @@ label noRepeatCollisions::pickFromCandidateSubList
     
     if(subCellSize > 0)
     {
-        label randomIndex = rndGen_.integer(0, subCellSize - 1);
+        label randomIndex = rndGen_.position<label>(0, subCellSize - 1);
         entry = candidatesInSubCell[randomIndex];
 
 //         Info<< "random index: " << randomIndex <<" entry " 
@@ -357,15 +357,15 @@ void noRepeatCollisions::collide()
                         // uniform candidate selection procedure
         
         //                 // Select the first collision candidate
-        //                 label candidateP = rndGen_.integer(0, nC-1);
+        //                 label candidateP = rndGen_.position<label>(0, nC-1);
         // 
         //                 // Select a possible second collision candidate
-        //                 label candidateQ = rndGen_.integer(0, nC-1);
+        //                 label candidateQ = rndGen_.position<label>(0, nC-1);
         // 
         //                 // If the same candidate is chosen, choose again
         //                 while (candidateP == candidateQ)
         //                 {
-        //                     candidateQ = rndGen_.integer(0, nC-1);
+        //                     candidateQ = rndGen_.position<label>(0, nC-1);
         //                 }
         
         
@@ -389,7 +389,7 @@ void noRepeatCollisions::collide()
                             cloud_.sigmaTcRMax()[cellI] = sigmaTcR;
                         }
         
-                        if ((sigmaTcR/sigmaTcRMax) > rndGen_.scalar01())
+                        if ((sigmaTcR/sigmaTcRMax) > rndGen_.sample01<scalar>())
                         {
                             // chemical reactions
         

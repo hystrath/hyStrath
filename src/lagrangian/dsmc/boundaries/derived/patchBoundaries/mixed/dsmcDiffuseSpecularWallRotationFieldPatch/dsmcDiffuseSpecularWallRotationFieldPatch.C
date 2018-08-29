@@ -103,7 +103,7 @@ void dsmcDiffuseSpecularWallRotationFieldPatch::controlParticle
 {
     measurePropertiesBeforeControl(p);
 
-    if (diffuseFraction() > cloud_.rndGen().scalar01())
+    if (diffuseFraction() > cloud_.rndGen().sample01<scalar>())
     {
         //- Calculation of the wall velocity to be added to U
         const vector& localPatchVelocity = 

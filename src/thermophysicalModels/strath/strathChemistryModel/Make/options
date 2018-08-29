@@ -8,7 +8,7 @@ EXE_INC = \
     -I$(LIB_SRC)/thermophysicalModels/functions/Polynomial \
     -I$(WM_PROJECT_USER_DIR)/src/thermophysicalModels/strath/strathSpecie/lnInclude \
     -I$(WM_PROJECT_USER_DIR)/src/thermophysicalModels/strath/strathReactionThermo/lnInclude \
-    -I$(LIB_SRC)/thermophysicalModels/thermophysicalFunctions/lnInclude \
+    -I$(LIB_SRC)/thermophysicalModels/thermophysicalProperties/lnInclude \
     -I$(LIB_SRC)/ODE/lnInclude
 
 LIB_LIBS = \
@@ -16,5 +16,5 @@ LIB_LIBS = \
     -lcompressibleTransportModels \
     -lstrathSpecie \
     -lstrathReactionThermophysicalModels \
-    -lthermophysicalFunctions \
+    -lthermophysicalProperties \
     -lODE

@@ -244,7 +244,7 @@ void temperatureBinsController::calculateProperties()
                 {
                     const int proc = p;
                     {
-                        OPstream toNeighbour(Pstream::blocking, proc);
+                        OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << mass << mom;
                     }
                 }
@@ -260,7 +260,7 @@ void temperatureBinsController::calculateProperties()
     
                     const int proc = p;
                     {
-                        IPstream fromNeighbour(Pstream::blocking, proc);
+                        IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> massProc >> momProc;
                     }
     
@@ -350,7 +350,7 @@ void temperatureBinsController::calculateProperties()
                 {
                     const int proc = p;
                     {
-                        OPstream toNeighbour(Pstream::blocking, proc);
+                        OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << mcc << m << nParcels;
                     }
                 }
@@ -367,7 +367,7 @@ void temperatureBinsController::calculateProperties()
 
                     const int proc = p;
                     {
-                        IPstream fromNeighbour(Pstream::blocking, proc);
+                        IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> mccProc >> mProc >> nParcelsProc;
                     }
 

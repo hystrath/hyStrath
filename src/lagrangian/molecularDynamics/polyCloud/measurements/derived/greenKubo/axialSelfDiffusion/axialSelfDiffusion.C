@@ -124,7 +124,7 @@ void axialSelfDiffusion::createField()
             {
                 const int proc = p;
                 {
-                    OPstream toNeighbour(Pstream::blocking, proc);
+                    OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
 
                     toNeighbour << maxTN;
                 }
@@ -140,7 +140,7 @@ void axialSelfDiffusion::createField()
 
                 const int proc = p;
                 {
-                    IPstream fromNeighbour(Pstream::blocking, proc);
+                    IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour  >> maxTNProc;
                 }
                 
@@ -171,7 +171,7 @@ void axialSelfDiffusion::createField()
             {
                 const int proc = p;
                 {
-                    OPstream toNeighbour(Pstream::blocking, proc);
+                    OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
 
                     toNeighbour << tNsTransfer;
                 }
@@ -187,7 +187,7 @@ void axialSelfDiffusion::createField()
 
                 const int proc = p;
                 {
-                    IPstream fromNeighbour(Pstream::blocking, proc);
+                    IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour  >> tNsProc;
                 }
     
@@ -221,7 +221,7 @@ void axialSelfDiffusion::createField()
             {
                 const int proc = p;
                 {
-                    OPstream toNeighbour(Pstream::blocking, proc);
+                    OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
 
                     toNeighbour << tNaddress_;
                 }
@@ -237,7 +237,7 @@ void axialSelfDiffusion::createField()
 
                 const int proc = p;
                 {
-                    IPstream fromNeighbour(Pstream::blocking, proc);
+                    IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour  >> tNaddressProc;
                 }
     

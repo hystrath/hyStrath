@@ -194,7 +194,7 @@ void densityController::deleteParcelFromDSMC(const label& c)
 
     if(molsInCell.size() > 0)
     {
-      label cellMolRemoveId = rndGen_.integer(0, molsInCell.size()-1);
+      label cellMolRemoveId = rndGen_.position<label>(0, molsInCell.size()-1);
       dsmcParcel* delParcel = molsInCell[cellMolRemoveId];
 
       //- delete molecule from cellOccupancy (before deleting it from cloud)
@@ -236,15 +236,15 @@ void densityController::insertParcelWithinDSMC(const label& c)
         //- select a random direction
         vector randDirection = vector
         (
-            rndGen_.GaussNormal(),
-            rndGen_.GaussNormal(),
-            rndGen_.GaussNormal()
+            rndGen_.GaussNormal<scalar>(),
+            rndGen_.GaussNormal<scalar>(),
+            rndGen_.GaussNormal<scalar>()
         );
 
         //- normalise the random vector (unit vector)
         randDirection /= mag(randDirection);
             
-        p = randDirection*rndGen_.scalar01()*maxDistance + cC;
+        p = randDirection*rndGen_.sample01<scalar>()*maxDistance + cC;
 
         if(mesh_.pointInCell(p, cellI))
         {

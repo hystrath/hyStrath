@@ -102,7 +102,7 @@ void dsmcDiffuseSpecularWallSphericalPatch::controlParticle(dsmcParcel& p, dsmcP
     const vector& localPatchVelocity = 
         dsmcSphericalPatchBoundary::wallVelocity(p);
 
-    if (diffuseFraction() > cloud_.rndGen().scalar01())
+    if (diffuseFraction() > cloud_.rndGen().sample01<scalar>())
     {
         //- Diffuse reflection
         dsmcDiffuseWallPatch::performDiffuseReflection

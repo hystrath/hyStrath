@@ -111,7 +111,6 @@ bool run
     Info<< "\nStarting time loop\n" << endl;
     
     label infoCounter = 0;
-    
     label noRefinement = 0;
 
     while (runTime.loop())
@@ -134,14 +133,14 @@ bool run
         
         infoCounter++;
         
-        if(infoCounter >= dsmc.nTerminalOutputs())
+        if (infoCounter >= dsmc.nTerminalOutputs())
         {
             Info<< "Time = " << runTime.timeName() << nl << endl;
         }
 
         dsmc.evolve();
 
-        if(infoCounter >= dsmc.nTerminalOutputs())
+        if (infoCounter >= dsmc.nTerminalOutputs())
         {
             dsmc.info();   
         }
@@ -149,9 +148,9 @@ bool run
         runTime.write();
 
         previousIterationTime = 
-            max(runTime.elapsedCpuTime()-currentIterationTime, 1e-3);
+            max(runTime.elapsedCpuTime() - currentIterationTime, 1e-3);
             
-        if(infoCounter >= dsmc.nTerminalOutputs())
+        if (infoCounter >= dsmc.nTerminalOutputs())
         {
             Info<< nl << "Stage " << noRestart << "." << noRefinement
                 << "  ExecutionTime = " << runTime.elapsedCpuTime() << " s"

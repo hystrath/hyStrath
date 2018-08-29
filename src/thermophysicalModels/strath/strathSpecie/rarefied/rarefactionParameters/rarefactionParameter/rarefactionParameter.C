@@ -129,10 +129,7 @@ Foam::rarefactionParameter::rarefactionParameter
     
     const word dictThermoPhy
     (
-        fileName(thermo.lookup("foamChemistryThermoFile")).substr
-        (
-            fileName(thermo.lookup("foamChemistryThermoFile")).find("constant/") + 9
-        )
+        fileName(thermo.lookup("foamChemistryThermoFile")).name()
     );
     
     // Construct the mean free path model

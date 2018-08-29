@@ -437,7 +437,7 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
         
         //Decide if a reaction is to occur
         
-        if(totalReactionProbability > cloud_.rndGen().scalar01())
+        if(totalReactionProbability > cloud_.rndGen().sample01<scalar>())
         {
             //A chemical reaction is to occur, choose which one
             
@@ -453,10 +453,9 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 {
                     cumulativeProbability += normalisedProbabilities[i];
                     
-                    if(cumulativeProbability > cloud_.rndGen().scalar01())
+                    if(cumulativeProbability > cloud_.rndGen().sample01<scalar>())
                     {
                         //Current reaction is to occur
-                        
                         if(i == 0)
                         {
                             //Dissociation is to occur
@@ -545,11 +544,11 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
 
                 // Variable Hard Sphere collision part
 
-                scalar cosTheta = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                scalar cosTheta = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
             
                 scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
             
-                scalar phi = twoPi*cloud_.rndGen().scalar01();
+                scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
             
                 vector postCollisionRelU =
                     relVelNonDissoMol
@@ -577,11 +576,11 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 scalar cRatoms = sqrt(2.0*translationalEnergy/mRatoms);
 
                 // Variable Hard Sphere collision part
-                scalar cosTheta2 = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                scalar cosTheta2 = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
             
                 scalar sinTheta2 = sqrt(1.0 - cosTheta2*cosTheta2);
             
-                scalar phi2 = twoPi*cloud_.rndGen().scalar01();
+                scalar phi2 = twoPi*cloud_.rndGen().sample01<scalar>();
             
                 vector postCollisionRelU2 = cRatoms
                 *vector
@@ -704,11 +703,11 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
 
                 // Variable Hard Sphere collision part
 
-                scalar cosTheta = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                scalar cosTheta = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
             
                 scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
             
-                scalar phi = twoPi*cloud_.rndGen().scalar01();
+                scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
             
                 vector postCollisionRelU =
                     relVelNonDissoMol
@@ -736,11 +735,11 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 scalar cRatoms = sqrt(2.0*translationalEnergy/mRatoms);
 
                 // Variable Hard Sphere collision part
-                scalar cosTheta2 = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                scalar cosTheta2 = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
             
                 scalar sinTheta2 = sqrt(1.0 - cosTheta2*cosTheta2);
             
-                scalar phi2 = twoPi*cloud_.rndGen().scalar01();
+                scalar phi2 = twoPi*cloud_.rndGen().sample01<scalar>();
             
                 vector postCollisionRelU2 = cRatoms
                 *vector
@@ -760,7 +759,7 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 p.vibLevel()[0] = vibLevelP;
                 p.ELevel() = ELevelP;
 
-                // Molecule Q will dissociation.
+                // Molecule Q will dissociate.
                 vector position = q.position();
                 
                 label cell = -1;
@@ -862,11 +861,11 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
 
                 // Variable Hard Sphere collision part
 
-                scalar cosTheta = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                scalar cosTheta = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
             
                 scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
             
-                scalar phi = twoPi*cloud_.rndGen().scalar01();
+                scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
             
                 vector postCollisionRelU =
                     relVelNonDissoMol
@@ -894,11 +893,11 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 scalar cRatoms = sqrt(2.0*translationalEnergy/mRatoms);
 
                 // Variable Hard Sphere collision part
-                scalar cosTheta2 = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                scalar cosTheta2 = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
             
                 scalar sinTheta2 = sqrt(1.0 - cosTheta2*cosTheta2);
             
-                scalar phi2 = twoPi*cloud_.rndGen().scalar01();
+                scalar phi2 = twoPi*cloud_.rndGen().sample01<scalar>();
             
                 vector postCollisionRelU2 = cRatoms
                 *vector
@@ -1021,11 +1020,11 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
 
                 // Variable Hard Sphere collision part
 
-                scalar cosTheta = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                scalar cosTheta = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
             
                 scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
             
-                scalar phi = twoPi*cloud_.rndGen().scalar01();
+                scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
             
                 vector postCollisionRelU =
                     relVelNonDissoMol
@@ -1053,11 +1052,11 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 scalar cRatoms = sqrt(2.0*translationalEnergy/mRatoms);
 
                 // Variable Hard Sphere collision part
-                scalar cosTheta2 = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                scalar cosTheta2 = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
             
                 scalar sinTheta2 = sqrt(1.0 - cosTheta2*cosTheta2);
             
-                scalar phi2 = twoPi*cloud_.rndGen().scalar01();
+                scalar phi2 = twoPi*cloud_.rndGen().sample01<scalar>();
             
                 vector postCollisionRelU2 = cRatoms
                 *vector
@@ -1094,7 +1093,7 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 
                 q.typeId() = typeId1;
                 q.U() = uQ1;
-                q.vibLevel().setSize(1,0);
+                q.vibLevel().setSize(0,0);
                 q.ERot() = 0.0;
                 q.ELevel() = 0;
                 
@@ -1245,7 +1244,7 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
         }
         //Decide if a reaction is to occur
         
-        if(totalReactionProbability > cloud_.rndGen().scalar01())
+        if(totalReactionProbability > cloud_.rndGen().sample01<scalar>())
         {
             //A chemical reaction is to occur, choose which one
             
@@ -1263,7 +1262,7 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 {
                     cumulativeProbability += normalisedProbabilities[i];
                     
-                    if(cumulativeProbability > cloud_.rndGen().scalar01())
+                    if(cumulativeProbability > cloud_.rndGen().sample01<scalar>())
                     {
                         //Current reaction is to occur
                         
@@ -1355,11 +1354,11 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
 
                 // Variable Hard Sphere collision part
 
-                scalar cosTheta = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                scalar cosTheta = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
             
                 scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
             
-                scalar phi = twoPi*cloud_.rndGen().scalar01();
+                scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
             
                 vector postCollisionRelU =
                     relVelNonDissoMol
@@ -1373,8 +1372,8 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 UP = Ucm + (postCollisionRelU*mQ/(mP + mQ)); 
                 UQ = Ucm - (postCollisionRelU*mP/(mP + mQ));
 
-                const label& typeId1 = dissociationProducts_[1][0];
-                const label& typeId2 = dissociationProducts_[1][1];
+                const label typeId1 = dissociationProducts_[1][0];
+                const label typeId2 = dissociationProducts_[1][1];
                 
                 //Mass of Product one and two
                 scalar mP1 = cloud_.constProps(typeId1).mass();
@@ -1387,11 +1386,11 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 scalar cRatoms = sqrt(2.0*translationalEnergy/mRatoms);
 
                 // Variable Hard Sphere collision part
-                scalar cosTheta2 = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                scalar cosTheta2 = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
             
                 scalar sinTheta2 = sqrt(1.0 - cosTheta2*cosTheta2);
             
-                scalar phi2 = twoPi*cloud_.rndGen().scalar01();
+                scalar phi2 = twoPi*cloud_.rndGen().sample01<scalar>();
             
                 vector postCollisionRelU2 = cRatoms
                 *vector
@@ -1514,11 +1513,11 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
 
                 // Variable Hard Sphere collision part
 
-                scalar cosTheta = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                scalar cosTheta = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
             
                 scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
             
-                scalar phi = twoPi*cloud_.rndGen().scalar01();
+                scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
             
                 vector postCollisionRelU =
                     relVelNonDissoMol
@@ -1532,8 +1531,8 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 UP = Ucm + (postCollisionRelU*mQ/(mP + mQ)); // UP is the single atom
                 UQ = Ucm - (postCollisionRelU*mP/(mP + mQ)); // UQ is used as Ucm for atomic split.
 
-                const label& typeId1 = dissociationProducts_[0][0];
-                const label& typeId2 = dissociationProducts_[0][1];
+                const label typeId1 = dissociationProducts_[0][0];
+                const label typeId2 = dissociationProducts_[0][1];
                 
                 //Mass of Product one and two
                 scalar mP1 = cloud_.constProps(typeId1).mass();
@@ -1546,11 +1545,11 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 scalar cRatoms = sqrt(2.0*translationalEnergy/mRatoms);
 
                 // Variable Hard Sphere collision part
-                scalar cosTheta2 = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                scalar cosTheta2 = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
             
                 scalar sinTheta2 = sqrt(1.0 - cosTheta2*cosTheta2);
             
-                scalar phi2 = twoPi*cloud_.rndGen().scalar01();
+                scalar phi2 = twoPi*cloud_.rndGen().sample01<scalar>();
             
                 vector postCollisionRelU2 = cRatoms
                 *vector
@@ -1672,11 +1671,11 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
 
                 // Variable Hard Sphere collision part
 
-                scalar cosTheta = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                scalar cosTheta = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
             
                 scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
             
-                scalar phi = twoPi*cloud_.rndGen().scalar01();
+                scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
             
                 vector postCollisionRelU =
                     relVelNonDissoMol
@@ -1704,11 +1703,11 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 scalar cRatoms = sqrt(2.0*translationalEnergy/mRatoms);
 
                 // Variable Hard Sphere collision part
-                scalar cosTheta2 = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                scalar cosTheta2 = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
             
                 scalar sinTheta2 = sqrt(1.0 - cosTheta2*cosTheta2);
             
-                scalar phi2 = twoPi*cloud_.rndGen().scalar01();
+                scalar phi2 = twoPi*cloud_.rndGen().sample01<scalar>();
             
                 vector postCollisionRelU2 = cRatoms
                 *vector
@@ -1831,11 +1830,11 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
 
                 // Variable Hard Sphere collision part
 
-                scalar cosTheta = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                scalar cosTheta = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
             
                 scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
             
-                scalar phi = twoPi*cloud_.rndGen().scalar01();
+                scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
             
                 vector postCollisionRelU =
                     relVelNonDissoMol
@@ -1863,11 +1862,11 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 scalar cRatoms = sqrt(2.0*translationalEnergy/mRatoms);
 
                 // Variable Hard Sphere collision part
-                scalar cosTheta2 = 2.0*cloud_.rndGen().scalar01() - 1.0;
+                scalar cosTheta2 = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
             
                 scalar sinTheta2 = sqrt(1.0 - cosTheta2*cosTheta2);
             
-                scalar phi2 = twoPi*cloud_.rndGen().scalar01();
+                scalar phi2 = twoPi*cloud_.rndGen().sample01<scalar>();
             
                 vector postCollisionRelU2 = cRatoms
                 *vector
@@ -1887,7 +1886,7 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 p.vibLevel()[0] = vibLevelP;
                 p.ELevel() = ELevelP;
 
-                // Molecule Q will dissociation.
+                // Molecule Q will dissociate.
                 vector position = q.position();
                 
                 label cell = -1;
@@ -1904,7 +1903,7 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 
                 q.typeId() = typeId1;
                 q.U() = uQ1;
-                q.vibLevel().setSize(1,0);
+                q.vibLevel().setSize(0,0);
                 q.ERot() = 0.0;
                 q.ELevel() = 0;
                 
@@ -1944,7 +1943,7 @@ void  dissociationIonisationTypeIDissimilarSpecies::outputResults(const label& c
         volume_ = 0.0;
 
         List<label> mols;
-	mols.append(0); mols.append(0);
+	      mols.append(0); mols.append(0);
 
         forAll(cellOccupancy, c)
         {

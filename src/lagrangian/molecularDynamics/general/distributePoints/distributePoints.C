@@ -199,7 +199,7 @@ List<vector> distributePoints::uniform
         {
             if(options.size() > 1)
             {
-                label n = rndGen_.integer(0, (options.size()-1));
+                label n = rndGen_.position<label>(0, (options.size()-1));
                 
                 sites[i]= options[n];
                 

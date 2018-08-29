@@ -935,11 +935,11 @@ void polyHydroxylSiO2SurfaceBounded::insertMolecule
     {
         pi = equipartitionAngularMomentum(temperature, id);
 
-        scalar phi(molCloud_.rndGen().scalar01()*constant::mathematical::twoPi);
+        scalar phi(molCloud_.rndGen().sample01<scalar>()*constant::mathematical::twoPi);
 
-        scalar theta(molCloud_.rndGen().scalar01()*constant::mathematical::twoPi);
+        scalar theta(molCloud_.rndGen().sample01<scalar>()*constant::mathematical::twoPi);
 
-        scalar psi(molCloud_.rndGen().scalar01()*constant::mathematical::twoPi);
+        scalar psi(molCloud_.rndGen().sample01<scalar>()*constant::mathematical::twoPi);
 
         Q = tensor
         (
@@ -980,9 +980,9 @@ vector polyHydroxylSiO2SurfaceBounded::equipartitionLinearVelocity
 {
     return sqrt(molCloud_.redUnits().kB()*temperature/mass)*vector
     (
-        molCloud_.rndGen().GaussNormal(),
-        molCloud_.rndGen().GaussNormal(),
-        molCloud_.rndGen().GaussNormal()
+        molCloud_.rndGen().GaussNormal<scalar>(),
+        molCloud_.rndGen().GaussNormal<scalar>(),
+        molCloud_.rndGen().GaussNormal<scalar>()
     );
 }
 
@@ -1001,17 +1001,17 @@ vector polyHydroxylSiO2SurfaceBounded::equipartitionAngularMomentum
         return sqrtKbT*vector
         (
             0.0,
-            sqrt(cP.momentOfInertia().yy())*molCloud_.rndGen().GaussNormal(),
-            sqrt(cP.momentOfInertia().zz())*molCloud_.rndGen().GaussNormal()
+            sqrt(cP.momentOfInertia().yy())*molCloud_.rndGen().GaussNormal<scalar>(),
+            sqrt(cP.momentOfInertia().zz())*molCloud_.rndGen().GaussNormal<scalar>()
         );
     }
     else
     {
         return sqrtKbT*vector
         (
-            sqrt(cP.momentOfInertia().xx())*molCloud_.rndGen().GaussNormal(),
-            sqrt(cP.momentOfInertia().yy())*molCloud_.rndGen().GaussNormal(),
-            sqrt(cP.momentOfInertia().zz())*molCloud_.rndGen().GaussNormal()
+            sqrt(cP.momentOfInertia().xx())*molCloud_.rndGen().GaussNormal<scalar>(),
+            sqrt(cP.momentOfInertia().yy())*molCloud_.rndGen().GaussNormal<scalar>(),
+            sqrt(cP.momentOfInertia().zz())*molCloud_.rndGen().GaussNormal<scalar>()
         );
     }
 }

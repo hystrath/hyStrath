@@ -63,9 +63,9 @@ void Foam::dsmcCloud::buildConstProps()
 
 void Foam::dsmcCloud::buildCellOccupancy()
 {
-    forAll(cellOccupancy_, cO)
+    forAll(cellOccupancy_, celli)
     {
-        cellOccupancy_[cO].clear();
+        cellOccupancy_[celli].clear();
     }
 
     forAllIter(dsmcCloud, *this, iter)
@@ -92,7 +92,7 @@ void Foam::dsmcCloud::buildCollisionSelectionRemainderFromScratch()
     // and 1.
     forAll(collisionSelectionRemainder_, cO)
     {
-        collisionSelectionRemainder_[cO] = rndGen_.scalar01();
+        collisionSelectionRemainder_[cO] = rndGen_.sample01<scalar>();
     }
 }
 
@@ -325,7 +325,7 @@ Foam::label Foam::dsmcCloud::pickFromCandidateList
     if (size > 0)
     {
         // choose a random number between 0 and the size of the candidateList
-        label randomIndex = rndGen_.integer(0, size - 1);
+        label randomIndex = rndGen_.position<label>(0, size - 1);
         entry = candidatesInCell[randomIndex];
 
         // build a new list without the chosen entry
@@ -390,7 +390,7 @@ Foam::label Foam::dsmcCloud::pickFromCandidateSubList
     
     if (subCellSize > 0)
     {
-        label randomIndex = rndGen_.integer(0, subCellSize - 1);
+        label randomIndex = rndGen_.position<label>(0, subCellSize - 1);
         entry = candidatesInSubCell[randomIndex];
 
 //         Info<< "random index: " << randomIndex <<" entry " 
@@ -489,7 +489,7 @@ Foam::scalar Foam::dsmcCloud::energyRatio
 
     if (ChiAMinusOne < SMALL && ChiBMinusOne < SMALL)
     {
-        return rndGen_.scalar01();
+        return rndGen_.sample01<scalar>();
     }
 
     scalar energyRatio;
@@ -500,7 +500,7 @@ Foam::scalar Foam::dsmcCloud::energyRatio
     {
         P = 0;
 
-        energyRatio = rndGen_.scalar01();
+        energyRatio = rndGen_.sample01<scalar>();
 
         if (ChiAMinusOne < SMALL)
         {
@@ -525,7 +525,7 @@ Foam::scalar Foam::dsmcCloud::energyRatio
                     ChiBMinusOne
                 );
         }
-    } while (P < rndGen_.scalar01());
+    } while (P < rndGen_.sample01<scalar>());
 
     return energyRatio;
 }
@@ -543,7 +543,7 @@ Foam::scalar Foam::dsmcCloud::PSIm
 
     if (DOFm == 2.0 && DOFtot == 4.0)
     {
-        return rndGen_.scalar01();
+        return rndGen_.sample01<scalar>();
     }
 
     if (DOFtot < 4.0)
@@ -560,9 +560,9 @@ Foam::scalar Foam::dsmcCloud::PSIm
 
     do
     {
-        rPSIm = rndGen_.scalar01();
+        rPSIm = rndGen_.sample01<scalar>();
         prob = pow(h1,h1)/(pow(h2,h2)*pow(h3,h3))*pow(rPSIm,h2)*pow(1.0-rPSIm,h3);
-    } while (prob < rndGen_.scalar01());
+    } while (prob < rndGen_.sample01<scalar>());
 
     return rPSIm;
 }
@@ -593,8 +593,8 @@ Foam::dsmcCloud::dsmcCloud
             IOobject::NO_WRITE
         )
     ),
-    controlDict_
-    (
+    controlDict_(t.controlDict()),
+    /*(
         IOobject
         (
             "controlDict",
@@ -603,7 +603,7 @@ Foam::dsmcCloud::dsmcCloud
             IOobject::MUST_READ_IF_MODIFIED,
             IOobject::NO_WRITE
         )
-    ),
+    ),*/
     typeIdList_(particleProperties_.lookup("typeIdList")),
     dsmcCoordinateSystem_(dsmcCoordinateSystem::New(t, mesh, *this)),
     porousMeasurements_(porousMeasurements::New(t, mesh, *this)),
@@ -671,7 +671,7 @@ Foam::dsmcCloud::dsmcCloud
     // and 1.
     forAll(collisionSelectionRemainder_, i)
     {
-        collisionSelectionRemainder_[i] = rndGen_.scalar01();
+        collisionSelectionRemainder_[i] = rndGen_.sample01<scalar>();
     }
 
     collisionPartnerSelectionModel_ = autoPtr<collisionPartnerSelection>
@@ -685,7 +685,6 @@ Foam::dsmcCloud::dsmcCloud
     boundaries_.setInitialConfig();
     controllers_.initialConfig();
 }
-
 
 
 // running dsmcInitialise+
@@ -712,8 +711,8 @@ Foam::dsmcCloud::dsmcCloud
             IOobject::NO_WRITE
         )
     ),
-    controlDict_
-    (
+    controlDict_(t.controlDict()),
+    /*(
         IOobject
         (
             "controlDict",
@@ -722,7 +721,7 @@ Foam::dsmcCloud::dsmcCloud
             IOobject::MUST_READ_IF_MODIFIED,
             IOobject::NO_WRITE
         )
-    ),
+    ),*/
     typeIdList_(particleProperties_.lookup("typeIdList")),
     dsmcCoordinateSystem_(dsmcCoordinateSystem::New(t, mesh, *this)),
     porousMeasurements_(porousMeasurements::New(t, mesh, *this)),
@@ -813,8 +812,14 @@ Foam::dsmcCloud::~dsmcCloud()
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-
 void Foam::dsmcCloud::evolve()
+{
+    evolve_moveAndCollide();
+    evolve_fields();
+}
+
+
+void Foam::dsmcCloud::evolve_moveAndCollide()
 {
     boundaries_.updateTimeInfo();
     fields_.updateTimeInfo();
@@ -831,21 +836,21 @@ void Foam::dsmcCloud::evolve()
     boundaries_.controlBeforeMove();
     
     //- Remove electrons
-    //removeElectrons(); // NOTE VINCENT: there is a clever way than rebuilding entire cell occ.
+    //removeElectrons(); // TODO VINCENT: there is a clever way than rebuilding entire cell occ.
     //buildCellOccupancy();
     
     //- Move the particles ballistically with their current velocities
-    scalar timer = mesh_.time().elapsedCpuTime();
+    //scalar timer = mesh_.time().elapsedCpuTime();
     Cloud<dsmcParcel>::move(td, deltaTValue());
-    Info<< "move" << tab << mesh_.time().elapsedCpuTime() - timer << " s" << endl; 
+    //Info<< "move" << tab << mesh_.time().elapsedCpuTime() - timer << " s" << endl; 
     
     //- Add electrons back after the move function
-    //addElectrons();
+    //addElectrons(); // TODO VINCENT
     
     //- Update cell occupancy
-    timer = mesh_.time().elapsedCpuTime();
+    //timer = mesh_.time().elapsedCpuTime();
     buildCellOccupancy();
-    Info<< "buildCellOccupancy" << tab << mesh_.time().elapsedCpuTime() - timer << " s " << endl;
+    //Info<< "buildCellOccupancy" << tab << mesh_.time().elapsedCpuTime() - timer << " s " << endl;
      
     //- Radial weighting for non-Cartesian flows (e.g., axisymmetric)
     coordSystem().evolve();
@@ -854,9 +859,9 @@ void Foam::dsmcCloud::evolve()
     boundaries_.controlBeforeCollisions();
     
     //- Calculate new velocities via stochastic collisions
-    timer = mesh_.time().elapsedCpuTime();
+    //timer = mesh_.time().elapsedCpuTime();
     collisions();
-    Info<< "collisions" << tab << mesh_.time().elapsedCpuTime() - timer << " s" << endl;
+    //Info<< "collisions" << tab << mesh_.time().elapsedCpuTime() - timer << " s" << endl;
     
     //- Reactions may have changed cell occupancy, update if any reaction
     if (reactions_.nReactions() != 0)
@@ -865,15 +870,19 @@ void Foam::dsmcCloud::evolve()
     }
     
     controllers_.controlAfterCollisions();
-    boundaries_.controlAfterCollisions();
-    
+    boundaries_.controlAfterCollisions();   
+}
+
+
+void Foam::dsmcCloud::evolve_fields()
+{
     reactions_.outputData();
     
     fields_.calculateFields();
     
-    timer = mesh_.time().elapsedCpuTime();   
+    //timer = mesh_.time().elapsedCpuTime();   
     fields_.writeFields();
-    Info<< "fields W" << tab << mesh_.time().elapsedCpuTime() - timer << " s" << endl;
+    //Info<< "fields W" << tab << mesh_.time().elapsedCpuTime() - timer << " s" << endl;
 
     controllers_.calculateProps();
     controllers_.outputResults();
@@ -888,10 +897,12 @@ void Foam::dsmcCloud::evolve()
     cellMeas_.clean();   
 }
 
+
 Foam::label Foam::dsmcCloud::nTerminalOutputs()
 {
     return nTerminalOutputs_;
 }
+
 
 void Foam::dsmcCloud::info()
 {
@@ -983,9 +994,9 @@ Foam::vector Foam::dsmcCloud::equipartitionLinearVelocity
     return sqrt(physicoChemical::k.value()*temperature/mass)
        *vector
         (
-            rndGen_.GaussNormal(),
-            rndGen_.GaussNormal(),
-            rndGen_.GaussNormal()
+            rndGen_.GaussNormal<scalar>(),
+            rndGen_.GaussNormal<scalar>(),
+            rndGen_.GaussNormal<scalar>()
         );
 }
 
@@ -1007,17 +1018,12 @@ Foam::vector Foam::dsmcCloud::chapmanEnskogVelocity
     
     while (repeatTry)
     {
-        CTry = vector
-            (
-                rndGen_.GaussNormal(),
-                rndGen_.GaussNormal(),
-                rndGen_.GaussNormal()
-            ) / sqrt(2.0);
+        CTry = rndGen_.GaussNormal<vector>() / sqrt(2.0);
             
         scalar gammaTry = 1.0 + (q & CTry) * (0.4 * (CTry & CTry) - 1.0)
             - (CTry & (tau & CTry));
             
-        if (gammaTry >= A*rndGen_.scalar01())
+        if (gammaTry >= A*rndGen_.sample01<scalar>())
         {
             repeatTry = false;
         }
@@ -1055,10 +1061,9 @@ void Foam::dsmcCloud::generalisedChapmanEnskog
 
     const scalarList& thetaV = constProps(typeID).thetaV();
     const scalar epsRotAv = rotationalTemperature/translationalTemperature;
-    
+
     scalar epsVibAv = 0.0;
-    
-    if (vibDOF > 0 && vibrationalTemperature > SMALL)
+    if (vibDOF > 0 && vibrationalTemperature > 5.)  // NEW VINCENT 20/08/2018
     {
         forAll(vibLevel, i)
         {
@@ -1082,7 +1087,7 @@ void Foam::dsmcCloud::generalisedChapmanEnskog
                 rotationalTemperature,
                 constProps(typeID).rotationalDegreesOfFreedom()
             );
-        
+
         vibLevel = equipartitionVibrationalEnergyLevel
             (
                 vibrationalTemperature,
@@ -1090,40 +1095,34 @@ void Foam::dsmcCloud::generalisedChapmanEnskog
                 typeID
             );
 
-
         epsRot = ERot/(k*translationalTemperature);
-        
-        if (vibDOF > 0 && vibrationalTemperature > SMALL)
+
+        if (vibDOF > 0 && vibrationalTemperature > 5.)  // NEW VINCENT 20/08/2018
         {
+            scalar epsVib = 0.0;
             forAll(vibLevel, i)
             {
-                epsVib += vibLevel[i]
-                    *physicoChemical::k.value()
-                    *thetaV[i];
+                epsVib += vibLevel[i]*thetaV[i];
             }
             
-            epsVib /= (physicoChemical::k.value()*vibrationalTemperature);
+            epsVib /= vibrationalTemperature;
         }
 
-        CTry = vector
-            (
-                rndGen_.GaussNormal(),
-                rndGen_.GaussNormal(),
-                rndGen_.GaussNormal()
-            ) / sqrt(2.0);
+        CTry = rndGen_.GaussNormal<vector>()/sqrt(2.0);
             
         scalar gammaTry = 1.0 + 2.0*(D & CTry) 
             + (qTra & CTry) * (0.4*(CTry & CTry) - 1.0) 
             + (qRot & CTry) * (epsRot - epsRotAv)
             + (qVib & CTry) * (epsVib - epsVibAv)
             - (CTry & (tau & CTry)); 
-            
-        if (gammaTry >= A*rndGen_.scalar01())
+  
+        
+        if (gammaTry >= A*rndGen_.sample01<scalar>())
         {
             repeatTry = false;
         }
     }
-
+    
     U = CTry*sqrt(2.0*k*translationalTemperature/mass);
 }
 
@@ -1143,7 +1142,7 @@ Foam::scalar Foam::dsmcCloud::equipartitionRotationalEnergy
     else if (rotationalDof < 2.0 + SMALL && rotationalDof > 2.0 - SMALL)
     {
         // Special case for rDof = 2, i.e. diatomics;
-        ERot = -log(rndGen_.scalar01())*physicoChemical::k.value()*temperature;
+        ERot = -log(rndGen_.sample01<scalar>())*physicoChemical::k.value()*temperature;
     }
     else
     {
@@ -1155,11 +1154,11 @@ Foam::scalar Foam::dsmcCloud::equipartitionRotationalEnergy
 
         do
         {
-            energyRatio = 10*rndGen_.scalar01();
+            energyRatio = 10*rndGen_.sample01<scalar>();
 
             P = pow((energyRatio/a), a)*exp(a - energyRatio);
 
-        } while (P < rndGen_.scalar01());
+        } while (P < rndGen_.sample01<scalar>());
 
         ERot = energyRatio*physicoChemical::k.value()*temperature;
     }
@@ -1185,7 +1184,7 @@ Foam::labelList Foam::dsmcCloud::equipartitionVibrationalEnergyLevel
     {  
         forAll(vibLevel, i)
         {
-            label j = -log(rndGen_.scalar01())*temperature/constProps(typeId).thetaV()[i];
+            label j = -log(rndGen_.sample01<scalar>())*temperature/constProps(typeId).thetaV()[i];
             vibLevel[i] = j;
         }
     }
@@ -1258,9 +1257,9 @@ Foam::label Foam::dsmcCloud::equipartitionElectronicLevel
         
         do // acceptance - rejection based on Eq. 3.1.2 of Liechty thesis.      
         {               
-            jDash = rndGen_.integer(0,jMax-1);
+            jDash = rndGen_.position<label>(0,jMax-1);
             func = degeneracyList[jDash]*exp((-electronicEnergyList[jDash]/EMax))/expMax;
-        } while( !(func > rndGen_.scalar01()));
+        } while( !(func > rndGen_.sample01<scalar>()));
     }
 
     return jDash;
@@ -1277,7 +1276,7 @@ Foam::scalar Foam::dsmcCloud::postCollisionRotationalEnergy
     
     if (rotationalDof == 2.0)
     {
-        energyRatio = 1.0 - pow(rndGen_.scalar01(),(1.0/ChiB));
+        energyRatio = 1.0 - pow(rndGen_.sample01<scalar>(),(1.0/ChiB));
     }
     else
     {
@@ -1289,7 +1288,7 @@ Foam::scalar Foam::dsmcCloud::postCollisionRotationalEnergy
 
         if (ChiAMinusOne < SMALL && ChiBMinusOne < SMALL)
         {
-            return rndGen_.scalar01();
+            return rndGen_.sample01<scalar>();
         }
 
         scalar energyRatio;
@@ -1300,7 +1299,7 @@ Foam::scalar Foam::dsmcCloud::postCollisionRotationalEnergy
         {
             P = 0;
 
-            energyRatio = rndGen_.scalar01();
+            energyRatio = rndGen_.sample01<scalar>();
 
             if (ChiAMinusOne < SMALL)
             {
@@ -1325,7 +1324,7 @@ Foam::scalar Foam::dsmcCloud::postCollisionRotationalEnergy
                         ChiBMinusOne
                     );
             }
-        } while (P < rndGen_.scalar01());
+        } while (P < rndGen_.sample01<scalar>());
     }
     
     return energyRatio; 
@@ -1357,13 +1356,13 @@ Foam::label Foam::dsmcCloud::postCollisionVibrationalEnergyLevel
 
         do // acceptance - rejection 
         {
-            iDash = rndGen_.integer(0,iMax);
+            iDash = rndGen_.position<label>(0,iMax);
             EVib = iDash*physicoChemical::k.value()*thetaV;
             
             // - equation 5.61, Bird
             func = pow((1.0 - (EVib / Ec)),(1.5 - omega));
 
-        } while( !(func > rndGen_.scalar01()) );
+        } while( !(func > rndGen_.sample01<scalar>()) );
     }
     else
     {
@@ -1397,7 +1396,7 @@ Foam::label Foam::dsmcCloud::postCollisionVibrationalEnergyLevel
             inverseVibrationalCollisionNumber = 1.0/fixedZv;
         }
         
-        if (inverseVibrationalCollisionNumber > rndGen_.scalar01())
+        if (inverseVibrationalCollisionNumber > rndGen_.sample01<scalar>())
         {
             // post-collision quantum number
             scalar func = 0.0;
@@ -1405,13 +1404,13 @@ Foam::label Foam::dsmcCloud::postCollisionVibrationalEnergyLevel
 
             do // acceptance - rejection 
             {
-                iDash = rndGen_.integer(0,iMax);
+                iDash = rndGen_.position<label>(0,iMax);
                 EVib = iDash*physicoChemical::k.value()*thetaV;
                 
                 // - equation 5.61, Bird
                 func = pow((1.0 - (EVib / Ec)),(1.5 - omega));
 
-            } while( !(func > rndGen_.scalar01()) );
+            } while( !(func > rndGen_.sample01<scalar>()) );
         }
     }
     
@@ -1450,7 +1449,7 @@ Foam::label Foam::dsmcCloud::postCollisionElectronicEnergyLevel
     
     do
     {
-        label nState = ceil(rndGen_.scalar01()*(nPossStates));
+        label nState = ceil(rndGen_.sample01<scalar>()*(nPossStates));
         label nAvailableStates = 0;
         label nLevel = -1;
         
@@ -1468,7 +1467,7 @@ Foam::label Foam::dsmcCloud::postCollisionElectronicEnergyLevel
         {
             scalar prob = pow(1.0 - (EElist[nLevel]/Ec), 1.5-omega);
             
-            if (prob > rndGen_.scalar01())
+            if (prob > rndGen_.sample01<scalar>())
             {
                 II = 1;
                 ELevel = nLevel;
@@ -1528,10 +1527,10 @@ Foam::label Foam::dsmcCloud::postCollisionElectronicEnergyLevel
 //         
 //     do // acceptance - rejection based on Eq. 3.1.8 of Liechty thesis.     
 //     {               
-//         jDash = rndGen_.integer(0,maxLev);
+//         jDash = rndGen_.position<label>(0,maxLev);
 //         prob = gList[jDash]*pow((Ec - EElist[jDash]), (1.5 - omega))/denomMax;
 // 
-//     } while( !(prob > rndGen_.scalar01()));          
+//     } while( !(prob > rndGen_.sample01<scalar>()));          
 //     
 //     ELevel = jDash;//post-collision Electronic energy.
 //     
@@ -1673,7 +1672,7 @@ void Foam::dsmcCloud::removeParcelFromCellOccupancy
                         if
                         (
                             (particlesRequired - nParticlesToInsert)
-                                > rndGen_.scalar01()
+                                > rndGen_.sample01<scalar>()
                         )
                         {
                             nParticlesToInsert++;
@@ -1808,7 +1807,7 @@ void Foam::dsmcCloud::resetHybrid2
                         if
                         (
                             (particlesRequired - nParticlesToInsert)
-                                > rndGen_.scalar01()
+                                > rndGen_.sample01<scalar>()
                         )
                         {
                             nParticlesToInsert++;
@@ -1872,6 +1871,8 @@ void Foam::dsmcCloud::resetHybridMax
 (
     volVectorField& UInitial,
     PtrList<volScalarField>& TtInitial,
+    PtrList<volScalarField>& TrInitial,
+    PtrList<volScalarField>& TvInitial,
     PtrList<volScalarField>& numberDensitiesField,
     word& typeOfReset,
     wordList& zonesToReset
@@ -1924,8 +1925,8 @@ void Foam::dsmcCloud::resetHybridMax
 
                         scalar numberDensity = numberDensitiesField[i][cellI];
                         scalar translationalTemperature = TtInitial[i][cellI];
-                        scalar rotationalTemperature = 0;
-                        scalar vibrationalTemperature = 0;
+                        scalar rotationalTemperature = TrInitial[i][cellI];
+                        scalar vibrationalTemperature = TvInitial[i][cellI];
                         vector velocity = UInitial[cellI];
 
                         // Calculate the number of particles required
@@ -1939,7 +1940,7 @@ void Foam::dsmcCloud::resetHybridMax
                         if
                         (
                             (particlesRequired - nParticlesToInsert)
-                                > rndGen_.scalar01()
+                                > rndGen_.sample01<scalar>()
                         )
                         {
                             nParticlesToInsert++;
@@ -2001,6 +2002,8 @@ void Foam::dsmcCloud::resetHybridTra
 (
     volVectorField& UInitial,
     PtrList<volScalarField>& TtInitial,
+    PtrList<volScalarField>& TrInitial,
+    PtrList<volScalarField>& TvInitial,
     PtrList<volScalarField>& numberDensitiesField,
     PtrList<volVectorField>& qtInitial,
     PtrList<volTensorField>& tauInitial,
@@ -2055,8 +2058,8 @@ void Foam::dsmcCloud::resetHybridTra
 
                         scalar numberDensity = numberDensitiesField[i][cellI];
                         scalar translationalTemperature = TtInitial[i][cellI];
-                        scalar rotationalTemperature = 0;
-                        scalar vibrationalTemperature = 0;
+                        scalar rotationalTemperature = TrInitial[i][cellI];
+                        scalar vibrationalTemperature = TvInitial[i][cellI];
                         vector velocity = UInitial[cellI];
 
                         // Calculate the number of particles required
@@ -2070,7 +2073,7 @@ void Foam::dsmcCloud::resetHybridTra
                         if
                         (
                             (particlesRequired - nParticlesToInsert)
-                                > rndGen_.scalar01()
+                                > rndGen_.sample01<scalar>()
                         )
                         {
                             nParticlesToInsert++;
@@ -2145,11 +2148,11 @@ void Foam::dsmcCloud::resetHybridTraRotVib
     wordList& zonesToReset
 )
 {
-    Info << "Deleting (" << typeOfReset << ")" << endl;
-    scalar time1_ = mesh_.time().elapsedCpuTime();
-    molsToDelete(mesh_, *this, typeOfReset);
-    scalar time2_ = mesh_.time().elapsedCpuTime();
-    Pout << "Proc " << UPstream::myProcNo() << " deletion time: " << time2_ - time1_ << "s (" << time1_ << ", " << time2_ << ")" << nl << endl;
+    //Info << "Deleting (" << typeOfReset << ")" << endl;
+    //scalar time1_ = mesh_.time().elapsedCpuTime();
+    //molsToDelete(mesh_, *this, typeOfReset);
+    //scalar time2_ = mesh_.time().elapsedCpuTime();
+    //Pout << "Proc " << UPstream::myProcNo() << " deletion time: " << time2_ - time1_ << "s (" << time1_ << ", " << time2_ << ")" << nl << endl;
 
     const cellZoneMesh& cellZones = mesh_.cellZones();
     forAll(zonesToReset, zoneToResetI)
@@ -2171,14 +2174,14 @@ void Foam::dsmcCloud::resetHybridTraRotVib
 
         if (zone.size())
         {
-            Info << "Lattice in zone: " << regionName << endl;
+            Info << "\nInserting particles in zone: " << regionName << "\n" << endl;
 
             forAll(zone, c)
             {
                 const label& cellI = zone[c];
                 forAll(typeIdList_, i)  ////////////////////////////////
                 {                       ////////////////////////////////
-                    massToIntroduce[i] += numberDensitiesField[i][cellI] * mesh_.V()[cellI];
+                    massToIntroduce[i] += numberDensitiesField[i][cellI]*mesh_.V()[cellI];
                 }                       ////////////////////////////////
                 List<tetIndices> cellTets = polyMeshTetDecomposition::cellTetIndices
                 (
@@ -2213,12 +2216,14 @@ void Foam::dsmcCloud::resetHybridTraRotVib
                         if
                         (
                             (particlesRequired - nParticlesToInsert)
-                                > rndGen_.scalar01()
+                                > rndGen_.sample01<scalar>()
                         )
                         {
                             nParticlesToInsert++;
                         }
+                        
                         massIntroduced[i] += nParticlesToInsert;///////////////
+                        
                         for (label pI = 0; pI < nParticlesToInsert; pI++)
                         {
                             point p = tet.randomPoint(rndGen_);
@@ -2230,7 +2235,7 @@ void Foam::dsmcCloud::resetHybridTraRotVib
                             labelList vibLevel
                             (
                                 constProps(i).thetaV().size(),
-                                0.0
+                                0
                             );
                             
                             label ELevel = 0; // TODO by generalisedChapmanEnskog
@@ -2280,17 +2285,19 @@ void Foam::dsmcCloud::resetHybridTraRotVib
                 }
             }
         }
-        Info << "For zone " + regionName + ":" << endl;
-        forAll(typeIdList_, i)
+        
+        //Info << "For zone " + regionName + ":" << endl;
+        
+        /*forAll(typeIdList_, i)
         {
-            scalar mass = this->constProps(i).mass();
+            const scalar mass = this->constProps(i).mass();
             massToIntroduce[i] *= mass * nParticle();
             massIntroduced[i] *= mass * nParticle();
-            Info << "    For specie " << i << ", mTI: "
+            Info << "  Specie " << i << ", mTI: "
                 << massToIntroduce[i] << "; mI: " << massIntroduced[i]
-                << nl << "        (diff of " << 100.0 * (massIntroduced[i]
-                / (massToIntroduce[i] + VSMALL) - 1.0) << "%)" << endl;
-        }
+                << "\t(" << 100.0 * (massIntroduced[i]
+                / (massToIntroduce[i] + VSMALL) - 1.0) << "% off)" << endl;
+        }*/ // INFO REMOVED VINCENT 24/08/2018
     }
     
     buildCellOccupancy();
@@ -2374,7 +2381,7 @@ void Foam::dsmcCloud::resetHybridTraRotVib
                         if
                         (
                             (particlesRequired - nParticlesToInsert)
-                                > rndGen_.scalar01()
+                                > rndGen_.sample01<scalar>()
                         )
                         {
                             nParticlesToInsert++;
@@ -2433,6 +2440,162 @@ void Foam::dsmcCloud::resetHybridTraRotVib
     }
     buildCellOccupancy();
 }*/
+
+
+void Foam::dsmcCloud::resetHybridWhenUpdated
+(
+    volVectorField& UInitial,
+    PtrList<volScalarField>& TtInitial,
+    PtrList<volScalarField>& TrInitial,
+    PtrList<volScalarField>& TvInitial,
+    PtrList<volScalarField>& numberDensitiesField,
+    PtrList<volVectorField>& DInitial,
+    PtrList<volVectorField>& qtInitial,
+    PtrList<volVectorField>& qrInitial,
+    PtrList<volVectorField>& qvInitial,
+    PtrList<volTensorField>& tauInitial,
+    word& typeOfReset,
+    word& zoneToReset
+)
+{
+    /*Info << "Deleting (" << typeOfReset << ")" << endl;
+    scalar time1_ = mesh_.time().elapsedCpuTime();
+    molsToDeleteHybrid(mesh_, *this, typeOfReset);
+    scalar time2_ = mesh_.time().elapsedCpuTime();
+
+    const cellZoneMesh& cellZones = mesh_.cellZones();
+    List<scalar> massToIntroduce(TvInitial.size(), 0.0);//////////////
+    List<scalar> massIntroduced(TvInitial.size(), 0.0);///////////////
+    
+    label zoneId = cellZones.findZoneID(zoneToReset);
+
+    if(zoneId == -1)
+    {
+        FatalErrorIn("resetHybrid")
+            << "Cannot find region: " << zoneToReset << nl << "in: "
+            << mesh_.time().constant()/"cellZones"
+            << exit(FatalError);
+    }
+
+    const cellZone& zone = cellZones[zoneId];
+
+    if (zone.size())
+    {
+        Info << "Lattice in zone: " << zoneToReset << endl;
+
+        forAll(zone, c)
+        {
+            const label& cellI = zone[c];
+            forAll(typeIdList_, i)  ////////////////////////////////
+            {                       ////////////////////////////////
+                massToIntroduce[i] += numberDensitiesField[i][cellI]
+                    * mesh_.V()[cellI];
+            }                       ////////////////////////////////
+            List<tetIndices> cellTets = polyMeshTetDecomposition::cellTetIndices
+            (
+                mesh_,
+                cellI
+            );
+
+            forAll(cellTets, tetI)
+            {
+                const tetIndices& cellTetIs = cellTets[tetI];
+
+                tetPointRef tet = cellTetIs.tet(mesh_);
+
+                scalar tetVolume = tet.mag();
+
+                forAll(typeIdList_, i)
+                {
+                    const dsmcParcel::constantProperties& cP = this->constProps(i);
+
+                    scalar numberDensity = numberDensitiesField[i][cellI];
+                    scalar translationalTemperature = TtInitial[i][cellI];
+                    scalar rotationalTemperature = TrInitial[i][cellI];
+                    scalar vibrationalTemperature = TvInitial[i][cellI];
+                    vector velocity = UInitial[cellI];
+
+                    // Calculate the number of particles required
+                    scalar particlesRequired = numberDensity*tetVolume;
+
+                    // Only integer numbers of particles can be inserted
+                    label nParticlesToInsert = label(particlesRequired);
+
+                    // Add another particle with a probability proportional to the
+                    // remainder of taking the integer part of particlesRequired
+                    if
+                    (
+                        (particlesRequired - nParticlesToInsert)
+                            > rndGen_.scalar01()
+                    )
+                    {
+                        nParticlesToInsert++;
+                    }
+                    massIntroduced[i] += nParticlesToInsert;///////////////
+                    for (label pI = 0; pI < nParticlesToInsert; pI++)
+                    {
+                        point p = tet.randomPoint(rndGen_);
+
+                        vector U;
+
+                        scalar ERot;
+                        scalar EVib;
+
+                        this->generalisedChapmanEnskog
+                        (
+                            i,
+                            translationalTemperature,
+                            rotationalTemperature,
+                            vibrationalTemperature,
+                            cP.mass(),
+                            DInitial[i][cellI],
+                            qtInitial[i][cellI],
+                            qrInitial[i][cellI],
+                            qvInitial[i][cellI],
+                            tauInitial[i][cellI],
+                            ERot,
+                            EVib,
+                            U
+                        );
+
+                        U += velocity;
+            
+                        label newParcel = 0;
+        
+                        label classification = 0;
+
+                        this->addNewParcel
+                        (
+                            p,
+                            U,
+                            ERot,
+                            EVib,
+                            cellI,
+                            cellTetIs.face(),
+                            cellTetIs.tetPt(),
+                            i,
+                            newParcel,
+                            classification
+                        );
+                    }
+                }
+            }
+        }
+    }
+    Info << "For zone " + zoneToReset + ":" << endl;
+    forAll(typeIdList_, i)
+    {
+        scalar mass = this->constProps(i).mass();
+        massToIntroduce[i] *= mass*nParticle();
+        massIntroduced[i] *= mass*nParticle();
+        Info << "  Specie " << i << ", mTI: "
+            << massToIntroduce[i] << "; mI: " << massIntroduced[i]
+            << nl << "\t(" << 100.0 * (massIntroduced[i]
+            / (massToIntroduce[i] + VSMALL) - 1.0) << "% off)" << endl;
+    }
+
+    buildCellOccupancy();*/
+}
 
 
 void Foam::dsmcCloud::shockReset()

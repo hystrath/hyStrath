@@ -127,8 +127,8 @@ trackingNumber/trackingNumber.C
 randomPointsInSquareZone/randomPointsInSquareZone.C
 
 
-multiscale/boundaryConditions/mixedFixedValueSlipFvPatchFields.C
-multiscale/boundaryConditions/nonLinMaxwellSlipUFvPatchVectorField.C
+/*multiscale/boundaryConditions/mixedFixedValueSlipFvPatchFields.C*/
+/*multiscale/boundaryConditions/nonLinMaxwellSlipUFvPatchVectorField.C*/
 
 
 LIB = $(FOAM_USER_LIBBIN)/libgeneralMolecule

@@ -116,7 +116,7 @@ polyZoneRdf::polyZoneRdf
             {
                 const int proc = p;
                 {
-                    OPstream toNeighbour(Pstream::blocking, proc);
+                    OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << totalVolume_;
                 }
             }
@@ -131,7 +131,7 @@ polyZoneRdf::polyZoneRdf
                 
                 const int proc = p;
                 {
-                    IPstream fromNeighbour(Pstream::blocking, proc);
+                    IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> totalVolumeProc;
                 }
                 
