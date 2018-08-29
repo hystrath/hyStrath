@@ -23,18 +23,9 @@
 
 #### Installation  
 ```sh
-<<<<<<< HEAD
-git clone https://github.com/vincentcasseau/hyStrath.git --branch master --single-branch && cd hyStrath/
-```   
-+ CFD & DSMC:
-```sh 
-./install-all.sh nCPUs > logInstall 2>&1 &
-```
-=======
 git clone https://github.com/vincentcasseau/hyStrath.git --branch master --single-branch && cd hyStrath/  
 ./install-all.sh 8 > logInstall 2>&1 &
 ```  
->>>>>>> a3e6a700eaf2695edb2c8f18b728cd7202b94561
 
 where _8_ is the number of processors to be used during the installation.  
 
@@ -79,7 +70,7 @@ Contributors: Dr Vincent Casseau, Daniel E.R. Espinoza, Dr Jimmy-John O.E. Hoste
 External contributors: [View more](https://github.com/vincentcasseau/hyStrath/wiki/Contributions)  
 
 
-#### [View all](https://github.com/vincentcasseau/hyStrath/wiki/People-and-Contact)  
+#### [View more](https://github.com/vincentcasseau/hyStrath/wiki/People-and-Contact)  
 
 
 <br><br>
