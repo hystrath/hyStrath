@@ -81,5 +81,5 @@ cd $sendingDir/applications/utilities/mesh/generation/blockMeshDG
 cd $currentDir
 
 echo "
-dsmcStrath_$WM_PROJECT_VERSION updated successfully. Hope you'll enjoy it, $userName :)
+DSMC module $WM_PROJECT_VERSION updated successfully. Hope you'll enjoy it, $userName :)
 "

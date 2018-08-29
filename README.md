@@ -67,11 +67,11 @@ Analysis](https://strathprints.strath.ac.uk/62926)
 
 ## People & Contact
 
-__GitHub coordinator__: Dr Vincent Casseau  
+__GitHub coordinator:__ Dr Vincent Casseau  
 
-__Contributors__: Dr Vincent Casseau, Daniel E.R. Espinoza, Dr Jimmy-John O.E. Hoste, Dr Viola Renato, Dr Rodrigo C. Palharini, Dr Craig White, Dr Thomas J. Scanlon, Dr Richard E. Brown     
+__Contributors:__ Dr Vincent Casseau, Daniel E.R. Espinoza, Dr Jimmy-John O.E. Hoste, Dr Viola Renato, Dr Rodrigo C. Palharini, Dr Craig White, Dr Thomas J. Scanlon, Dr Richard E. Brown     
 
-__External contributors__: R.Tech Engineering   
+__External contributors:__ R.Tech Engineering   
 
 #### [View more](https://github.com/vincentcasseau/hyStrath/wiki/People-and-Contact)  
 

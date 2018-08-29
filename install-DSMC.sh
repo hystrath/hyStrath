@@ -110,5 +110,5 @@ wclean all
 cd $currentDir
 
 echo "
-dsmcStrath_$WM_PROJECT_VERSION compiled successfully. Hope you'll enjoy it, $userName :)
+DSMC module $WM_PROJECT_VERSION compiled successfully. Hope you'll enjoy it, $userName :)
 "

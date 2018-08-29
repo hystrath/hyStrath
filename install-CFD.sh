@@ -93,5 +93,5 @@ wclean all
 cd $currentDir
 
 echo "
-cfdStrath_$WM_PROJECT_VERSION compiled successfully. Hope you'll enjoy it, $userName :)
+CFD module $WM_PROJECT_VERSION compiled successfully. Hope you'll enjoy it, $userName :)
 "

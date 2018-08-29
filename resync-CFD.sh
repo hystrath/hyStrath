@@ -63,5 +63,5 @@ cd $sendingDir/applications/utilities/mesh/generation/blockMeshDG
 cd $currentDir
 
 echo "
-cfdStrath_$WM_PROJECT_VERSION updated successfully. Hope you'll enjoy it, $userName :)
+CFD module $WM_PROJECT_VERSION updated successfully. Hope you'll enjoy it, $userName :)
 "
