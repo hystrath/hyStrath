@@ -5,7 +5,7 @@ set -e
 userName=`whoami`
 
 currentDir=`pwd`
-sendingDir="$FOAM_INST_DIR/$userName-$WM_PROJECT_VERSION"
+sendingDir="$WM_PROJECT_USER_DIR"
 
 nProcs=1
 if [ $# -ne 0 ]
@@ -81,5 +81,5 @@ cd $sendingDir/applications/utilities/mesh/generation/blockMeshDG
 cd $currentDir
 
 echo "
-dsmcStrath_$WM_PROJECT_VERSION updated successfully. Hope you'll enjoy it, $userName :)
+DSMC module $WM_PROJECT_VERSION updated successfully. Hope you'll enjoy it, $userName :)
 "

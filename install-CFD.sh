@@ -6,7 +6,7 @@ set -e
 userName=`whoami`
 
 currentDir=`pwd`
-sendingDir="$FOAM_INST_DIR/$userName-$WM_PROJECT_VERSION"
+sendingDir="$WM_PROJECT_USER_DIR"
 
 nProcs=1
 if [ $# -ne 0 ]
@@ -93,5 +93,5 @@ wclean all
 cd $currentDir
 
 echo "
-cfdStrath_$WM_PROJECT_VERSION compiled successfully. Hope you'll enjoy it, $userName :)
+CFD module $WM_PROJECT_VERSION compiled successfully. Hope you'll enjoy it, $userName :)
 "
