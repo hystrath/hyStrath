@@ -5,7 +5,7 @@ set -e
 userName=`whoami`
 
 currentDir=`pwd`
-sendingDir="$FOAM_INST_DIR/$userName-$WM_PROJECT_VERSION"
+sendingDir="$WM_PROJECT_USER_DIR"
 
 nProcs=1
 if [ $# -ne 0 ]
