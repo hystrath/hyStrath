@@ -36,12 +36,14 @@ inline Foam::powerLawEuckenTransport<Thermo>::powerLawEuckenTransport
 (
     const Thermo& t,
     const scalar dref,
-    const scalar omega
+    const scalar omega,
+    const scalar eta_s
 )
 :
     Thermo(t),
     dref_(dref),
-    omega_(omega)
+    omega_(omega),
+    eta_s_(eta_s)
 {}
 
 
@@ -54,7 +56,8 @@ inline Foam::powerLawEuckenTransport<Thermo>::powerLawEuckenTransport
 :
     Thermo(name, pet),
     dref_(pet.dref_),
-    omega_(pet.omega_)
+    omega_(pet.omega_),
+    eta_s_(pet.eta_s_)
 {}
 
 
@@ -107,8 +110,11 @@ inline Foam::scalar Foam::powerLawEuckenTransport<Thermo>::mu
 ) const
 {
     scalar Tref = 273.0;
-    scalar mu_ref = 15.0*sqrt(constant::mathematical::pi*constant::physicoChemical::k.value()*(this->W()*1.0e-3/constant::physicoChemical::NA.value())*Tref)
-          /(constant::mathematical::twoPi*pow(dref_, 2.0)*(5.0-2.0*omega_)*(7.0-2.0*omega_));
+    scalar mu_ref = 15.0
+        *sqrt(constant::mathematical::pi*constant::physicoChemical::k.value()
+        *(this->W()*1.0e-3/constant::physicoChemical::NA.value())*Tref)
+        /(constant::mathematical::twoPi*pow(dref_, 2.0)*(5.0-2.0*omega_)
+            *(7.0-2.0*omega_));
     
     return mu_ref*pow(Tt/Tref, omega_);
 }
@@ -150,8 +156,7 @@ inline Foam::scalar Foam::powerLawEuckenTransport<Thermo>::kappave
     const scalar p, const scalar Tt, const scalar Tve
 ) const
 {
-    const scalar eta_s = 1.2;
-    return eta_s*mu(p, Tt)*this->Cv_vel(p, Tve);
+    return eta_s_*mu(p, Tt)*this->Cv_vel(p, Tve);
 }
 
 
@@ -201,6 +206,7 @@ Foam::powerLawEuckenTransport<Thermo>::operator=
 
     dref_ = pet.dref_;
     omega_ = pet.omega_;
+    eta_s_ = pet.eta_s_;
 
     return *this;
 }
@@ -221,6 +227,7 @@ inline void Foam::powerLawEuckenTransport<Thermo>::operator+=
 
     dref_ = molr1*dref_ + molr2*pet.dref_;
     omega_ = molr1*omega_ + molr2*pet.omega_;
+    eta_s_ = molr1*eta_s_ + molr2*pet.eta_s_;
 }
 
 
@@ -239,6 +246,7 @@ inline void Foam::powerLawEuckenTransport<Thermo>::operator-=
 
     dref_ = molr1*dref_ - molr2*pet.dref_;
     omega_ = molr1*omega_ - molr2*pet.omega_;
+    eta_s_ = molr1*eta_s_ - molr2*pet.eta_s_;
 }
 
 
@@ -273,7 +281,8 @@ inline Foam::powerLawEuckenTransport<Thermo> Foam::operator+
     (
         t,
         molr1*pet1.dref_ + molr2*pet2.dref_,
-        molr1*pet1.omega_ + molr2*pet2.omega_
+        molr1*pet1.omega_ + molr2*pet2.omega_,
+        molr1*pet1.eta_s_ + molr2*pet2.eta_s_
     );
 }
 
@@ -297,7 +306,8 @@ inline Foam::powerLawEuckenTransport<Thermo> Foam::operator-
     (
         t,
         molr1*pet1.dref_ - molr2*pet2.dref_,
-        molr1*pet1.omega_ - molr2*pet2.omega_
+        molr1*pet1.omega_ - molr2*pet2.omega_,
+        molr1*pet1.eta_s_ - molr2*pet2.eta_s_
     );
 }
 
@@ -313,7 +323,8 @@ inline Foam::powerLawEuckenTransport<Thermo> Foam::operator*
     (
         s*static_cast<const Thermo&>(pet),
         pet.dref_,
-        pet.omega_
+        pet.omega_,
+        pet.eta_s_
     );
 }
 

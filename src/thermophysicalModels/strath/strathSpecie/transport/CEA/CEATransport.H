@@ -41,6 +41,8 @@ Description
         \kappa_r_k = mu_k*Cv_r_k
         \kappa_ve_k = mu_k*Cv_ve_k
     \f]
+    
+    \kappa_ve_k amended to be eta_s_k*mu_k*Cv_ve_k
 
 SourceFiles
     CEATransportI.H
@@ -117,11 +119,16 @@ private:
     
     // Private data
 
-        // Temperature bounds for the viscosity and thermal conductivity lists
+        //- Temperature bounds for the viscosity and thermal conductivity lists
         DynamicList<scalar> temp_;
         
-        // CEA coefficients for viscosity and thermal conductivity
+        //- CEA coefficients for viscosity and thermal conductivity
         DynamicList<CEATransportArray> mu_, kappa_;
+        
+        //- Factor in vibrational thermal conductivity kappave
+        // Hard-sphere: (7-2*omega_m)/5 with omega_m = 0.5
+        // Default value: 1.2
+        scalar eta_s_;
 
 
 public:
@@ -132,9 +139,10 @@ public:
         inline CEATransport
         (
             const Thermo& t,
-            const DynamicList<scalar> temp,
-            const DynamicList<CEATransportArray> mu,
-            const DynamicList<CEATransportArray> kappa
+            const DynamicList<scalar>& temp,
+            const DynamicList<CEATransportArray>& mu,
+            const DynamicList<CEATransportArray>& kappa,
+            const scalar eta_s
         );
 
         //- Construct as named copy

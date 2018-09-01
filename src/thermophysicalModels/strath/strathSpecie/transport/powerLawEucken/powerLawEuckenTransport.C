@@ -33,7 +33,8 @@ Foam::powerLawEuckenTransport<Thermo>::powerLawEuckenTransport(Istream& is)
 :
     Thermo(is),
     dref_(readScalar(is)),
-    omega_(readScalar(is))
+    omega_(readScalar(is)),
+    eta_s_(readScalar(is))
 {
     is.check("powerLawEuckenTransport<Thermo>::powerLawEuckenTransport(Istream&)");
 }
@@ -44,7 +45,8 @@ Foam::powerLawEuckenTransport<Thermo>::powerLawEuckenTransport(const dictionary&
 :
     Thermo(dict),
     dref_(readScalar(dict.subDict("specie").lookup("diameter"))),
-    omega_(readScalar(dict.subDict("specie").lookup("omega")))
+    omega_(readScalar(dict.subDict("specie").lookup("omega"))),
+    eta_s_(dict.subDict("specie").lookupOrDefault<scalar>("eta_s", 1.2))
 {}
 
 
@@ -61,6 +63,7 @@ void Foam::powerLawEuckenTransport<Thermo>::write(Ostream& os) const
     dictionary dict("specie");
     dict.add("diameter", dref_);
     dict.add("omega", omega_);
+    dict.add("eta_s", eta_s_);
     os  << indent << dict.dictName() << dict;
 
     os  << decrIndent << token::END_BLOCK << nl;
@@ -75,7 +78,8 @@ Foam::Ostream& Foam::operator<<
     const powerLawEuckenTransport<Thermo>& pet
 )
 {
-    os << static_cast<const Thermo&>(pet) << tab << pet.dref_ << tab << pet.omega_;
+    os << static_cast<const Thermo&>(pet) << tab << pet.dref_ << tab 
+       << pet.omega_ << tab << pet.eta_s_;
 
     os.check
     (

@@ -33,13 +33,15 @@ inline Foam::BlottnerEuckenTransport<Thermo>::BlottnerEuckenTransport
     const Thermo& t,
     const scalar Ak,
     const scalar Bk,
-    const scalar Ck
+    const scalar Ck,
+    const scalar eta_s
 )
 :
     Thermo(t),
     Ak_(Ak),
     Bk_(Bk),
-    Ck_(Ck)
+    Ck_(Ck),
+    eta_s_(eta_s)
 {}
 
 
@@ -53,7 +55,8 @@ inline Foam::BlottnerEuckenTransport<Thermo>::BlottnerEuckenTransport
     Thermo(name, bet),
     Ak_(bet.Ak_),
     Bk_(bet.Bk_),
-    Ck_(bet.Ck_)
+    Ck_(bet.Ck_),
+    eta_s_(bet.eta_s_)
 {}
 
 
@@ -145,8 +148,7 @@ inline Foam::scalar Foam::BlottnerEuckenTransport<Thermo>::kappave
     const scalar p, const scalar Tt, const scalar Tve
 ) const
 {
-    const scalar eta_s = 1.2; // Hard-sphere: (7-2*omega_m)/5 with omega_m = 0.5
-    return eta_s*mu(p, Tt)*this->Cv_vel(p, Tve);
+    return eta_s_*mu(p, Tt)*this->Cv_vel(p, Tve);
 }
 
 
@@ -197,6 +199,7 @@ Foam::BlottnerEuckenTransport<Thermo>::operator=
     Ak_ = bet.Ak_;
     Bk_ = bet.Bk_;
     Ck_ = bet.Ck_;
+    eta_s_ = bet.eta_s_;
 
     return *this;
 }
@@ -218,6 +221,7 @@ inline void Foam::BlottnerEuckenTransport<Thermo>::operator+=
     Ak_ = molr1*Ak_ + molr2*bet.Ak_;
     Bk_ = molr1*Bk_ + molr2*bet.Bk_;
     Ck_ = molr1*Ck_ + molr2*bet.Ck_;
+    eta_s_ = molr1*eta_s_ + molr2*bet.eta_s_;
 }
 
 
@@ -237,6 +241,7 @@ inline void Foam::BlottnerEuckenTransport<Thermo>::operator-=
     Ak_ = molr1*Ak_ - molr2*bet.Ak_;
     Bk_ = molr1*Bk_ - molr2*bet.Bk_;
     Ck_ = molr1*Ck_ - molr2*bet.Ck_;
+    Ck_ = molr1*eta_s_ - molr2*bet.eta_s_;
 }
 
 
@@ -272,7 +277,8 @@ inline Foam::BlottnerEuckenTransport<Thermo> Foam::operator+
         t,
         molr1*bet1.Ak_ + molr2*bet2.Ak_,
         molr1*bet1.Bk_ + molr2*bet2.Bk_,
-        molr1*bet1.Ck_ + molr2*bet2.Ck_
+        molr1*bet1.Ck_ + molr2*bet2.Ck_,
+        molr1*bet1.eta_s_ + molr2*bet2.eta_s_
     );
 }
 
@@ -297,7 +303,8 @@ inline Foam::BlottnerEuckenTransport<Thermo> Foam::operator-
         t,
         molr1*bet1.Ak_ - molr2*bet2.Ak_,
         molr1*bet1.Bk_ - molr2*bet2.Bk_,
-        molr1*bet1.Ck_ - molr2*bet2.Ck_
+        molr1*bet1.Ck_ - molr2*bet2.Ck_,
+        molr1*bet1.eta_s_ - molr2*bet2.eta_s_
     );
 }
 
@@ -314,7 +321,8 @@ inline Foam::BlottnerEuckenTransport<Thermo> Foam::operator*
         s*static_cast<const Thermo&>(bet),
         bet.Ak_,
         bet.Bk_,
-        bet.Ck_
+        bet.Ck_,
+        bet.eta_s_
     );
 }
 

@@ -100,8 +100,13 @@ class SutherlandEuckenTransport
 {
     // Private data
 
-        // Sutherland's coefficients
+        //- Sutherland's coefficients
         scalar As_, Ts_;
+        
+        //- Factor in vibrational thermal conductivity kappave
+        // Hard-sphere: (7-2*omega_m)/5 with omega_m = 0.5
+        // Default value: 1.2
+        scalar eta_s_;
 
 
     // Private Member Functions
@@ -125,7 +130,8 @@ public:
         (
             const Thermo& t,
             const scalar As,
-            const scalar Ts
+            const scalar Ts,
+            const scalar eta_s
         );
 
         //- Construct from two viscosities

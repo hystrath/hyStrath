@@ -32,7 +32,8 @@ template<class Thermo>
 Foam::constantTransport<Thermo>::constantTransport(Istream& is)
 :
     Thermo(is),
-    mu_(readScalar(is))
+    mu_(readScalar(is)),
+    eta_s_(readScalar(is))
 {
     is.check("constantTransport::constantTransport(Istream& is)");
 }
@@ -42,7 +43,8 @@ template<class Thermo>
 Foam::constantTransport<Thermo>::constantTransport(const dictionary& dict)
 :
     Thermo(dict),
-    mu_(readScalar(dict.subDict("transport").subDict("constant").lookup("mu")))
+    mu_(readScalar(dict.subDict("transport").subDict("constant").lookup("mu"))),
+    eta_s_(dict.subDict("specie").lookupOrDefault<scalar>("eta_s", 1.2))
 {}
 
 
@@ -56,10 +58,13 @@ void Foam::constantTransport<Thermo>::constantTransport::write(Ostream& os) cons
 
     Thermo::write(os);
 
-    dictionary dict("transport");
-    dict.subDict("constant").add("mu", mu_);
+    dictionary dictTransport("transport");
+    dictTransport.subDict("constant").add("mu", mu_);
+    os  << indent << dictTransport.dictName() << dictTransport;
     
-    os  << indent << dict.dictName() << dict;
+    dictionary dictSpecies("specie");
+    dictSpecies.add("eta_s", eta_s_);
+    os  << indent << dictSpecies.dictName() << dictSpecies;
 
     os  << decrIndent << token::END_BLOCK << nl;
 }
@@ -71,7 +76,7 @@ template<class Thermo>
 Foam::Ostream& Foam::operator<<(Ostream& os, const constantTransport<Thermo>& ct)
 {
     operator<<(os, static_cast<const Thermo&>(ct));
-    os << tab << ct.mu_;
+    os << tab << ct.mu_ << tab << ct.eta_s_;
 
     os.check("Ostream& operator<<(Ostream&, const constantTransport&)");
 

@@ -96,6 +96,11 @@ class constantTransport
 
         //- Constant dynamic viscosity [Pa.s]
         scalar mu_;
+        
+        //- Factor in vibrational thermal conductivity kappave
+        // Hard-sphere: (7-2*omega_m)/5 with omega_m = 0.5
+        // Default value: 1.2
+        scalar eta_s_;
 
 
     // Private Member Functions
@@ -104,7 +109,8 @@ class constantTransport
         inline constantTransport
         (
             const Thermo& t,
-            const scalar mu
+            const scalar mu,
+            const scalar eta_s
         );
 
 

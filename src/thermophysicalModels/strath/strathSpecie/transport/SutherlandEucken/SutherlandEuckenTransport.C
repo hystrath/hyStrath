@@ -33,7 +33,8 @@ Foam::SutherlandEuckenTransport<Thermo>::SutherlandEuckenTransport(Istream& is)
 :
     Thermo(is),
     As_(readScalar(is)),
-    Ts_(readScalar(is))
+    Ts_(readScalar(is)),
+    eta_s_(readScalar(is))
 {
     is.check("SutherlandEuckenTransport<Thermo>::SutherlandEuckenTransport(Istream&)");
 }
@@ -44,7 +45,8 @@ Foam::SutherlandEuckenTransport<Thermo>::SutherlandEuckenTransport(const diction
 :
     Thermo(dict),
     As_(readScalar(dict.subDict("transport").subDict("SutherlandEucken").lookup("As"))),
-    Ts_(readScalar(dict.subDict("transport").subDict("SutherlandEucken").lookup("Ts")))
+    Ts_(readScalar(dict.subDict("transport").subDict("SutherlandEucken").lookup("Ts"))),
+    eta_s_(dict.subDict("specie").lookupOrDefault<scalar>("eta_s", 1.2))
 {}
 
 
@@ -58,10 +60,14 @@ void Foam::SutherlandEuckenTransport<Thermo>::write(Ostream& os) const
 
     Thermo::write(os);
 
-    dictionary dict("transport");
-    dict.subDict("SutherlandEucken").add("As", As_);
-    dict.subDict("SutherlandEucken").add("Ts", Ts_);
-    os  << indent << dict.dictName() << dict;
+    dictionary dictTransport("transport");
+    dictTransport.subDict("SutherlandEucken").add("As", As_);
+    dictTransport.subDict("SutherlandEucken").add("Ts", Ts_);
+    os  << indent << dictTransport.dictName() << dictTransport;
+    
+    dictionary dictSpecies("specie");
+    dictSpecies.add("eta_s", eta_s_);
+    os  << indent << dictSpecies.dictName() << dictSpecies;
 
     os  << decrIndent << token::END_BLOCK << nl;
 }
@@ -75,7 +81,8 @@ Foam::Ostream& Foam::operator<<
     const SutherlandEuckenTransport<Thermo>& st
 )
 {
-    os << static_cast<const Thermo&>(st) << tab << st.As_ << tab << st.Ts_;
+    os << static_cast<const Thermo&>(st) << tab << st.As_ << tab << st.Ts_
+       << tab << st.eta_s_;
 
     os.check
     (

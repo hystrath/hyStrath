@@ -34,7 +34,8 @@ Foam::BlottnerEuckenTransport<Thermo>::BlottnerEuckenTransport(Istream& is)
     Thermo(is),
     Ak_(readScalar(is)),
     Bk_(readScalar(is)),
-    Ck_(readScalar(is))
+    Ck_(readScalar(is)),
+    eta_s_(readScalar(is))
 {
     is.check("BlottnerEuckenTransport<Thermo>::BlottnerEuckenTransport(Istream&)");
 }
@@ -46,7 +47,8 @@ Foam::BlottnerEuckenTransport<Thermo>::BlottnerEuckenTransport(const dictionary&
     Thermo(dict),
     Ak_(readScalar(dict.subDict("transport").subDict("BlottnerEucken").lookup("A"))),
     Bk_(readScalar(dict.subDict("transport").subDict("BlottnerEucken").lookup("B"))),
-    Ck_(readScalar(dict.subDict("transport").subDict("BlottnerEucken").lookup("C")))
+    Ck_(readScalar(dict.subDict("transport").subDict("BlottnerEucken").lookup("C"))),
+    eta_s_(dict.subDict("specie").lookupOrDefault<scalar>("eta_s", 1.2))
 {}
 
 
@@ -60,11 +62,15 @@ void Foam::BlottnerEuckenTransport<Thermo>::write(Ostream& os) const
 
     Thermo::write(os);
 
-    dictionary dict("transport");
-    dict.subDict("BlottnerEucken").add("A", Ak_);
-    dict.subDict("BlottnerEucken").add("B", Bk_);
-    dict.subDict("BlottnerEucken").add("C", Ck_);
-    os  << indent << dict.dictName() << dict;
+    dictionary dictTransport("transport");
+    dictTransport.subDict("BlottnerEucken").add("A", Ak_);
+    dictTransport.subDict("BlottnerEucken").add("B", Bk_);
+    dictTransport.subDict("BlottnerEucken").add("C", Ck_);
+    os  << indent << dictTransport.dictName() << dictTransport;
+    
+    dictionary dictSpecies("specie");
+    dictSpecies.add("eta_s", eta_s_);
+    os  << indent << dictSpecies.dictName() << dictSpecies;
 
     os  << decrIndent << token::END_BLOCK << nl;
 }
@@ -79,7 +85,7 @@ Foam::Ostream& Foam::operator<<
 )
 {
     os << static_cast<const Thermo&>(bet) << tab << bet.Ak_ << tab << bet.Bk_ 
-       << tab << bet.Ck_;
+       << tab << bet.Ck_ << tab << bet.eta_s_;
 
     os.check
     (

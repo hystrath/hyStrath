@@ -41,6 +41,8 @@ Description
         \kappa_r_k = mu_k*Cv_r_k
         \kappa_ve_k = mu_k*Cv_ve_k
     \f]
+    
+    \kappa_ve_k amended to be eta_s_k*mu_k*Cv_ve_k
 
 SourceFiles
     BlottnerEuckenTransportI.H
@@ -107,8 +109,13 @@ class BlottnerEuckenTransport
 {
     // Private data
 
-        // Blottner's coefficients
+        //- Blottner's coefficients
         scalar Ak_, Bk_, Ck_;
+        
+        //- Factor in vibrational thermal conductivity kappave
+        // Hard-sphere: (7-2*omega_m)/5 with omega_m = 0.5
+        // Default value: 1.2
+        scalar eta_s_;
 
 
 public:
@@ -121,7 +128,8 @@ public:
             const Thermo& t,
             const scalar Ak,
             const scalar Bk,
-            const scalar Ck
+            const scalar Ck,
+            const scalar eta_s
         );
 
         //- Construct as named copy

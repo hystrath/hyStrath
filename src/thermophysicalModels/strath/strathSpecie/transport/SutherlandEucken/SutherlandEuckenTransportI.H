@@ -51,12 +51,14 @@ inline Foam::SutherlandEuckenTransport<Thermo>::SutherlandEuckenTransport
 (
     const Thermo& t,
     const scalar As,
-    const scalar Ts
+    const scalar Ts,
+    const scalar eta_s
 )
 :
     Thermo(t),
     As_(As),
-    Ts_(Ts)
+    Ts_(Ts),
+    eta_s_(eta_s)
 {}
 
 
@@ -83,7 +85,8 @@ inline Foam::SutherlandEuckenTransport<Thermo>::SutherlandEuckenTransport
 :
     Thermo(name, st),
     As_(st.As_),
-    Ts_(st.Ts_)
+    Ts_(st.Ts_),
+    eta_s_(st.eta_s_)
 {}
 
 
@@ -177,8 +180,7 @@ inline Foam::scalar Foam::SutherlandEuckenTransport<Thermo>::kappave
     const scalar p, const scalar Tt, const scalar Tve
 ) const
 {
-    const scalar eta_s = 1.2;
-    return eta_s*mu(p, Tt)*this->Cv_vel(p, Tve);
+    return eta_s_*mu(p, Tt)*this->Cv_vel(p, Tve);
 }
 
 
@@ -228,6 +230,7 @@ Foam::SutherlandEuckenTransport<Thermo>::operator=
 
     As_ = st.As_;
     Ts_ = st.Ts_;
+    eta_s_ = st.eta_s_;
 
     return *this;
 }
@@ -248,6 +251,7 @@ inline void Foam::SutherlandEuckenTransport<Thermo>::operator+=
 
     As_ = molr1*As_ + molr2*st.As_;
     Ts_ = molr1*Ts_ + molr2*st.Ts_;
+    eta_s_ = molr1*eta_s_ + molr2*st.eta_s_;
 }
 
 
@@ -266,6 +270,7 @@ inline void Foam::SutherlandEuckenTransport<Thermo>::operator-=
 
     As_ = molr1*As_ - molr2*st.As_;
     Ts_ = molr1*Ts_ - molr2*st.Ts_;
+    eta_s_ = molr1*eta_s_ - molr2*st.eta_s_;
 }
 
 
@@ -300,7 +305,8 @@ inline Foam::SutherlandEuckenTransport<Thermo> Foam::operator+
     (
         t,
         molr1*st1.As_ + molr2*st2.As_,
-        molr1*st1.Ts_ + molr2*st2.Ts_
+        molr1*st1.Ts_ + molr2*st2.Ts_,
+        molr1*st1.eta_s_ + molr2*st2.eta_s_
     );
 }
 
@@ -324,7 +330,8 @@ inline Foam::SutherlandEuckenTransport<Thermo> Foam::operator-
     (
         t,
         molr1*st1.As_ - molr2*st2.As_,
-        molr1*st1.Ts_ - molr2*st2.Ts_
+        molr1*st1.Ts_ - molr2*st2.Ts_,
+        molr1*st1.eta_s_ - molr2*st2.eta_s_
     );
 }
 
@@ -340,7 +347,8 @@ inline Foam::SutherlandEuckenTransport<Thermo> Foam::operator*
     (
         s*static_cast<const Thermo&>(st),
         st.As_,
-        st.Ts_
+        st.Ts_,
+        st.eta_s_
     );
 }
 

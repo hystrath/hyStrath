@@ -29,11 +29,13 @@ template<class Thermo>
 inline Foam::constantTransport<Thermo>::constantTransport
 (
     const Thermo& t,
-    const scalar mu
+    const scalar mu,
+    const scalar eta_s
 )
 :
     Thermo(t),
-    mu_(mu)
+    mu_(mu),
+    eta_s_(eta_s)
 {}
 
 
@@ -45,7 +47,8 @@ inline Foam::constantTransport<Thermo>::constantTransport
 )
 :
     Thermo(name, ct),
-    mu_(ct.mu_)
+    mu_(ct.mu_),
+    eta_s_(ct.eta_s_)
 {}
 
 
@@ -139,8 +142,7 @@ inline Foam::scalar Foam::constantTransport<Thermo>::kappave
     const scalar p, const scalar Tt, const scalar Tve
 ) const
 {
-    const scalar eta_s = 1.2;
-    return eta_s*mu(p, Tt)*this->Cv_vel(p, Tve);
+    return eta_s_*mu(p, Tt)*this->Cv_vel(p, Tve);
 }
 
 
@@ -189,6 +191,7 @@ inline Foam::constantTransport<Thermo>& Foam::constantTransport<Thermo>::operato
     Thermo::operator=(ct);
 
     mu_ = ct.mu_;
+    eta_s_ = ct.eta_s_;
 
     return *this;
 }
@@ -208,6 +211,7 @@ inline void Foam::constantTransport<Thermo>::operator+=
     scalar molr2 = st.nMoles()/this->nMoles();
 
     mu_ = molr1*mu_ + molr2*st.mu_;
+    eta_s_ = molr1*eta_s_ + molr2*st.eta_s_;
 }
 
 
@@ -225,6 +229,7 @@ inline void Foam::constantTransport<Thermo>::operator-=
     scalar molr2 = st.nMoles()/this->nMoles();
 
     mu_ = molr1*mu_ - molr2*st.mu_;
+    eta_s_ = molr1*eta_s_ - molr2*st.eta_s_;
 }
 
 
@@ -258,7 +263,8 @@ inline Foam::constantTransport<Thermo> Foam::operator+
     return constantTransport<Thermo>
     (
         t,
-        molr1*ct1.mu_ + molr2*ct2.mu_
+        molr1*ct1.mu_ + molr2*ct2.mu_,
+        molr1*ct1.eta_s_ + molr2*ct2.eta_s_
     );
 }
 
@@ -281,7 +287,8 @@ inline Foam::constantTransport<Thermo> Foam::operator-
     return constantTransport<Thermo>
     (
         t,
-        molr1*ct1.mu_ - molr2*ct2.mu_
+        molr1*ct1.mu_ - molr2*ct2.mu_,
+        molr1*ct1.eta_s_ - molr2*ct2.eta_s_
     );
 }
 
@@ -296,7 +303,8 @@ inline Foam::constantTransport<Thermo> Foam::operator*
     return constantTransport<Thermo>
     (
         s*static_cast<const Thermo&>(ct),
-        ct.mu_
+        ct.mu_,
+        ct.eta_s_
     );
 }
 

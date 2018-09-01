@@ -31,15 +31,17 @@ template<class Thermo>
 inline Foam::CEATransport<Thermo>::CEATransport
 (
     const Thermo& t,
-    const DynamicList<scalar> temp,
-    const DynamicList<CEATransportArray> mu,
-    const DynamicList<CEATransportArray> kappa
+    const DynamicList<scalar>& temp,
+    const DynamicList<CEATransportArray>& mu,
+    const DynamicList<CEATransportArray>& kappa,
+    const scalar eta_s
 )
 :
     Thermo(t),
     temp_(temp),
     mu_(mu),
-    kappa_(kappa)
+    kappa_(kappa),
+    eta_s_(eta_s)
 {}
 
 
@@ -53,7 +55,8 @@ inline Foam::CEATransport<Thermo>::CEATransport
     Thermo(name, ceat),
     temp_(ceat.temp_),
     mu_(ceat.mu_),
-    kappa_(ceat.kappa_)
+    kappa_(ceat.kappa_),
+    eta_s_(ceat.eta_s_)
 {}
 
 
@@ -170,8 +173,7 @@ inline Foam::scalar Foam::CEATransport<Thermo>::kappave
     const scalar p, const scalar Tt, const scalar Tve
 ) const
 {
-    const scalar eta_s = 1.2;
-    return eta_s*mu(p, Tt)*this->Cv_vel(p, Tve);
+    return eta_s_*mu(p, Tt)*this->Cv_vel(p, Tve);
 }
 
 
@@ -224,6 +226,7 @@ Foam::CEATransport<Thermo>::operator=
     temp_ = ceat.temp_;
     mu_ = ceat.mu_;
     kappa_ = ceat.kappa_;
+    eta_s_ = ceat.eta_s_;
 
     return *this;
 }
@@ -283,7 +286,8 @@ inline Foam::CEATransport<Thermo> Foam::operator+
         t,
         molr1*ceat1.temp_ + molr2*ceat2.temp_,
         mu,
-        kappa
+        kappa,
+        molr1*ceat1.eta_s_ + molr2*ceat2.eta_s_
     );
 }
 
@@ -310,7 +314,8 @@ inline Foam::CEATransport<Thermo> Foam::operator-
         t,
         molr1*ceat1.temp_ - molr2*ceat2.temp_,
         mu,
-        kappa
+        kappa,
+        molr1*ceat1.eta_s_ - molr2*ceat2.eta_s_
     );
 }
 
@@ -327,7 +332,8 @@ inline Foam::CEATransport<Thermo> Foam::operator*
         s*static_cast<const Thermo&>(ceat),
         ceat.temp_,
         ceat.mu_,
-        ceat.kappa_
+        ceat.kappa_,
+        ceat.eta_s_
     );
 }
 

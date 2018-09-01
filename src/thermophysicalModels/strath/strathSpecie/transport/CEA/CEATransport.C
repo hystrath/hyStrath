@@ -54,6 +54,8 @@ Foam::CEATransport<Thermo>::CEATransport(Istream& is)
         }
     }
     
+    is >> eta_s_;
+    
     is.check("CEATransport<Thermo>::CEATransport(Istream&)");
 }
 
@@ -64,7 +66,8 @@ Foam::CEATransport<Thermo>::CEATransport(const dictionary& dict)
     Thermo(dict),
     temp_(dict.subDict("transport").subDict("CEA").lookup("temp")),
     mu_(dict.subDict("transport").subDict("CEA").lookup("visco")),
-    kappa_(dict.subDict("transport").subDict("CEA").lookup("kappa"))
+    kappa_(dict.subDict("transport").subDict("CEA").lookup("kappa")),
+    eta_s_(dict.subDict("specie").lookupOrDefault<scalar>("eta_s", 1.2))
 {}
 
 
@@ -78,11 +81,15 @@ void Foam::CEATransport<Thermo>::write(Ostream& os) const
 
     Thermo::write(os);
 
-    dictionary dict("transport");
-    dict.subDict("CEA").add("temp", temp_);
-    dict.subDict("CEA").add("visco", mu_);
-    dict.subDict("CEA").add("kappa", kappa_);
-    os  << indent << dict.dictName() << dict;
+    dictionary dictTransport("transport");
+    dictTransport.subDict("CEA").add("temp", temp_);
+    dictTransport.subDict("CEA").add("visco", mu_);
+    dictTransport.subDict("CEA").add("kappa", kappa_);
+    os  << indent << dictTransport.dictName() << dictTransport;
+    
+    dictionary dictSpecies("specie");
+    dictSpecies.add("eta_s", eta_s_);
+    os  << indent << dictSpecies.dictName() << dictSpecies;
 
     os  << decrIndent << token::END_BLOCK << nl;
 }
@@ -123,7 +130,7 @@ Foam::Ostream& Foam::operator<<
         }
     }
     
-    os << endl;
+    os << ceat.eta_s_ << endl;
     
     os.check
     (

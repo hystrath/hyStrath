@@ -40,6 +40,8 @@ Description
         \kappa_tr_k = 5/2*mu_k*Cv_tr_k
         \kappa_ve_k = mu_k*Cv_ve_k
     \f]
+    
+    \kappa_ve_k amended to be eta_s_k*mu_k*Cv_ve_k
 
 SourceFiles
     powerLawEuckenTransportI.H
@@ -108,6 +110,11 @@ class powerLawEuckenTransport
 
         // Blottner's coefficients
         scalar dref_, omega_;
+        
+        //- Factor in vibrational thermal conductivity kappave
+        // Hard-sphere: (7-2*omega_m)/5 with omega_m = 0.5
+        // Default value: 1.2
+        scalar eta_s_;
 
 
 public:
@@ -119,7 +126,8 @@ public:
         (
             const Thermo& t,
             const scalar dref,
-            const scalar omega
+            const scalar omega,
+            const scalar eta_s
         );
 
         //- Construct as named copy
