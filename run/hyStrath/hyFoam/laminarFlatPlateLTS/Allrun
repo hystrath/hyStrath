@@ -7,7 +7,7 @@ cd ${0%/*} || exit 1    # run from this directory
 runApplication blockMesh
 runApplication checkMesh
 
-hy2Foam > log.hyFoam
+hy2Foam > log.hyFoamLTS
 
 runApplication postProcess -func singleGraph -latestTime
 

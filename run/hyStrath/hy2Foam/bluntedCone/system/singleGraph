@@ -50,14 +50,7 @@ fields
 	U
 	Tt
 	Tv
-	Tv_N2
-	Tov
-	nD_N2
-	mfp
 	Mach
-	KnGLL_rho
-	KnGLL_T
-	KnGLL_U
 );
 
 // ************************************************************************* //

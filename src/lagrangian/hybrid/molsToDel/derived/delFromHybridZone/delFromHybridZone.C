@@ -83,16 +83,16 @@ void delFromHybridZone::findMolsToDel()
         deleteMolFromMoleculeCloud(*molsToDel[m]);
     }
 
-    label molsKept = initialSize - molsToDel.size();
+    const label molsKept = initialSize - molsToDel.size();
 
-    Info<< "  Zone: " << regionName_ << nl
-        << "    particles kept: " << molsKept
-        << ", particles removed: " << molsToDel.size() 
+    Info<< "  Zone: " << regionName_ << tab
+        << "particles removed: " << molsToDel.size()
+        << ", new cloud size: " << molsKept
         << endl;
 
 
     // as a precaution: rebuild cell occupancy
-//     molCloud_.rebuildCellOccupancy();
+//     cloud_.rebuildCellOccupancy();
 }
 
 

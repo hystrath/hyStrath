@@ -992,12 +992,13 @@ Foam::vector Foam::dsmcCloud::equipartitionLinearVelocity
 )
 {
     return sqrt(physicoChemical::k.value()*temperature/mass)
-       *vector
+       *rndGen_.GaussNormal<vector>();
+       /*vector
         (
             rndGen_.GaussNormal<scalar>(),
             rndGen_.GaussNormal<scalar>(),
             rndGen_.GaussNormal<scalar>()
-        );
+        );*/
 }
 
 
@@ -2288,7 +2289,7 @@ void Foam::dsmcCloud::resetHybridTraRotVib
         
         //Info << "For zone " + regionName + ":" << endl;
         
-        /*forAll(typeIdList_, i)
+        forAll(typeIdList_, i)
         {
             const scalar mass = this->constProps(i).mass();
             massToIntroduce[i] *= mass * nParticle();
@@ -2297,7 +2298,7 @@ void Foam::dsmcCloud::resetHybridTraRotVib
                 << massToIntroduce[i] << "; mI: " << massIntroduced[i]
                 << "\t(" << 100.0 * (massIntroduced[i]
                 / (massToIntroduce[i] + VSMALL) - 1.0) << "% off)" << endl;
-        }*/ // INFO REMOVED VINCENT 24/08/2018
+        } // INFO REMOVED VINCENT 24/08/2018
     }
     
     buildCellOccupancy();
