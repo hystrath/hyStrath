@@ -8,6 +8,7 @@
 + *hy2Foam* CFD solver (hypersonic reacting flows)  
 + **Coming soon: _ARC_**, a low computationally demanding 3-D Ablative Response Code  
 + *dsmcFoam+* code (direct simulation Monte Carlo)  
++ **Coming soon: _hyperFoam_**, a hybrid CFD-DSMC solver   
 
 #### Please visit the [_hyStrath_ Wiki page](https://github.com/vincentcasseau/hyStrath/wiki)  
 
@@ -69,9 +70,9 @@ Analysis](https://strathprints.strath.ac.uk/62926)
 
 __GitHub coordinator:__ Dr Vincent Casseau  
 
-__Contributors:__ Dr Vincent Casseau, Daniel E.R. Espinoza, Dr Jimmy-John O.E. Hoste, Dr Viola Renato, Dr Rodrigo C. Palharini, Dr Craig White, Dr Thomas J. Scanlon, Dr Richard E. Brown     
+__Contributors:__ Dr Vincent Casseau, Daniel E.R. Espinoza, Dr Christopher J. Capon, Dr Jimmy-John O.E. Hoste, Dr Viola Renato, Dr Rodrigo C. Palharini, Dr Craig White, Dr Melrose Brown, Prof Russell R. Boyce, Dr Thomas J. Scanlon, Dr Richard E. Brown     
 
-__External contributors:__ R.Tech Engineering   
+__External contributors:__ the Micro & Nano Flows Group, R.Tech Engineering   
 
 #### [View more](https://github.com/vincentcasseau/hyStrath/wiki/People-and-Contact)  
 
