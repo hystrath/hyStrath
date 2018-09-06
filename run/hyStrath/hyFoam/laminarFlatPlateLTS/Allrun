@@ -10,4 +10,3 @@ runApplication checkMesh
 hy2Foam > log.hyFoamLTS
 
 runApplication postProcess -func singleGraph -latestTime
-

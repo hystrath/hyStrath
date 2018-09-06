@@ -26,7 +26,7 @@ gradSchemes
 {
     default           Gauss linear;
   //if convergence is difficult, add:
-  //grad(U)           cellLimited Gauss linear 1; 
+  //grad(U)           cellLimited Gauss linear 1;
 }
 
 divSchemes
@@ -34,16 +34,16 @@ divSchemes
     default           none;
     div(tauMC)        Gauss linear;
     div(phi,U)        Gauss limitedLinearV 1;
-    
+
     // Species diffusion
     div(diffusiveFluxes)   Gauss linear;
     div(phi,Yi_h)     Gauss limitedLinear 1;
-    
+
     // Turbulence modelling
     div(phi,k)        Gauss limitedLinear 1;
     div(phi,omega)    Gauss limitedLinear 1;
     div(phi,epsilon)  Gauss limitedLinear 1;
-    
+
     // Needed when there are electrons in the gas mix
     div(U)            Gauss linear;
 }

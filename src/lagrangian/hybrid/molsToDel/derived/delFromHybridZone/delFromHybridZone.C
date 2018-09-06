@@ -40,8 +40,8 @@ defineTypeNameAndDebug(delFromHybridZone, 0);
 
 addToRunTimeSelectionTable
 (
-    molsToDeleteModel, 
-    delFromHybridZone, 
+    molsToDeleteModel,
+    delFromHybridZone,
     dictionary
 );
 
@@ -112,7 +112,7 @@ delFromHybridZone::delFromHybridZone
     typeIds_()
 {
     Info<< propsDict_.name() << endl;
-    
+
     const cellZoneMesh& cellZones = mesh_.cellZones();
     regionId_ = cellZones.findZoneID(regionName_);
 

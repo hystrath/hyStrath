@@ -38,8 +38,8 @@ solvers
         relTol          1e-3;
         minIter         1;
         maxIter         400;
-    }    
-   
+    }
+
     Yi
     {
         solver          PBiCG;
@@ -48,7 +48,7 @@ solvers
         relTol          0;
         maxIter         10;
     }
-    
+
     "(k|omega|epsilon)"
     {
     	  $U;

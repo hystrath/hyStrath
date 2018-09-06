@@ -18,17 +18,17 @@ FILES_TO_TEST="stagnationLine_U.xy stagnationLine_Mach_Tt_Tv_p_rho.xy"
 for FILE in $FILES_TO_TEST
 do
   NLINES=`wc -l $RES_PATH/$FILE | awk '{print $1}'`
-  
+
   for LINE in `seq 1 $NLINES`
   do
     RES_LINEVALUE=`sed "${LINE}q;d" $RES_PATH/$FILE | awk '{print $2}'`
     SOL_LINEVALUE=`sed "${LINE}q;d" $SOL_PATH/$FILE | awk '{print $2}'`
-    
+
     RES_LINEVALUE=`awk '{ print +$1 }' <<< $RES_LINEVALUE`
     SOL_LINEVALUE=`awk '{ print +$1 }' <<< $SOL_LINEVALUE`
 
-    if [ `echo "$SOL_LINEVALUE*(1.0+$TOLERANCE) < $RES_LINEVALUE" | bc -l` -eq 1 ] || [ `echo "$SOL_LINEVALUE*(1.0-$TOLERANCE) > $RES_LINEVALUE" | bc -l` -eq 1 ]; 
-    then echo "TEST FAILED: $FILE, line $LINE"; 
+    if [ `echo "$SOL_LINEVALUE*(1.0+$TOLERANCE) < $RES_LINEVALUE" | bc -l` -eq 1 ] || [ `echo "$SOL_LINEVALUE*(1.0-$TOLERANCE) > $RES_LINEVALUE" | bc -l` -eq 1 ];
+    then echo "TEST FAILED: $FILE, line $LINE";
     fi
   done
 done
@@ -46,8 +46,8 @@ SOL_LASTVALUE=`tail -1 $SOL_PATH/$FILE_TO_TEST | awk '{print $3}'`
 RES_LASTVALUE=`awk '{ print +$1 }' <<< $RES_LASTVALUE`
 SOL_LASTVALUE=`awk '{ print +$1 }' <<< $SOL_LASTVALUE`
 
-if [ `echo "$SOL_LASTVALUE*(1.0+$TOLERANCE) < $RES_LASTVALUE" | bc -l` -eq 1 ] || [ `echo "$SOL_LASTVALUE*(1.0-$TOLERANCE) > $RES_LASTVALUE" | bc -l` -eq 1 ]; 
-then echo "TEST FAILED: $FILE_TO_TEST"; 
+if [ `echo "$SOL_LASTVALUE*(1.0+$TOLERANCE) < $RES_LASTVALUE" | bc -l` -eq 1 ] || [ `echo "$SOL_LASTVALUE*(1.0-$TOLERANCE) > $RES_LASTVALUE" | bc -l` -eq 1 ];
+then echo "TEST FAILED: $FILE_TO_TEST";
 fi
 
 
@@ -65,7 +65,6 @@ SOL_LASTVALUE=`tail -1 $SOL_PATH/$FILE_TO_TEST | awk '{print $2}'`
 RES_LASTVALUE=`awk '{ print +$1 }' <<< $RES_LASTVALUE`
 SOL_LASTVALUE=`awk '{ print +$1 }' <<< $SOL_LASTVALUE`
 
-if [ `echo "$SOL_LASTVALUE*(1.0+$TOLERANCE) < $RES_LASTVALUE" | bc -l` -eq 1 ] || [ `echo "$SOL_LASTVALUE*(1.0-$TOLERANCE) > $RES_LASTVALUE" | bc -l` -eq 1 ]; 
-then echo "TEST FAILED: $FILE_TO_TEST"; 
+if [ `echo "$SOL_LASTVALUE*(1.0+$TOLERANCE) < $RES_LASTVALUE" | bc -l` -eq 1 ] || [ `echo "$SOL_LASTVALUE*(1.0-$TOLERANCE) > $RES_LASTVALUE" | bc -l` -eq 1 ];
+then echo "TEST FAILED: $FILE_TO_TEST";
 fi
-
