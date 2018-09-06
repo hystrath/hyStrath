@@ -65,6 +65,6 @@ SOL_LASTVALUE=`tail -1 $SOL_PATH/$FILE_TO_TEST | awk '{print $2}'`
 RES_LASTVALUE=`awk '{ print +$1 }' <<< $RES_LASTVALUE`
 SOL_LASTVALUE=`awk '{ print +$1 }' <<< $SOL_LASTVALUE`
 
-if [ `echo "a = ($SOL_LASTVALUE - $RES_LASTVALUE)/$SOL_LASTVALUE; sqrt(a*a) > $TOLERANCE" | bc -l` -eq 1 ];
+if [ `echo "a = ($RES_LASTVALUE - $SOL_LASTVALUE)/$SOL_LASTVALUE; sqrt(a*a) > $TOLERANCE" | bc -l` -eq 1 ];
 then echo "TEST FAILED: $FILE_TO_TEST";
 fi
