@@ -270,6 +270,8 @@ void dsmcPatchBoundary::measurePropertiesBeforeControl(dsmcParcel& p)
         const label wppLocalFace = wpp.whichFace(p.face());
 
         const scalar fA = mag(wpp.faceAreas()[wppLocalFace]);
+        
+        const scalar deltaT = cloud_.deltaTValue(p.cell());
     
         const dsmcParcel::constantProperties& 
             constProps(cloud_.constProps(p.typeId()));
@@ -283,46 +285,46 @@ void dsmcPatchBoundary::measurePropertiesBeforeControl(dsmcParcel& p)
     
         const vector& Ut = p.U() - U_dot_nw*nw;
     
-        const scalar invMagUnfA = 1.0/max(mag(U_dot_nw)*fA, SMALL);
+        const scalar invMagUnfADt = 1.0/max(mag(U_dot_nw)*fA*deltaT, SMALL); // NEW DANIEL 2018/09/07
 
         //- Update boundary flux measurements
         cloud_.boundaryFluxMeasurements()
-            .rhoNBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfA;
+            .rhoNBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfADt;
         
         if(constProps.rotationalDegreesOfFreedom() > 0)
         {
            cloud_.boundaryFluxMeasurements()
-              .rhoNIntBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfA;
+              .rhoNIntBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfADt;
         }
 
         if(constProps.numberOfElectronicLevels() > 1)
         {
            cloud_.boundaryFluxMeasurements()
-              .rhoNElecBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfA; 
+              .rhoNElecBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfADt; 
         }
 
         cloud_.boundaryFluxMeasurements()
-            .rhoMBF()[p.typeId()][wppIndex][wppLocalFace] += m*invMagUnfA;
+            .rhoMBF()[p.typeId()][wppIndex][wppLocalFace] += m*invMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
             .linearKEBF()[p.typeId()][wppIndex][wppLocalFace] += 
-                0.5*m*(p.U() & p.U())*invMagUnfA;
+                0.5*m*(p.U() & p.U())*invMagUnfADt;
             
         cloud_.boundaryFluxMeasurements()
             .mccSpeciesBF()[p.typeId()][wppIndex][wppLocalFace] += 
-                m*(p.U() & p.U())*invMagUnfA;
+                m*(p.U() & p.U())*invMagUnfADt;
             
         cloud_.boundaryFluxMeasurements()
             .momentumBF()[p.typeId()][wppIndex][wppLocalFace] += 
-                m*Ut*invMagUnfA;
+                m*Ut*invMagUnfADt;
             
         cloud_.boundaryFluxMeasurements()
             .rotationalEBF()[p.typeId()][wppIndex][wppLocalFace] += 
-                p.ERot()*invMagUnfA;
+                p.ERot()*invMagUnfADt;
             
         cloud_.boundaryFluxMeasurements()
             .rotationalDofBF()[p.typeId()][wppIndex][wppLocalFace] += 
-                constProps.rotationalDegreesOfFreedom()*invMagUnfA;
+                constProps.rotationalDegreesOfFreedom()*invMagUnfADt;
 
         forAll(p.vibLevel(), i)
         {
@@ -330,13 +332,13 @@ void dsmcPatchBoundary::measurePropertiesBeforeControl(dsmcParcel& p)
                 .vibrationalEBF()[p.typeId()][wppIndex][wppLocalFace] += 
                     p.vibLevel()[i]*constProps.thetaV()[i]
                   * physicoChemical::k.value()
-                  * invMagUnfA;
+                  * invMagUnfADt;
         }
 
         cloud_.boundaryFluxMeasurements()
             .electronicEBF()[p.typeId()][wppIndex][wppLocalFace] += 
                 constProps.electronicEnergyList()[p.ELevel()]
-              * invMagUnfA;
+              * invMagUnfADt;
 
         //- pre-interaction energy
         preIE_ = 0.5*m*(p.U() & p.U()) + p.ERot() 
@@ -381,46 +383,46 @@ void dsmcPatchBoundary::measurePropertiesAfterControl
     
         const vector Ut = p.U() - U_dot_nw*nw;
     
-        const scalar invMagUnfA = 1.0/max(mag(U_dot_nw)*fA, SMALL);
+        const scalar invMagUnfADt = 1.0/max(mag(U_dot_nw)*fA*deltaT, SMALL); // NEW DANIEL 2018/09/07
 
         //- Update boundary flux measurements
         cloud_.boundaryFluxMeasurements()
-            .rhoNBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfA;
+            .rhoNBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfADt;
         
         if(constProps.rotationalDegreesOfFreedom() > 0)
         {
            cloud_.boundaryFluxMeasurements()
-              .rhoNIntBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfA; 
+              .rhoNIntBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfADt; 
         }
         
         if(constProps.numberOfElectronicLevels() > 1)
         {
            cloud_.boundaryFluxMeasurements()
-              .rhoNElecBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfA;
+              .rhoNElecBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfADt;
         }
         
         cloud_.boundaryFluxMeasurements()
-            .rhoMBF()[p.typeId()][wppIndex][wppLocalFace] += m*invMagUnfA;
+            .rhoMBF()[p.typeId()][wppIndex][wppLocalFace] += m*invMagUnfADt;
             
         cloud_.boundaryFluxMeasurements()
             .linearKEBF()[p.typeId()][wppIndex][wppLocalFace] += 
-                0.5*m*(p.U() & p.U())*invMagUnfA;
+                0.5*m*(p.U() & p.U())*invMagUnfADt;
         
         cloud_.boundaryFluxMeasurements()
             .mccSpeciesBF()[p.typeId()][wppIndex][wppLocalFace] += 
-                m*(p.U() & p.U())*invMagUnfA;
+                m*(p.U() & p.U())*invMagUnfADt;
         
         cloud_.boundaryFluxMeasurements()
             .momentumBF()[p.typeId()][wppIndex][wppLocalFace] += 
-                m*Ut*invMagUnfA;
+                m*Ut*invMagUnfADt;
         
         cloud_.boundaryFluxMeasurements()
             .rotationalEBF()[p.typeId()][wppIndex][wppLocalFace] += 
-                p.ERot()*invMagUnfA;
+                p.ERot()*invMagUnfADt;
         
         cloud_.boundaryFluxMeasurements()
             .rotationalDofBF()[p.typeId()][wppIndex][wppLocalFace] += 
-                constProps.rotationalDegreesOfFreedom()*invMagUnfA;
+                constProps.rotationalDegreesOfFreedom()*invMagUnfADt;
         
         forAll(p.vibLevel(), i)
         {
@@ -428,12 +430,12 @@ void dsmcPatchBoundary::measurePropertiesAfterControl
                 .vibrationalEBF()[p.typeId()][wppIndex][wppLocalFace] += 
                     p.vibLevel()[i]*constProps.thetaV()[i]
                   * physicoChemical::k.value()
-                  * invMagUnfA;
+                  * invMagUnfADt;
         }
         
         cloud_.boundaryFluxMeasurements()
             .electronicEBF()[p.typeId()][wppIndex][wppLocalFace] += 
-                constProps.electronicEnergyList()[p.ELevel()]*invMagUnfA;
+                constProps.electronicEnergyList()[p.ELevel()]*invMagUnfADt;
         
         //- post-interaction energy
         scalar postIE = 0.5*m*(p.U() & p.U()) + p.ERot() 
