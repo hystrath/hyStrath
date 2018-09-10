@@ -84,6 +84,8 @@ protected:
         volScalarField meanCollisionRate_;
         volScalarField meanCollisionTime_;
         volScalarField meanCollisionTimeTimeStepRatio_;
+        //- Measured local collision rate 
+        volScalarField cr_; 
         volScalarField meanCollisionSeparation_;
         volScalarField SOF_;
         volScalarField Ma_;
@@ -153,12 +155,10 @@ protected:
         //- Mean collision rate
         List<scalarField> mcr_;
         
-        //- Measured local collision rate 
-        volScalarField cr_; 
+        
         
 
-        // boundary measurements
-        
+        //- Boundary measurements
         List<scalarField> rhoNBF_;
         List<scalarField> rhoMBF_;
         List<scalarField> linearKEBF_;
@@ -178,6 +178,7 @@ protected:
         List<List<scalarField>> mccSpeciesBF_;
         List<List<scalarField>> vibTBF_;
         List<List<scalarField>> vDofBF_;
+        List<List<List<scalarField>>> evmsBF_;
         
         //- Wall unit vectors - temporary storage, should be done in boundaries/patch
         List<vectorField> n_;

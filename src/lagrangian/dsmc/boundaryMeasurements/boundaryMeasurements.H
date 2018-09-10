@@ -87,6 +87,9 @@ private:
         List<List<scalarField>> qBF_;
         List<List<vectorField>> fDBF_;
         
+        //- species ID, vibrational energy mode, patch, face
+        List<List<List<scalarField>>> evmsBF_;
+        
         //- Number of stuck parcels on every boundary patch
         volScalarField::Boundary nParcelsOnStickingBoundaries_;
         
@@ -184,6 +187,8 @@ public:
             const scalarList& pnAbsorbedParcels
         );
         
+        void setInitialConfig();
+        
         void clean();
 
         void reset();
@@ -191,79 +196,72 @@ public:
 
     // Access
     
-        const List<List<scalarField>>& rhoNIntBF() const;
-        const List<List<scalarField>>& rhoNElecBF() const;
-        const List<List<scalarField>>& rhoNBF() const;
-        const List<List<scalarField>>& rhoMBF() const;
-        const List<List<scalarField>>& linearKEBF() const;
-        const List<List<scalarField>>& mccSpeciesBF() const;
-        const List<List<vectorField>>& momentumBF() const;
-        const List<List<vectorField>>& UMeanBF() const;
-        const List<List<scalarField>>& rotationalEBF() const;
-        const List<List<scalarField>>& rotationalDofBF() const;
-        const List<List<scalarField>>& vibrationalEBF() const;
-        const List<List<scalarField>>& electronicEBF() const;
-        const List<List<scalarField>>& qBF() const;
-        const List<List<vectorField>>& fDBF() const;
-        
-        //- Return const access to the number of stuck parcels on patchi
-        const fvPatchScalarField& pnStuckParcels(const label& patchi) const;
-        
-        //- Return const access to the number of absorbed parcels on patchi
-        const fvPatchScalarField& pnAbsorbedParcels(const label& patchi) const;
-        
-        //- Return access to the temperature boundary values on patchi
-        const fvPatchScalarField& boundaryT(const label& patchi) const;
-        
-        //- Return access to the velocity boundary values on patchi
-        const fvPatchVectorField& boundaryU(const label& patchi) const;
+      const List<List<scalarField>>& rhoNIntBF() const;
+      const List<List<scalarField>>& rhoNElecBF() const;
+      const List<List<scalarField>>& rhoNBF() const;
+      const List<List<scalarField>>& rhoMBF() const;
+      const List<List<scalarField>>& linearKEBF() const;
+      const List<List<scalarField>>& mccSpeciesBF() const;
+      const List<List<vectorField>>& momentumBF() const;
+      const List<List<vectorField>>& UMeanBF() const;
+      const List<List<scalarField>>& rotationalEBF() const;
+      const List<List<scalarField>>& rotationalDofBF() const;
+      const List<List<scalarField>>& vibrationalEBF() const;
+      const List<List<List<scalarField>>>& evmsBF() const;
+      const List<List<scalarField>>& electronicEBF() const;
+      const List<List<scalarField>>& qBF() const;
+      const List<List<vectorField>>& fDBF() const;
+      
+      //- Return const access to the number of stuck parcels on patchi
+      const fvPatchScalarField& pnStuckParcels(const label& patchi) const;
+      
+      //- Return const access to the number of absorbed parcels on patchi
+      const fvPatchScalarField& pnAbsorbedParcels(const label& patchi) const;
+      
+      //- Return access to the temperature boundary values on patchi
+      const fvPatchScalarField& boundaryT(const label& patchi) const;
+      
+      //- Return access to the velocity boundary values on patchi
+      const fvPatchVectorField& boundaryU(const label& patchi) const;
 
 
     // Check
     
     // Edit
     
-        List<List<scalarField>>& rhoNIntBF();
-        List<List<scalarField>>& rhoNElecBF();
-        List<List<scalarField>>& rhoNBF();
-        List<List<scalarField>>& rhoMBF();
-        List<List<scalarField>>& linearKEBF();
-        List<List<scalarField>>& mccSpeciesBF();
-        List<List<vectorField>>& momentumBF();
-        List<List<vectorField>>& UMeanBF();
-        List<List<scalarField>>& rotationalEBF();
-        List<List<scalarField>>& rotationalDofBF();
-        List<List<scalarField>>& vibrationalEBF();
-        List<List<scalarField>>& electronicEBF();
-        List<List<scalarField>>& qBF();
-        List<List<vectorField>>& fDBF();
-        
-        //- Return access to the number of stuck parcels on patchi
-        fvPatchScalarField& pnStuckParcels(const label& patchi);
-        
-        //- Return access to the number of absorbed parcels on patchi
-        fvPatchScalarField& pnAbsorbedParcels(const label& patchi);
-        
-        //- Return access to the temperature boundary values on patchi
-        fvPatchScalarField& boundaryT(const label& patchi);
-        
-        //- Return access to the velocity boundary values on patchi
-        fvPatchVectorField& boundaryU(const label& patchi);
-
+      List<List<scalarField>>& rhoNIntBF();
+      List<List<scalarField>>& rhoNElecBF();
+      List<List<scalarField>>& rhoNBF();
+      List<List<scalarField>>& rhoMBF();
+      List<List<scalarField>>& linearKEBF();
+      List<List<scalarField>>& mccSpeciesBF();
+      List<List<vectorField>>& momentumBF();
+      List<List<vectorField>>& UMeanBF();
+      List<List<scalarField>>& rotationalEBF();
+      List<List<scalarField>>& rotationalDofBF();
+      List<List<scalarField>>& vibrationalEBF();
+      List<List<List<scalarField>>>& evmsBF();
+      List<List<scalarField>>& electronicEBF();
+      List<List<scalarField>>& qBF();
+      List<List<vectorField>>& fDBF();
+      
+      //- Return access to the number of stuck parcels on patchi
+      fvPatchScalarField& pnStuckParcels(const label& patchi);
+      
+      //- Return access to the number of absorbed parcels on patchi
+      fvPatchScalarField& pnAbsorbedParcels(const label& patchi);
+      
+      //- Return access to the temperature boundary values on patchi
+      fvPatchScalarField& boundaryT(const label& patchi);
+      
+      //- Return access to the velocity boundary values on patchi
+      fvPatchVectorField& boundaryU(const label& patchi);
+      
 
     // Write
     
       //- write boundary measurements fields at writeTime
       void outputResults();
-
-
-    // Member Operators
-
-    // Friend Functions
-
-    // Friend Operators
-
-    // IOstream Operators
 
 };
 

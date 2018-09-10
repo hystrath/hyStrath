@@ -39,8 +39,10 @@ namespace Foam
 
 defineTypeNameAndDebug(dsmcFreeStreamInflowPatch, 0);
 
-addToRunTimeSelectionTable(dsmcGeneralBoundary, dsmcFreeStreamInflowPatch, dictionary);
-
+addToRunTimeSelectionTable
+(
+    dsmcGeneralBoundary, dsmcFreeStreamInflowPatch, dictionary
+);
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
@@ -375,7 +377,8 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
             reduce(parcelsToAdd[m], sumOp<scalar>());
             reduce(parcelsInserted[m], sumOp<scalar>());
 
-            Info<< "Patch " << patchName_ << ", Specie: " << typeIds_[m] 
+            Info<< "Patch " << patchName_ << ", Specie: " 
+                << cloud_.typeIdList()[typeIds_[m]] 
                 << ", target parcels to insert: " << parcelsToAdd[m]
                 <<", inserted parcels: " << parcelsInserted[m]
                 << endl;
@@ -385,7 +388,8 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
     {
         forAll(parcelsInserted, m)
         {
-            Info<< "Patch " << patchName_ << ", Specie: " << typeIds_[m] 
+            Info<< "Patch " << patchName_ << ", Specie: " 
+                << cloud_.typeIdList()[typeIds_[m]]
                 << ", target parcels to insert: " << parcelsToAdd[m]
                 <<", inserted parcels: " << parcelsInserted[m]
                 << endl;

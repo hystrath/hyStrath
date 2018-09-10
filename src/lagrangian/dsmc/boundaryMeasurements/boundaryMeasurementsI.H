@@ -103,6 +103,12 @@ inline const List<List<scalarField>>& boundaryMeasurements::vibrationalEBF() con
 }
 
 
+inline const List<List<List<scalarField>>>& boundaryMeasurements::evmsBF() const
+{
+    return evmsBF_;
+}
+
+
 inline const List<List<scalarField>>& boundaryMeasurements::electronicEBF() const
 {
     return electronicEBF_;
@@ -223,6 +229,13 @@ inline List<List<scalarField>>& boundaryMeasurements::vibrationalEBF()
 {
     return vibrationalEBF_;
 }
+
+
+inline List<List<List<scalarField>>>& boundaryMeasurements::evmsBF()
+{
+    return evmsBF_;
+}
+
 
 inline List<List<scalarField>>& boundaryMeasurements::electronicEBF()
 {

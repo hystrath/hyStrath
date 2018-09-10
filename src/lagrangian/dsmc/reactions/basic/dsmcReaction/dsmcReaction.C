@@ -55,9 +55,7 @@ dsmcReaction::dsmcReaction
     cloud_(cloud),
     nTotReactions_(0),
     reactWithLists_(false)
-{
-
-}
+{}
 
 
 // * * * * * * * * * * * * * * * * Selectors * * * * * * * * * * * * * * * * //
@@ -105,21 +103,24 @@ dsmcReaction::~dsmcReaction()
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-
 const label& dsmcReaction::nTotReactions() const
 {
     return nTotReactions_;
 }
+
 
 const label& dsmcReaction::nReactionsPerTimeStep() const
 {
     return nReactionsPerTimeStep_;
 }
 
+
 label& dsmcReaction::nReactionsPerTimeStep()
 {
     return nReactionsPerTimeStep_;
 }
+
+
 const dsmcCloud& dsmcReaction::cloud() const
 {
     return cloud_;

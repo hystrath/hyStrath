@@ -51,14 +51,13 @@ void Foam::dsmcCloud::buildConstProps()
     {
         const word& id(typeIdList_[i]);
 
-        Info<< "    " << id << endl;
+        Info<< tab << id << endl;
 
         const dictionary& molDict(moleculeProperties.subDict(id));
 
         constProps_[i] = dsmcParcel::constantProperties(molDict);
     }
 }
-
 
 
 void Foam::dsmcCloud::buildCellOccupancy()
@@ -594,21 +593,14 @@ Foam::dsmcCloud::dsmcCloud
         )
     ),
     controlDict_(t.controlDict()),
-    /*(
-        IOobject
-        (
-            "controlDict",
-            mesh_.time().system(),
-            mesh_,
-            IOobject::MUST_READ_IF_MODIFIED,
-            IOobject::NO_WRITE
-        )
-    ),*/
     typeIdList_(particleProperties_.lookup("typeIdList")),
     dsmcCoordinateSystem_(dsmcCoordinateSystem::New(t, mesh, *this)),
     porousMeasurements_(porousMeasurements::New(t, mesh, *this)),
-    nTerminalOutputs_(controlDict_.lookupOrDefault<label>("nTerminalOutputs", 1)),
-    cellOccupancy_(/*mesh_.nCells()*/), // EDITED VINCENT
+    nTerminalOutputs_
+    (
+        controlDict_.lookupOrDefault<label>("nTerminalOutputs", 1)
+    ),
+    cellOccupancy_(),
     rhoNMeanElectron_(mesh_.nCells(), 0.0),
     rhoMMeanElectron_(mesh_.nCells(), 0.0),
     rhoMMean_(mesh_.nCells(), 0.0),
@@ -629,7 +621,7 @@ Foam::dsmcCloud::dsmcCloud
         ),
         mesh_
     ),
-    collisionSelectionRemainder_(/*mesh_.nCells(), 0*/),
+    collisionSelectionRemainder_(),
     constProps_(),
     rndGen_(label(clock::getTime()) + 7183*Pstream::myProcNo()), // different seed every time simulation is started - needed for ensemble averaging!
     controllers_(t, mesh, *this),
@@ -663,9 +655,8 @@ Foam::dsmcCloud::dsmcCloud
 
     reactions_.initialConfiguration();
 
-    //buildCellOccupancy(); // DELETED VINCENT
-    buildCellOccupancyFromScratch(); // NEW VINCENT
-    buildCollisionSelectionRemainderFromScratch(); // NEW VINCENT
+    buildCellOccupancyFromScratch();
+    buildCollisionSelectionRemainderFromScratch();
 
     // Initialise the collision selection remainder to a random value between 0
     // and 1.
@@ -682,6 +673,7 @@ Foam::dsmcCloud::dsmcCloud
     collisionPartnerSelectionModel_->initialConfiguration();
 
     fields_.createFields();
+    boundaryMeas_.setInitialConfig();
     boundaries_.setInitialConfig();
     controllers_.initialConfig();
 }
@@ -712,20 +704,13 @@ Foam::dsmcCloud::dsmcCloud
         )
     ),
     controlDict_(t.controlDict()),
-    /*(
-        IOobject
-        (
-            "controlDict",
-            mesh_.time().system(),
-            mesh_,
-            IOobject::MUST_READ_IF_MODIFIED,
-            IOobject::NO_WRITE
-        )
-    ),*/
     typeIdList_(particleProperties_.lookup("typeIdList")),
     dsmcCoordinateSystem_(dsmcCoordinateSystem::New(t, mesh, *this)),
     porousMeasurements_(porousMeasurements::New(t, mesh, *this)),
-    nTerminalOutputs_(controlDict_.lookupOrDefault<label>("nTerminalOutputs", 1)),
+    nTerminalOutputs_
+    (
+        controlDict_.lookupOrDefault<label>("nTerminalOutputs", 1)
+    ),
     cellOccupancy_(),
     rhoNMeanElectron_(),
     rhoMMeanElectron_(),
@@ -751,7 +736,7 @@ Foam::dsmcCloud::dsmcCloud
     ),
     collisionSelectionRemainder_(),
     constProps_(),
-    rndGen_(label(clock::getTime()) + 1526*Pstream::myProcNo()), // different seed every time simulation is started - needed for ensemble averaging!
+    rndGen_(label(clock::getTime()) + 1526*Pstream::myProcNo()),
     controllers_(t, mesh),
     dynamicLoadBalancing_(t, mesh, *this),
     boundaryMeas_(mesh, *this),
@@ -783,10 +768,11 @@ Foam::dsmcCloud::dsmcCloud
 
         initialParcels = 0;
     }
+    
+    buildConstProps();
 
     coordSystem().checkCoordinateSystemInputs(true);
-
-    buildConstProps();
+    
     dsmcAllConfigurations conf(dsmcInitialiseDict, *this);
     conf.setInitialConfig();
 
@@ -801,7 +787,6 @@ Foam::dsmcCloud::dsmcCloud
          << " added parcels: " << finalParcels - initialParcels
          << ", total no. of parcels: " << finalParcels
          << endl;
-
 }
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
@@ -2179,7 +2164,7 @@ void Foam::dsmcCloud::resetHybridTraRotVib
 
             forAll(zone, c)
             {
-                const label& cellI = zone[c];
+                const label cellI = zone[c];
                 forAll(typeIdList_, i)  ////////////////////////////////
                 {                       ////////////////////////////////
                     massToIntroduce[i] += numberDensitiesField[i][cellI]*mesh_.V()[cellI];
@@ -2196,7 +2181,7 @@ void Foam::dsmcCloud::resetHybridTraRotVib
 
                     tetPointRef tet = cellTetIs.tet(mesh_);
 
-                    scalar tetVolume = tet.mag();
+                    const scalar tetVolume = tet.mag();
 
                     forAll(typeIdList_, i)
                     {
@@ -2229,7 +2214,7 @@ void Foam::dsmcCloud::resetHybridTraRotVib
                         {
                             point p = tet.randomPoint(rndGen_);
 
-                            vector U;
+                            vector U = vector::zero;
 
                             scalar ERot = 0.0;
 
@@ -2294,7 +2279,7 @@ void Foam::dsmcCloud::resetHybridTraRotVib
             const scalar mass = this->constProps(i).mass();
             massToIntroduce[i] *= mass * nParticle();
             massIntroduced[i] *= mass * nParticle();
-            Info << "  Specie " << i << ", mTI: "
+            Info << "  Specie " << typeIdList_[i] << ", mTI: "
                 << massToIntroduce[i] << "; mI: " << massIntroduced[i]
                 << "\t(" << 100.0 * (massIntroduced[i]
                 / (massToIntroduce[i] + VSMALL) - 1.0) << "% off)" << endl;

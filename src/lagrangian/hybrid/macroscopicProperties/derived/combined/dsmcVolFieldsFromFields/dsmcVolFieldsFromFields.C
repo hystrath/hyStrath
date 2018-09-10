@@ -248,7 +248,7 @@ void dsmcVolFieldsFromFields::calculateField()
                     + heatFluxVibVector_[cell].x();
 
 
-                heatFluxTraVector_[cell].y() = 0.5 * rhoN_[cell] * (mccu_[cell]
+                heatFluxTraVector_[cell].y() = 0.5 * rhoN_[cell] * (mccv_[cell]
                     - mcc_[cell] * UMean_[cell].y()) / rhoNMean_[cell]
                     - pressureTensor_[cell].yx() * UMean_[cell].x()
                     - pressureTensor_[cell].yy() * UMean_[cell].y()

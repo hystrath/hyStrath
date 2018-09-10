@@ -285,7 +285,7 @@ void dsmcPatchBoundary::measurePropertiesBeforeControl(dsmcParcel& p)
     
         const vector& Ut = p.U() - U_dot_nw*nw;
     
-        const scalar invMagUnfADt = 1.0/max(mag(U_dot_nw)*fA*deltaT, SMALL); // NEW DANIEL 2018/09/07
+        const scalar invMagUnfADt = 1.0/max(mag(U_dot_nw)*fA*deltaT, SMALL);
 
         //- Update boundary flux measurements
         cloud_.boundaryFluxMeasurements()
@@ -326,13 +326,19 @@ void dsmcPatchBoundary::measurePropertiesBeforeControl(dsmcParcel& p)
             .rotationalDofBF()[p.typeId()][wppIndex][wppLocalFace] += 
                 constProps.rotationalDegreesOfFreedom()*invMagUnfADt;
 
-        forAll(p.vibLevel(), i)
+        forAll(p.vibLevel(), mode)
         {
             cloud_.boundaryFluxMeasurements()
                 .vibrationalEBF()[p.typeId()][wppIndex][wppLocalFace] += 
-                    p.vibLevel()[i]*constProps.thetaV()[i]
+                    p.vibLevel()[mode]*constProps.thetaV()[mode]
                   * physicoChemical::k.value()
                   * invMagUnfADt;
+                  
+            cloud_.boundaryFluxMeasurements()
+                .evmsBF()[p.typeId()][mode][wppIndex][wppLocalFace] += 
+                    p.vibLevel()[mode]*constProps.thetaV()[mode]
+                  * physicoChemical::k.value()
+                  * invMagUnfADt;      
         }
 
         cloud_.boundaryFluxMeasurements()
@@ -344,9 +350,9 @@ void dsmcPatchBoundary::measurePropertiesBeforeControl(dsmcParcel& p)
         preIE_ = 0.5*m*(p.U() & p.U()) + p.ERot() 
             + constProps.electronicEnergyList()[p.ELevel()];
 
-        forAll(p.vibLevel(), i)
+        forAll(p.vibLevel(), mode)
         {
-           preIE_ += p.vibLevel()[i]*constProps.thetaV()[i]
+           preIE_ += p.vibLevel()[mode]*constProps.thetaV()[mode]
               *physicoChemical::k.value();
         }
 
@@ -383,7 +389,7 @@ void dsmcPatchBoundary::measurePropertiesAfterControl
     
         const vector Ut = p.U() - U_dot_nw*nw;
     
-        const scalar invMagUnfADt = 1.0/max(mag(U_dot_nw)*fA*deltaT, SMALL); // NEW DANIEL 2018/09/07
+        const scalar invMagUnfADt = 1.0/max(mag(U_dot_nw)*fA*deltaT, SMALL);
 
         //- Update boundary flux measurements
         cloud_.boundaryFluxMeasurements()
@@ -424,13 +430,19 @@ void dsmcPatchBoundary::measurePropertiesAfterControl
             .rotationalDofBF()[p.typeId()][wppIndex][wppLocalFace] += 
                 constProps.rotationalDegreesOfFreedom()*invMagUnfADt;
         
-        forAll(p.vibLevel(), i)
+        forAll(p.vibLevel(), mode)
         {
             cloud_.boundaryFluxMeasurements()
                 .vibrationalEBF()[p.typeId()][wppIndex][wppLocalFace] += 
-                    p.vibLevel()[i]*constProps.thetaV()[i]
+                    p.vibLevel()[mode]*constProps.thetaV()[mode]
                   * physicoChemical::k.value()
                   * invMagUnfADt;
+                  
+            cloud_.boundaryFluxMeasurements()
+                .evmsBF()[p.typeId()][mode][wppIndex][wppLocalFace] += 
+                    p.vibLevel()[mode]*constProps.thetaV()[mode]
+                  * physicoChemical::k.value()
+                  * invMagUnfADt;       
         }
         
         cloud_.boundaryFluxMeasurements()
@@ -441,9 +453,9 @@ void dsmcPatchBoundary::measurePropertiesAfterControl
         scalar postIE = 0.5*m*(p.U() & p.U()) + p.ERot() 
             + constProps.electronicEnergyList()[p.ELevel()];
         
-        forAll(p.vibLevel(), i)
+        forAll(p.vibLevel(), mode)
         {
-           postIE += p.vibLevel()[i]*constProps.thetaV()[i]
+           postIE += p.vibLevel()[mode]*constProps.thetaV()[mode]
               *physicoChemical::k.value();
         }
         

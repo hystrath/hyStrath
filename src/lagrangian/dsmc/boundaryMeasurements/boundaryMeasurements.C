@@ -209,6 +209,7 @@ boundaryMeasurements::boundaryMeasurements
     electronicEBF_(),
     qBF_(),
     fDBF_(),
+    evmsBF_(),
     nParcelsOnStickingBoundaries_
     (
         mesh_.boundary(),
@@ -233,14 +234,8 @@ boundaryMeasurements::boundaryMeasurements
         mesh_.C(),
         calculatedFvPatchVectorField::typeName
     )
-{
-    forAll(typeIds_, i) // TODO VINCENT, c'est reducteur
-    {
-        typeIds_[i] = i;
-    }
-    
-    reset();
-}
+{}
+
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
@@ -348,10 +343,21 @@ void boundaryMeasurements::outputResults()
 }
 
 
+void boundaryMeasurements::setInitialConfig()
+{
+    forAll(typeIds_, i)
+    {
+        typeIds_[i] = i;
+    }
+    
+    reset();
+}
+
+
 void boundaryMeasurements::clean()
 {
     //- clean geometric fields
-    forAll(rhoNBF_, i)
+    forAll(typeIds_, i)
     {
         forAll(rhoNBF_[i], j)
         {
@@ -369,6 +375,14 @@ void boundaryMeasurements::clean()
             electronicEBF_[i][j] = 0.0;
             qBF_[i][j] = 0.0;
             fDBF_[i][j] = vector::zero;
+        }
+        
+        forAll(evmsBF_[i], m)
+        {
+            forAll(evmsBF_[i][m], j)
+            {
+                evmsBF_[i][m][j] = 0.0;
+            }
         }
     }
     
@@ -402,8 +416,9 @@ void boundaryMeasurements::reset()
     electronicEBF_.setSize(nSpecies);
     qBF_.setSize(nSpecies);
     fDBF_.setSize(nSpecies);
+    evmsBF_.setSize(nSpecies);
     
-    forAll(rhoNBF_, i)
+    forAll(typeIds_, i)
     {        
         rhoNIntBF_[i].setSize(nPatches);
         rhoNElecBF_[i].setSize(nPatches);
@@ -419,6 +434,12 @@ void boundaryMeasurements::reset()
         electronicEBF_[i].setSize(nPatches);
         qBF_[i].setSize(nPatches);
         fDBF_[i].setSize(nPatches);
+        
+        evmsBF_[i].setSize(cloud_.constProps(typeIds_[i]).thetaV().size());
+        forAll(evmsBF_[i], m)
+        {
+            evmsBF_[i][m].setSize(nPatches);
+        }
         
         forAll(rhoNBF_[i], j)
         {
@@ -438,6 +459,15 @@ void boundaryMeasurements::reset()
             electronicEBF_[i][j].setSize(nFaces, 0.0);
             qBF_[i][j].setSize(nFaces, 0.0);
             fDBF_[i][j].setSize(nFaces, vector::zero);
+        }
+        
+        forAll(evmsBF_[i], m)
+        {
+            forAll(evmsBF_[i][m], j)
+            {
+                const label nFaces = mesh_.boundaryMesh()[j].size();
+                evmsBF_[i][m][j].setSize(nFaces, 0.0);
+            }
         }
     }
     
