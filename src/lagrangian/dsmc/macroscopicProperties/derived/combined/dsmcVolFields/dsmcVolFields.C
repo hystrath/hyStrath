@@ -1167,8 +1167,11 @@ void dsmcVolFields::calculateField()
             
             scalarField vibT(nCells, 0.0);
             scalarField vibTForOverallT(nCells, 0.0);
-            scalarField molarCp(nCells, 0.0);
-            scalarField molarCv(nCells, 0.0);
+            
+            //- Heat capacity at constant volume/(0.5*kB), trans-rotational
+            scalarField molarCv_transrot(nCells, 0.0);
+            //- Heat capacity at constant pressure/(0.5*kB), trans-rotational
+            scalarField molarCp_transrot(nCells, 0.0);
             scalarField molecularMass(nCells, 0.0);
             scalarField particleCv(nCells, 0.0);
             scalarField totalvDof(nCells, 0.0);
@@ -1546,17 +1549,27 @@ void dsmcVolFields::calculateField()
 
                     if (rhoNMean_[cell] > SMALL)
                     {
-                        molecularMass[cell] += cloud_.constProps(iD).mass()
-                            *(nParcels_[i][cell]/rhoNMean_[cell]);
-                        // TODO the following does not look right
-                        molarCp[cell] += (5.0 + cloud_.constProps(iD).rotationalDegreesOfFreedom())
-                            *(nParcels_[i][cell]/rhoNMean_[cell]); 
-                        molarCv[cell] += (3.0 + cloud_.constProps(iD).rotationalDegreesOfFreedom())
-                            *(nParcels_[i][cell]/rhoNMean_[cell]);
+                        const scalar molarFrac = nParcels_[i][cell]
+                            /rhoNMean_[cell];
+                        
+                        molecularMass[cell] += molarFrac
+                            *cloud_.constProps(iD).mass();
+                        molarCv_transrot[cell] += molarFrac
+                           *(
+                                3.0 
+                              + cloud_.constProps(iD)
+                                  .rotationalDegreesOfFreedom()
+                            );
+                        molarCp_transrot[cell] += molarFrac
+                           *(
+                                5.0 
+                              + cloud_.constProps(iD)
+                                  .rotationalDegreesOfFreedom()
+                            );
                     }
                 }
                 
-                particleCv[cell] = molarCv[cell]/NAvo;
+                particleCv[cell] = molarCv_transrot[cell]/NAvo;
 
                 const scalar gasConstant =
                 (
@@ -1567,12 +1580,13 @@ void dsmcVolFields::calculateField()
                 
                 const scalar gamma =
                 (
-                    molarCv[cell] > SMALL
-                  ? molarCp[cell]/molarCv[cell]
+                    molarCv_transrot[cell] > SMALL
+                  ? molarCp_transrot[cell]/molarCv_transrot[cell]
                   : 0.0
                 );
 
-                const scalar speedOfSound = sqrt
+                const scalar speedOfSound = 
+                    sqrt
                     (
                         gamma*gasConstant*translationalT_[cell]
                     );
@@ -1588,6 +1602,9 @@ void dsmcVolFields::calculateField()
                 {
                     forAll(typeIds_, i)
                     {
+                        mfp_[i][cell] = 0.0;
+                        mcr_[i][cell] = 0.0;
+                        
                         forAll(typeIds_, qspec)
                         {
                             const scalar dPQ = 
@@ -1666,7 +1683,8 @@ void dsmcVolFields::calculateField()
                     if (rhoN_[cell] > SMALL)
                     {
                         cr_[cell] = nColls_[cell]*cloud_.nParticles(cell)
-                            /(rhoN_[cell]*mesh_.cellVolumes()[cell]*nAvTimeSteps*deltaT);
+                            /(rhoN_[cell]*mesh_.cellVolumes()[cell]
+                                *nAvTimeSteps*deltaT);
                     }
                     
                     meanFreePath_[cell] = 0.0;
@@ -1704,12 +1722,6 @@ void dsmcVolFields::calculateField()
                         meanCollisionTimeTimeStepRatio_[cell] = GREAT;
                     }
                 
-                    /*forAll(typeIds_, i)
-                    {
-                        mfp_[i][cell] = 0.0;
-                        mcr_[i][cell] = 0.0;
-                    }*/ // TODO why this is here
-
                     if (meanFreePath_[cell] != GREAT)
                     {
                         scalar largestCellDimension = 0.0;
@@ -1781,10 +1793,14 @@ void dsmcVolFields::calculateField()
                 
                 if (measureErrors_)
                 {
-                    if (dsmcRhoNMean_[cell] > SMALL && Ma_[cell] > SMALL 
-                        && gamma > SMALL && particleCv[cell] > SMALL)
+                    // TODO
+                    if (
+                           dsmcRhoNMean_[cell] > SMALL && Ma_[cell] > SMALL 
+                        && gamma > SMALL && particleCv[cell] > SMALL
+                       )
                     {
-                        densityError_[cell] = 1.0/sqrt(dsmcRhoNMean_[cell]*nAvTimeSteps);
+                        densityError_[cell] = 1.0
+                            /sqrt(dsmcRhoNMean_[cell]*nAvTimeSteps);
                         velocityError_[cell] = (1.0/sqrt(dsmcRhoNMean_[cell]*nAvTimeSteps))*(1.0/(Ma_[cell]*sqrt(gamma)));
                         temperatureError_[cell] = 
                             (1.0/sqrt(dsmcRhoNMean_[cell]*nAvTimeSteps))
@@ -1799,8 +1815,10 @@ void dsmcVolFields::calculateField()
             const label nPatches = mesh_.boundaryMesh().size();
             
             List<scalarField> molecularMassBF(nPatches);
-            List<scalarField> molarCpBF(nPatches);
-            List<scalarField> molarCvBF(nPatches);
+            //- Heat capacity at constant volume/(0.5*kB), trans-rotational
+            List<scalarField> molarCvBF_transrot(nPatches);
+            //- Heat capacity at constant pressure/(0.5*kB), trans-rotational
+            List<scalarField> molarCpBF_transrot(nPatches);
             List<scalarField> particleCvBF(nPatches);
 
             //- computing boundary measurements
@@ -1809,8 +1827,8 @@ void dsmcVolFields::calculateField()
                 const polyPatch& patch = mesh_.boundaryMesh()[j];
 
                 molecularMassBF[j].setSize(patch.size(), 0.0);
-                molarCpBF[j].setSize(patch.size(), 0.0);
-                molarCvBF[j].setSize(patch.size(), 0.0);
+                molarCvBF_transrot[j].setSize(patch.size(), 0.0);
+                molarCpBF_transrot[j].setSize(patch.size(), 0.0);
                 particleCvBF[j].setSize(patch.size(), 0.0);
                 
                 if (isA<wallPolyPatch>(patch))
@@ -2012,28 +2030,52 @@ void dsmcVolFields::calculateField()
                             );
                         
                         //- Mach number
-                        particleCvBF[j][k] = molarCvBF[j][k]/NAvo;
+                        forAll(typeIds_, i)  
+                        {
+                            const label iD = typeIds_[i];
+
+                            if (rhoNBF_[j][k] > SMALL)
+                            {
+                                const scalar molarFrac = speciesRhoNBF_[i][j][k]
+                                    /rhoNBF_[j][k];
+                                
+                                molecularMassBF[j][k] += molarFrac
+                                    *cloud_.constProps(iD).mass();
+                                    
+                                molarCvBF_transrot[j][k] += molarFrac
+                                   *(
+                                        3.0 
+                                      + cloud_.constProps(iD)
+                                          .rotationalDegreesOfFreedom()
+                                    );
+                                    
+                                molarCpBF_transrot[j][k] += molarFrac
+                                   *(
+                                        5.0 
+                                      + cloud_.constProps(iD)
+                                          .rotationalDegreesOfFreedom()
+                                    );
+                            }
+                        }
+                
+                        particleCvBF[j][k] = molarCvBF_transrot[j][k]/NAvo;
                         
                         const scalar gasConstant =
                         (
                               molecularMassBF[j][k] > 0.0
                             ? kB/molecularMassBF[j][k]
                             : 0.0
-                        ); // TODO (not done yet)
+                        );
                         
                         const scalar gamma =
                         (
-                            molarCvBF[j][k] > SMALL
-                          ? molarCpBF[j][k]/molarCvBF[j][k]
+                            molarCvBF_transrot[j][k] > SMALL
+                          ? molarCpBF_transrot[j][k]/molarCvBF_transrot[j][k]
                           : 0.0
-                        ); // TODO
+                        );
                         
-                        /*Info<< "gasConstant" << tab << gasConstant << nl
-                            << "molecularMassBF[j][k]" << tab << molecularMassBF[j][k] << nl
-                            << "molarCpBF[j][k]" << tab << molarCpBF[j][k] << nl
-                            << "gamma" << tab << gamma <<endl;*/
-                        
-                        const scalar speedOfSound = sqrt
+                        const scalar speedOfSound = 
+                            sqrt
                             (
                                 gamma*gasConstant
                                *translationalT_.boundaryField()[j][k]
