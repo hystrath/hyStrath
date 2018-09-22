@@ -934,7 +934,10 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 
                 p.typeId() = typeId1;
                 p.U() = uP1;
-                p.vibLevel().setSize(0,0);
+                forAll(p.vibLevel(), i)
+                {
+                    p.vibLevel()[i] = 0;
+                }
                 p.ERot() = 0.0;
                 p.ELevel() = 0;
                 
@@ -1093,7 +1096,10 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 
                 q.typeId() = typeId1;
                 q.U() = uQ1;
-                q.vibLevel().setSize(0,0);
+                forAll(q.vibLevel(), i)
+                {
+                    q.vibLevel()[i] = 0;
+                }
                 q.ERot() = 0.0;
                 q.ELevel() = 0;
                 
@@ -1744,7 +1750,10 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 
                 p.typeId() = typeId1;
                 p.U() = uP1;
-                p.vibLevel().setSize(0,0);
+                forAll(p.vibLevel(), i)
+                {
+                    p.vibLevel()[i] = 0;
+                }
                 p.ERot() = 0.0;
                 p.ELevel() = 0;
                 
@@ -1903,7 +1912,10 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
                 
                 q.typeId() = typeId1;
                 q.U() = uQ1;
-                q.vibLevel().setSize(0,0);
+                forAll(q.vibLevel(), i)
+                {
+                    q.vibLevel()[i] = 0;
+                }
                 q.ERot() = 0.0;
                 q.ELevel() = 0;
                 
