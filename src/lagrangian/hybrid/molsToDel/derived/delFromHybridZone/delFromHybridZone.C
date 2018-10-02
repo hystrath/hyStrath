@@ -85,7 +85,7 @@ void delFromHybridZone::findMolsToDel()
 
     const label molsKept = initialSize - molsToDel.size();
 
-    Info<< "  Zone: " << regionName_ << tab
+    Info<< "      Zone: " << regionName_ << tab
         << "particles removed: " << molsToDel.size()
         << ", new cloud size: " << molsKept
         << endl;
