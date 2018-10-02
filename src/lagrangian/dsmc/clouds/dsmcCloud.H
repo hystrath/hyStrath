@@ -421,32 +421,32 @@ public:
         // adapting code from DSMC3.FOR)
         scalar equipartitionRotationalEnergy
         (
-            const scalar& temperature,
-            const scalar& rotationalDegreesOfFreedom
+            const scalar temperature,
+            const scalar rotationalDegreesOfFreedom
         );
         
         //- Generate a random vibrational energy
         labelList equipartitionVibrationalEnergyLevel
         (
-            const scalar& temperature,
-            const scalar& vibrationalDegreesOfFreedom,
-            const label& typeId
+            const scalar temperature,
+            const label nVibrationalModes,
+            const label typeId
         );
         
         //- Generate a random electronic energy level
         label equipartitionElectronicLevel
         (
-            const scalar& temperature,
+            const scalar temperature,
             const List<label>& degeneracyList,
             const List<scalar>& electronicEnergyList,
-            const label& typeId
+            const label typeId
         );
         
         // - Generate a LB post-collision rotational energy
         scalar postCollisionRotationalEnergy
         (
-            const scalar& rotationalDof,
-            const scalar& ChiB
+            const scalar rotationalDof,
+            const scalar ChiB
         );
         
         // - Generate a LB post-collision vibrational energy

@@ -973,7 +973,7 @@ public:
     };
 
 
-private:
+protected:
 
     // Protected member data
 

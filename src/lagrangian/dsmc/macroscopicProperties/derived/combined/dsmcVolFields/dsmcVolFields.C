@@ -1963,53 +1963,57 @@ void dsmcVolFields::calculateField()
                         scalar totalelDof = 0.0; // TODO
                         scalar elecT = 0.0; // TODO
                             
-    //                     forAll(electronicEBF_, i)
-    //                     {
-    //                         label nElectronicLevels = cloud_.constProps(typeIds_[i]).numberOfElectronicLevels();
-    //                         
-    //                         if (nElectronicLevels > 1 && speciesRhoNBF_[i][j][k] > VSMALL && speciesRhoNElecBF_[j][k] > VSMALL)
-    //                         {
-    //                             const scalarList& electronicEnergies = cloud_.constProps(typeIds_[i]).electronicEnergyList();
-    //                             const labelList& degeneracies = cloud_.constProps(typeIds_[i]).degeneracyList();
-    //                             
-    //                             scalar speciesTransT = (1.0/(3.0*kB))
-    //                                                     *(
-    //                                                         ((mccSpeciesBF_[i][j][k]/(speciesRhoNBF_[i][j][k])))
-    //                                                         - (
-    //                                                             (cloud_.constProps(typeIds_[i]).mass()
-    //                                                             )*mag(UMean_.boundaryField()[j][k])*mag(UMean_.boundaryField()[j][k]))
-    //                                                     );
-    //                             
-    //                             scalar fraction = speciesRhoNBF_[i][j][k]/speciesRhoNElecBF_[j][k];
-    //                             
-    //                             if (speciesTransT > VSMALL)
-    //                             {
-    //                                 scalar sum1 = 0.0;
-    //                                 scalar sum2 = 0.0;
-    //                                 
-    //                                 forAll(electronicEnergies, ii)
-    //                                 {
-    //                                     sum1 += degeneracies[ii]*exp(-electronicEnergies[ii]/(kB*speciesTransT));
-    //                                     sum2 += degeneracies[ii]*(electronicEnergies[ii]/(kB*speciesTransT))
-    //                                                 *exp(-electronicEnergies[ii]/(kB*speciesTransT));
-    //                                 }
-    //                                 
-    //                                 if (sum2 > VSMALL && sum1> VSMALL)
-    //                                 {
-    //                                     scalar elecTID = (electronicEBF_[i][j][k]/(kB*speciesRhoNBF_[i][j][k]))*(sum1/sum2);
-    //                                     
-    //                                     if (elecTID > SMALL && elecTID < GREAT)
-    //                                     {
-    //                                         elecT += fraction*elecTID;
-    //                                         
-    //                                         scalar eDof = (2.0*(electronicEBF_[i][j][k]/speciesRhoNBF_[i][j][k]))/(kB*speciesTransT);
-    //                                         
-    //                                         totalelDof += fraction*eDof;
-    //                                     }
-    //                                 }
-    //                             }
-    //                         }
-    //                     }
+                        forAll(typeIds_, i)
+                        {
+                            /*const label nElectronicLevels = cloud_.constProps(typeIds_[i]).numberOfElectronicLevels();
+
+                            if (nElectronicLevels > 1 && speciesRhoNBF_[i][j][k] > VSMALL && speciesRhoNElecBF_[j][k] > VSMALL)
+                            {
+                                const scalarList& electronicEnergies = cloud_.constProps(typeIds_[i]).electronicEnergyList();
+                                const labelList& degeneracies = cloud_.constProps(typeIds_[i]).degeneracyList();
+
+                                scalar speciesTransT = 
+                                    1.0/(3.0*kB)
+                                   *(
+                                        mccSpeciesBF_[i][j][k]/speciesRhoNBF_[i][j][k]
+                                     - (
+                                         cloud_.constProps(typeIds_[i]).mass()
+                                        *sqr(mag(UMean_.boundaryField()[j][k]))
+                                       )
+                                   );
+
+                                scalar fraction = speciesRhoNBF_[i][j][k]/speciesRhoNElecBF_[j][k];
+
+                                if (speciesTransT > SMALL)
+                                {
+                                   scalar sum1 = 0.0;
+                                   scalar sum2 = 0.0;
+                                   
+                                    forAll(electronicEnergies, ii)
+                                    {
+                                       sum1 += degeneracies[ii]*exp(-electronicEnergies[ii]/(kB*speciesTransT));
+                                       sum2 += degeneracies[ii]*(electronicEnergies[ii]/(kB*speciesTransT))
+                                                   *exp(-electronicEnergies[ii]/(kB*speciesTransT));
+                                    }
+                                   
+                                    if (sum2 > VSMALL && sum1> VSMALL)
+                                    {
+                                       scalar elecTID = electronicEBF_[i][j][k]
+                                          /(kB*speciesRhoNBF_[i][j][k])*(sum1/sum2);
+                                       
+                                       if (elecTID > SMALL && elecTID < GREAT)
+                                       {
+                                           elecT += fraction*elecTID;
+                                           
+                                           scalar eDof = 2.0*electronicEBF_[i][j][k]
+                                              /speciesRhoNBF_[i][j][k]/(kB*speciesTransT);
+                                           
+                                           totalelDof += fraction*eDof;
+                                       }
+                                    }
+                                }
+                            }*/
+                        }
                         
                         electronicT_.boundaryFieldRef()[j][k] = elecT; // TODO
                         
@@ -2023,8 +2027,7 @@ void dsmcVolFields::calculateField()
                                 )
                               + (totalelDof*elecT)
                             )
-                            /
-                            (
+                           /(
                                 3.0 + totalrDof + totalvDofBF_[j][k] 
                               + totalelDof
                             );
