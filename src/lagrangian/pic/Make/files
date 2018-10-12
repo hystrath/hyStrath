@@ -1,0 +1,88 @@
+/* PARCEL */
+parcels/pdParcel.C
+
+/* CLOUD */
+clouds/pdCloud.C
+
+/* FINITE VOLUME */
+finiteVolume/derived/fvConductorPatch/fvConductorPatch.C
+finiteVolume/derived/fvInsulatorPatch/fvInsulatorPatch.C
+
+/* AVERAGINGMETHODS */
+averagingMethod/makeAveragingMethods.C
+
+/* ELECTROMAGNETICS */
+macroscopicProperties/basic/pdEmFields/pdEmFields.C
+electroMagnetics/basic/ElectronModel/ElectronModel.C
+electroMagnetics/derived/NoElectronModel/NoElectronModel.C
+electroMagnetics/derived/Boltz/Boltz.C
+electroMagnetics/derived/constBackground/constBackground.C
+electroMagnetics/derived/constField/constField.C
+
+/* INITIALISE PD */
+initialisePdParcels/basic/pdConfiguration/pdConfiguration.C
+initialisePdParcels/basic/pdAllConfigurations/pdAllConfigurations.C
+initialisePdParcels/derived/pdMeshFill/pdMeshFill.C
+initialisePdParcels/derived/pdByField/pdByField.C
+initialisePdParcels/derived/pdZoneFill/pdZoneFill.C
+initialisePdParcels/derived/pdInitialiseOnLine/pdInitialiseOnLine.C
+
+/* REACTIONS */
+reactions/basic/pdReactions/pdReactions.C
+reactions/basic/pdReaction/pdReaction.C
+
+/* BINARY COLLISIONS */
+collisions/basic/BinaryCollisionModel/BinaryCollisionModel.C
+collisions/derived/NoBinaryCollision/NoBinaryCollision.C
+collisions/derived/VariableHardSphere/VariableHardSphere.C
+collisions/derived/VariableSoftSphere/VariableSoftSphere.C
+
+/* COLLISION PARTNER SELECTION ROUTINES */
+collisionPartnerSelection/basic/collisionPartnerSelection.C
+collisionPartnerSelection/derived/noTimeCounter/noTimeCounter.C
+collisionPartnerSelection/derived/noTimeCounterTCC/noTimeCounterTCC.C
+
+/* FIELD MEASUREMENTS */
+macroscopicProperties/basic/pdStandardFields/pdStandardFields.C
+macroscopicProperties/basic/pdFieldProperties/pdFieldProperties.C
+macroscopicProperties/basic/pdField/pdField.C
+faceTracker/pdFaceTracker.C
+
+/* BOUNDARY MEASUREMENTS */
+boundaryMeasurements/boundaryMeasurements.C
+
+/* BOUNDARIES */
+boundaries/basic/pdBoundaries/pdBoundaries.C
+
+boundaries/basic/pdCyclicBoundary/pdCyclicBoundary.C
+boundaries/basic/pdGeneralBoundary/pdGeneralBoundary.C
+boundaries/basic/pdPatchBoundary/pdPatchBoundary.C
+
+/* PATCH BOUNDARY MODELS */
+boundaries/derived/patchBoundaries/pdDeletionPatch/pdDeletionPatch.C
+boundaries/derived/patchBoundaries/pdAdiabaticWallPatch/pdAdiabaticWallPatch.C
+boundaries/derived/patchBoundaries/pdSpecularWallPatch/pdSpecularWallPatch.C
+boundaries/derived/patchBoundaries/pdDiffuseWallPatch/pdDiffuseWallPatch.C
+
+boundaries/derived/patchBoundaries/pdDiffuseNeutralisingWallPatch/pdDiffuseNeutralisingWallPatch.C
+boundaries/derived/patchBoundaries/pdAdsorbingWallPatch/pdAdsorbingWallPatch.C
+
+/* GENERAL BOUNDARY MODELS */
+boundaries/derived/generalBoundaries/pdFreeStreamInflowPatch/pdFreeStreamInflowPatch.C
+
+/* CYCLIC BOUNDARY MODELS */
+boundaries/derived/cyclicBoundaries/pdCyclicWallPatch/pdCyclicWallPatch.C
+
+/* COMBINED */
+macroscopicProperties/derived/combined/pdBinsMethod/pdBinsMethod.C
+macroscopicProperties/derived/combined/pdZone/pdZone.C
+macroscopicProperties/derived/combined/pdZoneBounded/pdZoneBounded.C
+macroscopicProperties/derived/combined/pdVolFields/pdVolFields.C
+
+/* CONTROLLERS*/
+controllers/basic/pdControllers/pdControllers.C
+controllers/basic/pdStateController/pdStateController.C
+controllers/basic/pdFluxController/pdFluxController.C
+
+
+LIB = $(FOAM_USER_LIBBIN)/libpdFoam

@@ -1,0 +1,12 @@
+cellRegions/cellRegions.C
+pointInfo/pointInfo.C
+pointInfoList/pointInfoList.C
+faceInfo/faceInfo.C
+faceInfoList/faceInfoList.C
+cellInform/cellInform.C
+cellInfoList/cellInfoList.C
+layerRegions/layerRegions.C
+region/region.C
+interface/interface.C
+
+LIB = $(FOAM_USER_LIBBIN)/libregionsAndInterfaces

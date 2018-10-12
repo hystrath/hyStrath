@@ -1,0 +1,175 @@
+/* PARCEL */
+parcels/pdParcel.C
+
+/* CLOUD */
+clouds/pdCloud.C
+
+/* AVERAGINGMETHODS */
+averagingMethod/makeAveragingMethods.C
+
+/* ELECTROMAGNETICS */
+macroscopicProperties/basic/pdEmFields/pdEmFields.C
+electroMagnetics/basic/ElectronModel/ElectronModel.C
+electroMagnetics/derived/NoElectronModel/NoElectronModel.C
+electroMagnetics/derived/Boltz/Boltz.C
+
+/* INITIALISE PD */
+initalisePdParcels/basic/pdConfiguration/pdConfiguration.C
+initalisePdParcels/basic/pdAllConfigurations/pdAllConfigurations.C
+initalisePdParcels/derived/pdMeshFill/pdMeshFill.C
+initalisePdParcels/derived/pdZoneFill/pdZoneFill.C
+initalisePdParcels/derived/pdInitialiseOnLine/pdInitialiseOnLine.C
+
+/* DELETE PARCELS*/
+
+/* REACTIONS */
+reactions/basic/pdReactions/pdReactions.C
+reactions/basic/pdReaction/pdReaction.C
+reactions/derived/dissociationTypeISameSpecies/dissociationTypeISameSpecies.C
+reactions/derived/dissociationTypeIDissimilarSpecies/dissociationTypeIDissimilarSpecies.C
+reactions/derived/mixedTypeIIDissociationForwardExchange/mixedTypeIIDissociationForwardExchange.C
+reactions/derived/mixedTypeIIDissociationReverseExchange/mixedTypeIIDissociationReverseExchange.C
+reactions/derived/dissociationTypeII/dissociationTypeII.C
+reactions/derived/recombination/recombination.C
+
+/* BINARY COLLISIONS */
+collisions/basic/BinaryCollisionModel/BinaryCollisionModel.C
+collisions/derived/NoBinaryCollision/NoBinaryCollision.C
+collisions/derived/VariableHardSphere/VariableHardSphere.C
+collisions/derived/VariableSoftSphere/VariableSoftSphere.C
+collisions/derived/LarsenBorgnakkeVariableHardSphere/LarsenBorgnakkeVariableHardSphere.C
+collisions/derived/LarsenBorgnakkeVariableHardSphereClassification/LarsenBorgnakkeVariableHardSphereClassification.C
+collisions/derived/LarsenBorgnakkeVariableSoftSphere/LarsenBorgnakkeVariableSoftSphere.C
+
+/* COLLISION PARTNER SELECTION ROUTINES */
+collisionPartnerSelection/basic/collisionPartnerSelection.C
+collisionPartnerSelection/derived/noTimeCounter/noTimeCounter.C
+collisionPartnerSelection/derived/noTimeCounterTCC/noTimeCounterTCC.C
+collisionPartnerSelection/derived/noTimeCounterAdaptiveSubcelling/noTimeCounterAdaptiveSubcelling.C
+collisionPartnerSelection/derived/simplifiedBernoulliTrials/simplifiedBernoulliTrials.C
+collisionPartnerSelection/derived/noRepeatCollisions/noRepeatCollisions.C
+collisionPartnerSelection/derived/simplifiedBernoulliTrialsTAS/simplifiedBernoulliTrialsTAS.C
+
+/* FIELD MEASUREMENTS */
+macroscopicProperties/basic/pdStandardFields/pdStandardFields.C
+macroscopicProperties/basic/pdFieldProperties/pdFieldProperties.C
+macroscopicProperties/basic/pdField/pdField.C
+faceTracker/pdFaceTracker.C
+
+boundaryMeasurements/boundaryMeasurements.C
+
+/* BOUNDARIES */
+boundaries/basic/pdBoundaries/pdBoundaries.C
+
+boundaries/basic/pdCyclicBoundary/pdCyclicBoundary.C
+boundaries/basic/pdGeneralBoundary/pdGeneralBoundary.C
+boundaries/basic/pdPatchBoundary/pdPatchBoundary.C
+
+/* PATCH BOUNDARY MODELS */
+boundaries/derived/patchBoundaries/pdDeletionPatch/pdDeletionPatch.C
+boundaries/derived/patchBoundaries/pdAdiabaticWallPatch/pdAdiabaticWallPatch.C
+boundaries/derived/patchBoundaries/pdSpecularWallPatch/pdSpecularWallPatch.C
+boundaries/derived/patchBoundaries/pdDiffuseWallPatch/pdDiffuseWallPatch.C
+
+boundaries/derived/patchBoundaries/pdDiffuseNeutralisingWallPatch/pdDiffuseNeutralisingWallPatch.C
+
+boundaries/derived/patchBoundaries/pdDiffuseWallClassificationPatch/pdDiffuseWallClassificationPatch.C
+boundaries/derived/patchBoundaries/pdDiffuseWallHeatFluxPatch/pdDiffuseWallHeatFluxPatch.C
+boundaries/derived/patchBoundaries/pdDiffuseWallFieldPatch/pdDiffuseWallFieldPatch.C
+boundaries/derived/patchBoundaries/pdMixedDiffuseSpecularWallPatch/pdMixedDiffuseSpecularWallPatch.C
+boundaries/derived/patchBoundaries/pdMixedDiffuseSpecularWallFieldPatch/pdMixedDiffuseSpecularWallFieldPatch.C
+boundaries/derived/patchBoundaries/pdMixedDiffuseSpecularWallRotationPatch/pdMixedDiffuseSpecularWallRotationPatch.C
+boundaries/derived/patchBoundaries/pdAdiabaticWallRotationPatch/pdAdiabaticWallRotationPatch.C
+boundaries/derived/patchBoundaries/pdMixedDiffuseSpecularWallRotationFieldPatch/pdMixedDiffuseSpecularWallRotationFieldPatch.C
+boundaries/derived/patchBoundaries/pdRadiationWallFieldPatch/pdRadiationWallFieldPatch.C
+boundaries/derived/patchBoundaries/radiationWallPatch/radiationWallPatch.C
+boundaries/derived/patchBoundaries/pdCLLWallPatch/pdCLLWallPatch.C
+boundaries/derived/patchBoundaries/pdCLLWallFieldPatch/pdCLLWallFieldPatch.C
+boundaries/derived/patchBoundaries/pdCLLWallBirdFieldPatch/pdCLLWallBirdFieldPatch.C
+boundaries/derived/patchBoundaries/pdDiffuseCatalyticWallPatch/pdDiffuseCatalyticWallPatch.C
+boundaries/derived/patchBoundaries/pdFixedHeatFluxFieldPatch/pdFixedHeatFluxFieldPatch.C
+boundaries/derived/patchBoundaries/pdFixedHeatFluxWallPatch/pdFixedHeatFluxWallPatch.C
+
+
+/* GENERAL BOUNDARY MODELS */
+boundaries/derived/generalBoundaries/pdFreeStreamInflowPatch/pdFreeStreamInflowPatch.C
+
+boundaries/derived/generalBoundaries/pdChapmanEnskogFreeStreamInflowPatch/pdChapmanEnskogFreeStreamInflowPatch.C
+boundaries/derived/generalBoundaries/pdFreeStreamInflowFieldPatch/pdFreeStreamInflowFieldPatch.C
+boundaries/derived/generalBoundaries/pdLiouFangPressureInlet/pdLiouFangPressureInlet.C
+boundaries/derived/generalBoundaries/pdLiouFangPressureOutletSpecifiedMolarFraction/pdLiouFangPressureOutletSpecifiedMolarFraction.C
+boundaries/derived/generalBoundaries/pdLiouFangPressureOutletCalculatedMolarFraction/pdLiouFangPressureOutletCalculatedMolarFraction.C
+boundaries/derived/generalBoundaries/pdNewPressureOutletCalculatedMolarFraction/pdNewPressureOutletCalculatedMolarFraction.C
+boundaries/derived/generalBoundaries/pdYePressureOutletCalculatedMolarFraction/pdYePressureOutletCalculatedMolarFraction.C
+boundaries/derived/generalBoundaries/pdWangPressureInlet/pdWangPressureInlet.C
+boundaries/derived/generalBoundaries/pdMassFlowRateInlet/pdMassFlowRateInlet.C
+
+
+/* CYCLIC BOUNDARY MODELS */
+
+
+/* COMBINED */
+
+macroscopicProperties/derived/combined/pdBinsMethod/pdBinsMethod.C
+macroscopicProperties/derived/combined/pdZone/pdZone.C
+macroscopicProperties/derived/combined/pdZoneBounded/pdZoneBounded.C
+macroscopicProperties/derived/combined/pdVolFields/pdVolFields.C
+
+
+/*    DENSITY */
+
+macroscopicProperties/derived/density/pdDensityFluctuationsZone/pdDensityFluctuationsZone.C
+macroscopicProperties/derived/density/crbsFluctuationsZone/crbsFluctuationsZone.C
+macroscopicProperties/derived/density/srbsFluctuationsZone/srbsFluctuationsZone.C
+macroscopicProperties/derived/density/srbsFluctuationsComplexZone/srbsFluctuationsComplexZone.C
+macroscopicProperties/derived/density/pdRayleighBrillouinBinsMethod/pdRayleighBrillouinBinsMethod.C
+
+/*    TEMPERATURE */
+
+
+/*    VELOCITY */
+
+macroscopicProperties/derived/velocity/pdVelocityDistributionZone/pdVelocityDistributionZone.C
+macroscopicProperties/derived/velocity/pdSpeedDistributionZone/pdSpeedDistributionZone.C
+
+/* OTHER FIELDS */
+
+macroscopicProperties/derived/otherFields/pdVibrationalQuantumLevelDistribution/pdVibrationalQuantumLevelDistribution.C
+macroscopicProperties/derived/otherFields/pdVibrationalDegreesOfFreedomZone/pdVibrationalDegreesOfFreedomZone.C
+
+/* PRESSURE */
+
+
+/*    MASS FLUX */
+
+macroscopicProperties/derived/massFlux/pdMassFluxSurface/pdMassFluxSurface.C
+
+
+/* CONTROLLERS*/
+controllers/basic/pdControllers/pdControllers.C
+controllers/basic/pdStateController/pdStateController.C
+controllers/basic/pdFluxController/pdFluxController.C
+
+/* DENSITY*/
+
+controllers/derived/density/densityController/densityController.C
+controllers/derived/density/densityZoneController/densityZoneController.C
+controllers/derived/density/densityControlZone/densityControlZone.C
+
+
+/* TEMPERATURE*/
+
+controllers/derived/temperature/temperatureController/temperatureController.C
+controllers/derived/temperature/temperatureZoneController/temperatureZoneController.C
+controllers/derived/temperature/temperatureBinsController/temperatureBinsController.C
+controllers/derived/temperature/temperatureBerendsenBins/temperatureBerendsenBins.C
+
+/*OTHERS*/
+
+controllers/derived/others/gravitationalAccelerationController/gravitationalAccelerationController.C
+controllers/derived/others/gravitationalController/gravitationalController.C
+controllers/derived/others/crbsController/crbsController.C
+controllers/derived/others/forcingFunctionController/forcingFunctionController.C
+controllers/derived/others/timeVaryingOnlyForcingFunctionController/timeVaryingOnlyForcingFunctionController.C
+
+LIB = $(FOAM_USER_LIBBIN)/libpdFoam
