@@ -206,10 +206,8 @@ void Foam::pdCloud::addNewParcel
 (
     const vector& position,
     const vector& U,
-    /***********************************************************************/
     const vector& A,
     const scalar EPot,
-    /***********************************************************************/
     const scalar ERot,
     const scalar EVib,
     const label cellI,
@@ -225,10 +223,8 @@ void Foam::pdCloud::addNewParcel
         mesh_,
         position,
         U,
-        /***********************************************************************/
         A,
         EPot,
-        /***********************************************************************/
         ERot,
         EVib,
         cellI,
@@ -379,7 +375,6 @@ Foam::pdCloud::pdCloud
     rndGen_(label(clock::getTime()) + 7183*Pstream::myProcNo()), // different seed every time simulation is started - needed for ensemble averaging!
     controllers_(t, mesh, *this),
     standardFields_(mesh, *this),
-    /***********************************************************************/
     emFields_(mesh, *this),
     electronModel_
 	(
@@ -389,7 +384,6 @@ Foam::pdCloud::pdCloud
             *this
         )
     ),
-    /***********************************************************************/
     fields_(t, mesh, *this),
     boundaries_(t, mesh, *this),
     trackingInfo_(mesh, *this, true),
@@ -508,10 +502,8 @@ Foam::pdCloud::pdCloud
     rndGen_(label(clock::getTime()) + 1526*Pstream::myProcNo()), // different seed every time simulation is started - needed for ensemble averaging!
     controllers_(t, mesh),
     standardFields_(mesh, *this, true),
-    /***********************************************************************/
     emFields_(mesh, *this, true),
     electronModel_(),
-    /***********************************************************************/
     fields_(t, mesh),
     boundaries_(t, mesh),
     trackingInfo_(mesh, *this),

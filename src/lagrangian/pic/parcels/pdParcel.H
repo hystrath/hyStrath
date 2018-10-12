@@ -83,10 +83,8 @@ public:
             //- Particle mass [kg]                  (constant)
             scalar mass_;
 
-            /***********************************************************************/
             //- Particle charge units []            (constant)
             scalar Ze_;
-            /***********************************************************************/
 
             //- Particle hard sphere diameter [m]   (constant)
             scalar d_;
@@ -113,7 +111,7 @@ public:
             scalar thetaD_;
 
             //- Reference vibrational relaxation number
-            scalar Zref_;
+            scalar Zref_; //TODO: Change label to avoid confusion with Ze_
 
             //- Reference temperature for reference vibrational relaxation number
             scalar TrefZv_;
@@ -141,10 +139,8 @@ public:
             //- Return const access to the particle density
             inline scalar mass() const;
 
-            /***********************************************************************/
             //- Return const access to the particle charge units
             inline scalar Ze() const;
-            /***********************************************************************/
 
             //- Return const access to the minimum particle mass
             inline scalar d() const;
@@ -186,7 +182,7 @@ public:
         public particle::TrackingData<pdCloud>
     {
         //Private data
-    /***********************************************************************/
+
         // label specifying which part of the integration algorithm is taking place
         label part_;
 
@@ -209,7 +205,6 @@ public:
             inline label part() const;
 
     };
-    /***********************************************************************/
 
     private:
 
@@ -220,13 +215,11 @@ public:
             //- Velocity of Parcel [m/s]
             vector U_;
 
-            /***********************************************************************/
             //- Acceleration of Parcel [m/s^2]
             vector A_;
 
             //- Potential energy of the Parcel [V]
             scalar EPot_;
-            /***********************************************************************/
 
             //- Rotational energy of the Parcel [J]
             scalar ERot_;
@@ -259,10 +252,8 @@ public:
             const polyMesh& mesh,
             const vector& position,
             const vector& U,
-            /***********************************************************************/
             const vector& A,
             const scalar EPot,
-            /***********************************************************************/
             const scalar ERot,
             const scalar EVib,
             const label cellI,
@@ -320,13 +311,11 @@ public:
             //- Return const access to velocity
             inline const vector& U() const;
 
-            /***********************************************************************/
             //- Return const access to acceleration
             inline const vector& A() const;
 
             //- Return const access to potential energy
             inline scalar EPot() const;
-            /***********************************************************************/
 
             //- Return const access to rotational energy
             inline scalar ERot() const;
@@ -351,13 +340,11 @@ public:
             //- Return access to velocity
             inline vector& U();
 
-            /***********************************************************************/
             //- Return access to acceleration
             inline vector& A();
 
             //- Return access to potential energy
             inline scalar& EPot();
-            /***********************************************************************/
 
             //- Return access to rotational energy
             inline scalar& ERot();

@@ -28,7 +28,6 @@ License
 #include "polyMeshTetDecomposition.H"
 
 #include "Basic.H"
-#include "Dual.H"
 #include "Linear.H"
 
 

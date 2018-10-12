@@ -182,12 +182,9 @@ void pdMeshFill::setInitialConfiguration()
                         typeId
                     );
 
-                    /***********************************************************************/
-                    //initialising accerleration and force on particle as [0;0;0] at the moment
+                    //initialising acceleration and force on particle as [0;0;0] at the moment
                     vector A = vector::zero;
                     scalar EPot = 0.0;
-                    /***********************************************************************/
-
 
                     U += velocity;
 
@@ -199,10 +196,8 @@ void pdMeshFill::setInitialConfiguration()
                     (
                         p,
                         U,
-                        /***********************************************************************/
                         A,
                         EPot,
-                        /***********************************************************************/
                         ERot,
                         EVib,
                         cellI,

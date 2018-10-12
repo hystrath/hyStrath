@@ -54,6 +54,7 @@ bool Foam::pdParcel::move
     }
 
     // First leapfrog velocity adjust part, required before tracking+force part
+    // TODO: Use labels for td.part() method instead of 0-4 to increase clarity when referenced in pdCloud
     if(td.part() == 0)
     {
         U_ += A_*trackTime;
@@ -67,7 +68,7 @@ bool Foam::pdParcel::move
 
         // For reduced-D cases, the velocity used to track needs to be
         // constrained, but the actual U_ of the parcel must not be
-        // altered or used, as it is altered by patch interactions an
+        // altered or used, as it is altered by patch interactions and
         // needs to retain its 3D value for collision purposes.
         vector Utracking = U_;
 
@@ -81,7 +82,6 @@ bool Foam::pdParcel::move
 
             // Apply correction to velocity to constrain tracking for
             // reduced-D cases
-
             meshTools::constrainDirection(mesh, mesh.solutionD(), Utracking);
 
             // Set the Lagrangian time-step

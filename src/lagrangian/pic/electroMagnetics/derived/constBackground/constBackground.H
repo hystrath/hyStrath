@@ -53,10 +53,10 @@ class constBackground
         //- background density
         dimensionedScalar rhoB_;
 
-        //- referance temperature
+        //- reference temperature
         dimensionedScalar TB_;
 
-        //- referance potential
+        //- reference potential
         dimensionedScalar phi0_;
 
         //- charge of state of background i.e. +1, +2. -1

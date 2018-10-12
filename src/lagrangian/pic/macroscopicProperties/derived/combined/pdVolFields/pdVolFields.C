@@ -687,7 +687,6 @@ pdVolFields::pdVolFields
 
         typeIds_[i] = typeId;
     }
-    /*******************************************************************/
 
     //- outer list is typeIds, inner list is number of cells on the mesh
 
@@ -709,7 +708,6 @@ pdVolFields::pdVolFields
         mfp_[i].setSize(mesh_.nCells());
         mcr_[i].setSize(mesh_.nCells());
     }
-    /*******************************************************************/
 
     boundaryCells_.setSize(mesh.boundaryMesh().size());
 
