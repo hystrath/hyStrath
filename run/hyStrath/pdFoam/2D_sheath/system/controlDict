@@ -1,0 +1,178 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.x                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     pdFoam;
+
+startFrom       latestTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         3e-5;
+
+deltaT          5e-5;
+
+writeControl    runTime;
+
+writeInterval   1e-10;
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  12;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable true;
+
+adjustTimeStep  no;
+
+functions
+{
+   
+
+    fieldAverage1
+    {
+        type            fieldAverage;
+        functionObjectLibs ( "libfieldFunctionObjects.so" );
+        outputControl   outputTime;
+        resetOnOutput   off;
+        fields
+        (
+            rhoN
+            {
+                 mean on;
+                 prime2Mean off;
+                 base time;
+            }
+            rhoM
+            {
+                mean on;
+                prime2Mean off;
+                base time;
+            }
+            Jp
+            {
+                mean on;
+                prime2Mean off;
+                base time;
+            }
+            rhop
+            {
+                mean on;
+                prime2Mean off;
+                base time;
+            }
+            rhoe
+            {
+                mean on;
+                prime2Mean off;
+                base time;
+            }
+            rhoZ
+            {
+                mean on;
+                prime2Mean off;
+                base time;
+            }
+            phiE
+            {
+                mean on;
+                prime2Mean off;
+                base time;
+            }
+            pdRhoN
+            {
+                 mean on;
+                 prime2Mean off;
+                 base time;
+            }
+	    pdRhoNColl
+            {
+                 mean on;
+                 prime2Mean off;
+                 base time;
+            }
+            momentum
+            {
+                mean on;
+                prime2Mean off;
+                base time;
+            }
+            linearKE
+            {
+                mean on;
+                prime2Mean off;
+                base time;
+            }
+            rotationalE
+            {
+                mean on;
+                prime2Mean off;
+                base time;
+            }
+            rotationalDof
+            {
+                mean on;
+                prime2Mean off;
+                base time;
+            }
+            vibrationalE
+            {
+                mean on;
+                prime2Mean off;
+                base time;
+            }
+            vibrationalDof
+            {
+                mean on;
+                prime2Mean off;
+                base time;
+            }
+            q
+            {
+                 mean on;
+                 prime2Mean off;
+                 base time;
+            }
+            fD
+            {
+                mean on;
+                prime2Mean off;
+                base time;
+            }
+        );
+        
+    }
+    /*
+    pdFields1
+    {
+        type            pdFieldsStrath;
+        functionObjectLibs ( "libutilityFunctionObjectsPicStrath.so" );
+        enabled         false;
+        outputControl   outputTime;
+    }*/
+
+}
+
+// ************************************************************************* //

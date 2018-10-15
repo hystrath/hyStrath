@@ -1,0 +1,58 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.3                                   |
+|   \\  /    A nd           | Web:      http://www.openfoam.org               |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      boundariesDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+pdPatchBoundaries
+(
+);
+
+pdCyclicBoundaries
+(
+
+     boundary
+     {
+        cyclicBoundaryProperties
+        {
+            patchName                            periodic_1;
+        }
+	
+	boundaryModel 		pdCyclicWallPatch;
+	
+	pdCyclicWallPatchProperties
+	{
+	}
+     }
+	
+     boundary
+     {
+        cyclicBoundaryProperties
+        {
+            patchName                            periodic_2;
+        }
+	
+	boundaryModel 		pdCyclicWallPatch;
+	
+	pdCyclicWallPatchProperties
+	{
+	}
+     }
+
+);
+
+pdGeneralBoundaries
+(
+);
+// ************************************************************************* //

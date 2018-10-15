@@ -1,0 +1,214 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | NpenFNAM: The Npen Source CFD Toolbox           |
+|  \\    /   N peration     | Version:  1.7.1                                 |
+|   \\  /    A nd           | Web:      www.NpenFNAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      chemReactDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+//				reaction types	
+//	   ===============================================================
+//	   name						reaction equation	keyword
+//	   ---------------------------------------------------------------
+//	   dissociation type I		 AB+CD-->A+B+CD		dissTypeI
+//	   dissociation type II		 AB+C -->A+B+C		dissTypeII
+//	   exchange reaction 		 AB+C -->AC+B		molEx
+//	   molecular recombination	 A+B+C-->AB+C		molRe
+//	   ===============================================================
+//
+// X as a reactant or product is used if there exists no third reactant or product
+//
+
+reactions
+(
+/*	nitrogenReaction*/
+/*	{*/
+/*		reactionModel		dissRateTypeISameSpecies;*/
+
+/*		dissRateTypeISameSpeciesProperties*/
+/*		{*/
+/*			reactionName					nitrogenReaction;*/
+/*		    reactantMoleculesToDissociate	(N2 N2);*/
+/*		    productsOfDissociatedMolecule	(N N);*/
+/*		    allowSplitting			no;*/
+/*       }*/
+/*	}*/
+
+
+/*	oxygenReaction*/
+/*	{*/
+/*		reactionModel		dissRateTypeISameSpecies;*/
+
+/*		dissRateTypeISameSpeciesProperties*/
+/*		{*/
+/*			reactionName					oxygenReaction;*/
+/*		    reactantMoleculesToDissociate	(O2 O2);*/
+/*		    productsOfDissociatedMolecule	(O O);*/
+/*		    allowSplitting			no;*/
+/*       }*/
+/*	}*/
+
+/*	nitricoxideReaction*/
+/*	{*/
+/*		reactionModel		dissRateTypeISameSpecies;*/
+
+/*		dissRateTypeISameSpeciesProperties*/
+/*		{*/
+/*			reactionName					nitricoxideReaction;*/
+/*		    reactantMoleculesToDissociate	(NO NO);*/
+/*		    productsOfDissociatedMolecule	(N O);*/
+/*		    allowSplitting			no;*/
+/*       }*/
+/*	}*/
+
+
+/*	nitrogenOxygenReaction*/
+/*	{*/
+/*		reactionModel		dissRateTypeIDissimilarSpecies;*/
+
+/*		dissRateTypeIDissimilarSpeciesProperties*/
+/*		{*/
+/*			reactionName					nitrogenOxygenReaction;*/
+/*		    reactantMoleculesToDissociate	(N2 O2);*/
+/*		    productsOfDissociatedMolecule	((N N) (O O));*/
+/*		    allowSplitting			no;*/
+/*       }*/
+/*	}*/
+
+/*	nitrogenNitricoxideReaction*/
+/*	{*/
+/*		reactionModel		dissRateTypeIDissimilarSpecies;*/
+
+/*		dissRateTypeIDissimilarSpeciesProperties*/
+/*		{*/
+/*			reactionName					nitrogenNitricoxideReaction;*/
+/*		    reactantMoleculesToDissociate	(N2 NO);*/
+/*		    productsOfDissociatedMolecule	((N N) (N O));*/
+/*		    allowSplitting			no;*/
+/*       }*/
+/*	}*/
+
+/*	oxygenNitricoxideReaction*/
+/*	{*/
+/*		reactionModel		dissRateTypeIDissimilarSpecies;*/
+
+/*		dissRateTypeIDissimilarSpeciesProperties*/
+/*		{*/
+/*			reactionName					oxygenNitricoxideReaction;*/
+/*		    reactantMoleculesToDissociate	(O2 NO);*/
+/*		    productsOfDissociatedMolecule	((O O) (N O));*/
+/*		    sameSpecie				no;*/
+/*		    allowSplitting			no;*/
+/*       }*/
+/*	}	*/
+
+/*	nitrogenAtomicNitrogenReaction*/
+/*	{*/
+/*		reactionModel		dissRateTypeII;*/
+
+/*		dissRateTypeIIProperties*/
+/*		{*/
+/*			reactionName					nitrogenAtomicNitrogenReaction;*/
+/*		    reactantMoleculesToDissociate	(N2 N);*/
+/*		    productsOfDissociatedMolecule	(N N);*/
+/*		    allowSplitting			no;*/
+/*       }*/
+/*	}*/
+
+/*	oxygenAtomicOxygenReaction*/
+/*	{*/
+/*		reactionModel		dissRateTypeII;*/
+
+/*		dissRateTypeIIProperties*/
+/*		{*/
+/*			reactionName					oxygenAtomicOxygenReaction;*/
+/*		    reactantMoleculesToDissociate	(O2 O);*/
+/*		    productsOfDissociatedMolecule	(O O);*/
+/*		    allowSplitting			no;*/
+/*       }*/
+/*	}*/
+
+/*	exchangeReaction*/
+/*	{*/
+/*		reactionModel		mixedTypeIIDissociationForwardExchange;*/
+
+/*		mixedTypeIIDissociationForwardExchangeProperties*/
+/*		{*/
+/*			reactionName				forwardExchangeReaction;*/
+/*		    reactantMolecules			(NO O);*/
+/*		    productsOfExchangeReaction	(O2 N);*/
+/*			productsOfDissociatedMolecule (N O);*/
+/*		    activationEnergy			(19629); //in Kelvin, converted to Joules in the code*/
+/*		    heatOfReaction				(-19629); //in Kelvin, converted to Joules in the code*/
+/*			aCoeff						(0.085); //from QKRates*/
+/*			bCoeff						(0.65); //from QKRates*/
+/*		    allowSplitting				no;*/
+/*       }*/
+/*	}*/
+
+/*	exchangeReaction*/
+/*	{*/
+/*		reactionModel		mixedTypeIIDissociationReverseExchange;*/
+
+/*		mixedTypeIIDissociationReverseExchangeProperties*/
+/*		{*/
+/*			reactionName				reverseExchangeReaction;*/
+/*		    reactantMolecules			(O2 N);*/
+/*		    productsOfExchangeReaction	(NO O);*/
+/*			productsOfDissociatedMolecule (O O);*/
+/*		    activationEnergy			(0); //in Kelvin, converted to Joules in the code*/
+/*		    heatOfReaction				(-19629); //in Kelvin, converted to Joules in the code*/
+/*			aCoeff						(0.25); //from QKRates*/
+/*			bCoeff						(0); //from QKRates*/
+/*		    allowSplitting				no;*/
+/*       }*/
+/*	}*/
+
+/*	exchangeReaction*/
+/*	{*/
+/*		reactionModel		mixedTypeIIDissociationForwardExchange;*/
+
+/*		mixedTypeIIDissociationForwardExchangeProperties*/
+/*		{*/
+/*			reactionName				forwardExchangeReaction;*/
+/*		    reactantMolecules			(N2 O);*/
+/*		    productsOfExchangeReaction	(NO N);*/
+/*			productsOfDissociatedMolecule (N N);*/
+/*		    activationEnergy			(37483); //in Kelvin, converted to Joules in the code*/
+/*		    heatOfReaction				(-37483); //in Kelvin, converted to Joules in the code*/
+/*			aCoeff						(0.15); //from QKRates*/
+/*			bCoeff						(0); //from QKRates*/
+/*		    allowSplitting				no;*/
+/*       }*/
+/*	}*/
+
+/*	exchangeReaction*/
+/*	{*/
+/*		reactionModel		mixedTypeIIDissociationReverseExchange;*/
+
+/*		mixedTypeIIDissociationReverseExchangeProperties*/
+/*		{*/
+/*			reactionName				reverseExerchangeReaction;*/
+/*		    reactantMolecules			(NO N);*/
+/*		    productsOfExchangeReaction	(N2 O);*/
+/*			productsOfDissociatedMolecule (N O);*/
+/*		    activationEnergy			(0); //in Kelvin, converted to Joules in the code*/
+/*		    heatOfReaction				(-37483); //in Kelvin, converted to Joules in the code*/
+/*			aCoeff						(0.07); //from QKRates*/
+/*			bCoeff						(0.62); //from QKRates*/
+/*		    allowSplitting				no;*/
+/*       }*/
+/*	}*/
+);
+
+

@@ -1,0 +1,98 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.x                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      pdProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+pdMeasurementOptions
+{
+	standardFields 		true;
+	infoOutputFrequency 	1;
+}
+
+// General Properties
+// ~~~~~~~~~~~~~~~~~~
+
+nEquivalentParticles            1;
+
+// Binary Collision Model
+// ~~~~~~~~~~~~~~~~~~~~~~
+
+BinaryCollisionModel            NoBinaryCollision;
+
+// Collision Partner Selection Model
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+collisionPartnerSelectionModel  noTimeCounter;
+
+// Averaging Method
+// ~~~~~~~~~~~~~~~~~~~~
+
+//AveragingMethod 	       	 Linear;
+
+AveragingMethod 	       	 Basic;
+// Electron Fluid Model
+// ~~~~~~~~~~~~~~~~~~~
+
+ElectronModel 			constBackground;
+
+constBackgroundCoeffs
+{
+	temperature 	1000;
+	density 	1.3037972e7;
+	potential 	0;
+	charge 		1;
+}
+
+// Molecular species
+// ~~~~~~~~~~~~~~~~~
+
+typeIdList                      (e_1 e_2);
+
+
+// electron mass set to equal charge to increase growth rate of instability
+moleculeProperties
+{
+    e_1
+    {
+        mass                                    1.60218e-20;
+        Ze                                      -1;      
+        diameter                                3.0e-10;   
+        rotationalDegreesOfFreedom              0;
+        vibrationalModes                        0;
+        omega                                   0.8;
+        alpha                                   0;        
+        characteristicVibrationalTemperature    0;
+        dissociationTemperature                 0;
+        charDissQuantumLevel                    0;
+        referenceTempForZref                    0;
+        Zref                                    0;
+    }
+    e_2
+    {
+        mass                                    1.60218e-20;
+        Ze                                      -1;      
+        diameter                                3.0e-10;   
+        rotationalDegreesOfFreedom              0;
+        vibrationalModes                        0;
+        omega                                   0.8;
+        alpha                                   0;        
+        characteristicVibrationalTemperature    0;
+        dissociationTemperature                 0;
+        charDissQuantumLevel                    0;
+        referenceTempForZref                    0;
+        Zref                                    0;
+    }
+}
+// ************************************************************************* //

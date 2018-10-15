@@ -1,0 +1,148 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.0.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      snappyHexMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Which of the steps to run
+castellatedMesh true;
+snap            true;
+addLayers       true;
+
+
+geometry
+{
+
+    sphere
+    {
+        type searchableSphere;
+        centre  (0 0 0);
+        radius  0.1e-7;
+    }
+};
+
+castellatedMeshControls
+{
+    maxLocalCells 1000;
+    maxGlobalCells 2000;
+    minRefinementCells 10;
+    maxLoadUnbalance 0.50;
+    nCellsBetweenLevels 3;
+    features
+    (
+    );
+    refinementSurfaces
+    {  
+        sphere
+        {
+            level (1 1 );
+        /*    regions
+            {
+                secondSolid
+                {
+                    level (5 5);
+                }
+            }
+        */
+            patchInfo
+            {
+                type wall;
+            }
+        }
+        
+    }
+
+    resolveFeatureAngle 30;
+    refinementRegions
+    {
+    /*	sphere
+    	{
+    		mode outside;
+    		levels ((1.0 2));
+    	}
+    */
+    }
+    
+    locationInMesh (0.11e-7 0 0);
+    allowFreeStandingZoneFaces true;
+}
+
+
+snapControls
+{
+    nSmoothPatch 5;
+    tolerance 4.0;
+    nSolveIter 10;
+    nRelaxIter 10;
+}
+
+addLayersControls
+{
+    relativeSizes false;
+    layers
+    {
+        sphere_region0
+        {
+            nSurfaceLayers 1;
+
+        }
+
+    }
+
+    expansionRatio 1.0;
+//    finalLayerThickness 1e-9;
+finalLayerThickness 0.015e-7;
+  //  finalLayerRatio 0.01;
+    minThickness 0.001e-7;
+    nGrow 0;
+    featureAngle 30;
+    nRelaxIter 10;
+    nSmoothSurfaceNormals 1;
+    nSmoothNormals 3;
+    nSmoothThickness 10;
+    maxFaceThicknessRatio 0.8;
+    maxThicknessToMedialRatio 0.8;
+    minMedianAxisAngle 40;
+    nBufferCellsNoExtrude 0;
+    nLayerIter 100;
+    nRelaxedIter 20;
+}
+
+meshQualityControls
+{
+    maxNonOrtho 65;
+    maxBoundarySkewness 20;
+    maxInternalSkewness 4;
+    maxConcave 80;
+    minVol 1e-250;
+    minTetQuality 1e-25;
+    minArea -1;
+    minTwist 0.05;
+    minDeterminant 0.001;
+    minFaceWeight 0.05;
+    minVolRatio 1e-1;
+    minTriangleTwist -1;
+
+    nSmoothScale 4;
+    errorReduction 0.75;
+
+    relaxed
+    {
+        maxNonOrtho 75;
+    }
+}
+
+debug 0;
+mergeTolerance 1e-7;
+
+// ************************************************************************* //

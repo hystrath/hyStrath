@@ -1,0 +1,106 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.x                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      pdProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Measurement Options
+// ~~~~~~~~~~~~~~~~~~~
+
+pdMeasurementOptions
+{
+	standardFields 		true; // switch - output standard openfoam fields
+	infoOutputFrequency 	   1; // frequency of system information in runtime log
+}
+
+
+// General Properties
+// ~~~~~~~~~~~~~~~~~~
+
+nEquivalentParticles            2;
+
+// Binary Collision Model
+// ~~~~~~~~~~~~~~~~~~~~~~
+
+BinaryCollisionModel            NoBinaryCollision;
+
+// Collision Partner Selection Model
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+collisionPartnerSelectionModel  noTimeCounter;
+
+// Averaging Method
+// ~~~~~~~~~~~~~~~~~~~~
+
+// First order particle weighting - Particle in Cell
+//AveragingMethod 	       	 Linear;
+
+// Zeroth order particle weighting - Particle in Volume
+AveragingMethod 	       	 Basic;
+
+// Electron Fluid Model
+// ~~~~~~~~~~~~~~~~~~~
+
+ElectronModel 			NoElectronModel;
+
+// Non-linear Boltzmann electron fluid
+/*ElectronModel 			Boltz;
+BoltzCoeffs
+{
+    n0				1.2951e14;
+    TeV 			1;
+    phi0 			0;
+    tol  			1e-3;
+    nCorr 			10;
+}*/
+
+// Molecular species
+// ~~~~~~~~~~~~~~~~~
+
+typeIdList                      (H e);
+
+moleculeProperties
+{
+    H
+    {
+        mass                                    1.67242702e-27;
+        Ze                                      1;      
+        diameter                                3.0e-10;   
+        rotationalDegreesOfFreedom              0;
+        vibrationalModes                        0;
+        omega                                   0.8;
+        alpha                                   0;        
+        characteristicVibrationalTemperature    0;
+        dissociationTemperature                 0;
+        charDissQuantumLevel                    0;
+        referenceTempForZref                    0;
+        Zref                                    0;
+    }
+    e
+    {
+        mass                                    9.10938291e-31;
+        Ze                                      -1;      
+        diameter                                3.0e-10;   
+        rotationalDegreesOfFreedom              0;
+        vibrationalModes                        0;
+        omega                                   0.8;
+        alpha                                   0;        
+        characteristicVibrationalTemperature    0;
+        dissociationTemperature                 0;
+        charDissQuantumLevel                    0;
+        referenceTempForZref                    0;
+        Zref                                    0;
+    }
+}
+// ************************************************************************* //

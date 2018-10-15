@@ -1,0 +1,117 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.0.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+
+
+
+
+
+   convertToMeters 1;
+
+   	
+	
+   	
+        
+   	
+   	
+   	 
+
+   	vertices
+   	(
+    		( 0.0 0.0 0.0) 	// Vertex a0 = 0 
+		( 6.283 0.0 0.0) // Vertex a1 = 1 
+		( 6.283 0.01 0.0) // Vertex a2 = 2 
+		( 0.0 0.01 0.0) // Vertex a3 = 3 
+ 		
+    		( 0.0 0.0 -0.01) 	// Vertex b0 = 4 
+		( 6.283 0.0 -0.01) // Vertex b1 = 5 
+		( 6.283 0.01 -0.01) // Vertex b2 = 6 
+		( 0.0 0.01 -0.01) // Vertex b3 = 7 
+	);
+
+   	blocks
+   	(
+				
+		hex (0 1 5 4 3 2 6 7) (256 1 1) simpleGrading (1 1 1) //0
+	);
+
+   edges
+   (
+   );
+
+boundary
+   (
+    	periodic_1
+        {
+	    type cyclic;
+	    neighbourPatch periodic_2;
+            faces
+            (
+		(0 4 7 3)
+	    );
+	}
+
+    	bottom
+        {
+            type empty;
+            faces
+            (
+		(0 3 2 1)
+	    );
+	}
+
+    	top
+        {
+            type empty;
+            faces
+            (
+		(4 5 6 7)
+	    );
+	}
+
+    	periodic_2
+        {
+	    type cyclic;
+	    neighbourPatch periodic_1;
+            faces
+            (
+		(1 5 6 2)
+	    );
+	}
+
+    	front
+        {
+            type empty;
+            faces
+            (
+	
+		(0 1 5 4)
+	    );
+	}
+    	back
+        {
+            type empty;
+            faces
+            (
+		(3 7 6 2)
+	    );
+	}
+);
+
+mergePatchPairs
+(
+);

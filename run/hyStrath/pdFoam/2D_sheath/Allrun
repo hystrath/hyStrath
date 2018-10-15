@@ -1,0 +1,26 @@
+#!/bin/sh
+cd ${0%/*} || exit 1    # run from this directory
+
+nProcs=1
+if [ $# -ne 0 ]
+  then nProcs=$1;
+fi
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+runApplication blockMesh
+runApplication pdInitialise
+
+# BC files (phiE in particular) are over-written during pdInitialise.
+# Store them in BC and copy them to 0 after intialisation.
+cp BC/* 0/
+
+if [ $nProcs -eq 1 ]
+  then runApplication pdFoam
+else
+  runApplication decomposePar -latestTime
+  runApplication mpirun -np $nProcs pdFoam -parallel
+  runApplication reconstructPar -latestTime
+fi  
+

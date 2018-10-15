@@ -1,0 +1,118 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.3                                   |
+|   \\  /    A nd           | Web:      http://www.openfoam.org               |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      boundariesDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+pdPatchBoundaries
+(
+     
+     boundary
+     {
+      
+        patchBoundaryProperties
+        {
+            patchName                            Inlet;
+        }
+     
+        boundaryModel      pdDeletionPatch;
+     
+        pdDeletionPatchProperties
+        {
+		allSpecies 			yes;
+        }
+     }
+
+     boundary
+     {
+      
+        patchBoundaryProperties
+        {
+            patchName                            Wall;
+        }
+     
+        boundaryModel      pdDeletionPatch;
+     
+        pdDeletionPatchProperties
+        {
+		allSpecies			yes;
+        }
+     }
+
+);
+
+pdCyclicBoundaries
+(
+     boundary
+     {
+        cyclicBoundaryProperties
+        {
+            patchName                            periodic_1;
+        }
+	
+	boundaryModel 		pdReflectiveParticleMembranePatch;
+	
+	pdReflectiveParticleMembranePatchProperties
+	{
+		reflectionProbability 		0;
+	}
+     }
+	
+     boundary
+     {
+        cyclicBoundaryProperties
+        {
+            patchName                            periodic_2;
+        }
+	
+	boundaryModel 		pdReflectiveParticleMembranePatch;
+	
+	pdReflectiveParticleMembranePatchProperties
+	{
+		reflectionProbability 		0;
+	}
+     }
+);
+
+pdGeneralBoundaries
+(
+     boundary
+     {
+      
+        generalBoundaryProperties
+        {
+            patchName                            Inlet;
+        }
+     
+        boundaryModel      pdFreeStreamInflowPatch;
+     
+        pdFreeStreamInflowPatchProperties
+        {
+		typeIds				(H e);		
+				
+		velocity 			(0.0 0.0 0.0);
+
+		translationalTemperature	1000;
+		rotationalTemperature		0.0;
+		vibrationalTemperature 		0.0;
+
+		numberDensities
+		{
+		        H     			1e12;
+		        e      			1e12;
+	        }
+        }
+     }
+);
+// ************************************************************************* //

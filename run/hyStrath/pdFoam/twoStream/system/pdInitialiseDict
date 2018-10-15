@@ -1,0 +1,59 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.x                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      pdInitialiseDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+configurations
+(
+
+	configuration
+	{
+		type 			pdInitialiseOnLine;
+
+		numberOfPDParticlesOnLine
+		{
+		    e_1                     4096;
+		};
+
+		translationalTemperature 	0;
+		rotationalTemperature		0;
+		vibrationalTemperature		0;
+
+		velocity     	(1 0 0);
+		startPosition 	(0 0.005 -0.005);
+		endPosition 	(6.283 0.005 -0.005);
+	}
+	configuration
+	{
+
+		type 			pdInitialiseOnLine;
+
+		numberOfPDParticlesOnLine
+		{
+		    e_2                     4096;
+		};
+
+		translationalTemperature 	0;
+		rotationalTemperature		0;
+		vibrationalTemperature		0;
+
+		velocity     	(-1 0 0);
+		
+		startPosition 	(0 0.005 -0.005);
+		endPosition 	(6.283 0.005 -0.005);
+	}
+);
+
+// ************************************************************************* //

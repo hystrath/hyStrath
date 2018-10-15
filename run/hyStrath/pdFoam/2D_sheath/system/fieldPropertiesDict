@@ -1,0 +1,73 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.7.1                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fieldPropertiesDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+pdFields
+(
+
+     field
+     {
+         fieldModel          	pdVolFields;
+ 
+         timeProperties
+         {
+         	timeOption          write;
+ 	    	resetAtOutput		on;
+         }
+ 
+         pdVolFieldsProperties
+         {
+             fieldName               H;
+             typeIds                 (H);
+         }
+     }
+     field
+     {
+         fieldModel          	pdVolFields;
+ 
+         timeProperties
+         {
+         	timeOption          write;
+ 	    	resetAtOutput		on;
+         }
+ 
+         pdVolFieldsProperties
+         {
+             fieldName               e;
+             typeIds                 (e);
+         }
+     }
+     field
+     {
+         fieldModel          	pdVolFields;
+ 
+         timeProperties
+         {
+         	timeOption          write;
+ 	    	resetAtOutput		on;
+         }
+ 
+         pdVolFieldsProperties
+         {
+             fieldName               mixture;
+             typeIds                 (H e);
+         }
+     }
+
+
+);
+// ************************************************************************* //

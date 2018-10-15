@@ -1,0 +1,70 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1706                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       polyBoundaryMesh;
+    location    "constant/polyMesh";
+    object      boundary;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+6
+(
+    periodic_1
+    {
+        type            cyclic;
+        inGroups        1(cyclic);
+        nFaces          1;
+        startFace       255;
+        matchTolerance  0.0001;
+        transform       unknown;
+        neighbourPatch  periodic_2;
+    }
+    bottom
+    {
+        type            empty;
+        inGroups        1(empty);
+        nFaces          256;
+        startFace       256;
+    }
+    top
+    {
+        type            empty;
+        inGroups        1(empty);
+        nFaces          256;
+        startFace       512;
+    }
+    periodic_2
+    {
+        type            cyclic;
+        inGroups        1(cyclic);
+        nFaces          1;
+        startFace       768;
+        matchTolerance  0.0001;
+        transform       unknown;
+        neighbourPatch  periodic_1;
+    }
+    front
+    {
+        type            empty;
+        inGroups        1(empty);
+        nFaces          256;
+        startFace       769;
+    }
+    back
+    {
+        type            empty;
+        inGroups        1(empty);
+        nFaces          256;
+        startFace       1025;
+    }
+)
+
+// ************************************************************************* //
