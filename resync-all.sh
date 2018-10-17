@@ -9,3 +9,4 @@ fi
 
 ./resync-CFD.sh $nProcs
 ./resync-DSMC.sh $nProcs
+./resync-hybridPICDSMC.sh $nProcs

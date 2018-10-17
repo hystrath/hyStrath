@@ -8,6 +8,7 @@
 + *hy2Foam* CFD solver (hypersonic reacting flows)  
 + **Coming soon: _ARC_**, a low computationally demanding 3-D Ablative Response Code  
 + *dsmcFoam+* code (direct simulation Monte Carlo)  
++ *pdFoam* code, a hybrid PIC-DSMC solver  
 + **Coming soon: _hyperFoam_**, a hybrid CFD-DSMC solver   
 
 #### Please visit the [_hyStrath_ Wiki page](https://github.com/vincentcasseau/hyStrath/wiki)  

@@ -9,3 +9,4 @@ fi
 
 ./install-CFD.sh $nProcs
 ./install-DSMC.sh $nProcs
+./install-hybridPICDSMC.sh $nProcs
