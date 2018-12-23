@@ -39,15 +39,15 @@ SourceFiles
 #ifndef dsmcReaction_H
 #define dsmcReaction_H
 
+#include <numeric>
+
 #include "IOdictionary.H"
-// #include "Time.H"
 #include "autoPtr.H"
 #include "runTimeSelectionTables.H"
 #include "vector.H"
 #include "volFields.H"
 #include "Random.H"
 #include "dsmcParcel.H"
-// #include "timeData.H"
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -66,18 +66,38 @@ protected:
 
     // Protected data
 
-
         const fvMesh& mesh_;
 
         dsmcCloud& cloud_;
 
-        label nTotReactions_;
-
-        label nReactionsPerTimeStep_;
-
         bool reactWithLists_;
+        
+        //- Name of the reaction
+        word reactionName_;
+        
+        //- Ids of the reactants
+        labelList reactantIds_;
+        
+        //- Types of the reactants
+        labelList reactantTypes_;
+        
+        //- Switch to allow the chemical reaction to take place (default: true)
+        //  Set to False to measure reaction rates in heat bath simulations 
+        bool allowSplitting_;
+        
+        //- Switch to write the reaction rate in the log file (default: false)
+        bool writeRatesToTerminal_;
+        
+        //- Switch to decide whether the collision is performed within the 
+        //  reaction class or in the appropriate binary collision class
+        bool relax_;
+        
 
-      // Private Member Functions
+    // Private Member Functions
+    
+        //-
+        virtual void setProperties();
+
 
 
 public:
@@ -128,35 +148,35 @@ public:
 
         virtual void initialConfiguration() = 0;
 
-        virtual void reaction
-        (
-            dsmcParcel& p,
-            dsmcParcel& q
-        ) = 0;
+        virtual void reaction(dsmcParcel& p, dsmcParcel& q) = 0;
 
         virtual void reaction
         (
             dsmcParcel& p,
             dsmcParcel& q,
             const DynamicList<label>& candidateList,
-            const List<DynamicList<label> >& candidateSubList,
+            const List<DynamicList<label>>& candidateSubList,
             const label& candidateP,
             const List<label>& whichSubCell
         ) = 0;
+        
+        const bool& relax() const;
 
-        virtual const bool& relax() const = 0;
-
-        virtual bool tryReactMolecules(const label& typeIdP, const label& typeIdQ) = 0;
+        virtual bool tryReactMolecules
+        (
+            const label& typeIdP,
+            const label& typeIdQ
+        ) = 0;
 
         virtual void outputResults(const label& counterIndex) = 0;
+        
+        labelList decreasing_sort_indices(const scalarList &v);
 
-        // Access
+      // Access
+      
         const dsmcCloud& cloud() const;
 
-        const label& nTotReactions() const;
-
-        const label& nReactionsPerTimeStep() const;
-        label& nReactionsPerTimeStep();
+        virtual inline label nReactionsPerTimeStep() const = 0;
 
         const bool& reactWithLists() const;
 

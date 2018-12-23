@@ -43,14 +43,13 @@ namespace Foam
                       Class LarsenBorgnakkeVariableHardSphere Declaration
 \*---------------------------------------------------------------------------*/
 
-//template<class CloudType>
 class LarsenBorgnakkeVariableHardSphere
 :
     public BinaryCollisionModel
 {
     // Private data
     
-    //- The coefficients dictionary
+        //- The coefficients dictionary
         const dictionary coeffDict_;
 
         //- Reference temperature
@@ -67,6 +66,7 @@ class LarsenBorgnakkeVariableHardSphere
         
         //- Electronic relaxation collision number
         const scalar electronicRelaxationCollisionNumber_;
+
 
     // Private Member Functions
 
@@ -93,32 +93,41 @@ public:
 
     // Member Functions
     
-    //- Return the coefficients dictionary
-        const dictionary& coeffDict() const;
-
         //- Flag to indicate whether model activates collision model
-        bool active() const;
+        virtual bool active() const;
         
         //- Return the vibrational relaxation number
-        const scalar& vibrationalRelaxationNumber() const
+        virtual const scalar& vibrationalRelaxationNumber() const
         {
             return vibrationalRelaxationCollisionNumber_;
         }
 
-        //- Return the collision cross section * relative velocity product
-        scalar sigmaTcR
+        //- Return the collision cross section times relative velocity product
+        virtual scalar sigmaTcR
         (
             const dsmcParcel& pP,
             const dsmcParcel& pQ
         ) const;
 
         //- Apply collision
-        void collide
+        virtual void collide
         (
             dsmcParcel& pP,
             dsmcParcel& pQ,
             label& cellI
         );
+        
+        //- Apply LB relaxation
+        virtual void relax
+        (
+            dsmcParcel& p,
+            scalar& translationalEnergy,
+            const scalar omegaPQ,
+            const bool postReaction = false
+        );
+        
+        //- Return the coefficients dictionary
+        virtual const dictionary& coeffDict() const;
 };
 
 

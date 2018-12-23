@@ -149,7 +149,7 @@ void dsmcMeshFillHybridSubrelax::setInitialConfiguration()
         scalar rotDoF =
             cloud_.constProps(moleculeI).rotationalDegreesOfFreedom();
         scalar vibDoF =
-            cloud_.constProps(moleculeI).vibrationalDegreesOfFreedom();
+            cloud_.constProps(moleculeI).nVibrationalModes();
         scalar omega =
             cloud_.constProps(moleculeI).omega();
 //        dimensionedScalar d = cloud_.constProps(moleculeI).d();

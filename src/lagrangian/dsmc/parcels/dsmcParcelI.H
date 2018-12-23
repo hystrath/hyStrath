@@ -23,7 +23,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "mathematicalConstants.H"
+#include "constants.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
@@ -39,101 +39,178 @@ inline Foam::dsmcParcel::constantProperties::constantProperties
     const dictionary& dict
 )
 :
+    type_(-1),
     mass_(readScalar(dict.lookup("mass"))),
     d_(readScalar(dict.lookup("diameter"))),
-    rotationalDegreesOfFreedom_(dict.lookupOrDefault<scalar>("rotationalDegreesOfFreedom", 0)),
-    vibrationalDegreesOfFreedom_(dict.lookupOrDefault<scalar>("vibrationalModes", 0)),
+    rotationalDegreesOfFreedom_
+    (
+        dict.lookupOrDefault<scalar>("rotationalDegreesOfFreedom", 0)
+    ),
+    nVibrationalModes_
+    (
+        dict.lookupOrDefault<scalar>("nVibrationalModes", 0)
+    ),
+    vibrationalDegeneracyList_
+    (
+        dict.lookupOrDefault<labelList>
+        (
+            "vibrationalDegeneracyList",
+            labelList(nVibrationalModes_, 1)
+        )
+    ),
     omega_(readScalar(dict.lookup("omega"))),
     alpha_(dict.lookupOrDefault<scalar>("alpha", 1.0)),
-    thetaV_(dict.lookupOrDefault<scalarList>("characteristicVibrationalTemperature", scalarList())),
-    thetaD_(dict.lookupOrDefault<scalarList>("dissociationTemperature", scalarList())),
+    thetaV_
+    (
+        dict.lookupOrDefault<scalarList>
+        (
+            "characteristicVibrationalTemperature",
+            scalarList()
+        )
+    ),
+    thetaD_
+    (
+        dict.lookupOrDefault<scalarList>
+        (
+            "dissociationTemperature",
+            scalarList()
+        )
+    ),
     Zref_(dict.lookupOrDefault<scalarList>("Zref", scalarList())),
-    TrefZv_(dict.lookupOrDefault<scalarList>("referenceTempForZref", scalarList())),
-    charDissQuantumLevel_(dict.lookupOrDefault<labelList>("charDissQuantumLevel", labelList())),
-    ionisationTemperature_(dict.lookupOrDefault<scalar>("ionisationTemperature", 1e10)),
-    numberOfElectronicLevels_(dict.lookupOrDefault<label>("numberOfElectronicLevels", 1)),
+    TrefZv_
+    (
+        dict.lookupOrDefault<scalarList>("referenceTempForZref", scalarList())
+    ),
+    charDissQuantumLevel_(),
+    ionisationTemperature_
+    (
+        dict.lookupOrDefault<scalar>("ionisationTemperature", 1e10)
+    ),
     charge_(dict.lookupOrDefault<label>("charge", 0)),
-    electronicEnergyList_(dict.lookupOrDefault<scalarList>("electronicEnergyList", scalarList(1, 0.0))),
-    degeneracyList_(dict.lookupOrDefault<labelList>("degeneracyList", labelList(1, 1.0)))
+    nElectronicLevels_(dict.lookupOrDefault<label>("nElectronicLevels", 1)),
+    electronicEnergyList_
+    (
+        dict.lookupOrDefault<scalarList>
+        (
+            "electronicEnergyList",
+            scalarList(1, 0.0)
+        )
+    ),
+    electronicDegeneracyList_
+    (
+        dict.lookupOrDefault<labelList>
+        (
+            "electronicDegeneracyList",
+            labelList(1, 1)
+        )
+    )
 {
-    if(thetaV_.size() != vibrationalDegreesOfFreedom_)
+    if (thetaV_.size() != nVibrationalModes_)
     {
         FatalErrorIn("dsmcParcel::constantProperties::constantProperties")
             << "Number of characteristic vibrational temperatures is "
-            << thetaV_.size()
-            << ", instead of " 
-            << vibrationalDegreesOfFreedom_ << nl 
+            << thetaV_.size() << ", instead of " << nVibrationalModes_ << nl 
             << exit(FatalError);
     }
     
-    if(thetaD_.size() != vibrationalDegreesOfFreedom_)
+    if (thetaD_.size() != nVibrationalModes_)
     {
         FatalErrorIn("dsmcParcel::constantProperties::constantProperties")
             << "Number of characteristic dissociation temperatures is"
-            << thetaD_.size()
-            << ", instead of "
-            << vibrationalDegreesOfFreedom_ << nl 
+            << thetaD_.size() << ", instead of " << nVibrationalModes_ << nl 
             << exit(FatalError);
     }
     
-    if(Zref_.size() != vibrationalDegreesOfFreedom_)
+    if (Zref_.size() != nVibrationalModes_)
     {
         FatalErrorIn("dsmcParcel::constantProperties::constantProperties")
             << "Number of reference vibrational relaxation numbers is"
-            << Zref_.size()
-            << ", instead of " 
-            << vibrationalDegreesOfFreedom_ << nl 
+            << Zref_.size() << ", instead of " << nVibrationalModes_ << nl 
             << exit(FatalError);
     }
     
-    if(TrefZv_.size() != vibrationalDegreesOfFreedom_)
+    if (TrefZv_.size() != nVibrationalModes_)
     {
         FatalErrorIn("dsmcParcel::constantProperties::constantProperties")
             << "Number of reference temperature for vibrational relaxation is"
-            << TrefZv_.size()
-            << ", instead of " 
-            << vibrationalDegreesOfFreedom_ << nl 
+            << TrefZv_.size() << ", instead of " << nVibrationalModes_ << nl 
             << exit(FatalError);
     }
     
-    if(charDissQuantumLevel_.size() != vibrationalDegreesOfFreedom_)
-    {
-        FatalErrorIn("dsmcParcel::constantProperties::constantProperties")
-            << "Number of characteristic dissociation quantum levels is"
-            << charDissQuantumLevel_.size()
-            << ", instead of " 
-            << vibrationalDegreesOfFreedom_ << nl 
-            << exit(FatalError);
-    }
-    
-    if(degeneracyList_.size() != numberOfElectronicLevels_)
+    if (electronicDegeneracyList_.size() != nElectronicLevels_)
     {
         FatalErrorIn("dsmcParcel::constantProperties::constantProperties")
             << "Number of degeneracy levels should be "
-            << numberOfElectronicLevels_
-            << ", instead of " 
-            << degeneracyList_.size() << nl 
+            << nElectronicLevels_ << ", instead of " 
+            << electronicDegeneracyList_.size() << nl 
             << exit(FatalError);
     }
     
-    if(electronicEnergyList_.size() != numberOfElectronicLevels_)
+    if (electronicEnergyList_.size() != nElectronicLevels_)
     {
         FatalErrorIn("dsmcParcel::constantProperties::constantProperties")
             << "Number of electronic energy levels should be "
-            << numberOfElectronicLevels_
-            << ", instead of " 
+            << nElectronicLevels_ << ", instead of " 
             << electronicEnergyList_.size() << nl 
             << exit(FatalError);
     }
     
-    if(charge_ > 1 || charge_ < -1)
+    if (charge_ < -1 || charge_ > 1)
     {
         FatalErrorIn("dsmcParcel::constantProperties::constantProperties")
             << "Charge value should be 0 for neutrals, "
-            << "1 for ions, or -1 for electrons"
-            << ", instead of " 
+            << "1 for ions, or -1 for electrons" << ", instead of " 
             << charge_ << nl 
             << exit(FatalError);
+    }
+    
+    charDissQuantumLevel_.setSize(nVibrationalModes_, 0);
+    forAll(charDissQuantumLevel_, mode)
+    {
+        charDissQuantumLevel_[mode] = thetaD_[mode]/thetaV_[mode];
+    }
+    
+    //- Finding the type of the particle
+    if (charge_ == -1)
+    {
+        //- Electron
+        type_ = 0;
+    }
+    else if (charge_ == 1)
+    {
+        if (nVibrationalModes_ == 0)
+        {
+            //- Ionised atom
+            type_ = 11;
+        }
+        else if (nVibrationalModes_ == 1)
+        {
+            //- Ionised diatomic molecule
+            type_ = 21;
+        }
+        else
+        {
+            //- Ionised polyatomic molecule
+            type_ = 31;
+        }
+    }
+    else
+    {
+        if (nVibrationalModes_ == 0)
+        {
+            //- Neutral atom
+            type_ = 10;
+        }
+        else if (nVibrationalModes_ == 1)
+        {
+            //- Neutral diatomic molecule
+            type_ = 20;
+        }
+        else
+        {
+            //- Neutral polyatomic molecule
+            type_ = 30;
+        }
     }
 }
 
@@ -172,6 +249,12 @@ inline Foam::dsmcParcel::dsmcParcel
 
 // * * * * * * * * * constantProperties Member Functions * * * * * * * * * * //
 
+inline Foam::label Foam::dsmcParcel::constantProperties::type() const
+{
+    return type_;
+}
+
+
 inline Foam::scalar Foam::dsmcParcel::constantProperties::mass() const
 {
     return mass_;
@@ -198,10 +281,27 @@ Foam::dsmcParcel::constantProperties::rotationalDegreesOfFreedom() const
 }
 
 
-inline Foam::scalar 
-Foam::dsmcParcel::constantProperties::vibrationalDegreesOfFreedom() const
+inline Foam::label
+Foam::dsmcParcel::constantProperties::nVibrationalModes() const
 {
-    return vibrationalDegreesOfFreedom_;
+    return nVibrationalModes_;
+}
+
+
+inline Foam::label
+Foam::dsmcParcel::constantProperties::vibrationalDegeneracy_m
+(
+    const label mode
+) const
+{
+    return vibrationalDegeneracyList_[mode];
+}
+
+
+inline Foam::labelList
+Foam::dsmcParcel::constantProperties::vibrationalDegeneracyList() const
+{
+    return vibrationalDegeneracyList_;
 }
 
 
@@ -217,9 +317,27 @@ inline Foam::scalar Foam::dsmcParcel::constantProperties::alpha() const
 }
 
 
+inline Foam::scalar Foam::dsmcParcel::constantProperties::thetaV_m
+(
+    const label mode
+) const
+{
+    return thetaV_[mode];
+}
+
+
 inline Foam::scalarList Foam::dsmcParcel::constantProperties::thetaV() const
 {
     return thetaV_;
+}
+
+
+inline Foam::scalar Foam::dsmcParcel::constantProperties::thetaD_m
+(
+    const label mode
+) const
+{
+    return thetaD_[mode];
 }
 
 
@@ -229,9 +347,27 @@ inline Foam::scalarList Foam::dsmcParcel::constantProperties::thetaD() const
 }
 
 
+inline Foam::scalar Foam::dsmcParcel::constantProperties::Zref_m
+(
+    const label mode
+) const
+{
+    return Zref_[mode];
+}
+
+
 inline Foam::scalarList Foam::dsmcParcel::constantProperties::Zref() const
 {
     return Zref_;
+}
+
+
+inline Foam::scalar Foam::dsmcParcel::constantProperties::TrefZv_m
+(
+    const label mode
+) const
+{
+    return TrefZv_[mode];
 }
 
 
@@ -241,21 +377,65 @@ inline Foam::scalarList Foam::dsmcParcel::constantProperties::TrefZv() const
 }
 
 
-inline Foam::labelList Foam::dsmcParcel::constantProperties::charDissQuantumLevel() const
+inline Foam::label Foam::dsmcParcel::constantProperties::charDissQuantumLevel_m
+(
+    const label mode
+) const
+{
+    return charDissQuantumLevel_[mode];
+}
+
+
+inline Foam::labelList
+Foam::dsmcParcel::constantProperties::charDissQuantumLevel() const
 {
     return charDissQuantumLevel_;
 }
 
 
-inline Foam::scalar Foam::dsmcParcel::constantProperties::ionisationTemperature() const
+inline Foam::scalar
+Foam::dsmcParcel::constantProperties::eVib_m
+(
+    const label mode,
+    const label vibLevel
+) const
 {
-    return ionisationTemperature_;
+    return vibLevel*constant::physicoChemical::k.value()*thetaV_m(mode)
+        *vibrationalDegeneracy_m(mode);
 }
 
 
-inline Foam::label Foam::dsmcParcel::constantProperties::numberOfElectronicLevels() const
+inline Foam::scalar 
+Foam::dsmcParcel::constantProperties::eVib_tot(const labelList& vibLevel) const
 {
-    return numberOfElectronicLevels_;
+    scalar vibEnergy = 0.0;
+    
+    forAll(vibLevel, i)
+    {
+        vibEnergy += eVib_m(i, vibLevel[i]);
+    }
+    
+    return vibEnergy;
+}
+
+
+inline Foam::scalarList 
+Foam::dsmcParcel::constantProperties::eVib(const labelList& vibLevel) const
+{
+    scalarList vibEnergy(nVibrationalModes_, 0.0);
+    
+    forAll(vibEnergy, i)
+    {
+        vibEnergy[i] = eVib_m(i, vibLevel[i]);
+    }
+    
+    return vibEnergy;
+}
+
+inline Foam::scalar
+Foam::dsmcParcel::constantProperties::ionisationTemperature() const
+{
+    return ionisationTemperature_;
 }
 
 
@@ -265,28 +445,28 @@ inline Foam::label Foam::dsmcParcel::constantProperties::charge() const
 }
 
 
-inline Foam::scalarList Foam::dsmcParcel::constantProperties::electronicEnergyList() const
+inline Foam::label
+Foam::dsmcParcel::constantProperties::nElectronicLevels() const
+{
+    return nElectronicLevels_;
+}
+
+
+inline Foam::scalarList
+Foam::dsmcParcel::constantProperties::electronicEnergyList() const
 {
     return electronicEnergyList_;
 }
 
 
-inline Foam::labelList Foam::dsmcParcel::constantProperties::degeneracyList() const
+inline Foam::labelList
+Foam::dsmcParcel::constantProperties::electronicDegeneracyList() const
 {
-    return degeneracyList_;
+    return electronicDegeneracyList_;
 }
 
 
-// * * * * * * * * * * * trackData Member Functions  * * * * * * * * * * * * //
-
-//template <class ParcelType>
-// inline Foam::dsmcCloud& Foam::dsmcParcel::trackData::cloud()
-// {
-//     return cloud_;
-// }
-
-
-// * * * * * * * * * * DsmcParcel Member Functions  * * * * * * * * * * //
+// * * * * * * * * * * dsmcParcel Member Functions  * * * * * * * * * * //
 
 inline const Foam::label& Foam::dsmcParcel::typeId() const
 {
@@ -333,7 +513,7 @@ inline const Foam::dsmcParcel::TrackedParcel& Foam::dsmcParcel::tracked() const
 
 inline bool Foam::dsmcParcel::isTracked() const
 {
-    /*if(tracked_)
+    /*if (tracked_)
     {
         return true;
     } 
@@ -359,7 +539,7 @@ inline const Foam::dsmcParcel::StuckParcel& Foam::dsmcParcel::stuck() const
 
 inline bool Foam::dsmcParcel::isStuck() const
 {
-    if(stuck_)
+    if (stuck_)
     {
         return true;
     }
@@ -370,7 +550,7 @@ inline bool Foam::dsmcParcel::isStuck() const
 
 inline bool Foam::dsmcParcel::isFree() const
 {
-    if(stuck_)
+    if (stuck_)
     {
         return false;
     }

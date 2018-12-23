@@ -135,7 +135,7 @@ dsmcVolFieldsFromFields::dsmcVolFieldsFromFields
                 scalarList EVib
                 (
                     cloud_.constProps(typeIds_[iD])
-                        .vibrationalDegreesOfFreedom()
+                        .nVibrationalModes()
                 );
                     
                 forAll(mesh_.cells(), cell)
@@ -197,7 +197,7 @@ void dsmcVolFieldsFromFields::calculateField()
             scalarList EVib
             (
                 cloud_.constProps(typeIds_[iD])
-                    .vibrationalDegreesOfFreedom()
+                    .nVibrationalModes()
             );
             
             scalar vibEn = 0.0;

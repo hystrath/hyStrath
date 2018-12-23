@@ -297,7 +297,7 @@ void dsmcPatchBoundary::measurePropertiesBeforeControl(dsmcParcel& p)
               .rhoNIntBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfADt;
         }
 
-        if(constProps.numberOfElectronicLevels() > 1)
+        if(constProps.nElectronicLevels() > 1)
         {
            cloud_.boundaryFluxMeasurements()
               .rhoNElecBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfADt; 
@@ -326,19 +326,18 @@ void dsmcPatchBoundary::measurePropertiesBeforeControl(dsmcParcel& p)
             .rotationalDofBF()[p.typeId()][wppIndex][wppLocalFace] += 
                 constProps.rotationalDegreesOfFreedom()*invMagUnfADt;
 
+        const scalar EVibP_tot = constProps.eVib_tot(p.vibLevel());
+        
+        cloud_.boundaryFluxMeasurements()
+            .vibrationalEBF()[p.typeId()][wppIndex][wppLocalFace] +=
+                EVibP_tot*invMagUnfADt;
+                
         forAll(p.vibLevel(), mode)
         {
             cloud_.boundaryFluxMeasurements()
-                .vibrationalEBF()[p.typeId()][wppIndex][wppLocalFace] += 
-                    p.vibLevel()[mode]*constProps.thetaV()[mode]
-                  * physicoChemical::k.value()
-                  * invMagUnfADt;
-                  
-            cloud_.boundaryFluxMeasurements()
                 .evmsBF()[p.typeId()][mode][wppIndex][wppLocalFace] += 
-                    p.vibLevel()[mode]*constProps.thetaV()[mode]
-                  * physicoChemical::k.value()
-                  * invMagUnfADt;      
+                    constProps.eVib_m(mode, p.vibLevel()[mode])
+                   *invMagUnfADt;      
         }
 
         cloud_.boundaryFluxMeasurements()
@@ -347,14 +346,8 @@ void dsmcPatchBoundary::measurePropertiesBeforeControl(dsmcParcel& p)
               * invMagUnfADt;
 
         //- pre-interaction energy
-        preIE_ = 0.5*m*(p.U() & p.U()) + p.ERot() 
+        preIE_ = 0.5*m*(p.U() & p.U()) + p.ERot() + EVibP_tot
             + constProps.electronicEnergyList()[p.ELevel()];
-
-        forAll(p.vibLevel(), mode)
-        {
-           preIE_ += p.vibLevel()[mode]*constProps.thetaV()[mode]
-              *physicoChemical::k.value();
-        }
 
         //- pre-interaction momentum
         preIMom_ = m*p.U();
@@ -401,7 +394,7 @@ void dsmcPatchBoundary::measurePropertiesAfterControl
               .rhoNIntBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfADt; 
         }
         
-        if(constProps.numberOfElectronicLevels() > 1)
+        if(constProps.nElectronicLevels() > 1)
         {
            cloud_.boundaryFluxMeasurements()
               .rhoNElecBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfADt;
@@ -430,19 +423,18 @@ void dsmcPatchBoundary::measurePropertiesAfterControl
             .rotationalDofBF()[p.typeId()][wppIndex][wppLocalFace] += 
                 constProps.rotationalDegreesOfFreedom()*invMagUnfADt;
         
+        const scalar EVibP_tot = constProps.eVib_tot(p.vibLevel());
+        
+        cloud_.boundaryFluxMeasurements()
+            .vibrationalEBF()[p.typeId()][wppIndex][wppLocalFace] += 
+                EVibP_tot*invMagUnfADt;
+                    
         forAll(p.vibLevel(), mode)
         {
             cloud_.boundaryFluxMeasurements()
-                .vibrationalEBF()[p.typeId()][wppIndex][wppLocalFace] += 
-                    p.vibLevel()[mode]*constProps.thetaV()[mode]
-                  * physicoChemical::k.value()
-                  * invMagUnfADt;
-                  
-            cloud_.boundaryFluxMeasurements()
                 .evmsBF()[p.typeId()][mode][wppIndex][wppLocalFace] += 
-                    p.vibLevel()[mode]*constProps.thetaV()[mode]
-                  * physicoChemical::k.value()
-                  * invMagUnfADt;       
+                    constProps.eVib_m(mode, p.vibLevel()[mode])
+                   *invMagUnfADt;       
         }
         
         cloud_.boundaryFluxMeasurements()
@@ -450,14 +442,8 @@ void dsmcPatchBoundary::measurePropertiesAfterControl
                 constProps.electronicEnergyList()[p.ELevel()]*invMagUnfADt;
         
         //- post-interaction energy
-        scalar postIE = 0.5*m*(p.U() & p.U()) + p.ERot() 
+        scalar postIE = 0.5*m*(p.U() & p.U()) + p.ERot() + EVibP_tot
             + constProps.electronicEnergyList()[p.ELevel()];
-        
-        forAll(p.vibLevel(), mode)
-        {
-           postIE += p.vibLevel()[mode]*constProps.thetaV()[mode]
-              *physicoChemical::k.value();
-        }
         
         //- post-interaction momentum
         const vector& postIMom = m*p.U();

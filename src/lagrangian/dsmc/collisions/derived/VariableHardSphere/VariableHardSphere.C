@@ -29,16 +29,22 @@ License
 
 using namespace Foam::constant::mathematical;
 
-// * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
 {
     defineTypeNameAndDebug(VariableHardSphere, 0);
-    addToRunTimeSelectionTable(BinaryCollisionModel, VariableHardSphere, dictionary);
+    addToRunTimeSelectionTable
+    (
+        BinaryCollisionModel,
+        VariableHardSphere,
+        dictionary
+    );
 };
 
 
+// * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 Foam::VariableHardSphere::VariableHardSphere
 (
@@ -54,19 +60,16 @@ Foam::VariableHardSphere::VariableHardSphere
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
-
 Foam::VariableHardSphere::~VariableHardSphere()
 {}
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-
 bool Foam::VariableHardSphere::active() const
 {
     return true;
 }
-
 
 
 Foam::scalar Foam::VariableHardSphere::sigmaTcR
@@ -177,26 +180,39 @@ void Foam::VariableHardSphere::collide
     //- III molecule when it collides with either class II or class III
     //- molecules.
     
-    if(classificationP == 0 && classificationQ == 1)
+    if (classificationP == 0 && classificationQ == 1)
     {
         pP.classification() = 2;
     }
     
-    if(classificationQ == 0 && classificationP == 1)
+    if (classificationQ == 0 && classificationP == 1)
     {
         pQ.classification() = 2;
     }
     
-    if(classificationP == 0 && classificationQ == 2)
+    if (classificationP == 0 && classificationQ == 2)
     {
         pP.classification() = 2;
     }
     
-    if(classificationQ == 0 && classificationP == 2)
+    if (classificationQ == 0 && classificationP == 2)
     {
         pQ.classification() = 2;
     }
 }
+
+
+void Foam::VariableHardSphere::relax
+(
+    dsmcParcel& p,
+    scalar& translationalEnergy,
+    const scalar omegaPQ,
+    const bool postReaction 
+)
+{
+    NotImplemented
+}
+
 
 const Foam::dictionary& Foam::VariableHardSphere::coeffDict() const
 {

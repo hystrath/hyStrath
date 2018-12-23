@@ -62,23 +62,26 @@ class dsmcReactions
 
     // Private data
 
-        //- The entire dictionary (containing multiple subDictionaries)
-
         Time& time_;
-
+        
+        //- The entire dictionary (containing multiple subDictionaries)
         IOdictionary chemReactDict_;
 
-        //- number of dsmcReactions
+        //- Number of dsmcReactions
         label nReactions_;
 
         PtrList<entry> reactionsList_;
         List<word> reactionNames_;
         List<label> reactionIds_;
-        List< autoPtr<dsmcReaction> > reactions_;
+        List< autoPtr<dsmcReaction>> reactions_;
 
-        // given two pair typeIds, one is returned the modelId number in the reactions_ data member
-        List< List<label> > pairAddressing_;
-
+        //- Symmetric label matrix
+        //  Return the reaction class corresponding to a given pair of typeIds
+        //  if there is one
+        List<List<label>> pairAddressing_;
+        
+        //- Label to count the number of time-steps
+        //  Used when printing the reaction rates
         label counter_;
 
 public:
@@ -101,27 +104,30 @@ public:
         );
 
 
+    // Destructor
+    
         ~dsmcReactions();
+
 
     // Member Functions
 
-        //- initial configuration
-        void initialConfiguration();
+          //- Initial configuration
+          void initialConfiguration();
+          
+          //- Printing reaction info
+          void outputData();
 
-        void outputData();
+      // Access
 
-        // Access
+          inline label returnModelId(dsmcParcel& p, dsmcParcel& q);
 
-            inline label returnModelId(dsmcParcel& p, dsmcParcel& q);
+          inline List<autoPtr<dsmcReaction>>& reactions();
+          inline const List<autoPtr<dsmcReaction>>& reactions() const;
 
-            inline List< autoPtr<dsmcReaction> >& reactions();
-            inline const List< autoPtr<dsmcReaction> >& reactions() const;
-
-            inline const List< List<label> >& pairModelAddressing() const;
-            
-            //- Return const access to the number of reactions
-            inline const label& nReactions() const; 
-    
+          inline const List<List<label>>& pairModelAddressing() const;
+          
+          //- Return const access to the number of reactions
+          inline const label& nReactions() const; 
 };
 
 

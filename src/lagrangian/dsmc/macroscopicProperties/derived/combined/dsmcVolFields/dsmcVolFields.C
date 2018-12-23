@@ -644,6 +644,7 @@ dsmcVolFields::dsmcVolFields
 dsmcVolFields::~dsmcVolFields()
 {}
 
+
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 void dsmcVolFields::readIn()
@@ -674,6 +675,7 @@ void dsmcVolFields::readIn()
     
     dict.readIfPresent("nTimeSteps", nTimeSteps_);
 }
+
 
 void dsmcVolFields::writeOut()
 {
@@ -712,6 +714,7 @@ void dsmcVolFields::writeOut()
         dict.regIOobject::writeObject(fmt, ver, cmp);
     }
 }
+
 
 //- Initial configuration
 void dsmcVolFields::createField()
@@ -752,7 +755,7 @@ void dsmcVolFields::createField()
 
         typeIds_[i] = typeId;
     }
-
+    
     vibT_.setSize(typeIds_.size());
     nGroundElectronicLevel_.setSize(typeIds_.size());
     nFirstElectronicLevel_.setSize(typeIds_.size());
@@ -782,7 +785,7 @@ void dsmcVolFields::createField()
 
         vibrationalETotal_[i].setSize
         (
-            cloud_.constProps(typeIds_[i]).vibrationalDegreesOfFreedom()
+            cloud_.constProps(typeIds_[i]).nVibrationalModes()
         );
         
         forAll(vibrationalETotal_[i], j)
@@ -963,31 +966,23 @@ void dsmcVolFields::calculateField()
 
                 if (iD != -1 && p.isFree())
                 {
+                    const dsmcParcel::constantProperties& cP = cloud_.constProps(p.typeId());
+                    
                     const label cell = p.cell();
                     const scalar nParticles = cloud_.nParticles(cell);
-                    const scalar mass = cloud_.constProps(p.typeId()).mass();
+                    const scalar mass = cP.mass();
                     const scalar massBySqMagU = mass*(p.U() & p.U());
-                    const scalar rotationalDof = cloud_.
-                        constProps(p.typeId()).rotationalDegreesOfFreedom();
-                    const scalarList& electronicEnergies = cloud_.
-                        constProps(p.typeId()).electronicEnergyList();
+                    const scalar rotationalDof = cP.rotationalDegreesOfFreedom();
+                    const scalarList& electronicEnergies = cP.electronicEnergyList();
 
-                    scalarList EVib
-                    (
-                        cloud_.constProps(p.typeId()).thetaV().size(), 0.0
-                    );
-                    
                     scalar vibEn = 0.0;
-                    
-                    forAll(EVib, mode)
+                    forAll(cP.thetaV(), mode)
                     {
-                        EVib[mode] = p.vibLevel()[mode]*kB
-                            *cloud_.constProps(p.typeId()).thetaV()[mode];
-                        
-                        vibrationalETotal_[iD][mode][cell] += EVib[mode];
-                        vibEn += EVib[mode];
+                        const scalar eVib_m = cP.eVib_m(mode, p.vibLevel()[mode]);
+                        vibrationalETotal_[iD][mode][cell] += eVib_m;
+                        vibEn += eVib_m;
                     }
-                                    
+                    
                     rhoNMean_[cell] += 1.0;
                     rhoNInstantaneous_[cell] += 1.0;
                     rhoMMean_[cell] += mass;
@@ -1005,7 +1000,6 @@ void dsmcVolFields::calculateField()
                     rhoMMeanXnParticle_[cell] += mass*nParticles;
                     momentumMeanXnParticle_[cell] += mass*(p.U())*nParticles;
                     linearKEMeanXnParticle_[cell] += massBySqMagU*nParticles;
-                                                        
                     
                     muu_[cell] += mass*sqr(p.U().x());
                     muv_[cell] += mass*p.U().x()*p.U().y();
@@ -1019,18 +1013,17 @@ void dsmcVolFields::calculateField()
                     mccv_[cell] += massBySqMagU*(p.U().y());
                     mccw_[cell] += massBySqMagU*(p.U().z());
                     
-                    eu_[cell] += (p.ERot() + vibEn)*p.U().x();
-                    ev_[cell] += (p.ERot() + vibEn)*p.U().y();
-                    ew_[cell] += (p.ERot() + vibEn)*p.U().z();
-                    e_[cell] += (p.ERot() + vibEn);
+                    eu_[cell] += (p.ERot() + vibEn)*p.U().x(); // TODO missing Eel
+                    ev_[cell] += (p.ERot() + vibEn)*p.U().y(); // TODO missing Eel
+                    ew_[cell] += (p.ERot() + vibEn)*p.U().z(); // TODO missing Eel
+                    e_[cell] += (p.ERot() + vibEn); // TODO missing Eel
                     
                     if (rotationalDof > VSMALL)
                     {
                         rhoNMeanInt_[cell] += 1.0;
                     }
                     
-                    const label& nElecLevels =                 
-                       cloud_.constProps(p.typeId()).numberOfElectronicLevels();
+                    const label& nElecLevels = cP.nElectronicLevels();
                     
                     if (nElecLevels > 1)
                     {
@@ -1067,7 +1060,7 @@ void dsmcVolFields::calculateField()
                     }
                 }
             }
-            
+
             //Info<< "fields myCal" << tab << mesh_.time().elapsedCpuTime() - timer << " s" << endl; // TODO VINCENT
             
             // obtain collision quality measurements
@@ -1077,33 +1070,33 @@ void dsmcVolFields::calculateField()
                     cloud_.cellPropMeasurements().collisionSeparation()[cell];
                 nColls_[cell] += cloud_.cellPropMeasurements().nColls()[cell];
             }
-            
+
             //- obtain boundary measurements
             forAll(typeIds_, i)
             {
-                const label iD = typeIds_[i];
+                const label typeId = typeIds_[i];
                 
                 forAll(mesh_.boundaryMesh(), j)
                 {                
                     forAll(mesh_.boundaryMesh()[j], k)
                     {
-                        rhoNBF_[j][k] += cloud_.boundaryFluxMeasurements().rhoNBF()[iD][j][k];
-                        rhoMBF_[j][k] += cloud_.boundaryFluxMeasurements().rhoMBF()[iD][j][k];
-                        linearKEBF_[j][k] += cloud_.boundaryFluxMeasurements().linearKEBF()[iD][j][k];
-                        momentumBF_[j][k] += cloud_.boundaryFluxMeasurements().momentumBF()[iD][j][k];
-                        rotationalEBF_[j][k] += cloud_.boundaryFluxMeasurements().rotationalEBF()[iD][j][k];
-                        rotationalDofBF_[j][k] += cloud_.boundaryFluxMeasurements().rotationalDofBF()[iD][j][k];
-                        qBF_[j][k] += cloud_.boundaryFluxMeasurements().qBF()[iD][j][k];
-                        fDBF_[j][k] += cloud_.boundaryFluxMeasurements().fDBF()[iD][j][k];
-                        speciesRhoNBF_[i][j][k] += cloud_.boundaryFluxMeasurements().rhoNBF()[iD][j][k];
-                        vibrationalEBF_[i][j][k] += cloud_.boundaryFluxMeasurements().vibrationalEBF()[iD][j][k];
-                        electronicEBF_[i][j][k] += cloud_.boundaryFluxMeasurements().electronicEBF()[iD][j][k];
-                        mccSpeciesBF_[i][j][k] += cloud_.boundaryFluxMeasurements().mccSpeciesBF()[iD][j][k];
-                        speciesRhoNIntBF_[j][k] += cloud_.boundaryFluxMeasurements().rhoNIntBF()[iD][j][k];
-                        speciesRhoNElecBF_[j][k] += cloud_.boundaryFluxMeasurements().rhoNElecBF()[iD][j][k];
+                        rhoNBF_[j][k] += cloud_.boundaryFluxMeasurements().rhoNBF()[typeId][j][k];
+                        rhoMBF_[j][k] += cloud_.boundaryFluxMeasurements().rhoMBF()[typeId][j][k];
+                        linearKEBF_[j][k] += cloud_.boundaryFluxMeasurements().linearKEBF()[typeId][j][k];
+                        momentumBF_[j][k] += cloud_.boundaryFluxMeasurements().momentumBF()[typeId][j][k];
+                        rotationalEBF_[j][k] += cloud_.boundaryFluxMeasurements().rotationalEBF()[typeId][j][k];
+                        rotationalDofBF_[j][k] += cloud_.boundaryFluxMeasurements().rotationalDofBF()[typeId][j][k];
+                        qBF_[j][k] += cloud_.boundaryFluxMeasurements().qBF()[typeId][j][k];
+                        fDBF_[j][k] += cloud_.boundaryFluxMeasurements().fDBF()[typeId][j][k];
+                        speciesRhoNBF_[i][j][k] += cloud_.boundaryFluxMeasurements().rhoNBF()[typeId][j][k];
+                        vibrationalEBF_[i][j][k] += cloud_.boundaryFluxMeasurements().vibrationalEBF()[typeId][j][k];
+                        electronicEBF_[i][j][k] += cloud_.boundaryFluxMeasurements().electronicEBF()[typeId][j][k];
+                        mccSpeciesBF_[i][j][k] += cloud_.boundaryFluxMeasurements().mccSpeciesBF()[typeId][j][k];
+                        speciesRhoNIntBF_[j][k] += cloud_.boundaryFluxMeasurements().rhoNIntBF()[typeId][j][k];
+                        speciesRhoNElecBF_[j][k] += cloud_.boundaryFluxMeasurements().rhoNElecBF()[typeId][j][k];
                     }
                 }
-            
+                
                 forAll(evmsBF_[i], mode)
                 {
                     forAll(mesh_.boundaryMesh(), j)
@@ -1112,7 +1105,7 @@ void dsmcVolFields::calculateField()
                         {
                             evmsBF_[i][mode][j][k] += 
                                 cloud_.boundaryFluxMeasurements()
-                                    .evmsBF()[iD][mode][j][k];
+                                    .evmsBF()[typeId][mode][j][k];
                         }
                     }
                 }
@@ -1121,7 +1114,7 @@ void dsmcVolFields::calculateField()
         
         sampleCounter_ = 0;
     }
-    
+
     if (time_.time().outputTime())
     {
         const scalar nAvTimeSteps = nTimeSteps_;
@@ -1224,7 +1217,7 @@ void dsmcVolFields::calculateField()
                     translationalT_[cell] = 0.0;           
                     p_[cell] = 0.0;
                 }
-                
+
                 if (rhoNInstantaneous_[cell] > SMALL)
                 {
                     dsmcRhoN_[cell] = rhoNInstantaneous_[cell];
@@ -1241,14 +1234,14 @@ void dsmcVolFields::calculateField()
                   ? rotationalDofMean_[cell]/rhoNMean_[cell]
                   : 0.0
                 );
-                
+
                 rotationalT_[cell] =
                 (
                     rotationalDofMean_[cell] > SMALL
                   ? 2.0*rotationalEMean_[cell]/(kB*rotationalDofMean_[cell])
                   : 0.0
                 );
-               
+
                 //- Vibrational energy mode
                 scalarList degreesOfFreedomSpecies(typeIds_.size(), 0.0);
                 scalarList vibTID(typeIds_.size(), 0.0);
@@ -1260,15 +1253,15 @@ void dsmcVolFields::calculateField()
                     degreesOfFreedomMode[i].setSize
                     (
                         cloud_.constProps(typeIds_[i])
-                            .vibrationalDegreesOfFreedom(), 0.0
+                            .nVibrationalModes(), 0.0
                     );
                     vibTMode[i].setSize
                     (
                         cloud_.constProps(typeIds_[i])
-                            .vibrationalDegreesOfFreedom(), 0.0
+                            .nVibrationalModes(), 0.0
                     );
                 }
-               
+
                 forAll(typeIds_, i)
                 {
                     forAll(vibrationalETotal_[i], mode)
@@ -1278,7 +1271,7 @@ void dsmcVolFields::calculateField()
                             && degreesOfFreedomMode.size() > VSMALL)
                         {        
                             const scalar thetaV = 
-                                cloud_.constProps(typeIds_[i]).thetaV()[mode];
+                                cloud_.constProps(typeIds_[i]).thetaV_m(mode);
                             
                             const scalar vibrationalEMean = 
                                 vibrationalETotal_[i][mode][cell]
@@ -1287,13 +1280,13 @@ void dsmcVolFields::calculateField()
                             const scalar iMean = vibrationalEMean/(kB*thetaV);
                             
                             vibTMode[i][mode] = thetaV/log(1.0 + 1.0/iMean);
-
+                            
                             degreesOfFreedomMode[i][mode] = 
                                 (2.0*thetaV/vibTMode[i][mode]) 
                               / (exp(thetaV/vibTMode[i][mode]) - 1.0);
                         }
                     }
-                    
+
                     forAll(degreesOfFreedomMode[i], mode)
                     {
                         degreesOfFreedomSpecies[i] += 
@@ -1305,13 +1298,13 @@ void dsmcVolFields::calculateField()
                         if (degreesOfFreedomSpecies[i] > SMALL)
                         {
                             vibTID[i] += vibTMode[i][mode]
-                                *(degreesOfFreedomMode[i][mode]
-                                /degreesOfFreedomSpecies[i]);
+                                *degreesOfFreedomMode[i][mode]
+                                /degreesOfFreedomSpecies[i];
                         }
                     }
                     
                     totalvDof[cell] += degreesOfFreedomSpecies[i];
-                    
+
                     if (rhoNMeanInt_[cell] > VSMALL 
                         && rhoNMean_[cell] > VSMALL 
                         && nParcels_[i][cell] > VSMALL)
@@ -1323,8 +1316,7 @@ void dsmcVolFields::calculateField()
                             /rhoNMean_[cell];
                         
                         totalvDofOverall[cell] += 
-                            totalvDof[cell]
-                            *(fractionOverall/fraction);
+                            totalvDof[cell]*(fractionOverall/fraction);
                         
                         vibT[cell] += vibTID[i]*fraction;
                     }
@@ -1341,7 +1333,7 @@ void dsmcVolFields::calculateField()
                     const scalarList& electronicEnergies = 
                         cloud_.constProps(typeIds_[i]).electronicEnergyList();
                     const labelList& degeneracies = 
-                        cloud_.constProps(typeIds_[i]).degeneracyList();
+                        cloud_.constProps(typeIds_[i]).electronicDegeneracyList();
 
                     if (   nGroundElectronicLevel_[i][cell] > SMALL 
                         && nFirstElectronicLevel_[i][cell] > SMALL 
@@ -1373,12 +1365,12 @@ void dsmcVolFields::calculateField()
                         totalelDof += fraction*eDof;
                     }
                     
-    //                 label nElectronicLevels = cloud_.constProps(typeIds_[i]).numberOfElectronicLevels();
+    //                 label nElectronicLevels = cloud_.constProps(typeIds_[i]).nElectronicLevels();
     //                 
     //                 if (nElectronicLevels > 1 && nParcels_[i][cell] > VSMALL && molsElec_[cell] > VSMALL)
     //                 {
     //                     const scalarList& electronicEnergies = cloud_.constProps(typeIds_[i]).electronicEnergyList();
-    //                     const labelList& degeneracies = cloud_.constProps(typeIds_[i]).degeneracyList();
+    //                     const labelList& degeneracies = cloud_.constProps(typeIds_[i]).electronicDegeneracyList();
     //                     
     //                     scalar speciesTransT = (1.0/(3.0*kB))
     //                                             *(
@@ -1429,7 +1421,7 @@ void dsmcVolFields::calculateField()
                         + totalelDof*electronicT_[cell]
                     ) /
                     (3.0 + totalrDof + totalvDof_[cell] + totalelDof); // TODO
-                                    
+
                 if (measureHeatFluxShearStress_)
                 {                    
                     if (rhoNMean_[cell] > SMALL)
@@ -1568,12 +1560,12 @@ void dsmcVolFields::calculateField()
                             );
                     }
                 }
-                
+
                 particleCv[cell] = molarCv_transrot[cell]/NAvo;
 
                 const scalar gasConstant =
                 (
-                    molecularMass[cell] > 0.0
+                    molecularMass[cell] > 0.0 && translationalT_[cell] > SMALL
                   ? kB/molecularMass[cell]
                   : 0.0
                 );
@@ -1590,14 +1582,14 @@ void dsmcVolFields::calculateField()
                     (
                         gamma*gasConstant*translationalT_[cell]
                     );
-                
+
                 Ma_[cell] =
                 (
                     speedOfSound > SMALL
                   ? mag(UMean_[cell])/speedOfSound
                   : 0.0
                 );
-                
+
                 if (measureMeanFreePath_)
                 {
                     forAll(typeIds_, i)
@@ -1721,7 +1713,7 @@ void dsmcVolFields::calculateField()
                         meanCollisionTime_[cell] = GREAT;
                         meanCollisionTimeTimeStepRatio_[cell] = GREAT;
                     }
-                
+
                     if (meanFreePath_[cell] != GREAT)
                     {
                         scalar largestCellDimension = 0.0;
@@ -1777,7 +1769,7 @@ void dsmcVolFields::calculateField()
                         cellMfpRatio_[cell] = 1.0/mfpCellRatio_[cell];
                     }
                 }
-                
+
                 if (measureClassifications_)
                 {            
                     if (rhoNMean_[cell] > SMALL)
@@ -1846,7 +1838,7 @@ void dsmcVolFields::calculateField()
                         
                         rhoN_.boundaryFieldRef()[j][k] = rhoNMean;
                         rhoM_.boundaryFieldRef()[j][k] = rhoMMean;
-                        
+
                         //- Translational energy mode and velocity
                         if (rhoMMean > VSMALL)
                         {
@@ -1868,7 +1860,7 @@ void dsmcVolFields::calculateField()
                             UMean_.boundaryFieldRef()[j][k] = vector::zero;
                             translationalT_.boundaryFieldRef()[j][k] = 0.0;
                         }
-                            
+
                         //- Rotational energy mode
                         const scalar totalrDof = 
                         (
@@ -1883,7 +1875,7 @@ void dsmcVolFields::calculateField()
                           ? 2.*rotationalEBF_[j][k]/(kB*rotationalDofBF_[j][k])
                           : 0.0
                         );
-                        
+
                         //- Vibrational energy mode
                         vibrationalT_.boundaryFieldRef()[j][k] = 0.0;
                         totalvDofBF_[j][k] = 0.0;
@@ -1898,31 +1890,34 @@ void dsmcVolFields::calculateField()
                             vDofBF_[i][j][k] = 0.0;
                             vibTBF_[i][j][k] = 0.0;
 
-                            forAll(vDofms, mode)
+                            if (speciesRhoNBF_[i][j][k] > 0)
                             {    
-                                const scalar thetaV = cloud_
-                                    .constProps(typeIds_[i]).thetaV()[mode];
+                                forAll(vDofms, mode)
+                                {
+                                    const scalar thetaV = cloud_
+                                        .constProps(typeIds_[i]).thetaV()[mode];
+                                    
+                                    const scalar iMean = evmsBF_[i][mode][j][k]
+                                        /(kB*thetaV*speciesRhoNBF_[i][j][k]);
 
-                                const scalar iMean = evmsBF_[i][mode][j][k]
-                                    /(kB*thetaV*speciesRhoNBF_[i][j][k]);
-                                
-                                Tvms[mode] = 
-                                (
-                                    iMean > 0
-                                  ? thetaV/log(1.0 + 1.0/iMean)
-                                  : 0.0
-                                );  
+                                    Tvms[mode] = 
+                                    (
+                                        iMean > 0
+                                      ? thetaV/log(1.0 + 1.0/iMean)
+                                      : 0.0
+                                    );  
 
-                                vDofms[mode] = 
-                                (
-                                  Tvms[mode] > 0.0  
-                                  ? 2.0*thetaV/Tvms[mode]
-                                      /(exp(thetaV/Tvms[mode]) - 1.0)
-                                  : 0.0
-                                );
+                                    vDofms[mode] = 
+                                    (
+                                      Tvms[mode] > 0.0  
+                                      ? 2.0*thetaV/Tvms[mode]
+                                          /(exp(thetaV/Tvms[mode]) - 1.0)
+                                      : 0.0
+                                    );
 
-                                vDofBF_[i][j][k] += vDofms[mode];
-                                vibTBF_[i][j][k] += vDofms[mode]*Tvms[mode];
+                                    vDofBF_[i][j][k] += vDofms[mode];
+                                    vibTBF_[i][j][k] += vDofms[mode]*Tvms[mode];
+                                }
                             }
                             
                             if (vDofBF_[i][j][k] > SMALL)
@@ -1933,7 +1928,7 @@ void dsmcVolFields::calculateField()
                             {
                                 vibTBF_[i][j][k] = 0.0;
                             }
-                            
+
                             const scalar molarFrac = 
                             (
                                 rhoNMean > SMALL
@@ -1962,15 +1957,15 @@ void dsmcVolFields::calculateField()
                         //- Electronic energy mode
                         scalar totalelDof = 0.0; // TODO
                         scalar elecT = 0.0; // TODO
-                            
+
                         forAll(typeIds_, i)
                         {
-                            /*const label nElectronicLevels = cloud_.constProps(typeIds_[i]).numberOfElectronicLevels();
+                            /*const label nElectronicLevels = cloud_.constProps(typeIds_[i]).nElectronicLevels();
 
                             if (nElectronicLevels > 1 && speciesRhoNBF_[i][j][k] > VSMALL && speciesRhoNElecBF_[j][k] > VSMALL)
                             {
                                 const scalarList& electronicEnergies = cloud_.constProps(typeIds_[i]).electronicEnergyList();
-                                const labelList& degeneracies = cloud_.constProps(typeIds_[i]).degeneracyList();
+                                const labelList& degeneracies = cloud_.constProps(typeIds_[i]).electronicDegeneracyList();
 
                                 scalar speciesTransT = 
                                     1.0/(3.0*kB)

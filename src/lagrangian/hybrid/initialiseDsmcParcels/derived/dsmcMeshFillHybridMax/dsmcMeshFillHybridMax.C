@@ -285,7 +285,7 @@ void dsmcMeshFillHybridMax::setInitialConfiguration()
                     scalar EVib = cloud_.equipartitionVibrationalEnergy
                     (
                         vibrationalTemperature,
-                        cP.vibrationalDegreesOfFreedom(),
+                        cP.nVibrationalModes(),
                         i
                     );
 

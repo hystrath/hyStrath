@@ -499,7 +499,7 @@ void dsmcBinsMethod::createField()
     {
         forAll(vibrationalETotal_[b], iD)
         {
-            vibrationalETotal_[b][iD].setSize(cloud_.constProps(typeIds_[iD]).vibrationalDegreesOfFreedom(),0.0);
+            vibrationalETotal_[b][iD].setSize(cloud_.constProps(typeIds_[iD]).nVibrationalModes(),0.0);
         }
     }
 }
@@ -590,7 +590,7 @@ void dsmcBinsMethod::calculateField()
                     
 //                     scalar EVib = p->vibLevel()*physicoChemical::k.value()*cloud_.constProps(p->typeId()).thetaV();
 
-                    scalarList EVib(cloud_.constProps(typeIds_[iD]).vibrationalDegreesOfFreedom());
+                    scalarList EVib(cloud_.constProps(typeIds_[iD]).nVibrationalModes());
                 
                     forAll(EVib, i)
                     {
@@ -617,7 +617,7 @@ void dsmcBinsMethod::calculateField()
                         molsInt_[n] += 1.0;
                     }
                     
-                    if(cloud_.constProps(p->typeId()).numberOfElectronicLevels() > 1)
+                    if(cloud_.constProps(p->typeId()).nElectronicLevels() > 1)
                     {
                         molsElec_[n] += 1.0;
                     }
@@ -1015,12 +1015,12 @@ void dsmcBinsMethod::calculateField()
                     
                 forAll(speciesMols[n], iD)
                 {
-                    label nElectronicLevels = cloud_.constProps(typeIds_[iD]).numberOfElectronicLevels();
+                    label nElectronicLevels = cloud_.constProps(typeIds_[iD]).nElectronicLevels();
                     
                     if(nElectronicLevels > 1 && speciesMols[n][iD] > VSMALL && molsElec[n] > VSMALL)
                     {
                         const scalarList& electronicEnergies = cloud_.constProps(typeIds_[iD]).electronicEnergyList();
-                        const labelList& degeneracies = cloud_.constProps(typeIds_[iD]).degeneracyList();
+                        const labelList& degeneracies = cloud_.constProps(typeIds_[iD]).electronicDegeneracyList();
                         
                         if(nParticlesGroundElectronicState[n][iD] > VSMALL && nParticlesFirstElectronicState[n][iD] > VSMALL && ((nParticlesGroundElectronicState[n][iD]*degeneracies[1]) != (nParticlesFirstElectronicState[n][iD]*degeneracies[0])))
                         {
@@ -1049,12 +1049,12 @@ void dsmcBinsMethod::calculateField()
 //                     
 //                 forAll(speciesMols[n], iD)
 //                 {
-//                     label nElectronicLevels = cloud_.constProps(typeIds_[iD]).numberOfElectronicLevels();
+//                     label nElectronicLevels = cloud_.constProps(typeIds_[iD]).nElectronicLevels();
 //                     
 //                     if(nElectronicLevels > 1 && speciesMols[n][iD] > VSMALL && molsElec[n] > VSMALL)
 //                     {
 //                         const scalarList& electronicEnergies = cloud_.constProps(typeIds_[iD]).electronicEnergyList();
-//                         const labelList& degeneracies = cloud_.constProps(typeIds_[iD]).degeneracyList();
+//                         const labelList& degeneracies = cloud_.constProps(typeIds_[iD]).electronicDegeneracyList();
 //                         
 //                         scalar speciesTransT = (1.0/(3.0*physicoChemical::k.value()))
 //                                                 *(

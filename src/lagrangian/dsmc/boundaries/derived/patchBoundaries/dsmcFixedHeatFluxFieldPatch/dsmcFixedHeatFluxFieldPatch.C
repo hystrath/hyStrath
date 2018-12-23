@@ -275,7 +275,7 @@ void dsmcFixedHeatFluxFieldPatch::controlParticle(dsmcParcel& p, dsmcParcel::tra
 
     scalar rotationalDof = cloud_.constProps(typeId).rotationalDegreesOfFreedom();
     
-    scalar vibrationalDof = cloud_.constProps(typeId).vibrationalDegreesOfFreedom();
+    scalar vibrationalDof = cloud_.constProps(typeId).nVibrationalModes();
 
     U =
         sqrt(physicoChemical::k.value()*T/mass)
@@ -304,7 +304,7 @@ void dsmcFixedHeatFluxFieldPatch::controlParticle(dsmcParcel& p, dsmcParcel::tra
 //     ELevel = cloud_.equipartitionElectronicLevel
 //                     (
 //                         T,
-//                         cloud_.constProps(typeId).degeneracyList(),
+//                         cloud_.constProps(typeId).electronicDegeneracyList(),
 //                         cloud_.constProps(typeId).electronicEnergyList(),
 //                         typeId
 //                     );

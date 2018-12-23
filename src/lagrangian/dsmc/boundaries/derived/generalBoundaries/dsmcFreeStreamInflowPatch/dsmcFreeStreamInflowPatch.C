@@ -94,7 +94,7 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
     Random& rndGen = cloud_.rndGen();
 
     const scalar sqrtPi = sqrt(pi);
-
+Info<< "-20" << endl; 
     // compute parcels to insert
     forAll(accumulatedParcelsToInsert_, i)
     {
@@ -107,7 +107,11 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
             const vector sF = mesh_.faceAreas()[faceI];
             const scalar fA = mag(sF);
             
-            const scalar deltaT = cloud_.deltaTValue(mesh_.boundaryMesh()[patchId_].faceCells()[faceI]);
+            const scalar deltaT = 
+                cloud_.deltaTValue
+                (
+                    mesh_.boundaryMesh()[patchId_].faceCells()[f]
+                );
 
             scalar mostProbableSpeed
             (
@@ -118,7 +122,7 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
                 )
             );
 
-             // Dotting boundary velocity with the face unit normal
+            // Dotting boundary velocity with the face unit normal
             // (which points out of the domain, so it must be
             // negated), dividing by the most probable speed to form
             // molecularSpeedRatio * cosTheta
@@ -139,7 +143,6 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
                 /(2.0*sqrtPi*cloud_.nParticles(patchId_, f));
         }
     }
-
 
     labelField parcelsInserted(typeIds_.size(), 0);
     labelField parcelsToAdd(typeIds_.size(), 0);
@@ -328,18 +331,18 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
                     faceRotationalTemperature,
                     cloud_.constProps(typeId).rotationalDegreesOfFreedom()
                 );
-                
+
                 labelList vibLevel = cloud_.equipartitionVibrationalEnergyLevel
                 (
                     faceVibrationalTemperature,
-                    cloud_.constProps(typeId).vibrationalDegreesOfFreedom(),
+                    cloud_.constProps(typeId).nVibrationalModes(),
                     typeId
                 );
-                
+
                 label ELevel = cloud_.equipartitionElectronicLevel
                 (
                     faceElectronicTemperature,
-                    cloud_.constProps(typeId).degeneracyList(),
+                    cloud_.constProps(typeId).electronicDegeneracyList(),
                     cloud_.constProps(typeId).electronicEnergyList(),
                     typeId
                 );
@@ -347,7 +350,7 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
                 label newParcel = patchId();
                 
                 const scalar RWF = cloud_.coordSystem().RWF(cellI);
-              
+
                 cloud_.addNewParcel
                 (
                     p,

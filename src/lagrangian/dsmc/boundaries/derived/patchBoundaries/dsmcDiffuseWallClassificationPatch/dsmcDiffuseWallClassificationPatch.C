@@ -134,7 +134,7 @@ void dsmcDiffuseWallClassificationPatch::controlParticle(dsmcParcel& p, dsmcParc
 
     scalar rotationalDof = cloud_.constProps(typeId).rotationalDegreesOfFreedom();
     
-    scalar vibrationalDof = cloud_.constProps(typeId).vibrationalDegreesOfFreedom();
+    scalar vibrationalDof = cloud_.constProps(typeId).nVibrationalModes();
 
     U =
         sqrt(physicoChemical::k.value()*T/mass)

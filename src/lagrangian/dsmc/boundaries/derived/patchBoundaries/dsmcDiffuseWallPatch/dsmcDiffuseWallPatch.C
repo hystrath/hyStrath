@@ -100,7 +100,7 @@ void dsmcDiffuseWallPatch::performDiffuseReflection
         cloud_.constProps(typeId).rotationalDegreesOfFreedom();
     
     scalar vibrationalDof = 
-        cloud_.constProps(typeId).vibrationalDegreesOfFreedom();
+        cloud_.constProps(typeId).nVibrationalModes();
 
     Random& rndGen = cloud_.rndGen();
 
@@ -122,7 +122,7 @@ void dsmcDiffuseWallPatch::performDiffuseReflection
     ELevel = cloud_.equipartitionElectronicLevel
         (
             T,
-            cloud_.constProps(typeId).degeneracyList(),
+            cloud_.constProps(typeId).electronicDegeneracyList(),
             cloud_.constProps(typeId).electronicEnergyList(),
             typeId
         );   

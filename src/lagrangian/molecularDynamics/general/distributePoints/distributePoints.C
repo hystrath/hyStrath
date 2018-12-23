@@ -199,7 +199,8 @@ List<vector> distributePoints::uniform
         {
             if(options.size() > 1)
             {
-                label n = rndGen_.position<label>(0, (options.size()-1));
+                //label n = rndGen_.position<label>(0, (options.size()-1)); OLD
+                label n = rndGen_.sample01<scalar>()*options.size();
                 
                 sites[i]= options[n];
                 

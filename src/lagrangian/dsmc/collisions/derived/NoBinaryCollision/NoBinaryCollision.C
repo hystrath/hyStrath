@@ -29,15 +29,20 @@ License
 
 using namespace Foam::constant::mathematical;
 
-// * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
 namespace Foam
 {
     defineTypeNameAndDebug(NoBinaryCollision, 0);
-    addToRunTimeSelectionTable(BinaryCollisionModel, NoBinaryCollision, dictionary);
-
+    addToRunTimeSelectionTable
+    (
+        BinaryCollisionModel,
+        NoBinaryCollision,
+        dictionary
+    );
 };
 
-
+// * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 Foam::NoBinaryCollision::NoBinaryCollision
 (
@@ -51,7 +56,6 @@ Foam::NoBinaryCollision::NoBinaryCollision
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
-
 Foam::NoBinaryCollision::~NoBinaryCollision()
 {}
 
@@ -63,7 +67,6 @@ bool Foam::NoBinaryCollision::active() const
 {
     return false;
 }
-
 
 
 Foam::scalar Foam::NoBinaryCollision::sigmaTcR
@@ -84,13 +87,12 @@ Foam::scalar Foam::NoBinaryCollision::sigmaTcR
     )
         << "sigmaTcR called on NoBinaryCollision model, this should "
         << "not happen, this is not an actual model." << nl
-        << "Enclose calls to sigmaTcR within a if(binaryCollision().active()) "
+        << "Enclose calls to sigmaTcR within a if (binaryCollision().active()) "
         << " check."
         << abort(FatalError);
 
     return 0.0;
 }
-
 
 
 void Foam::NoBinaryCollision::collide
@@ -100,6 +102,17 @@ void Foam::NoBinaryCollision::collide
     label& cellI
 )
 {}
+
+
+void Foam::NoBinaryCollision::relax
+(
+    dsmcParcel& p,
+    scalar& translationalEnergy,
+    const scalar omegaPQ,
+    const bool postReaction
+)
+{}
+
 
 const Foam::dictionary& Foam::NoBinaryCollision::coeffDict() const
 {

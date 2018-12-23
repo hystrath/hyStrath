@@ -44,19 +44,16 @@ Foam::BinaryCollisionModel::BinaryCollisionModel(dsmcCloud& owner)
 {}
 
 
-// 
 Foam::BinaryCollisionModel::BinaryCollisionModel
 (
     const dictionary& dict,
     dsmcCloud& owner
-//     const word& type
 )
 :
     dict_(dict),
     cloud_(owner)
-{
-    
-}
+{}
+
 
 Foam::autoPtr<Foam::BinaryCollisionModel> Foam::BinaryCollisionModel::New
 (
@@ -93,7 +90,6 @@ Foam::autoPtr<Foam::BinaryCollisionModel> Foam::BinaryCollisionModel::New
 
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
-
 
 Foam::BinaryCollisionModel::~BinaryCollisionModel()
 {}

@@ -86,7 +86,8 @@ Foam::label Foam::dsmcCloud::pickFromCandidateList
     if(size > 0)
     {
         // choose a random number between 0 and the size of the candidateList size
-        label randomIndex = rndGen_.position<label>(0, size - 1);
+        //label randomIndex = rndGen_.position<label>(0, size - 1); OLD
+        label randomIndex = rndGen_.sample01<scalar>()*size;
         entry = candidatesInCell[randomIndex];
 
         // build a new list without the chosen entry
@@ -151,7 +152,8 @@ Foam::label Foam::dsmcCloud::pickFromCandidateSubList
     
     if(subCellSize > 0)
     {
-        label randomIndex = rndGen_.position<label>(0, subCellSize - 1);
+        //label randomIndex = rndGen_.position<label>(0, subCellSize - 1); OLD
+        label randomIndex = rndGen_.sample01<scalar>()*subCellSize;
         entry = candidatesInSubCell[randomIndex];
 
 //         Info<< "random index: " << randomIndex <<" entry " 
@@ -806,7 +808,7 @@ void Foam::dsmcCloud::resetHybrid
                             scalar EVib = this->equipartitionVibrationalEnergy
                             (
                                 vibrationalTemperature,
-                                cP.vibrationalDegreesOfFreedom(),
+                                cP.nVibrationalModes(),
                                 i
                             );
 
@@ -940,7 +942,7 @@ void Foam::dsmcCloud::resetHybrid2
                             scalar EVib = this->equipartitionVibrationalEnergy
                             (
                                 vibrationalTemperature,
-                                cP.vibrationalDegreesOfFreedom(),
+                                cP.nVibrationalModes(),
                                 i
                             );
 
@@ -1069,7 +1071,7 @@ void Foam::dsmcCloud::resetHybridMax
                             scalar EVib = this->equipartitionVibrationalEnergy
                             (
                                 vibrationalTemperature,
-                                cP.vibrationalDegreesOfFreedom(),
+                                cP.nVibrationalModes(),
                                 i
                             );
 
@@ -1202,7 +1204,7 @@ void Foam::dsmcCloud::resetHybridTra
                             scalar EVib = this->equipartitionVibrationalEnergy
                             (
                                 vibrationalTemperature,
-                                cP.vibrationalDegreesOfFreedom(),
+                                cP.nVibrationalModes(),
                                 i
                             );
 
@@ -1796,7 +1798,7 @@ void Foam::dsmcCloud::generalisedChapmanEnskog
 )
 {
     scalar k = physicoChemical::k.value();
-    scalar vibDOF = constProps(typeID).vibrationalDegreesOfFreedom();
+    scalar vibDOF = constProps(typeID).nVibrationalModes();
 
     scalar B = max(mag(D), mag(tau));
     B = max(B, mag(qTra));
@@ -1901,7 +1903,7 @@ void Foam::dsmcCloud::generalisedChapmanEnskog2
     EVib = this->equipartitionVibrationalEnergy
         (
             vibrationalTemperature,
-            constProps(typeID).vibrationalDegreesOfFreedom(),
+            constProps(typeID).nVibrationalModes(),
             typeID
         );
 

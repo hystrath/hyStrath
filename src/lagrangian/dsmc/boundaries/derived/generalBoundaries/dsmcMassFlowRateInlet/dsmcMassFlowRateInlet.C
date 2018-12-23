@@ -306,14 +306,14 @@ void dsmcMassFlowRateInlet::controlParcelsBeforeMove()
                 labelList vibLevel = cloud_.equipartitionVibrationalEnergyLevel
                 (
                     faceTemperature,
-                    cloud_.constProps(typeId).vibrationalDegreesOfFreedom(),
+                    cloud_.constProps(typeId).nVibrationalModes(),
                     typeId
                 );
                 
                 label ELevel = cloud_.equipartitionElectronicLevel
                 (
                     faceTemperature,
-                    cloud_.constProps(typeId).degeneracyList(),
+                    cloud_.constProps(typeId).electronicDegeneracyList(),
                     cloud_.constProps(typeId).electronicEnergyList(),
                     typeId
                 );

@@ -158,7 +158,8 @@ void noTimeCounterPorousMaterial::collide()
             {
                 if(cloud_.rndGen().sample01<scalar>() > porosity_)
                 {
-                    label candidateP = rndGen_.position<label>(0, nC - 1);
+                    //label candidateP = rndGen_.position<label>(0, nC - 1); OLD
+                    label candidateP = rndGen_.sample01<scalar>()*nC;
                     
                     dsmcParcel& p = *cellParcels[candidateP];
                     
@@ -204,7 +205,8 @@ void noTimeCounterPorousMaterial::collide()
                 // subCell candidate selection procedure
 
                 // Select the first collision candidate
-                label candidateP = rndGen_.position<label>(0, nC - 1);
+                //label candidateP = rndGen_.position<label>(0, nC - 1); OLD
+                label candidateP = rndGen_.sample01<scalar>()*nC;
 
                 // Declare the second collision candidate
                 label candidateQ = -1;
@@ -221,7 +223,8 @@ void noTimeCounterPorousMaterial::collide()
 
                     do
                     {
-                        candidateQ = subCellPs[rndGen_.position<label>(0, nSC - 1)];
+                        //candidateQ = subCellPs[rndGen_.position<label>(0, nSC - 1)]; OLD
+                        candidateQ = subCellPs[rndGen_.sample01<scalar>()*nSC];
 
                     } while (candidateP == candidateQ);
                 }
@@ -233,7 +236,8 @@ void noTimeCounterPorousMaterial::collide()
 
                     do
                     {
-                        candidateQ = rndGen_.position<label>(0, nC - 1);
+                        //candidateQ = rndGen_.position<label>(0, nC - 1); OLD
+                        candidateQ = rndGen_.sample01<scalar>()*nC;
 
                     } while (candidateP == candidateQ);
                 }
@@ -242,15 +246,15 @@ void noTimeCounterPorousMaterial::collide()
                 // uniform candidate selection procedure
 
                 // // Select the first collision candidate
-                // label candidateP = rndGen_.position<label>(0, nC-1);
+                // label candidateP = rndGen_.sample01<scalar>()*nC;
 
                 // // Select a possible second collision candidate
-                // label candidateQ = rndGen_.position<label>(0, nC-1);
+                // label candidateQ = ndGen_.sample01<scalar>()*nC;
 
                 // // If the same candidate is chosen, choose again
                 // while (candidateP == candidateQ)
                 // {
-                //     candidateQ = rndGen_.position<label>(0, nC-1);
+                //     candidateQ = ndGen_.sample01<scalar>()*nC;
                 // }
 
                 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

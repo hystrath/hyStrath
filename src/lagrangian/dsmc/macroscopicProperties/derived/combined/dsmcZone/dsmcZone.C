@@ -446,7 +446,7 @@ void dsmcZone::createField()
 {
     forAll(vibrationalETotal_, iD)
     {
-        vibrationalETotal_[iD].setSize(cloud_.constProps(typeIds_[iD]).vibrationalDegreesOfFreedom(),0.0);
+        vibrationalETotal_[iD].setSize(cloud_.constProps(typeIds_[iD]).nVibrationalModes(),0.0);
     }
 }
 
@@ -513,7 +513,7 @@ void dsmcZone::calculateField()
                 mccv_ += mass*mag(p->U())*mag(p->U())*(p->U().y());
                 mccw_ += mass*mag(p->U())*mag(p->U())*(p->U().z());
                 
-                scalarList EVib(cloud_.constProps(typeIds_[iD]).vibrationalDegreesOfFreedom());
+                scalarList EVib(cloud_.constProps(typeIds_[iD]).nVibrationalModes());
                 
                 forAll(EVib, i)
                 {
@@ -540,7 +540,7 @@ void dsmcZone::calculateField()
                     molsInt_ += 1.0;
                 }
                 
-                if(cloud_.constProps(p->typeId()).numberOfElectronicLevels() > 1)
+                if(cloud_.constProps(p->typeId()).nElectronicLevels() > 1)
                 {
                     molsElec_ += 1.0;
                 }
@@ -897,12 +897,12 @@ void dsmcZone::calculateField()
                 
             forAll(speciesMols, iD)
             {
-                label nElectronicLevels = cloud_.constProps(typeIds_[iD]).numberOfElectronicLevels();
+                label nElectronicLevels = cloud_.constProps(typeIds_[iD]).nElectronicLevels();
                 
                 if(nElectronicLevels > 1 && speciesMols[iD] > VSMALL && molsElec > VSMALL)
                 {
                     const scalarList& electronicEnergies = cloud_.constProps(typeIds_[iD]).electronicEnergyList();
-                    const labelList& degeneracies = cloud_.constProps(typeIds_[iD]).degeneracyList();
+                    const labelList& degeneracies = cloud_.constProps(typeIds_[iD]).electronicDegeneracyList();
                     
 //                     scalar speciesTransT = (1.0/(3.0*physicoChemical::k.value()))
 //                                             *(

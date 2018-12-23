@@ -44,9 +44,12 @@ namespace Foam
 
 defineTypeNameAndDebug(simplifiedBernoulliTrials, 0);
 
-addToRunTimeSelectionTable(collisionPartnerSelection, simplifiedBernoulliTrials, dictionary);
-
-
+addToRunTimeSelectionTable
+(
+    collisionPartnerSelection,
+    simplifiedBernoulliTrials,
+    dictionary
+);
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
@@ -62,9 +65,7 @@ simplifiedBernoulliTrials::simplifiedBernoulliTrials
 )
 :
     collisionPartnerSelection(mesh, cloud, dict)
-//     propsDict_(dict.subDict(typeName + "Properties"))
 {}
-
 
 
 // * * * * * * * * * * * * * * * * Selectors * * * * * * * * * * * * * * * * //
@@ -83,6 +84,7 @@ void simplifiedBernoulliTrials::initialConfiguration()
 
 }
 
+
 void simplifiedBernoulliTrials::collide()
 {
     if (!cloud_.binaryCollision().active())
@@ -90,7 +92,7 @@ void simplifiedBernoulliTrials::collide()
         return;
     }
 
-    // Temporary storage for subCells
+    //- Temporary storage for subCells
     List<DynamicList<label> > subCells(8);
 
     label collisionCandidates = 0;
@@ -124,7 +126,8 @@ void simplifiedBernoulliTrials::collide()
                 candidateP = p;
             
                 k = nC-1 - p;
-                label random = rndGen_.position<label>(1, k);
+                //label random = rndGen_.position<label>(1, k); OLD
+                label random = 1 + rndGen_.sample01<scalar>()*(k+1);
                 candidateQ = p + random;
                 
                 dsmcParcel& parcelP = *cellParcels[candidateP];

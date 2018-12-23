@@ -414,7 +414,7 @@ void Foam::dsmcStandardFields::calculateFields()
 
         vibrationalE[cellI] += p.vibLevel()*cloud_.constProps(p.typeId()).thetaV()*physicoChemical::k.value();
 
-        vibrationalDof[cellI] += cloud_.constProps(p.typeId()).vibrationalDegreesOfFreedom();
+        vibrationalDof[cellI] += cloud_.constProps(p.typeId()).nVibrationalModes();
 
         momentum[cellI] += cloud_.constProps(p.typeId()).mass()*p.U();
     }

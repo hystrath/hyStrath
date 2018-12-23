@@ -168,7 +168,7 @@ void dsmcDiffuseWallHeatFluxPatch::controlParticle(dsmcParcel& p, dsmcParcel::tr
 
     scalar rotationalDof = cloud_.constProps(typeId).rotationalDegreesOfFreedom();
     
-    scalar vibrationalDof = cloud_.constProps(typeId).vibrationalDegreesOfFreedom();
+    scalar vibrationalDof = cloud_.constProps(typeId).nVibrationalModes();
 
     U =
         sqrt(physicoChemical::k.value()*T/mass)

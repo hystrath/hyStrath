@@ -33,6 +33,12 @@ Description
 
 namespace Foam
 {
+
+// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
+
+
+// * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
+
 //- Null Constructor 
 dsmcReactions::dsmcReactions
 (
@@ -58,6 +64,7 @@ dsmcReactions::dsmcReactions
     pairAddressing_(),
     counter_(0)
 {}
+
 
 //- Constructor for dsmcFoam+
 dsmcReactions::dsmcReactions
@@ -86,12 +93,9 @@ dsmcReactions::dsmcReactions
     reactions_(reactionsList_.size()),
     counter_(0)
 {
-
     Info << nl << "Creating dsmcReactions" << nl << endl;
 
-    //- state dsmcReactions
-
-    if(reactions_.size() > 0 )
+    if (reactions_.size() > 0)
     {
         forAll(reactions_, r)
         {
@@ -109,7 +113,7 @@ dsmcReactions::dsmcReactions
             nReactions_++;
         }
 
-        Info << "number of reactions created: " << nReactions_ << endl;
+        Info << "Number of reactions created: " << nReactions_ << endl;
     }
     else
     {
@@ -124,16 +128,16 @@ dsmcReactions::dsmcReactions
     }
 }
 
+
+// * * * * * * * * * * * * * * * * Destructors  * * * * * * * * * * * * * * //
+
 dsmcReactions::~dsmcReactions()
 {}
 
 
-// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
-
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-//- initial configuration
-//- call this function after the dsmcCloud is completely initialised
+//- Call this function after the dsmcCloud is completely initialised
 void dsmcReactions::initialConfiguration()
 {
     forAll(reactions_, r)
@@ -141,45 +145,37 @@ void dsmcReactions::initialConfiguration()
         reactions_[r]->initialConfiguration();
     }
 
-    // set pair addressing
-
+    //- Set pair addressing
     forAll(pairAddressing_, i)
     {
-        forAll(pairAddressing_[i], j)
+        for(label j=i; j<pairAddressing_.size(); j++)
         {
-            label noOfReactionModelsPerPair = 0;
+            label nReactionModelsPerPair = 0;
 
             forAll(reactions_, r)
             {                
-                if(reactions_[r]->tryReactMolecules(i, j))
+                if (reactions_[r]->tryReactMolecules(i, j))
                 {                    
-//                     Info << "r = " << r << endl;
-                    
                     pairAddressing_[i][j] = r;
-                    
-//                     Info << "pairAddressing_[i][j] = " << pairAddressing_[i][j] << endl;
-
-                    noOfReactionModelsPerPair++;
+                    pairAddressing_[j][i] = r;
+                    nReactionModelsPerPair++;
                 }
             }
 
-            if(noOfReactionModelsPerPair > 1)
+            if (nReactionModelsPerPair > 1)
             {
                 FatalErrorIn("dsmcReactions::initialConfiguration()")
-                    << "There is more than one reaction model specified for the typeId pair: "
-                    << i << " and " << j
+                    << "There is more than one reaction model specified for "
+                    << "the typeId pair: " << i << " and " << j
                     << exit(FatalError);
             }
         }
     }
    
-    Info << "reactionNames: " << reactionNames_ << endl;
-
-//     Info << "pair addressing: " << pairAddressing_ << endl;
+    Info << "pair addressing: " << pairAddressing_ << endl;
 }
 
-//- output of data
-//- required for output to screen any required information
+
 void dsmcReactions::outputData()
 {
     counter_++;

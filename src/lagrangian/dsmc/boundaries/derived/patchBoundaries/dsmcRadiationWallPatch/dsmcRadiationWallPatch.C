@@ -158,12 +158,7 @@ void dsmcRadiationWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::tracking
 
     scalar Etrans = 0.5*magSqr(U)*cloud_.constProps(typeId).mass();
 
-    scalar EcTot = Etrans + ERot;
-
-    forAll(vibLevel, i)
-    {
-        EcTot += vibLevel[i]*physicoChemical::k.value()*cloud_.constProps(typeId).thetaV()[i];
-    }
+    scalar EcTot = Etrans + ERot + cloud_.constProps(typeId).eVib_tot(vibLevel);
     
     EcTot_ += EcTot;
     
@@ -180,7 +175,7 @@ void dsmcRadiationWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::tracking
 
     scalar rotationalDof = cloud_.constProps(typeId).rotationalDegreesOfFreedom();
     
-    scalar vibrationalDof = cloud_.constProps(typeId).vibrationalDegreesOfFreedom();
+    scalar vibrationalDof = cloud_.constProps(typeId).nVibrationalModes();
 
     Random& rndGen = cloud_.rndGen();
     

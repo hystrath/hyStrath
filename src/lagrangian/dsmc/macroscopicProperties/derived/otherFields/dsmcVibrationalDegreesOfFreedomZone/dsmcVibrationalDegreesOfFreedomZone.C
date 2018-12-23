@@ -42,8 +42,12 @@ namespace Foam
 
 defineTypeNameAndDebug(dsmcVibrationalDegreesOfFreedomZone, 0);
 
-addToRunTimeSelectionTable(dsmcField, dsmcVibrationalDegreesOfFreedomZone, dictionary);
-
+addToRunTimeSelectionTable
+(
+    dsmcField,
+    dsmcVibrationalDegreesOfFreedomZone,
+    dictionary
+);
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
@@ -62,7 +66,7 @@ dsmcVibrationalDegreesOfFreedomZone::dsmcVibrationalDegreesOfFreedomZone
     fieldName_(propsDict_.lookup("fieldName")),
     regionName_(propsDict_.lookup("zoneName")),
     regionId_(-1),
-	vibrationalETotal_(),
+	  vibrationalETotal_(),
     nParcels_(),
     vibT_(),
     vDof_(),
@@ -70,8 +74,7 @@ dsmcVibrationalDegreesOfFreedomZone::dsmcVibrationalDegreesOfFreedomZone
     vDoF_(0.0),
     vDoFField_(time_.totalNAvSteps()+1, 0.0)
 {
-
-    // standard to reading typeIds ------------ 
+    // standard to reading typeIds
     const List<word> molecules (propsDict_.lookup("typeIds"));
 
     DynamicList<word> moleculesReduced(0);
@@ -145,7 +148,7 @@ void dsmcVibrationalDegreesOfFreedomZone::createField()
     
     forAll(vibrationalETotal_, i)
     {
-        vibrationalETotal_[i].setSize(cloud_.constProps(typeIds_[i]).vibrationalDegreesOfFreedom(), 0.0);
+        vibrationalETotal_[i].setSize(cloud_.constProps(typeIds_[i]).nVibrationalModes(), 0.0);
     }
 }
 

@@ -285,7 +285,7 @@ void dsmcMeshFillFromCFD::setInitialConfiguration()
         scalar rotDoF =
             cloud_.constProps()[moleculeI].rotationalDegreesOfFreedom();
         scalar vibDoF =
-            cloud_.constProps()[moleculeI].vibrationalDegreesOfFreedom();
+            cloud_.constProps()[moleculeI].nVibrationalModes();
         scalar omega =
             cloud_.constProps()[moleculeI].omega();
 

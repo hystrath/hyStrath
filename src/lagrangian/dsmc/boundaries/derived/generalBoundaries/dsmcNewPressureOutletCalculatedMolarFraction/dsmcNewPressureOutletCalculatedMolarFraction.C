@@ -310,7 +310,7 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsBeforeMove()
                 labelList vibLevel = cloud_.equipartitionVibrationalEnergyLevel
                 (
                     faceVibrationalTemperature,
-                    cloud_.constProps(typeId).vibrationalDegreesOfFreedom(),
+                    cloud_.constProps(typeId).nVibrationalModes(),
                     typeId
                 );
                 

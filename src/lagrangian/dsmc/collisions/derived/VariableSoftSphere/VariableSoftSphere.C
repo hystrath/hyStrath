@@ -95,12 +95,12 @@ Foam::scalar Foam::VariableSoftSphere::sigmaTcR
         );
        
        
-//     if(typeIdP == 1 && typeIdQ == 0)
+//     if (typeIdP == 1 && typeIdQ == 0)
 //     {
 //         omegaPQ = 0.725;
 //     }
 //     
-//     if(typeIdP == 0 && typeIdQ == 1)
+//     if (typeIdP == 0 && typeIdQ == 1)
 //     {
 //         omegaPQ = 0.725;
 //     }
@@ -151,12 +151,12 @@ void Foam::VariableSoftSphere::collide
             + (cloud_.constProps(typeIdQ).alpha())
         );
     
-//     if(typeIdP == 1 && typeIdQ == 0)
+//     if (typeIdP == 1 && typeIdQ == 0)
 //     {
 //         alphaPQ = 1.0/1.64;
 //     }
 //     
-//     if(typeIdP == 0 && typeIdQ == 1)
+//     if (typeIdP == 0 && typeIdQ == 1)
 //     {
 //         alphaPQ = 1.0/1.64;
 //     }
@@ -194,7 +194,7 @@ void Foam::VariableSoftSphere::collide
     
     vector postCollisionRelU = vector::zero;
     
-//     if(D > VSMALL)
+//     if (D > VSMALL)
 //     {
         postCollisionRelU =
             vector
@@ -226,26 +226,39 @@ void Foam::VariableSoftSphere::collide
     //- III molecule when it collides with either class II or class III
     //- molecules.
     
-    if(classificationP == 0 && classificationQ == 1)
+    if (classificationP == 0 && classificationQ == 1)
     {
         pP.classification() = 2;
     }
     
-    if(classificationQ == 0 && classificationP == 1)
+    if (classificationQ == 0 && classificationP == 1)
     {
         pQ.classification() = 2;
     }
     
-    if(classificationP == 0 && classificationQ == 2)
+    if (classificationP == 0 && classificationQ == 2)
     {
         pP.classification() = 2;
     }
     
-    if(classificationQ == 0 && classificationP == 2)
+    if (classificationQ == 0 && classificationP == 2)
     {
         pQ.classification() = 2;
     }
 }
+
+
+void Foam::VariableSoftSphere::relax
+(
+    dsmcParcel& p,
+    scalar& translationalEnergy,
+    const scalar omegaPQ,
+    const bool postReaction
+)
+{
+    NotImplemented
+}
+
 
 const Foam::dictionary& Foam::VariableSoftSphere::coeffDict() const
 {

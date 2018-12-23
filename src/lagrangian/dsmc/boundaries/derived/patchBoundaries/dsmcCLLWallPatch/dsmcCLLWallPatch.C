@@ -145,7 +145,7 @@ void dsmcCLLWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::trackingData& 
 
     scalar rotationalDof = cloud_.constProps(typeId).rotationalDegreesOfFreedom();
         
-//     scalar vibrationalDof = cloud_.constProps(typeId).vibrationalDegreesOfFreedom();
+//     scalar vibrationalDof = cloud_.constProps(typeId).nVibrationalModes();
     
 //     scalar characteristicVibrationalTemperature = cloud_.constProps(typeId).thetaV();
     

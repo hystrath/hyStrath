@@ -225,14 +225,14 @@ void dsmcLaserHeatingFill::setInitialConfiguration()
                         labelList vibLevel = cloud_.equipartitionVibrationalEnergyLevel
                         (
                             cellTemperature,
-                            cP.vibrationalDegreesOfFreedom(),
+                            cP.nVibrationalModes(),
                             typeId
                         );
                         
                         label ELevel = cloud_.equipartitionElectronicLevel
                         (
                             cellTemperature,
-                            cP.degeneracyList(),
+                            cP.electronicDegeneracyList(),
                             cP.electronicEnergyList(),
                             typeId
                         );

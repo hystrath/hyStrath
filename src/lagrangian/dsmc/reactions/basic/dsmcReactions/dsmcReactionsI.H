@@ -31,36 +31,25 @@ namespace Foam
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-
 inline label dsmcReactions::returnModelId(dsmcParcel& p, dsmcParcel& q)
 {
-//     label modelId = -1;
-// 
-//     forAll(reactions_, r)
-//     {
-//         if(reactions_[r]->tryReactMolecules(p,q))
-//         {
-//             modelId = r;
-//         }
-//     }
-
     return pairAddressing_[p.typeId()][q.typeId()];
 }
 
 
-inline List< autoPtr<dsmcReaction> >& dsmcReactions::reactions()
-{
-	return reactions_;
-}
-
-
-inline const List< autoPtr<dsmcReaction> >& dsmcReactions::reactions() const
+inline List< autoPtr<dsmcReaction>>& dsmcReactions::reactions()
 {
     return reactions_;
 }
 
 
-inline const List< List<label> >& dsmcReactions::pairModelAddressing() const
+inline const List<autoPtr<dsmcReaction>>& dsmcReactions::reactions() const
+{
+    return reactions_;
+}
+
+
+inline const List<List<label>>& dsmcReactions::pairModelAddressing() const
 {
     return pairAddressing_;
 }
@@ -70,8 +59,6 @@ inline const label& dsmcReactions::nReactions() const
 {
     return nReactions_;
 }
-
-
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

@@ -256,7 +256,8 @@ Foam::label Foam::dsmcCloud::pickFromCandidateList
     if (size > 0)
     {
         // choose a random number between 0 and the size of the candidateList
-        label randomIndex = rndGen_.position<label>(0, size - 1);
+        //label randomIndex = rndGen_.position<label>(0, size - 1); OLD
+        label randomIndex = rndGen_.sample01<scalar>()*size;
         entry = candidatesInCell[randomIndex];
 
         // build a new list without the chosen entry
@@ -321,7 +322,8 @@ Foam::label Foam::dsmcCloud::pickFromCandidateSubList
 
     if (subCellSize > 0)
     {
-        label randomIndex = rndGen_.position<label>(0, subCellSize - 1);
+        //label randomIndex = rndGen_.position<label>(0, subCellSize - 1); OLD
+        label randomIndex = rndGen_.sample01<scalar>()*subCellSize;
         entry = candidatesInSubCell[randomIndex];
 
 //         Info<< "random index: " << randomIndex <<" entry "
@@ -874,7 +876,7 @@ void Foam::dsmcCloud::info()
             << "    Average electronic energy       = "
             << electronicEnergy/nMol << nl
             << "    Total energy                    = "
-            << (rotationalEnergy + linearKineticEnergy
+            << (linearKineticEnergy + rotationalEnergy
                 + vibrationalEnergy + electronicEnergy)
             << endl;
 
@@ -913,8 +915,8 @@ void Foam::dsmcCloud::autoMap(const mapPolyMesh& mapper)
 
 Foam::vector Foam::dsmcCloud::equipartitionLinearVelocity
 (
-    const scalar& temperature,
-    const scalar& mass
+    const scalar temperature,
+    const scalar mass
 )
 {
     return sqrt(physicoChemical::k.value()*temperature/mass)
@@ -924,8 +926,8 @@ Foam::vector Foam::dsmcCloud::equipartitionLinearVelocity
 
 Foam::vector Foam::dsmcCloud::chapmanEnskogVelocity
 (
-    const scalar& temperature,
-    const scalar& mass,
+    const scalar temperature,
+    const scalar mass,
     const vector& q,
     const tensor& tau
 )
@@ -972,7 +974,7 @@ void Foam::dsmcCloud::generalisedChapmanEnskog
 )
 {
     const scalar k = physicoChemical::k.value();
-    const scalar vibDOF = constProps(typeID).vibrationalDegreesOfFreedom();
+    const scalar vibDOF = constProps(typeID).nVibrationalModes();
 
     scalar B = max(mag(D), mag(tau));
     B = max(B, mag(qTra));
@@ -1105,7 +1107,7 @@ Foam::labelList Foam::dsmcCloud::equipartitionVibrationalEnergyLevel
         forAll(vibLevel, mode)
         {
             vibLevel[mode] = -log(rndGen_.sample01<scalar>())*temperature
-                /constProps(typeId).thetaV()[mode];
+                /constProps(typeId).thetaV_m(mode);
         }
     }
 
@@ -1116,14 +1118,13 @@ Foam::labelList Foam::dsmcCloud::equipartitionVibrationalEnergyLevel
 Foam::label Foam::dsmcCloud::equipartitionElectronicLevel
 (
     const scalar temperature,
-    const List<label>& degeneracyList,
+    const List<label>& electronicDegeneracyList,
     const List<scalar>& electronicEnergyList,
     const label typeId
 )
-
 {
     scalar EMax = physicoChemical::k.value()*temperature;
-    label jMax = constProps(typeId).numberOfElectronicLevels();
+    label jMax = constProps(typeId).nElectronicLevels();
 
     label jDash = 0; // random integer between 0 and jMax-1.
     scalar EJ = 0.0; // maximum possible electronic energy level within list based on k*TElec.
@@ -1149,7 +1150,7 @@ Foam::label Foam::dsmcCloud::equipartitionElectronicLevel
         label i = 0;
         do
         {
-            expSum += degeneracyList[i]*exp((-electronicEnergyList[i]/EMax));
+            expSum += electronicDegeneracyList[i]*exp((-electronicEnergyList[i]/EMax));
             i += 1;
         } while (i < jMax);
 
@@ -1161,7 +1162,7 @@ Foam::label Foam::dsmcCloud::equipartitionElectronicLevel
         for (label ii = 0; ii < jMax; ii++)
         {
             //Eq. 3.1.1 of Liechty thesis.
-            boltz = degeneracyList[ii]*exp((-electronicEnergyList[ii]/EMax))/expSum;
+            boltz = electronicDegeneracyList[ii]*exp((-electronicEnergyList[ii]/EMax))/expSum;
 
             if (boltzMax < boltz)
             {
@@ -1171,14 +1172,15 @@ Foam::label Foam::dsmcCloud::equipartitionElectronicLevel
         }
 
         EJ = electronicEnergyList[jSelect]; //Max. poss energy in list : list goes from [0] to [jMax-1]
-        gJ = degeneracyList[jSelect]; //Max. poss degeneracy in list : list goes from [0] to [jMax-1]
+        gJ = electronicDegeneracyList[jSelect]; //Max. poss degeneracy in list : list goes from [0] to [jMax-1]
         expMax = gJ*exp((-EJ/EMax)); // Max. in denominator of Liechty pdf for initialisation/
                                      //wall bcs/freestream EEle etc..
 
         do // acceptance - rejection based on Eq. 3.1.2 of Liechty thesis.
         {
-            jDash = rndGen_.position<label>(0,jMax-1);
-            func = degeneracyList[jDash]*exp((-electronicEnergyList[jDash]/EMax))/expMax;
+            //jDash = rndGen_.position<label>(0,jMax-1); OLD
+            jDash = rndGen_.sample01<scalar>()*jMax;
+            func = electronicDegeneracyList[jDash]*exp((-electronicEnergyList[jDash]/EMax))/expMax;
         } while( !(func > rndGen_.sample01<scalar>()));
     }
 
@@ -1254,15 +1256,15 @@ Foam::scalar Foam::dsmcCloud::postCollisionRotationalEnergy
 Foam::label Foam::dsmcCloud::postCollisionVibrationalEnergyLevel
 (
     bool postReaction,
-    label vibLevel,
-    label iMax,
-    scalar thetaV,
-    scalar thetaD,
-    scalar refTempZv,
-    scalar omega,
-    scalar Zref,
-    scalar Ec,
-    scalar fixedZv
+    const label vibLevel,
+    const label iMax,
+    const scalar thetaV,
+    const scalar thetaD,
+    const scalar refTempZv,
+    const scalar omega,
+    const scalar Zref,
+    const scalar Ec,
+    const scalar fixedZv
 )
 {
     label iDash = vibLevel;
@@ -1270,40 +1272,40 @@ Foam::label Foam::dsmcCloud::postCollisionVibrationalEnergyLevel
     if (postReaction)
     {
         // post-collision quantum number
-//         label iDash = 0;
         scalar func = 0.0;
         scalar EVib = 0.0;
 
         do // acceptance - rejection
         {
-            iDash = rndGen_.position<label>(0,iMax);
+            //iDash = rndGen_.position<label>(0, iMax); OLD
+             iDash = rndGen_.sample01<scalar>()*(iMax+1);
             EVib = iDash*physicoChemical::k.value()*thetaV;
 
             // - equation 5.61, Bird
-            func = pow((1.0 - (EVib / Ec)),(1.5 - omega));
+            func = pow(1.0 - EVib/Ec, 1.5 - omega);
 
         } while( !(func > rndGen_.sample01<scalar>()) );
     }
     else
     {
-        // - "quantised collision temperature" (equation 3, Bird 2010), denominator from Bird 5.42
+        //- "quantised collision temperature" (equation 3, Bird 2010), denominator from Bird 5.42
 
-        scalar TColl = (iMax*thetaV) / (3.5 - omega);
+        const scalar TColl = iMax*thetaV/(3.5 - omega);
 
-        scalar pow1 = pow((thetaD/TColl),0.33333) - 1.0;
+        const scalar pow1 = pow(thetaD/TColl, 0.33333) - 1.0;
 
-        scalar pow2 = pow ((thetaD/refTempZv),0.33333) -1.0;
+        const scalar pow2 = pow(thetaD/refTempZv, 0.33333) -1.0;
 
-        scalar inverseVibrationalCollisionNumber = 1.0; // NEW VINCENT
+        scalar inverseVibrationalCollisionNumber = 1.0;
 
         if (fixedZv == 0)
         {
             //- vibrational collision number (equation 2, Bird 2010)
-            scalar ZvP1 = pow((thetaD/TColl),omega);
+            const scalar ZvP1 = pow((thetaD/TColl), omega);
 
-            scalar ZvP2 = pow(Zref*(pow((thetaD/refTempZv),(-1.0*omega))),(pow1/pow2));
+            const scalar ZvP2 = pow(Zref*(pow(thetaD/refTempZv, -omega)),(pow1/pow2));
 
-            scalar Zv = ZvP1*ZvP2;
+            const scalar Zv = ZvP1*ZvP2;
 
             //- In order to obtain the relaxation rate corresponding to Zv with the collision
             //  energy-based procedure, the inelastic fraction should be set to about 1/(5Zv)
@@ -1324,11 +1326,13 @@ Foam::label Foam::dsmcCloud::postCollisionVibrationalEnergyLevel
 
             do // acceptance - rejection
             {
-                iDash = rndGen_.position<label>(0,iMax);
+                //iDash = rndGen_.position<label>(0, iMax); OLD
+                iDash = rndGen_.sample01<scalar>()*(iMax+1);
+                
                 EVib = iDash*physicoChemical::k.value()*thetaV;
 
                 // - equation 5.61, Bird
-                func = pow((1.0 - (EVib / Ec)),(1.5 - omega));
+                func = pow(1.0 - EVib/Ec, 1.5 - omega);
 
             } while( !(func > rndGen_.sample01<scalar>()) );
         }
@@ -1340,11 +1344,11 @@ Foam::label Foam::dsmcCloud::postCollisionVibrationalEnergyLevel
 
 Foam::label Foam::dsmcCloud::postCollisionElectronicEnergyLevel
 (
-    scalar Ec,
-    label jMax,
-    scalar omega,
-    List<scalar> EElist,
-    List<label> gList
+    const scalar Ec,
+    const label jMax,
+    const scalar omega,
+    const scalarList& EElist,
+    const labelList& gList
 )
 {
     label nPossStates = 0;
@@ -1369,7 +1373,7 @@ Foam::label Foam::dsmcCloud::postCollisionElectronicEnergyLevel
 
     do
     {
-        label nState = ceil(rndGen_.sample01<scalar>()*(nPossStates));
+        label nState = ceil(rndGen_.sample01<scalar>()*nPossStates);
         label nAvailableStates = 0;
         label nLevel = -1;
 
@@ -1394,8 +1398,8 @@ Foam::label Foam::dsmcCloud::postCollisionElectronicEnergyLevel
             }
         }
 
-    }while(II==0);
-
+    } while(II==0);
+    
     return ELevel;
 
 //     label maxLev = 0;
@@ -1447,7 +1451,8 @@ Foam::label Foam::dsmcCloud::postCollisionElectronicEnergyLevel
 //
 //     do // acceptance - rejection based on Eq. 3.1.8 of Liechty thesis.
 //     {
-//         jDash = rndGen_.position<label>(0,maxLev);
+//         //jDash = rndGen_.position<label>(0,maxLev); OLD
+//         jDash = rndGen_.sample01<scalar>()*(maxLev+1);
 //         prob = gList[jDash]*pow((Ec - EElist[jDash]), (1.5 - omega))/denomMax;
 //
 //     } while( !(prob > rndGen_.sample01<scalar>()));
@@ -1620,7 +1625,7 @@ void Foam::dsmcCloud::removeParcelFromCellOccupancy
                             scalar EVib = this->equipartitionVibrationalEnergy
                             (
                                 vibrationalTemperature,
-                                cP.vibrationalDegreesOfFreedom(),
+                                cP.nVibrationalModes(),
                                 i
                             );
 
@@ -1754,7 +1759,7 @@ void Foam::dsmcCloud::resetHybrid2
                             scalar EVib = this->equipartitionVibrationalEnergy
                             (
                                 vibrationalTemperature,
-                                cP.vibrationalDegreesOfFreedom(),
+                                cP.nVibrationalModes(),
                                 i
                             );
 
@@ -1885,7 +1890,7 @@ void Foam::dsmcCloud::resetHybridMax
                             scalar EVib = this->equipartitionVibrationalEnergy
                             (
                                 vibrationalTemperature,
-                                cP.vibrationalDegreesOfFreedom(),
+                                cP.nVibrationalModes(),
                                 i
                             );
 
@@ -2020,7 +2025,7 @@ void Foam::dsmcCloud::resetHybridTra
                             scalar EVib = this->equipartitionVibrationalEnergy
                             (
                                 vibrationalTemperature,
-                                cP.vibrationalDegreesOfFreedom(),
+                                cP.nVibrationalModes(),
                                 i
                             );
 

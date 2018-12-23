@@ -341,7 +341,7 @@ void densityControlZone::controlParcelsAfterCollisions()
                 labelList vibLevel = cloud_.equipartitionVibrationalEnergyLevel
                 (
                     temperature_,
-                    cloud_.constProps(typeId).vibrationalDegreesOfFreedom(),
+                    cloud_.constProps(typeId).nVibrationalModes(),
                     typeId
                 );
                 
@@ -350,7 +350,7 @@ void densityControlZone::controlParcelsAfterCollisions()
                 label ELevel = cloud_.equipartitionElectronicLevel
                 (
                     temperature_,
-                    cP.degeneracyList(),
+                    cP.electronicDegeneracyList(),
                     cP.electronicEnergyList(),
                     typeId
                 );

@@ -155,24 +155,17 @@ void dsmcFixedHeatFluxWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::trac
     measurePropertiesBeforeControl(p);
 
     vector& U = p.U();
-
     scalar& ERot = p.ERot();
-    
     labelList& vibLevel = p.vibLevel();
-    
-//     label& ELevel = p.ELevel();
+    label& ELevel = p.ELevel();
 
-    label typeId = p.typeId();
+    const label typeId = p.typeId();
 
     scalar m = cloud_.constProps(typeId).mass();
 
-    scalar preIE = 0.5*m*(U & U) + ERot;
-//         + cloud_.constProps(typeId).electronicEnergyList()[ELevel];
-    
-    forAll(vibLevel, i)
-    {
-        preIE += vibLevel[i]*physicoChemical::k.value()*cloud_.constProps(typeId).thetaV()[i];
-    }
+    scalar preIE = 0.5*m*(U & U) + ERot
+        + cloud_.constProps(typeId).eVib_tot(p.vibLevel());
+        + cloud_.constProps(typeId).electronicEnergyList()[ELevel];
 
     vector nw = p.normal();
     nw /= mag(nw);
@@ -215,7 +208,7 @@ void dsmcFixedHeatFluxWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::trac
 
     scalar rotationalDof = cloud_.constProps(typeId).rotationalDegreesOfFreedom();
     
-    scalar vibrationalDof = cloud_.constProps(typeId).vibrationalDegreesOfFreedom();
+    scalar vibrationalDof = cloud_.constProps(typeId).nVibrationalModes();
 
     U =
         sqrt(physicoChemical::k.value()*T/mass)
@@ -229,23 +222,19 @@ void dsmcFixedHeatFluxWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::trac
     
     vibLevel = cloud_.equipartitionVibrationalEnergyLevel(T, vibrationalDof, typeId);
     
-//     ELevel = cloud_.equipartitionElectronicLevel
-//                     (
-//                         T,
-//                         cloud_.constProps(typeId).degeneracyList(),
-//                         cloud_.constProps(typeId).electronicEnergyList(),
-//                         typeId
-//                     );
+    ELevel = cloud_.equipartitionElectronicLevel
+        (
+            T,
+            cloud_.constProps(typeId).electronicDegeneracyList(),
+            cloud_.constProps(typeId).electronicEnergyList(),
+            typeId
+        );
 
     measurePropertiesAfterControl(p, 0.0);
     
-    scalar postIE = 0.5*m*(U & U) + ERot;
-        
-    forAll(vibLevel, i)
-    {
-        postIE += vibLevel[i]*physicoChemical::k.value()*cloud_.constProps(typeId).thetaV()[i];
-    }
-//         + cloud_.constProps(typeId).electronicEnergyList()[p.ELevel()] ;
+    scalar postIE = 0.5*m*(U & U) + ERot
+        + cloud_.constProps(typeId).eVib_tot(vibLevel)
+        + cloud_.constProps(typeId).electronicEnergyList()[ELevel];
     
     U += velocity_;
     

@@ -162,14 +162,14 @@ void dsmcInitialiseOnLine::setInitialConfiguration()
             labelList vibLevel = cloud_.equipartitionVibrationalEnergyLevel
             (
                 vibrationalTemperature,
-                cP.vibrationalDegreesOfFreedom(),
+                cP.nVibrationalModes(),
                 typeId
             );
             
             label ELevel = cloud_.equipartitionElectronicLevel
             (
                 electronicTemperature,
-                cP.degeneracyList(),
+                cP.electronicDegeneracyList(),
                 cP.electronicEnergyList(),
                 typeId
             );
@@ -277,7 +277,7 @@ void dsmcInitialiseOnLine::setInitialConfiguration()
 //                     scalar EVib = cloud_.equipartitionVibrationalEnergy
 //                     (
 //                         vibrationalTemperature,
-//                         cP.vibrationalDegreesOfFreedom(),
+//                         cP.nVibrationalModes(),
 //                         typeId
 //                     );
 // 

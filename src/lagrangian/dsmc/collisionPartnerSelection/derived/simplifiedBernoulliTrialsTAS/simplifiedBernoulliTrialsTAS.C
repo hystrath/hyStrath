@@ -268,7 +268,8 @@ void simplifiedBernoulliTrialsTAS::collide()
                     candidateP = p;
                 
                     k = nCS - p - 1;
-                    candidateQ = p + rndGen_.position<label>(1, k);
+                    //candidateQ = p + rndGen_.position<label>(1, k); OLD
+                    candidateQ = p + 1 + rndGen_.sample01<scalar>()*(k+1);
                     
                     dsmcParcel& parcelP = *cellParcels[subCells[i][candidateP]];
                     dsmcParcel& parcelQ = *cellParcels[subCells[i][candidateQ]];

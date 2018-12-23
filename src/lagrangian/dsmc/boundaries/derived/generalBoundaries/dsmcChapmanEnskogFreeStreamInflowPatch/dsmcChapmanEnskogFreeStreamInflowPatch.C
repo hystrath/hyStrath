@@ -115,7 +115,11 @@ void dsmcChapmanEnskogFreeStreamInflowPatch::controlParcelsBeforeMove()
             const vector& sF = mesh_.faceAreas()[faceI];
             const scalar fA = mag(sF);
             
-            const scalar deltaT = cloud_.deltaTValue(mesh_.boundaryMesh()[patchId_].faceCells()[faceI]);
+           const scalar deltaT = 
+                cloud_.deltaTValue
+                (
+                    mesh_.boundaryMesh()[patchId_].faceCells()[f]
+                );
             
             scalar mostProbableSpeed
             (
@@ -382,14 +386,14 @@ void dsmcChapmanEnskogFreeStreamInflowPatch::controlParcelsBeforeMove()
                 labelList vibLevel = cloud_.equipartitionVibrationalEnergyLevel
                 (
                     faceVibrationalTemperature,
-                    cloud_.constProps(typeId).vibrationalDegreesOfFreedom(),
+                    cloud_.constProps(typeId).nVibrationalModes(),
                     typeId
                 );
                 
                 label ELevel = cloud_.equipartitionElectronicLevel
                 (
                     faceElectronicTemperature,
-                    cloud_.constProps(typeId).degeneracyList(),
+                    cloud_.constProps(typeId).electronicDegeneracyList(),
                     cloud_.constProps(typeId).electronicEnergyList(),
                     typeId
                 );

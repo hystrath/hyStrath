@@ -143,7 +143,7 @@ void dsmcDiffuseWallMultiTPatch::controlParticle(dsmcParcel& p, dsmcParcel::trac
 
     scalar rotationalDof = cloud_.constProps(typeId).rotationalDegreesOfFreedom();
     
-    scalar vibrationalDof = cloud_.constProps(typeId).vibrationalDegreesOfFreedom();
+    scalar vibrationalDof = cloud_.constProps(typeId).nVibrationalModes();
 
     U =
         sqrt(physicoChemical::k.value()*Ttra/mass)
@@ -162,7 +162,7 @@ void dsmcDiffuseWallMultiTPatch::controlParticle(dsmcParcel& p, dsmcParcel::trac
     ELevel = cloud_.equipartitionElectronicLevel
         (
             Tel,
-            cloud_.constProps(typeId).degeneracyList(),
+            cloud_.constProps(typeId).electronicDegeneracyList(),
             cloud_.constProps(typeId).electronicEnergyList(),
             typeId
         );

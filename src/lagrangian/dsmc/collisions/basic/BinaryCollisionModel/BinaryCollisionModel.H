@@ -59,11 +59,8 @@ protected:
         //- The cloud dictionary
         const dictionary& dict_;
 
-        // reference to the owner cloud class
+        //- Reference to the owner cloud class
         dsmcCloud& cloud_;
-
-//         //- The coefficients dictionary
-//         const dictionary coeffDict_;
 
 
 public:
@@ -95,7 +92,6 @@ public:
         (
             const dictionary& dict,
             dsmcCloud& owner
-//             const word& type
         );
 
 
@@ -113,12 +109,6 @@ public:
 
     // Access
 
-        //- Return the owner cloud object
-//         const dsmcCloud& owner() const;
-
-        //- Return non-const access to the owner cloud object
-//         dsmcCloud& owner();
-
         //- Return the dictionary
         const dictionary& dict() const;
 
@@ -131,7 +121,7 @@ public:
         //- Flag to indicate whether model activates collision model
         virtual bool active() const = 0;
 
-        //- Return the collision cross section * relative velocity product
+        //- Return the collision cross section times relative velocity product
         virtual scalar sigmaTcR
         (
             const dsmcParcel& pP,
@@ -144,6 +134,15 @@ public:
             dsmcParcel& pP,
             dsmcParcel& pQ,
             label& cellI
+        ) = 0;
+        
+        //- Apply relaxation
+        virtual void relax
+        (
+            dsmcParcel& p,
+            scalar& translationalEnergy,
+            const scalar omegaPQ,
+            const bool postReaction = false
         ) = 0;
 };
 

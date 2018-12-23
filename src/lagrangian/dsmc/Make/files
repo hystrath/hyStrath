@@ -37,21 +37,15 @@ molsToDel/derived/delFromZone/delFromZone.C
 /* REACTIONS */
 reactions/basic/dsmcReactions/dsmcReactions.C
 reactions/basic/dsmcReaction/dsmcReaction.C
-reactions/derived/vincent_dissociation/dissociationQK.C
-reactions/derived/moleculeAtomDissociationIonisation/moleculeAtomDissociationIonisation.C
-reactions/derived/moleculeElectronDissociationIonisation/moleculeElectronDissociationIonisation.C
-reactions/derived/atomElectronIonisation/atomElectronIonisation.C
-reactions/derived/atomAtomIonisationSameSpecies/atomAtomIonisationSameSpecies.C
-reactions/derived/atomAtomIonisationDissimilarSpecies/atomAtomIonisationDissimilarSpecies.C
-reactions/derived/atomIonIonisation/atomIonIonisation.C
-reactions/derived/moleculeIonDissociationIonisation/moleculeIonDissociationIonisation.C
-reactions/derived/forwardAssociativeIonisation/forwardAssociativeIonisation.C
-reactions/derived/forwardAssociativeIonisationDissimilarSpecies/forwardAssociativeIonisationDissimilarSpecies.C
-reactions/derived/reverseAssociativeIonisation/reverseAssociativeIonisation.C
-reactions/derived/chargeExchange/chargeExchange.C
-reactions/derived/dissociationIonisationTypeISameSpecies/dissociationIonisationTypeISameSpecies.C
-reactions/derived/dissociationIonisationTypeIDissimilarSpecies/dissociationIonisationTypeIDissimilarSpecies.C
-reactions/derived/dissociationIonisationExchange/dissociationIonisationExchange.C
+reactions/derived/dissociationQK/dissociationQK.C
+reactions/derived/ionisationQK/ionisationQK.C
+/*reactions/derived/associativeIonisationQK/associativeIonisationQK.C*/
+reactions/derived/exchangeQK/exchangeQK.C
+reactions/derived/chargeExchangeQK/chargeExchangeQK.C
+
+reactions/derived/mixed/dissociationExchangeQK/dissociationExchangeQK.C
+reactions/derived/mixed/dissociationIonisationQK/dissociationIonisationQK.C
+reactions/derived/mixed/dissociationIonisationExchangeQK/dissociationIonisationExchangeQK.C
 
 /* BINARY COLLISIONS */
 collisions/basic/BinaryCollisionModel/BinaryCollisionModel.C
@@ -83,11 +77,9 @@ porousMeasurements/derived/global/dsmcGlobalPorousMediumMeasurements.C
 
 /* BOUNDARIES */
 boundaries/basic/dsmcBoundaries/dsmcBoundaries.C
-
 boundaries/basic/dsmcCyclicBoundary/dsmcCyclicBoundary.C
 boundaries/basic/dsmcGeneralBoundary/dsmcGeneralBoundary.C
 boundaries/basic/dsmcPatchBoundary/dsmcPatchBoundary.C
-
 
 /* PATCH BOUNDARY MODELS */
 boundaries/derived/patchBoundaries/dsmcFieldPatchBoundary/dsmcFieldPatchBoundary.C

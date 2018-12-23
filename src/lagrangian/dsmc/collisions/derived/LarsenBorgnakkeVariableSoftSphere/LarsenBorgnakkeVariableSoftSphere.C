@@ -29,13 +29,17 @@ License
 
 using namespace Foam::constant::mathematical;
 
-// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
 {
     defineTypeNameAndDebug(LarsenBorgnakkeVariableSoftSphere, 0);
-    addToRunTimeSelectionTable(BinaryCollisionModel, 
-                               LarsenBorgnakkeVariableSoftSphere, dictionary);
+    addToRunTimeSelectionTable
+    (
+        BinaryCollisionModel, 
+        LarsenBorgnakkeVariableSoftSphere,
+        dictionary
+    );
 };
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
@@ -74,7 +78,6 @@ bool Foam::LarsenBorgnakkeVariableSoftSphere::active() const
 {
     return true;
 }
-
 
 
 Foam::scalar Foam::LarsenBorgnakkeVariableSoftSphere::sigmaTcR
@@ -174,11 +177,11 @@ void Foam::LarsenBorgnakkeVariableSoftSphere::collide
     scalarList preCollisionEVibQ(vibLevelQ.size(),0.0);
     
     scalar vibrationalDofP = 
-                cloud_.constProps(typeIdP).vibrationalDegreesOfFreedom();
+                cloud_.constProps(typeIdP).nVibrationalModes();
     scalar vibrationalDofQ = 
-                cloud_.constProps(typeIdQ).vibrationalDegreesOfFreedom();
+                cloud_.constProps(typeIdQ).nVibrationalModes();
                 
-    if(vibrationalDofP > 0)
+    if (vibrationalDofP > 0)
     {
         forAll(vibLevelP, i)
         {
@@ -188,7 +191,7 @@ void Foam::LarsenBorgnakkeVariableSoftSphere::collide
         }
     }
 
-    if(vibrationalDofQ > 0)
+    if (vibrationalDofQ > 0)
     {
         forAll(vibLevelQ, i)
         {
@@ -209,15 +212,15 @@ void Foam::LarsenBorgnakkeVariableSoftSphere::collide
     scalar rotationalDofQ = 
                     cloud_.constProps(typeIdQ).rotationalDegreesOfFreedom();
                     
-    label jMaxP = cloud_.constProps(typeIdP).numberOfElectronicLevels();    
-    label jMaxQ = cloud_.constProps(typeIdQ).numberOfElectronicLevels();
+    label jMaxP = cloud_.constProps(typeIdP).nElectronicLevels();    
+    label jMaxQ = cloud_.constProps(typeIdQ).nElectronicLevels();
     
     List<scalar> EElistP = cloud_.constProps(typeIdP).electronicEnergyList();   
  
     List<scalar> EElistQ = cloud_.constProps(typeIdQ).electronicEnergyList();
    
-    List<label> gListP = cloud_.constProps(typeIdP).degeneracyList();    
-    List<label> gListQ = cloud_.constProps(typeIdQ).degeneracyList();  
+    List<label> gListP = cloud_.constProps(typeIdP).electronicDegeneracyList();    
+    List<label> gListQ = cloud_.constProps(typeIdQ).electronicDegeneracyList();  
     
     scalarList thetaVP = cloud_.constProps(typeIdP).thetaV();  
     scalarList thetaVQ = cloud_.constProps(typeIdQ).thetaV();
@@ -258,7 +261,7 @@ void Foam::LarsenBorgnakkeVariableSoftSphere::collide
     // serial application of the LB method, as per the INELRS subroutine in 
     // Bird's DSMC0R.FOR
     
-    if(inverseElectronicCollisionNumber > rndGen.sample01<scalar>())
+    if (inverseElectronicCollisionNumber > rndGen.sample01<scalar>())
     { 
 
         // collision energy of particle P = relative translational energy + 
@@ -281,7 +284,7 @@ void Foam::LarsenBorgnakkeVariableSoftSphere::collide
         translationalEnergy = EcP - EElistP[ELevelP];
     }
             
-    if(vibrationalDofP > VSMALL)
+    if (vibrationalDofP > VSMALL)
     {
         forAll(vibLevelP, i)
         {
@@ -292,7 +295,7 @@ void Foam::LarsenBorgnakkeVariableSoftSphere::collide
             // - maximum possible quantum level (equation 3, Bird 2010)
             label iMaxP = (EcP / (physicoChemical::k.value()*thetaVP[i])); 
 
-            if(iMaxP > SMALL)
+            if (iMaxP > SMALL)
             {       
                 vibLevelP[i] = cloud_.postCollisionVibrationalEnergyLevel
                         (
@@ -330,7 +333,7 @@ void Foam::LarsenBorgnakkeVariableSoftSphere::collide
         }
     }
     
-    if(inverseElectronicCollisionNumber > rndGen.sample01<scalar>())
+    if (inverseElectronicCollisionNumber > rndGen.sample01<scalar>())
     {
 
         // collision energy of particle Q = relative translational energy + 
@@ -353,7 +356,7 @@ void Foam::LarsenBorgnakkeVariableSoftSphere::collide
         translationalEnergy = EcQ - EElistQ[ELevelQ];
     }
               
-    if(vibrationalDofQ > VSMALL)
+    if (vibrationalDofQ > VSMALL)
     {
         forAll(vibLevelQ, i)
         {
@@ -364,7 +367,7 @@ void Foam::LarsenBorgnakkeVariableSoftSphere::collide
             // - maximum possible quantum level (equation 3, Bird 2010)
             label iMaxQ = (EcQ / (physicoChemical::k.value()*thetaVQ[i])); 
 
-            if(iMaxQ > SMALL)
+            if (iMaxQ > SMALL)
             {       
                 vibLevelQ[i] = cloud_.postCollisionVibrationalEnergyLevel
                         (
@@ -444,25 +447,37 @@ void Foam::LarsenBorgnakkeVariableSoftSphere::collide
     //- III molecule when it collides with either class II or class III
     //- molecules.
     
-    if(classificationP == 0 && classificationQ == 1)
+    if (classificationP == 0 && classificationQ == 1)
     {
         pP.classification() = 2;
     }
     
-    if(classificationQ == 0 && classificationP == 1)
+    if (classificationQ == 0 && classificationP == 1)
     {
         pQ.classification() = 2;
     }
     
-    if(classificationP == 0 && classificationQ == 2)
+    if (classificationP == 0 && classificationQ == 2)
     {
         pP.classification() = 2;
     }
     
-    if(classificationQ == 0 && classificationP == 2)
+    if (classificationQ == 0 && classificationP == 2)
     {
         pQ.classification() = 2;
     }
+}
+
+
+void Foam::LarsenBorgnakkeVariableSoftSphere::relax
+(
+    dsmcParcel& p,
+    scalar& translationalEnergy,
+    const scalar omegaPQ,
+    const bool postReaction
+)
+{
+    NotImplemented
 }
 
 

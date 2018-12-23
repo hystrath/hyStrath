@@ -177,7 +177,7 @@ void dsmcCLLWallFieldPatch::controlParticle(dsmcParcel& p, dsmcParcel::trackingD
 
     scalar rotationalDof = cloud_.constProps(typeId).rotationalDegreesOfFreedom();
     
-    scalar vibrationalDof = cloud_.constProps(typeId).vibrationalDegreesOfFreedom();
+    scalar vibrationalDof = cloud_.constProps(typeId).nVibrationalModes();
     
     const scalar& alphaT = tangentialAccommodationCoefficient_*(2.0 - tangentialAccommodationCoefficient_);
     

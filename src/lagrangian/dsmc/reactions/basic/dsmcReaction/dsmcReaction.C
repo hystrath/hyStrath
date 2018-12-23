@@ -41,6 +41,27 @@ defineTypeNameAndDebug(dsmcReaction, 0);
 
 defineRunTimeSelectionTable(dsmcReaction, dictionary);
 
+
+// * * * * * * * * * * *  Protected Member functions * * * * * * * * * * * * //
+
+void dsmcReaction::setProperties()
+{
+    if (cloud_.coordSystem().type() != "dsmcCartesian" && writeRatesToTerminal_)
+    {
+        WarningIn("dsmcReaction::setProperties()")
+            << "For reaction named " << reactionName_ << nl
+            << "Non Cartesian coordinate system, cannot print "
+            << "reaction rates to the terminal." << nl << endl;
+            writeRatesToTerminal_ = false;
+    }
+    
+    forAll(reactantIds_, r)
+    {
+        reactantTypes_[r] = cloud_.constProps(reactantIds_[r]).type();
+    }
+}
+
+
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 // Construct from components
@@ -53,9 +74,40 @@ dsmcReaction::dsmcReaction
 :
     mesh_(cloud.mesh()),
     cloud_(cloud),
-    nTotReactions_(0),
-    reactWithLists_(false)
-{}
+    reactWithLists_(false),
+    reactionName_(dict.name().substr(1)),
+    reactantIds_(),
+    reactantTypes_(),
+    allowSplitting_
+    (
+        dict.lookupOrDefault<Switch>("allowSplitting", true)
+    ),
+    writeRatesToTerminal_
+    (
+        dict.lookupOrDefault<Switch>("writeRatesToTerminal", false)
+    ),
+    relax_(true)
+{
+    //- Reading in reactants
+    const List<word> reactants(dict.lookup("reactants"));
+    reactantIds_.setSize(reactants.size(), -1);
+    reactantTypes_.setSize(reactantIds_.size(), -1);
+    
+    forAll(reactantIds_, r)
+    {
+        reactantIds_[r] = findIndex(cloud_.typeIdList(), reactants[r]);
+        
+        //- Check that reactants belong to the typeIdList as defined in 
+        //  constant/dsmcProperties
+        if (reactantIds_[r] == -1)
+        {
+            FatalErrorIn("dsmcReaction::setProperties()")
+                << "For reaction named " << reactionName_ << nl
+                << "Cannot find type id: " << reactants[r] << nl 
+                << exit(FatalError);
+        }
+    }
+}
 
 
 // * * * * * * * * * * * * * * * * Selectors * * * * * * * * * * * * * * * * //
@@ -101,25 +153,8 @@ autoPtr<dsmcReaction> dsmcReaction::New
 dsmcReaction::~dsmcReaction()
 {}
 
+
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
-
-const label& dsmcReaction::nTotReactions() const
-{
-    return nTotReactions_;
-}
-
-
-const label& dsmcReaction::nReactionsPerTimeStep() const
-{
-    return nReactionsPerTimeStep_;
-}
-
-
-label& dsmcReaction::nReactionsPerTimeStep()
-{
-    return nReactionsPerTimeStep_;
-}
-
 
 const dsmcCloud& dsmcReaction::cloud() const
 {
@@ -130,6 +165,44 @@ const dsmcCloud& dsmcReaction::cloud() const
 const bool& dsmcReaction::reactWithLists() const
 {
     return reactWithLists_;
+}
+
+
+const bool& dsmcReaction::relax() const
+{
+    return relax_;
+}
+
+
+labelList dsmcReaction::decreasing_sort_indices(const scalarList &v)
+{
+    //- initialize original index locations
+    labelList idx(v.size());
+    std::iota(idx.begin(), idx.end(), 0);
+
+    scalarList rnd(v.size(), 0.0);
+    forAll(rnd, i)
+    {
+        rnd[i] = cloud_.rndGen().sample01<scalar>();
+    }
+
+    //- sort indices in decreasing order based on comparing values in v
+    //  random shuffle for similar values
+    std::sort
+    (
+        idx.begin(),
+        idx.end(),
+        [&v, &rnd](label i1, label i2)
+        {
+            if (v[i1] == v[i2])
+            {
+                return rnd[i1] > rnd[i2];
+            }
+            return v[i1] > v[i2];
+        }
+    );
+
+    return idx;
 }
 
 } // End namespace Foam

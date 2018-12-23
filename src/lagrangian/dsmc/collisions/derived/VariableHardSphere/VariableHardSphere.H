@@ -80,24 +80,33 @@ public:
     // Member Functions
 
         //- Flag to indicate whether model activates collision model
-        bool active() const;
+        virtual bool active() const;
 
-        //- Return the collision cross section * relative velocity product
-        scalar sigmaTcR
+        //- Return the collision cross section times relative velocity product
+        virtual scalar sigmaTcR
         (
             const dsmcParcel& pP,
             const dsmcParcel& pQ
         ) const;
 
         //- Apply collision
-        void collide
+        virtual void collide
         (
             dsmcParcel& pP,
             dsmcParcel& pQ,
             label& cellI
         );
+        
+        //- Apply relaxation
+        virtual void relax
+        (
+            dsmcParcel& p,
+            scalar& translationalEnergy,
+            const scalar omegaPQ,
+            const bool postReaction = false
+        );
 
-        const dictionary& coeffDict() const;
+        virtual const dictionary& coeffDict() const;
 };
 
 

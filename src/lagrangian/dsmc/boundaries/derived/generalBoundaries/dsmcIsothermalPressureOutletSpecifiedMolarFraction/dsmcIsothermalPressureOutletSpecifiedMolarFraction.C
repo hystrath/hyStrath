@@ -301,7 +301,7 @@ void dsmcIsothermalPressureOutletSpecifiedMolarFraction::controlParcelsBeforeMov
                 labelList vibLevel = cloud_.equipartitionVibrationalEnergyLevel
                 (
                     faceTemperature,
-                    cloud_.constProps(typeId).vibrationalDegreesOfFreedom(),
+                    cloud_.constProps(typeId).nVibrationalModes(),
                     typeId
                 );
                 
@@ -310,7 +310,7 @@ void dsmcIsothermalPressureOutletSpecifiedMolarFraction::controlParcelsBeforeMov
                 label ELevel = cloud_.equipartitionElectronicLevel
                 (
                     faceTemperature,
-                    cloud_.constProps(typeId).degeneracyList(),
+                    cloud_.constProps(typeId).electronicDegeneracyList(),
                     cloud_.constProps(typeId).electronicEnergyList(),
                     typeId
                 );

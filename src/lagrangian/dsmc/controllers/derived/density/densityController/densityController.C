@@ -194,12 +194,13 @@ void densityController::deleteParcelFromDSMC(const label& c)
 
     if(molsInCell.size() > 0)
     {
-      label cellMolRemoveId = rndGen_.position<label>(0, molsInCell.size()-1);
-      dsmcParcel* delParcel = molsInCell[cellMolRemoveId];
+        //label cellMolRemoveId = rndGen_.position<label>(0, molsInCell.size()-1); OLD
+        label cellMolRemoveId = rndGen_.sample01<scalar>()*molsInCell.size();
+        dsmcParcel* delParcel = molsInCell[cellMolRemoveId];
 
-      //- delete molecule from cellOccupancy (before deleting it from cloud)
-      cloud_.removeParcelFromCellOccupancy(cellMolRemoveId, cellI);
-      cloud_.deleteParticle(*delParcel);
+        //- delete molecule from cellOccupancy (before deleting it from cloud)
+        cloud_.removeParcelFromCellOccupancy(cellMolRemoveId, cellI);
+        cloud_.deleteParticle(*delParcel);
     }
 
 }
@@ -269,14 +270,14 @@ void densityController::insertParcelWithinDSMC(const label& c)
     labelList vibLevel = cloud_.equipartitionVibrationalEnergyLevel
     (
         temperature_,
-        cP.vibrationalDegreesOfFreedom(),
+        cP.nVibrationalModes(),
         typeId_
     );
     
     label ELevel = cloud_.equipartitionElectronicLevel
     (
         temperature_,
-        cP.degeneracyList(),
+        cP.electronicDegeneracyList(),
         cP.electronicEnergyList(),
         typeId_
     );

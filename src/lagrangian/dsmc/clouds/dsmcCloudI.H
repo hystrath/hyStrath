@@ -284,16 +284,7 @@ inline Foam::scalarList Foam::dsmcCloud::infoMeasurements()
         infoMeasurements[0] += cP.mass()*nParticles;
         infoMeasurements[1] += 0.5*cP.mass()*(p.U() & p.U())*nParticles;
         infoMeasurements[2] += p.ERot()*nParticles;
-        
-        if(cP.vibrationalDegreesOfFreedom() > 0)
-        {
-            forAll(p.vibLevel(), i)
-            {
-                infoMeasurements[3] += physicoChemical::k.value()
-                    *p.vibLevel()[i]*cP.thetaV()[i]*nParticles;
-            }
-        }
-        
+        infoMeasurements[3] += cP.eVib_tot(p.vibLevel())*nParticles;
         infoMeasurements[4] += cP.electronicEnergyList()[p.ELevel()]*nParticles;
         
         if(p.isStuck())
@@ -312,8 +303,8 @@ inline Foam::scalarList Foam::dsmcCloud::infoMeasurements()
 
 inline Foam::scalar Foam::dsmcCloud::maxwellianAverageSpeed
 (
-    const scalar& temperature,
-    const scalar& mass
+    const scalar temperature,
+    const scalar mass
 ) const
 {
     return 2.0*sqrt(2.0*physicoChemical::k.value()*temperature/(pi*mass));
@@ -323,7 +314,7 @@ inline Foam::scalar Foam::dsmcCloud::maxwellianAverageSpeed
 inline Foam::scalarField Foam::dsmcCloud::maxwellianAverageSpeed
 (
     const scalarField& temperature,
-    const scalar& mass
+    const scalar mass
 ) const
 {
     return 2.0*sqrt(2.0*physicoChemical::k.value()*temperature/(pi*mass));
@@ -332,8 +323,8 @@ inline Foam::scalarField Foam::dsmcCloud::maxwellianAverageSpeed
 
 inline Foam::scalar Foam::dsmcCloud::maxwellianRMSSpeed
 (
-    const scalar& temperature,
-    const scalar& mass
+    const scalar temperature,
+    const scalar mass
 ) const
 {
     return sqrt(3.0*physicoChemical::k.value()*temperature/mass);
@@ -343,7 +334,7 @@ inline Foam::scalar Foam::dsmcCloud::maxwellianRMSSpeed
 inline Foam::scalarField Foam::dsmcCloud::maxwellianRMSSpeed
 (
     const scalarField& temperature,
-    const scalar& mass
+    const scalar mass
 ) const
 {
     return sqrt(3.0*physicoChemical::k.value()*temperature/mass);
@@ -352,8 +343,8 @@ inline Foam::scalarField Foam::dsmcCloud::maxwellianRMSSpeed
 
 inline Foam::scalar Foam::dsmcCloud::maxwellianMostProbableSpeed
 (
-    const scalar& temperature,
-    const scalar& mass
+    const scalar temperature,
+    const scalar mass
 ) const
 {
     return sqrt(2.0*physicoChemical::k.value()*temperature/mass);
@@ -363,7 +354,7 @@ inline Foam::scalar Foam::dsmcCloud::maxwellianMostProbableSpeed
 inline Foam::scalarField Foam::dsmcCloud::maxwellianMostProbableSpeed
 (
     const scalarField& temperature,
-    const scalar& mass
+    const scalar mass
 ) const
 {
     return sqrt(2.0*physicoChemical::k.value()*temperature/mass);

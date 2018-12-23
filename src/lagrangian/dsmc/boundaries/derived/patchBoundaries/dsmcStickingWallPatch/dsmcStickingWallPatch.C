@@ -202,15 +202,9 @@ void dsmcStickingWallPatch::adsorbParticle
         localTemperature = temperature_;
     }
     
-    preIE = 0.5*mass*(U & U) + ERot + 
-        cloud_.constProps(typeId).electronicEnergyList()[p.ELevel()];
-    
-    forAll(p.vibLevel(), i)
-    {
-        preIE += p.vibLevel()[i]
-            *cloud_.constProps(typeId).thetaV()[i]
-            *physicoChemical::k.value();
-    }
+    preIE = 0.5*mass*(U & U) + ERot 
+        + cloud_.constProps(typeId).eVib_tot(p.vibLevel())
+        + cloud_.constProps(typeId).electronicEnergyList()[p.ELevel()];
     
     preIMom = mass*U;
     
@@ -329,7 +323,7 @@ void dsmcStickingWallPatch::measurePropertiesAfterDesorption
               .rhoNIntBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfA; 
         }
         
-        if(constProps.numberOfElectronicLevels() > 1)
+        if(constProps.nElectronicLevels() > 1)
         {
            cloud_.boundaryFluxMeasurements()
               .rhoNElecBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfA;
@@ -358,28 +352,19 @@ void dsmcStickingWallPatch::measurePropertiesAfterDesorption
             .rotationalDofBF()[p.typeId()][wppIndex][wppLocalFace] += 
                 constProps.rotationalDegreesOfFreedom()*invMagUnfA;
 
-        forAll(p.vibLevel(), i)
-        {
-            cloud_.boundaryFluxMeasurements()
-                .vibrationalEBF()[p.typeId()][wppIndex][wppLocalFace] += 
-                    p.vibLevel()[i]*constProps.thetaV()[i]
-                  * physicoChemical::k.value()
-                  * invMagUnfA;
-        }
+        const scalar EVibP_tot = constProps.eVib_tot(p.vibLevel());
+        
+        cloud_.boundaryFluxMeasurements()
+            .vibrationalEBF()[p.typeId()][wppIndex][wppLocalFace] += 
+                EVibP_tot*invMagUnfA;
 
         cloud_.boundaryFluxMeasurements()
             .electronicEBF()[p.typeId()][wppIndex][wppLocalFace] += 
                 constProps.electronicEnergyList()[p.ELevel()]*invMagUnfA;
 
         // post-interaction energy
-        scalar postIE = 0.5*m*(p.U() & p.U()) + p.ERot() 
+        scalar postIE = 0.5*m*(p.U() & p.U()) + p.ERot() + EVibP_tot
             + constProps.electronicEnergyList()[p.ELevel()];
-
-        forAll(p.vibLevel(), i)
-        {
-           postIE += p.vibLevel()[i]*constProps.thetaV()[i]
-              *physicoChemical::k.value();
-        }
 
         // post-interaction momentum
         const vector postIMom = m*p.U();

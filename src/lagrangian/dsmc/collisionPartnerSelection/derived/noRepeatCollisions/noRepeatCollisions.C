@@ -58,7 +58,8 @@ label noRepeatCollisions::pickFromCandidateList
     if(size > 0)
     {
         // choose a random number between 0 and the size of the candidateList size
-        label randomIndex = rndGen_.position<label>(0, size - 1);
+        //label randomIndex = rndGen_.position<label>(0, size - 1); OLD
+        label randomIndex = rndGen_.sample01<scalar>()*size;
         entry = candidatesInCell[randomIndex];
 
 //         Info<< "random index: " << randomIndex <<" entry " 
@@ -128,7 +129,8 @@ label noRepeatCollisions::pickFromCandidateSubList
     
     if(subCellSize > 0)
     {
-        label randomIndex = rndGen_.position<label>(0, subCellSize - 1);
+        //label randomIndex = rndGen_.position<label>(0, subCellSize - 1); OLD
+        label randomIndex = rndGen_.sample01<scalar>()*subCellSize;
         entry = candidatesInSubCell[randomIndex];
 
 //         Info<< "random index: " << randomIndex <<" entry " 
@@ -357,15 +359,15 @@ void noRepeatCollisions::collide()
                         // uniform candidate selection procedure
         
         //                 // Select the first collision candidate
-        //                 label candidateP = rndGen_.position<label>(0, nC-1);
+        //                 label candidateP = rndGen_.sample01<scalar>()*nC;
         // 
         //                 // Select a possible second collision candidate
-        //                 label candidateQ = rndGen_.position<label>(0, nC-1);
+        //                 label candidateQ = rndGen_.sample01<scalar>()*nC;
         // 
         //                 // If the same candidate is chosen, choose again
         //                 while (candidateP == candidateQ)
         //                 {
-        //                     candidateQ = rndGen_.position<label>(0, nC-1);
+        //                     candidateQ = rndGen_.sample01<scalar>()*nC;
         //                 }
         
         

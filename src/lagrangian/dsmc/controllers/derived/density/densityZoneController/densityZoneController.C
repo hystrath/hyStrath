@@ -300,7 +300,8 @@ void densityZoneController::nMolsToControl()
         
                     while(!foundCell)
                     {
-                        label cellId = rndGen_.position<label>(0, controlZone().size()-1);
+                        //label cellId = rndGen_.position<label>(0, controlZone().size()-1); OLD
+                        label cellId = rndGen_.sample01<scalar>()*controlZone().size();
 
                         if( findIndex(cellsChosen, cellId) == -1)
                         {
@@ -351,7 +352,8 @@ void densityZoneController::nMolsToControl()
     
                 while(!foundCell)
                 {
-                    label cellId = rndGen_.position<label>(0, controlZone().size()-1);
+                    //label cellId = rndGen_.position<label>(0, controlZone().size()-1); OLD
+                    label cellId = rndGen_.sample01<scalar>()*controlZone().size();
     
                     if( findIndex(cellsChosen, cellId) == -1)
                     {
@@ -540,14 +542,14 @@ void densityZoneController::insertParcels(const label& nMols, const label& c)
         labelList vibLevel = cloud_.equipartitionVibrationalEnergyLevel
         (
             temperature_,
-            cP.vibrationalDegreesOfFreedom(),
+            cP.nVibrationalModes(),
             typeId_
         );
         
         label ELevel = cloud_.equipartitionElectronicLevel
         (
             temperature_,
-            cP.degeneracyList(),
+            cP.electronicDegeneracyList(),
             cP.electronicEnergyList(),
             typeId_
         );
@@ -601,7 +603,8 @@ void densityZoneController::deleteParcels(const label& nMols, const label& c)
     
         if(molsInCell.size() > 0)
         {
-            label cellMolRemoveId = rndGen_.position<label>(0, molsInCell.size()-1);
+            //label cellMolRemoveId = rndGen_.position<label>(0, molsInCell.size()-1);
+            label cellMolRemoveId = rndGen_.sample01<scalar>()*molsInCell.size();
             dsmcParcel* delParcel = molsInCell[cellMolRemoveId];
             
             //- delete molecule from cellOccupancy (before deleting it from cloud)

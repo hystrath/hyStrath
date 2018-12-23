@@ -383,16 +383,16 @@ public:
         // distribution
         vector equipartitionLinearVelocity
         (
-            const scalar& temperature,
-            const scalar& mass
+            const scalar temperature,
+            const scalar mass
         );
         
         //- Generate a random velocity sampled from the Chapman-Enskog speed
         // distribution
         vector chapmanEnskogVelocity
         (
-            const scalar& temperature,
-            const scalar& mass,
+            const scalar temperature,
+            const scalar mass,
             const vector& q,
             const tensor& tau
         );
@@ -437,7 +437,7 @@ public:
         label equipartitionElectronicLevel
         (
             const scalar temperature,
-            const List<label>& degeneracyList,
+            const List<label>& electronicDegeneracyList,
             const List<scalar>& electronicEnergyList,
             const label typeId
         );
@@ -453,65 +453,65 @@ public:
         label postCollisionVibrationalEnergyLevel
         (
             bool postReaction,
-            label vibLevel,
-            label iMax,
-            scalar thetaV,
-            scalar thetaD,
-            scalar refTempZv,
-            scalar omega,
-            scalar Zref,
-            scalar Ec,
-            scalar fixedZv = 0
+            const label vibLevel,
+            const label iMax,
+            const scalar thetaV,
+            const scalar thetaD,
+            const scalar refTempZv,
+            const scalar omega,
+            const scalar Zref,
+            const scalar Ec,
+            const scalar fixedZv = 0
         );
         
         // - Generate a LB post-collision electronic energy level
         label postCollisionElectronicEnergyLevel
         (
-            scalar Ec,
-            label jMax,
-            scalar omega,
-            List<scalar> EElist,
-            List<label> gList
+            const scalar Ec,
+            const label jMax,
+            const scalar omega,
+            const scalarList& EElist,
+            const labelList& gList
         );
 
         // From the Maxwellian distribution:
         //- Average particle speed
         inline scalar maxwellianAverageSpeed
         (
-            const scalar& temperature,
-            const scalar& mass
+            const scalar temperature,
+            const scalar mass
         ) const;
 
         inline scalarField maxwellianAverageSpeed
         (
             const scalarField& temperature,
-            const scalar& mass
+            const scalar mass
         ) const;
 
         //- RMS particle speed
         inline scalar maxwellianRMSSpeed
         (
-            const scalar& temperature,
-            const scalar& mass
+            const scalar temperature,
+            const scalar mass
         ) const;
 
         inline scalarField maxwellianRMSSpeed
         (
             const scalarField& temperature,
-            const scalar& mass
+            const scalar mass
         ) const;
 
         //- Most probable speed
         inline scalar maxwellianMostProbableSpeed
         (
-            const scalar& temperature,
-            const scalar& mass
+            const scalar temperature,
+            const scalar mass
         ) const;
 
         inline scalarField maxwellianMostProbableSpeed
         (
             const scalarField& temperature,
-            const scalar& mass
+            const scalar mass
         ) const;
 
 

@@ -151,9 +151,9 @@ void Foam::LarsenBorgnakkeVariableHardSphereNoTv::collide
 
     scalar rotationalDofQ = cloud_.constProps(typeIdQ).rotationalDegreesOfFreedom();
     
-    scalar vibrationalDofP = cloud_.constProps(typeIdP).vibrationalDegreesOfFreedom();
+    scalar vibrationalDofP = cloud_.constProps(typeIdP).nVibrationalModes();
 
-    scalar vibrationalDofQ = cloud_.constProps(typeIdQ).vibrationalDegreesOfFreedom();
+    scalar vibrationalDofQ = cloud_.constProps(typeIdQ).nVibrationalModes();
     
     scalar thetaVP = cloud_.constProps(typeIdP).thetaV();
     

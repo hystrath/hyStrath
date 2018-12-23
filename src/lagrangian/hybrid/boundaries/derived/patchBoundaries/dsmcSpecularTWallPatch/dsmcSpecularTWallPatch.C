@@ -107,7 +107,7 @@ void dsmcSpecularTWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::tracking
 
     scalar rotationalDof = cloud_.constProps(typeId).rotationalDegreesOfFreedom();
     
-    scalar vibrationalDof = cloud_.constProps(typeId).vibrationalDegreesOfFreedom();
+    scalar vibrationalDof = cloud_.constProps(typeId).nVibrationalModes();
 
     ERot = cloud_.equipartitionRotationalEnergy(T, rotationalDof);
     
@@ -118,7 +118,7 @@ void dsmcSpecularTWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::tracking
     ELevel = cloud_.equipartitionElectronicLevel
         (
             T,
-            cloud_.constProps(typeId).degeneracyList(),
+            cloud_.constProps(typeId).electronicDegeneracyList(),
             cloud_.constProps(typeId).electronicEnergyList(),
             typeId
         ); 

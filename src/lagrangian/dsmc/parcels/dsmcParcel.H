@@ -73,6 +73,12 @@ public:
     {
         // Private data
 
+            //- Particle type deduced from its other properties
+            //  0: electron, 10: atom, 11: ionised atom, 
+            //  20: neutral diatomic molecule, 21: ionised diatomic molecule
+            //  30: neutral polyatomic molecule, 31: ionised polyatomic molecule
+            label type_;
+            
             //- Particle mass [kg] (constant)
             scalar mass_;
 
@@ -82,8 +88,11 @@ public:
             //- Rotational degrees of freedom
             scalar rotationalDegreesOfFreedom_;
         
-            //- Vibrational degrees of freedom
-            scalar vibrationalDegreesOfFreedom_;
+            //- Number of vibrational modes
+            label nVibrationalModes_;
+            
+            //- Degeneracy of each vibrational mode
+            labelList vibrationalDegeneracyList_;
 
             //- Viscosity index
             scalar omega_;
@@ -100,7 +109,8 @@ public:
             //- Reference vibrational relaxation number
             scalarList Zref_;
             
-            //- Reference temperature for reference vibrational relaxation number
+            //- Reference temperature for reference vibrational relaxation 
+            //  number
             scalarList TrefZv_;
             
             //- Characteristic dissociation quantum level
@@ -109,17 +119,17 @@ public:
             //- Ionisation temperature
             scalar ionisationTemperature_;
             
-            //- Number of electronic energy/degeneracy levels
-            label numberOfElectronicLevels_;
-            
             //- Charge state (0 for neutrals, 1 for ions, -1 for electrons)
             label charge_;
-
+            
+            //- Number of electronic energy/degeneracy levels
+            label nElectronicLevels_;
+            
             //- Scalar list of electronic energy levels [J]
             scalarList electronicEnergyList_;     
         
-            //- Integer list of degeneracies at each electronic level
-            labelList degeneracyList_;
+            //- Degeneracy of each electronic level
+            labelList electronicDegeneracyList_;
 
     public:
 
@@ -135,20 +145,29 @@ public:
 
         // Member functions
 
-            //- Return const access to the particle density
+            //- Return const access to the type of particle
+            inline label type() const;
+            
+            //- Return const access to the particle mass
             inline scalar mass() const;
 
-            //- Return const access to the minimum particle mass
+            //- Return const access to the particle diameter
             inline scalar d() const;
 
             //- Return the reference total collision cross section
             inline scalar sigmaT() const;
 
-            //- Return the rotationalDegreesOfFreedom
+            //- Return the rotational degrees of freedom
             inline scalar rotationalDegreesOfFreedom() const;
             
-            //- Return the vibrationallDegreesOfFreedom
-            inline scalar vibrationalDegreesOfFreedom() const;
+            //- Return the number of vibrational modes
+            inline label nVibrationalModes() const;
+            
+            //- Return the degeneracy for the vibrational mode m
+            inline label vibrationalDegeneracy_m(const label mode) const;
+            
+            //- Return the degeneracy of each vibrational mode
+            inline labelList vibrationalDegeneracyList() const;
             
             //- Return the viscosity index
             inline scalar omega() const;
@@ -156,35 +175,68 @@ public:
             //- Return the VSS scattering parameter
             inline scalar alpha() const;
     
+            //- Return the characteristic vibrational temperature for a given
+            //  vibrational energy mode
+            inline scalar thetaV_m(const label mode) const;
+            
             //- Return the characteristic vibrational temperature
             inline scalarList thetaV() const;    
+            
+            //- Return the characteristic dissociation temperature for a given
+            //  vibrational energy mode
+            inline scalar thetaD_m(const label mode) const;
             
             //- Return the characteristic dissociation temperature
             inline scalarList thetaD() const;
     
+            //- Return the characteristic vibrational relaxation number for a 
+            //  given vibrational energy mode
+            inline scalar Zref_m(const label mode) const;
+            
             //- Return the characteristic vibrational relaxation number
             inline scalarList Zref() const;
                       
-            //- Return the reference temperature for the characteristic vibrational relaxation number
+            //- Return the reference temperature for the characteristic 
+            //  vibrational relaxation number for a given vibrational energy 
+            //  mode
+            inline scalar TrefZv_m(const label mode) const;
+            
+            //- Return the reference temperature for the characteristic 
+            //  vibrational relaxation number
             inline scalarList TrefZv() const;
+            
+            //- Return the characteristic dissociation level for a given
+            //  vibrational energy mode
+            inline label charDissQuantumLevel_m(const label mode) const;
             
             //- Return the characteristic dissociation level
             inline labelList charDissQuantumLevel() const;
             
+            //- Return the vibrational energy of a given vibrational energy mode
+            inline scalar eVib_m(const label mode, const label vibLevel) const;
+            
+            //- Return the total vibrational energy given the vibrational level 
+            //  for each mode
+            inline scalar eVib_tot(const labelList& vibLevel) const;
+            
+            //- Return the vibrational energy for each vibrational energy mode
+            //  given the vibrational level for each mode
+            inline scalarList eVib(const labelList& vibLevel) const;
+            
             //- Return the ionisation temperature
             inline scalar ionisationTemperature() const;
             
-            //- Return the number of electronic energy/degeneracy levels
-            inline label numberOfElectronicLevels() const;
-            
             //- Return the particle's charge state
             inline label charge() const;
-
-            //- Return the number of electronic energy/degeneracy levels
+            
+            //- Return the number of electronic energy levels
+            inline label nElectronicLevels() const;
+            
+            //- Return the energy (J) associated to each electronic level
             inline scalarList electronicEnergyList() const;
             
-            //- Return the number of electronic energy/degeneracy levels
-            inline labelList degeneracyList() const;
+            //- Return the degeneracy of each electronic level
+            inline labelList electronicDegeneracyList() const;
     };
 
 
