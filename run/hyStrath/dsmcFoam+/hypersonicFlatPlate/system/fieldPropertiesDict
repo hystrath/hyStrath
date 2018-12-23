@@ -34,7 +34,6 @@ dsmcFields
            	typeIds                 (N2);
            	measureMeanFreePath     true;
            	mfpReferenceTemperature 273;
-           	measureErrors           true;
          }
      }
 );

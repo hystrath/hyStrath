@@ -33,7 +33,6 @@ dsmcFields
             fieldName                 Ar;
            	typeIds                     (Ar);
            	measureMeanFreePath         true;
-           	measureErrors               true;
            	mfpReferenceTemperature     273;
          }
      }

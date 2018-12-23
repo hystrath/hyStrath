@@ -51,42 +51,34 @@ moleculeProperties
 {
     N2
     {
-        mass                           			46.5e-27;
-        diameter                        		4.17e-10;
-        rotationalDegreesOfFreedom             		 2;
-        vibrationalModes            			         1;
-        omega                               		0.74;
-        alpha						                         1.0;
-        characteristicVibrationalTemperature		(3371);
+        mass                           			  46.5e-27;
+        diameter                        		  4.17e-10;
+	      rotationalDegreesOfFreedom             		   2;
+        nVibrationalModes            			           1;
+        omega                               		  0.74;
+	      alpha						                           1.0;
+	      characteristicVibrationalTemperature		(3371);
         dissociationTemperature            		(113500);
-        ionisationTemperature            		1135000000;
-        charDissQuantumLevel				              (33);
-        Zref 						                    (52560);
-        referenceTempForZref				         (3371);
-        charge                                  0;
-        numberOfElectronicLevels                1;
-        electronicEnergyList                    (0);
-        degeneracyList                          (1);
+        ionisationTemperature				          180798.3;
+	      Zref 						                       (52560);
+	      referenceTempForZref				            (3371);
+        charge                                       0;
     }
 
   	O2
     {
-        mass                           			53.12e-27;
-        diameter                        		4.07e-10;
-        rotationalDegreesOfFreedom	             	2;
-        vibrationalModes            			         1;
-        omega                           	    	0.77;
-        alpha						                         1.0;
-        characteristicVibrationalTemperature		(2256);
-        dissociationTemperature            		(59500);
-        ionisationTemperature            		1135000000;
-        charDissQuantumLevel				               (26);
-        Zref 						                     (17900);
-        referenceTempForZref				          (2256);
-        charge                                  0;
-        numberOfElectronicLevels                1;
-        electronicEnergyList                    (0);
-        degeneracyList                          (1);
+        mass                           			 53.12e-27;
+        diameter                        		  4.07e-10;
+		    rotationalDegreesOfFreedom	                 2;
+        nVibrationalModes            			           1;
+        omega                           	        0.77;
+		    alpha									                     1.0;
+		    characteristicVibrationalTemperature	  (2256);
+        dissociationTemperature            		 (59500);
+		    ionisationTemperature					        140066.5;
+		    Zref 								                   (17900);
+		    referenceTempForZref				          	(2256);
+        charge                                       0;
     }
 }
 

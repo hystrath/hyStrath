@@ -52,20 +52,10 @@ moleculeProperties
     {
         mass                              		46.5e-27;
         diameter                          		4.17e-10;
-        rotationalDegreesOfFreedom        		2;
-        vibrationalModes       		            0;
-        omega                             		0.74;
-        alpha                                   1.0;
-        characteristicVibrationalTemperature	();
-		charDissQuantumLevel					();
-        dissociationTemperature					();
-        ionisationTemperature                   0;
-        numberOfElectronicLevels                1;
-        electronicEnergyList                    (0);
-        degeneracyList                          (1);
-        charge                                  0;
-        Zref									(); //calculated from the Zuppardi2010 paper = 52500
-        referenceTempForZref                    ();
+        rotationalDegreesOfFreedom        		       2;
+        nVibrationalModes       		                 0;
+        omega                             		    0.74;
+        alpha                                      1.0;
     } 
 }
 

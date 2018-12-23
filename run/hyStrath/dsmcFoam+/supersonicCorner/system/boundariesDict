@@ -77,9 +77,9 @@ dsmcGeneralBoundaries
 			      }
 			      
 			      translationalTemperature	  300;
-			      rotationalTemperature       300;
-			      vibrationalTemperature      300;
-            electronicTemperature       0;
+			      rotationalTemperature         0;
+			      vibrationalTemperature        0;
+            electronicTemperature         0;
 			      
 			      velocity			        (1936 0 0);
 		    }

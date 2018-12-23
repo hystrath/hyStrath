@@ -15,7 +15,6 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-
 dsmcFields
 (
      field
@@ -25,7 +24,7 @@ dsmcFields
          timeProperties
          {
          	  timeOption          write;
- 	    	    resetAtOutput		    on;
+ 	    	    resetAtOutput		    off;
          }
  
          dsmcVolFieldsProperties
@@ -42,7 +41,7 @@ dsmcFields
          timeProperties
          {
          	  timeOption      write;
- 	    	    resetAtOutput		on;
+ 	    	    resetAtOutput		off;
          }
  
          dsmcVolFieldsProperties
@@ -60,7 +59,7 @@ dsmcFields
          timeProperties
          {
          	  timeOption      write;
- 	    	    resetAtOutput		on;
+ 	    	    resetAtOutput		off;
          }
  
          dsmcVolFieldsProperties

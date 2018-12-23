@@ -29,7 +29,7 @@ configurations
 
 		    translationalTemperature     300;
 		    rotationalTemperature        300; 
-		    vibrationalTemperature         0;
+		    vibrationalTemperature       300;
         electronicTemperature          0;
 
 		    velocity        (1950 0 0);
