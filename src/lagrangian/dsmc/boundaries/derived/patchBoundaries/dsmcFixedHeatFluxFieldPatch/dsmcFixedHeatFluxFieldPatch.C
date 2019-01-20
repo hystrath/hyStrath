@@ -305,8 +305,7 @@ void dsmcFixedHeatFluxFieldPatch::controlParticle(dsmcParcel& p, dsmcParcel::tra
 //                     (
 //                         T,
 //                         cloud_.constProps(typeId).electronicDegeneracyList(),
-//                         cloud_.constProps(typeId).electronicEnergyList(),
-//                         typeId
+//                         cloud_.constProps(typeId).electronicEnergyList()
 //                     );
     
     EcTot_[faceId] += cloud_.nParticles(patchId(), faceId)*(preIE - postIE);

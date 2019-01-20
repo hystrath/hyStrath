@@ -41,7 +41,6 @@ defineTypeNameAndDebug(delFromZone, 0);
 addToRunTimeSelectionTable(molsToDeleteModel, delFromZone, dictionary);
 
 
-
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 // Construct from components

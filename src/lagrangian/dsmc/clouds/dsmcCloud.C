@@ -973,8 +973,8 @@ void Foam::dsmcCloud::generalisedChapmanEnskog
     vector& U
 )
 {
-    const scalar k = physicoChemical::k.value();
-    const scalar vibDOF = constProps(typeID).nVibrationalModes();
+    const scalar kB = physicoChemical::k.value();
+    const label nVibModes = constProps(typeID).nVibrationalModes();
 
     scalar B = max(mag(D), mag(tau));
     B = max(B, mag(qTra));
@@ -986,7 +986,7 @@ void Foam::dsmcCloud::generalisedChapmanEnskog
     const scalar epsRotAv = rotationalTemperature/translationalTemperature;
 
     scalar epsVibAv = 0.0;
-    if (vibDOF > 0 && vibrationalTemperature > 5.)  // NEW VINCENT 20/08/2018
+    if (nVibModes > 0 && vibrationalTemperature > 5.)
     {
         forAll(vibLevel, mode)
         {
@@ -1005,23 +1005,25 @@ void Foam::dsmcCloud::generalisedChapmanEnskog
 
     while (repeatTry)
     {
-        ERot = equipartitionRotationalEnergy
+        ERot =
+            equipartitionRotationalEnergy
             (
                 rotationalTemperature,
                 constProps(typeID).rotationalDegreesOfFreedom()
             );
 
-        vibLevel = equipartitionVibrationalEnergyLevel
-            (
-                vibrationalTemperature,
-                vibDOF,
-                typeID
-            );
-
-        epsRot = ERot/(k*translationalTemperature);
-
-        if (vibDOF > 0 && vibrationalTemperature > 5.) // NEW VINCENT 20/08/2018
+        epsRot = ERot/(kB*translationalTemperature);
+        
+        if (nVibModes > 0 && vibrationalTemperature > 5.)
         {
+            vibLevel = 
+                equipartitionVibrationalEnergyLevel
+                (
+                    vibrationalTemperature,
+                    nVibModes,
+                    typeID
+                );
+            
             scalar epsVib = 0.0;
             forAll(vibLevel, mode)
             {
@@ -1033,10 +1035,10 @@ void Foam::dsmcCloud::generalisedChapmanEnskog
 
         CTry = rndGen_.GaussNormal<vector>()/sqrt(2.0);
 
-        scalar gammaTry = 1.0 + 2.0*(D & CTry)
-            + (qTra & CTry) * (0.4*(CTry & CTry) - 1.0)
-            + (qRot & CTry) * (epsRot - epsRotAv)
-            + (qVib & CTry) * (epsVib - epsVibAv)
+        const scalar gammaTry = 1.0 + 2.0*(D & CTry)
+            + (qTra & CTry)*(0.4*(CTry & CTry) - 1.0)
+            + (qRot & CTry)*(epsRot - epsRotAv)
+            + (qVib & CTry)*(epsVib - epsVibAv)
             - (CTry & (tau & CTry));
 
         if (gammaTry >= A*rndGen_.sample01<scalar>())
@@ -1045,7 +1047,7 @@ void Foam::dsmcCloud::generalisedChapmanEnskog
         }
     }
 
-    U = CTry*sqrt(2.0*k*translationalTemperature/mass);
+    U = CTry*sqrt(2.0*kB*translationalTemperature/mass);
 }
 
 
@@ -1118,70 +1120,77 @@ Foam::labelList Foam::dsmcCloud::equipartitionVibrationalEnergyLevel
 Foam::label Foam::dsmcCloud::equipartitionElectronicLevel
 (
     const scalar temperature,
-    const List<label>& electronicDegeneracyList,
-    const List<scalar>& electronicEnergyList,
-    const label typeId
+    const labelList& electronicDegeneracyList,
+    const scalarList& electronicEnergyList
 )
 {
-    scalar EMax = physicoChemical::k.value()*temperature;
-    label jMax = constProps(typeId).nElectronicLevels();
+    const scalar EMax = physicoChemical::k.value()*temperature;
+    const label jMax = electronicDegeneracyList.size() - 1;
 
-    label jDash = 0; // random integer between 0 and jMax-1.
-    scalar EJ = 0.0; // maximum possible electronic energy level within list based on k*TElec.
-    label gJ = 0; // maximum possible degeneracy level within list.
-    label jSelect = 0; // selected intermediate integer electronic level (0 to jMax-1).
-    scalar expMax = 0.0; // maximum denominator value in Liechty pdf (see below).
-    scalar expSum = 0.0; // Summation term based on random electronic level.
-    scalar boltz = 0; // Boltzmann distribution of Eq. 3.1.1 of Liechty thesis.
-    scalar func = 0.0; // distribution function Eq. 3.1.2 of Liechty thesis.
+    //- Random integer between 0 and jMax
+    label jDash = 0;
+    //- Maximum possible electronic energy level within list based on k*TElec
+    scalar EJ = 0.0;
+    //- Maximum possible degeneracy level within list
+    label gJ = 0; 
+    //- Selected intermediate integer electronic level (0 to jMax)
+    label jSelect = 0; 
+    //- Maximum denominator value in Liechty pdf (see below)
+    scalar expMax = 0.0;
+    //- Summation term based on random electronic level
+    scalar expSum = 0.0;
+    //- Boltzmann distribution of Eq. 3.1.1 of Liechty thesis
+    scalar boltz = 0.0; 
+    //- Distribution function Eq. 3.1.2 of Liechty thesis
+    scalar func = 0.0;
 
-    if (jMax == 1) // Only the electron E- has 1 degeneracy level = 0 (for programming purposes) in constant/dsmcProperties
+    if (jMax > 0 and temperature > SMALL) 
     {
-//         return EEle;
-        return 0;
-    }
-    if (temperature < VSMALL)
-    {
-        return jDash;
-    }
-    else
-    {
-        // Calculate summation term in denominator of Eq.3.1.1 from Liechty thesis.
-        label i = 0;
-        do
+        //- Calculate summation term in denominator of Eq. 3.1.1 in Liechty 
+        //  thesis
+        forAll(electronicDegeneracyList, i)
         {
-            expSum += electronicDegeneracyList[i]*exp((-electronicEnergyList[i]/EMax));
-            i += 1;
-        } while (i < jMax);
+            expSum += electronicDegeneracyList[i]
+                *exp(-electronicEnergyList[i]/EMax);
+        }
 
-        // select maximum integer energy level based on boltz value.
-        // Note that this depends on the temperature.
-
+        //- Select maximum integer energy level based on boltz value.
+        //  Note that this depends on the temperature.
         scalar boltzMax = 0.0;
 
-        for (label ii = 0; ii < jMax; ii++)
+        forAll(electronicDegeneracyList, i)
         {
-            //Eq. 3.1.1 of Liechty thesis.
-            boltz = electronicDegeneracyList[ii]*exp((-electronicEnergyList[ii]/EMax))/expSum;
+            //- Eq. 3.1.1 of Liechty thesis.
+            boltz =
+                electronicDegeneracyList[i]
+               *exp(-electronicEnergyList[i]/EMax)
+               /expSum;
 
             if (boltzMax < boltz)
             {
                 boltzMax = boltz;
-                jSelect = ii;
+                jSelect = i;
             }
         }
 
-        EJ = electronicEnergyList[jSelect]; //Max. poss energy in list : list goes from [0] to [jMax-1]
-        gJ = electronicDegeneracyList[jSelect]; //Max. poss degeneracy in list : list goes from [0] to [jMax-1]
-        expMax = gJ*exp((-EJ/EMax)); // Max. in denominator of Liechty pdf for initialisation/
-                                     //wall bcs/freestream EEle etc..
+        //- Max. poss energy in list: list goes from 0 to jMax
+        EJ = electronicEnergyList[jSelect]; 
+        //- Max. poss degeneracy in list: list goes from 0 to jMax
+        gJ = electronicDegeneracyList[jSelect]; 
+        //- Max. in denominator of Liechty pdf for initialisation/wall 
+        //  bcs/freestream EEle etc..
+        expMax = gJ*exp(-EJ/EMax); 
 
-        do // acceptance - rejection based on Eq. 3.1.2 of Liechty thesis.
+        //- Acceptance - rejection based on Eq. 3.1.2 of Liechty thesis
+        do
         {
-            //jDash = rndGen_.position<label>(0,jMax-1); OLD
-            jDash = rndGen_.sample01<scalar>()*jMax;
-            func = electronicDegeneracyList[jDash]*exp((-electronicEnergyList[jDash]/EMax))/expMax;
-        } while( !(func > rndGen_.sample01<scalar>()));
+          //jDash = rndGen_.position<label>(0,jMax); OLD
+            jDash = rndGen_.sample01<scalar>()*(jMax+1);
+            func =
+                electronicDegeneracyList[jDash]
+               *exp(-electronicEnergyList[jDash]/EMax)
+               /expMax;
+        } while(func < rndGen_.sample01<scalar>());
     }
 
     return jDash;
@@ -1198,24 +1207,24 @@ Foam::scalar Foam::dsmcCloud::postCollisionRotationalEnergy
 
     if (rotationalDof == 2.0)
     {
-        energyRatio = 1.0 - pow(rndGen_.sample01<scalar>(),(1.0/ChiB));
+        energyRatio = 1.0 - pow(rndGen_.sample01<scalar>(), 1.0/ChiB);
     }
     else
     {
-        scalar ChiA = 0.5*rotationalDof;
+        const scalar ChiA = 0.5*rotationalDof;
 
-        scalar ChiAMinusOne = ChiA - 1;
+        scalar ChiAMinusOne = ChiA - 1.;
 
-        scalar ChiBMinusOne = ChiB - 1;
+        scalar ChiBMinusOne = ChiB - 1.;
 
         if (ChiAMinusOne < SMALL && ChiBMinusOne < SMALL)
         {
             return rndGen_.sample01<scalar>();
         }
 
-        scalar energyRatio;
+        scalar energyRatio = 0.0;
 
-        scalar P;
+        scalar P = 0.0;
 
         do
         {
@@ -1225,11 +1234,11 @@ Foam::scalar Foam::dsmcCloud::postCollisionRotationalEnergy
 
             if (ChiAMinusOne < SMALL)
             {
-                P = pow((1.0 - energyRatio),ChiBMinusOne);
+                P = pow(1.0 - energyRatio, ChiBMinusOne);
             }
             else if (ChiBMinusOne < SMALL)
             {
-                P = pow((1.0 - energyRatio),ChiAMinusOne);
+                P = pow(1.0 - energyRatio, ChiAMinusOne);
             }
             else
             {
@@ -1264,7 +1273,9 @@ Foam::label Foam::dsmcCloud::postCollisionVibrationalEnergyLevel
     const scalar omega,
     const scalar Zref,
     const scalar Ec,
-    const scalar fixedZv
+    const scalar fixedZv,
+    const label invZvFormulation,
+    const label cellI
 )
 {
     label iDash = vibLevel;
@@ -1278,40 +1289,93 @@ Foam::label Foam::dsmcCloud::postCollisionVibrationalEnergyLevel
         do // acceptance - rejection
         {
             //iDash = rndGen_.position<label>(0, iMax); OLD
-             iDash = rndGen_.sample01<scalar>()*(iMax+1);
+            iDash = rndGen_.sample01<scalar>()*(iMax + 1);
             EVib = iDash*physicoChemical::k.value()*thetaV;
 
             // - equation 5.61, Bird
             func = pow(1.0 - EVib/Ec, 1.5 - omega);
 
-        } while( !(func > rndGen_.sample01<scalar>()) );
+        } while(func < rndGen_.sample01<scalar>());
     }
     else
     {
-        //- "quantised collision temperature" (equation 3, Bird 2010), denominator from Bird 5.42
-
-        const scalar TColl = iMax*thetaV/(3.5 - omega);
-
-        const scalar pow1 = pow(thetaD/TColl, 0.33333) - 1.0;
-
-        const scalar pow2 = pow(thetaD/refTempZv, 0.33333) -1.0;
-
         scalar inverseVibrationalCollisionNumber = 1.0;
 
         if (fixedZv == 0)
         {
-            //- vibrational collision number (equation 2, Bird 2010)
-            const scalar ZvP1 = pow((thetaD/TColl), omega);
+            //- Temperature used to calculate Zv
+            scalar T = 0;
+            
+            if (invZvFormulation == 0)
+            {
+                //- "Quantised collision temperature" (equation 3, Bird 2010)
+                //  denominator from Bird 5.42
+                T = iMax*thetaV/(3.5 - omega);
+            }
+            else if (invZvFormulation == 1)
+            {
+                //- Macroscopic (overall) temperature
+                const scalar TMacro = fields().overallT(cellI);
+                
+                if (TMacro > SMALL)
+                {
+                    T = TMacro;
+                }
+                else
+                {
+                    //- Collision temperature used instead
+                    //  the pre-2008 formulation is recovered
+                    T = iMax*thetaV/(3.5 - omega);
+                }
+                
+            }
+            else
+            {
+                //- Macroscopic (translational) temperature
+                /*const scalar TMacro = fields().translationalT(cellI);
+                
+                if (TMacro > SMALL)
+                {
+                    T = TMacro;
+                }
+                else
+                {
+                    //- Collision temperature used instead
+                    //  the pre-2008 formulation is recovered
+                    T = iMax*thetaV/(3.5 - omega);
+                }*/ //TODO
+                // Collision temperature for the time being
+                // it gives a better agreement
+                T = iMax*thetaV/(3.5 - omega);
+            }
 
-            const scalar ZvP2 = pow(Zref*(pow(thetaD/refTempZv, -omega)),(pow1/pow2));
+            const scalar pow1 = pow(thetaD/T, 1./3.) - 1.0;
+
+            const scalar pow2 = pow(thetaD/refTempZv, 1./3.) - 1.0;
+            
+            //- vibrational collision number (equation 2, Bird 2010)
+            const scalar ZvP1 = pow(thetaD/T, omega);
+
+            const scalar ZvP2 =
+                pow
+                (
+                    Zref*pow(thetaD/refTempZv, -omega),
+                    pow1/pow2
+                );
 
             const scalar Zv = ZvP1*ZvP2;
 
             //- In order to obtain the relaxation rate corresponding to Zv with the collision
             //  energy-based procedure, the inelastic fraction should be set to about 1/(5Zv)
             //  Bird 2008 RGD "A Comparison of Collision Energy-Based and Temperature-Based..."
-
-            inverseVibrationalCollisionNumber = 1.0/(5.0*Zv);
+            if (invZvFormulation == 2)
+            {
+                inverseVibrationalCollisionNumber = 1.0/(5.0*Zv);
+            }
+            else
+            {
+                inverseVibrationalCollisionNumber = 1.0/Zv;   
+            }
         }
         else
         {
@@ -1334,7 +1398,7 @@ Foam::label Foam::dsmcCloud::postCollisionVibrationalEnergyLevel
                 // - equation 5.61, Bird
                 func = pow(1.0 - EVib/Ec, 1.5 - omega);
 
-            } while( !(func > rndGen_.sample01<scalar>()) );
+            } while(func < rndGen_.sample01<scalar>());
         }
     }
 
@@ -1350,30 +1414,36 @@ Foam::label Foam::dsmcCloud::postCollisionElectronicEnergyLevel
     const scalarList& EElist,
     const labelList& gList
 )
-{
-    label nPossStates = 0;
-    label ELevel = -1;
-
+{   
+    /*label nPossibleStates = 0;
+        
+    //- Post collision electronic level uniformly selected, taking the 
+    //  degeneracies of the different energy levels into account.
+    
+    //- Summation for all levels with energy below the collision energy
     if (jMax == 1)
     {
-        nPossStates = gList[0];
+        nPossibleStates = gList[0];
     }
     else
     {
-        forAll(EElist, n)
+        forAll(EElist, i)
         {
-            if (Ec > EElist[n])
+            if (Ec > EElist[i])
             {
-                nPossStates += gList[n];
+                nPossibleStates += gList[i];
             }
         }
     }
-
+    
     label II = 0;
+    
+    //- Post-collision electronic energy
+    label jDash = -1;
 
     do
     {
-        label nState = ceil(rndGen_.sample01<scalar>()*nPossStates);
+        const label nState = ceil(rndGen_.sample01<scalar>()*nPossibleStates);
         label nAvailableStates = 0;
         label nLevel = -1;
 
@@ -1384,82 +1454,80 @@ Foam::label Foam::dsmcCloud::postCollisionElectronicEnergyLevel
             if (nState <= nAvailableStates && nLevel < 0)
             {
                 nLevel = n;
+                break;
             }
         }
 
+        //- Acceptance - rejection based on Eq. 3.1.8 of Liechty thesis
         if (Ec > EElist[nLevel])
         {
-            scalar prob = pow(1.0 - (EElist[nLevel]/Ec), 1.5-omega);
+            scalar prob = pow(1.0 - EElist[nLevel]/Ec, 1.5 - omega);
 
             if (prob > rndGen_.sample01<scalar>())
             {
                 II = 1;
-                ELevel = nLevel;
+                jDash = nLevel;
             }
         }
 
-    } while(II==0);
+    } while (II == 0);
     
-    return ELevel;
+    return jDash;*/
+    
+    //- Maximum allowable electronic level obtainable from Ecoll
+    label jSelectA = 0;
+    //- Energy level maximazing expression gList[j]*pow(Ec - EElist[j], 1.5 - omega)
+    label jSelectB = 0;
+    
+    scalar g = 0.0;
+    scalar gMax = 0.0;
 
-//     label maxLev = 0;
-//     label jSelectA = 0;
-//     label jSelectB = 0;
-//     label jSelect = 0;
-//     label jDash = 0.0;
-//     label gJ = 0.0;
-//     label ELevel = 0;
-//     scalar g = 0.0;
-//     scalar gMax = 0.0;
-//     scalar EJ = 0.0;
-//     scalar denomMax = 0.0;
-//     scalar prob = 0.0;
-//
-//     // Determine the maximum possible integer energy level immediately below EcP.
-//
-//     for (label ii = 0; ii < jMax; ii++)
-//     {
-//         if (EElist[ii] > Ec)
-//         {
-//             break;
-//         }
-//
-//         maxLev = ii;
-//         jSelectA = ii;
-//
-//         //Eq. 3.1.6 of Liechty thesis.
-//         g = gList[ii]*pow((Ec - EElist[ii]),(1.5 - omega));
-//
-//         if ( ii == 0 || gMax < g )
-//         {
-//             gMax = g;
-//             jSelectB = ii;
-//         }
-//     }
-//
-//     jSelect = jSelectA;
-//
-//     if (jSelectB < jSelectA)
-//     {
-//         jSelect = jSelectB;
-//     }
-//
-//
-//     EJ = EElist[jSelect]; //Max. poss energy in list : list goes from [0] to [jSelect]
-//     gJ = gList[jSelect]; //Max. poss degeneracy in list : list goes from [0] to [jSelect]
-//     denomMax = gJ*pow((Ec - EJ), (1.5 - omega)); // Max. denominator of Liechty pdf for post-collision pdf.
-//
-//     do // acceptance - rejection based on Eq. 3.1.8 of Liechty thesis.
-//     {
-//         //jDash = rndGen_.position<label>(0,maxLev); OLD
-//         jDash = rndGen_.sample01<scalar>()*(maxLev+1);
-//         prob = gList[jDash]*pow((Ec - EElist[jDash]), (1.5 - omega))/denomMax;
-//
-//     } while( !(prob > rndGen_.sample01<scalar>()));
-//
-//     ELevel = jDash;//post-collision Electronic energy.
-//
-//     return ELevel;
+    //- Determine the maximum possible integer energy level immediately below Ec
+    forAll(gList, i)
+    {
+       if (EElist[i] > Ec)
+       {
+           break;
+       }
+
+       jSelectA = i;
+
+       //- Eq. 3.1.6 of Liechty thesis.
+       g = gList[i]*pow(Ec - EElist[i], 1.5 - omega);
+
+       if (gMax < g)
+       {
+           gMax = g;
+           jSelectB = i;
+       }
+    }
+
+    //- Liechty's procedure - step 3
+    //  Minimum of jSelectA and jSelectB
+    const label jSelect = min(jSelectA, jSelectB);
+
+    //- Max. poss energy in list: list goes from 0 to jSelect
+    const scalar EJ = EElist[jSelect]; 
+    //- Max. poss degeneracy in list: list goes from 0 to jSelect
+    const label gJ = gList[jSelect];
+    //- Max. denominator of Liechty pdf for post-collision pdf 
+    const scalar denomMax = gJ*pow(Ec - EJ, 1.5 - omega); 
+    
+    //- Acceptance - rejection based on Eq. 3.1.8 of Liechty thesis
+    //- Post-collision electronic energy
+    label jDash = 0;
+    scalar prob = 0.0;
+    
+    do 
+    {
+     //jDash = rndGen_.position<label>(0,jSelectA); OLD
+       jDash = rndGen_.sample01<scalar>()*(jSelectA+1);
+       prob = gList[jDash]*pow(Ec - EElist[jDash], 1.5 - omega)/denomMax;
+
+    } while(prob < rndGen_.sample01<scalar>());
+
+    return jDash;
+    
 }
 
 

@@ -233,8 +233,7 @@ void dsmcLaserHeatingFill::setInitialConfiguration()
                         (
                             cellTemperature,
                             cP.electronicDegeneracyList(),
-                            cP.electronicEnergyList(),
-                            typeId
+                            cP.electronicEnergyList()
                         );
 
                         U += velocity;

@@ -144,6 +144,7 @@ void dissociationIonisationExchangeQK::reaction(dsmcParcel& p, dsmcParcel& q)
         
         scalar totalReactionProbability = 0.0;
         scalarList reactionProbabilities(5, 0.0);
+        scalarList collisionEnergies(5, 0.0);
         
         label vibModeDissoP = -1;
         label vibModeDissoQ = -1;
@@ -153,6 +154,7 @@ void dissociationIonisationExchangeQK::reaction(dsmcParcel& p, dsmcParcel& q)
             p,
             translationalEnergy,
             vibModeDissoP,
+            collisionEnergies[0],
             totalReactionProbability,
             reactionProbabilities[0]
         );
@@ -162,6 +164,7 @@ void dissociationIonisationExchangeQK::reaction(dsmcParcel& p, dsmcParcel& q)
             q,
             translationalEnergy,
             vibModeDissoQ,
+            collisionEnergies[1],
             totalReactionProbability,
             reactionProbabilities[1]
         );
@@ -171,6 +174,7 @@ void dissociationIonisationExchangeQK::reaction(dsmcParcel& p, dsmcParcel& q)
             p,
             translationalEnergy,
             0,
+            collisionEnergies[2],
             totalReactionProbability,
             reactionProbabilities[2]
         );
@@ -180,6 +184,7 @@ void dissociationIonisationExchangeQK::reaction(dsmcParcel& p, dsmcParcel& q)
             q,
             translationalEnergy,
             1,
+            collisionEnergies[3],
             totalReactionProbability,
             reactionProbabilities[3]
         );
@@ -191,6 +196,7 @@ void dissociationIonisationExchangeQK::reaction(dsmcParcel& p, dsmcParcel& q)
                 p,
                 translationalEnergy,
                 omegaPQ,
+                collisionEnergies[4],
                 totalReactionProbability,
                 reactionProbabilities[4]
             );
@@ -202,6 +208,7 @@ void dissociationIonisationExchangeQK::reaction(dsmcParcel& p, dsmcParcel& q)
                 q,
                 translationalEnergy,
                 omegaPQ,
+                collisionEnergies[4],
                 totalReactionProbability,
                 reactionProbabilities[4]
             );
@@ -237,7 +244,7 @@ void dissociationIonisationExchangeQK::reaction(dsmcParcel& p, dsmcParcel& q)
                             //- Dissociation of P is to occur
                             dissociationQK::dissociateParticleByPartner
                             (
-                                p, q, vibModeDissoP, 0
+                                p, q, 0, vibModeDissoP, collisionEnergies[i]
                             );
                             //- There can't be another reaction: break
                             break;
@@ -248,7 +255,7 @@ void dissociationIonisationExchangeQK::reaction(dsmcParcel& p, dsmcParcel& q)
                             //- Dissociation of Q is to occur
                             dissociationQK::dissociateParticleByPartner
                             (
-                                q, p, vibModeDissoQ, 1
+                                q, p, 1, vibModeDissoQ, collisionEnergies[i]
                             );
                             //- There can't be another reaction: break
                             break;
@@ -257,7 +264,10 @@ void dissociationIonisationExchangeQK::reaction(dsmcParcel& p, dsmcParcel& q)
                         if (i == 2)
                         {
                             //- Ionisation of P is to occur
-                            ionisationQK::ioniseParticleByPartner(p, q, 0);
+                            ionisationQK::ioniseParticleByPartner
+                            (
+                                p, q, 0, collisionEnergies[i]
+                            );
                             //- There can't be another reaction: break
                             break;
                         }
@@ -265,7 +275,10 @@ void dissociationIonisationExchangeQK::reaction(dsmcParcel& p, dsmcParcel& q)
                         if (i == 3)
                         {
                             //- Ionisation of Q is to occur
-                            ionisationQK::ioniseParticleByPartner(q, p, 1);
+                            ionisationQK::ioniseParticleByPartner
+                            (
+                                q, p, 1, collisionEnergies[i]
+                            );
                             //- There can't be another reaction: break
                             break;
                         }
@@ -275,11 +288,17 @@ void dissociationIonisationExchangeQK::reaction(dsmcParcel& p, dsmcParcel& q)
                             //- Exchange reaction
                             if (exchangeQK::posMolReactant_ == 0)
                             {
-                                exchangeQK::exchange(p, q);
+                                exchangeQK::exchange
+                                (
+                                    p, q, collisionEnergies[i]
+                                );
                             }
                             else
                             {
-                                exchangeQK::exchange(q, p);
+                                exchangeQK::exchange
+                                (
+                                    q, p, collisionEnergies[i]
+                                );
                             }
                             //- There can't be another reaction: break
                             break;

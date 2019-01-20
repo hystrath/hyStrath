@@ -64,8 +64,8 @@ protected:
         //- Sub-dictionary containing the reaction properties
         dictionary propsDict_;
         
-        //- Position of the molecule in the list of reactants
-        label posMolReactant_;
+        //- Position of the neutral particle in the list of reactants
+        label posNeutralReactant_;
         
         //- Ids of the products
         labelList productIdsChargeExchange_;
@@ -92,11 +92,17 @@ protected:
             const dsmcParcel& p,
             const scalar translationalEnergy,
             const scalar omegaPQ,
+            scalar& collisionEnergy,
             scalar& totalReactionProbability,
             scalar& reactionProbability
         );
         
-        void chargeExchange(dsmcParcel& p, dsmcParcel& q);
+        void chargeExchange
+        (
+            dsmcParcel& p,
+            dsmcParcel& q,
+            scalar collisionEnergy
+        );
 
 
 public:

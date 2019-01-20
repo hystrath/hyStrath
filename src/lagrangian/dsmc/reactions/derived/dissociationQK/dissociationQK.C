@@ -202,6 +202,7 @@ void dissociationQK::testDissociation
     const dsmcParcel& p,
     const scalar translationalEnergy,
     label& vibModeDisso,
+    scalar& collisionEnergy,
     scalar& totalReactionProbability,
     scalar& reactionProbability
 )
@@ -222,8 +223,8 @@ void dissociationQK::testDissociation
             const scalar EVibP_m = cloud_.constProps(typeIdP).eVib_m(m, vibLevelP[m]);
             const label idP = cloud_.constProps(typeIdP).charDissQuantumLevel_m(m);    
 
-            const scalar EcP = translationalEnergy + EVibP_m;
-            const label imaxP = EcP/(physicoChemical::k.value()*thetaVP);
+            collisionEnergy = translationalEnergy + EVibP_m;
+            const label imaxP = collisionEnergy/(physicoChemical::k.value()*thetaVP);
         
             //- Condition for the dissociation of the molecule P, mode m
             if (imaxP > idP)
@@ -246,8 +247,9 @@ void dissociationQK::dissociateParticleByPartner
 (
     dsmcParcel& p,
     dsmcParcel& q,
+    const label nR,
     const label vibModeDisso,
-    const label nR
+    scalar collisionEnergy
 )
 {
     const label typeIdP = p.typeId();
@@ -267,13 +269,8 @@ void dissociationQK::dissociateParticleByPartner
     {
         relax_ = false;
         
-        vector UP = p.U();
-        vector UQ = q.U();
-        
-        const scalar mP = cloud_.constProps(typeIdP).mass();
-        const scalar mQ = cloud_.constProps(typeIdQ).mass();
-        const scalar mR = mP*mQ/(mP + mQ);
-        const scalar cRsqr = magSqr(UP - UQ);
+        //- The collision energy is being subtracted the heat of reaction
+        collisionEnergy -= heatOfReactionDissociationJoules_[nR][vibModeDisso];
         
         const scalar omegaPQ =
             0.5
@@ -282,44 +279,29 @@ void dissociationQK::dissociateParticleByPartner
                 + cloud_.constProps(typeIdQ).omega()
             );
             
-        scalar translationalEnergy = 0.5*mR*cRsqr;
-    
-        const scalar EVibP_mdisso = cloud_.constProps(typeIdP).eVib_m
-            (
-                vibModeDisso, 
-                p.vibLevel()[vibModeDisso]
-            );
-        
-        translationalEnergy += EVibP_mdisso 
-            - heatOfReactionDissociationJoules_[nR][vibModeDisso];
-        
         //- Energy redistribution for particle Q
-        cloud_.binaryCollision().relax(q, translationalEnergy, omegaPQ, true);
+        cloud_.binaryCollision().redistribute
+        (
+            q, collisionEnergy, omegaPQ, true
+        );
         
-        const scalar relVelNonDissoParticle = sqrt(2.0*translationalEnergy/mR);
-
-        //- Center of mass velocity of all particles
-        const vector Ucm = (mP*UP + mQ*UQ)/(mP + mQ);    
-
-        //- Variable Hard Sphere collision part
-        const scalar cosTheta = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
-        const scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
-        const scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
-    
-        const vector postCollisionRelU = relVelNonDissoParticle
-           *vector
-            (
-                cosTheta,
-                sinTheta*cos(phi),
-                sinTheta*sin(phi)
-            );
-
-        UP = Ucm + (postCollisionRelU*mQ/(mP + mQ)); 
-        UQ = Ucm - (postCollisionRelU*mP/(mP + mQ));
+        const scalar mP = cloud_.constProps(typeIdP).mass();
+        const scalar mQ = cloud_.constProps(typeIdQ).mass();
+        const scalar mR = mP*mQ/(mP + mQ);
         
-        //- Post-collision velocity for particle Q
-        q.U() = UQ;
-
+        scalar relVelNonDissoParticle = sqrt(2.0*collisionEnergy/mR);
+        
+        //- Post-collision velocities for P (pre-reaction) and Q
+        cloud_.binaryCollision().postCollisionVelocities
+        (
+            typeIdP,
+            typeIdQ,
+            p.U(),
+            q.U(),
+            relVelNonDissoParticle
+        );
+        
+        //- Post-reaction
         const label typeId1 = productIdsDissociation_[nR][0];
         const label typeId2 = productIdsDissociation_[nR][1];
         
@@ -328,34 +310,40 @@ void dissociationQK::dissociateParticleByPartner
         const scalar mP2 = cloud_.constProps(typeId2).mass();
         const scalar mRproducts = mP1*mP2/(mP1 + mP2);
         
-        const scalar ERotP = p.ERot();
-        const scalar EEleP = cloud_.constProps(typeIdP).electronicEnergyList()[p.ELevel()];
         //- Energy left for the 2 products
-        //  Assumption: no energy redistribution for the particle being split
-        //  All the remaining energy is stored in the translational mode
-        const scalar translationalEnergyLeft = ERotP + EEleP;
-        const scalar cRproducts = sqrt(2.0*translationalEnergyLeft/mRproducts);
-
-        //- Variable Hard Sphere collision part
-        const scalar cosTheta2 = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
-        const scalar sinTheta2 = sqrt(1.0 - cosTheta2*cosTheta2);
-        const scalar phi2 = twoPi*cloud_.rndGen().sample01<scalar>();
-    
-        const vector postCollisionRelU2 = cRproducts
-           *vector
+        const scalar ERotP = p.ERot();
+        const scalar EVibP_tot =
+            cloud_.constProps(typeIdP).eVib_tot
             (
-                cosTheta2,
-                sinTheta2*cos(phi2),
-                sinTheta2*sin(phi2)
+                p.vibLevel()
+            ); 
+            
+        const scalar EVibP_mdisso =
+            cloud_.constProps(typeIdP).eVib_m
+            (
+                vibModeDisso, 
+                p.vibLevel()[vibModeDisso]
             );
-
-        const vector uP1 = UP + postCollisionRelU2*mP2/(mP1 + mP2);
-        const vector uP2 = UP - postCollisionRelU2*mP1/(mP1 + mP2);
+        const scalar EVibP_nondisso = EVibP_tot - EVibP_mdisso; 
+        const scalar EEleP = cloud_.constProps(typeIdP).electronicEnergyList()[p.ELevel()];
+        //- Assumption: no energy redistribution for the particle being split
+        //  All the remaining energy is stored in the translational mode
+        const scalar translationalEnergyLeft = ERotP + EVibP_nondisso + EEleP;
+        const scalar cRproducts = sqrt(2.0*translationalEnergyLeft/mRproducts);
+        
+        vector UP2 = vector::zero;
+        cloud_.binaryCollision().postCollisionVelocities
+        (
+            typeId1,
+            typeId2,
+            p.U(),
+            UP2,
+            cRproducts
+        );
 
         // Molecule P dissociates
         // The molecule is first transformed into the first product ...
         p.typeId() = typeId1;
-        p.U() = uP1;
         p.vibLevel().setSize
         (
             cloud_.constProps(typeId1).nVibrationalModes(),
@@ -376,7 +364,7 @@ void dissociationQK::dissociateParticleByPartner
         cloud_.addNewParcel
         (
             p.position(),
-            uP2,
+            UP2,
             p.RWF(),
             product2_ERot,
             product2_ELevel,
@@ -517,6 +505,7 @@ void dissociationQK::reaction(dsmcParcel& p, dsmcParcel& q)
         
         scalar totalReactionProbability = 0.0;
         scalarList reactionProbabilities(2, 0.0);
+        scalarList collisionEnergies(2, 0.0);
         
         label vibModeDissoP = -1;
         label vibModeDissoQ = -1;
@@ -526,6 +515,7 @@ void dissociationQK::reaction(dsmcParcel& p, dsmcParcel& q)
             p,
             translationalEnergy,
             vibModeDissoP,
+            collisionEnergies[0],
             totalReactionProbability,
             reactionProbabilities[0]
         );
@@ -535,6 +525,7 @@ void dissociationQK::reaction(dsmcParcel& p, dsmcParcel& q)
             q,
             translationalEnergy,
             vibModeDissoQ,
+            collisionEnergies[1],
             totalReactionProbability,
             reactionProbabilities[1]
         );
@@ -567,7 +558,10 @@ void dissociationQK::reaction(dsmcParcel& p, dsmcParcel& q)
                         if (i == 0)
                         {
                             //- Dissociation of P is to occur
-                            dissociateParticleByPartner(p, q, vibModeDissoP, i);
+                            dissociateParticleByPartner
+                            (
+                                p, q, i, vibModeDissoP, collisionEnergies[i]
+                            );
                             //- There can't be another reaction: break
                             break;
                         }
@@ -575,7 +569,10 @@ void dissociationQK::reaction(dsmcParcel& p, dsmcParcel& q)
                         if (i == 1)
                         {
                             //- Dissociation of Q is to occur
-                            dissociateParticleByPartner(q, p, vibModeDissoQ, i);
+                            dissociateParticleByPartner
+                            (
+                                q, p, i, vibModeDissoQ, collisionEnergies[i]
+                            );
                             //- There can't be another reaction: break
                             break;
                         }

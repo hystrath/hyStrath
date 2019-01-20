@@ -88,6 +88,7 @@ protected:
             const dsmcParcel& p,
             const scalar translationalEnergy,
             label& vibModeDisso,
+            scalar& collisionEnergy,
             scalar& totalReactionProbability,
             scalar& reactionProbability
         );
@@ -96,8 +97,9 @@ protected:
         (
             dsmcParcel& p,
             dsmcParcel& q,
+            const label nR,
             const label vibModeDisso,
-            const label nR
+            scalar collisionEnergy
         );
 
 

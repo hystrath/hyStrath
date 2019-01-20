@@ -61,14 +61,14 @@ void exchangeQK::setProperties()
     
     forAll(reactantIds_, r)
     {
-        //- Check if this reactant is a neutral molecule
-        if (reactantTypes_[r] == 20 or reactantTypes_[r] == 30)
+        //- Check if this reactant is a molecule
+        if (reactantTypes_[r] >= 20)
         {
             moleculeFound = true;
             posMolReactant_ = r;
         }
-        //- Check if this reactant is a neutral atom
-        else if (reactantTypes_[r] == 10)
+        //- Check if this reactant is an atom
+        else if (reactantTypes_[r] == 10 or reactantTypes_[r] == 11)
         {
             atomFound = true;
         }
@@ -77,7 +77,7 @@ void exchangeQK::setProperties()
             FatalErrorIn("exchangeQK::setProperties()")
                 << "For reaction named " << reactionName_ << nl
                 << "Reactant " << cloud_.typeIdList()[reactantIds_[r]]
-                << " is neither a neutral molecule nor an atom" << nl 
+                << " is neither a molecule nor an atom" << nl 
                 << exit(FatalError);
         }
     }
@@ -86,14 +86,14 @@ void exchangeQK::setProperties()
     {
         FatalErrorIn("exchangeQK::setProperties()")
             << "For reaction named " << reactionName_ << nl
-            << "None of the reactants is a neutral molecule." << nl 
+            << "None of the reactants is a molecule." << nl 
             << exit(FatalError);
     }
     else if (!atomFound)
     {
         FatalErrorIn("exchangeQK::setProperties()")
             << "For reaction named " << reactionName_ << nl
-            << "None of the reactants is a neutral atom." << nl 
+            << "None of the reactants is an atom." << nl 
             << exit(FatalError);
     }
     
@@ -133,18 +133,19 @@ void exchangeQK::setProperties()
                 << exit(FatalError);
         }
 
-        //- Check if this product is a neutral molecule
-        if (   
-              cloud_.constProps(productIndex).type() == 20 
-           or cloud_.constProps(productIndex).type() == 30
-        )
+        //- Check if this product is a molecule
+        if (cloud_.constProps(productIndex).type() >= 20)
         {
             moleculeFound = true;
             //- The molecule is set to be the first product
             productIdsExchange_[0] = productIndex;
         }
-        //- Check if this product is a neutral atom
-        else if (cloud_.constProps(productIndex).type() == 10)
+        //- Check if this product is an atom
+        else if
+        (
+            cloud_.constProps(productIndex).type() == 10
+         or cloud_.constProps(productIndex).type() == 11
+        )
         {
             atomFound = true;
             //- The atom is set to be the second product
@@ -155,7 +156,7 @@ void exchangeQK::setProperties()
             FatalErrorIn("exchangeQK::setProperties()")
                 << "For reaction named " << reactionName_ << nl
                 << "Product " << cloud_.typeIdList()[productIndex]
-                << " is neither a neutral molecule nor an atom" << nl 
+                << " is neither a molecule nor an atom" << nl 
                 << exit(FatalError);
         }
     }
@@ -164,14 +165,14 @@ void exchangeQK::setProperties()
     {
         FatalErrorIn("exchangeQK::setProperties()")
             << "For reaction named " << reactionName_ << nl
-            << "None of the products is a neutral molecule." << nl 
+            << "None of the products is a molecule." << nl 
             << exit(FatalError);
     }
     else if (!atomFound)
     {
         FatalErrorIn("exchangeQK::setProperties()")
             << "For reaction named " << reactionName_ << nl
-            << "None of the products is a neutral atom." << nl 
+            << "None of the products is an atom." << nl 
             << exit(FatalError);
     }
 }
@@ -182,6 +183,7 @@ void exchangeQK::testExchange
     const dsmcParcel& p,
     const scalar translationalEnergy,
     const scalar omegaPQ,
+    scalar& collisionEnergy,
     scalar& totalReactionProbability,
     scalar& reactionProbability
 )
@@ -219,11 +221,11 @@ void exchangeQK::testExchange
         const scalar kBByThetaVP = physicoChemical::k.value()*cloud_.constProps(typeIdP).thetaV_m(m);
         const scalar EVibP_m = cloud_.constProps(typeIdP).eVib_m(m, vibLevel_m);
         
-        //- Collision total energy
-        scalar EcP = translationalEnergy + EVibP_m;
+        //- Total collision energy
+        collisionEnergy = translationalEnergy + EVibP_m;
         
         //- Condition for the exchange reaction to possibly occur
-        if(EcP > activationEnergy)
+        if(collisionEnergy > activationEnergy)
         {
             scalar summation = 0.0;
 
@@ -234,14 +236,14 @@ void exchangeQK::testExchange
             }
             else
             {
-                const label iaP = EcP/kBByThetaVP;
+                const label iaP = collisionEnergy/kBByThetaVP;
 
                 for(label i=0; i<=iaP; i++)
                 {
                     summation += 
                         pow
                         (
-                            1.0 - cloud_.constProps(typeIdP).eVib_m(m, i)/EcP,
+                            1.0 - cloud_.constProps(typeIdP).eVib_m(m, i)/collisionEnergy,
                             1.5 - omegaPQ
                         );
                 }
@@ -251,7 +253,7 @@ void exchangeQK::testExchange
             reactionProbability =
                 pow
                 (
-                    1.0 - activationEnergy/EcP,
+                    1.0 - activationEnergy/collisionEnergy,
                     1.5 - omegaPQ
                 )
                 /summation;
@@ -270,7 +272,8 @@ void exchangeQK::testExchange
 void exchangeQK::exchange
 (
     dsmcParcel& p,
-    dsmcParcel& q
+    dsmcParcel& q,
+    scalar collisionEnergy
 )
 {
     const label typeIdP = p.typeId();
@@ -462,7 +465,11 @@ void exchangeQK::reaction(dsmcParcel& p, dsmcParcel& q)
     //- Exchange reaction AB + C --> A + BC 
     //  If P is the first reactant AB (i.e., not the atom)
     //  NB: Q is necessarily M otherwise this class would not have been selected
-    if (cloud_.constProps(typeIdP).type() != 10) 
+    if
+    (
+        cloud_.constProps(typeIdP).type() != 10
+     && cloud_.constProps(typeIdP).type() != 11
+    ) 
     { 
         const scalar mP = cloud_.constProps(typeIdP).mass();
         const scalar mQ = cloud_.constProps(typeIdQ).mass();
@@ -483,12 +490,14 @@ void exchangeQK::reaction(dsmcParcel& p, dsmcParcel& q)
         
         scalar totalReactionProbability = 0.0;
         scalarList reactionProbabilities(1, 0.0);
+        scalarList collisionEnergies(1, 0.0);
         
         testExchange
         (
             p,
             translationalEnergy,
             omegaPQ,
+            collisionEnergies[0],
             totalReactionProbability,
             reactionProbabilities[0]
         );
@@ -496,7 +505,7 @@ void exchangeQK::reaction(dsmcParcel& p, dsmcParcel& q)
         //- Decide if an exchange reaction is to occur
         if (totalReactionProbability > cloud_.rndGen().sample01<scalar>())
         {
-            exchange(p, q);
+            exchange(p, q, collisionEnergies[0]);
         }
     }
     else

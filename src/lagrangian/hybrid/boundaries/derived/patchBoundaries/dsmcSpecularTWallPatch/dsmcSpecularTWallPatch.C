@@ -119,8 +119,7 @@ void dsmcSpecularTWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::tracking
         (
             T,
             cloud_.constProps(typeId).electronicDegeneracyList(),
-            cloud_.constProps(typeId).electronicEnergyList(),
-            typeId
+            cloud_.constProps(typeId).electronicEnergyList()
         ); 
     
     measurePropertiesAfterControl(p, 0.0);

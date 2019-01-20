@@ -35,9 +35,13 @@ using namespace Foam::constant::mathematical;
 namespace Foam
 {
     defineTypeNameAndDebug(VariableSoftSphere, 0);
-    addToRunTimeSelectionTable(BinaryCollisionModel, VariableSoftSphere, dictionary);
+    addToRunTimeSelectionTable
+    (
+        BinaryCollisionModel,
+        VariableSoftSphere,
+        dictionary
+    );
 };
-
 
 
 Foam::VariableSoftSphere::VariableSoftSphere
@@ -47,13 +51,17 @@ Foam::VariableSoftSphere::VariableSoftSphere
 )
 :
     BinaryCollisionModel(dict, cloud),
-    coeffDict_(dict.subDict(typeName + "Coeffs")),
-    Tref_(readScalar(coeffDict_.lookup("Tref")))
+    coeffDict_
+    (
+        dict.isDict(typeName + "Coeffs")
+        ? dict.subDict(typeName + "Coeffs")
+        : dictionary()
+    ),
+    Tref_(coeffDict_.lookupOrDefault<scalar>("Tref", 273.0))
 {}
 
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
-
 
 Foam::VariableSoftSphere::~VariableSoftSphere()
 {}
@@ -61,12 +69,10 @@ Foam::VariableSoftSphere::~VariableSoftSphere()
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-
 bool Foam::VariableSoftSphere::active() const
 {
     return true;
 }
-
 
 
 Foam::scalar Foam::VariableSoftSphere::sigmaTcR
@@ -75,157 +81,89 @@ Foam::scalar Foam::VariableSoftSphere::sigmaTcR
     const dsmcParcel& pQ
 ) const
 {
-//     const dmscCloud& cloud(this->owner());
+    const label typeIdP = pP.typeId();
+    const label typeIdQ = pQ.typeId();
 
-    label typeIdP = pP.typeId();
-    label typeIdQ = pQ.typeId();
-
-    scalar dPQ =
+    const scalar dPQ =
         0.5
        *(
             cloud_.constProps(typeIdP).d()
           + cloud_.constProps(typeIdQ).d()
         );
 
-    scalar omegaPQ =
+    const scalar omegaPQ =
         0.5
        *(
             cloud_.constProps(typeIdP).omega()
           + cloud_.constProps(typeIdQ).omega()
         );
        
-       
-//     if (typeIdP == 1 && typeIdQ == 0)
-//     {
-//         omegaPQ = 0.725;
-//     }
-//     
-//     if (typeIdP == 0 && typeIdQ == 1)
-//     {
-//         omegaPQ = 0.725;
-//     }
-
-
-    scalar cR = mag(pP.U() - pQ.U());
+    const scalar cR = mag(pP.U() - pQ.U());
 
     if (cR < VSMALL)
     {
         return 0;
     }
 
-    scalar mP = cloud_.constProps(typeIdP).mass();
-
-    scalar mQ = cloud_.constProps(typeIdQ).mass();
-
-    scalar mR = mP*mQ/(mP + mQ);
+    const scalar mP = cloud_.constProps(typeIdP).mass();
+    const scalar mQ = cloud_.constProps(typeIdQ).mass();
+    const scalar mR = mP*mQ/(mP + mQ);
 
     // calculating cross section = pi*dPQ^2, where dPQ is from Bird, eq. 4.79
     scalar sigmaTPQ =
-        pi*dPQ*dPQ
-       *pow(2.0*physicoChemical::k.value()*Tref_/(mR*cR*cR), omegaPQ - 0.5)
+        pi*sqr(dPQ)
+       *pow(2.0*physicoChemical::k.value()*Tref_/(mR*sqr(cR)), omegaPQ - 0.5)
        /exp(Foam::lgamma(2.5 - omegaPQ));
 
     return sigmaTPQ*cR;
 }
 
 
-
 void Foam::VariableSoftSphere::collide
 (
     dsmcParcel& pP,
     dsmcParcel& pQ,
-    label& cellI
+    const label cellI,
+    scalar cR
 )
 {
-//     dsmcCloud& cloud_(this->owner());
+    scatter(pP, pQ, cellI, cR);
+}
 
-    label typeIdP = pP.typeId();
-    label typeIdQ = pQ.typeId();
-    vector& UP = pP.U();
-    vector& UQ = pQ.U();
-    
-    scalar alphaPQ = 
-        0.5
-        *(
-            (cloud_.constProps(typeIdP).alpha())
-            + (cloud_.constProps(typeIdQ).alpha())
-        );
-    
-//     if (typeIdP == 1 && typeIdQ == 0)
-//     {
-//         alphaPQ = 1.0/1.64;
-//     }
-//     
-//     if (typeIdP == 0 && typeIdQ == 1)
-//     {
-//         alphaPQ = 1.0/1.64;
-//     }
-    
-//     Info << "alphaPQ = " << alphaPQ << endl;
-        
-    scalar collisionSeparation = sqrt(
-            sqr(pP.position().x() - pQ.position().x()) +
-            sqr(pP.position().y() - pQ.position().y())
+
+void Foam::VariableSoftSphere::scatter
+(
+    dsmcParcel& pP,
+    dsmcParcel& pQ,
+    const label cellI,
+    scalar cR
+)
+{
+    postCollisionVelocities
+    (
+        pP.typeId(),
+        pQ.typeId(),
+        pP.U(),
+        pQ.U(),
+        cR
     );
     
+    //- Collision separation and measurements
     cloud_.cellPropMeasurements().collisionSeparation()[cellI] += 
-                                                        collisionSeparation;
+        sqrt
+        (
+            sqr(pP.position().x() - pQ.position().x())
+          + sqr(pP.position().y() - pQ.position().y())
+          + sqr(pP.position().z() - pQ.position().z())
+        );
+        
     cloud_.cellPropMeasurements().nColls()[cellI]++;
-
-    Random& rndGen(cloud_.rndGen());
-
-    scalar mP = cloud_.constProps(typeIdP).mass();
-
-    scalar mQ = cloud_.constProps(typeIdQ).mass();
-
-    vector Ucm = (mP*UP + mQ*UQ)/(mP + mQ);
-
-    scalar cR = mag(UP - UQ);
     
-    vector cRComponents = UP - UQ;
-
-    scalar cosTheta = 2.0*(pow(rndGen.sample01<scalar>(),(1.0/alphaPQ))) - 1.0;
-
-    scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
-
-    scalar phi = twoPi*rndGen.sample01<scalar>();
+    const label classificationP = pP.classification();
+    const label classificationQ = pQ.classification();
     
-    scalar D = sqrt(cRComponents.y()*cRComponents.y() + cRComponents.z()*cRComponents.z());
-    
-    vector postCollisionRelU = vector::zero;
-    
-//     if (D > VSMALL)
-//     {
-        postCollisionRelU =
-            vector
-            (
-                cosTheta*cRComponents.x() + sinTheta*sin(phi)*D,
-                cosTheta*cRComponents.y() + sinTheta*(cR*cRComponents.z()*cos(phi) - cRComponents.x()*cRComponents.y()*sin(phi))/D,
-                cosTheta*cRComponents.z() - sinTheta*(cR*cRComponents.y()*cos(phi) + cRComponents.x()*cRComponents.z()*sin(phi))/D
-            ); //Bird, equation 2.22
-//     }
-//     else
-//     {
-//         postCollisionRelU =
-//             vector
-//             (
-//                 cosTheta*cRComponents.x(),
-//                 sinTheta*cos(phi)*cRComponents.x(),
-//                 sinTheta*sin(phi)*cRComponents.x()
-//             );
-//     }
-
-    UP = Ucm + postCollisionRelU*mQ/(mP + mQ);
-
-    UQ = Ucm - postCollisionRelU*mP/(mP + mQ);
-    
-    label classificationP = pP.classification();
-    label classificationQ = pQ.classification();
-    
-    //- class I molecule changes to class
-    //- III molecule when it collides with either class II or class III
-    //- molecules.
-    
+    //- Class I molecule changes to class III molecule when it collides with 
+    //  either class II or class III molecules.
     if (classificationP == 0 && classificationQ == 1)
     {
         pP.classification() = 2;
@@ -248,20 +186,134 @@ void Foam::VariableSoftSphere::collide
 }
 
 
-void Foam::VariableSoftSphere::relax
+void Foam::VariableSoftSphere::postCollisionVelocities
+(
+    const label typeIdP,
+    const label typeIdQ,
+    vector& UP,
+    vector& UQ,
+    scalar cR
+)
+{
+    if (cR == -1)
+    {
+        cR = mag(UP - UQ);
+    }
+    
+    const scalar alphaPQ = 
+        0.5
+       *(
+            cloud_.constProps(typeIdP).alpha()
+          + cloud_.constProps(typeIdQ).alpha()
+        );
+        
+    const scalar mP = cloud_.constProps(typeIdP).mass();
+    const scalar mQ = cloud_.constProps(typeIdQ).mass();
+
+    const vector& Ucm = (mP*UP + mQ*UQ)/(mP + mQ);
+
+    const vector& cRComponents = UP - UQ;
+
+    const scalar cosTheta =
+        2.0
+       *(
+            pow(cloud_.rndGen().sample01<scalar>(), 1.0/alphaPQ)
+        ) - 1.0;
+    const scalar sinTheta = sqrt(1.0 - sqr(cosTheta));
+    const scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
+    
+    const scalar D =
+        sqrt
+        (
+            cRComponents.y()*cRComponents.y() 
+          + cRComponents.z()*cRComponents.z()
+        );
+    
+    //- Bird, equation 2.22
+    const vector& postCollisionRelU =
+        vector
+        (
+            cosTheta*cRComponents.x() + sinTheta*sin(phi)*D,
+            cosTheta*cRComponents.y() + sinTheta*(cR*cRComponents.z()*cos(phi) 
+                - cRComponents.x()*cRComponents.y()*sin(phi))/D,
+            cosTheta*cRComponents.z() - sinTheta*(cR*cRComponents.y()*cos(phi)
+                + cRComponents.x()*cRComponents.z()*sin(phi))/D
+        ); 
+
+    //- Post-collision velocities
+    UP = Ucm + postCollisionRelU*mQ/(mP + mQ);
+
+    UQ = Ucm - postCollisionRelU*mP/(mP + mQ);
+}
+
+
+void Foam::VariableSoftSphere::postReactionVelocities
+(
+    const label typeIdP,
+    const label typeIdQ,
+    vector& UP,
+    vector& UQ,
+    scalar cR
+)
+{
+    const scalar alphaPQ = 
+        0.5
+       *(
+            cloud_.constProps(typeIdP).alpha()
+          + cloud_.constProps(typeIdQ).alpha()
+        );
+        
+    const scalar mP = cloud_.constProps(typeIdP).mass();
+    const scalar mQ = cloud_.constProps(typeIdQ).mass();
+
+    const vector& cRComponents = UP;
+
+    const scalar cosTheta =
+        2.0
+       *(
+            pow(cloud_.rndGen().sample01<scalar>(), 1.0/alphaPQ)
+        ) - 1.0;
+    const scalar sinTheta = sqrt(1.0 - sqr(cosTheta));
+    const scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
+    
+    const scalar D =
+        sqrt
+        (
+            cRComponents.y()*cRComponents.y() 
+          + cRComponents.z()*cRComponents.z()
+        );
+    
+    //- Bird, equation 2.22
+    const vector& postCollisionRelU =
+        vector
+        (
+            cosTheta*cRComponents.x() + sinTheta*sin(phi)*D,
+            cosTheta*cRComponents.y() + sinTheta*(cR*cRComponents.z()*cos(phi) 
+                - cRComponents.x()*cRComponents.y()*sin(phi))/D,
+            cosTheta*cRComponents.z() - sinTheta*(cR*cRComponents.y()*cos(phi)
+                + cRComponents.x()*cRComponents.z()*sin(phi))/D
+        ); 
+
+    //- Post-collision velocities
+    UQ = UP - postCollisionRelU*mP/(mP + mQ);
+    
+    UP += postCollisionRelU*mQ/(mP + mQ);
+}
+
+
+void Foam::VariableSoftSphere::redistribute
 (
     dsmcParcel& p,
     scalar& translationalEnergy,
     const scalar omegaPQ,
     const bool postReaction
 )
-{
-    NotImplemented
-}
+{}
 
 
 const Foam::dictionary& Foam::VariableSoftSphere::coeffDict() const
 {
     return coeffDict_;
 }
+
 // ************************************************************************* //

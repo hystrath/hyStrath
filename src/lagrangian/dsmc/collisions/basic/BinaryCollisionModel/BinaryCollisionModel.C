@@ -25,8 +25,7 @@ License
 
 #include "BinaryCollisionModel.H"
 
-// * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
-
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
 {
@@ -35,6 +34,8 @@ namespace Foam
     defineRunTimeSelectionTable(BinaryCollisionModel, dictionary);
 };
 
+
+// * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 
 Foam::BinaryCollisionModel::BinaryCollisionModel(dsmcCloud& owner)

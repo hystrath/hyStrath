@@ -55,7 +55,7 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                           Class dsmcControllers Declaration
+                         Class dsmcControllers Declaration
 \*---------------------------------------------------------------------------*/
 
 class dsmcControllers
@@ -64,7 +64,6 @@ class dsmcControllers
     // Private data
 
         //- The entire dictionary (containing multiple subDictionaries)
-
 
         Time& time_;
 

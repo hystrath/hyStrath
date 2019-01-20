@@ -24,10 +24,7 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "NoBinaryCollision.H"
-#include "constants.H"
 #include "addToRunTimeSelectionTable.H"
-
-using namespace Foam::constant::mathematical;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -79,16 +76,14 @@ Foam::scalar Foam::NoBinaryCollision::sigmaTcR
     (
         "Foam::scalar Foam::NoBinaryCollision::sigmaTcR"
         "("
-            "label typeIdP,"
-            "label typeIdQ,"
-            "const vector& UP,"
-            "const vector& UQ"
+            "const dsmcParcel& pP,"
+            "const dsmcParcel& pQ"
         ") const"
     )
-        << "sigmaTcR called on NoBinaryCollision model, this should "
+        << "sigmaTcR called in NoBinaryCollision model, this should "
         << "not happen, this is not an actual model." << nl
         << "Enclose calls to sigmaTcR within a if (binaryCollision().active()) "
-        << " check."
+        << "check."
         << abort(FatalError);
 
     return 0.0;
@@ -99,12 +94,23 @@ void Foam::NoBinaryCollision::collide
 (
     dsmcParcel& pP,
     dsmcParcel& pQ,
-    label& cellI
+    const label cellI,
+    scalar cR
 )
 {}
 
 
-void Foam::NoBinaryCollision::relax
+void Foam::NoBinaryCollision::scatter
+(
+    dsmcParcel& pP,
+    dsmcParcel& pQ,
+    const label cellI,
+    scalar cR
+)
+{}
+
+
+void Foam::NoBinaryCollision::redistribute
 (
     dsmcParcel& p,
     scalar& translationalEnergy,

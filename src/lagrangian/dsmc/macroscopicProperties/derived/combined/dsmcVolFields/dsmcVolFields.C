@@ -344,7 +344,7 @@ dsmcVolFields::dsmcVolFields
             IOobject::NO_WRITE
         ),
         mesh_,
-        dimensionedScalar("zero",  dimensionSet(0, -3, -1, 0, 0), 0.0)
+        dimensionedScalar("zero",  dimensionSet(0, 0, -1, 0, 0), 0.0)
     ),
     meanCollisionSeparation_
     (
@@ -933,6 +933,7 @@ void dsmcVolFields::calculateField()
     if (sampleInterval_ <= sampleCounter_)
     {
         nTimeSteps_ += 1.0;
+        const scalar nAvTimeSteps = nTimeSteps_;
         
         if (densityOnly_)
         {
@@ -1018,7 +1019,7 @@ void dsmcVolFields::calculateField()
                     ew_[cell] += (p.ERot() + vibEn)*p.U().z(); // TODO missing Eel
                     e_[cell] += (p.ERot() + vibEn); // TODO missing Eel
                     
-                    if (rotationalDof > VSMALL)
+                    if (rotationalDof > 0)
                     {
                         rhoNMeanInt_[cell] += 1.0;
                     }
@@ -1063,15 +1064,61 @@ void dsmcVolFields::calculateField()
 
             //Info<< "fields myCal" << tab << mesh_.time().elapsedCpuTime() - timer << " s" << endl; // TODO VINCENT
             
-            // obtain collision quality measurements
+            //- Obtain collision quality measurements and mixture translational
+            //  temperature
             forAll(cloud_.cellPropMeasurements().collisionSeparation(), cell)
             {
                 collisionSeparation_[cell] += 
                     cloud_.cellPropMeasurements().collisionSeparation()[cell];
                 nColls_[cell] += cloud_.cellPropMeasurements().nColls()[cell];
+                
+                if (rhoNMean_[cell] > 1e-3)
+                {                  
+                    const scalar cellVolume = mesh_.cellVolumes()[cell];
+                    
+                    dsmcRhoNMean_[cell] = rhoNMean_[cell]/nAvTimeSteps;
+                    
+                    const scalar rhoNMean = rhoNMeanXnParticle_[cell]
+                        /(nAvTimeSteps*cellVolume);
+                    const scalar rhoMMean = rhoMMeanXnParticle_[cell]
+                        /(nAvTimeSteps*cellVolume);
+                    
+                    rhoN_[cell] = rhoNMean;
+                    rhoM_[cell] = rhoMMean;
+                    
+                    UMean_[cell] = momentumMeanXnParticle_[cell]
+                        /rhoMMeanXnParticle_[cell];
+
+                    const scalar linearKEMean = 0.5
+                        *linearKEMeanXnParticle_[cell] 
+                        /(cellVolume*nAvTimeSteps);
+                    
+                    //- Translational temperature
+                    translationalT_[cell] = 
+                        2.0/(3.0*kB*rhoNMean)
+                       *(
+                            linearKEMean - 0.5*rhoMMean
+                           *(
+                                UMean_[cell] & UMean_[cell]
+                            )
+                        );
+                                    
+                    p_[cell] = rhoNMean*kB*translationalT_[cell];
+                }
+                else
+                {
+                    // not zero so that weighted decomposition still works
+                    dsmcRhoNMean_[cell] = 0.001; 
+                    //dsmcRhoN_[cell] = 0.001;
+                    rhoN_[cell] = 0.0;
+                    rhoM_[cell] = 0.0;
+                    UMean_[cell] = vector::zero;
+                    translationalT_[cell] = 0.0;           
+                    p_[cell] = 0.0;
+                }
             }
 
-            //- obtain boundary measurements
+            //- Obtain boundary measurements
             forAll(typeIds_, i)
             {
                 const label typeId = typeIds_[i];
@@ -1158,7 +1205,7 @@ void dsmcVolFields::calculateField()
         {                  
             const label nCells = mesh_.nCells();
             
-            scalarField vibT(nCells, 0.0);
+            vibrationalT_.primitiveFieldRef() = 0.0;
             scalarField vibTForOverallT(nCells, 0.0);
             
             //- Heat capacity at constant volume/(0.5*kB), trans-rotational
@@ -1167,12 +1214,11 @@ void dsmcVolFields::calculateField()
             scalarField molarCp_transrot(nCells, 0.0);
             scalarField molecularMass(nCells, 0.0);
             scalarField particleCv(nCells, 0.0);
-            scalarField totalvDof(nCells, 0.0);
             scalarField totalvDofOverall(nCells, 0.0);
             
             forAll(rhoNMean_, cell)
             {                
-                if (rhoNMean_[cell] > 1e-3) // NEW VINCENT
+                /*if (rhoNMean_[cell] > 1e-3) // TODO moved up already
                 {                  
                     const scalar cellVolume = mesh_.cellVolumes()[cell];
                     
@@ -1216,7 +1262,7 @@ void dsmcVolFields::calculateField()
                     UMean_[cell] = vector::zero;
                     translationalT_[cell] = 0.0;           
                     p_[cell] = 0.0;
-                }
+                }*/
 
                 if (rhoNInstantaneous_[cell] > SMALL)
                 {
@@ -1267,8 +1313,8 @@ void dsmcVolFields::calculateField()
                     forAll(vibrationalETotal_[i], mode)
                     {
                         if (vibrationalETotal_[i][mode][cell] > VSMALL
-                            && nParcels_[i][cell] > VSMALL
-                            && degreesOfFreedomMode.size() > VSMALL)
+                            && nParcels_[i][cell] > SMALL
+                            && degreesOfFreedomMode.size() > SMALL)
                         {        
                             const scalar thetaV = 
                                 cloud_.constProps(typeIds_[i]).thetaV_m(mode);
@@ -1282,15 +1328,11 @@ void dsmcVolFields::calculateField()
                             vibTMode[i][mode] = thetaV/log(1.0 + 1.0/iMean);
                             
                             degreesOfFreedomMode[i][mode] = 
-                                (2.0*thetaV/vibTMode[i][mode]) 
-                              / (exp(thetaV/vibTMode[i][mode]) - 1.0);
+                                2.0*thetaV/vibTMode[i][mode] 
+                              /(exp(thetaV/vibTMode[i][mode]) - 1.0);
+                              
+                            degreesOfFreedomSpecies[i] += degreesOfFreedomMode[i][mode];
                         }
-                    }
-
-                    forAll(degreesOfFreedomMode[i], mode)
-                    {
-                        degreesOfFreedomSpecies[i] += 
-                            degreesOfFreedomMode[i][mode];
                     }
                     
                     forAll(degreesOfFreedomMode[i], mode)
@@ -1303,11 +1345,14 @@ void dsmcVolFields::calculateField()
                         }
                     }
                     
-                    totalvDof[cell] += degreesOfFreedomSpecies[i];
+                    totalvDof_[cell] += degreesOfFreedomSpecies[i];
 
-                    if (rhoNMeanInt_[cell] > VSMALL 
-                        && rhoNMean_[cell] > VSMALL 
-                        && nParcels_[i][cell] > VSMALL)
+                    if
+                    (
+                         rhoNMeanInt_[cell] > VSMALL 
+                      && rhoNMean_[cell] > VSMALL 
+                      && nParcels_[i][cell] > SMALL
+                    )
                     {
                         const scalar fraction = nParcels_[i][cell]
                             /rhoNMeanInt_[cell];
@@ -1316,30 +1361,30 @@ void dsmcVolFields::calculateField()
                             /rhoNMean_[cell];
                         
                         totalvDofOverall[cell] += 
-                            totalvDof[cell]*(fractionOverall/fraction);
+                            totalvDof_[cell]*fractionOverall/fraction;
                         
-                        vibT[cell] += vibTID[i]*fraction;
+                        //- TODO
+                        vibrationalT_[cell] += vibTID[i]*fraction;
                     }
                 }
 
-                vibrationalT_[cell] = vibT[cell];
-                
                 //- Electronic energy mode
-                scalar totalelDof = 0.0;
+                scalar totalEDof = 0.0;
                 scalar elecT = 0.0;
                     
                 forAll(nParcels_, i) // TODO
                 {
-                    const scalarList& electronicEnergies = 
+                    /*const scalarList& electronicEnergies = 
                         cloud_.constProps(typeIds_[i]).electronicEnergyList();
                     const labelList& degeneracies = 
                         cloud_.constProps(typeIds_[i]).electronicDegeneracyList();
 
-                    if (   nGroundElectronicLevel_[i][cell] > SMALL 
-                        && nFirstElectronicLevel_[i][cell] > SMALL 
-                        && nFirstElectronicLevel_[i][cell]*degeneracies[0] 
+                    if
+                    (    nGroundElectronicLevel_[i][cell] > SMALL 
+                      && nFirstElectronicLevel_[i][cell] > SMALL 
+                      && nFirstElectronicLevel_[i][cell]*degeneracies[0] 
                             != nGroundElectronicLevel_[i][cell]*degeneracies[1]
-                       )
+                    )
                     {
                         const scalar elecTID = 
                             (electronicEnergies[1] - electronicEnergies[0])
@@ -1362,66 +1407,132 @@ void dsmcVolFields::calculateField()
                         const scalar eDof = 2.0*electronicETotal_[i][cell]
                             /nParcels_[i][cell]/(kB*elecTID);
 
-                        totalelDof += fraction*eDof;
-                    }
+                        totalEDof += fraction*eDof;
+                    }*/
                     
-    //                 label nElectronicLevels = cloud_.constProps(typeIds_[i]).nElectronicLevels();
-    //                 
-    //                 if (nElectronicLevels > 1 && nParcels_[i][cell] > VSMALL && molsElec_[cell] > VSMALL)
-    //                 {
-    //                     const scalarList& electronicEnergies = cloud_.constProps(typeIds_[i]).electronicEnergyList();
-    //                     const labelList& degeneracies = cloud_.constProps(typeIds_[i]).electronicDegeneracyList();
-    //                     
-    //                     scalar speciesTransT = (1.0/(3.0*kB))
-    //                                             *(
-    //                                                 (mccSpecies_[i][cell]/(nParcels_[i][cell]))
-    //                                                 - (
-    //                                                     cloud_.constProps(typeIds_[i]).mass()*mag(UMean_[cell])*mag(UMean_[cell])
-    //                                                 )
-    //                                             );
-    //                     
-    //                     scalar fraction = nParcels_[i][cell]/molsElec_[cell];
-    //                     
-    //                     if (speciesTransT > SMALL && electronicETotal_[i][cell] > VSMALL)
-    //                     {
-    //                         scalar sum1 = 0.0;
-    //                         scalar sum2 = 0.0;
-    //                         
-    //                         forAll(electronicEnergies, ii)
-    //                         {
-    //                             sum1 += degeneracies[ii]*exp(-electronicEnergies[ii]/(kB*speciesTransT));
-    //                             sum2 += degeneracies[ii]*(electronicEnergies[ii]/(kB*speciesTransT))
-    //                                         *exp(-electronicEnergies[ii]/(kB*speciesTransT));
-    //                         }
-    //                         
-    //                         if (sum2 > VSMALL && sum1 > VSMALL)
-    //                         {
-    //                             scalar elecTID = (electronicETotal_[i][cell]/(kB*nParcels_[i][cell]))*(sum1/sum2);
-    //                             
-    //                             if (elecTID > SMALL && elecTID < GREAT)
-    //                             {
-    //                                 elecT += fraction*elecTID;
-    //                                 
-    //                                 scalar eDof = (2.0*(electronicETotal_[i][cell]/nParcels_[i][cell]))/(kB*speciesTransT);
-    //                                 
-    //                                 totalelDof += fraction*eDof;
-    //                             }
-    //                         }
-    //                     }
-    //                 }
+                     label nElectronicLevels = cloud_.constProps(typeIds_[i]).nElectronicLevels();
+                     
+                     if (nElectronicLevels > 1 && nParcels_[i][cell] > SMALL && molsElec_[cell] > SMALL)
+                     {
+                         const scalarList& electronicEnergies = cloud_.constProps(typeIds_[i]).electronicEnergyList();
+                         const labelList& degeneracies = cloud_.constProps(typeIds_[i]).electronicDegeneracyList();
+                         
+                         const scalar translationalTSpecies = 
+                            1.0/(3.0*kB)
+                           *(
+                               mccSpecies_[i][cell]/nParcels_[i][cell]
+                             - (
+                                   cloud_.constProps(typeIds_[i]).mass()
+                                  *mag(UMean_[cell])*mag(UMean_[cell])
+                               )
+                           );
+                           
+                         const scalar fraction = nParcels_[i][cell]/molsElec_[cell];
+                         
+                         //Info << "translationalTSpecies" << tab << translationalTSpecies << endl;  
+                         //Info << "fraction" << tab << fraction << endl;  
+                         
+                         if (translationalTSpecies > SMALL && electronicETotal_[i][cell] > VSMALL)
+                         {
+                             scalar sum1 = 0.0;
+                             scalar sum2 = 0.0;
+                             
+                             forAll(electronicEnergies, ii)
+                             {
+                                 sum1 += degeneracies[ii]*exp(-electronicEnergies[ii]/(kB*translationalTSpecies));
+                                 sum2 += degeneracies[ii]*electronicEnergies[ii]/(kB*translationalTSpecies)
+                                             *exp(-electronicEnergies[ii]/(kB*translationalTSpecies));
+                             }
+                             
+                             if (sum1 > VSMALL && sum2 > VSMALL)
+                             {
+                                 const scalar electronicTSpecies =
+                                    electronicETotal_[i][cell]
+                                   /(kB*nParcels_[i][cell])*sum1/sum2;
+                                 
+                                 if (electronicTSpecies > SMALL && electronicTSpecies < GREAT)
+                                 {
+                                     elecT += fraction*electronicTSpecies;
+                                     
+                                     const scalar eDof =
+                                        2.0*electronicETotal_[i][cell]/nParcels_[i][cell]
+                                       /(kB*translationalTSpecies);
+                                     
+                                     totalEDof += fraction*eDof;
+                                 }
+                             }
+                         }
+                     }
                 }
 
-                electronicT_[cell] = elecT; // TODO
+                electronicT_[cell] = elecT;
+//Info << "totalEDof" << tab << totalEDof << tab << "electronicT_[cell]" << tab << electronicT_[cell] << endl;
+                
+                
+                /*scalar totalEDof = 0.0;
+                scalar elecT = 0.0;
+                    
+                forAll(nParcels_, iD)
+                {
+                    const scalarList& electronicEnergies = 
+                        cloud_.constProps(typeIds_[iD]).electronicEnergyList();
+                    const labelList& degeneracies = 
+                        cloud_.constProps(typeIds_[iD]).electronicDegeneracyList();
 
+                    if
+                    (
+                        nGroundElectronicLevel_[iD][cell] > VSMALL
+                     && nFirstElectronicLevel_[iD][cell] > VSMALL
+                     && nFirstElectronicLevel_[iD][cell]*degeneracies[0] 
+                            != nGroundElectronicLevel_[iD][cell]*degeneracies[1]
+                    )
+                    {
+                        const scalar elecTID = 
+                            (electronicEnergies[1] - electronicEnergies[0])/
+                            (
+                                kB*
+                                log
+                                (
+                                    (nGroundElectronicLevel_[iD][cell]*degeneracies[1])/
+                                    (nFirstElectronicLevel_[iD][cell]*degeneracies[0])
+                                )   
+                            );
+
+                    
+                        const scalar fraction = nParcels_[iD][cell]/molsElec_[cell];
+                            
+                        if(elecTID > VSMALL)
+                        {
+                            elecT += fraction*elecTID;
+                        }
+                        
+                        const scalar eDof =
+                            (
+                                2.0*(electronicETotal_[iD][cell]/
+                             nParcels_[iD][cell])
+                            )
+                            /
+                            (
+                                kB*elecTID
+                            );
+
+                        totalEDof += fraction*eDof;
+                    }
+                }
+
+                electronicT_[cell] = elecT;*/
+                
+                //- Overall temperature
                 overallT_[cell] = 
                     ( 
                         3.0*translationalT_[cell]
                         + totalrDof*rotationalT_[cell]
                         + totalvDof_[cell]*vibrationalT_[cell]
-                        + totalelDof*electronicT_[cell]
+                        + totalEDof*electronicT_[cell]
                     ) /
-                    (3.0 + totalrDof + totalvDof_[cell] + totalelDof); // TODO
+                    (3.0 + totalrDof + totalvDof_[cell] + totalEDof);
 
+                
                 if (measureHeatFluxShearStress_)
                 {                    
                     if (rhoNMean_[cell] > SMALL)
@@ -1614,12 +1725,12 @@ void dsmcVolFields::calculateField()
                             const scalar massRatio = 
                                 cloud_.constProps(typeIds_[i]).mass()
                                /cloud_.constProps(typeIds_[qspec]).mass();
-                            const scalar symmFactor = (i == qspec ? 1.0 : 2.0);
                             
-                            if (
-                                  nParcels_[qspec][cell] > SMALL 
-                                  && translationalT_[cell] > SMALL
-                               )
+                            if
+                            (
+                                nParcels_[qspec][cell] > SMALL 
+                             && translationalT_[cell] > SMALL
+                            )
                             {
                                 const scalar nDensQ = 
                                     nParcelsXnParticle_[qspec][cell]
@@ -1641,7 +1752,7 @@ void dsmcVolFields::calculateField()
                                         omegaPQ - 0.5
                                     )*sqrt(1.0+massRatio); //Bird, eq (4.76)
                                 
-                                mcr_[i][cell] += symmFactor*sqrt(pi)*sqr(dPQ)
+                                mcr_[i][cell] += 2.0*sqrt(pi)*sqr(dPQ)
                                     *nDensQ
                                     *pow
                                     (
@@ -1674,6 +1785,8 @@ void dsmcVolFields::calculateField()
                     
                     if (rhoN_[cell] > SMALL)
                     {
+                        //const scalar symmFactor = 2.0; // TODO (i == qspec ? 1.0 : 2.0);
+                        
                         cr_[cell] = nColls_[cell]*cloud_.nParticles(cell)
                             /(rhoN_[cell]*mesh_.cellVolumes()[cell]
                                 *nAvTimeSteps*deltaT);
@@ -2201,12 +2314,12 @@ void dsmcVolFields::calculateField()
             {
                 meanFreePath_.write();
                 mfpCellRatio_.write();
-                meanCollisionRate_.write();
+                //meanCollisionRate_.write();
                 meanCollisionTime_.write();
                 meanCollisionTimeTimeStepRatio_.write();
-                meanCollisionSeparation_.write();
-                cr_.write();
-                SOF_.write();
+                //meanCollisionSeparation_.write();
+                //cr_.write();
+                //SOF_.write();
             }
             
             if (measureClassifications_)
@@ -2259,7 +2372,7 @@ void dsmcVolFields::calculateField()
                 rotationalEMean_[celli] = 0.0;
                 rotationalDofMean_[celli] = 0.0;
                 rhoNMeanInt_[celli] = 0.0;
-                molsElec_[celli] = scalar(0.0),
+                molsElec_[celli] = 0.0,
                 nClassI_[celli] = 0.0;
                 nClassII_[celli] = 0.0;
                 nClassIII_[celli] = 0.0;

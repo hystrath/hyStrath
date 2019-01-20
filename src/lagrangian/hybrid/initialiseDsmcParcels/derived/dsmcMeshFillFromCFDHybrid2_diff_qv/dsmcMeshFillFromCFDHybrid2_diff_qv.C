@@ -39,9 +39,12 @@ namespace Foam
 
 defineTypeNameAndDebug(dsmcMeshFillFromCFDHybrid2_diff_qv, 0);
 
-addToRunTimeSelectionTable(dsmcConfiguration, dsmcMeshFillFromCFDHybrid2_diff_qv,
-    dictionary);
-
+addToRunTimeSelectionTable
+(
+    dsmcConfiguration,
+    dsmcMeshFillFromCFDHybrid2_diff_qv,
+    dictionary
+);
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
@@ -51,14 +54,10 @@ dsmcMeshFillFromCFDHybrid2_diff_qv::dsmcMeshFillFromCFDHybrid2_diff_qv
 (
     dsmcCloud& cloud,
     const dictionary& dict
-//     const word& name
 )
 :
     dsmcConfiguration(cloud, dict)
-{
-
-}
-
+{}
 
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
@@ -67,9 +66,7 @@ dsmcMeshFillFromCFDHybrid2_diff_qv::~dsmcMeshFillFromCFDHybrid2_diff_qv()
 {}
 
 
-
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
-
 
 void dsmcMeshFillFromCFDHybrid2_diff_qv::setInitialConfiguration()
 {
@@ -235,7 +232,7 @@ void dsmcMeshFillFromCFDHybrid2_diff_qv::setInitialConfiguration()
                     IOobject::NO_READ,
                     IOobject::AUTO_WRITE
                 ),
-                nDInitial[moleculeI] * k * TtInitial
+                nDInitial[moleculeI]*k*TtInitial
             )
         );
 
@@ -311,7 +308,7 @@ void dsmcMeshFillFromCFDHybrid2_diff_qv::setInitialConfiguration()
 
         scalar rotDoF =
             cloud_.constProps()[moleculeI].rotationalDegreesOfFreedom();
-        scalar vibDoF =
+        const label vibDoF =
             cloud_.constProps()[moleculeI].nVibrationalModes();
         scalar omega =
             cloud_.constProps()[moleculeI].omega();
@@ -470,7 +467,7 @@ void dsmcMeshFillFromCFDHybrid2_diff_qv::setInitialConfiguration()
                         * dummyGradT[cellI] * twoBeta;
                 }
 
-                if(vibDoF > SMALL)
+                if(vibDoF > 0)
                 {
                     if(qv_)
                     {

@@ -113,6 +113,10 @@ public:
         inline const List< autoPtr<dsmcField> >& fields() const;
         inline const List<word>& fieldNames() const;
         inline const List<label>& fieldIds() const;
+        
+        scalar translationalT(const label cellI);
+        
+        scalar overallT(const label cellI);
 
     // Ostream Operator
 

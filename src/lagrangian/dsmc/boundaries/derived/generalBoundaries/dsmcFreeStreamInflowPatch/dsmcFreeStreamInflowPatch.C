@@ -94,7 +94,7 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
     Random& rndGen = cloud_.rndGen();
 
     const scalar sqrtPi = sqrt(pi);
-Info<< "-20" << endl; 
+
     // compute parcels to insert
     forAll(accumulatedParcelsToInsert_, i)
     {
@@ -343,8 +343,7 @@ Info<< "-20" << endl;
                 (
                     faceElectronicTemperature,
                     cloud_.constProps(typeId).electronicDegeneracyList(),
-                    cloud_.constProps(typeId).electronicEnergyList(),
-                    typeId
+                    cloud_.constProps(typeId).electronicEnergyList()
                 );
                 
                 label newParcel = patchId();

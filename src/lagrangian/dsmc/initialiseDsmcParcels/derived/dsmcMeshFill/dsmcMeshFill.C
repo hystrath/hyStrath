@@ -41,7 +41,6 @@ defineTypeNameAndDebug(dsmcMeshFill, 0);
 addToRunTimeSelectionTable(dsmcConfiguration, dsmcMeshFill, dictionary);
 
 
-
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 // Construct from components
@@ -58,12 +57,10 @@ dsmcMeshFill::dsmcMeshFill
 }
 
 
-
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
 dsmcMeshFill::~dsmcMeshFill()
 {}
-
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
@@ -191,8 +188,7 @@ void dsmcMeshFill::setInitialConfiguration()
                     (
                         electronicTemperature,
                         cP.electronicDegeneracyList(),
-                        cP.electronicEnergyList(),
-                        typeId
+                        cP.electronicEnergyList()
                     );
 
                     U += velocity;

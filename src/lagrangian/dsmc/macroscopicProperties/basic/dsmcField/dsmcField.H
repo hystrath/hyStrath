@@ -207,6 +207,10 @@ public:
 
 //         virtual const propertyField& field() const = 0;
 
+        virtual scalar translationalT(const label cellI) = 0;
+        
+        virtual scalar overallT(const label cellI) = 0;
+
 };
 
 

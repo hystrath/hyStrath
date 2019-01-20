@@ -92,7 +92,7 @@ void delFromHybridZone::findMolsToDel()
 
 
     // as a precaution: rebuild cell occupancy
-//     cloud_.rebuildCellOccupancy();
+    // cloud_.reBuildCellOccupancy();
 }
 
 

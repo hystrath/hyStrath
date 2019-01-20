@@ -27,8 +27,6 @@ License
 #include "constants.H"
 #include "addToRunTimeSelectionTable.H"
 
-using namespace Foam::constant::mathematical;
-
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
 namespace Foam
@@ -50,26 +48,55 @@ Foam::LarsenBorgnakkeVariableHardSphere::LarsenBorgnakkeVariableHardSphere
     dsmcCloud& cloud
 )
 :
-    BinaryCollisionModel(dict, cloud),
-    coeffDict_(dict.subDict(typeName + "Coeffs")),
-    Tref_(readScalar(coeffDict_.lookup("Tref"))),
+    VariableHardSphere(dict, cloud),
+    coeffDictLB_
+    (
+        dict.isDict(typeName + "Coeffs")
+        ? dict.subDict(typeName + "Coeffs")
+        : dictionary()
+    ),
     rotationalRelaxationCollisionNumber_
     (
-        readScalar(coeffDict_.lookup("rotationalRelaxationCollisionNumber"))
+        coeffDictLB_.lookupOrDefault<scalar>
+        (
+            "rotationalRelaxationCollisionNumber",
+            5.0
+        )
     ),
     vibrationalRelaxationCollisionNumber_
     (
-        coeffDict_.lookupOrDefault<scalar>
+        coeffDictLB_.lookupOrDefault<scalar>
         (
             "vibrationalRelaxationCollisionNumber", 
             0.0
         )
     ),
+    invZvFormulation_(2),
     electronicRelaxationCollisionNumber_
     (
-        readScalar(coeffDict_.lookup("electronicRelaxationCollisionNumber"))
+        coeffDictLB_.lookupOrDefault<scalar>
+        (
+            "electronicRelaxationCollisionNumber",
+            500.0
+        )
     )
-{}
+{
+    const word inverseZvFormulationVersion =
+        coeffDictLB_.lookupOrDefault<word>
+        (
+            "inverseZvFormulation", 
+            word::null
+        );
+        
+    if (inverseZvFormulationVersion == "pre-2008")
+    {
+        invZvFormulation_ = 0;
+    }
+    else if (inverseZvFormulationVersion == "2008")
+    {
+        invZvFormulation_ = 1;
+    }
+}
 
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
@@ -80,65 +107,14 @@ Foam::LarsenBorgnakkeVariableHardSphere::~LarsenBorgnakkeVariableHardSphere()
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-bool Foam::LarsenBorgnakkeVariableHardSphere::active() const
-{
-    return true;
-}
-
-
-Foam::scalar Foam::LarsenBorgnakkeVariableHardSphere::sigmaTcR
-(
-    const dsmcParcel& pP,
-    const dsmcParcel& pQ
-) const
-{
-    const label typeIdP = pP.typeId();
-    const label typeIdQ = pQ.typeId();
-
-    const scalar dPQ =
-        0.5
-       *(
-            cloud_.constProps(typeIdP).d()
-          + cloud_.constProps(typeIdQ).d()
-        );
-
-    const scalar omegaPQ =
-        0.5
-       *(
-            cloud_.constProps(typeIdP).omega()
-          + cloud_.constProps(typeIdQ).omega()
-        );
-
-    const scalar cR = mag(pP.U() - pQ.U());
-
-    if (cR < VSMALL)
-    {
-        return 0;
-    }
-
-    const scalar mP = cloud_.constProps(typeIdP).mass();
-    const scalar mQ = cloud_.constProps(typeIdQ).mass();
-    const scalar mR = mP*mQ/(mP + mQ);
-
-    // calculating cross section = pi*dPQ^2, where dPQ is from Bird, eq. 4.79
-    const scalar sigmaTPQ =
-        pi*dPQ*dPQ
-       *pow(2.0*physicoChemical::k.value()*Tref_/(mR*cR*cR), omegaPQ - 0.5)
-       /exp(Foam::lgamma(2.5 - omegaPQ));
-
-    return sigmaTPQ*cR;
-}
-
-
 void Foam::LarsenBorgnakkeVariableHardSphere::collide
 (
     dsmcParcel& pP,
     dsmcParcel& pQ,
-    label& cellI
+    const label cellI,
+    scalar cR
 )
 {   
-    Random& rndGen(cloud_.rndGen());
-    
     const label typeIdP = pP.typeId();
     const label typeIdQ = pQ.typeId();
     
@@ -148,7 +124,7 @@ void Foam::LarsenBorgnakkeVariableHardSphere::collide
     const scalar mP = cloud_.constProps(typeIdP).mass();
     const scalar mQ = cloud_.constProps(typeIdQ).mass();
     const scalar mR = mP*mQ/(mP + mQ);
-    const vector Ucm = (mP*UP + mQ*UQ)/(mP + mQ);
+    
     const scalar cRsqr = magSqr(UP - UQ);
 
     //- Pre-collision relative translational energy
@@ -161,70 +137,17 @@ void Foam::LarsenBorgnakkeVariableHardSphere::collide
           + cloud_.constProps(typeIdQ).omega()
         );
     
-    relax(pP, translationalEnergy, omegaPQ);
-    relax(pQ, translationalEnergy, omegaPQ);
+    redistribute(pP, translationalEnergy, omegaPQ);
+    redistribute(pQ, translationalEnergy, omegaPQ);
 
     //- Rescale the translational energy
-    const scalar cR = sqrt(2.0*translationalEnergy/mR);
-
-    //- Variable Hard Sphere collision part (Eq. 3.14, p57)
-    const scalar cosTheta = 2.0*rndGen.sample01<scalar>() - 1.0;
-    const scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
-    const scalar phi = 2.0*pi*rndGen.sample01<scalar>();
-
-    //- Post-collision relative velocity (Eq. 3.15, p57)
-    const vector postCollisionRelU =
-        cR
-       *vector
-        (
-            cosTheta,
-            sinTheta*cos(phi),
-            sinTheta*sin(phi)
-        );
-
-    UP = Ucm + postCollisionRelU*mQ/(mP + mQ);
-
-    UQ = Ucm - postCollisionRelU*mP/(mP + mQ);
+    cR = sqrt(2.0*translationalEnergy/mR);
     
-    
-    scalar collisionSeparation = sqrt(
-            sqr(pP.position().x() - pQ.position().x()) +
-            sqr(pP.position().y() - pQ.position().y())
-    );
-    
-    cloud_.cellPropMeasurements().collisionSeparation()[cellI] += collisionSeparation;
-    cloud_.cellPropMeasurements().nColls()[cellI]++;
-    
-    const label classificationP = pP.classification();
-    const label classificationQ = pQ.classification();
-    
-    //- Class I molecule changes to class
-    //  III molecule when it collides with either class II or class III
-    //  molecules.
-    
-    if (classificationP == 0 && classificationQ == 1)
-    {
-        pP.classification() = 2;
-    }
-    
-    if (classificationQ == 0 && classificationP == 1)
-    {
-        pQ.classification() = 2;
-    }
-    
-    if (classificationP == 0 && classificationQ == 2)
-    {
-        pP.classification() = 2;
-    }
-    
-    if (classificationQ == 0 && classificationP == 2)
-    {
-        pQ.classification() = 2;
-    }
+    VariableHardSphere::scatter(pP, pQ, cellI, cR);
 }
 
 
-void Foam::LarsenBorgnakkeVariableHardSphere::relax
+void Foam::LarsenBorgnakkeVariableHardSphere::redistribute
 (
     dsmcParcel& p,
     scalar& translationalEnergy,
@@ -241,8 +164,10 @@ void Foam::LarsenBorgnakkeVariableHardSphere::relax
         return void();
     }
     
-    const scalar inverseRotationalCollisionNumber = 1.0/rotationalRelaxationCollisionNumber_;
-    const scalar inverseElectronicCollisionNumber = 1.0/electronicRelaxationCollisionNumber_;
+    const scalar inverseRotationalCollisionNumber =
+        1.0/rotationalRelaxationCollisionNumber_;
+    const scalar inverseElectronicCollisionNumber =
+        1.0/electronicRelaxationCollisionNumber_;
     
     scalar& ERotP = p.ERot();
     label& ELevelP = p.ELevel();
@@ -250,27 +175,25 @@ void Foam::LarsenBorgnakkeVariableHardSphere::relax
     //- Electronic energy mode for P
     if (inverseElectronicCollisionNumber > cloud_.rndGen().sample01<scalar>())
     { 
-        const scalar preCollisionEEleP = cP.electronicEnergyList()[ELevelP];
         const label jMaxP = cP.nElectronicLevels();    
         const scalarList& EElistP = cP.electronicEnergyList();    
-        const labelList& gListP = cP.electronicDegeneracyList();   
+        const labelList& gListP = cP.electronicDegeneracyList(); 
+        const scalar preCollisionEEleP = EElistP[ELevelP];
     
         //- Collision energy of particle P: relative translational energy 
         //   + pre-collision electronic energy
         const scalar EcP = translationalEnergy + preCollisionEEleP;
         
-        const label postCollisionELevel = 
+        ELevelP = 
             cloud_.postCollisionElectronicEnergyLevel
-                (
-                    EcP,
-                    jMaxP,
-                    omegaPQ,
-                    EElistP,
-                    gListP
-                );
+            (
+                EcP,
+                jMaxP,
+                omegaPQ,
+                EElistP,
+                gListP
+            );
                         
-        ELevelP = postCollisionELevel;
-        
         //- Relative translational energy after electronic energy exchange
         translationalEnergy = EcP - EElistP[ELevelP];
     }
@@ -307,7 +230,9 @@ void Foam::LarsenBorgnakkeVariableHardSphere::relax
                         omegaPQ,
                         ZrefP[i],
                         EcP,
-                        vibrationalRelaxationCollisionNumber_
+                        vibrationalRelaxationCollisionNumber_,
+                        invZvFormulation_,
+                        p.cell()
                     );
                         
                 translationalEnergy = EcP - cP.eVib_m(i, p.vibLevel()[i]);
@@ -321,7 +246,7 @@ void Foam::LarsenBorgnakkeVariableHardSphere::relax
     // Larsen Borgnakke rotational energy redistribution part. Using the serial
     // application of the LB method, as per the INELRS subroutine in Bird's
     // DSMC0R.FOR
-    if (rotationalDofP > VSMALL)
+    if (rotationalDofP > 0)
     {
          /*scalar particleProbabilityP = 
              ((zeta_T + 2.0*rotationalDofP)/(2.0*rotationalDofP))
@@ -357,8 +282,7 @@ void Foam::LarsenBorgnakkeVariableHardSphere::relax
 const Foam::dictionary&
 Foam::LarsenBorgnakkeVariableHardSphere::coeffDict() const
 {
-    return coeffDict_;
+    return coeffDictLB_;
 }
-
 
 // ************************************************************************* //

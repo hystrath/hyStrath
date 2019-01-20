@@ -278,8 +278,7 @@ void densityController::insertParcelWithinDSMC(const label& c)
     (
         temperature_,
         cP.electronicDegeneracyList(),
-        cP.electronicEnergyList(),
-        typeId_
+        cP.electronicEnergyList()
     );
 
     //thermal velocity + stream velocity = instantaneous velocity -

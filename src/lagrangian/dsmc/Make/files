@@ -39,13 +39,19 @@ reactions/basic/dsmcReactions/dsmcReactions.C
 reactions/basic/dsmcReaction/dsmcReaction.C
 reactions/derived/dissociationQK/dissociationQK.C
 reactions/derived/ionisationQK/ionisationQK.C
-/*reactions/derived/associativeIonisationQK/associativeIonisationQK.C*/
+reactions/derived/associativeIonisationQK/associativeIonisationQK.C
 reactions/derived/exchangeQK/exchangeQK.C
 reactions/derived/chargeExchangeQK/chargeExchangeQK.C
 
 reactions/derived/mixed/dissociationExchangeQK/dissociationExchangeQK.C
 reactions/derived/mixed/dissociationIonisationQK/dissociationIonisationQK.C
 reactions/derived/mixed/dissociationIonisationExchangeQK/dissociationIonisationExchangeQK.C
+reactions/derived/mixed/dissociationIonisationChargeExchangeQK/dissociationIonisationChargeExchangeQK.C
+reactions/derived/mixed/dissociationIonisationExchangeChargeExchangeQK/dissociationIonisationExchangeChargeExchangeQK.C
+reactions/derived/mixed/ionisationExchangeChargeExchangeQK/ionisationExchangeChargeExchangeQK.C
+reactions/derived/mixed/ionisationExchangeQK/ionisationExchangeQK.C
+reactions/derived/mixed/ionisationChargeExchangeQK/ionisationChargeExchangeQK.C
+reactions/derived/mixed/ionisationAssociativeIonisationQK/ionisationAssociativeIonisationQK.C
 
 /* BINARY COLLISIONS */
 collisions/basic/BinaryCollisionModel/BinaryCollisionModel.C

@@ -128,9 +128,9 @@ void ionisationQK::setProperties()
         }
         else
         {
-            //- If this species is not an electron, it should have ionisation
+            //- If this species is not charged, it should have ionisation
             //  products
-            if (reactantTypes_[r] != 0)
+            if (cloud_.constProps(reactantIds_[r]).charge() == 0)
             {
                 FatalErrorIn("ionisationQK::setProperties()")
                     << "For reaction named " << reactionName_ << nl
@@ -182,6 +182,7 @@ void ionisationQK::testIonisation
     const dsmcParcel& p,
     const scalar translationalEnergy,
     const label nReac,
+    scalar& collisionEnergy,
     scalar& totalReactionProbability,
     scalar& reactionProbability
 )
@@ -192,10 +193,10 @@ void ionisationQK::testIonisation
     {
         const scalar EEleP = 
             cloud_.constProps(typeIdP).electronicEnergyList()[p.ELevel()];   
-        const scalar EcP = translationalEnergy + EEleP;
+        collisionEnergy = translationalEnergy + EEleP;
     
         //- Condition for the ionisation of P
-        if (EcP > heatOfReactionIonisationJoules_[nReac])
+        if (collisionEnergy > heatOfReactionIonisationJoules_[nReac])
         {
             //- Add reaction to the list of competing reactions with 
             //  probability reactionProbability
@@ -210,7 +211,8 @@ void ionisationQK::ioniseParticleByPartner
 (
     dsmcParcel& p,
     dsmcParcel& q,
-    const label nR
+    const label nR,
+    scalar collisionEnergy
 )
 {
     const label typeIdP = p.typeId();
@@ -230,13 +232,8 @@ void ionisationQK::ioniseParticleByPartner
     {
         relax_ = false;
         
-        vector UP = p.U();
-        vector UQ = q.U();
-        
-        const scalar mP = cloud_.constProps(typeIdP).mass();
-        const scalar mQ = cloud_.constProps(typeIdQ).mass();
-        const scalar mR = mP*mQ/(mP + mQ);
-        const scalar cRsqr = magSqr(UP - UQ);
+        //- The collision energy is being subtracted the heat of reaction
+        collisionEnergy -= heatOfReactionIonisationJoules_[nR];
         
         const scalar omegaPQ =
             0.5
@@ -245,39 +242,29 @@ void ionisationQK::ioniseParticleByPartner
                 + cloud_.constProps(typeIdQ).omega()
             );
             
-        scalar translationalEnergy = 0.5*mR*cRsqr;
-       
-        const scalar EEleP = cloud_.constProps(typeIdP).electronicEnergyList()[p.ELevel()];
-        
-        translationalEnergy += EEleP - heatOfReactionIonisationJoules_[nR];
-    
         //- Energy redistribution for particle Q
-        cloud_.binaryCollision().relax(q, translationalEnergy, omegaPQ, true);
+        cloud_.binaryCollision().redistribute
+        (
+            q, collisionEnergy, omegaPQ, true
+        );
         
-        const scalar relVelNonIonisedParticle = sqrt(2.0*translationalEnergy/mR);
-
-        //- Center of mass velocity of all particles
-        const vector Ucm = (mP*UP + mQ*UQ)/(mP + mQ);    
-
-        //- Variable Hard Sphere collision part
-        const scalar cosTheta = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
-        const scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
-        const scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
-    
-        const vector postCollisionRelU = relVelNonIonisedParticle
-           *vector
-            (
-                cosTheta,
-                sinTheta*cos(phi),
-                sinTheta*sin(phi)
-            );
-
-        UP = Ucm + (postCollisionRelU*mQ/(mP + mQ)); 
-        UQ = Ucm - (postCollisionRelU*mP/(mP + mQ));
+        const scalar mP = cloud_.constProps(typeIdP).mass();
+        const scalar mQ = cloud_.constProps(typeIdQ).mass();
+        const scalar mR = mP*mQ/(mP + mQ);
         
-        //- Post-collision velocity for particle Q
-        q.U() = UQ;
-
+        scalar relVelNonIonisedParticle = sqrt(2.0*collisionEnergy/mR);
+        
+        //- Post-collision velocities for P (pre-reaction) and Q
+        cloud_.binaryCollision().postCollisionVelocities
+        (
+            typeIdP,
+            typeIdQ,
+            p.U(),
+            q.U(),
+            relVelNonIonisedParticle
+        );
+        
+        //- Post-reaction
         const label typeId1 = productIdsIonisation_[nR][0];
         const label typeId2 = productIdsIonisation_[nR][1];
         
@@ -286,34 +273,27 @@ void ionisationQK::ioniseParticleByPartner
         const scalar mP2 = cloud_.constProps(typeId2).mass();
         const scalar mRproducts = mP1*mP2/(mP1 + mP2);
         
+        //- Energy left for the 2 products
         const scalar ERotP = p.ERot();
         const scalar EVibP = cloud_.constProps(typeIdP).eVib_tot(p.vibLevel());
-        //- Energy left for the 2 products
-        //  Assumption: no energy redistribution for the particle being split
+        //- Assumption: no energy redistribution for the particle being split
         //  All the remaining energy is stored in the translational mode
         const scalar translationalEnergyLeft = ERotP + EVibP;
         const scalar cRproducts = sqrt(2.0*translationalEnergyLeft/mRproducts);
 
-        //- Variable Hard Sphere collision part
-        const scalar cosTheta2 = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
-        const scalar sinTheta2 = sqrt(1.0 - cosTheta2*cosTheta2);
-        const scalar phi2 = twoPi*cloud_.rndGen().sample01<scalar>();
-    
-        const vector postCollisionRelU2 = cRproducts
-           *vector
-            (
-                cosTheta2,
-                sinTheta2*cos(phi2),
-                sinTheta2*sin(phi2)
-            );
-
-        const vector uP1 = UP + postCollisionRelU2*mP2/(mP1 + mP2);
-        const vector uP2 = UP - postCollisionRelU2*mP1/(mP1 + mP2);
+        vector UP2 = vector::zero;
+        cloud_.binaryCollision().postCollisionVelocities
+        (
+            typeId1,
+            typeId2,
+            p.U(),
+            UP2,
+            cRproducts
+        );
 
         // Molecule P ionises
         // The molecule is first transformed into the ionised particle ...
         p.typeId() = typeId1;
-        p.U() = uP1;
         p.vibLevel() = 0;
         p.ERot() = 0.0;
         p.ELevel() = 0;
@@ -329,7 +309,7 @@ void ionisationQK::ioniseParticleByPartner
         cloud_.addNewParcel
         (
             p.position(),
-            uP2,
+            UP2,
             p.RWF(),
             product2_ERot,
             product2_ELevel,
@@ -470,12 +450,14 @@ void ionisationQK::reaction(dsmcParcel& p, dsmcParcel& q)
         
         scalar totalReactionProbability = 0.0;
         scalarList reactionProbabilities(2, 0.0);
+        scalarList collisionEnergies(2, 0.0);
         
         testIonisation
         (
             p,
             translationalEnergy,
             0,
+            collisionEnergies[0],
             totalReactionProbability,
             reactionProbabilities[0]
         );
@@ -485,6 +467,7 @@ void ionisationQK::reaction(dsmcParcel& p, dsmcParcel& q)
             q,
             translationalEnergy,
             1,
+            collisionEnergies[1],
             totalReactionProbability,
             reactionProbabilities[1]
         );
@@ -517,7 +500,10 @@ void ionisationQK::reaction(dsmcParcel& p, dsmcParcel& q)
                         if (i == 0)
                         {
                             //- Ionisation of P is to occur
-                            ioniseParticleByPartner(p, q, i);
+                            ioniseParticleByPartner
+                            (
+                                p, q, i, collisionEnergies[i]
+                            );
                             //- There can't be another reaction: break
                             break;
                         }
@@ -525,7 +511,10 @@ void ionisationQK::reaction(dsmcParcel& p, dsmcParcel& q)
                         if (i == 1)
                         {
                             //- Ionisation of Q is to occur
-                            ioniseParticleByPartner(q, p, i);
+                            ioniseParticleByPartner
+                            (
+                                q, p, i, collisionEnergies[i]
+                            );
                             //- There can't be another reaction: break
                             break;
                         }

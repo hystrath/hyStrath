@@ -437,9 +437,8 @@ public:
         label equipartitionElectronicLevel
         (
             const scalar temperature,
-            const List<label>& electronicDegeneracyList,
-            const List<scalar>& electronicEnergyList,
-            const label typeId
+            const labelList& electronicDegeneracyList,
+            const scalarList& electronicEnergyList
         );
         
         // - Generate a LB post-collision rotational energy
@@ -461,7 +460,9 @@ public:
             const scalar omega,
             const scalar Zref,
             const scalar Ec,
-            const scalar fixedZv = 0
+            const scalar fixedZv = 0,
+            const label invZvFormulation = 2,
+            const label cellI = 0
         );
         
         // - Generate a LB post-collision electronic energy level

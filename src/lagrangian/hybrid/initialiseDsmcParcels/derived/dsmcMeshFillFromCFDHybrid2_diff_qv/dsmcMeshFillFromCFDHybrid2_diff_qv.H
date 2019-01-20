@@ -23,15 +23,13 @@ License
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 Class
-    dsmcMeshFill
+    dsmcMeshFillFromCFDHybrid2_diff_qv
 
 Description
 
 
 SourceFiles
-    dsmcMeshFillI.H
     dsmcMeshFill.C
-    dsmcMeshFillIO.C
 
 
 \*---------------------------------------------------------------------------*/
@@ -51,7 +49,7 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                           Class dsmcMeshFill Declaration
+              Class dsmcMeshFillFromCFDHybrid2_diff_qv Declaration
 \*---------------------------------------------------------------------------*/
 
 class dsmcMeshFillFromCFDHybrid2_diff_qv
@@ -64,7 +62,7 @@ private:
     // Private data
 
         //- subDictionary containing the properties
-//         dictionary propsDict_;
+           //dictionary propsDict_;
 
 
     // Private Member Functions
@@ -81,10 +79,10 @@ public:
 
         //- Construct from components
         dsmcMeshFillFromCFDHybrid2_diff_qv
-		(
+		    (
             dsmcCloud& cloud,
             const dictionary& dict
-		);
+		    );
 
     // Destructor
 

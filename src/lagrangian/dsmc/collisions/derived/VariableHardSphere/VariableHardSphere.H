@@ -47,7 +47,10 @@ class VariableHardSphere
 :
     public BinaryCollisionModel
 {
-    // Private data
+
+protected:
+ 
+    // Protected data
 
         //- The coefficients dictionary
         const dictionary coeffDict_;
@@ -55,7 +58,6 @@ class VariableHardSphere
         //- Reference temperature
         const scalar Tref_;
 
-        
 
 public:
 
@@ -94,11 +96,41 @@ public:
         (
             dsmcParcel& pP,
             dsmcParcel& pQ,
-            label& cellI
+            const label cellI,
+            scalar cR = -1
         );
         
-        //- Apply relaxation
-        virtual void relax
+        //- Scatter parcels P and Q
+        virtual void scatter
+        (
+            dsmcParcel& pP,
+            dsmcParcel& pQ,
+            const label cellI,
+            scalar cR = -1
+        );
+        
+        //- Calculate post-collision velocities
+        virtual void postCollisionVelocities
+        (
+            const label typeIdP,
+            const label typeIdQ,
+            vector& UP,
+            vector& UQ,
+            scalar cR = -1
+        );
+        
+        //- Calculate post-reaction velocities for both products
+        virtual void postReactionVelocities
+        (
+            const label typeIdP,
+            const label typeIdQ,
+            vector& UP,
+            vector& UQ,
+            scalar cR
+        );
+        
+        //- Apply energy redistribution
+        virtual void redistribute
         (
             dsmcParcel& p,
             scalar& translationalEnergy,

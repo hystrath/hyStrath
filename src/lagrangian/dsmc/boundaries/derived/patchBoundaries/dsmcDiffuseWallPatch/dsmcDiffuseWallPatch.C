@@ -123,8 +123,7 @@ void dsmcDiffuseWallPatch::performDiffuseReflection
         (
             T,
             cloud_.constProps(typeId).electronicDegeneracyList(),
-            cloud_.constProps(typeId).electronicEnergyList(),
-            typeId
+            cloud_.constProps(typeId).electronicEnergyList()
         );   
     
     if (localVelocity != vector::zero)

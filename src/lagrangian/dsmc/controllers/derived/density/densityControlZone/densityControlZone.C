@@ -351,8 +351,7 @@ void densityControlZone::controlParcelsAfterCollisions()
                 (
                     temperature_,
                     cP.electronicDegeneracyList(),
-                    cP.electronicEnergyList(),
-                    typeId
+                    cP.electronicEnergyList()
                 );
                 
                 const scalar& RWF = cloud_.coordSystem().recalculateRWF(cell);

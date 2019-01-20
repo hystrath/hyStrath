@@ -74,6 +74,7 @@ void chargeExchangeQK::setProperties()
                 break;    
             case 0:
                 neutralFound = true;
+                posNeutralReactant_ = r;
                 break;
             case 1:
                 ionisedFound = true;
@@ -124,7 +125,7 @@ void chargeExchangeQK::setProperties()
                 cloud_.typeIdList(), 
                 productsChargeExchange[r]
             );
-
+            
         //- Check that products belong to the typeIdList as defined in 
         //  constant/dsmcProperties
         if (productIndex == -1)
@@ -181,6 +182,7 @@ void chargeExchangeQK::testChargeExchange
     const dsmcParcel& p,
     const scalar translationalEnergy,
     const scalar omegaPQ,
+    scalar& collisionEnergy,
     scalar& totalReactionProbability,
     scalar& reactionProbability
 )
@@ -219,10 +221,10 @@ void chargeExchangeQK::testChargeExchange
     const scalar EEleP = EElistP[p.ELevel()];
     
     //- Total collision energy
-    const scalar EcP = translationalEnergy + EEleP;
+    collisionEnergy = translationalEnergy + EEleP;
     
     //- Condition for the charge exchange reaction to possibly occur
-    if (EcP > activationEnergy)
+    if (collisionEnergy > activationEnergy)
     {
         label keyElectronicLevel = -1;
         
@@ -238,7 +240,7 @@ void chargeExchangeQK::testChargeExchange
         
         const label trialELevel = cloud_.postCollisionElectronicEnergyLevel
             (
-                EcP,
+                collisionEnergy,
                 maxElectronicLevelP,
                 omegaPQ,
                 EElistP,
@@ -258,7 +260,7 @@ void chargeExchangeQK::testChargeExchange
             {
                 forAll(EElistP, n)
                 {
-                    if (EcP > EElistP[n])
+                    if (collisionEnergy > EElistP[n])
                     {
                         nPossStates += gListP[n];
                     }
@@ -284,13 +286,13 @@ void chargeExchangeQK::testChargeExchange
             
             for(label i=0; i<=nLevel; i++)
             { 
-                summation += gListP[i]*pow(EcP - EElistP[i], 1.5-omegaPQ);
+                summation += gListP[i]*pow(collisionEnergy - EElistP[i], 1.5-omegaPQ);
             }
             
             probChEx =
                 (
                     gListP[trialELevel]
-                   *pow(EcP - EElistP[trialELevel], 1.5-omegaPQ)
+                   *pow(collisionEnergy - EElistP[trialELevel], 1.5-omegaPQ)
                 )
                /summation;
             
@@ -308,7 +310,8 @@ void chargeExchangeQK::testChargeExchange
 void chargeExchangeQK::chargeExchange
 (
     dsmcParcel& p,
-    dsmcParcel& q
+    dsmcParcel& q,
+    scalar collisionEnergy
 )
 {
     const label typeIdP = p.typeId();
@@ -414,7 +417,7 @@ chargeExchangeQK::chargeExchangeQK
 :
     dsmcReaction(t, cloud, dict),
     propsDict_(dict.subDict(typeName + "Properties")),
-    posMolReactant_(-1),
+    posNeutralReactant_(-1),
     productIdsChargeExchange_(),
     chargeExchangeStr_(word::null),
     nTotChargeExchangeReactions_(0),
@@ -424,8 +427,8 @@ chargeExchangeQK::chargeExchangeQK
         readScalar(propsDict_.lookup("heatOfReactionChargeExchange"))
        *physicoChemical::k.value()
     ),
-    aCoeffChEx_(readScalar(propsDict_.lookup("aCoeff_ChEx"))),
-    bCoeffChEx_(readScalar(propsDict_.lookup("bCoeff_ChEx"))),
+    aCoeffChEx_(readScalar(propsDict_.lookup("aCoeff"))),
+    bCoeffChEx_(readScalar(propsDict_.lookup("bCoeff"))),
     volume_(0.0)
 {}
 
@@ -523,12 +526,14 @@ void chargeExchangeQK::reaction(dsmcParcel& p, dsmcParcel& q)
         
         scalar totalReactionProbability = 0.0;
         scalarList reactionProbabilities(1, 0.0);
+        scalarList collisionEnergies(1, 0.0);
         
         testChargeExchange
         (
             p,
             translationalEnergy,
             omegaPQ,
+            collisionEnergies[0],
             totalReactionProbability,
             reactionProbabilities[0]
         );
@@ -536,7 +541,7 @@ void chargeExchangeQK::reaction(dsmcParcel& p, dsmcParcel& q)
         //- Decide if a charge exchange reaction is to occur
         if (totalReactionProbability > cloud_.rndGen().sample01<scalar>())
         {
-            chargeExchange(p, q);
+            chargeExchange(p, q, collisionEnergies[0]);
         }
     }
     else

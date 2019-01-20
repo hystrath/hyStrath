@@ -214,8 +214,7 @@ void dsmcZoneFill::setInitialConfiguration()
                         (
                             electronicTemperature,
                             cP.electronicDegeneracyList(),
-                            cP.electronicEnergyList(),
-                            typeId
+                            cP.electronicEnergyList()
                         );
 
                         U += velocity;

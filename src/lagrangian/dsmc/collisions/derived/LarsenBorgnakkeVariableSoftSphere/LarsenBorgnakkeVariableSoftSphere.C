@@ -27,8 +27,6 @@ License
 #include "constants.H"
 #include "addToRunTimeSelectionTable.H"
 
-using namespace Foam::constant::mathematical;
-
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
@@ -51,425 +49,106 @@ Foam::LarsenBorgnakkeVariableSoftSphere::LarsenBorgnakkeVariableSoftSphere
     dsmcCloud& cloud
 )
 :
-    BinaryCollisionModel(dict, cloud),
-    coeffDict_(dict.subDict(typeName + "Coeffs")),
-    Tref_(readScalar(coeffDict_.lookup("Tref"))),
+    VariableSoftSphere(dict, cloud),
+    coeffDictLB_
+    (
+        dict.isDict(typeName + "Coeffs")
+        ? dict.subDict(typeName + "Coeffs")
+        : dictionary::null
+    ),
     rotationalRelaxationCollisionNumber_
     (
-        readScalar(coeffDict_.lookup("rotationalRelaxationCollisionNumber"))
+        coeffDictLB_.lookupOrDefault<scalar>
+        (
+            "rotationalRelaxationCollisionNumber",
+            5.0
+        )
     ),
+    vibrationalRelaxationCollisionNumber_
+    (
+        coeffDictLB_.lookupOrDefault<scalar>
+        (
+            "vibrationalRelaxationCollisionNumber", 
+            0.0
+        )
+    ),
+    invZvFormulation_(2),
     electronicRelaxationCollisionNumber_
     (
-        readScalar(coeffDict_.lookup("electronicRelaxationCollisionNumber"))
+        coeffDictLB_.lookupOrDefault<scalar>
+        (
+            "electronicRelaxationCollisionNumber",
+            500.0
+        )
     )
-{}
+{
+    const word inverseZvFormulationVersion =
+        coeffDictLB_.lookupOrDefault<word>
+        (
+            "inverseZvFormulation", 
+            word::null
+        );
+        
+    if (inverseZvFormulationVersion == "pre-2008")
+    {
+        invZvFormulation_ = 0;
+    }
+    else if (inverseZvFormulationVersion == "2008")
+    {
+        invZvFormulation_ = 1;
+    }   
+}
 
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
-
 Foam::LarsenBorgnakkeVariableSoftSphere::~LarsenBorgnakkeVariableSoftSphere()
 {}
 
+
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
-
-
-bool Foam::LarsenBorgnakkeVariableSoftSphere::active() const
-{
-    return true;
-}
-
-
-Foam::scalar Foam::LarsenBorgnakkeVariableSoftSphere::sigmaTcR
-(
-    const dsmcParcel& pP,
-    const dsmcParcel& pQ
-) const
-{
-//     const CloudType& cloud(this->owner());
-
-    label typeIdP = pP.typeId();
-    label typeIdQ = pQ.typeId();
-
-    scalar dPQ =
-        0.5
-       *(
-            cloud_.constProps(typeIdP).d()
-          + cloud_.constProps(typeIdQ).d()
-        );
-
-    scalar omegaPQ =
-        0.5
-       *(
-            cloud_.constProps(typeIdP).omega()
-          + cloud_.constProps(typeIdQ).omega()
-        );
-
-    scalar cR = mag(pP.U() - pQ.U());
-
-    if (cR < VSMALL)
-    {
-        return 0;
-    }
-
-    scalar mP = cloud_.constProps(typeIdP).mass();
-
-    scalar mQ = cloud_.constProps(typeIdQ).mass();
-
-    scalar mR = mP*mQ/(mP + mQ);
-
-    // calculating cross section = pi*dPQ^2, where dPQ is from Bird, eq. 4.79
-    scalar sigmaTPQ =
-        pi*dPQ*dPQ
-       *pow(2.0*physicoChemical::k.value()*Tref_/(mR*cR*cR), omegaPQ - 0.5)
-       /exp(Foam::lgamma(2.5 - omegaPQ));
-
-    return sigmaTPQ*cR;
-}
-
-
 
 void Foam::LarsenBorgnakkeVariableSoftSphere::collide
 (
     dsmcParcel& pP,
     dsmcParcel& pQ,
-    label& cellI
+    const label cellI,
+    scalar cR
 )
 {
-
-    label typeIdP = pP.typeId();
-    label typeIdQ = pQ.typeId();
+    const label typeIdP = pP.typeId();
+    const label typeIdQ = pQ.typeId();
+    
     vector& UP = pP.U();
     vector& UQ = pQ.U();
-    scalar& ERotP = pP.ERot();
-    scalar& ERotQ = pQ.ERot();
-    label& ELevelP = pP.ELevel();
-    label& ELevelQ = pQ.ELevel();
-    labelList& vibLevelP = pP.vibLevel();
-    labelList& vibLevelQ = pQ.vibLevel();
     
-    scalar alphaPQ = 
-    0.5*(
-        cloud_.constProps(typeIdP).alpha()
-        + cloud_.constProps(typeIdQ).alpha()
-    );
+    const scalar mP = cloud_.constProps(typeIdP).mass();
+    const scalar mQ = cloud_.constProps(typeIdQ).mass();
+    const scalar mR = mP*mQ/(mP + mQ);
     
-    
-    scalar collisionSeparation = sqrt(
-            sqr(pP.position().x() - pQ.position().x()) +
-            sqr(pP.position().y() - pQ.position().y())
-    );
-    
-    cloud_.cellPropMeasurements().collisionSeparation()[cellI] += 
-                                                        collisionSeparation;
-    cloud_.cellPropMeasurements().nColls()[cellI]++;
+    const scalar cRsqr = magSqr(UP - UQ);
 
-    Random& rndGen(cloud_.rndGen());
+    //- Pre-collision relative translational energy
+    scalar translationalEnergy = 0.5*mR*cRsqr;
     
-    //Larsen Borgnakke rotational energy redistribution part.  Using the serial
-    // application of the LB method, as per the INELRS subroutine in Bird's
-    //DSMC0R.FOR
-
-    scalar preCollisionERotP = ERotP;
-    scalar preCollisionERotQ = ERotQ;
-    
-    scalarList preCollisionEVibP(vibLevelP.size(),0.0);
-    scalarList preCollisionEVibQ(vibLevelQ.size(),0.0);
-    
-    scalar vibrationalDofP = 
-                cloud_.constProps(typeIdP).nVibrationalModes();
-    scalar vibrationalDofQ = 
-                cloud_.constProps(typeIdQ).nVibrationalModes();
-                
-    if (vibrationalDofP > 0)
-    {
-        forAll(vibLevelP, i)
-        {
-            preCollisionEVibP[i] =  vibLevelP[i]*
-                                    cloud_.constProps(typeIdP).thetaV()[i]
-                                    *physicoChemical::k.value();
-        }
-    }
-
-    if (vibrationalDofQ > 0)
-    {
-        forAll(vibLevelQ, i)
-        {
-            preCollisionEVibQ[i] =  vibLevelQ[i]*
-                                    cloud_.constProps(typeIdQ).thetaV()[i]
-                                    *physicoChemical::k.value();
-        }
-    }
-
-    scalar preCollisionEEleP = 
-                cloud_.constProps(typeIdP).electronicEnergyList()[ELevelP];
-    scalar preCollisionEEleQ = 
-                cloud_.constProps(typeIdQ).electronicEnergyList()[ELevelQ];
-
-    scalar rotationalDofP = 
-                    cloud_.constProps(typeIdP).rotationalDegreesOfFreedom();
-
-    scalar rotationalDofQ = 
-                    cloud_.constProps(typeIdQ).rotationalDegreesOfFreedom();
-                    
-    label jMaxP = cloud_.constProps(typeIdP).nElectronicLevels();    
-    label jMaxQ = cloud_.constProps(typeIdQ).nElectronicLevels();
-    
-    List<scalar> EElistP = cloud_.constProps(typeIdP).electronicEnergyList();   
- 
-    List<scalar> EElistQ = cloud_.constProps(typeIdQ).electronicEnergyList();
-   
-    List<label> gListP = cloud_.constProps(typeIdP).electronicDegeneracyList();    
-    List<label> gListQ = cloud_.constProps(typeIdQ).electronicDegeneracyList();  
-    
-    scalarList thetaVP = cloud_.constProps(typeIdP).thetaV();  
-    scalarList thetaVQ = cloud_.constProps(typeIdQ).thetaV();
-    
-    scalarList thetaDP = cloud_.constProps(typeIdP).thetaD();
-    scalarList thetaDQ = cloud_.constProps(typeIdQ).thetaD();
-    
-    scalarList ZrefP = cloud_.constProps(typeIdP).Zref();
-    scalarList ZrefQ = cloud_.constProps(typeIdQ).Zref();
-    
-    scalarList refTempZvP = cloud_.constProps(typeIdP).TrefZv();
-    scalarList refTempZvQ = cloud_.constProps(typeIdQ).TrefZv();
-
-    scalar omegaPQ =
+    const scalar omegaPQ =
         0.5
        *(
             cloud_.constProps(typeIdP).omega()
           + cloud_.constProps(typeIdQ).omega()
         );
-
-    scalar mP = cloud_.constProps(typeIdP).mass();
-    scalar mQ = cloud_.constProps(typeIdQ).mass();
-
-    scalar mR = mP*mQ/(mP + mQ);
-    vector Ucm = (mP*UP + mQ*UQ)/(mP + mQ);
-    scalar cRsqr = magSqr(UP - UQ);
-
-    scalar translationalEnergy = 0.5*mR*cRsqr;
-
-    scalar ChiB = 2.5 - omegaPQ;
     
-    scalar inverseRotationalCollisionNumber = 
-                                    1.0/rotationalRelaxationCollisionNumber_;
-    scalar inverseElectronicCollisionNumber = 
-                                    1.0/electronicRelaxationCollisionNumber_;
-                                    
-    // Larsen Borgnakke rotational energy redistribution part.  Using the 
-    // serial application of the LB method, as per the INELRS subroutine in 
-    // Bird's DSMC0R.FOR
+    redistribute(pP, translationalEnergy, omegaPQ);
+    redistribute(pQ, translationalEnergy, omegaPQ);
+
+    //- Rescale the translational energy
+    cR = sqrt(2.0*translationalEnergy/mR);
     
-    if (inverseElectronicCollisionNumber > rndGen.sample01<scalar>())
-    { 
-
-        // collision energy of particle P = relative translational energy + 
-        // pre-collision electronic energy
-        
-        scalar EcP = translationalEnergy + preCollisionEEleP;
-        
-        label postCollisionELevel = cloud_.postCollisionElectronicEnergyLevel
-                        (
-                            EcP,
-                            jMaxP,
-                            omegaPQ,
-                            EElistP,
-                            gListP
-                        );
-                        
-        ELevelP = postCollisionELevel;
-        
-        // relative translational energy after electronic exchange
-        translationalEnergy = EcP - EElistP[ELevelP];
-    }
-            
-    if (vibrationalDofP > VSMALL)
-    {
-        forAll(vibLevelP, i)
-        {
-            // collision energy of particle P = relative translational energy + 
-            // pre-collision vibrational energy
-            scalar EcP = translationalEnergy + preCollisionEVibP[i]; 
-
-            // - maximum possible quantum level (equation 3, Bird 2010)
-            label iMaxP = (EcP / (physicoChemical::k.value()*thetaVP[i])); 
-
-            if (iMaxP > SMALL)
-            {       
-                vibLevelP[i] = cloud_.postCollisionVibrationalEnergyLevel
-                        (
-                            false,
-                            vibLevelP[i],
-                            iMaxP,
-                            thetaVP[i],
-                            thetaDP[i],
-                            refTempZvP[i],
-                            omegaPQ,
-                            ZrefP[i],
-                            EcP
-                        );
-                        
-                translationalEnergy = EcP 
-                                        - (vibLevelP[i]
-                                        *cloud_.constProps(typeIdP).thetaV()[i]
-                                        *physicoChemical::k.value());
-            }
-        }
-    }
-
-    if (rotationalDofP > 0)
-    {
-        if (inverseRotationalCollisionNumber > rndGen.sample01<scalar>())
-        {
-            scalar EcP = translationalEnergy + preCollisionERotP;
-            
-            scalar energyRatio = 
-                    cloud_.postCollisionRotationalEnergy(rotationalDofP,ChiB);
-
-            ERotP = energyRatio*EcP;
-        
-            translationalEnergy = EcP - ERotP;
-        }
-    }
-    
-    if (inverseElectronicCollisionNumber > rndGen.sample01<scalar>())
-    {
-
-        // collision energy of particle Q = relative translational energy + 
-        // pre-collision electronic energy
-        
-        scalar EcQ = translationalEnergy + preCollisionEEleQ; 
-        
-        label postCollisionELevel = cloud_.postCollisionElectronicEnergyLevel
-                        (
-                            EcQ,
-                            jMaxQ,
-                            omegaPQ,
-                            EElistQ,
-                            gListQ
-                        );
-                        
-        ELevelQ = postCollisionELevel;
-
-        // relative translational energy after electronic exchange
-        translationalEnergy = EcQ - EElistQ[ELevelQ];
-    }
-              
-    if (vibrationalDofQ > VSMALL)
-    {
-        forAll(vibLevelQ, i)
-        {
-            // collision energy of particle Q = relative translational energy + 
-            // pre-collision vibrational energy
-            scalar EcQ = translationalEnergy + preCollisionEVibQ[i]; 
-
-            // - maximum possible quantum level (equation 3, Bird 2010)
-            label iMaxQ = (EcQ / (physicoChemical::k.value()*thetaVQ[i])); 
-
-            if (iMaxQ > SMALL)
-            {       
-                vibLevelQ[i] = cloud_.postCollisionVibrationalEnergyLevel
-                        (
-                            false,
-                            vibLevelQ[i],
-                            iMaxQ,
-                            thetaVQ[i],
-                            thetaDQ[i],
-                            refTempZvQ[i],
-                            omegaPQ,
-                            ZrefQ[i],
-                            EcQ
-                        );
-                        
-                translationalEnergy = EcQ 
-                                        - (vibLevelQ[i]
-                                        *cloud_.constProps(typeIdQ).thetaV()[i]
-                                        *physicoChemical::k.value());
-            }
-        }
-    }
-
-    if (rotationalDofQ > 0)
-    {
-        if (inverseRotationalCollisionNumber > rndGen.sample01<scalar>())
-        {
-            scalar EcQ = translationalEnergy + preCollisionERotQ;
-            
-            scalar energyRatio = 
-                    cloud_.postCollisionRotationalEnergy(rotationalDofQ,ChiB);
-
-            ERotQ = energyRatio*EcQ;
-        
-            translationalEnergy = EcQ - ERotQ;
-        }
-    }
-
-    // Rescale the translational energy
-    scalar A = sqrt(2.0*translationalEnergy/mR);
-    
-    scalar cR = mag(UP - UQ);
-    
-    vector cRComponents = (UP - UQ) * (A/cR);
-    
-    cR = A;
-   
-    scalar cosTheta = (2.0*pow(rndGen.sample01<scalar>(),(1.0/alphaPQ))) - 1.0;
-
-    scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
-
-    scalar phi = twoPi*rndGen.sample01<scalar>();
-    
-    scalar D = sqrt(pow(cRComponents.y(),2.0) + pow(cRComponents.z(),2.0));
-
-    vector postCollisionRelU =
-        vector
-        (
-            (cosTheta*cRComponents.x()) + sinTheta*sin(phi)*D,
-            (cosTheta*cRComponents.y()) + sinTheta
-                *(cR*cRComponents.z()*cos(phi) 
-                    - cRComponents.x()*cRComponents.y()
-                    *sin(phi))/D,
-            (cosTheta*cRComponents.z()) - sinTheta
-                *(cR*cRComponents.y()*cos(phi) 
-                + cRComponents.x()*cRComponents.z()
-                *sin(phi))/D
-        );
-
-    UP = Ucm + postCollisionRelU*mQ/(mP + mQ);
-
-    UQ = Ucm - postCollisionRelU*mP/(mP + mQ);
-    
-    label classificationP = pP.classification();
-    label classificationQ = pQ.classification();
-    
-    //- class I molecule changes to class
-    //- III molecule when it collides with either class II or class III
-    //- molecules.
-    
-    if (classificationP == 0 && classificationQ == 1)
-    {
-        pP.classification() = 2;
-    }
-    
-    if (classificationQ == 0 && classificationP == 1)
-    {
-        pQ.classification() = 2;
-    }
-    
-    if (classificationP == 0 && classificationQ == 2)
-    {
-        pP.classification() = 2;
-    }
-    
-    if (classificationQ == 0 && classificationP == 2)
-    {
-        pQ.classification() = 2;
-    }
+    VariableSoftSphere::scatter(pP, pQ, cellI, cR);
 }
 
 
-void Foam::LarsenBorgnakkeVariableSoftSphere::relax
+void Foam::LarsenBorgnakkeVariableSoftSphere::redistribute
 (
     dsmcParcel& p,
     scalar& translationalEnergy,
@@ -477,14 +156,134 @@ void Foam::LarsenBorgnakkeVariableSoftSphere::relax
     const bool postReaction
 )
 {
-    NotImplemented
+    const label typeIdP = p.typeId();
+    const dsmcParcel::constantProperties& cP = cloud_.constProps(typeIdP);
+    
+    if (cP.type() == 0)
+    {
+        //- The particle is an electron, no energy to redistribute
+        return void();
+    }
+    
+    const scalar inverseRotationalCollisionNumber =
+        1.0/rotationalRelaxationCollisionNumber_;
+    const scalar inverseElectronicCollisionNumber =
+        1.0/electronicRelaxationCollisionNumber_;
+    
+    scalar& ERotP = p.ERot();
+    label& ELevelP = p.ELevel();
+    
+    //- Electronic energy mode for P
+    if (inverseElectronicCollisionNumber > cloud_.rndGen().sample01<scalar>())
+    { 
+        const label jMaxP = cP.nElectronicLevels();    
+        const scalarList& EElistP = cP.electronicEnergyList();    
+        const labelList& gListP = cP.electronicDegeneracyList();  
+        const scalar preCollisionEEleP = EElistP[ELevelP]; 
+    
+        //- Collision energy of particle P: relative translational energy 
+        //   + pre-collision electronic energy
+        const scalar EcP = translationalEnergy + preCollisionEEleP;
+        
+        ELevelP = 
+            cloud_.postCollisionElectronicEnergyLevel
+                (
+                    EcP,
+                    jMaxP,
+                    omegaPQ,
+                    EElistP,
+                    gListP
+                );
+                        
+        //- Relative translational energy after electronic energy exchange
+        translationalEnergy = EcP - EElistP[ELevelP];
+    }
+            
+    //- Vibrational energy mode for P
+    if (cP.nVibrationalModes() > 0)
+    {
+        const scalarList& thetaVP = cP.thetaV();  
+        const scalarList& thetaDP = cP.thetaD();
+        const scalarList& ZrefP = cP.Zref();
+        const scalarList& refTempZvP = cP.TrefZv();
+        const scalarList& preCollisionEVibP = cP.eVib(p.vibLevel());
+        
+        forAll(thetaVP, i)
+        {
+            //- Collision energy of particle P: relative translational energy 
+            //    + pre-collision vibrational energy
+            const scalar EcP = translationalEnergy + preCollisionEVibP[i]; 
+
+            //- Maximum possible quantum level (equation 3, Bird 2010)
+            const label iMaxP = EcP/(physicoChemical::k.value()*thetaVP[i]); 
+
+            if (iMaxP > 0)
+            {       
+                p.vibLevel()[i] = 
+                    cloud_.postCollisionVibrationalEnergyLevel
+                    (
+                        postReaction,
+                        p.vibLevel()[i],
+                        iMaxP,
+                        thetaVP[i],
+                        thetaDP[i],
+                        refTempZvP[i],
+                        omegaPQ,
+                        ZrefP[i],
+                        EcP,
+                        vibrationalRelaxationCollisionNumber_,
+                        invZvFormulation_,
+                        p.cell()
+                    );
+                        
+                translationalEnergy = EcP - cP.eVib_m(i, p.vibLevel()[i]);
+            }
+        }
+    }
+    
+    //- Rotational energy mode for P
+    const scalar rotationalDofP = cP.rotationalDegreesOfFreedom();
+        
+    // Larsen Borgnakke rotational energy redistribution part. Using the serial
+    // application of the LB method, as per the INELRS subroutine in Bird's
+    // DSMC0R.FOR
+    if (rotationalDofP > VSMALL)
+    {
+         /*scalar particleProbabilityP = 
+             ((zeta_T + 2.0*rotationalDofP)/(2.0*rotationalDofP))
+             *(
+                 1.0 - sqrt(
+                             1.0 - (rotationalDofP/zeta_T)
+                             *((zeta_T+rotationalDofP)/(zeta_T+2.0*rotationalDofP))
+                             *(4.0/rotationalRelaxationCollisionNumber_)
+                           )
+              );
+            
+         Info << "particleProbabilityP = " << particleProbabilityP << endl;*/
+       //if (particleProbabilityP > cloud_.rndGen().sample01<scalar>())  
+        
+        const scalar preCollisionERotP = ERotP;
+        
+        if (inverseRotationalCollisionNumber > cloud_.rndGen().sample01<scalar>())
+        {
+            const scalar EcP = translationalEnergy + preCollisionERotP;
+            const scalar ChiB = 2.5 - omegaPQ;
+            
+            const scalar energyRatio = 
+                cloud_.postCollisionRotationalEnergy(rotationalDofP, ChiB);
+
+            ERotP = energyRatio*EcP;
+        
+            translationalEnergy = EcP - ERotP;
+        }
+    }
 }
 
 
 const Foam::dictionary& 
 Foam::LarsenBorgnakkeVariableSoftSphere::coeffDict() const
 {
-    return coeffDict_;
+    return coeffDictLB_;
 }
 
 

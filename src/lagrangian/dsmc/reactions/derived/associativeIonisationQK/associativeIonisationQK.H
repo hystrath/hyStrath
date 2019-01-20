@@ -64,19 +64,27 @@ protected:
         //- Sub-dictionary containing the reaction properties
         dictionary propsDict_;
         
+        //- Id of the intermediate molecule
+        label intermediateMoleculeId_;
+        
         //- Ids of the products
-        List<labelList> productIdsAssociativeIonisation_;
+        labelList productIdsAssociativeIonisation_;
+        
+        //- Switch to determine whether or not the reaction is a forward or 
+        //  reverse associative ionisation reaction
+        bool forwardAssociativeIonisation_;
+        
+        //- Position of the ionised molecule in the reactant or product list
+        label posIonisedMol_;
         
         //- String to print for the associative ionisation reaction
-        wordList associativeIonisationStr_;
+        word associativeIonisationStr_;
         
-        labelList nTotAssociativeIonisationReactions_;
-        labelList nAssociativeIonisationReactionsPerTimeStep_;
+        label nTotAssociativeIonisationReactions_;
+        label nAssociativeIonisationReactionsPerTimeStep_;
        
         scalarList heatOfReactionAssociativeIonisationJoules_;
 
-        bool relax_;
-        
         //- Total volume of the numerical domain (NB: should not be there)
         scalar volume_;
 
@@ -85,20 +93,38 @@ protected:
 
         virtual void setProperties();
         
-        void testAssociativeIonisation
+        void testForwardAssociativeIonisation
         (
             const dsmcParcel& p,
+            const dsmcParcel& q,
             const scalar translationalEnergy,
-            const label nReac,
+            scalar& collisionEnergy,
             scalar& totalReactionProbability,
             scalar& reactionProbability
         );
         
-        void associativeIonisation
+        void testReverseAssociativeIonisation
+        (
+            const dsmcParcel& p,
+            const dsmcParcel& q,
+            const scalar translationalEnergy,
+            scalar& collisionEnergy,
+            scalar& totalReactionProbability,
+            scalar& reactionProbability
+        );
+        
+        void forwardAssociativeIonisation
         (
             dsmcParcel& p,
             dsmcParcel& q,
-            const label nR
+            scalar collisionEnergy
+        );
+        
+        void reverseAssociativeIonisation
+        (
+            dsmcParcel& p,
+            dsmcParcel& q,
+            scalar collisionEnergy
         );
 
 
@@ -134,7 +160,7 @@ public:
             dsmcParcel& p,
             dsmcParcel& q,
             const DynamicList<label>& candidateList,
-            const List<DynamicList<label> >& candidateSubList,
+            const List<DynamicList<label>>& candidateSubList,
             const label& candidateP,
             const List<label>& whichSubCell
         );

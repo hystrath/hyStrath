@@ -311,8 +311,7 @@ void dsmcIsothermalPressureOutletSpecifiedMolarFraction::controlParcelsBeforeMov
                 (
                     faceTemperature,
                     cloud_.constProps(typeId).electronicDegeneracyList(),
-                    cloud_.constProps(typeId).electronicEnergyList(),
-                    typeId
+                    cloud_.constProps(typeId).electronicEnergyList()
                 );
                 
                 const scalar& RWF = cloud_.coordSystem().RWF(cellI);

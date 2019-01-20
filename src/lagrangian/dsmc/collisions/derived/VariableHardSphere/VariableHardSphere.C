@@ -53,8 +53,13 @@ Foam::VariableHardSphere::VariableHardSphere
 )
 :
     BinaryCollisionModel(dict, cloud),
-    coeffDict_(dict.subDict(typeName + "Coeffs")),
-    Tref_(readScalar(coeffDict_.lookup("Tref")))
+    coeffDict_
+    (
+        dict.isDict(typeName + "Coeffs")
+        ? dict.subDict(typeName + "Coeffs")
+        : dictionary()
+    ),
+    Tref_(coeffDict_.lookupOrDefault<scalar>("Tref", 273.0))
 {}
 
 
@@ -78,108 +83,89 @@ Foam::scalar Foam::VariableHardSphere::sigmaTcR
     const dsmcParcel& pQ
 ) const
 {
-//     const dmscCloud& cloud(this->owner());
+    const label typeIdP = pP.typeId();
+    const label typeIdQ = pQ.typeId();
 
-    label typeIdP = pP.typeId();
-    label typeIdQ = pQ.typeId();
-
-    scalar dPQ =
+    const scalar dPQ =
         0.5
        *(
             cloud_.constProps(typeIdP).d()
           + cloud_.constProps(typeIdQ).d()
         );
 
-    scalar omegaPQ =
+    const scalar omegaPQ =
         0.5
        *(
             cloud_.constProps(typeIdP).omega()
           + cloud_.constProps(typeIdQ).omega()
         );
 
-    scalar cR = mag(pP.U() - pQ.U());
+    const scalar cR = mag(pP.U() - pQ.U());
 
     if (cR < VSMALL)
     {
         return 0;
     }
 
-    scalar mP = cloud_.constProps(typeIdP).mass();
+    const scalar mP = cloud_.constProps(typeIdP).mass();
+    const scalar mQ = cloud_.constProps(typeIdQ).mass();
+    const scalar mR = mP*mQ/(mP + mQ);
 
-    scalar mQ = cloud_.constProps(typeIdQ).mass();
-
-    scalar mR = mP*mQ/(mP + mQ);
-
-    // calculating cross section = pi*dPQ^2, where dPQ is from Bird, eq. 4.79
-    scalar sigmaTPQ =
-        pi*dPQ*dPQ
-       *pow(2.0*physicoChemical::k.value()*Tref_/(mR*cR*cR), omegaPQ - 0.5)
+    //- Calculating cross section = pi*dPQ^2, where dPQ is from Bird, eq. 4.79
+    const scalar sigmaTPQ =
+        pi*sqr(dPQ)
+       *pow(2.0*physicoChemical::k.value()*Tref_/(mR*sqr(cR)), omegaPQ - 0.5)
        /exp(Foam::lgamma(2.5 - omegaPQ));
 
     return sigmaTPQ*cR;
 }
 
 
-
 void Foam::VariableHardSphere::collide
 (
     dsmcParcel& pP,
     dsmcParcel& pQ,
-    label& cellI
+    const label cellI,
+    scalar cR
 )
 {
-//     dsmcCloud& cloud_(this->owner());
+    scatter(pP, pQ, cellI, cR);
+}
 
-    label typeIdP = pP.typeId();
-    label typeIdQ = pQ.typeId();
-    vector& UP = pP.U();
-    vector& UQ = pQ.U();
-    
-    scalar collisionSeparation = sqrt(
-            sqr(pP.position().x() - pQ.position().x()) +
-            sqr(pP.position().y() - pQ.position().y())
+
+void Foam::VariableHardSphere::scatter
+(
+    dsmcParcel& pP,
+    dsmcParcel& pQ,
+    const label cellI,
+    scalar cR
+)
+{
+    postCollisionVelocities
+    (
+        pP.typeId(),
+        pQ.typeId(),
+        pP.U(),
+        pQ.U(),
+        cR
     );
     
+    //- Collision separation and measurements
     cloud_.cellPropMeasurements().collisionSeparation()[cellI] += 
-                                                        collisionSeparation;
-    cloud_.cellPropMeasurements().nColls()[cellI]++;
-
-    Random& rndGen(cloud_.rndGen());
-
-    scalar mP = cloud_.constProps(typeIdP).mass();
-
-    scalar mQ = cloud_.constProps(typeIdQ).mass();
-
-    vector Ucm = (mP*UP + mQ*UQ)/(mP + mQ);
-
-    scalar cR = mag(UP - UQ);
-
-    scalar cosTheta = 2.0*rndGen.sample01<scalar>() - 1.0;
-
-    scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
-
-    scalar phi = twoPi*rndGen.sample01<scalar>();
-
-    vector postCollisionRelU =
-        cR
-       *vector
+        sqrt
         (
-            cosTheta,
-            sinTheta*cos(phi),
-            sinTheta*sin(phi)
+            sqr(pP.position().x() - pQ.position().x())
+          + sqr(pP.position().y() - pQ.position().y())
+          + sqr(pP.position().z() - pQ.position().z())
         );
-
-    UP = Ucm + postCollisionRelU*mQ/(mP + mQ);
-
-    UQ = Ucm - postCollisionRelU*mP/(mP + mQ);
+        
+    cloud_.cellPropMeasurements().nColls()[cellI]++;
     
-    label classificationP = pP.classification();
-    label classificationQ = pQ.classification();
+    const label classificationP = pP.classification();
+    const label classificationQ = pQ.classification();
     
-    //- class I molecule changes to class
-    //- III molecule when it collides with either class II or class III
-    //- molecules.
-    
+    //- Class I molecule changes to class III molecule when it collides with 
+    //  either class II or class III molecules.
     if (classificationP == 0 && classificationQ == 1)
     {
         pP.classification() = 2;
@@ -202,20 +188,91 @@ void Foam::VariableHardSphere::collide
 }
 
 
-void Foam::VariableHardSphere::relax
+void Foam::VariableHardSphere::postCollisionVelocities
+(
+    const label typeIdP,
+    const label typeIdQ,
+    vector& UP,
+    vector& UQ,
+    scalar cR
+)
+{
+    if (cR == -1)
+    {
+        cR = mag(UP - UQ);
+    }
+    
+    const scalar mP = cloud_.constProps(typeIdP).mass();
+    const scalar mQ = cloud_.constProps(typeIdQ).mass();
+
+    //- Pre-collision center of mass velocity
+    const vector& Ucm = (mP*UP + mQ*UQ)/(mP + mQ);
+
+    const scalar cosTheta = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
+    const scalar sinTheta = sqrt(1.0 - sqr(cosTheta));
+    const scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
+
+    const vector& postCollisionRelativeU =
+        cR
+       *vector
+        (
+            cosTheta,
+            sinTheta*cos(phi),
+            sinTheta*sin(phi)
+        );
+
+    //- Post-collision velocities
+    UP = Ucm + postCollisionRelativeU*mQ/(mP + mQ);
+
+    UQ = Ucm - postCollisionRelativeU*mP/(mP + mQ);
+}
+
+
+void Foam::VariableHardSphere::postReactionVelocities
+(
+    const label typeIdP,
+    const label typeIdQ,
+    vector& UP,
+    vector& UQ,
+    scalar cR
+)
+{
+    const scalar mP = cloud_.constProps(typeIdP).mass();
+    const scalar mQ = cloud_.constProps(typeIdQ).mass();
+
+    const scalar cosTheta = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
+    const scalar sinTheta = sqrt(1.0 - sqr(cosTheta));
+    const scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
+
+    const vector& postCollisionRelativeU =
+        cR
+       *vector
+        (
+            cosTheta,
+            sinTheta*cos(phi),
+            sinTheta*sin(phi)
+        );
+
+    //- Post-collision velocities
+    UQ = UP - postCollisionRelativeU*mP/(mP + mQ);
+    
+    UP += postCollisionRelativeU*mQ/(mP + mQ);
+}
+
+
+void Foam::VariableHardSphere::redistribute
 (
     dsmcParcel& p,
     scalar& translationalEnergy,
     const scalar omegaPQ,
     const bool postReaction 
 )
-{
-    NotImplemented
-}
+{}
 
 
 const Foam::dictionary& Foam::VariableHardSphere::coeffDict() const
 {
     return coeffDict_;
 }
+
 // ************************************************************************* //

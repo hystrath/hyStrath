@@ -52,10 +52,11 @@ namespace Foam
 
 class BinaryCollisionModel
 {
-    // Private data
 
 protected:
 
+    // Protected data
+        
         //- The cloud dictionary
         const dictionary& dict_;
 
@@ -113,7 +114,7 @@ public:
         const dictionary& dict() const;
 
         //- Return the coefficients dictionary
-        virtual const dictionary& coeffDict() const =0;
+        virtual const dictionary& coeffDict() const = 0;
 
 
     // Member Functions
@@ -133,11 +134,41 @@ public:
         (
             dsmcParcel& pP,
             dsmcParcel& pQ,
-            label& cellI
+            const label cellI,
+            scalar cR = -1
         ) = 0;
         
-        //- Apply relaxation
-        virtual void relax
+        //- Scatter parcels P and Q
+        virtual void scatter
+        (
+            dsmcParcel& pP,
+            dsmcParcel& pQ,
+            const label cellI,
+            scalar cR = -1
+        ) = 0;
+        
+        //- Calculate post-collision velocities
+        virtual void postCollisionVelocities
+        (
+            const label typeIdP,
+            const label typeIdQ,
+            vector& UP,
+            vector& UQ,
+            scalar cR = -1
+        ) = 0;
+        
+        //- Calculate post-reaction velocities for both products
+        virtual void postReactionVelocities
+        (
+            const label typeIdP,
+            const label typeIdQ,
+            vector& UP,
+            vector& UQ,
+            scalar cR
+        ) = 0;
+        
+        //- Apply energy redistribution
+        virtual void redistribute
         (
             dsmcParcel& p,
             scalar& translationalEnergy,

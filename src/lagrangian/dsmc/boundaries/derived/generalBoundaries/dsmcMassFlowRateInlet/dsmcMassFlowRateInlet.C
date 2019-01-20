@@ -314,8 +314,7 @@ void dsmcMassFlowRateInlet::controlParcelsBeforeMove()
                 (
                     faceTemperature,
                     cloud_.constProps(typeId).electronicDegeneracyList(),
-                    cloud_.constProps(typeId).electronicEnergyList(),
-                    typeId
+                    cloud_.constProps(typeId).electronicEnergyList()
                 );
                 
                 label newParcel = patchId();

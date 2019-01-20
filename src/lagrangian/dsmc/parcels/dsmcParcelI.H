@@ -298,7 +298,7 @@ Foam::dsmcParcel::constantProperties::vibrationalDegeneracy_m
 }
 
 
-inline Foam::labelList
+inline const Foam::labelList&
 Foam::dsmcParcel::constantProperties::vibrationalDegeneracyList() const
 {
     return vibrationalDegeneracyList_;
@@ -326,7 +326,8 @@ inline Foam::scalar Foam::dsmcParcel::constantProperties::thetaV_m
 }
 
 
-inline Foam::scalarList Foam::dsmcParcel::constantProperties::thetaV() const
+inline const Foam::scalarList&
+Foam::dsmcParcel::constantProperties::thetaV() const
 {
     return thetaV_;
 }
@@ -341,7 +342,8 @@ inline Foam::scalar Foam::dsmcParcel::constantProperties::thetaD_m
 }
 
 
-inline Foam::scalarList Foam::dsmcParcel::constantProperties::thetaD() const
+inline const Foam::scalarList&
+Foam::dsmcParcel::constantProperties::thetaD() const
 {
     return thetaD_;
 }
@@ -356,7 +358,8 @@ inline Foam::scalar Foam::dsmcParcel::constantProperties::Zref_m
 }
 
 
-inline Foam::scalarList Foam::dsmcParcel::constantProperties::Zref() const
+inline const Foam::scalarList&
+Foam::dsmcParcel::constantProperties::Zref() const
 {
     return Zref_;
 }
@@ -371,7 +374,8 @@ inline Foam::scalar Foam::dsmcParcel::constantProperties::TrefZv_m
 }
 
 
-inline Foam::scalarList Foam::dsmcParcel::constantProperties::TrefZv() const
+inline const Foam::scalarList&
+Foam::dsmcParcel::constantProperties::TrefZv() const
 {
     return TrefZv_;
 }
@@ -386,7 +390,7 @@ inline Foam::label Foam::dsmcParcel::constantProperties::charDissQuantumLevel_m
 }
 
 
-inline Foam::labelList
+inline const Foam::labelList&
 Foam::dsmcParcel::constantProperties::charDissQuantumLevel() const
 {
     return charDissQuantumLevel_;
@@ -400,8 +404,8 @@ Foam::dsmcParcel::constantProperties::eVib_m
     const label vibLevel
 ) const
 {
-    return vibLevel*constant::physicoChemical::k.value()*thetaV_m(mode)
-        *vibrationalDegeneracy_m(mode);
+    return vibLevel*constant::physicoChemical::k.value()*thetaV_m(mode);
+     //   *vibrationalDegeneracy_m(mode);
 }
 
 
@@ -419,7 +423,7 @@ Foam::dsmcParcel::constantProperties::eVib_tot(const labelList& vibLevel) const
 }
 
 
-inline Foam::scalarList 
+inline Foam::scalarList
 Foam::dsmcParcel::constantProperties::eVib(const labelList& vibLevel) const
 {
     scalarList vibEnergy(nVibrationalModes_, 0.0);
@@ -452,14 +456,14 @@ Foam::dsmcParcel::constantProperties::nElectronicLevels() const
 }
 
 
-inline Foam::scalarList
+inline const Foam::scalarList&
 Foam::dsmcParcel::constantProperties::electronicEnergyList() const
 {
     return electronicEnergyList_;
 }
 
 
-inline Foam::labelList
+inline const Foam::labelList&
 Foam::dsmcParcel::constantProperties::electronicDegeneracyList() const
 {
     return electronicDegeneracyList_;

@@ -167,7 +167,7 @@ public:
             inline label vibrationalDegeneracy_m(const label mode) const;
             
             //- Return the degeneracy of each vibrational mode
-            inline labelList vibrationalDegeneracyList() const;
+            inline const labelList& vibrationalDegeneracyList() const;
             
             //- Return the viscosity index
             inline scalar omega() const;
@@ -180,21 +180,21 @@ public:
             inline scalar thetaV_m(const label mode) const;
             
             //- Return the characteristic vibrational temperature
-            inline scalarList thetaV() const;    
+            inline const scalarList& thetaV() const;    
             
             //- Return the characteristic dissociation temperature for a given
             //  vibrational energy mode
             inline scalar thetaD_m(const label mode) const;
             
             //- Return the characteristic dissociation temperature
-            inline scalarList thetaD() const;
+            inline const scalarList& thetaD() const;
     
             //- Return the characteristic vibrational relaxation number for a 
             //  given vibrational energy mode
             inline scalar Zref_m(const label mode) const;
             
             //- Return the characteristic vibrational relaxation number
-            inline scalarList Zref() const;
+            inline const scalarList& Zref() const;
                       
             //- Return the reference temperature for the characteristic 
             //  vibrational relaxation number for a given vibrational energy 
@@ -203,14 +203,14 @@ public:
             
             //- Return the reference temperature for the characteristic 
             //  vibrational relaxation number
-            inline scalarList TrefZv() const;
+            inline const scalarList& TrefZv() const;
             
             //- Return the characteristic dissociation level for a given
             //  vibrational energy mode
             inline label charDissQuantumLevel_m(const label mode) const;
             
             //- Return the characteristic dissociation level
-            inline labelList charDissQuantumLevel() const;
+            inline const labelList& charDissQuantumLevel() const;
             
             //- Return the vibrational energy of a given vibrational energy mode
             inline scalar eVib_m(const label mode, const label vibLevel) const;
@@ -233,10 +233,10 @@ public:
             inline label nElectronicLevels() const;
             
             //- Return the energy (J) associated to each electronic level
-            inline scalarList electronicEnergyList() const;
+            inline const scalarList& electronicEnergyList() const;
             
             //- Return the degeneracy of each electronic level
-            inline labelList electronicDegeneracyList() const;
+            inline const labelList& electronicDegeneracyList() const;
     };
 
 

@@ -217,6 +217,32 @@ void dsmcFieldProperties::writeFields()
 }
 
 
+scalar dsmcFieldProperties::translationalT(const label cellI)
+{ 
+    if (fields_.size() > 0)
+    {
+        return fields_[0]->translationalT(cellI);
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+
+scalar dsmcFieldProperties::overallT(const label cellI)
+{ 
+    if (fields_.size() > 0)
+    {
+        return fields_[0]->overallT(cellI);
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 } // End namespace Foam

@@ -120,7 +120,7 @@ dsmcVolFieldsFromFields::dsmcVolFieldsFromFields
     eVibW_(mesh_.nCells(), 0.0),
     eVib_(mesh_.nCells(), 0.0)
 {
-    // initialisation
+    //- Initialisation
     nTimeSteps_ = propsDict_.lookupOrDefault<scalar>("nPrevTimeSteps", 0.0);
 
     if (nTimeSteps_ > SMALL)
@@ -134,8 +134,7 @@ dsmcVolFieldsFromFields::dsmcVolFieldsFromFields
             {
                 scalarList EVib
                 (
-                    cloud_.constProps(typeIds_[iD])
-                        .nVibrationalModes()
+                    cloud_.constProps(iD).nVibrationalModes()
                 );
                     
                 forAll(mesh_.cells(), cell)
@@ -188,31 +187,13 @@ void dsmcVolFieldsFromFields::calculateField()
     forAllConstIter(dsmcCloud, cloud_, iter)
     {
         const dsmcParcel& p = iter();
-        label iD = findIndex(typeIds_, p.typeId());
+        const label iD = findIndex(typeIds_, p.typeId());
 
         if (iD != -1)
         {
             const label cell = p.cell();
                 
-            scalarList EVib
-            (
-                cloud_.constProps(typeIds_[iD])
-                    .nVibrationalModes()
-            );
-            
-            scalar vibEn = 0.0;
-            
-            if (EVib.size() > 0)
-            {
-                forAll(EVib, i)
-                {
-                    EVib[i] = p.vibLevel()[i]
-                         *physicoChemical::k.value()                
-                         *cloud_.constProps(p.typeId()).thetaV()[i];
-                    
-                    vibEn += EVib[i];
-                }
-            }
+            scalar vibEn = cloud_.constProps(p.typeId()).eVib_tot(p.vibLevel());
             
             eRotU_[cell] += p.ERot()*p.U().x();
             eRotV_[cell] += p.ERot()*p.U().y();
@@ -294,7 +275,7 @@ void dsmcVolFieldsFromFields::calculateField()
             heatFluxVibVector_.write();
         }
 
-        //- reset
+        //- Reset
         if (time_.resetFieldsAtOutput())
         {
             forAll(rhoNMean_, celli)
@@ -346,10 +327,12 @@ void dsmcVolFieldsFromFields::writeField()
     dsmcVolFields::writeField();
 }
 
+
 void dsmcVolFieldsFromFields::updateProperties(const dictionary& newDict)
 {
     dsmcVolFields::updateProperties(newDict);
 }
+
 
 } // End namespace Foam
 

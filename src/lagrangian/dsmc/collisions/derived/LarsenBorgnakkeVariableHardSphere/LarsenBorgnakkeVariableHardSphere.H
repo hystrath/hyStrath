@@ -25,14 +25,14 @@ Class
 
 Description
     Variable Hard Sphere BinaryCollision Model with Larsen Borgnakke internal
-    energy redistribution.  Based on the INELRS subroutine in Bird's DSMC0R.FOR
+    energy redistribution. Based on the INELRS subroutine in Bird's DSMC0R.FOR
 
 \*---------------------------------------------------------------------------*/
 
 #ifndef LarsenBorgnakkeVariableHardSphere_H
 #define LarsenBorgnakkeVariableHardSphere_H
 
-#include "BinaryCollisionModel.H"
+#include "VariableHardSphere.H"
 #include "dsmcCloud.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -40,20 +40,17 @@ Description
 namespace Foam
 {
 /*---------------------------------------------------------------------------*\
-                      Class LarsenBorgnakkeVariableHardSphere Declaration
+               Class LarsenBorgnakkeVariableHardSphere Declaration
 \*---------------------------------------------------------------------------*/
 
 class LarsenBorgnakkeVariableHardSphere
 :
-    public BinaryCollisionModel
+    public VariableHardSphere
 {
     // Private data
     
         //- The coefficients dictionary
-        const dictionary coeffDict_;
-
-        //- Reference temperature
-        const scalar Tref_;
+        const dictionary coeffDictLB_;
 
         //- Rotational relaxation collision number
         const scalar rotationalRelaxationCollisionNumber_;
@@ -63,6 +60,14 @@ class LarsenBorgnakkeVariableHardSphere
         //  If a value is given in the dsmcProperties dict, then it is affected
         //  to vibrationalRelaxationCollisionNumber_
         const scalar vibrationalRelaxationCollisionNumber_;
+        
+        //- Formulation for the inverse vibrational collision number
+        //  that is: 
+        //  pre-2008: 1/Zv using the collision temperature -> 0
+        //  2008: 1/Zv using the overall temperature -> 1
+        //  (Bird 2008 RGD "A Comparison of Collision-Based and Temp-Based...")
+        //  post-2008: 1/(5*Zv) using the collision temperature -> 2
+        label invZvFormulation_;
         
         //- Electronic relaxation collision number
         const scalar electronicRelaxationCollisionNumber_;
@@ -93,32 +98,23 @@ public:
 
     // Member Functions
     
-        //- Flag to indicate whether model activates collision model
-        virtual bool active() const;
-        
         //- Return the vibrational relaxation number
-        virtual const scalar& vibrationalRelaxationNumber() const
+        inline const scalar& vibrationalRelaxationNumber() const
         {
             return vibrationalRelaxationCollisionNumber_;
         }
-
-        //- Return the collision cross section times relative velocity product
-        virtual scalar sigmaTcR
-        (
-            const dsmcParcel& pP,
-            const dsmcParcel& pQ
-        ) const;
-
+        
         //- Apply collision
         virtual void collide
         (
             dsmcParcel& pP,
             dsmcParcel& pQ,
-            label& cellI
+            const label cellI,
+            scalar cR = -1
         );
         
-        //- Apply LB relaxation
-        virtual void relax
+        //- Apply LB energy redistribution
+        virtual void redistribute
         (
             dsmcParcel& p,
             scalar& translationalEnergy,

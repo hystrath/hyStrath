@@ -90,17 +90,17 @@ dsmcControllers::dsmcControllers
     nStateControllers_(0),
     nFluxControllers_(0),
 
-	stateControllersList_(dsmcControllersDict_.lookup("dsmcStateControllers")),
+	  stateControllersList_(dsmcControllersDict_.lookup("dsmcStateControllers")),
     sCNames_(stateControllersList_.size()),
     sCIds_(stateControllersList_.size()),
     sCFixedPathNames_(stateControllersList_.size()),
-	stateControllers_(stateControllersList_.size()),
-
+	  stateControllers_(stateControllersList_.size()),
+  
     fluxControllersList_(dsmcControllersDict_.lookup("dsmcFluxControllers")),
     fCNames_(fluxControllersList_.size()),
     fCIds_(fluxControllersList_.size()),
     fCFixedPathNames_(fluxControllersList_.size()),
-	fluxControllers_(fluxControllersList_.size())
+	  fluxControllers_(fluxControllersList_.size())
 {
 
     Info << nl << "Creating dsmcControllers" << nl << endl;

@@ -92,11 +92,12 @@ protected:
             const dsmcParcel& p,
             const scalar translationalEnergy,
             const scalar omegaPQ,
+            scalar& collisionEnergy,
             scalar& totalReactionProbability,
             scalar& reactionProbability
         );
         
-        void exchange(dsmcParcel& p, dsmcParcel& q);
+        void exchange(dsmcParcel& p, dsmcParcel& q, scalar collisionEnergy);
 
 
 public:

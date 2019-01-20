@@ -237,6 +237,18 @@ public:
       virtual void writeField();
 
       virtual void updateProperties(const dictionary& dict);
+      
+    // Access
+    
+      virtual scalar translationalT(const label cellI)
+      {
+          return translationalT_[cellI];
+      }
+      
+      virtual scalar overallT(const label cellI)
+      {
+          return overallT_[cellI];
+      }
 };
 
 
