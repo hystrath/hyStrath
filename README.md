@@ -6,6 +6,7 @@
 #### Includes:
 + *hyFoam* CFD solver (supersonic combusting flows)  
 + *hy2Foam* CFD solver (hypersonic reacting flows)  
++ *hy2MhdFoam* solver (hypersonic reacting flows with MHD flow control)  
 + **Coming soon: _ARC_**, a low computationally demanding 3-D Ablative Response Code  
 + *dsmcFoam+* code (direct simulation Monte Carlo)  
 + *pdFoam* code, a hybrid PIC-DSMC solver  
@@ -59,7 +60,7 @@ Analysis](https://strathprints.strath.ac.uk/62926)
 
 __GitHub coordinator:__ Dr Vincent Casseau  
 
-__Contributors:__ Dr Vincent Casseau, Daniel E.R. Espinoza, Dr Christopher J. Capon, Dr Jimmy-John O.E. Hoste, Dr Viola Renato, Dr Rodrigo C. Palharini, Dr Craig White, Dr Melrose Brown, Prof Russell R. Boyce, Dr Thomas J. Scanlon, Dr Richard E. Brown     
+__Contributors:__ Dr Vincent Casseau, Daniel E.R. Espinoza, Dr Christopher J. Capon, Alexey Ryakhovskiy, Dr Jimmy-John O.E. Hoste, Dr Viola Renato, Dr Rodrigo C. Palharini, Dr Craig White, Dr Melrose Brown, Prof Russell R. Boyce, Dr Thomas J. Scanlon, Dr Richard E. Brown     
 
 __External contributors:__ the Micro & Nano Flows Group, R.Tech Engineering   
 
