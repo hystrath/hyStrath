@@ -1,0 +1,11 @@
+
+mixedFixedValueSlip/mixedFixedValueSlipFvPatchFields.C
+
+U/nonEqMaxwellSlipUFvPatchVectorField.C
+
+T/nonEqSmoluchowskiJumpT/nonEqSmoluchowskiJumpTFvPatchScalarField.C
+T/nonEqSmoluchowskiJumpTv/nonEqSmoluchowskiJumpTvFvPatchScalarField.C
+T/nonEqSmoluchowskiJumpTvMix/nonEqSmoluchowskiJumpTvMixFvPatchScalarField.C
+T/nonEqPattersonJumpT/nonEqPattersonJumpTFvPatchScalarField.C
+
+LIB = $(FOAM_USER_LIBBIN)/libhyTwoFoam

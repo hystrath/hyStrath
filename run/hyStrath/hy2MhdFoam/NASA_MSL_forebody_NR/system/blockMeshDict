@@ -1,0 +1,169 @@
+// The OpenFOAM Project // File: blockMeshDict
+/*
+-------------------------------------------------------------------------------
+ =========         | dictionary
+ \\      /         |
+  \\    /          | Name:   blockMeshDict
+   \\  /           | Family: FoamX configuration file
+    \\/            |
+    F ield         | OpenFOAM version: 2.3
+    O peration     | Product of Nabla Ltd.
+    A and          |
+    M anipulation  | Email: Enquiries@Nabla.co.uk
+-------------------------------------------------------------------------------
+*/
+// FoamX Case Dictionary.
+
+FoamFile
+{
+    version         2.0;
+    format          ascii;
+    class           dictionary;
+    object          blockMeshDict;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+convertToMeters 1;
+
+vertices
+(
+(0.0000000000	0.0000000000	0.0000000000) //0 heatshield apex
+(0.0678458016	0.38440644288	0.01678354775) //1 nose circle and straight line tangency point max Y
+(0.1391766360	0.58019977018	0.02533206904) //2 straight line and shoulder circle tangency point max Y
+(0.2566382136	0.6623689709	0.02891965382) //3 shoulder circle apex max Y
+(-0.4	0.0000000000	0.0000000000) //4 computational domain apex
+(-2.914467174e-01   6.150503087e-01   2.685367641e-02) //5 comp domain nose circle and straight line tangency max Y
+(-1.588457268e-01   8.991433994e-01   3.925744863e-02) //6 boundary point max Y
+(0.2566382136	1.38846172541	0.06062154812) //7 comp domain max X max Y point
+(0.0678458016	0.38440644288	-0.01678354775) //8 nose circle and straight line tangency point max Z
+(0.1391766360	0.58019977018	-0.02533206904) //9 straight line and shoulder circle tangency point max Z
+(0.2566382136	0.6623689709	-0.02891965382) //10 shoulder circle apex max Z
+(-2.914467174e-01   6.150503087e-01   -2.685367641e-02) //11 comp domain nose circle and straight line tangency max Z
+(-1.588457268e-01   8.991433994e-01   -3.925744863e-02) //12 boundary point max Z
+(0.2566382136	1.38846172541	-0.06062154812) //13 comp domain max X max Z point
+//(0.0678458016	-0.3847726612	0.0000000000) //14 nose circle and straight line tangency point min Y
+//(0.1391766360	-0.5807525179	0.0000000000) //15 straight line and shoulder circle tangency point min Y
+//(0.2566382136	-0.6630000000	0.0000000000) //16 shoulder circle apex min Y
+//(-0.7215145369	-0.3255903331	0.0000000000) //17 comp domain nose circle and straight line tangency min Y
+//(-0.2324381617	-3.0172596663	0.0000000000) //18 boundary point min Y
+//(0.2566382136	-5.7089289995	0.0000000000) //19 comp domain max X min Y point
+);
+
+blocks 
+( 
+    hex (0 4 5 1 0 4 11 8) (200 200 1) simpleGrading (3 1 1)		//block 0
+    hex (1 5 6 2 8 11 12 9) (200 100 1) simpleGrading (3 1 1)		//block 1
+    hex (2 6 7 3 9 12 13 10) (200 100 1) simpleGrading (3 1 1)		//block 2
+    //hex (4 11 17 4 0 8 14 0) (35 30 50) simpleGrading (1 1 0.5)		//block 3
+   // hex (11 12 18 17 8 9 15 14) (30 30 50) simpleGrading (1 1 0.5)	//block 4
+   // hex (12 13 19 18 9 10 16 15) (40 30 50) simpleGrading (1 1 0.5)	//block 5
+
+);
+
+
+edges
+(
+arc 0 1 (0.0170912779	0.19516826598	0.00852123051)
+arc 4 5 (-3.726539554e-01   3.122692255e-01   1.363396883e-02)
+arc 2 3 (0.1849411590	0.6397844923	0.02793359419)
+arc 0 8 (0.0170912779	0.19516826598	-0.00852123051)
+arc 5 6 (-1.181046025e-01   9.662187927e-01   4.218602355e-02)
+arc 6 7 (1.496149332e-01   1.293579267e+00   5.647889052e-02)
+arc 4 11 (-3.726539554e-01   3.122692255e-01   -1.363396883e-02)
+arc 11 12 (-1.181046025e-01   9.662187927e-01   -4.218602355e-02)
+arc 12 13 (1.496149332e-01   1.293579267e+00   -5.647889052e-02)
+arc 9 10 (0.1849411590	0.6397844923 	-0.02793359419)
+arc 1 8 (0.0678458016	0.3847726612	0.0000000000)
+arc 2 9 (0.1391766360	0.5807525179	0.0000000000)
+arc 3 10 (0.2566382136	0.6630000000	0.0000000000)
+arc 5 11 (-2.914467174e-01   6.156362580e-01   0.000000000e+00)
+arc 6 12 (-1.588457268e-01   9.000000000e-01   0.000000000e+00)
+arc 7 13 (0.2566382136	1.3897844923	0.0000000000)
+      //arc 0 14 (0.0170912779	-0.1953541999	0.0000000000)
+//arc 4 17 (-0.7428650589	-0.1634170177	0.0000000000)
+//arc 15 16 (0.1849411590	-0.6403940055	0.0000000000)
+//arc 0 8 (0.0170912779	0.0000000000	0.1953541999)
+//arc 4 11 (-0.7428650589	0.0000000000	0.1634170177)
+//arc 9 10 (0.1849411590	0.0000000000 	0.6403940055)
+//arc 8 14 (0.0678458016	-0.2720753580	0.2720753580)
+//arc 9 15 (0.1391766360	-0.4106540436	0.4106540436)
+//arc 10 16 (0.2566382136	-0.4688117959	0.4688117959)
+//arc 11 17 (-0.7215145369 -0.2302271324	0.2302271324)
+//arc 12 18 (-0.2324381617 -2.1335247706	2.1335247706)
+//arc 13 19 (0.2566382136	-4.0368224089	4.0368224089)	
+
+);
+
+boundary
+(
+ inlet
+  {
+    type patch;
+    faces
+    (
+      (5 4 4 11)
+      //(11 4 4 17)
+(5 11 12 6)
+      //(11 17 18 12)
+//(12 18 19 13)
+(6 12 13 7) // IN VINCENT
+    );
+  }
+
+  object
+  {
+    type wall;
+    faces
+    (
+      (1 0 0 8)
+     // (8 0 0 14)
+(2 9 8 1)
+      //(8 9 15 14)
+(3 10 9 2)
+//(10 16 15 9)
+    );
+  }
+  outlet
+  {
+    type patch;
+    faces
+    (
+     // (6 12 13 7) // OUT VINCENT
+      (3 10 13 7) 
+    );
+   }
+  front
+  {
+    type wedge;
+    faces
+    (
+      (4 5 1 0)
+      (5 6 2 1)
+(6 7 3 2)
+    );
+   }
+  back
+  {
+    type wedge;
+    faces
+    (
+(4 0 8 11)
+(11 8 9 12)
+(12 9 10 13)
+    );
+   }
+
+ bottom
+ {
+    type symmetryPlane;
+    faces
+    (
+      (0 4 4 0)
+    );
+ }
+);
+
+mergePatchPairs
+(
+);
