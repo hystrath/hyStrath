@@ -1,0 +1,5 @@
+basicConductivityModel/basicConductivityModel.C
+conductivityModel/conductivityModel.C
+constSigma/constSigma.C
+
+LIB = $(FOAM_USER_LIBBIN)/libconductivityModels

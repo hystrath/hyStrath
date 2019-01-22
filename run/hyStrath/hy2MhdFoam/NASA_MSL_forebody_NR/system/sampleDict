@@ -1,0 +1,59 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.6                                   |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      sampleDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+interpolationScheme cellPointFace;
+
+setFormat       raw;
+
+surfaceFormat   raw;
+
+sets
+(
+    stagnationLine
+    {
+        type    uniform;
+        axis    x;
+        start   ( 0.006 1e-08 0 );
+        end     ( 0.0095 1e-08 0 );
+        nPoints 1000;
+    }
+
+);
+
+surfaces        
+(
+);
+
+fields 
+(
+	p
+	rho
+	U
+	Tt
+	Tv
+	Tv_N2
+	Tov
+	nD_N2
+	mfp
+	Mach
+	KnGLL_rho
+	KnGLL_T
+	KnGLL_U
+);
+
+
+// ************************************************************************* //
