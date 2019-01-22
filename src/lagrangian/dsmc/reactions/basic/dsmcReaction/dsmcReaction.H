@@ -176,7 +176,7 @@ public:
       
         const dsmcCloud& cloud() const;
 
-        virtual inline label nReactionsPerTimeStep() const = 0;
+        virtual label nReactionsPerTimeStep() const = 0;
 
         const bool& reactWithLists() const;
 

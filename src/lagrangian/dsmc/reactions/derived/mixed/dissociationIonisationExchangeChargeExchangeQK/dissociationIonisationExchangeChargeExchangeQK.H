@@ -121,7 +121,7 @@ public:
 
       // Access
 
-        virtual inline label nReactionsPerTimeStep() const;
+        virtual label nReactionsPerTimeStep() const;
 
         virtual void outputResults(const label& counterIndex);
 

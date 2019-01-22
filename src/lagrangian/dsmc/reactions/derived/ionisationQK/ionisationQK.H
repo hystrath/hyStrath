@@ -75,8 +75,6 @@ protected:
        
         scalarList heatOfReactionIonisationJoules_;
 
-        bool relax_;
-        
         //- Total volume of the numerical domain (NB: should not be there)
         scalar volume_;
 
@@ -153,7 +151,7 @@ public:
 
       // Access
 
-        virtual inline label nReactionsPerTimeStep() const
+        virtual label nReactionsPerTimeStep() const
         {
             return std::accumulate
             (
