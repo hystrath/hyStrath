@@ -1,0 +1,19 @@
+set term x11
+
+set xlabel "Time  (s)"
+set ylabel "Temperature  (K)"
+
+set logscale x
+set format x "%.0t x 10^{%+03T}"
+
+path = "postProcessing/probes/0/"
+
+plot \
+500/2.718281 w l lw 2 t "500/e",\
+path."translationalT_N2cold" u 1:2 w l t "T_t",\
+path."rotationalT_N2cold" u 1:2 w l t "T_r",\
+"< paste ".path."translationalT_N2cold ".path."rotationalT_N2cold" u 1:($2-$4) w l t "T_t - T_r"
+
+pause 10
+reread
+

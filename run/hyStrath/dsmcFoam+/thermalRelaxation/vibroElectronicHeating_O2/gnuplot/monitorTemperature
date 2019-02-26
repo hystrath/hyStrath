@@ -1,0 +1,27 @@
+set term x11
+set key bottom right spacing 1.2
+
+set xlabel "Mean collision times"
+set ylabel "Temperature  (K)"
+
+set xrange [0:*]
+set yrange [0:10000]
+
+path = "postProcessing/probes/0/"
+sol = "gnuplot/solution/dsmcFoam+/"
+
+plot \
+7450 w l lw 2 dashtype 2 t "Analytical: equilibrium temp w/o electronic mode",\
+6980 w l lw 2 dashtype 2 t "Analytical: equilibrium temp w/ electronic mode",\
+"< paste ".path."meanCollisionTime_O2 ".sol."translationalT_O2" u ($1/$2):4 w l t "sol, T_t",\
+"< paste ".path."meanCollisionTime_O2 ".path."translationalT_O2" u ($1/$2):4 w l t "dsmcFoam+, T_t",\
+"< paste ".path."meanCollisionTime_O2 ".path."rotationalT_O2" u ($1/$2):4 w l t "dsmcFoam+, T_r",\
+"< paste ".path."meanCollisionTime_O2 ".sol."vibrationalT_O2" u ($1/$2):4 w l t "sol, T_v",\
+"< paste ".path."meanCollisionTime_O2 ".path."vibrationalT_O2" u ($1/$2):4 w l t "dsmcFoam+, T_v",\
+"< paste ".path."meanCollisionTime_O2 ".sol."electronicT_O2" u ($1/$2):4 w l t "sol, T_{el}",\
+"< paste ".path."meanCollisionTime_O2 ".path."electronicT_O2" u ($1/$2):4 w l t "dsmcFoam+, T_{el}",\
+"< paste ".path."meanCollisionTime_O2 ".path."overallT_O2" u ($1/$2):4 w l t "dsmcFoam+, T_{ov}"
+
+pause 10
+reread
+

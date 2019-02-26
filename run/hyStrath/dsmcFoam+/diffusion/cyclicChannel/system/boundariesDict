@@ -1,0 +1,94 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.3                                   |
+|   \\  /    A nd           | Web:      http://www.openfoam.org               |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      boundariesDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dsmcPatchBoundaries
+(
+     boundary
+     {
+         patchBoundaryProperties
+         {
+             patchName         top;
+         }
+ 
+         boundaryModel   dsmcSpecularWallPatch;
+ 
+         dsmcSpecularWallPatchProperties{}
+     }
+     
+     boundary
+     {
+         patchBoundaryProperties
+         {
+             patchName         bottom;
+         }
+ 
+         boundaryModel   dsmcSpecularWallPatch;
+ 
+         dsmcSpecularWallPatchProperties{}
+     }
+);
+
+dsmcCyclicBoundaries
+(
+    boundary
+    {
+         cyclicBoundaryProperties
+         {
+             patchName   inlet;
+         }
+ 
+         boundaryModel   dsmcReflectiveParticleMembranePatch;
+ 
+         dsmcReflectiveParticleMembranePatchProperties
+         {
+              typeIds (Ar);
+              
+              reflectionProbabilities
+              {
+                  Ar   0;
+              }
+         }
+     }
+
+     boundary
+     {
+         cyclicBoundaryProperties
+         {
+             patchName    outlet;
+         }
+ 
+         boundaryModel   dsmcReflectiveParticleMembranePatch;
+ 
+         dsmcReflectiveParticleMembranePatchProperties
+         {
+              typeIds (Ar);
+              
+              reflectionProbabilities
+              {
+                  Ar   0;
+              }
+         }
+     }
+
+);
+
+dsmcGeneralBoundaries
+(
+
+);
+
+// ************************************************************************* //

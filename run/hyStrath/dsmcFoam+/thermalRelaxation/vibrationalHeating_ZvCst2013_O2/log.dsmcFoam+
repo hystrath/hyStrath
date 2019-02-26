@@ -1,0 +1,397 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1706                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : v1706
+Arch   : "LSB;label=32;scalar=64"
+Exec   : dsmcFoam+
+Date   : Jan 11 2019
+Time   : 00:07:26
+Host   : "Galileo"
+PID    : 11466
+Case   : /home/vincent/OpenFOAM/vincent-v1706/hyStrath/run/hyStrath/dsmcFoam+/thermalRelaxation/vibrationalHeating_ZvCst200_O2
+nProcs : 1
+sigFpe : Enabling floating point exception trapping (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 10)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Create mesh for time = 0
+
+Selecting dynamicFvMesh dynamicRefineFvMesh
+
+Constructing dsmcCloud 
+Selecting the coordinate system model:	dsmcCartesian
+
+Selecting the time-step model:	dsmcConstantTimeStepModel
+
+Constant time-step model:
+- time-step [sec]	1e-08
+
+Selecting the porous measurement model:	dsmcNoPorousMediumMeasurements
+
+
+Creating dsmcControllers
+
+Creating fields: 
+
+Selecting field: dsmcVolFields
+
+TimeData Statistics: 
+ measurement option: write
+ nSamples: 1, time interval: 1e-08
+ nAverages: 1, time interval: 1e-08
+ total no. of sampling steps: 10000
+ total no. of averaging Steps: 10000
+
+
+Creating the boundary models: 
+
+Selecting BinaryCollisionModel LarsenBorgnakkeVariableHardSphere
+
+Creating dsmcReactions
+
+WARNING: there are no reactions.
+
+Constructing constant properties for
+	O2
+pair addressing: 1(1(-1))
+Selecting collisionPartnerSelectionModel noTimeCounter
+
+Initialising the measurement fields
+
+Initialising dsmcVolFields field
+
+Starting time loop
+
+Time = 1e-06
+
+    Collisions                      = 35396
+
+    Number of DSMC particles        = 99998
+    Number of stuck particles       = 0
+    Number of free particles        = 99998
+    Average linear kinetic energy   = 1.935493664e-19
+    Average rotational energy       = 1.286077251e-19
+    Average vibrational energy      = 2.380274509e-20
+    Average electronic energy       = 0
+    Total energy                    = 3.459529174e-11
+
+Stage 1.0  ExecutionTime = 105.96 s  ClockTime = 107 s  Iteration 100 (1 s)
+
+Time = 2e-06
+
+    Collisions                      = 34790
+
+    Number of DSMC particles        = 99998
+    Number of stuck particles       = 0
+    Number of free particles        = 99998
+    Average linear kinetic energy   = 1.825503544e-19
+    Average rotational energy       = 1.226765059e-19
+    Average vibrational energy      = 4.073297628e-20
+    Average electronic energy       = 0
+    Total energy                    = 3.459529174e-11
+
+Stage 1.0  ExecutionTime = 208.09 s  ClockTime = 209 s  Iteration 200 (1.01 s)
+
+Time = 3e-06
+
+    Collisions                      = 34579
+
+    Number of DSMC particles        = 99998
+    Number of stuck particles       = 0
+    Number of free particles        = 99998
+    Average linear kinetic energy   = 1.754313953e-19
+    Average rotational energy       = 1.173477551e-19
+    Average vibrational energy      = 5.318068627e-20
+    Average electronic energy       = 0
+    Total energy                    = 3.459529174e-11
+
+Stage 1.0  ExecutionTime = 310.43 s  ClockTime = 312 s  Iteration 300 (1.07 s)
+
+Time = 4e-06
+
+    Collisions                      = 34305
+
+    Number of DSMC particles        = 99998
+    Number of stuck particles       = 0
+    Number of free particles        = 99998
+    Average linear kinetic energy   = 1.698281397e-19
+    Average rotational energy       = 1.137965878e-19
+    Average vibrational energy      = 6.233510903e-20
+    Average electronic energy       = 0
+    Total energy                    = 3.459529174e-11
+
+Stage 1.0  ExecutionTime = 410.21 s  ClockTime = 412 s  Iteration 400 (0.97 s)
+
+Time = 5e-06
+
+    Collisions                      = 33915
+
+    Number of DSMC particles        = 99998
+    Number of stuck particles       = 0
+    Number of free particles        = 99998
+    Average linear kinetic energy   = 1.660723573e-19
+    Average rotational energy       = 1.108100554e-19
+    Average vibrational energy      = 6.907742394e-20
+    Average electronic energy       = 0
+    Total energy                    = 3.459529174e-11
+
+Stage 1.0  ExecutionTime = 508.94 s  ClockTime = 511 s  Iteration 500 (0.97 s)
+
+Time = 6e-06
+
+    Collisions                      = 33941
+
+    Number of DSMC particles        = 99998
+    Number of stuck particles       = 0
+    Number of free particles        = 99998
+    Average linear kinetic energy   = 1.624305931e-19
+    Average rotational energy       = 1.094266987e-19
+    Average vibrational energy      = 7.410254481e-20
+    Average electronic energy       = 0
+    Total energy                    = 3.459529174e-11
+
+Stage 1.0  ExecutionTime = 607.08 s  ClockTime = 609 s  Iteration 600 (0.98 s)
+
+
+    From function virtual bool Foam::regIOobject::readIfModified()
+    in file db/regIOobject/regIOobjectRead.C at line 408
+        Re-reading object controlDict from file "/home/vincent/OpenFOAM/vincent-v1706/hyStrath/run/hyStrath/dsmcFoam+/thermalRelaxation/vibrationalHeating_ZvCst200_O2/system/controlDict"
+Time = 7e-06
+
+    Collisions                      = 33788
+
+    Number of DSMC particles        = 99998
+    Number of stuck particles       = 0
+    Number of free particles        = 99998
+    Average linear kinetic energy   = 1.608914012e-19
+    Average rotational energy       = 1.07230612e-19
+    Average vibrational energy      = 7.783782339e-20
+    Average electronic energy       = 0
+    Total energy                    = 3.459529174e-11
+
+Stage 1.0  ExecutionTime = 707.53 s  ClockTime = 710 s  Iteration 700 (0.97 s)
+
+Time = 8e-06
+
+    Collisions                      = 33648
+
+    Number of DSMC particles        = 99998
+    Number of stuck particles       = 0
+    Number of free particles        = 99998
+    Average linear kinetic energy   = 1.589393466e-19
+    Average rotational energy       = 1.063709288e-19
+    Average vibrational energy      = 8.06495612e-20
+    Average electronic energy       = 0
+    Total energy                    = 3.459529174e-11
+
+Stage 1.0  ExecutionTime = 806.1 s  ClockTime = 808 s  Iteration 800 (0.97 s)
+
+Time = 9e-06
+
+    Collisions                      = 33842
+
+    Number of DSMC particles        = 99998
+    Number of stuck particles       = 0
+    Number of free particles        = 99998
+    Average linear kinetic energy   = 1.578997863e-19
+    Average rotational energy       = 1.054861603e-19
+    Average vibrational energy      = 8.257389002e-20
+    Average electronic energy       = 0
+    Total energy                    = 3.459529174e-11
+
+Stage 1.0  ExecutionTime = 905.29 s  ClockTime = 908 s  Iteration 900 (0.99 s)
+
+Time = 1e-05
+
+    Collisions                      = 33599
+
+    Number of DSMC particles        = 99998
+    Number of stuck particles       = 0
+    Number of free particles        = 99998
+    Average linear kinetic energy   = 1.570803768e-19
+    Average rotational energy       = 1.04900791e-19
+    Average vibrational energy      = 8.397866874e-20
+    Average electronic energy       = 0
+    Total energy                    = 3.459529174e-11
+
+Stage 1.0  ExecutionTime = 1003.98 s  ClockTime = 1007 s  Iteration 1000 (1.01 s)
+
+Time = 1.1e-05
+
+    Collisions                      = 33809
+
+    Number of DSMC particles        = 99998
+    Number of stuck particles       = 0
+    Number of free particles        = 99998
+    Average linear kinetic energy   = 1.56620189e-19
+    Average rotational energy       = 1.039801842e-19
+    Average vibrational energy      = 8.535946343e-20
+    Average electronic energy       = 0
+    Total energy                    = 3.459529174e-11
+
+Stage 1.0  ExecutionTime = 1103.98 s  ClockTime = 1107 s  Iteration 1100 (1.01 s)
+
+Time = 1.2e-05
+
+    Collisions                      = 33791
+
+    Number of DSMC particles        = 99998
+    Number of stuck particles       = 0
+    Number of free particles        = 99998
+    Average linear kinetic energy   = 1.561401399e-19
+    Average rotational energy       = 1.035996116e-19
+    Average vibrational energy      = 8.622008508e-20
+    Average electronic energy       = 0
+    Total energy                    = 3.459529174e-11
+
+Stage 1.0  ExecutionTime = 1204.09 s  ClockTime = 1209 s  Iteration 1200 (1.01 s)
+
+Time = 1.3e-05
+
+    Collisions                      = 33671
+
+    Number of DSMC particles        = 99998
+    Number of stuck particles       = 0
+    Number of free particles        = 99998
+    Average linear kinetic energy   = 1.554991351e-19
+    Average rotational energy       = 1.037142138e-19
+    Average vibrational energy      = 8.674648775e-20
+    Average electronic energy       = 0
+    Total energy                    = 3.459529174e-11
+
+Stage 1.0  ExecutionTime = 1303.99 s  ClockTime = 1309 s  Iteration 1300 (1 s)
+
+Time = 1.4e-05
+
+    Collisions                      = 33652
+
+    Number of DSMC particles        = 99998
+    Number of stuck particles       = 0
+    Number of free particles        = 99998
+    Average linear kinetic energy   = 1.555844409e-19
+    Average rotational energy       = 1.035737758e-19
+    Average vibrational energy      = 8.680161986e-20
+    Average electronic energy       = 0
+    Total energy                    = 3.459529174e-11
+
+Stage 1.0  ExecutionTime = 1403.95 s  ClockTime = 1409 s  Iteration 1400 (1 s)
+
+Time = 1.5e-05
+
+    Collisions                      = 33628
+
+    Number of DSMC particles        = 99998
+    Number of stuck particles       = 0
+    Number of free particles        = 99998
+    Average linear kinetic energy   = 1.547163014e-19
+    Average rotational energy       = 1.03894332e-19
+    Average vibrational energy      = 8.734920323e-20
+    Average electronic energy       = 0
+    Total energy                    = 3.459529174e-11
+
+Stage 1.0  ExecutionTime = 1505.99 s  ClockTime = 1511 s  Iteration 1500 (1.1 s)
+
+Time = 1.6e-05
+
+    Collisions                      = 33342
+
+    Number of DSMC particles        = 99998
+    Number of stuck particles       = 0
+    Number of free particles        = 99998
+    Average linear kinetic energy   = 1.547952265e-19
+    Average rotational energy       = 1.0354473e-19
+    Average vibrational energy      = 8.76198801e-20
+    Average electronic energy       = 0
+    Total energy                    = 3.459529174e-11
+
+Stage 1.0  ExecutionTime = 1609.59 s  ClockTime = 1615 s  Iteration 1600 (1.05 s)
+
+Time = 1.7e-05
+
+    Collisions                      = 33541
+
+    Number of DSMC particles        = 99998
+    Number of stuck particles       = 0
+    Number of free particles        = 99998
+    Average linear kinetic energy   = 1.549315977e-19
+    Average rotational energy       = 1.030937631e-19
+    Average vibrational energy      = 8.793447578e-20
+    Average electronic energy       = 0
+    Total energy                    = 3.459529174e-11
+
+Stage 1.0  ExecutionTime = 1712.2 s  ClockTime = 1718 s  Iteration 1700 (1.04 s)
+
+Time = 1.8e-05
+
+    Collisions                      = 33367
+
+    Number of DSMC particles        = 99998
+    Number of stuck particles       = 0
+    Number of free particles        = 99998
+    Average linear kinetic energy   = 1.551420228e-19
+    Average rotational energy       = 1.030256848e-19
+    Average vibrational energy      = 8.779212903e-20
+    Average electronic energy       = 0
+    Total energy                    = 3.459529174e-11
+
+Stage 1.0  ExecutionTime = 1814.5 s  ClockTime = 1821 s  Iteration 1800 (1.01 s)
+
+Time = 1.9e-05
+
+    Collisions                      = 33319
+
+    Number of DSMC particles        = 99998
+    Number of stuck particles       = 0
+    Number of free particles        = 99998
+    Average linear kinetic energy   = 1.549371117e-19
+    Average rotational energy       = 1.02959296e-19
+    Average vibrational energy      = 8.806342886e-20
+    Average electronic energy       = 0
+    Total energy                    = 3.459529174e-11
+
+Stage 1.0  ExecutionTime = 1917.6 s  ClockTime = 1924 s  Iteration 1900 (1.03 s)
+
+Time = 2e-05
+
+    Collisions                      = 33502
+
+    Number of DSMC particles        = 99998
+    Number of stuck particles       = 0
+    Number of free particles        = 99998
+    Average linear kinetic energy   = 1.548416965e-19
+    Average rotational energy       = 1.029833821e-19
+    Average vibrational energy      = 8.813475798e-20
+    Average electronic energy       = 0
+    Total energy                    = 3.459529174e-11
+
+Stage 1.0  ExecutionTime = 2058.75 s  ClockTime = 2067 s  Iteration 2000 (1.96 s)
+
+--> FOAM Warning : 
+    From function bool Foam::rmDir(const Foam::fileName&, bool)
+    in file POSIX.C at line 990
+    cannot open directory "/home/vincent/OpenFOAM/vincent-v1706/hyStrath/run/hyStrath/dsmcFoam+/thermalRelaxation/vibrationalHeating_ZvCst200_O2/2.095e-05"
+
+    From function virtual bool Foam::regIOobject::readIfModified()
+    in file db/regIOobject/regIOobjectRead.C at line 408
+        Re-reading object controlDict from file "/home/vincent/OpenFOAM/vincent-v1706/hyStrath/run/hyStrath/dsmcFoam+/thermalRelaxation/vibrationalHeating_ZvCst200_O2/system/controlDict"
+
+
+--> FOAM FATAL IO ERROR: 
+cannot find file
+
+file: /home/vincent/OpenFOAM/vincent-v1706/hyStrath/run/hyStrath/dsmcFoam+/thermalRelaxation/vibrationalHeating_ZvCst200_O2/system/controlDict at line 0.
+
+    From function regIOobject::readStream()
+    in file db/regIOobject/regIOobjectRead.C at line 237.
+
+FOAM exiting
+
+double free or corruption (fasttop)
+Aborted (core dumped)

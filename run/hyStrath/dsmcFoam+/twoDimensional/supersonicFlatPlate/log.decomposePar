@@ -1,0 +1,95 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1706                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : v1706
+Arch   : "LSB;label=32;scalar=64"
+Exec   : decomposePar -latestTime
+Date   : Jan 12 2019
+Time   : 15:53:33
+Host   : "Galileo"
+PID    : 5706
+Case   : /home/vincent/OpenFOAM/vincent-v1706/hyStrath/run/hyStrath/dsmcFoam+/twoDimensional/supersonicFlatPlate
+nProcs : 1
+sigFpe : Enabling floating point exception trapping (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 10)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+
+
+Decomposing mesh region0
+
+Create mesh
+
+Calculating distribution of cells
+Selecting decompositionMethod scotch
+
+Finished decomposition in 0.01 s
+
+Calculating original mesh data
+
+Distributing cells to processors
+
+Distributing faces to processors
+
+Distributing points to processors
+
+Constructing processor meshes
+
+Processor 0
+    Number of cells = 1500
+    Number of faces shared with processor 1 = 63
+    Number of faces shared with processor 2 = 27
+    Number of faces shared with processor 3 = 33
+    Number of processor patches = 3
+    Number of processor faces = 123
+    Number of boundary faces = 3049
+
+Processor 1
+    Number of cells = 1500
+    Number of faces shared with processor 0 = 63
+    Number of processor patches = 1
+    Number of processor faces = 63
+    Number of boundary faces = 3111
+
+Processor 2
+    Number of cells = 1500
+    Number of faces shared with processor 0 = 27
+    Number of faces shared with processor 3 = 55
+    Number of processor patches = 2
+    Number of processor faces = 82
+    Number of boundary faces = 3082
+
+Processor 3
+    Number of cells = 1500
+    Number of faces shared with processor 0 = 33
+    Number of faces shared with processor 2 = 55
+    Number of processor patches = 2
+    Number of processor faces = 88
+    Number of boundary faces = 3078
+
+Number of processor faces = 178
+Max number of cells = 1500 (0% above average 1500)
+Max number of processor patches = 3 (50% above average 2)
+Max number of faces between processors = 123 (38.20224719% above average 89)
+
+Time = 0
+Identified lagrangian data set: "dsmc"
+
+Processor 0: field transfer
+Detected additional non-decomposed files in "/home/vincent/OpenFOAM/vincent-v1706/hyStrath/run/hyStrath/dsmcFoam+/twoDimensional/supersonicFlatPlate/0/uniform"
+Processor 1: field transfer
+Detected additional non-decomposed files in "/home/vincent/OpenFOAM/vincent-v1706/hyStrath/run/hyStrath/dsmcFoam+/twoDimensional/supersonicFlatPlate/0/uniform"
+Processor 2: field transfer
+Detected additional non-decomposed files in "/home/vincent/OpenFOAM/vincent-v1706/hyStrath/run/hyStrath/dsmcFoam+/twoDimensional/supersonicFlatPlate/0/uniform"
+Processor 3: field transfer
+Detected additional non-decomposed files in "/home/vincent/OpenFOAM/vincent-v1706/hyStrath/run/hyStrath/dsmcFoam+/twoDimensional/supersonicFlatPlate/0/uniform"
+
+End
+

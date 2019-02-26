@@ -1,0 +1,69 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.7.1                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      dsmcProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+// General Properties
+// ~~~~~~~~~~~~~~~~~~
+
+nEquivalentParticles            1000;
+
+
+// Binary Collision Model
+// ~~~~~~~~~~~~~~~~~~~~~~
+
+BinaryCollisionModel        LarsenBorgnakkeVariableHardSphere;
+
+LarsenBorgnakkeVariableHardSphereCoeffs
+{
+    rotationalRelaxationCollisionNumber   5.0;
+    vibrationalRelaxationCollisionNumber  200; //- Bird (2013)
+}
+
+
+// Collision Partner Selection Model
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+collisionPartnerSelectionModel        noTimeCounter;
+
+
+// Molecular species
+// ~~~~~~~~~~~~~~~~~
+
+typeIdList           (O2);
+
+moleculeProperties
+{
+    O2
+    {
+        mass                                 53.12e-27;
+        diameter                              4.07e-10;
+        diameterVSS                           4.01e-10;
+        omega                                     0.77;
+        alpha                                      1.4;
+        rotationalDegreesOfFreedom                   2;
+        nVibrationalModes                            1;
+        characteristicVibrationalTemperature    (2256);
+        dissociationTemperature                (59500);
+        Zref                                   (17900);
+        referenceTempForZref                    (2256);
+        ionisationTemperature                 140066.5;
+        charge                                       0;
+    }
+}
+
+
+// ************************************************************************* //

@@ -1,0 +1,22 @@
+set term x11
+set key bottom right spacing 1.2
+
+set xlabel "Mean collision times"
+set ylabel "Temperature  (K)"
+
+set xrange [0:*]
+set yrange [0:10000]
+
+path = "postProcessing/probes/0/"
+
+set arrow from 206, graph 0 to 206, graph 1 nohead
+
+plot \
+10000/2.718281 w l lw 2 t "10000/e",\
+"< paste ".path."meanCollisionTime_O2 ".path."translationalT_O2 ".path."rotationalT_O2" u ($1/$2):(0.5*($4+$6)) w l t "dsmcFoam+, (T_t + T_r)/2. (constant Zv)",\
+"< paste ".path."meanCollisionTime_O2 ".path."translationalT_O2 ".path."rotationalT_O2 ".path."vibrationalT_O2" u ($1/$2):(0.5*($4+$6) - $8) w l t "dsmcFoam+, (T_t + T_r)/2. - T_v (constant Zv)",\
+"< paste ".path."meanCollisionTime_O2 ".path."vibrationalT_O2" u ($1/$2):4 w l t "dsmcFoam+, T_v (constant Zv)"
+
+pause 10
+reread
+

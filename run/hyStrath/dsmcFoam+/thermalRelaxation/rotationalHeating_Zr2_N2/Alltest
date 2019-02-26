@@ -1,0 +1,60 @@
+#!/bin/bash
+cd ${0%/*} || exit 1    # run from this directory
+
+CURRENT_DIR=`pwd`
+PARENT_DIR=`dirname $CURRENT_DIR`
+CURRENT_DIR_BASENAME=`basename $CURRENT_DIR`
+PARENT_DIR_BASENAME=`basename $PARENT_DIR`
+HEADLINE="Testing $PARENT_DIR_BASENAME/$CURRENT_DIR_BASENAME"
+
+SUCCESS_STR="\e[48;5;022mSUCCESS\e[0m"
+FAIL_STR="\e[48;5;124mFAIL\e[0m"
+
+function convert()
+{
+  local convertedNum=`sed -E 's/([+-]?[0-9.]+)[eE]\+?(-?)([0-9]+)/(\1*10^\2\3)/g' <<< $1`
+  echo $convertedNum
+}
+
+echo $HEADLINE
+
+NERRORS=0
+
+# Acceptable tolerance
+TOLERANCE=0.03
+
+SOL_PATH="gnuplot/solution"
+SOL_DSMC_PATH="$SOL_PATH/dsmcFoam+"
+RES_PATH="postProcessing/probes/0"
+
+FILES_TO_TEST="meanCollisionTime_N2cold overallT_N2cold  rhoN_N2cold  rotationalT_N2cold  translationalT_N2cold"
+
+for FILE in $FILES_TO_TEST
+do
+  if [ -f $RES_PATH/$FILE ] ; then
+    NLINES=`wc -l $RES_PATH/$FILE | awk '{print $1}'`
+    NSTEPS=$(($NLINES / 10))
+    
+    for LINE in `seq 4 $NSTEPS $NLINES`
+    do
+      RES_LINEVALUE=`sed "${LINE}q;d" $RES_PATH/$FILE | awk '{print $2}'`
+      SOL_LINEVALUE=`sed "${LINE}q;d" $SOL_DSMC_PATH/$FILE | awk '{print $2}'`
+
+      RES_LINEVALUE=`convert $RES_LINEVALUE`
+      SOL_LINEVALUE=`convert $SOL_LINEVALUE`
+      
+      if [ `echo "$SOL_LINEVALUE*(1.0+$TOLERANCE) < $RES_LINEVALUE" | bc -l` -eq 1 ] || [ `echo "$SOL_LINEVALUE*(1.0-$TOLERANCE) > $RES_LINEVALUE" | bc -l` -eq 1 ] ; then
+          printf "\tFAIL: $FILE, line $LINE - SOL $SOL_LINEVALUE vs. RES $RES_LINEVALUE\n"
+          NERRORS=$((NERRORS+1))
+      fi
+    done
+  else
+    printf "\t$FAIL_STR: $FILE does not exist\n"
+  fi  
+done
+
+if [ $NERRORS -lt 10 ] ; then
+  printf "\t$SUCCESS_STR\n"
+else
+  printf "\t$FAIL_STR\n"
+fi  

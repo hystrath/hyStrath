@@ -1,0 +1,23 @@
+set term x11
+set key bottom right spacing 1.2
+
+set xlabel "Mean collision times"
+set ylabel "Temperature  (K)"
+
+set xrange [0:*]
+set yrange [0:10000]
+
+path = "postProcessing/probes/0/"
+sol = "gnuplot/solution/dsmcFoam+/"
+
+plot \
+"< paste ".path."meanCollisionTime_N2 ".path."translationalT_N2" u ($1/$2):4 w l t "dsmcFoam+, T_t",\
+"< paste ".path."meanCollisionTime_N2 ".path."rotationalT_N2" u ($1/$2):4 w l t "dsmcFoam+, T_r",\
+"< paste ".path."meanCollisionTime_N2 ".path."vibrationalT_N2" u ($1/$2):4 w l t "dsmcFoam+, T_v",\
+"< paste ".path."meanCollisionTime_N2 ".path."electronicT_N2" u ($1/$2):4 w l t "dsmcFoam+, T_{el}",\
+"< paste ".path."meanCollisionTime_N2 ".sol."electronicT_N2" u ($1/$2):4 w l t "sol, T_{el}",\
+"< paste ".path."meanCollisionTime_N2 ".path."overallT_N2" u ($1/$2):4 w l t "dsmcFoam+, T_{ov}"
+
+pause 10
+reread
+

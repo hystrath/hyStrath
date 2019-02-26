@@ -1,0 +1,80 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.7.1                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      dsmcProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+// General Properties
+// ~~~~~~~~~~~~~~~~~~
+
+nEquivalentParticles            1000;
+
+
+// Binary Collision Model
+// ~~~~~~~~~~~~~~~~~~~~~~
+
+BinaryCollisionModel        LarsenBorgnakkeVariableHardSphere;
+
+LarsenBorgnakkeVariableHardSphereCoeffs
+{
+    rotationalRelaxationCollisionNumber   5.0;
+    electronicRelaxationCollisionNumber   500.0;
+}
+
+
+// Collision Partner Selection Model
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+collisionPartnerSelectionModel        noTimeCounter;
+
+
+// Molecular species
+// ~~~~~~~~~~~~~~~~~
+
+typeIdList           (N2);
+
+moleculeProperties
+{
+    N2
+    {
+        mass                                  46.5e-27;
+        diameter                              4.17e-10;
+        diameterVSS                           4.11e-10;
+        omega                                     0.74;
+        alpha                                     1.36;
+        rotationalDegreesOfFreedom                   2;
+        nVibrationalModes                            1;
+        characteristicVibrationalTemperature    (3371);
+        dissociationTemperature               (113500);
+        Zref                                   (52560);
+        referenceTempForZref                    (3371);
+        ionisationTemperature                 180798.3;
+        charge                                       0;
+        nElectronicLevels                           15;
+        electronicDegeneracyList
+        (
+            1 3 6 6 3 1 2 2 5 1 6 6 10 6 6
+        );
+        electronicEnergyList
+        (
+            0  9.972e-19 1.1843e-18 1.1881e-18 1.3165e-18 1.3538e-18
+              1.3763e-18 1.4483e-18 1.5415e-18 1.6925e-18 1.7242e-18
+              1.7707e-18 1.8474e-18 1.9388e-18 2.0778e-18
+        );
+    }
+}
+
+
+// ************************************************************************* //

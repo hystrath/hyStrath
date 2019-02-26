@@ -1,0 +1,14 @@
+set term x11
+
+set xrange[0:10000]
+
+set xlabel "Time"
+set ylabel "Mean squared displacement  (m2)"
+
+plot \
+"gnuplot/solution/sol_VSS_MSD" u 0:1 w l lw 1.5 t "Solution, VSS 1.4, d_{VHS} (Casseau, 2018)",\
+"gnuplot/solution/dsmcFoam+/log.dsmcFoam+_VSS_MSD" u 0:1 w l lw 1.5 t "Stored {/Helvetica-Italics dsmcFoam+} solution, VSS 1.4, d_{VSS}",\
+"log.dsmcFoam+_VSS_MSD" u 0:1 w l lw 1.5 t "{/Helvetica-Italics dsmcFoam+}, VSS 1.4, d_{VSS}"
+
+pause 10
+reread 

@@ -1,0 +1,25 @@
+set term x11
+set key bottom right spacing 1.2
+
+#NB: the collision number is half the mean collition time
+
+set xlabel "Collision number"
+set ylabel "Temperature  (K)"
+
+set yrange [0:20000]
+
+path = "postProcessing/probes/0/"
+
+plot \
+"gnuplot/solution/sol_Bird2007_translationalT.txt" u 1:2 w p t "Bird (2007), T_t",\
+"gnuplot/solution/sol_Bird2007_rotationalT.txt" u 1:2 w p t "Bird (2007), T_r",\
+"gnuplot/solution/sol_Bird2007_vibrationalT.txt" u 1:2 w p t "Bird (2007), T_v",\
+"gnuplot/solution/sol_Bird2007_overallT.txt" u 1:2 w p t "Bird (2007), T_{ov}",\
+"< paste ".path."meanCollisionTime_N2 ".path."translationalT_N2" u (0.5*$1/$2):4 w l t "dsmcFoam+, T_t",\
+"< paste ".path."meanCollisionTime_N2 ".path."rotationalT_N2" u (0.5*$1/$2):4 w l t "dsmcFoam+, T_r",\
+"< paste ".path."meanCollisionTime_N2 ".path."vibrationalT_N2" u (0.5*$1/$2):4 w l t "dsmcFoam+, T_v",\
+"< paste ".path."meanCollisionTime_N2 ".path."overallT_N2" u (0.5*$1/$2):4 w l t "dsmcFoam+, T_{ov}"
+
+pause 10
+reread
+

@@ -1,0 +1,20 @@
+set term x11
+
+set xlabel "Time  (s)"
+set ylabel "Temperature  (K)"
+
+set logscale x
+set format x "%.0t x 10^{%+03T}"
+
+path = "postProcessing/probes/0/"
+
+plot \
+path."translationalT_N2" u 1:2 w l t "T_t",\
+path."rotationalT_N2" u 1:2 w l t "T_r",\
+path."vibrationalT_N2" u 1:2 w l t "T_v",\
+path."electronicT_N2" u 1:2 w l t "T_{el}",\
+path."overallT_N2" u 1:2 w l t "T_{ov}"
+
+pause 10
+reread
+

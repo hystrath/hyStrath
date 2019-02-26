@@ -1,0 +1,23 @@
+set term x11
+set key bottom right spacing 1.2
+
+set xlabel "Mean collision times"
+set ylabel "Temperature  (K)"
+
+set xrange [0:15000]
+set yrange [0:5000]
+
+path = "postProcessing/probes/0/"
+
+plot \
+"gnuplot/solution/sol_Bird2008_Tcoll-based_overallT.txt" u 1:2 w p t "Bird (2008), T_{ov} (Tcoll-based)",\
+"gnuplot/solution/sol_Bird2008_Tbased_overallT.txt" u 1:2 w p t "Bird (2008), T_{ov} (Tmacro-based)",\
+"< paste ".path."meanCollisionTime_O2 ".path."overallT_O2" u ($1/$2):4 w l t "dsmcFoam+, T_{ov} (variable Zv)",\
+"gnuplot/solution/sol_Bird2008_Tcoll-based_vibrationalT.txt" u 1:2 w p t "Bird (2008), T_v (Tcoll-based)",\
+"gnuplot/solution/sol_Bird2008_Tbased_vibrationalT.txt" u 1:2 w p t "Bird (2008), T_v (Tmacro-based)",\
+"gnuplot/solution/sol_Bird2008_ZvConstant_vibrationalT.txt" u 1:2 w p t "Bird (2008), T_v (constant Zv)",\
+"< paste ".path."meanCollisionTime_O2 ".path."vibrationalT_O2" u ($1/$2):4 w l t "dsmcFoam+, T_v (variable Zv)"
+
+pause 10
+reread
+

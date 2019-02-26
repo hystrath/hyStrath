@@ -1,0 +1,43 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.3.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      probes;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+probes
+{
+    type            probes;
+    functionObjectLibs ("libsampling.so");
+    enabled         true;
+    writeControl   timeStep;
+    writeInterval  1;
+
+    fields
+    (
+        translationalT_N2
+        rotationalT_N2
+        vibrationalT_N2
+        electronicT_N2
+        overallT_N2
+        
+        rhoN_N2
+        meanCollisionTime_N2
+    );
+
+    probeLocations
+    (
+        (5e-6 5e-6 5e-6)
+    );
+
+}

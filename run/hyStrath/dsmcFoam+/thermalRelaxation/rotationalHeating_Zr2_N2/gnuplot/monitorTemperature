@@ -1,0 +1,22 @@
+set term x11
+set key bottom right spacing 1.2
+
+set xlabel "Mean collision times"
+set ylabel "Temperature  (K)"
+
+set xrange [0:15]
+set yrange [0:500]
+
+path = "postProcessing/probes/0/"
+
+set arrow from 2.06, graph 0 to 2.06, graph 1 nohead
+
+plot \
+500/2.718281 w l lw 2 t "500/e",\
+"< paste ".path."meanCollisionTime_N2cold ".path."translationalT_N2cold" u ($1/$2):4 w l t "dsmcFoam+, T_t",\
+"< paste ".path."meanCollisionTime_N2cold ".path."rotationalT_N2cold" u ($1/$2):4 w l t "dsmcFoam+, T_r",\
+"< paste ".path."meanCollisionTime_N2cold ".path."translationalT_N2cold ".path."rotationalT_N2cold" u ($1/$2):($4-$6) w l t "dsmcFoam+, T_t - T_r"
+
+pause 10
+reread
+
