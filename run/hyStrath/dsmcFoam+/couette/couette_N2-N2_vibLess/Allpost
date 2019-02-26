@@ -1,0 +1,21 @@
+#!/bin/sh
+cd ${0%/*} || exit 1    # run from this directory
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+rm -f log.postProcess
+runApplication postProcess -func singleGraph -latestTime
+
+timeFolders=`ls -d [0-9]*`
+timeFolder=`echo $timeFolders | rev | cut -d ' ' -f1 | rev`
+
+resultFolders=`ls -d postProcessing/singleGraph/[0-9]*`
+resultFolder="postProcessing/singleGraph/$timeFolder"
+
+for resultFolder in $resultFolders; do
+  paste $resultFolder/line_UMean_Mixture.xy $resultFolder/line_rhoN_N2_rhoN_O2_rotationalT_Mixture_translationalT_Mixture.xy > $resultFolder/line_UMean_Mixture_rhoN_N2_rhoN_O2_rotationalT_Mixture_translationalT_Mixture.xy
+  awk '{$3=$4=$5=""; print $0}' $resultFolder/line_UMean_Mixture_rhoN_N2_rhoN_O2_rotationalT_Mixture_translationalT_Mixture.xy > $resultFolder/line_UxMix_rhoNN2_rhoNO2_TrMix_TtMix.xy
+  awk '{ print $1 " " $2 " " 0.4*$5+0.6*$6 " " $7 " " $8 " " $3 " " $4}' $resultFolder/line_UxMix_rhoNN2_rhoNO2_TrMix_TtMix.xy > $resultFolder/line_UxMix_TtrMix_rhoNN2_rhoNO2.xy
+  rm -f $resultFolder/line_UMean_Mixture.xy $resultFolder/line_rhoN_N2_rhoN_O2_rotationalT_Mixture_translationalT_Mixture.xy $resultFolder/line_UMean_Mixture_rhoN_N2_rhoN_O2_rotationalT_Mixture_translationalT_Mixture.xy $resultFolder/line_UxMix_rhoNN2_rhoNO2_TrMix_TtMix.xy
+done

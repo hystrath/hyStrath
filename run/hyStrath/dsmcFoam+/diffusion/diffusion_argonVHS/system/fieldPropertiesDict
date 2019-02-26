@@ -1,0 +1,42 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.7.1                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fieldPropertiesDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+dsmcFields
+(
+     field
+     {
+         fieldModel         dsmcVolFields;
+ 
+         timeProperties
+         {
+         	  timeOption      write;
+             resetAtOutput       on;
+         }
+ 
+         dsmcVolFieldsProperties
+         {
+             fieldName                    Ar;
+             typeIds                     (Ar);
+             measureMeanFreePath         true;
+         	   averagingAcrossManyRuns		 false;
+         }
+     }
+);
+
+
+// ************************************************************************* //

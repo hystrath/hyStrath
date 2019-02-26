@@ -1,0 +1,125 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.3                                   |
+|   \\  /    A nd           | Web:      http://www.openfoam.org               |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      boundariesDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dsmcPatchBoundaries
+(
+    boundary
+    {
+        patchBoundaryProperties
+        {
+            patchName                           spline;
+        }
+
+        boundaryModel   dsmcDeletionPatch;
+
+        dsmcDeletionPatchProperties
+        {
+            allSpecies		yes;
+        }
+    }
+
+    boundary
+    {
+        patchBoundaryProperties
+        {
+            patchName                           inlet;
+        }
+
+        boundaryModel   dsmcDeletionPatch;
+
+        dsmcDeletionPatchProperties
+        {
+            allSpecies                yes;
+        }
+    }
+
+    boundary
+    {
+        patchBoundaryProperties
+        {
+            patchName         orion;
+        }
+
+        boundaryModel   dsmcDiffuseWallPatch;
+
+        dsmcDiffuseWallPatchProperties
+        {
+            velocity 			(0 0 0);
+            temperature			1000;
+        }
+    }
+);
+
+dsmcCyclicBoundaries
+(
+
+);
+
+dsmcGeneralBoundaries
+(
+    boundary
+    {
+        generalBoundaryProperties
+        {
+        patchName                           spline;
+        }
+
+        boundaryModel   dsmcFreeStreamInflowPatch;
+
+        dsmcFreeStreamInflowPatchProperties
+        {
+            typeIds                   (N2 O2);
+            velocity			     (6053.4 0 0);
+            translationalTemperature	     217.63;
+            rotationalTemperature          217.63;
+            vibrationalTemperature         217.63;
+            electronicTemperature       0;
+            numberDensities
+            {
+                N2            2.318e18;
+                O2            6.161e17;
+            };
+        }
+    }
+
+    boundary
+    {
+        generalBoundaryProperties
+        {
+            patchName                           inlet;
+        }
+
+        boundaryModel   dsmcFreeStreamInflowPatch;
+
+        dsmcFreeStreamInflowPatchProperties
+        {
+            typeIds                   (N2 O2);
+            velocity			     (6053.4 0 0);
+            translationalTemperature	     217.63;
+            rotationalTemperature          217.63;
+            vibrationalTemperature         217.63;
+            electronicTemperature       0;
+            numberDensities
+            {
+                N2            2.318e18;
+                O2            6.161e17;
+            };
+        }
+    }
+);
+
+// ************************************************************************* //

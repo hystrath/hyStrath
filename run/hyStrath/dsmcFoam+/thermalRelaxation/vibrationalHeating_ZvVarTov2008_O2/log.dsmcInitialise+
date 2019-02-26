@@ -1,0 +1,54 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1706                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : v1706
+Arch   : "LSB;label=32;scalar=64"
+Exec   : dsmcInitialise+
+Date   : Jan 11 2019
+Time   : 17:57:07
+Host   : "Galileo"
+PID    : 2680
+Case   : /home/vincent/OpenFOAM/vincent-v1706/hyStrath/run/hyStrath/dsmcFoam+/thermalRelaxation/vibrationalHeating_ZvVarMacro2008_O2
+nProcs : 1
+sigFpe : Enabling floating point exception trapping (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 10)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Create mesh for time = 0
+
+Selecting dynamicFvMesh dynamicRefineFvMesh
+Initialising dsmc for Time = 0
+
+Selecting the coordinate system model:	dsmcCartesian
+
+Selecting the time-step model:	dsmcConstantTimeStepModel
+
+Constant time-step model:
+- time-step [sec]	2e-08
+
+Selecting the porous measurement model:	dsmcNoPorousMediumMeasurements
+
+clearing existing field of parcels 
+
+Constructing constant properties for
+	O2
+
+Creating dsmc configurations: 
+
+Selecting dsmcConfiguration dsmcMeshFill
+
+Initialising particles
+
+Initial no. of parcels: 0 added parcels: 99998, total no. of parcels: 99998
+
+ClockTime = 1 s
+
+End
+

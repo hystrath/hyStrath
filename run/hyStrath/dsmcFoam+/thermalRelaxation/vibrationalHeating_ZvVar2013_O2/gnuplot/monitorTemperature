@@ -1,0 +1,21 @@
+set term x11
+set key bottom right spacing 1.2
+
+set xlabel "Mean collision times"
+set ylabel "Temperature  (K)"
+
+set xrange [0:*]
+set yrange [0:10000]
+
+path = "postProcessing/probes/0/"
+
+plot \
+"< paste ".path."meanCollisionTime_O2 ".path."translationalT_O2" u ($1/$2):4 w l t "dsmcFoam+, T_t (variable Zv)",\
+"< paste ".path."meanCollisionTime_O2 ".path."rotationalT_O2" u ($1/$2):4 w l t "dsmcFoam+, T_t (variable Zv)",\
+"< paste ".path."meanCollisionTime_O2 ".path."vibrationalT_O2" u ($1/$2):4 w l t "dsmcFoam+, T_v (variable Zv, TMacro)",\
+"< paste ".path."meanCollisionTime_O2 gnuplot/solution/dsmcFoam+/vibrationalT_O2" u ($1/$2):4 w l t "dsmcFoam+, T_v (variable Zv, TColl)",\
+"< paste ".path."meanCollisionTime_O2 ".path."overallT_O2" u ($1/$2):4 w l t "dsmcFoam+, T_{ov} (variable Zv)"
+
+pause 10
+reread
+

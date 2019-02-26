@@ -1,0 +1,19 @@
+set term x11
+
+set xlabel "Timestep"
+set ylabel "Fraction of DSMC particles stuck to the wall  [%]"
+
+set xrange [0:1000]
+set yrange [0:100]
+set ytics 20
+set mxtics 2
+set mytics 5
+
+nSimulators = 100000
+
+plot \
+"gnuplot/solution/sol_nStuckParcels" u 0:($1/nSimulators*100) w l lw 1.5 t "Solution: Adsorption and positive wall temperature gradient",\
+"< cat log.dsmcFoam+ | grep 'Number of stuck particles' | cut -d '=' -f 2" u 0:($1/nSimulators*100) w l lw 1.5 t "dsmcFoam+"
+
+pause 10
+reread

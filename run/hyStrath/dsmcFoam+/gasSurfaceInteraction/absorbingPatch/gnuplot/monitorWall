@@ -1,0 +1,18 @@
+set term x11
+
+set xlabel "Timestep"
+set ylabel "Fraction of DSMC particles left in the box  [%]"
+
+set xrange [0:1000]
+set ytics 20
+set mxtics 2
+set mytics 2
+
+nSimulators = 10000
+
+plot \
+"gnuplot/solution/sol_nAbsorbedParcels" u 0:($1/100) w l lw 1.5 t "Solution: Absorption, P_{abs} = 0.5",\
+"< cat log.dsmcFoam+ | grep 'Number of DSMC particles' | cut -d '=' -f 2" u 0:($1/100) w l lw 1.5 t "dsmcFoam+"
+
+pause 10
+reread

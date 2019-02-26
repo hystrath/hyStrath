@@ -1,0 +1,83 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1706                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : v1706
+Arch   : "LSB;label=32;scalar=64"
+Exec   : blockMesh
+Date   : Jan 12 2019
+Time   : 09:57:23
+Host   : "Galileo"
+PID    : 13724
+Case   : /home/vincent/OpenFOAM/vincent-v1706/hyStrath/run/hyStrath/dsmcFoam+/diffusion/diffusion_argonVHS
+nProcs : 1
+sigFpe : Enabling floating point exception trapping (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 10)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Creating block mesh from
+    "/home/vincent/OpenFOAM/vincent-v1706/hyStrath/run/hyStrath/dsmcFoam+/diffusion/diffusion_argonVHS/system/blockMeshDict"
+No non-linear block edges defined
+No non-planar block faces defined
+Creating topology blocks
+Creating topology patches
+
+Reading patches section
+
+Creating block mesh topology
+
+Reading physicalType from existing boundary file
+
+Default patch type set to empty
+
+Check topology
+
+	Basic statistics
+		Number of internal faces : 0
+		Number of boundary faces : 6
+		Number of defined boundary faces : 6
+		Number of undefined boundary faces : 0
+	Checking patch -> block consistency
+
+Creating block offsets
+Creating merge list .
+
+Creating polyMesh from blockMesh
+Creating patches
+Creating cells
+Creating points with scale 1e-05
+    Block 0 cell size :
+        i : 1e-05 .. 1e-05
+        j : 1e-05 .. 1e-05
+        k : 1e-05 .. 1e-05
+
+
+There are no merge patch pairs edges
+
+Writing polyMesh with 0 cellZones
+----------------
+Mesh Information
+----------------
+  boundingBox: (0 0 0) (1e-05 1e-05 1e-05)
+  nPoints: 8
+  nCells: 1
+  nFaces: 6
+  nInternalFaces: 0
+----------------
+Patches
+----------------
+  patch 0 (start: 0 size: 1) name: bottom
+  patch 1 (start: 1 size: 1) name: top
+  patch 2 (start: 2 size: 1) name: inlet
+  patch 3 (start: 3 size: 1) name: outlet
+  patch 4 (start: 4 size: 1) name: back
+  patch 5 (start: 5 size: 1) name: front
+
+End
+

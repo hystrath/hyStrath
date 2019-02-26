@@ -1,0 +1,83 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.3                                   |
+|   \\  /    A nd           | Web:      http://www.openfoam.org               |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      boundariesDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dsmcPatchBoundaries
+(
+     boundary
+     {
+         patchBoundaryProperties
+         {
+             patchName   defaultFaces;
+         }
+ 
+         boundaryModel   dsmcSpecularWallPatch;
+ 
+         dsmcSpecularWallPatchProperties {}
+     }
+     
+    boundary
+    {
+       patchBoundaryProperties
+       {
+          patchName    stickingWall;
+       }
+
+       boundaryModel  dsmcAbsorbingStickingDiffuseWallPatch;
+
+       dsmcDiffuseWallPatchProperties
+       {
+           temperature 		        2000;
+           velocity 			     (0 0 0);
+       }
+       
+       dsmcStickingWallPatchProperties
+       {
+           typeIds    (Ar);
+           adsorptionProbabilities
+           {
+               Ar		0.5;
+           }
+           residenceTimes
+           {
+               Ar		5e-8;
+           }
+           saturationLimit 2.0e15;
+       }
+       
+       dsmcAbsorbingWallPatchProperties
+       {
+           typeIds    (Ar);
+           absorptionProbabilities
+           {
+               Ar		0.15;
+           }
+           saturationLimit 6.0e15;
+       }
+    }
+);
+
+dsmcCyclicBoundaries
+(
+
+);
+
+dsmcGeneralBoundaries
+(
+
+);
+
+// ************************************************************************* //

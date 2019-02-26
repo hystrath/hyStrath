@@ -1,0 +1,69 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.7.1                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      dsmcProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+// General Properties
+// ~~~~~~~~~~~~~~~~~~
+
+nEquivalentParticles            1000;
+
+
+// Binary Collision Model
+// ~~~~~~~~~~~~~~~~~~~~~~
+
+BinaryCollisionModel        LarsenBorgnakkeVariableHardSphere;
+
+LarsenBorgnakkeVariableHardSphereCoeffs
+{
+    rotationalRelaxationCollisionNumber   5.0;
+    inverseZvFormulation           "pre-2008";
+}
+
+
+// Collision Partner Selection Model
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+collisionPartnerSelectionModel        noTimeCounter;
+
+
+// Molecular species
+// ~~~~~~~~~~~~~~~~~
+
+typeIdList           (N2);
+
+moleculeProperties
+{
+    N2
+    {
+        mass                                  46.5e-27;
+        diameter                              4.17e-10;
+        diameterVSS                           4.11e-10;
+        omega                                     0.74;
+        alpha                                     1.36;
+        rotationalDegreesOfFreedom                   2;
+        nVibrationalModes                            1;
+        characteristicVibrationalTemperature    (3371);
+        dissociationTemperature               (113500);
+        Zref                                    (19.8); //- tuned (Scanlon 2015)
+        referenceTempForZref                   (20000); //- tuned (Figure 3.)
+        ionisationTemperature                 180798.3;
+        charge                                       0;
+    }
+}
+
+
+// ************************************************************************* //

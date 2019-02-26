@@ -1,0 +1,153 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1706                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : v1706
+Arch   : "LSB;label=32;scalar=64"
+Exec   : dsmcFoam+
+Date   : Jan 14 2019
+Time   : 23:02:44
+Host   : "Galileo"
+PID    : 22120
+Case   : /home/vincent/OpenFOAM/vincent-v1706/hyStrath/run/hyStrath/dsmcFoam+/thermalRelaxation/rotationalHeating_Zr2_N2
+nProcs : 1
+sigFpe : Enabling floating point exception trapping (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 10)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Create mesh for time = 0
+
+Selecting dynamicFvMesh dynamicRefineFvMesh
+
+Constructing dsmcCloud 
+Selecting the coordinate system model:	dsmcCartesian
+
+Selecting the time-step model:	dsmcConstantTimeStepModel
+
+Constant time-step model:
+- time-step [sec]	1e-07
+
+Selecting the porous measurement model:	dsmcNoPorousMediumMeasurements
+
+
+Creating dsmcControllers
+
+Creating fields: 
+
+Selecting field: dsmcVolFields
+
+TimeData Statistics: 
+ measurement option: write
+ nSamples: 1, time interval: 1e-07
+ nAverages: 1, time interval: 1e-07
+ total no. of sampling steps: 50
+ total no. of averaging Steps: 50
+
+
+Creating the boundary models: 
+
+Selecting BinaryCollisionModel LarsenBorgnakkeVariableHardSphere
+
+Creating dsmcReactions
+
+WARNING: there are no reactions.
+
+Constructing constant properties for
+	N2cold
+pair addressing: 1(1(-1))
+Selecting collisionPartnerSelectionModel noTimeCounter
+
+Initialising the measurement fields
+
+Initialising dsmcVolFields field
+
+Starting time loop
+
+Time = 1e-06
+
+    Collisions                      = 18313
+
+    Number of DSMC particles        = 100000
+    Number of stuck particles       = 0
+    Number of free particles        = 100000
+    Average linear kinetic energy   = 6.914564826e-21
+    Average rotational energy       = 3.438116309e-21
+    Average vibrational energy      = 0
+    Average electronic energy       = 0
+    Total energy                    = 1.035268113e-13
+
+Stage 1.0  ExecutionTime = 15.1 s  ClockTime = 15 s  Iteration 10 (1.44 s)
+
+Time = 2e-06
+
+    Collisions                      = 18037
+
+    Number of DSMC particles        = 100000
+    Number of stuck particles       = 0
+    Number of free particles        = 100000
+    Average linear kinetic energy   = 6.333412962e-21
+    Average rotational energy       = 4.019268172e-21
+    Average vibrational energy      = 0
+    Average electronic energy       = 0
+    Total energy                    = 1.035268113e-13
+
+Stage 1.0  ExecutionTime = 28.85 s  ClockTime = 29 s  Iteration 20 (1.35 s)
+
+Time = 3e-06
+
+    Collisions                      = 17897
+
+    Number of DSMC particles        = 100000
+    Number of stuck particles       = 0
+    Number of free particles        = 100000
+    Average linear kinetic energy   = 6.224890277e-21
+    Average rotational energy       = 4.127790857e-21
+    Average vibrational energy      = 0
+    Average electronic energy       = 0
+    Total energy                    = 1.035268113e-13
+
+Stage 1.0  ExecutionTime = 42.14 s  ClockTime = 43 s  Iteration 30 (1.33 s)
+
+Time = 4e-06
+
+    Collisions                      = 17972
+
+    Number of DSMC particles        = 100000
+    Number of stuck particles       = 0
+    Number of free particles        = 100000
+    Average linear kinetic energy   = 6.223580105e-21
+    Average rotational energy       = 4.129101029e-21
+    Average vibrational energy      = 0
+    Average electronic energy       = 0
+    Total energy                    = 1.035268113e-13
+
+Stage 1.0  ExecutionTime = 56 s  ClockTime = 57 s  Iteration 40 (1.33 s)
+
+Time = 5e-06
+
+    Collisions                      = 18045
+
+    Number of DSMC particles        = 100000
+    Number of stuck particles       = 0
+    Number of free particles        = 100000
+    Average linear kinetic energy   = 6.225447345e-21
+    Average rotational energy       = 4.127233789e-21
+    Average vibrational energy      = 0
+    Average electronic energy       = 0
+    Total energy                    = 1.035268113e-13
+
+Stage 1.0  ExecutionTime = 69.46 s  ClockTime = 70 s  Iteration 50 (1.49 s)
+
+End stage 1
+
+Total Iterations = 50
+End main
+
+double free or corruption (fasttop)
+Aborted (core dumped)

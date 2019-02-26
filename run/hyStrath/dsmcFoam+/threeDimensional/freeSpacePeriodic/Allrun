@@ -1,0 +1,29 @@
+#!/bin/bash
+cd ${0%/*} || exit 1    # run from this directory
+
+nProcs=1
+if [ $# -ne 0 ] ; then
+  if ! [[ $nProcs =~ '^[0-9]' ]]
+     then nProcs=$1;
+  fi
+fi
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+runApplication blockMesh
+runApplication dsmcInitialise+
+
+./resetSampling
+
+delaySampling=$((2000 / $nProcs))
+
+if [ $nProcs -eq 1 ] ; then
+  sleep $delaySampling && ./startSampling &
+  runApplication dsmcFoam+
+else
+  runApplication decomposePar -latestTime
+  sleep $delaySampling && ./startSampling &
+  mpirun -np $nProcs dsmcFoam+ -parallel > log.dsmcFoam+ 2>&1
+  runApplication reconstructPar -latestTime
+fi 

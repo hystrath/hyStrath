@@ -1,0 +1,31 @@
+#!/bin/bash
+cd ${0%/*} || exit 1    # run from this directory
+
+currentDir=`pwd`
+
+read -r -p "Please confirm? [Y/n] " input
+ 
+case $input in
+    [yY][eE][sS]|[yY])
+       echo "Tests in progress"
+       # For all the sub-directories containing a 'Alltest' file
+       for dir in `find . \( -type f -a -name Alltest \)`
+       do
+           dir=${dir%/Alltest}
+           echo $dir
+           if [ -e "$dir/Alltest" ]
+           then
+               cd $dir
+               ./Alltest
+               cd $currentDir
+           fi
+       done
+       ;;
+    [nN][oO]|[nN])
+       echo "Aborted"
+       ;;
+    *)
+ echo "Invalid input"
+ exit 1
+ ;;
+esac

@@ -1,0 +1,38 @@
+#!/bin/bash
+cd ${0%/*} || exit 1    # run from this directory
+
+nProcs=1
+if [ $# -ne 0 ] ; then
+  if ! [[ $nProcs =~ '^[0-9]' ]]
+     then nProcs=$1;
+  fi
+fi
+
+currentDir=`pwd`
+
+read -r -p "Please confirm? [Y/n] " input
+ 
+case $input in
+    [yY][eE][sS]|[yY])
+       echo "Runs in progress"
+       # For all the sub-directories containing a 'Allrun' file
+       for dir in `find . \( -type f -a -name Allrun \)`
+       do
+           dir=${dir%/Allrun}
+           echo $dir
+           if [ -e "$dir/Allrun" ]
+           then
+               cd $dir
+               ./Allrun $nProcs
+               cd $currentDir
+           fi
+       done
+       ;;
+    [nN][oO]|[nN])
+       echo "Aborted"
+       ;;
+    *)
+ echo "Invalid input"
+ exit 1
+ ;;
+esac

@@ -1,0 +1,82 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1706                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       polyBoundaryMesh;
+    location    "constant/polyMesh";
+    object      boundary;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+6
+(
+    xPeriodic_half0
+    {
+        type            cyclic;
+        inGroups        1(cyclic);
+        nFaces          256;
+        startFace       14464;
+        matchTolerance  0.0001;
+        transform       unknown;
+        neighbourPatch  xPeriodic_half1;
+    }
+    xPeriodic_half1
+    {
+        type            cyclic;
+        inGroups        1(cyclic);
+        nFaces          256;
+        startFace       14720;
+        matchTolerance  0.0001;
+        transform       unknown;
+        neighbourPatch  xPeriodic_half0;
+    }
+    yPeriodic_half0
+    {
+        type            cyclic;
+        inGroups        1(cyclic);
+        nFaces          320;
+        startFace       14976;
+        matchTolerance  0.0001;
+        transform       unknown;
+        neighbourPatch  yPeriodic_half1;
+    }
+    yPeriodic_half1
+    {
+        type            cyclic;
+        inGroups        1(cyclic);
+        nFaces          320;
+        startFace       15296;
+        matchTolerance  0.0001;
+        transform       unknown;
+        neighbourPatch  yPeriodic_half0;
+    }
+    zPeriodic_half0
+    {
+        type            cyclic;
+        inGroups        1(cyclic);
+        nFaces          320;
+        startFace       15616;
+        matchTolerance  0.0001;
+        transform       unknown;
+        neighbourPatch  zPeriodic_half1;
+    }
+    zPeriodic_half1
+    {
+        type            cyclic;
+        inGroups        1(cyclic);
+        nFaces          320;
+        startFace       15936;
+        matchTolerance  0.0001;
+        transform       unknown;
+        neighbourPatch  zPeriodic_half0;
+    }
+)
+
+// ************************************************************************* //

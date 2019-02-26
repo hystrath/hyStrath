@@ -1,0 +1,24 @@
+set term x11
+
+set xlabel "Timestep"
+set ylabel "Fraction of DSMC particles being stuck  [%]"
+
+#set xrange [0:100]
+set xrange [15:60]
+set yrange [19.5:20.5]
+set ytics 0.5
+#set ytics 20
+set mxtics 5
+set mytics 5
+
+nSimulators = 10000
+
+plot \
+20 w l lw 1.8 t 'Saturation limit',\
+"gnuplot/solution/sol_nStuckParcels" u 0:($1/nSimulators*100) w lp lw 1.5 t "Solution: Adsorption, residence time, \& saturation",\
+"< cat log.dsmcFoam+ | grep 'Number of stuck particles' | cut -d '=' -f 2" u 0:($1/nSimulators*100.0) w lp lw 1.5 t "dsmcFoam+: Number of stuck particles"
+
+pause 10
+reread 
+
+

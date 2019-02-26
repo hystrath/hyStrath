@@ -1,0 +1,4 @@
+#!/bin/sh
+cd ${0%/*} || exit 1    # run from this directory
+
+cat log.dsmcFoam+ | grep 'Mean squared displacement ' | cut -d '=' -f 2 | cut -d '(' -f 1 > log.dsmcFoam+_VHS_MSD

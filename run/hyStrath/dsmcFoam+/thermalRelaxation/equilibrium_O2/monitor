@@ -1,0 +1,20 @@
+set term x11
+
+eV = 1.60218e-19
+
+set ytics nomirror
+set y2tics nomirror
+
+set xlabel "Timestep"
+set ylabel "Number of DSMC particles  [million]"
+set y2label "Average energy for a given mode [eV]"
+
+plot \
+"< cat log.dsmcFoam+ | grep 'Number of DSMC particles' | cut -d '=' -f 2" u 0:($1/1e6) w l axis x1y1 t "Number of DSMC particles", \
+"< cat log.dsmcFoam+ | grep 'Average linear kinetic energy' | cut -d '=' -f 2" u 0:($1/eV) w l axis x1y2 t "Average linear kinetic energy",\
+"< cat log.dsmcFoam+ | grep 'Average rotational energy' | cut -d '=' -f 2" u 0:($1/eV) w l axis x1y2 t "Average rotational energy",\
+"< cat log.dsmcFoam+ | grep 'Average vibrational energy' | cut -d '=' -f 2" u 0:($1/eV) w l axis x1y2 t "Average vibrational energy",\
+"< cat log.dsmcFoam+ | grep 'Average electronic energy' | cut -d '=' -f 2" u 0:($1/eV) w l axis x1y2 t "Average electronic energy"
+
+pause 10
+reread 

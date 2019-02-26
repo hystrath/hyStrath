@@ -1,0 +1,38 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.6                                   |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      dsmcInitialiseDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+configurations
+(
+    configuration
+    {
+		    type                dsmcMeshFill;
+
+        numberDensities
+        {
+   			    N2         		 2.0456009311e+19;
+            O2             2.0456009311e+19;
+		    };
+		    	
+		    translationalTemperature     	2000.0;
+     		rotationalTemperature     		2000.0;
+     		vibrationalTemperature     		   0.0;
+     		electronicTemperature            0.0;
+
+		    velocity        (0.0 0.0 0.0);
+    }
+);
+
+// ************************************************************************* //
