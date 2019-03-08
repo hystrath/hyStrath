@@ -1223,8 +1223,6 @@ Foam::scalar Foam::dsmcCloud::postCollisionRotationalEnergy
             return rndGen_.sample01<scalar>();
         }
 
-        scalar energyRatio = 0.0;
-
         scalar P = 0.0;
 
         do
