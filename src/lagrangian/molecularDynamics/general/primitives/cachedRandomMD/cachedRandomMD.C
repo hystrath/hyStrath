@@ -253,7 +253,8 @@ Foam::scalar Foam::cachedRandomMD::sample01()
 template<>
 Foam::label Foam::cachedRandomMD::position(const label& start, const label& end)
 {
-    return start + round(sample01<scalar>()*(end - start));
+//    return start + round(sample01<scalar>()*(end - start));
+    return min(end, start + label(sample01<scalar>()*(end - start + 1)));
 }
 
 

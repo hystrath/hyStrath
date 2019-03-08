@@ -168,7 +168,9 @@ void noTimeCounter::collide()
                 // subCell candidate selection procedure
 
                 // Select the first collision candidate
-                label candidateP = rndGen_.position<label>(0, nC - 1);
+                //  label candidateP = rndGen_.position<label>(0, nC - 1); OLD
+                label candidateP = min(nC-1,
+                    label(rndGen_.sample01<scalar>()*nC));
 
                 // Declare the second collision candidate
                 label candidateQ = -1;
@@ -185,7 +187,9 @@ void noTimeCounter::collide()
 
                     do
                     {
-                        candidateQ = subCellPs[rndGen_.position<label>(0, nSC - 1)];
+                        //  candidateQ = subCellPs[rndGen_.position<label>(0, nSC - 1)]; OLD
+                        candidateQ = subCellPs[min(nSC-1,
+                            label(rndGen_.sample01<scalar>()*nSC))];
 
                     } while (candidateP == candidateQ);
                 }
@@ -197,7 +201,9 @@ void noTimeCounter::collide()
 
                     do
                     {
-                        candidateQ = rndGen_.position<label>(0, nC - 1);
+                        //  candidateQ = rndGen_.position<label>(0, nC - 1); OLD
+                        candidateQ = min(nC-1,
+                            label(rndGen_.sample01<scalar>()*nC));
 
                     } while (candidateP == candidateQ);
                 }

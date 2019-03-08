@@ -48,6 +48,8 @@ Type Foam::cachedRandomMD::position(const Type& start, const Type& end)
     {
         value.component(cmpt) +=
             sample01<scalar>()*(end.component(cmpt) - start.component(cmpt));
+        //May be needed to be corrected, probably to:
+        //value.component(cmpt) = position(end.component(cmpt) - start.component(cmpt));
     }
 
     return value;

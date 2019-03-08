@@ -59,7 +59,7 @@ label noRepeatCollisions::pickFromCandidateList
     {
         // choose a random number between 0 and the size of the candidateList size
         //label randomIndex = rndGen_.position<label>(0, size - 1); OLD
-        label randomIndex = rndGen_.sample01<scalar>()*size;
+        label randomIndex = min(size-1, label(rndGen_.sample01<scalar>()*size));
         entry = candidatesInCell[randomIndex];
 
 //         Info<< "random index: " << randomIndex <<" entry " 
@@ -130,7 +130,8 @@ label noRepeatCollisions::pickFromCandidateSubList
     if(subCellSize > 0)
     {
         //label randomIndex = rndGen_.position<label>(0, subCellSize - 1); OLD
-        label randomIndex = rndGen_.sample01<scalar>()*subCellSize;
+        label randomIndex = min(subCellSize-1,
+            label(rndGen_.sample01<scalar>()*subCellSize));
         entry = candidatesInSubCell[randomIndex];
 
 //         Info<< "random index: " << randomIndex <<" entry " 
@@ -359,15 +360,18 @@ void noRepeatCollisions::collide()
                         // uniform candidate selection procedure
         
         //                 // Select the first collision candidate
-        //                 label candidateP = rndGen_.sample01<scalar>()*nC;
+        //                 label candidateP = min(nC-1,
+        //                     label(rndGen_.sample01<scalar>()*nC));
         // 
         //                 // Select a possible second collision candidate
-        //                 label candidateQ = rndGen_.sample01<scalar>()*nC;
+        //                 label candidateQ = min(nC-1,
+        //                     label(rndGen_.sample01<scalar>()*nC));
         // 
         //                 // If the same candidate is chosen, choose again
         //                 while (candidateP == candidateQ)
         //                 {
-        //                     candidateQ = rndGen_.sample01<scalar>()*nC;
+        //                     candidateQ = min(nC-1,
+        //                         label(rndGen_.sample01<scalar>()*nC));
         //                 }
         
         

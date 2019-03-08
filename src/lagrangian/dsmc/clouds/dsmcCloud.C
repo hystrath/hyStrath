@@ -257,7 +257,7 @@ Foam::label Foam::dsmcCloud::pickFromCandidateList
     {
         // choose a random number between 0 and the size of the candidateList
         //label randomIndex = rndGen_.position<label>(0, size - 1); OLD
-        label randomIndex = rndGen_.sample01<scalar>()*size;
+        label randomIndex = min(size-1, label(rndGen_.sample01<scalar>()*size));
         entry = candidatesInCell[randomIndex];
 
         // build a new list without the chosen entry
@@ -323,7 +323,8 @@ Foam::label Foam::dsmcCloud::pickFromCandidateSubList
     if (subCellSize > 0)
     {
         //label randomIndex = rndGen_.position<label>(0, subCellSize - 1); OLD
-        label randomIndex = rndGen_.sample01<scalar>()*subCellSize;
+        label randomIndex = min(subCellSize-1,
+            label(rndGen_.sample01<scalar>()*subCellSize));
         entry = candidatesInSubCell[randomIndex];
 
 //         Info<< "random index: " << randomIndex <<" entry "
@@ -1185,7 +1186,7 @@ Foam::label Foam::dsmcCloud::equipartitionElectronicLevel
         do
         {
           //jDash = rndGen_.position<label>(0,jMax); OLD
-            jDash = rndGen_.sample01<scalar>()*(jMax+1);
+            jDash = min(jMax, label(rndGen_.sample01<scalar>()*(jMax+1)));
             func =
                 electronicDegeneracyList[jDash]
                *exp(-electronicEnergyList[jDash]/EMax)
@@ -1289,7 +1290,7 @@ Foam::label Foam::dsmcCloud::postCollisionVibrationalEnergyLevel
         do // acceptance - rejection
         {
             //iDash = rndGen_.position<label>(0, iMax); OLD
-            iDash = rndGen_.sample01<scalar>()*(iMax + 1);
+            iDash = min(iMax, label(rndGen_.sample01<scalar>()*(iMax+1)));
             EVib = iDash*physicoChemical::k.value()*thetaV;
 
             // - equation 5.61, Bird
@@ -1391,7 +1392,7 @@ Foam::label Foam::dsmcCloud::postCollisionVibrationalEnergyLevel
             do // acceptance - rejection
             {
                 //iDash = rndGen_.position<label>(0, iMax); OLD
-                iDash = rndGen_.sample01<scalar>()*(iMax+1);
+                iDash = min(iMax, label(rndGen_.sample01<scalar>()*(iMax+1)));
                 
                 EVib = iDash*physicoChemical::k.value()*thetaV;
 
@@ -1443,7 +1444,8 @@ Foam::label Foam::dsmcCloud::postCollisionElectronicEnergyLevel
 
     do
     {
-        const label nState = ceil(rndGen_.sample01<scalar>()*nPossibleStates);
+        const label nState = max(0,
+            ceil(rndGen_.sample01<scalar>()*nPossibleStates));
         label nAvailableStates = 0;
         label nLevel = -1;
 
@@ -1521,7 +1523,7 @@ Foam::label Foam::dsmcCloud::postCollisionElectronicEnergyLevel
     do 
     {
      //jDash = rndGen_.position<label>(0,jSelectA); OLD
-       jDash = rndGen_.sample01<scalar>()*(jSelectA+1);
+       jDash = min(jSelectA, label(rndGen_.sample01<scalar>()*(jSelectA+1)));
        prob = gList[jDash]*pow(Ec - EElist[jDash], 1.5 - omega)/denomMax;
 
     } while(prob < rndGen_.sample01<scalar>());

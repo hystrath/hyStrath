@@ -162,7 +162,8 @@ void noTimeCounterSubCycled::collide()
 
                     // Select the first collision candidate
                     //label candidateP = rndGen_.position<label>(0, nC - 1); OLD
-                    label candidateP = rndGen_.sample01<scalar>()*nC;
+                    label candidateP = min(nC-1,
+                        label(rndGen_.sample01<scalar>()*nC));
 
                     // Declare the second collision candidate
                     label candidateQ = -1;
@@ -181,7 +182,8 @@ void noTimeCounterSubCycled::collide()
                         do
                         {
                             //candidateQ = subCellPs[rndGen_.position<label>(0, nSC - 1)]; OLD
-                            candidateQ = subCellPs[rndGen_.sample01<scalar>()*nSC];
+                            candidateQ = subCellPs[min(nSC-1,
+                                label(rndGen_.sample01<scalar>()*nSC))];
 
                         } while (candidateP == candidateQ);
                     }
@@ -194,7 +196,8 @@ void noTimeCounterSubCycled::collide()
                         do
                         {
                             //candidateQ = rndGen_.position<label>(0, nC - 1); OLD
-                            candidateQ = rndGen_.sample01<scalar>()*nC;
+                            candidateQ = min(nC-1,
+                                label(rndGen_.sample01<scalar>()*nC));
 
                         } while (candidateP == candidateQ);
                     }
@@ -203,15 +206,18 @@ void noTimeCounterSubCycled::collide()
                     // uniform candidate selection procedure
 
                     // // Select the first collision candidate
-                    // label candidateP = rndGen_.sample01<scalar>()*nC;
+                    // label candidateP = min(nC-1,
+                    //     label(rndGen_.sample01<scalar>()*nC));
 
                     // // Select a possible second collision candidate
-                    // label candidateQ = rndGen_.sample01<scalar>()*nC;
+                    // label candidateQ = min(nC-1,
+                    //     label(rndGen_.sample01<scalar>()*nC));
 
                     // // If the same candidate is chosen, choose again
                     // while (candidateP == candidateQ)
                     // {
-                    //     candidateQ = rndGen_.sample01<scalar>()*nC;
+                    //     candidateQ = min(nC-1,
+                    //         label(rndGen_.sample01<scalar>()*nC));
                     // }
 
                     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

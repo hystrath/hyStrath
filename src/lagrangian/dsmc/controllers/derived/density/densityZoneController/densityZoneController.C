@@ -301,7 +301,8 @@ void densityZoneController::nMolsToControl()
                     while(!foundCell)
                     {
                         //label cellId = rndGen_.position<label>(0, controlZone().size()-1); OLD
-                        label cellId = rndGen_.sample01<scalar>()*controlZone().size();
+                        label cellId = min(controlZone().size()-1,
+                            label(rndGen_.sample01<scalar>()*controlZone().size()));
 
                         if( findIndex(cellsChosen, cellId) == -1)
                         {
@@ -353,7 +354,8 @@ void densityZoneController::nMolsToControl()
                 while(!foundCell)
                 {
                     //label cellId = rndGen_.position<label>(0, controlZone().size()-1); OLD
-                    label cellId = rndGen_.sample01<scalar>()*controlZone().size();
+                    label cellId = min(controlZone().size()-1,
+                        label(rndGen_.sample01<scalar>()*controlZone().size()));
     
                     if( findIndex(cellsChosen, cellId) == -1)
                     {
@@ -603,7 +605,8 @@ void densityZoneController::deleteParcels(const label& nMols, const label& c)
         if(molsInCell.size() > 0)
         {
             //label cellMolRemoveId = rndGen_.position<label>(0, molsInCell.size()-1);
-            label cellMolRemoveId = rndGen_.sample01<scalar>()*molsInCell.size();
+            label cellMolRemoveId = min(molsInCell.size()-1,
+                label(rndGen_.sample01<scalar>()*molsInCell.size()));
             dsmcParcel* delParcel = molsInCell[cellMolRemoveId];
             
             //- delete molecule from cellOccupancy (before deleting it from cloud)

@@ -195,7 +195,8 @@ void densityController::deleteParcelFromDSMC(const label& c)
     if(molsInCell.size() > 0)
     {
         //label cellMolRemoveId = rndGen_.position<label>(0, molsInCell.size()-1); OLD
-        label cellMolRemoveId = rndGen_.sample01<scalar>()*molsInCell.size();
+        label cellMolRemoveId = min(molsInCell.size()-1,
+            label(rndGen_.sample01<scalar>()*molsInCell.size()));
         dsmcParcel* delParcel = molsInCell[cellMolRemoveId];
 
         //- delete molecule from cellOccupancy (before deleting it from cloud)
