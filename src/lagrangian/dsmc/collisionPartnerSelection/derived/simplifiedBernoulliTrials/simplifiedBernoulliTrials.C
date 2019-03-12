@@ -127,7 +127,7 @@ void simplifiedBernoulliTrials::collide()
             
                 k = nC-1 - p;
                 //label random = rndGen_.position<label>(1, k); OLD
-                label random = min(k, 1 + label(rndGen_.sample01<scalar>()*k));
+                label random = cloud_.randomLabel(1, k);
                 candidateQ = p + random;
                 
                 dsmcParcel& parcelP = *cellParcels[candidateP];

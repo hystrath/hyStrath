@@ -377,6 +377,14 @@ public:
         inline Random& rndGen();
 
 
+    // Random implementation corrections
+        //Generates a random integer between valMin and valMax
+        label randomLabel
+        (
+            const label valOne,
+            const label valTwo
+        );
+
     // Kinetic theory helper functions
 
         //- Generate a random velocity sampled from the Maxwellian speed

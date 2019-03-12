@@ -254,7 +254,26 @@ template<>
 Foam::label Foam::cachedRandomMD::position(const label& start, const label& end)
 {
 //    return start + round(sample01<scalar>()*(end - start));
-    return min(end, start + label(sample01<scalar>()*(end - start + 1)));
+
+    if (start == end)
+    {
+        return start;
+    }
+    else
+    {
+        const label minVal = min(start, end);
+        const label maxVal = max(start, end);
+
+        label val = minVal + label(sample01<scalar>()*(maxVal - minVal + 1));
+
+        // Rare case when scalar01() returns exactly 1.000 and the truncated
+        // value would be out of range.
+        if(val == maxVal + 1)
+        {
+            val = position(minVal, maxVal);
+        }
+        return val;
+    }
 }
 
 

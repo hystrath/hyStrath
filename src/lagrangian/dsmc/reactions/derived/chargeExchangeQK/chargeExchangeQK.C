@@ -267,9 +267,7 @@ void chargeExchangeQK::testChargeExchange
                 }
             }
             
-            label nState = ceil(cloud_.rndGen().sample01<scalar>()*(nPossStates));
-            // if nState can't be zero, change previous line to:
-            // label nState = max(1, ceil(cloud_.rndGen().sample01<scalar>()*nPossStates));
+            label nState = cloud_.randomLabel(1, nPossStates);
 
             label nAvailableStates = 0;
             label nLevel = -1;

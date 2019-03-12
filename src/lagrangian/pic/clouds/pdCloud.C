@@ -88,7 +88,7 @@ Foam::label Foam::pdCloud::pdkFromCandidateList
     {
         // choose a random number between 0 and the size of the candidateList size
         // label randomIndex = rndGen_.position<label>(0, size - 1); OLD
-        label randomIndex = min(size-1, label(rndGen_.sample01<scalar>()*size));
+        label randomIndex = randomLabel(0, size-1);
         entry = candidatesInCell[randomIndex];
 
         // build a new list without the chosen entry
@@ -154,8 +154,7 @@ Foam::label Foam::pdCloud::pdkFromCandidateSubList
     if(subCellSize > 0)
     {
         //  label randomIndex = rndGen_.position<label>(0, subCellSize - 1); OLD
-        label randomIndex = min(subCellSize-1,
-            label(rndGen_.sample01<scalar>()*subCellSize));
+        label randomIndex = randomLabel(0, subCellSize-1);
         entry = candidatesInSubCell[randomIndex];
 
 //         Info<< "random index: " << randomIndex <<" entry "
@@ -883,6 +882,35 @@ void Foam::pdCloud::info() const
                 << endl;
     }
 }
+
+
+Foam::label Foam::pdCloud::randomLabel
+(
+    const label valOne,
+    const label valTwo
+)
+{
+    if (valOne == valTwo)
+    {
+        return valOne;
+    }
+    else
+    {
+        const label start = Foam::min(valOne, valTwo);
+        const label end = Foam::max(valOne, valTwo);
+
+        label val = start + label(rndGen_.sample01<scalar>()*(end - start + 1));
+
+        // Rare case when scalar01() returns exactly 1.000 and the truncated
+        // value would be out of range.
+        if(val == end + 1)
+        {
+            val = randomLabel(start, end);
+        }
+        return val;
+    }
+}
+
 
 Foam::vector Foam::pdCloud::equipartitionLinearVelocity
 (

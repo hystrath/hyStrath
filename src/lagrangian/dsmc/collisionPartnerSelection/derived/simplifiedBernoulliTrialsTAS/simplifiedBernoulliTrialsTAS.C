@@ -269,8 +269,7 @@ void simplifiedBernoulliTrialsTAS::collide()
                 
                     k = nCS - p - 1;
                     //candidateQ = p + rndGen_.position<label>(1, k); OLD
-                    candidateQ = p + min(k, 1
-                        + label(rndGen_.sample01<scalar>()*k));
+                    candidateQ = p + cloud_.randomLabel(1, k);
                     
                     dsmcParcel& parcelP = *cellParcels[subCells[i][candidateP]];
                     dsmcParcel& parcelQ = *cellParcels[subCells[i][candidateQ]];

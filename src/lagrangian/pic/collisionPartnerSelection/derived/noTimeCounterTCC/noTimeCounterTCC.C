@@ -537,8 +537,7 @@ void noTimeCounterTCC::collide()
                 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 //- Select the first collision candidate
                 //  label candidateP = rndGen_.position<label>(0, nColl - 1); OLD
-                label candidateP = min(nColl-1,
-                    label(rndGen_.sample01<scalar>()*nColl));
+                label candidateP = cloud_.randomLabel(0, nColl-1);
 
                 //- Declare the second collision candidate
                 label candidateQ = -1;
@@ -558,8 +557,7 @@ void noTimeCounterTCC::collide()
                     do
                     {
                         //  candidateQ = rndGen_.position<label>(0, nSCP - 1); OLD
-                        candidateQ = min(nSCP-1,
-                            label(rndGen_.sample01<scalar>()*nSCP));
+                        candidateQ = cloud_.randomLabel(0, nSCP-1);
 
                         //transfer index of chosen particle in cellOccupancy to cellParcels list
                         forAll(cellParcels,cP)
@@ -613,8 +611,7 @@ void noTimeCounterTCC::collide()
                     if(cellQ != -1)
                     {
                         //  candidateQ = rndGen_.position<label>(0, nSCQ - 1); OLD
-                        candidateQ = min(nSCQ-1,
-                            label(rndGen_.sample01<scalar>()*nSCQ));// random number for cell
+                        candidateQ = cloud_.randomLabel(0, nSCQ-1);// random number for cell
 
                         //transfer index of chosen particle in cellOccupancy to cellParcels list
                         forAll(cellParcels,cP)
@@ -630,8 +627,7 @@ void noTimeCounterTCC::collide()
                         do
                         {
                             //  candidateQ = rndGen_.position<label>(0, nColl - 1); OLD
-                            candidateQ = min(nColl-1,
-                                label(rndGen_.sample01<scalar>()*nColl));
+                            candidateQ = cloud_.randomLabel(0, nColl-1);
                             cellQ = cellParcels[candidateQ]->cell();
                         } while (candidateP == candidateQ);
 

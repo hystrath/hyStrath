@@ -257,7 +257,7 @@ Foam::label Foam::dsmcCloud::pickFromCandidateList
     {
         // choose a random number between 0 and the size of the candidateList
         //label randomIndex = rndGen_.position<label>(0, size - 1); OLD
-        label randomIndex = min(size-1, label(rndGen_.sample01<scalar>()*size));
+        label randomIndex = randomLabel(0, size-1);
         entry = candidatesInCell[randomIndex];
 
         // build a new list without the chosen entry
@@ -323,8 +323,7 @@ Foam::label Foam::dsmcCloud::pickFromCandidateSubList
     if (subCellSize > 0)
     {
         //label randomIndex = rndGen_.position<label>(0, subCellSize - 1); OLD
-        label randomIndex = min(subCellSize-1,
-            label(rndGen_.sample01<scalar>()*subCellSize));
+        label randomIndex = randomLabel(0, subCellSize-1);
         entry = candidatesInSubCell[randomIndex];
 
 //         Info<< "random index: " << randomIndex <<" entry "
@@ -914,6 +913,34 @@ void Foam::dsmcCloud::autoMap(const mapPolyMesh& mapper)
 }
 
 
+Foam::label Foam::dsmcCloud::randomLabel
+(
+            const label valOne,
+            const label valTwo
+)
+{
+    if (valOne == valTwo)
+    {
+        return valOne;
+    }
+    else
+    {
+        const label start = Foam::min(valOne, valTwo);
+        const label end = Foam::max(valOne, valTwo);
+
+        label val = start + label(rndGen_.sample01<scalar>()*(end - start + 1));
+
+        // Rare case when scalar01() returns exactly 1.000 and the truncated
+        // value would be out of range.
+        if(val == end + 1)
+        {
+            val = randomLabel(start, end);
+        }
+        return val;
+    }
+}
+
+
 Foam::vector Foam::dsmcCloud::equipartitionLinearVelocity
 (
     const scalar temperature,
@@ -1186,7 +1213,7 @@ Foam::label Foam::dsmcCloud::equipartitionElectronicLevel
         do
         {
           //jDash = rndGen_.position<label>(0,jMax); OLD
-            jDash = min(jMax, label(rndGen_.sample01<scalar>()*(jMax+1)));
+            jDash = randomLabel(0, jMax);
             func =
                 electronicDegeneracyList[jDash]
                *exp(-electronicEnergyList[jDash]/EMax)
@@ -1288,7 +1315,7 @@ Foam::label Foam::dsmcCloud::postCollisionVibrationalEnergyLevel
         do // acceptance - rejection
         {
             //iDash = rndGen_.position<label>(0, iMax); OLD
-            iDash = min(iMax, label(rndGen_.sample01<scalar>()*(iMax+1)));
+            iDash = randomLabel(0, iMax);
             EVib = iDash*physicoChemical::k.value()*thetaV;
 
             // - equation 5.61, Bird
@@ -1390,7 +1417,7 @@ Foam::label Foam::dsmcCloud::postCollisionVibrationalEnergyLevel
             do // acceptance - rejection
             {
                 //iDash = rndGen_.position<label>(0, iMax); OLD
-                iDash = min(iMax, label(rndGen_.sample01<scalar>()*(iMax+1)));
+                iDash = randomLabel(0, iMax);
                 
                 EVib = iDash*physicoChemical::k.value()*thetaV;
 
@@ -1442,8 +1469,7 @@ Foam::label Foam::dsmcCloud::postCollisionElectronicEnergyLevel
 
     do
     {
-        const label nState = max(0,
-            ceil(rndGen_.sample01<scalar>()*nPossibleStates));
+        const label nState = randomLabel(1, nPossibleStates);
         label nAvailableStates = 0;
         label nLevel = -1;
 
@@ -1521,7 +1547,7 @@ Foam::label Foam::dsmcCloud::postCollisionElectronicEnergyLevel
     do 
     {
      //jDash = rndGen_.position<label>(0,jSelectA); OLD
-       jDash = min(jSelectA, label(rndGen_.sample01<scalar>()*(jSelectA+1)));
+       jDash = randomLabel(0, jSelectA);
        prob = gList[jDash]*pow(Ec - EElist[jDash], 1.5 - omega)/denomMax;
 
     } while(prob < rndGen_.sample01<scalar>());
