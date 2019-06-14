@@ -767,6 +767,11 @@ void Foam::dsmcCloud::evolve_moveAndCollide()
     Cloud<dsmcParcel>::move(td, deltaTValue());
     //Info<< "move" << tab << mesh_.time().elapsedCpuTime() - timer << " s" << endl;
 
+    //- Update cell occupancy
+    //timer = mesh_.time().elapsedCpuTime();
+    buildCellOccupancy();
+    //Info<< "buildCellOccupancy" << tab << mesh_.time().elapsedCpuTime() - timer << " s " << endl;
+    
     //- Add electrons back after the move function
     if (findIndex(typeIdList_, "e-") != -1)
     {
@@ -774,11 +779,6 @@ void Foam::dsmcCloud::evolve_moveAndCollide()
         addElectrons();
         buildCellOccupancy();
     }
-
-    //- Update cell occupancy
-    //timer = mesh_.time().elapsedCpuTime();
-    buildCellOccupancy();
-    //Info<< "buildCellOccupancy" << tab << mesh_.time().elapsedCpuTime() - timer << " s " << endl;
 
     //- Radial weighting for non-Cartesian flows (e.g., axisymmetric)
     coordSystem().evolve();
