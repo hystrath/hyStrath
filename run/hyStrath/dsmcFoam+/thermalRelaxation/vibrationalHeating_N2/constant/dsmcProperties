@@ -51,13 +51,12 @@ moleculeProperties
     {
         mass                                  46.5e-27;
         diameter                              4.17e-10;
-        diameterVSS                           4.11e-10;
         omega                                     0.74;
         alpha                                     1.36;
         rotationalDegreesOfFreedom                   2;
         nVibrationalModes                            1;
         characteristicVibrationalTemperature    (3371);
-        dissociationTemperature               (113500);
+        dissociationTemperature                 113500;
         Zref                                    (19.8); //- tuned (Scanlon 2015)
         referenceTempForZref                   (20000); //- tuned (Figure 3.)
         ionisationTemperature                 180798.3;
