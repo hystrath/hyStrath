@@ -46,8 +46,9 @@ Type Foam::cachedRandomMD::position(const Type& start, const Type& end)
     Type value(start);
     for (direction cmpt=0; cmpt<pTraits<Type>::nComponents; cmpt++)
     {
-        value.component(cmpt) +=
-            sample01<scalar>()*(end.component(cmpt) - start.component(cmpt));
+        //value.component(cmpt) +=
+//            sample01<scalar>()*(end.component(cmpt) - start.component(cmpt));
+        value.component(cmpt) = position(end.component(cmpt) - start.component(cmpt));
     }
 
     return value;

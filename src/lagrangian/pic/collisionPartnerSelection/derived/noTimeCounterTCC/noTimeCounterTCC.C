@@ -536,7 +536,8 @@ void noTimeCounterTCC::collide()
                 // Supercell nearest partner collision selection
                 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 //- Select the first collision candidate
-                label candidateP = rndGen_.position<label>(0, nColl - 1);
+                //  label candidateP = rndGen_.position<label>(0, nColl - 1); OLD
+                label candidateP = cloud_.randomLabel(0, nColl-1);
 
                 //- Declare the second collision candidate
                 label candidateQ = -1;
@@ -555,7 +556,8 @@ void noTimeCounterTCC::collide()
 
                     do
                     {
-                        candidateQ = rndGen_.position<label>(0, nSCP - 1);
+                        //  candidateQ = rndGen_.position<label>(0, nSCP - 1); OLD
+                        candidateQ = cloud_.randomLabel(0, nSCP-1);
 
                         //transfer index of chosen particle in cellOccupancy to cellParcels list
                         forAll(cellParcels,cP)
@@ -608,7 +610,8 @@ void noTimeCounterTCC::collide()
 
                     if(cellQ != -1)
                     {
-                        candidateQ = rndGen_.position<label>(0, nSCQ - 1); // random number for cell
+                        //  candidateQ = rndGen_.position<label>(0, nSCQ - 1); OLD
+                        candidateQ = cloud_.randomLabel(0, nSCQ-1);// random number for cell
 
                         //transfer index of chosen particle in cellOccupancy to cellParcels list
                         forAll(cellParcels,cP)
@@ -623,7 +626,8 @@ void noTimeCounterTCC::collide()
                     {
                         do
                         {
-                            candidateQ = rndGen_.position<label>(0, nColl - 1);
+                            //  candidateQ = rndGen_.position<label>(0, nColl - 1); OLD
+                            candidateQ = cloud_.randomLabel(0, nColl-1);
                             cellQ = cellParcels[candidateQ]->cell();
                         } while (candidateP == candidateQ);
 

@@ -87,7 +87,7 @@ Foam::label Foam::dsmcCloud::pickFromCandidateList
     {
         // choose a random number between 0 and the size of the candidateList size
         //label randomIndex = rndGen_.position<label>(0, size - 1); OLD
-        label randomIndex = rndGen_.sample01<scalar>()*size;
+        label randomIndex = cloud_.randomLabel(0, size-1);
         entry = candidatesInCell[randomIndex];
 
         // build a new list without the chosen entry
@@ -153,7 +153,7 @@ Foam::label Foam::dsmcCloud::pickFromCandidateSubList
     if(subCellSize > 0)
     {
         //label randomIndex = rndGen_.position<label>(0, subCellSize - 1); OLD
-        label randomIndex = rndGen_.sample01<scalar>()*subCellSize;
+        label randomIndex = cloud_.randomLabel(0, subCellSize-1);
         entry = candidatesInSubCell[randomIndex];
 
 //         Info<< "random index: " << randomIndex <<" entry " 

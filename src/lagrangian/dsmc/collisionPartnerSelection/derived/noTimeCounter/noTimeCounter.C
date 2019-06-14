@@ -162,7 +162,7 @@ void noTimeCounter::collide()
 
                 // Select the first collision candidate
                 //label candidateP = rndGen_.position<label>(0, nC - 1);
-                label candidateP = rndGen_.sample01<scalar>()*nC;
+                label candidateP = cloud_.randomLabel(0, nC-1);
 
                 // Declare the second collision candidate
                 label candidateQ = -1;
@@ -180,7 +180,7 @@ void noTimeCounter::collide()
                     do
                     {
                         //candidateQ = subCellPs[rndGen_.position<label>(0, nSC - 1)]; OLD
-                        candidateQ = subCellPs[rndGen_.sample01<scalar>()*nSC];
+                        candidateQ = subCellPs[cloud_.randomLabel(0, nSC-1)];
 
                     } while (candidateP == candidateQ);
                 }
@@ -193,7 +193,7 @@ void noTimeCounter::collide()
                     do
                     {
                         //candidateQ = rndGen_.position<label>(0, nC - 1); OLD
-                        candidateQ = rndGen_.sample01<scalar>()*nC;
+                        candidateQ = cloud_.randomLabel(0, nC-1);
 
                     } while (candidateP == candidateQ);
                 }
@@ -202,15 +202,15 @@ void noTimeCounter::collide()
                 // uniform candidate selection procedure
 
                 // // Select the first collision candidate
-                // label candidateP = rndGen_.sample01<scalar>()*nC;
+                // label candidateP = cloud_.randomLabel(0, nC-1);
 
                 // // Select a possible second collision candidate
-                // label candidateQ = rndGen_.sample01<scalar>()*nC;
+                // label candidateQ = cloud_.randomLabel(0, nC-1);
 
                 // // If the same candidate is chosen, choose again
                 // while (candidateP == candidateQ)
                 // {
-                //     candidateQ = rndGen_.sample01<scalar>()*nC;
+                //     candidateQ = cloud_.randomLabel(0, nC-1);
                 // }
 
                 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
