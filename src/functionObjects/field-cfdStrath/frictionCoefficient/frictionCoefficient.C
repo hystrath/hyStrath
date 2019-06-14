@@ -171,10 +171,10 @@ bool Foam::functionObjects::frictionCoefficient::execute()
             const multi2Thermo& thermo =
                 lookupObject<multi2Thermo>(multi2Thermo::dictName);
                 
-            const volVectorField wallShearStress(wallShearStressHeader_, mesh_);
+            volVectorField wallShearStress(wallShearStressHeader_, mesh_);
             
-            const volVectorField::Boundary& wallShearStressBf = 
-                wallShearStress.boundaryField();
+            volVectorField::Boundary& wallShearStressBf = 
+                wallShearStress.boundaryFieldRef();
 
             const label inflowPatchId = 
                 mesh_.boundaryMesh().findPatchID(inflowPatchName_);
@@ -192,15 +192,22 @@ bool Foam::functionObjects::frictionCoefficient::execute()
             forAll(patches, patchi)
             {
                 const fvPatch& patch = patches[patchi];
-
+                
                 if (isA<wallFvPatch>(patch))
                 {
+                    const vectorField& Sfp = mesh_.Sf().boundaryField()[patchi];
+                    const scalarField& magSfp = mesh_.magSf().boundaryField()[patchi];
+                    vectorField n(-Sfp/magSfp);
+                    
+                    wallShearStressBf[patchi] = wallShearStressBf[patchi] & (I - n*n);
+                    
                     forAll(patches[patchi], facei)
                     {
                         frictionCoefficientBf[patchi][facei] =
-                            mag(wallShearStressBf[patchi][facei])
-                           /(0.5*rhoinf*pow(magUinf, 2));
+                            mag(wallShearStressBf[patchi][facei]);
                     }
+                    
+                    frictionCoefficientBf[patchi] /= (0.5*rhoinf*pow(magUinf, 2));
                 }
             }
         }
