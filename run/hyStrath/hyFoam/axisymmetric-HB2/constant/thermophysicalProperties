@@ -33,7 +33,7 @@ downgradeToSingleTemperature yes;
 
 chemistryReader foam2ChemistryReader;
 
-foamChemistryFile "$FOAM_CASE/constant/hTCReactions-DPLR";
+foamChemistryFile "$FOAM_CASE/constant/hTCReactionsDPLR";
 
 foamChemistryThermoFile "$FOAM_CASE/constant/thermoDEM";
 

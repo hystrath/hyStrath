@@ -15,6 +15,8 @@ RES_PATH="postProcessing/singleGraph/0.0002"
 SOL_PATH="gnuplot/solution/singleGraph/0.0002"
 FILES_TO_TEST="stagnationLine_U.xy stagnationLine_Mach_Tt_Tv_p_rho.xy"
 
+DIFF_FOUND=false
+
 for FILE in $FILES_TO_TEST
 do
   NLINES=`wc -l $RES_PATH/$FILE | awk '{print $1}'`
@@ -27,8 +29,10 @@ do
     RES_LINEVALUE=`awk '{ print +$1 }' <<< $RES_LINEVALUE`
     SOL_LINEVALUE=`awk '{ print +$1 }' <<< $SOL_LINEVALUE`
 
-    if [ `echo "$SOL_LINEVALUE*(1.0+$TOLERANCE) < $RES_LINEVALUE" | bc -l` -eq 1 ] || [ `echo "$SOL_LINEVALUE*(1.0-$TOLERANCE) > $RES_LINEVALUE" | bc -l` -eq 1 ];
-    then echo "TEST FAILED: $FILE, line $LINE";
+    if [ `echo "a = ($RES_LINEVALUE - $SOL_LINEVALUE)/$SOL_LINEVALUE; sqrt(a*a) > $TOLERANCE" | bc -l` -eq 1 ];
+    then
+        echo "  > TEST FAILED: $FILE, line $LINE";
+        DIFF_FOUND=true;
     fi
   done
 done
@@ -47,7 +51,9 @@ RES_LASTVALUE=`awk '{ print +$1 }' <<< $RES_LASTVALUE`
 SOL_LASTVALUE=`awk '{ print +$1 }' <<< $SOL_LASTVALUE`
 
 if [ `echo "$SOL_LASTVALUE*(1.0+$TOLERANCE) < $RES_LASTVALUE" | bc -l` -eq 1 ] || [ `echo "$SOL_LASTVALUE*(1.0-$TOLERANCE) > $RES_LASTVALUE" | bc -l` -eq 1 ];
-then echo "TEST FAILED: $FILE_TO_TEST";
+then
+    echo "  > TEST FAILED: $FILE_TO_TEST";
+    DIFF_FOUND=true;
 fi
 
 
@@ -66,5 +72,12 @@ RES_LASTVALUE=`awk '{ print +$1 }' <<< $RES_LASTVALUE`
 SOL_LASTVALUE=`awk '{ print +$1 }' <<< $SOL_LASTVALUE`
 
 if [ `echo "$SOL_LASTVALUE*(1.0+$TOLERANCE) < $RES_LASTVALUE" | bc -l` -eq 1 ] || [ `echo "$SOL_LASTVALUE*(1.0-$TOLERANCE) > $RES_LASTVALUE" | bc -l` -eq 1 ];
-then echo "TEST FAILED: $FILE_TO_TEST";
+then
+    echo "  > TEST FAILED: $FILE_TO_TEST";
+    DIFF_FOUND=true;
+fi
+
+if [ "$DIFF_FOUND" = false ];
+then
+    echo "  > TESTS PASSED";
 fi

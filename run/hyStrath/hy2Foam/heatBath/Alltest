@@ -9,10 +9,18 @@ RES_PATH="postProcessing/probes/0"
 SOL_PATH="gnuplot/solution"
 FILES_TO_TEST="Tt Tv_N2 N2 N p rho nD_N2"
 
+DIFF_FOUND=false
+
 for FILE in $FILES_TO_TEST
 do
-  if [ `diff $RES_PATH/$FILE $SOL_PATH/$FILE | wc -l` -ne 0 ]; 
-  then echo "TEST FAILED: $FILE"; 
+  if [ `diff $RES_PATH/$FILE $SOL_PATH/$FILE | wc -l` -ne 0 ];
+  then
+      echo "  > TEST FAILED: $FILE";
+      DIFF_FOUND=true;
   fi
 done
 
+if [ "$DIFF_FOUND" = false ];
+then
+    echo "  > TESTS PASSED";
+fi
