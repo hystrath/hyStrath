@@ -1,7 +1,7 @@
 /*--------------------------------*- C++ -*----------------------------------*\
 | =========                 |                                                 |
 | \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  2.1.x                                 |
+|  \\    /   O peration     | Version:  2.3.x                                 |
 |   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
 |    \\/     M anipulation  |                                                 |
 \*---------------------------------------------------------------------------*/
@@ -9,49 +9,45 @@ FoamFile
 {
     version     2.0;
     format      ascii;
-    class       dictionary;
-    location    "system";
-    object      pdInitialiseDict;
+    class       volScalarField;
+    location    "0";
+    object      phiE;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-configurations
-(
-	
-	/*
-	
-	configuration
+dimensions      [1 2 -3 0 0 -1 0];
+
+internalField   uniform 0;
+
+boundaryField
+{
+        Inlet
 	{
-		type 			pdByField;
-
-		typeIds 		(O+);
-
-		velocityFields 		(U_O+);
-		densityFields 		(rhoN_O+);
-
-		translationalTemperature 	1000;
-		rotationalTemperature		0;
-		vibrationalTemperature		0;
-
-		velocity        (0 0 0);
+		type            fixedValue;
+		value           uniform 0;
 	}
-	*/
-	configuration
+	periodic_1
 	{
-		type 			pdMeshFill;
-
-		numberDensities
-		{
-		    H                     1e12;
-		    e 			  1e12;
-		};
-
-		translationalTemperature 	1000;
-		rotationalTemperature		0;
-		vibrationalTemperature		0;
-
-		velocity        (0 0 0);
+		type            cyclic;
 	}
-);
+	periodic_2
+	{
+		type            cyclic;
+	}
+	Wall
+	{
+		type            fixedValue;
+		value 		uniform -2.11;
+	}
+	front
+	{
+		type            empty;
+	}
+	back
+	{
+	 	type            empty;
+	}
+}
+
 
 // ************************************************************************* //
