@@ -72,6 +72,7 @@ boundaries/derived/generalBoundaries/pdFreeStreamInflowPatch/pdFreeStreamInflowP
 
 /* CYCLIC BOUNDARY MODELS */
 boundaries/derived/cyclicBoundaries/pdCyclicWallPatch/pdCyclicWallPatch.C
+boundaries/derived/cyclicBoundaries/pdReflectiveParticleMembranePatch/pdReflectiveParticleMembranePatch.C
 
 /* COMBINED */
 macroscopicProperties/derived/combined/pdBinsMethod/pdBinsMethod.C

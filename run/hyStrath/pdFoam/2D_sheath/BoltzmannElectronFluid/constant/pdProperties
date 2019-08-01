@@ -52,45 +52,31 @@ AveragingMethod 	       	 Basic;
 // Electron Fluid Model
 // ~~~~~~~~~~~~~~~~~~~
 
-ElectronModel 			NoElectronModel;
+//ElectronModel 			NoElectronModel;
 
 // Non-linear Boltzmann electron fluid
-/*ElectronModel 			Boltz;
+ElectronModel 			Boltz;
+
 BoltzCoeffs
 {
-    n0				1.2951e14;
-    TeV 			1;
-    phi0 			0;
+    density			1e12;
+    temperature 			1000;
+    potential 			0; // reference potential
     tol  			1e-3;
     nCorr 			10;
-}*/
+}
 
 // Molecular species
 // ~~~~~~~~~~~~~~~~~
 
-typeIdList                      (H e);
+typeIdList                      (H+);
 
 moleculeProperties
 {
-    H
+    H+
     {
         mass                                    1.67242702e-27;
         Ze                                      1;      
-        diameter                                3.0e-10;   
-        rotationalDegreesOfFreedom              0;
-        vibrationalModes                        0;
-        omega                                   0.8;
-        alpha                                   0;        
-        characteristicVibrationalTemperature    0;
-        dissociationTemperature                 0;
-        charDissQuantumLevel                    0;
-        referenceTempForZref                    0;
-        Zref                                    0;
-    }
-    e
-    {
-        mass                                    9.10938291e-31;
-        Ze                                      -1;      
         diameter                                3.0e-10;   
         rotationalDegreesOfFreedom              0;
         vibrationalModes                        0;

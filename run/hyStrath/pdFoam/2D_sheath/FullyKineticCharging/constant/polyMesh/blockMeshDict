@@ -1,0 +1,119 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.0.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+
+
+
+
+
+   convertToMeters 1;
+
+	
+
+   	
+	
+   	
+        
+   	
+   	
+   	 
+
+   	vertices
+   	(
+    		( 0.0 0.0 0.0) 	// Vertex a0 = 0 
+		( 0.043644 0.0 0.0) // Vertex a1 = 1 
+		( 0.043644 0.0021822 0.0) // Vertex a2 = 2 
+		( 0.0 0.0021822 0.0) // Vertex a3 = 3 
+ 		
+    		( 0.0 0.0 -0.010911) 	// Vertex b0 = 4 
+		( 0.043644 0.0 -0.010911) // Vertex b1 = 5 
+		( 0.043644 0.0021822 -0.010911) // Vertex b2 = 6 
+		( 0.0 0.0021822 -0.010911) // Vertex b3 = 7 
+	);
+
+   	blocks
+   	(
+				
+		hex (0 1 5 4 3 2 6 7) (128 128 1) simpleGrading (1 1 1) //0
+	);
+
+   edges
+   (
+   );
+
+boundary
+   (
+    	Inlet
+        {
+            type patch;
+            faces
+            (
+		(0 4 7 3)
+	    );
+	}
+
+    	periodic_1
+        {
+            type cyclic;
+	    neighbourPatch periodic_2;
+            faces
+            (
+		(0 3 2 1)
+	    );
+	}
+
+    	periodic_2
+        {
+            type cyclic;
+	    neighbourPatch periodic_1;
+            faces
+            (
+		(4 5 6 7)
+	    );
+	}
+
+    	Wall
+        {
+            type wall;
+            faces
+            (
+		(1 5 6 2)
+	    );
+	}
+
+    	front
+        {
+            type empty;
+            faces
+            (
+	
+		(0 1 5 4)
+	    );
+	}
+    	back
+        {
+            type empty;
+            faces
+            (
+		(3 7 6 2)
+	    );
+	}
+);
+
+mergePatchPairs
+(
+);

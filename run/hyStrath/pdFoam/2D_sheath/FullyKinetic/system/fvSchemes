@@ -11,35 +11,46 @@ FoamFile
     format      ascii;
     class       dictionary;
     location    "system";
-    object      decomposeParDict;
+    object      fvSchemes;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-numberOfSubdomains 30;
-
-method          simple;
-
-simpleCoeffs
+ddtSchemes
 {
-    n               ( 6 5 1 );
-    delta           0.001;
+    default         none;
 }
 
-hierarchicalCoeffs
+gradSchemes
 {
-    n               ( 1 1 1 );
-    delta           0.001;
-    order           xyz;
+    default         Gauss linear;
+    grad(phiE)      Gauss linear;
 }
 
-manualCoeffs
+divSchemes
 {
-    dataFile        "";
+    default         none;
 }
 
-distributed     no;
+laplacianSchemes
+{
+    default         none;
+    laplacian(phiE) Gauss linear corrected;
+}
 
-roots           ( );
+interpolationSchemes
+{
+    default          none;
+}
+
+snGradSchemes
+{
+    default         none;
+}
+
+fluxRequired
+{
+    default         no;
+}
 
 
 // ************************************************************************* //
