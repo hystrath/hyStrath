@@ -92,9 +92,9 @@ void pdReflectiveParticleMembranePatch::calculateProperties()
 
     if(nRejections > 0)
     {
-        Info<< "no Reflections: " << nReflections 
+        Info<< "no Reflections: " << nReflections
             << ", no Rejections: " << nRejections
-            << " ratio relfections/(reflections+rejections):" 
+            << " ratio relfections/(reflections+rejections):"
             << scalar(nReflections)/scalar(nReflections+nRejections)
             << endl;
     }
@@ -129,33 +129,33 @@ void pdReflectiveParticleMembranePatch::controlMol
 
     scalar d = nF & mol.U();
 
-/*            Info<< "parcel to reflect at pos: " 
+/*            Info<< "parcel to reflect at pos: "
                 << mol.position() << ", nF: " << nF
-                << " old velocity: " << mol.U() 
+                << " old velocity: " << mol.U()
                 << " faceI: " << faceI
                 << " fA: " << fA
                 << " fB: " << fB
                 << " fB: " << fB
-                << endl; */   
+                << endl; */
 
 
     if(d > 0) // processor boundary
     {
         if(fA != -1)
         {
-            scalar pRandom = rndGen.scalar01();
+            const scalar pRandom = rndGen.sample01<scalar>();
 
             if( pRandom <= p_ ) // reflect molecule
             {
                 scalar Un = mol.U() & nF;
-    
+
                 mol.U() -= 2.0*Un*nF;
 
                 td.switchProcessor = false;
 
                 nReflections_++;
 
-//                 Pout<< "Reflected!!: mol at pos: " 
+//                 Pout<< "Reflected!!: mol at pos: "
 //                     << mol.position() << ", nF: " << nF
 //                     << " tracking number: " << mol.trackingNumber()
 //                     << " new velocity: " << mol.v()
@@ -172,27 +172,27 @@ void pdReflectiveParticleMembranePatch::controlMol
     else if (d < 0) // cyclic (non-processor boundary)
     {
         if(fB != -1)
-        {    
-//             Info<< " to reflect mol at pos: " 
+        {
+//             Info<< " to reflect mol at pos: "
 //                 << mol.position() << ", nF: " << nF
-//                 << " old velocity: " << mol.U() 
+//                 << " old velocity: " << mol.U()
 //                 << " faceI: " << faceI
 //                 << " fA: " << fA
 //                 << " fB: " << fB
 //                 << endl;
 
-            scalar pRandom = rndGen.scalar01();
+            const scalar pRandom = rndGen.sample01<scalar>();
 
             if( pRandom <= p_ ) // reflect molecule
             {
                 scalar Un = mol.U() & nF;
-    
+
                 mol.U() -= 2.0*Un*nF;
 
                 nReflections_++;
 
-//                 Info<< "Reflected!!: mol at pos: " 
-//                     << mol.position() 
+//                 Info<< "Reflected!!: mol at pos: "
+//                     << mol.position()
 //                     << " new velocity: " << mol.U()
 //                     << endl;
             }
