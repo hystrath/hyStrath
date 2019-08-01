@@ -9,6 +9,7 @@ cleanSamples
 
 rm~all
 rm log*
+rm -r processor*
 rm -rf 0 boundaries fieldMeasurements > /dev/null
 
 # ----------------------------------------------------------------- end-of-file

@@ -25,11 +25,11 @@ stopAt          endTime;
 
 endTime         3e-5;
 
-deltaT          5e-5;
+deltaT          2.5e-9;
 
 writeControl    runTime;
 
-writeInterval   1e-10;
+writeInterval   1.5e-5;
 
 purgeWrite      0;
 
@@ -49,129 +49,6 @@ adjustTimeStep  no;
 
 functions
 {
-   
-
-    fieldAverage1
-    {
-        type            fieldAverage;
-        functionObjectLibs ( "libfieldFunctionObjects.so" );
-        outputControl   outputTime;
-        resetOnOutput   off;
-        fields
-        (
-            rhoN
-            {
-                 mean on;
-                 prime2Mean off;
-                 base time;
-            }
-            rhoM
-            {
-                mean on;
-                prime2Mean off;
-                base time;
-            }
-            Jp
-            {
-                mean on;
-                prime2Mean off;
-                base time;
-            }
-            rhop
-            {
-                mean on;
-                prime2Mean off;
-                base time;
-            }
-            rhoe
-            {
-                mean on;
-                prime2Mean off;
-                base time;
-            }
-            rhoZ
-            {
-                mean on;
-                prime2Mean off;
-                base time;
-            }
-            phiE
-            {
-                mean on;
-                prime2Mean off;
-                base time;
-            }
-            pdRhoN
-            {
-                 mean on;
-                 prime2Mean off;
-                 base time;
-            }
-	    pdRhoNColl
-            {
-                 mean on;
-                 prime2Mean off;
-                 base time;
-            }
-            momentum
-            {
-                mean on;
-                prime2Mean off;
-                base time;
-            }
-            linearKE
-            {
-                mean on;
-                prime2Mean off;
-                base time;
-            }
-            rotationalE
-            {
-                mean on;
-                prime2Mean off;
-                base time;
-            }
-            rotationalDof
-            {
-                mean on;
-                prime2Mean off;
-                base time;
-            }
-            vibrationalE
-            {
-                mean on;
-                prime2Mean off;
-                base time;
-            }
-            vibrationalDof
-            {
-                mean on;
-                prime2Mean off;
-                base time;
-            }
-            q
-            {
-                 mean on;
-                 prime2Mean off;
-                 base time;
-            }
-            fD
-            {
-                mean on;
-                prime2Mean off;
-                base time;
-            }
-        );
-        
-    }
-    /*
-    pdFields1
-    {
-        type            pdFieldsStrath;
-        functionObjectLibs ( "libutilityFunctionObjectsPicStrath.so" );
-        enabled         false;
-        outputControl   outputTime;
-    }*/
 
 }
 
