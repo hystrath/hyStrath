@@ -68,14 +68,7 @@ inline Foam::dsmcParcel::constantProperties::constantProperties
             scalarList()
         )
     ),
-    thetaD_
-    (
-        dict.lookupOrDefault<scalarList>
-        (
-            "dissociationTemperature",
-            scalarList()
-        )
-    ),
+    thetaD_(dict.lookupOrDefault<scalar>("dissociationTemperature", 0.0)),
     Zref_(dict.lookupOrDefault<scalarList>("Zref", scalarList())),
     TrefZv_
     (
@@ -110,14 +103,6 @@ inline Foam::dsmcParcel::constantProperties::constantProperties
         FatalErrorIn("dsmcParcel::constantProperties::constantProperties")
             << "Number of characteristic vibrational temperatures is "
             << thetaV_.size() << ", instead of " << nVibrationalModes_ << nl 
-            << exit(FatalError);
-    }
-    
-    if (thetaD_.size() != nVibrationalModes_)
-    {
-        FatalErrorIn("dsmcParcel::constantProperties::constantProperties")
-            << "Number of characteristic dissociation temperatures is"
-            << thetaD_.size() << ", instead of " << nVibrationalModes_ << nl 
             << exit(FatalError);
     }
     
@@ -167,7 +152,7 @@ inline Foam::dsmcParcel::constantProperties::constantProperties
     charDissQuantumLevel_.setSize(nVibrationalModes_, 0);
     forAll(charDissQuantumLevel_, mode)
     {
-        charDissQuantumLevel_[mode] = thetaD_[mode]/thetaV_[mode];
+        charDissQuantumLevel_[mode] = thetaD_/thetaV_[mode];
     }
     
     //- Finding the type of the particle
@@ -333,16 +318,7 @@ Foam::dsmcParcel::constantProperties::thetaV() const
 }
 
 
-inline Foam::scalar Foam::dsmcParcel::constantProperties::thetaD_m
-(
-    const label mode
-) const
-{
-    return thetaD_[mode];
-}
-
-
-inline const Foam::scalarList&
+inline Foam::scalar
 Foam::dsmcParcel::constantProperties::thetaD() const
 {
     return thetaD_;

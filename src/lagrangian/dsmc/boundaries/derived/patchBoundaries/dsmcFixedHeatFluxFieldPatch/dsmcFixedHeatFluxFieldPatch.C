@@ -226,10 +226,7 @@ void dsmcFixedHeatFluxFieldPatch::controlParticle(dsmcParcel& p, dsmcParcel::tra
     scalar preIE = 0.5*m*(U & U) + ERot;
 //         + cloud_.constProps(typeId).electronicEnergyList()[ELevel];
         
-    forAll(vibLevel, i)
-    {
-        preIE += vibLevel[i]*physicoChemical::k.value()*cloud_.constProps(typeId).thetaV()[i];
-    }
+    preIE += cloud_.constProps(typeId).eVib_tot(vibLevel);
     
     label faceId = findIndex(faces_, p.face());
 
@@ -296,10 +293,7 @@ void dsmcFixedHeatFluxFieldPatch::controlParticle(dsmcParcel& p, dsmcParcel::tra
     scalar postIE = 0.5*m*(U & U) + ERot;
 //         + cloud_.constProps(typeId).electronicEnergyList()[p.ELevel()] ;
         
-    forAll(vibLevel, i)
-    {
-        postIE += vibLevel[i]*physicoChemical::k.value()*cloud_.constProps(typeId).thetaV()[i];
-    }
+    postIE += cloud_.constProps(typeId).eVib_tot(vibLevel);
     
 //     ELevel = cloud_.equipartitionElectronicLevel
 //                     (

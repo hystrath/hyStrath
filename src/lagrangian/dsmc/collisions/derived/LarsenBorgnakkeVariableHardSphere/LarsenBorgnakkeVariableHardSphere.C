@@ -201,8 +201,8 @@ void Foam::LarsenBorgnakkeVariableHardSphere::redistribute
     //- Vibrational energy mode for P
     if (cP.nVibrationalModes() > 0)
     {
+        const scalar thetaDP = cP.thetaD();
         const scalarList& thetaVP = cP.thetaV();  
-        const scalarList& thetaDP = cP.thetaD();
         const scalarList& ZrefP = cP.Zref();
         const scalarList& refTempZvP = cP.TrefZv();
         const scalarList& preCollisionEVibP = cP.eVib(p.vibLevel());
@@ -225,7 +225,7 @@ void Foam::LarsenBorgnakkeVariableHardSphere::redistribute
                         p.vibLevel()[i],
                         iMaxP,
                         thetaVP[i],
-                        thetaDP[i],
+                        thetaDP,
                         refTempZvP[i],
                         omegaPQ,
                         ZrefP[i],

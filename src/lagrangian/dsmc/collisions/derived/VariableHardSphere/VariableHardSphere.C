@@ -104,7 +104,7 @@ Foam::scalar Foam::VariableHardSphere::sigmaTcR
 
     if (cR < VSMALL)
     {
-        return 0;
+        return 0.0;
     }
 
     const scalar mP = cloud_.constProps(typeIdP).mass();

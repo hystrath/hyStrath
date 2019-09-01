@@ -73,7 +73,7 @@ protected:
         labelList nTotDissociationReactions_;
         labelList nDissociationReactionsPerTimeStep_;
        
-        List<scalarList> heatOfReactionDissociationJoules_;
+        scalarList heatOfReactionDissociationJoules_;
 
         //- Total volume of the numerical domain (NB: should not be there)
         scalar volume_;

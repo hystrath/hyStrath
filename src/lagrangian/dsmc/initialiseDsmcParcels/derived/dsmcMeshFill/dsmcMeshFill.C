@@ -143,9 +143,8 @@ void dsmcMeshFill::setInitialConfiguration()
                 scalar numberDensity = numberDensities[i];
 
                 // Calculate the number of particles required
-                scalar particlesRequired = numberDensity*tetVolume;
-                
-                particlesRequired /= cloud_.nParticles(cellI);
+                scalar particlesRequired = numberDensity*tetVolume
+                    /cloud_.nParticles(cellI);
 
                 // Only integer numbers of particles can be inserted
                 label nParticlesToInsert = label(particlesRequired);

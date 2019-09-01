@@ -149,7 +149,7 @@ void associativeIonisationQK::setProperties()
         //  with a heat of reaction of opposite sign that of dissociation
         heatOfReactionAssociativeIonisationJoules_[0] = 
             -physicoChemical::k.value()
-           *cloud_.constProps(intermediateMoleculeId_).thetaD()[0]; // TODO make thetaD a scalar again
+           *cloud_.constProps(intermediateMoleculeId_).thetaD();
            
         //- The intermediate molecule ionises
         heatOfReactionAssociativeIonisationJoules_[1] = 
@@ -237,7 +237,7 @@ void associativeIonisationQK::setProperties()
             //- The intermediate molecule dissociates
             heatOfReactionAssociativeIonisationJoules_[1] = 
                 physicoChemical::k.value()
-               *cloud_.constProps(intermediateMoleculeId_).thetaD()[0]; // TODO make thetaD a scalar again
+               *cloud_.constProps(intermediateMoleculeId_).thetaD();
                
             //- Check that both products are neutral atoms
             if
@@ -313,7 +313,7 @@ void associativeIonisationQK::testForwardAssociativeIonisation
                 0.0,
                 iMax,
                 thetaVIntermediate,
-                cloud_.constProps(intermediateMoleculeId_).thetaD()[0],
+                cloud_.constProps(intermediateMoleculeId_).thetaD(),
                 cloud_.constProps(intermediateMoleculeId_).TrefZv()[0],
                 omegaIntermediate,
                 cloud_.constProps(intermediateMoleculeId_).Zref()[0],
@@ -353,7 +353,7 @@ void associativeIonisationQK::testForwardAssociativeIonisation
                         0.0,
                         iMax,
                         thetaVIntermediate,
-                        cloud_.constProps(intermediateMoleculeId_).thetaD()[0],
+                        cloud_.constProps(intermediateMoleculeId_).thetaD(),
                         cloud_.constProps(intermediateMoleculeId_).TrefZv()[0],
                         omegaIntermediate,
                         cloud_.constProps(intermediateMoleculeId_).Zref()[0],
@@ -483,7 +483,7 @@ void associativeIonisationQK::testReverseAssociativeIonisation
                     0.0,
                     iMax,
                     thetaVIntermediate,
-                    cloud_.constProps(intermediateMoleculeId_).thetaD()[0],
+                    cloud_.constProps(intermediateMoleculeId_).thetaD(),
                     cloud_.constProps(intermediateMoleculeId_).TrefZv()[0],
                     omegaIntermediate,
                     cloud_.constProps(intermediateMoleculeId_).Zref()[0],

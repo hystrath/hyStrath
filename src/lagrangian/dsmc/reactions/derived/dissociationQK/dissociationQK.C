@@ -270,7 +270,7 @@ void dissociationQK::dissociateParticleByPartner
         relax_ = false;
         
         //- The collision energy is being subtracted the heat of reaction
-        collisionEnergy -= heatOfReactionDissociationJoules_[nR][vibModeDisso];
+        collisionEnergy -= heatOfReactionDissociationJoules_[nR];
         
         const scalar omegaPQ =
             0.5

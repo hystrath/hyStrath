@@ -57,7 +57,7 @@ moleculeProperties
         rotationalDegreesOfFreedom                   2;
         nVibrationalModes                            1;
         characteristicVibrationalTemperature    (2256);
-        dissociationTemperature                (59500);
+        dissociationTemperature                  59500;
         Zref                                   (17900);
         referenceTempForZref                    (2256);
         ionisationTemperature                 140066.5;

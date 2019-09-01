@@ -104,7 +104,7 @@ public:
             scalarList thetaV_;
 
             //- Characteristic dissociation temperature
-            scalarList thetaD_;
+            scalar thetaD_;
         
             //- Reference vibrational relaxation number
             scalarList Zref_;
@@ -182,12 +182,8 @@ public:
             //- Return the characteristic vibrational temperature
             inline const scalarList& thetaV() const;    
             
-            //- Return the characteristic dissociation temperature for a given
-            //  vibrational energy mode
-            inline scalar thetaD_m(const label mode) const;
-            
             //- Return the characteristic dissociation temperature
-            inline const scalarList& thetaD() const;
+            inline scalar thetaD() const;
     
             //- Return the characteristic vibrational relaxation number for a 
             //  given vibrational energy mode

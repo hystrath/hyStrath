@@ -213,15 +213,7 @@ void dsmcStickingWallPatch::adsorbParticle
     
     const scalar& T = localTemperature;
     
-    //Random& rndGen = cloud_.rndGen();
-    
-    U = vector::zero; 
-       /*SMALL*sqrt(physicoChemical::k.value()*T/mass)
-       *(
-            rndGen.GaussNormal<scalar>()*tw1
-          + rndGen.GaussNormal<scalar>()*tw2
-          - sqrt(-2.0*log(max(1 - rndGen.sample01<scalar>(), VSMALL)))*nw
-        );*/
+    U = vector::zero;
     
     const label wppIndex = patchId();
     const polyPatch& wpp = mesh_.boundaryMesh()[wppIndex];
