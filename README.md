@@ -45,8 +45,7 @@ where _8_ is the number of processors to be used during the installation.
 [*__dsmcFoam+__*] &nbsp; C. White _et al._, 03/2018: [dsmcFoam+: An OpenFOAM based direct simulation Monte Carlo solver](https://pure.strath.ac.uk/portal/files/81235392/White_etal_CPC_2017_an_OpenFOAM_based_direct_simulation_Monte_Carlo_solver.pdf)
 
 #### Latest conference paper:  
-[*__ARC__*] &nbsp; V. Renato _et al._, 09/2017: [Multi-dimensional Ablation and Thermal Response Program for Martian Entry
-Analysis](https://strathprints.strath.ac.uk/62926)  
+[*__dsmcFoam+__*] &nbsp; V. Casseau _et al._, 08/2019: [Effective diffusivity in porous media under rarefied gas conditions](https://aip.scitation.org/doi/abs/10.1063/1.5119641)
 
 #### [View more](https://github.com/vincentcasseau/hyStrath/wiki/Publications)  
 
