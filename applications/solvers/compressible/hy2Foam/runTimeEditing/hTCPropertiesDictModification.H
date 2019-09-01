@@ -16,7 +16,6 @@ if(reaction->lookupOrDefault<bool>("applyChanges", false))
     // --- Print the results before updating the thermo package
     // Will be used for re-start
     #include "write/writeEssentials.H"
-    #include "write/write.H"
     
     // --- End the bool run(...) function and restart the simulation
     return true;

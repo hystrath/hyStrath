@@ -8,7 +8,15 @@ thermo.Tt().write();
 
 forAll(Y, speciei)
 {
-    composition.Tv(speciei).write();
+    if (not (downgradeSingleT or downgradeSingleTv))
+    {
+        composition.Tv(speciei).write();
+    }
     composition.Y(speciei).write();
+}
+
+if (downgradeSingleTv)
+{
+    thermo.Tv().write();
 }
 
