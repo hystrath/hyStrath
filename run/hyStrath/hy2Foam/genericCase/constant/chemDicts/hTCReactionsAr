@@ -1,0 +1,126 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.3.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      hTCReactionsAr;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Wang, Hai-Xing & Sun, Wei-Ping & Sun, Su-Rong & Murphy, Anthony & Ju, 
+//    Yiguang. (2013). 
+// Two-Temperature Chemical-Nonequilibrium Modelling of a High-Velocity Argon 
+//    Plasma Flow in a Low-Power Arcjet Thruster. 
+// Plasma Chemistry and Plasma Processing. 34. 
+// doi: 10.1007/s11090-013-9501-5. 
+
+species
+(
+    Ar
+    psdAr
+    Ar+
+    e-
+);
+
+// Units
+// m^3 kmol^-1 s^-1 for second order rate constants
+// m^6 kmol^-2 s^-1 for third order rate constants
+// Ta: K
+
+reactions
+{
+    // Reaction no 1
+    reaction1
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "Ar + e- = psdAr + e-";
+        controlT transrotational;
+        A        3.18e14;
+        beta     0.5;
+        Ta       135300;
+    }
+
+    // Reaction no 2
+    reaction2
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "psdAr + e- = Ar + e-";
+        controlT transrotational;
+        A        3.11e13;
+        beta     0.5;
+        Ta       0.0;
+    }
+    
+    // Reaction no 3
+    reaction3
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "psdAr + e- = Ar+ + e- + e-";
+        controlT transrotational;
+        A        1.2e14;
+        beta     0.0;
+        Ta       71950;
+    }
+    
+    // Reaction no 4
+    reaction4
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "psdAr + psdAr = Ar+ + Ar + e-";
+        controlT transrotational;
+        A        1.74e10;
+        beta     0.5;
+        Ta       0.0;
+    }
+    
+    // Reaction no 5
+    reaction5
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "Ar+ + e- + e- = psdAr + e-";
+        controlT transrotational;
+        A        3.71e-04;
+        beta     -4.5;
+        Ta       0.0;
+    }
+    
+    // Reaction no 6
+    reaction6
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "Ar + Ar+ + e- = Ar + psdAr";
+        controlT transrotational;
+        A        8.48e19;
+        beta     -2.5;
+        Ta       0.0;
+    }
+    
+    // Reaction no 8
+    reaction8
+    {
+        type     irreversibleHoffertLienReaction;
+        reaction "Ar + Ar = psdAr + Ar";
+        controlT transrotational;
+        A        10.1;
+        beta     1.5;
+        Ta       135300;
+    }
+       
+    // Reaction no 9
+    reaction9
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "psdAr + Ar = Ar + Ar";
+        A        1.81e6;
+        beta     0.0;
+        Ta       0.0;
+    }
+}
