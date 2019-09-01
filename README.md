@@ -7,7 +7,7 @@
 + *hyFoam* CFD solver (supersonic combusting flows)  
 + *hy2Foam* CFD solver (hypersonic reacting flows)  
 + *hy2MhdFoam* solver (hypersonic reacting flows with MHD flow control)  
-+ **Coming soon: _ARC_**, a low computationally demanding 3-D Ablative Response Code  
++ **_ARC_** (on hold): a low computationally demanding 3-D Ablative Response Code  
 + *dsmcFoam+* code (direct simulation Monte Carlo)  
 + *pdFoam* code, a hybrid PIC-DSMC solver   
 
