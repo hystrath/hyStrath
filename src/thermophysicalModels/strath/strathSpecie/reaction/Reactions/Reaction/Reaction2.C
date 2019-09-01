@@ -156,8 +156,18 @@ Foam::Reaction2<Reaction2Thermo>::Reaction2
     rhs_(rhs),
     controlT_(transrotational)
 {
-    // NEW VINCENT - UNUSED CONSTRUCTOR
-    Info << "This constructor should not be used - VINCENT" << endl;
+    FatalErrorIn
+    (
+        "Reaction2<Reaction2Thermo>::Reaction2"
+        "("
+            "const speciesTable& species, "
+            "const List<specieCoeffs>& lhs, "
+            "const List<specieCoeffs>& rhs, "
+            "const HashPtrTable<Reaction2Thermo>& thermoDatabase"
+        ")"
+    )
+        << "NB VINCENT: This constructor should not be used"
+        << exit(FatalError);
     
     setThermo(thermoDatabase);
 }
@@ -330,7 +340,17 @@ Foam::Reaction2<Reaction2Thermo>::Reaction2
     species_(species),
     controlT_(transrotational)
 {
-    Info << "This constructor should not be used - VINCENT" << endl;
+    FatalErrorIn
+    (
+        "Reaction2<Reaction2Thermo>::Reaction2"
+        "("
+            "const speciesTable& species, "
+            "const HashPtrTable<Reaction2Thermo>& thermoDatabase, "
+            "Istream& is "
+        ")"
+    )
+        << "NB VINCENT: This constructor should not be used"
+        << exit(FatalError);
     
     setLRhs(is, species, lhs_, rhs_);
     setThermo(thermoDatabase);
@@ -349,9 +369,14 @@ Foam::Reaction2<Reaction2Thermo>::Reaction2
     name_(dict.dictName()),
     species_(species)
 {
-    // This constructor is used in the very beginnning of a simulation
-    // NEW VINCENT ************************************************************
-    word controllingTemperature = dict.lookupOrDefault<word>("controlT", "transrotational");
+    // NB VINCENT: this constructor is used in the beginning of a simulation
+    word controllingTemperature = 
+        dict.lookupOrDefault<word>
+        (
+            "controlT",
+            "transrotational"
+        );
+        
     if (controllingTemperature == "chargeExchange")
     {
         controlT_ = chargeExchange;
@@ -386,15 +411,22 @@ Foam::Reaction2<Reaction2Thermo>::Reaction2
     }
     else
     {
-        Info  << "Foam::Reaction2<Reaction2Thermo>::Reaction2(const speciesTable& species, "
-              << "const HashPtrTable<Reaction2Thermo>& thermoDatabase, const dictionary& dict)"
-              << "Controlling temperature " << controllingTemperature  << "is invalid." << nl << nl
-              << "Valid Controlling temperature types are: " 
-              << " chargeExchange, dissociation, exchange, impactDissociation," << nl 
-              << " impactIonisation, associativeIonisation, transrotational, vibrational."
-              << exit(FatalIOError);
+        FatalErrorIn
+        (
+            "Reaction2<Reaction2Thermo>::Reaction2"
+            "("
+                "const speciesTable&, "
+                "const HashPtrTable<Reaction2Thermo>& thermoDatabase, "
+                "const dictionary& dict "
+            ")"
+        )   << "Controlling temperature type "
+            << controllingTemperature << "is invalid." << nl << nl
+            << "Valid controlling temperature types are: " << nl
+            << "  chargeExchange, dissociation, exchange, impactDissociation," 
+            << nl << "  impactIonisation, associativeIonisation, "
+            << "transrotational, vibrational."
+            << exit(FatalIOError);
     }
-    // BRAND NEW VINCENT ******************************************************
     
     setLRhs
     (

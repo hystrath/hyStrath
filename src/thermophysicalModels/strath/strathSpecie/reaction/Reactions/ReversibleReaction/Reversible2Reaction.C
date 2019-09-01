@@ -38,7 +38,7 @@ Reversible2Reaction
 (
     const ReactionType<ReactionThermo>& reaction,
     const ReactionRate& k,
-    const DynamicList<scalar> ni, // NEW VINCENT 09/02/2016
+    const DynamicList<scalar> ni,
     const DynamicList<scalar> A0,
     const DynamicList<scalar> A1,
     const DynamicList<scalar> A2,
@@ -48,7 +48,7 @@ Reversible2Reaction
 :
     ReactionType<ReactionThermo>(reaction),
     k_(k),
-    ni_(ni), // NEW VINCENT 09/02/2016
+    ni_(ni),
     A0_(A0),
     A1_(A1),
     A2_(A2),
@@ -74,7 +74,6 @@ Reversible2Reaction
     ReactionType<ReactionThermo>(species, thermoDatabase, is),
     k_(species, is)
 {
-
     forAll(ni_, i)
     {
         is >> ni_[i];
@@ -104,7 +103,6 @@ Reversible2Reaction
     {
         is >> A4_[i];
     }
-
 }
 
 
@@ -124,7 +122,7 @@ Reversible2Reaction
 :
     ReactionType<ReactionThermo>(species, thermoDatabase, dict),
     k_(species, dict),
-    ni_(dict.lookup("ni")), // NEW VINCENT 09/02/2016
+    ni_(dict.lookup("ni")),
     A0_(dict.lookup("A0")),
     A1_(dict.lookup("A1")),
     A2_(dict.lookup("A2")),
@@ -148,7 +146,7 @@ Reversible2Reaction
 :
     ReactionType<ReactionThermo>(rr, species),
     k_(rr.k_),
-    ni_(rr.ni_), // NEW VINCENT 09/02/2016
+    ni_(rr.ni_),
     A0_(rr.A0_),
     A1_(rr.A1_),
     A2_(rr.A2_),
@@ -200,7 +198,7 @@ Foam::scalar Foam::Reversible2Reaction
     const scalarField& c
 ) const
 {
-    //return kfwd/this->Kc(p, T); // ORIGINAL FORMULATION, DELETED VINCENT 09/02/2016
+    //return kfwd/this->Kc(p, T); // ORIGINAL FORMULATION, DELETED
     return kfwd/Keq(p, T); // NEW VINCENT 09/02/2016
 }
 
@@ -227,7 +225,6 @@ Foam::scalar Foam::Reversible2Reaction
 }
 
 
-// NEW VINCENT 09/02/2016 *****************************************************
 template
 <
     template<class> class ReactionType,
@@ -245,6 +242,8 @@ Foam::scalar Foam::Reversible2Reaction
     const scalar T
 ) const
 {
+    const scalar Z = 1.0e4/T;
+    
     scalar nDMix = p/(constant::physicoChemical::k.value()*T);
     const label nLow(findBounds(nDMix)), nHigh(nLow+1);
     
@@ -254,12 +253,8 @@ Foam::scalar Foam::Reversible2Reaction
     const scalar A3Mix = boundedLinearInterpolation(nDMix, ni_[nLow], ni_[nHigh], A3_[nLow], A3_[nHigh]);
     const scalar A4Mix = boundedLinearInterpolation(nDMix, ni_[nLow], ni_[nHigh], A4_[nLow], A4_[nHigh]);
     
-    const scalar Z = 1.0e4/T;
-    
-    //Info << "Keq: " << exp(A0Mix*T/1.0e4 + A1Mix + A2Mix*log(1.0e4/T) + A3Mix*1.0e4/T + A4Mix*sqr(1.0e4/T)) << endl;
     return exp(A0Mix/Z + A1Mix + A2Mix*log(Z) + A3Mix*Z + A4Mix*sqr(Z));
 }
-// END NEW VINCENT 09/02/2016 *************************************************
 
 
 template

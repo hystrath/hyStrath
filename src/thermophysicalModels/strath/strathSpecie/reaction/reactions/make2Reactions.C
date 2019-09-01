@@ -27,8 +27,9 @@ License
 #include "make2Reaction.H"
 
 #include "Arrhenius2ReactionRate.H"
-#include "subArrhenius2ReactionRate.H" // NEW VINCENT 08/11/16
-#include "ImpactIonisationArrhenius2ReactionRate.H" // NEW VINCENT 03/06/16
+#include "HoffertLienReactionRate.H"
+#include "subArrhenius2ReactionRate.H"
+#include "ImpactIonisationArrhenius2ReactionRate.H"
 #include "infiniteReactionRate.H"
 #include "LandauTellerReactionRate.H"
 #include "thirdBodyArrheniusReactionRate.H"
@@ -52,6 +53,7 @@ License
     defineTemplateRunTimeSelectionTable(Reaction, dictionary);                 \
                                                                                \
     makeIRNReactions(MultiThermo, Arrhenius2ReactionRate)                      \
+    makeIRNReactions(MultiThermo, HoffertLienReactionRate)                     \
     makeIRNReactions(MultiThermo, subArrhenius2ReactionRate)                   \
     makeIRNReactions(MultiThermo, ImpactIonisationArrhenius2ReactionRate)      \
     makeIRNReactions(MultiThermo, infiniteReactionRate)                        \
@@ -65,6 +67,13 @@ License
     (                                                                          \
        MultiThermo,                                                            \
        Arrhenius2ReactionRate,                                                 \
+       LindemannFallOffFunction                                                \
+    )                                                                          \
+                                                                               \
+    makePressureDependentReactions                                             \
+    (                                                                          \
+       MultiThermo,                                                            \
+       HoffertLienReactionRate,                                                \
        LindemannFallOffFunction                                                \
     )                                                                          \
                                                                                \
