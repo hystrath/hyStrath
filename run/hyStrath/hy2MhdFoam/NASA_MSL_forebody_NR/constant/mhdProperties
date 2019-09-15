@@ -15,9 +15,9 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-mhd             false; //true;
+mhd             false;
 
-mhdModel        noMHD; //lowReMag;
+mhdModel        noMHD;
 
 collisionData   constant;
 
@@ -29,7 +29,7 @@ n               2;
 
 sigma0          5100;
 
-hallEffect      false; //true;
+hallEffect      false;
 
 
 // ************************************************************************* //

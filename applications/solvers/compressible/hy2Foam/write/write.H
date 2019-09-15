@@ -5,7 +5,7 @@ transport().write();
 composition.write();
 
 //- Write diffusion fluxes
-if(not hyLight) 
+if (not hyLight) 
 {
     volVectorField sumDiffusiveFluxes = speciesDiffusion().sumDiffusiveFluxes();
     sumDiffusiveFluxes.write();
@@ -30,35 +30,38 @@ if(not hyLight)
     }
 }
          
-if(not downgradeSingleT)
+if (not downgradeSingleT)
 {
-    if(not hyLight) 
+    if (not hyLight) 
     {
         thermo.T().write();
         
-        if(noSolvedVibEq > 1)
+        if (noSolvedVibEq > 1)
         {
             thermo.Tv().write();
         }
     }
 }
 
-if(downgradeSingleTv)
+if (downgradeSingleTv)
 {
     thermo.Tv().write();
 }
 
-if(writeWallHeatFlux) 
+
+if (writeWallHeatFlux) 
 {       
-    surfaceScalarField heatFlux = -fvc::interpolate(turbulence->alphaEff())*fvc::snGrad(et);
-    forAll(Y, speciei)
-    {
-        heatFlux -= fvc::interpolate(transport().alphave(speciei))*fvc::snGrad(hevk[speciei]);
-    }   
+    surfaceScalarField heatFlux_convtr =
+        -fvc::interpolate(turbulence->alphaEff())*fvc::snGrad(et);
+        
+    surfaceScalarField heatFlux_convve =
+        -fvc::interpolate(transport().alphave())*fvc::snGrad(ev);
+    
+    surfaceScalarField heatFlux = heatFlux_convtr + heatFlux_convve;
 
     const surfaceScalarField::Boundary& patchHeatFlux = heatFlux.boundaryField();
 
-    Info<< "\nWall heat fluxes [W]" << endl;
+    Info<< "\nIntegrated convection wall heat flux [W]" << endl;
     forAll(patchHeatFlux, patchi)
     {
         if (isA<wallFvPatch>(mesh.boundary()[patchi]))
@@ -67,12 +70,10 @@ if(writeWallHeatFlux)
 
             Info<< "Patch " << patchi
                 << " named " << patchHeatFlux[patchi].patch().name()
-                << ": "
-                << gSum
-                   (
-                       mesh.magSf().boundaryField()[patchi]
-                      *patchHeatFlux[patchi]
-                   )
+                << ": " << int_tot_whf << nl
+                << "   convective trans-rot  (%): " << int_convtr_whf << nl
+                << "   convective vibrp-elec (%): " << int_convve_whf << nl
+                << "   diffusive             (%): TBC" << nl
                 << endl;
         }
     }
@@ -82,12 +83,12 @@ if(writeWallHeatFlux)
 }
 
 
-if(reaction->lookupOrDefault<bool>("applyChangesAtWriteTime", false))
+if (reaction->lookupOrDefault<bool>("applyChangesAtWriteTime", false))
 {
     return true;
 }
 
-if(reaction->lookupOrDefault<bool>("applyChangesAtWriteTimeAndWait", false))
+if (reaction->lookupOrDefault<bool>("applyChangesAtWriteTimeAndWait", false))
 {
     label restartIn = reaction->lookupOrDefault<label>("restartIn", 120);
     
