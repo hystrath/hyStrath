@@ -24,7 +24,6 @@ if(thermo.transportDictionary().subDict("transportModels").lookupOrDefault<bool>
     speciesDiffusionName = thermo.transportDictionary().subDict("transportModels")
         .lookupOrDefault<word>("multiSpeciesTransport", word::null);
         
-    writeHeatFluxes = thermo.transportDictionary().subDict("transportModels").lookupOrDefault<bool>("writeHeatFluxes", false);
     writeWallHeatFlux = thermo.transportDictionary().subDict("transportModels").lookupOrDefault<bool>("writeWallHeatFlux", false);
 
     thermo.transportDictionary().subDict("transportModels").set<bool>("applyChanges", false);

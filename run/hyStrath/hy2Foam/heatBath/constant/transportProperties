@@ -41,7 +41,6 @@ transportModels
     writeThermalConducSpecies      off;
     writeThermalConducMixture      off;
     
-    writeHeatFluxes                off;
     writeWallHeatFlux              off;
     
     multiSpeciesTransport          noSpeciesDiffusion;

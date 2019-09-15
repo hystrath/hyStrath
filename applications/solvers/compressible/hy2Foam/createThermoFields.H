@@ -158,7 +158,7 @@ autoPtr<mixingRule> transport
 const volScalarField& mu = thermo.mu();
 
 //- Bulk viscosity 08/10/2016
-const scalar pi = constant::mathematical::pi;
+/*const scalar pi = constant::mathematical::pi;
 const scalar ZrotInf = 18.0;
 const dimensionedScalar TZ ("TZ", dimTemperature, 91.5);
 volScalarField Zrot = ZrotInf/(1.0 + sqr(pi)/2.0*sqrt(TZ/thermo.Tt()) + (sqr(pi)/4.0 + pi)*TZ/thermo.Tt());
@@ -177,7 +177,7 @@ volScalarField bulkToShearRatio
     ),
     mesh,
     dimensionedScalar("scalarZero", dimless, 0.0)
-);
+);*/
 
 bool inviscid(true);
 if (max(mu.primitiveField()) > 0.0)
@@ -203,7 +203,6 @@ rarefactionParameters->correct(U);
 // Heat flux vectors
 //---------------------------------------------------------
 
-bool writeHeatFluxes = thermo.transportDictionary().subDict("transportModels").lookupOrDefault<bool>("writeHeatFluxes", false);
 bool writeWallHeatFlux = thermo.transportDictionary().subDict("transportModels").lookupOrDefault<bool>("writeWallHeatFlux", false);
 
 //- Wall heat flux
@@ -226,52 +225,3 @@ if (writeWallHeatFlux)
     wallHeatFlux.writeOpt() = IOobject::AUTO_WRITE;
 }
 
-volVectorField *heatFluxVector = 0, *convectiveHeatFlux = 0, *diffusiveHeatFlux = 0;
-
-if (hyDev)
-{
-    heatFluxVector = new volVectorField
-    (
-        IOobject
-        (
-            "heatFluxVectorCFD",
-            runTime.timeName(),
-            mesh,
-            IOobject::NO_READ,
-            IOobject::NO_WRITE
-        ),
-        mesh,
-        dimensionedVector("heatFluxVectorCFD", dimensionSet(1, 0, -3, 0, 0), vector::zero)
-    );
-}
-
-if (writeHeatFluxes)
-{
-    convectiveHeatFlux = new volVectorField 
-    (
-        IOobject
-        (
-            "qConv",
-            runTime.timeName(),
-            mesh,
-            IOobject::NO_READ,
-            IOobject::NO_WRITE
-        ),
-        mesh,
-        dimensionedVector("qConv", dimensionSet(1, 0, -3, 0, 0), vector::zero)
-    );
-
-    diffusiveHeatFlux = new volVectorField 
-    (
-        IOobject
-        (
-            "qDiff",
-            runTime.timeName(),
-            mesh,
-            IOobject::NO_READ,
-            IOobject::NO_WRITE
-        ),
-        mesh,
-        dimensionedVector("qDiff", (*convectiveHeatFlux).dimensions(), vector::zero)
-    );
-}

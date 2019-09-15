@@ -48,33 +48,6 @@ if(downgradeSingleTv)
     thermo.Tv().write();
 }
 
-
-if(hyDev)
-{
-    //tauMC.write();
-    if(heatFluxVector)
-    {
-        heatFluxVector->write();
-    }
-}
-
-if(writeHeatFluxes)
-{
-    if(convectiveHeatFlux and diffusiveHeatFlux)
-    {
-        *convectiveHeatFlux = turbulence->kappaEff()*fvc::grad(thermo.Tt());
-        forAll(Y, speciei)
-        {
-            *convectiveHeatFlux += transport().kappave(speciei)*fvc::grad(composition.Tv(speciei));
-        }
-
-        *diffusiveHeatFlux = speciesDiffusion().multiSpeciesHeatSource();
-
-        convectiveHeatFlux->write();
-        diffusiveHeatFlux->write();
-    }
-}
-
 if(writeWallHeatFlux) 
 {       
     surfaceScalarField heatFlux = -fvc::interpolate(turbulence->alphaEff())*fvc::snGrad(et);
@@ -124,4 +97,3 @@ if(reaction->lookupOrDefault<bool>("applyChangesAtWriteTimeAndWait", false))
     
     return true;
 }
-
