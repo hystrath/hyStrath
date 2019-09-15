@@ -22,19 +22,21 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Applications
-    hyFoam: Single-Temperature Open-Source CFD Solver for Supersonic 
-            Combusting Flows
-             
-    hy2Foam: Two-Temperature Open-Source CFD Solver for Hypersonic 
-             Weakly-Ionised Reacting Flows
+    hy2MhdFoam: Two-Temperature Open-Source CFD Solver for Hypersonic 
+             Weakly-Ionised Reacting Flows, with MHD source terms.
+             Can be downgraded to a single-temperature model.
 
 Description
     Density-based compressible flow solver
 
 \*---------------------------------------------------------------------------*/
 
-#include "hy2MhdFoam_include.H"
+#define HY2FOAM_EXTERNAL_FILE_MOMENTUM_EQNS "eqns/UEqn_MHD.H"
+#define HY2FOAM_EXTERNAL_FILE_TOTENERGYIVC_EQN "eqns/eEqnInviscid_MHD.H"
+#define HY2FOAM_EXTERNAL_FILE_TOTENERGYVIS_EQN "eqns/eEqnViscous_MHD.H"
+#define HY2FOAM_EXTERNAL_FILE_OUTPUT "write/write_MHD.H"
 
+#include "hy2MhdFoam_include.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

@@ -2,6 +2,8 @@
 cd ${0%/*} || exit 1    # run from this directory
 set -x
 
-(wmake libso BCs && wmake)
+cd ../hy2Foam
+./Allwmake
 
-# ----------------------------------------------------------------- end-of-file
+cd ../hy2MhdFoam
+wmake

@@ -18,12 +18,12 @@ solve
   - fvc::div(sigmaDotU)
  ==
     reaction->Sh()
+  + mhd->Q(U)  
   // + radiation->Sh(thermo)
-  + mhd->Q(U) //--------------Alexey
 ); 
 
- Info<< "Q_mag is working. max(Q_mag) = ";
- Info<< max(mhd->Q(U)) << endl;
+Info<< "max(Q_mag) = " << max(mhd->Q(U)) << endl;
+
 e = rhoE/rho - 0.5*magSqr(U);
 
 et.ref() = e() - ev();

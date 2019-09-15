@@ -7,9 +7,8 @@ if(!inviscid)
         fvm::ddt(rho, e) - fvc::ddt(rho, e)
       - fvm::laplacian(turbulence->alphaEff(), e) + fvc::laplacian(turbulence->alphaEff(), ev)
       - fvm::laplacian(transport().alphave(), e) + fvc::laplacian(transport().alphave(), et)
- //     - Q_mag //--------------Alexey
     );
-     Info<< "Q_mag is working" <<endl;
+
     if(speciesDiffusionName != "noSpeciesDiffusion")
     {
         eEqnViscous += fvc::div(speciesDiffusion().multiSpeciesHeatSource(), "div(diffusiveFluxes)");

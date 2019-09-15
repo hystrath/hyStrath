@@ -57,15 +57,15 @@ thermo.resetTemperatureBoundingInfo();
 //Info<< "YEqn time" << tab << runTime.elapsedCpuTime() - time << " s" << endl; 
 
 // --- Solve momentum equations
-#include "eqns/UEqn.H"
+#include HY2FOAM_EXTERNAL_FILE_MOMENTUM_EQNS
 
 if (downgradeSingleT)
 {
     // --- Solve the total energy equation
     //- inviscid
-    #include "eqns/eEqnInviscid.H"
+    #include HY2FOAM_EXTERNAL_FILE_TOTENERGYIVC_EQN
     //- viscous
-    #include "eqns/eEqnViscous.H"
+    #include HY2FOAM_EXTERNAL_FILE_TOTENERGYVIS_EQN
 }
 else if (downgradeSingleTv)
 {
@@ -73,10 +73,10 @@ else if (downgradeSingleTv)
     // --- Solve the total energy equation
     //- inviscid
     #include "eqns/evEqnInviscid_SingleTv.H" 
-    #include "eqns/eEqnInviscid.H" 
+    #include HY2FOAM_EXTERNAL_FILE_TOTENERGYIVC_EQN
     //- viscous
     #include "eqns/evEqnViscous_SingleTv.H" 
-    #include "eqns/eEqnViscous.H" 
+    #include HY2FOAM_EXTERNAL_FILE_TOTENERGYVIS_EQN
 }
 else if (downgradeSingleVibMode)
 {
@@ -84,28 +84,28 @@ else if (downgradeSingleVibMode)
     // --- Solve the total energy equation
     //- inviscid
     #include "eqns/evEqnInviscid.H" 
-    #include "eqns/eEqnInviscid.H"
+    #include HY2FOAM_EXTERNAL_FILE_TOTENERGYIVC_EQN
     //- viscous
     #include "eqns/evEqnViscous.H"
-    #include "eqns/eEqnViscous.H"
+    #include HY2FOAM_EXTERNAL_FILE_TOTENERGYVIS_EQN
 }
 else
 {
     // --- Solve the vibrational energy equations (one per vib. mode)
     // --- Solve the total energy equation
     //- inviscid
-    //#include "Eqns/evEqn_MultiModes.H"
-    //#include "Eqns/eEqnInviscid.H" 
+    //#include "eqns/evEqn_MultiModes.H"
+    //#include HY2FOAM_EXTERNAL_FILE_TOTENERGYIVC_EQN
     //- viscous
-    //#include "Eqns/eEqnViscous.H"   
+    //#include HY2FOAM_EXTERNAL_FILE_TOTENERGYVIS_EQN 
 }
 
 // --- Pressure field calculation
 #include "eqns/pEqn.H"
 
 // --- Enable input from / coupling with another application
-#ifdef HY2FOAM_PATH_TO_EXTERNAL_FILE_1
-#include HY2FOAM_PATH_TO_EXTERNAL_FILE_1
+#ifdef HY2FOAM_EXTERNAL_FILE_HYBRID_COUPLING
+#include HY2FOAM_EXTERNAL_FILE_HYBRID_COUPLING
 #endif
 
 turbulence->correct();
@@ -118,12 +118,12 @@ thermo.temperatureBoundingReport();
 
 if (runTime.outputTime())
 {
-    #ifdef HY2FOAM_PATH_TO_EXTERNAL_FILE_2
-    #include HY2FOAM_PATH_TO_EXTERNAL_FILE_2
-    #endif
-    
     runTime.write();
     #include "write/write.H"
+    
+    #ifdef HY2FOAM_EXTERNAL_FILE_OUTPUT
+    #include HY2FOAM_EXTERNAL_FILE_OUTPUT
+    #endif
 }
 
 previousIterationTime = 

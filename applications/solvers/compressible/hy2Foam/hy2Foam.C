@@ -33,8 +33,11 @@ Description
 
 \*---------------------------------------------------------------------------*/
 
-#include "hy2Foam_include.H"
+#define HY2FOAM_EXTERNAL_FILE_MOMENTUM_EQNS "eqns/UEqn.H"
+#define HY2FOAM_EXTERNAL_FILE_TOTENERGYIVC_EQN "eqns/eEqnInviscid.H"
+#define HY2FOAM_EXTERNAL_FILE_TOTENERGYVIS_EQN "eqns/eEqnViscous.H"
 
+#include "hy2Foam_include.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -96,9 +99,9 @@ int main(int argc, char *argv[])
 bool run
 (
     argList& args,
-    Time& runTime, 
+    Time& runTime,
     fvMesh& mesh,
-    scalar& currentIterationTime, 
+    scalar& currentIterationTime,
     scalar& previousIterationTime,
     label& noRestart,
     label& noIteration
