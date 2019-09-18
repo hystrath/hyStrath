@@ -67,6 +67,27 @@ if (writeWallHeatFlux)
         if (isA<wallFvPatch>(mesh.boundary()[patchi]))
         {
             wallHeatFlux.boundaryFieldRef()[patchi] = patchHeatFlux[patchi];
+            
+            const scalar int_tot_whf = 
+                gSum
+                (
+                    mesh.magSf().boundaryField()[patchi]
+                   *patchHeatFlux[patchi]
+                );
+                
+            const scalar int_convtr_whf = 
+                gSum
+                (
+                    mesh.magSf().boundaryField()[patchi]
+                   *heatFlux_convtr.boundaryField()[patchi]
+                )/int_tot_whf*100.0;
+                
+            const scalar int_convve_whf = 
+                gSum
+                (
+                    mesh.magSf().boundaryField()[patchi]
+                   *heatFlux_convve.boundaryField()[patchi]
+                )/int_tot_whf*100.0;           
 
             Info<< "Patch " << patchi
                 << " named " << patchHeatFlux[patchi].patch().name()
