@@ -455,7 +455,7 @@ void dsmcBoundaries::checkCyclicBoundaryModels(const polyMesh& mesh)
 
 void dsmcBoundaries::checkPatchBoundaryModels(const polyMesh& mesh)
 {
-    //- check that all poly-patches defined within blockMeshDict,
+    //- check that all poly-patches defined within constant/polyMesh/boundary,
     //  each have one model.
 
     label nPolyPatches = 0;
@@ -512,7 +512,7 @@ void dsmcBoundaries::checkPatchBoundaryModels(const polyMesh& mesh)
         FatalErrorIn("dsmcBoundaries::checkPatchBoundaryModels(const polyMesh& mesh)")
             << nl
             << " Number of poly-patches = "  << nPolyPatches 
-            << " in blockMeshDict, are not equal to the number of patch models = " 
+            << " in constant/polyMesh/boundary, are not equal to the number of patch models = " 
             << nPatchBoundaryModels_  << ", defined in " 
             << mesh.time().system()/"boundariesDict"
             << abort(FatalError);
