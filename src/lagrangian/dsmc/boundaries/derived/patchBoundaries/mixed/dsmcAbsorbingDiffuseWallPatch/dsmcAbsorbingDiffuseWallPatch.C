@@ -105,7 +105,7 @@ void dsmcAbsorbingDiffuseWallPatch::controlParticle
     if(iD != -1) 
     {
         //- particle considered for absorption
-        const scalar absorptionProbability = absorptionProb(iD);
+        const scalar absorptionProbability = absorptionProbs_[iD];
         
         const label wppIndex = patchId();
         

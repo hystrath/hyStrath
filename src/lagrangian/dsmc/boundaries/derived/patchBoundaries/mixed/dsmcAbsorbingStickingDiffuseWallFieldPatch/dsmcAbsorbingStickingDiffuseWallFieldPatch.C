@@ -127,12 +127,10 @@ void dsmcAbsorbingStickingDiffuseWallFieldPatch::controlParticle
         if(iDab != -1 && iDst != -1) 
         {
             //- absorption probability
-            const scalar absorptionProbability = 
-                dsmcAbsorbingWallPatch::absorptionProb(iDab);
+            const scalar absorptionProbability = absorptionProbs_[iDab];
                 
             //- adsorption probability
-            const scalar adsorptionProbability = 
-                dsmcStickingWallPatch::adsorptionProb(iDst);
+            const scalar adsorptionProbability = adsorptionProbs_[iDst];
                 
             if
             (

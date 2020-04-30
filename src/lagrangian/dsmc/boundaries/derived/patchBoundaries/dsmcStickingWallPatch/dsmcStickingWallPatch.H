@@ -82,7 +82,7 @@ protected:
         scalarList adsorptionProbs_;
         
         //- Residence time for a particle stuck to the wall
-        scalarList residenceTime_;
+        scalarList residenceTimes_;
         
         //- Number of stuck particles per face
         scalarList nStuckParcels_;
@@ -179,7 +179,7 @@ public:
         //- Return const access to all residence times
         const scalarList& residenceTimes() const
         {
-            return residenceTime_;
+            return residenceTimes_;
         }
         
         //- Return const access to the number of stuck parcels
@@ -249,7 +249,7 @@ public:
             
             if (iD != -1)
             {
-                return residenceTime_[iD];
+                return residenceTimes_[iD];
             }
             
             FatalErrorIn
