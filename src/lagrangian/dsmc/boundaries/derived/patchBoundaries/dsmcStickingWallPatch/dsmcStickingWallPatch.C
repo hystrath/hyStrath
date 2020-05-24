@@ -96,15 +96,15 @@ void dsmcStickingWallPatch::setProperties()
         );
     }
     
-    residenceTime_.clear();
+    residenceTimes_.clear();
 
-    residenceTime_.setSize(typeIds_.size(), 0.0);
+    residenceTimes_.setSize(typeIds_.size(), 0.0);
     
-    forAll(residenceTime_, i)
+    forAll(residenceTimes_, i)
     {
         if (propsDict_.isDict("residenceTimes"))
         {
-            residenceTime_[i] =
+            residenceTimes_[i] =
             (
                 propsDict_.subDict("residenceTimes")
                     .lookupOrDefault<scalar>(moleculesReduced[i], VGREAT)
@@ -112,7 +112,7 @@ void dsmcStickingWallPatch::setProperties()
         }
         else
         {
-            residenceTime_[i] = VGREAT;
+            residenceTimes_[i] = VGREAT;
         }
     }
     
@@ -234,11 +234,8 @@ void dsmcStickingWallPatch::adsorbParticle
 
 void dsmcStickingWallPatch::testForDesorption(dsmcParcel& p)
 { 
-    //- Calculate the probability that this particle will be released
-    const label& iD = p.typeId(); //findIndex(typeIds_, p.typeId());
-    
-    /*Info << "p.typeId() " << p.typeId() << endl;
-    Info << "iD " << iD << endl;*/
+    const label typeId = p.typeId();
+    const label iD = findIndex(typeIds_, typeId);
     
     if(iD != -1)
     {
@@ -246,9 +243,10 @@ void dsmcStickingWallPatch::testForDesorption(dsmcParcel& p)
 
         Random& rndGen = cloud_.rndGen();
 
-        if(rndGen.sample01<scalar>() < deltaT/residenceTime_[iD])
+        //- Calculate the probability that this particle will be released
+        if(rndGen.sample01<scalar>() < deltaT/residenceTimes_[iD])
         {
-            const scalar mass = cloud_.constProps(iD).mass();
+            const scalar mass = cloud_.constProps(typeId).mass();
             
             vector& U = p.U();
             
@@ -398,7 +396,7 @@ dsmcStickingWallPatch::dsmcStickingWallPatch
     propsDict_(dict.subDict(typeName + "Properties")),
     typeIds_(),
     adsorptionProbs_(),
-    residenceTime_(),
+    residenceTimes_(),
     nStuckParcels_(mesh_.boundaryMesh()[patchId()].size(), 0.0),
     saturationLimit_(mesh_.boundaryMesh()[patchId()].size(), 0.0)
 {

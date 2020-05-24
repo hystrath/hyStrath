@@ -42,7 +42,7 @@ void dsmcAbsorbingWallPatch::setProperties()
     if(molecules.size() == 0)
     {
         FatalErrorIn("dsmcAbsorbingWallPatch::setProperties()")
-            << "Cannot have zero typeIds being adsorbed." << nl << "in: "
+            << "Cannot have zero typeIds being absorbed." << nl << "in: "
             << mesh_.time().system()/"boundariesDict"
             << exit(FatalError);
     }
@@ -190,7 +190,7 @@ void dsmcAbsorbingWallPatch::testParticleForAbsorption
             mesh_.boundaryMesh()[wppIndex].whichFace(p.face());
                 
         //- absorption probability
-        const scalar absorptionProbability = absorptionProb(iD);
+        const scalar absorptionProbability = absorptionProbs_[iD];
             
         if
         (

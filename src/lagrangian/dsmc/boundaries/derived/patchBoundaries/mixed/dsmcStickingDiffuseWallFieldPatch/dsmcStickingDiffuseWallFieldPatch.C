@@ -105,7 +105,7 @@ void dsmcStickingDiffuseWallFieldPatch::controlParticle
         if(iD != -1)
         {
             //- particle considered for adsorption
-            const scalar adsorbtionProbability = adsorptionProb(iD);
+            const scalar adsorbtionProbability = adsorptionProbs_[iD];
             
             const label wppIndex = patchId();
             

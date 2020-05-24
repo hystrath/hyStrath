@@ -76,7 +76,7 @@ protected:
 
     // Protected data  
     
-        //- typeIds to be adsorbed
+        //- typeIds to be absorbed
         labelList typeIds_;
         
         //- probability of absorption for each species in typeIds_
