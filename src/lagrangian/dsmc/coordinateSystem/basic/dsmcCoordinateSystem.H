@@ -160,14 +160,7 @@ public:
 
         //- Return const access to the number of real particles represented by
         //  a DSMC parcel for a given cell
-        //  Locally in the code, the radialWeightingMethod (RWM) can be
-        //  changed from "cell"- to "particle"-based if rWMethod is set to
-        //  mixed and the method call uses mixedRWM = true (e.g., nTC)
-        virtual inline scalar nParticles
-        (
-            const label celli,
-            const bool mixedRWMethod = false
-        ) const;
+        virtual inline scalar nParticles(const label celli) const;
 
         //- Return const access to the number of real particles represented by
         //  a parcel for a given patch/face couple
@@ -190,14 +183,7 @@ public:
         );
 
         //- Return the local RWF for a given cell
-        //  Locally in the code, the radialWeightingMethod (RWM) can be
-        //  changed from "cell"- to "particle"-based if rWMethod is set to
-        //  mixed and the method call uses mixedRWM = true (e.g., nTC)
-        virtual inline scalar RWF
-        (
-            const label celli,
-            const bool mixedRWMethod = false
-        ) const;
+        virtual inline scalar RWF(const label celli) const;
 
         //- Return the local RWF for a given face
         virtual inline scalar pRWF
@@ -230,14 +216,7 @@ public:
         ) const;
 
         //- Recalculate and return the radial weighting factor for a cell
-        //  Locally in the code, the radialWeightingMethod (rWMethod) can be
-        //  changed from "cell"- to "particle"-based if rWMethod is set to
-        //  mixed and the method call uses mixedRWM = true (e.g., nTC)
-        virtual scalar recalculateRWF
-        (
-            const label cellI,
-            const bool mixedRWMethod = false
-        ) const;
+        virtual scalar recalculateRWF(const label cellI) const;
 
 
       // Write

@@ -107,7 +107,7 @@ void simplifiedBernoulliTrials::collide()
     {
         const scalar deltaT = cloud_.deltaTValue(cellI);
 
-        const scalar nParticle = cloud_.nParticles(cellI, true);
+        const scalar nParticle = cloud_.nParticles(cellI);
 
         const DynamicList<dsmcParcel*>& cellParcels(cellOccupancy[cellI]);
 

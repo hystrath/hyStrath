@@ -251,7 +251,7 @@ void simplifiedBernoulliTrialsTAS::collide()
 
             }
 
-            scalar prob1 = (cloud_.nParticles(cellI, true)*deltaT)/(mesh.cellVolumes()[cellI]/nSubCells_[cellI]);
+            scalar prob1 = (cloud_.nParticles(cellI)*deltaT)/(mesh.cellVolumes()[cellI]/nSubCells_[cellI]);
             label k = -1;
             label candidateP = -1;
             label candidateQ = -1;

@@ -53,13 +53,9 @@ inline const volScalarField& dsmcSpherical::nParticles() const
 }
 
 
-inline scalar dsmcSpherical::nParticles
-(
-    const label celli,
-    const bool mixedRWMethod
-) const
+inline scalar dsmcSpherical::nParticles(const label celli) const
 {
-    return timeStepModel_().nParticles(celli)*RWF(celli, mixedRWMethod);
+    return timeStepModel_().nParticles(celli)*RWF(celli);
 }
 
 
@@ -89,17 +85,8 @@ inline scalar dsmcSpherical::nParticles
 }
 
 
-inline scalar dsmcSpherical::RWF
-(
-    const label celli,
-    const bool mixedRWMethod
-) const
+inline scalar dsmcSpherical::RWF(const label celli) const
 {
-    if (rWMethod_ == "mixed" and mixedRWMethod)
-    {
-        return recalculateRWF(celli, mixedRWMethod);
-    }
-
     return RWF_[celli];
 }
 

@@ -146,7 +146,7 @@ void noTimeCounterSubCycled::collide()
 
                 scalar selectedPairs =
                     cloud_.collisionSelectionRemainder()[cellI]
-                    + 0.5*nC*(nC - 1)*cloud_.nParticles(cellI, true)*sigmaTcRMax*(deltaT/nSubCycles_)
+                    + 0.5*nC*(nC - 1)*cloud_.nParticles(cellI)*sigmaTcRMax*(deltaT/nSubCycles_)
                     /cellVolume;
 
                 label nCandidates(selectedPairs);

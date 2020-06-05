@@ -71,11 +71,7 @@ inline const volScalarField& dsmcCoordinateSystem::nParticles() const
 }
 
 
-inline scalar dsmcCoordinateSystem::nParticles
-(
-    const label celli,
-    const bool mixedRWMethod
-) const
+inline scalar dsmcCoordinateSystem::nParticles(const label celli) const
 {
     return timeStepModel_().nParticles(celli);
 }
@@ -107,11 +103,7 @@ inline scalar dsmcCoordinateSystem::nParticles
 }
 
 
-inline scalar dsmcCoordinateSystem::RWF
-(
-    const label celli,
-    const bool mixedRWMethod
-) const
+inline scalar dsmcCoordinateSystem::RWF(const label celli) const
 {
     return 1.0;
 }

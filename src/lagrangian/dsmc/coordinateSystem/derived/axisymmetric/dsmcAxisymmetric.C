@@ -210,20 +210,13 @@ void dsmcAxisymmetric::checkCoordinateSystemInputs(const bool init)
     rWMethod_ = cloud_.particleProperties().subDict("axisymmetricProperties")
         .lookupOrDefault<word>("radialWeightingMethod", "cell");
 
-    if
-    (
-        rWMethod_ != "cell" and rWMethod_ != "particle"
-            and rWMethod_ != "mixed"
-    )
+    if (rWMethod_ != "cell" and rWMethod_ != "particle")
     {
-        FatalErrorIn
-        (
-            "dsmcAxisymmetric::checkCoordinateSystemInputs(const bool init)"
-        )
-        << "The radial weighting method is badly defined. Choices "
-           "in constant/dsmcProperties are cell, particle, or "
-           "mixed. Please edit the entry: radialWeightingMethod"
-        << exit(FatalError);
+        FatalErrorInFunction
+            << "The radial weighting method is badly defined. Choices in "
+            << "constant/dsmcProperties are cell or particle. Please edit the "
+            << "entry: radialWeightingMethod."
+            << exit(FatalError);
     }
 
     const word& revolutionAxis =
@@ -376,15 +369,11 @@ scalar dsmcAxisymmetric::recalculatepRWF
 }
 
 
-scalar dsmcAxisymmetric::recalculateRWF
-(
-    const label cellI,
-    const bool mixedRWMethod
-) const
+scalar dsmcAxisymmetric::recalculateRWF(const label cellI) const
 {
     scalar RWF = 1.0;
 
-    if (rWMethod_ == "particle" or (mixedRWMethod and rWMethod_ == "mixed"))
+    if (rWMethod_ == "particle")
     {
         const DynamicList<dsmcParcel*>& cellParcels(cloud_.cellOccupancy()[cellI]);
 
