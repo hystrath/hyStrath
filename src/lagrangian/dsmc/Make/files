@@ -181,7 +181,8 @@ macroscopicProperties/derived/otherFields/dsmcElectronicEnergyLevelDistribution/
 
 
 /*    MASS FLUX */
-/*macroscopicProperties/derived/massFlux/dsmcMassFluxSurface/dsmcMassFluxSurface.C*/
+/*macroscopicProperties/derived/massFlux/dsmcMassFluxSurface/dsmcMassFluxSurface.C
+macroscopicProperties/derived/massFlux/atomisticMassFluxMultiSurfaces/atomisticMassFluxMultiSurfaces.C*/
 
 
 /* CONTROLLERS*/
