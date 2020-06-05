@@ -140,7 +140,10 @@ void dsmcSpherical::updateRWF()
 
         forAll(pRWF, facei)
         {
-            pRWF[facei] = recalculatepRWF(patchi, facei);
+            const label celli =
+                mesh_.boundaryMesh()[patchi].faceCells()[facei];
+
+            pRWF[facei] = RWF_[celli];
         }
     }
 }
@@ -261,25 +264,6 @@ void dsmcSpherical::evolve()
 
     sphericalWeighting();
     cloud_.reBuildCellOccupancy();
-}
-
-
-scalar dsmcSpherical::recalculatepRWF
-(
-    const label patchI,
-    const label faceI
-) const
-{
-    const point& fC = mesh_.boundaryMesh()[patchI].faceCentres()[faceI];
-    const scalar radius =
-        sqrt
-        (
-            sqr(fC.x() - origin_.x())
-          + sqr(fC.y() - origin_.y())
-          + sqr(fC.z() - origin_.z())
-        );
-
-    return 1.0 + (maxRWF() - 1.0)*sqr(radius/radialExtent());
 }
 
 

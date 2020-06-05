@@ -174,14 +174,6 @@ public:
         //- Evolve function
         virtual void evolve();
 
-        //- Recalculate and return the radial weighting factor for a given
-        //  patch/face
-        virtual scalar recalculatepRWF
-        (
-            const label patchI,
-            const label faceI
-        ) const;
-
         //- Recalculate and return the radial weighting factor for a cell
         virtual scalar recalculateRWF(const label cellI) const;
 

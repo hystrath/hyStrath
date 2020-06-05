@@ -114,16 +114,6 @@ Foam::dsmcCoordinateSystem::~dsmcCoordinateSystem()
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-Foam::scalar Foam::dsmcCoordinateSystem::recalculatepRWF
-(
-    const label patchI,
-    const label faceI
-) const
-{
-    return 1.0;
-}
-
-
 Foam::scalar Foam::dsmcCoordinateSystem::recalculateRWF(const label cellI) const
 {
     return 1.0;

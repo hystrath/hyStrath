@@ -144,7 +144,10 @@ void dsmcAxisymmetric::updateRWF()
 
         forAll(pRWF, facei)
         {
-            pRWF[facei] = recalculatepRWF(patchi, facei);
+            const label celli =
+                mesh_.boundaryMesh()[patchi].faceCells()[facei];
+
+            pRWF[facei] = RWF_[celli];
         }
     }
 }
@@ -354,19 +357,6 @@ void dsmcAxisymmetric::evolve()
 
     axisymmetricWeighting();
     cloud_.reBuildCellOccupancy();
-}
-
-
-scalar dsmcAxisymmetric::recalculatepRWF
-(
-    const label patchI,
-    const label faceI
-) const
-{
-    const point& fC = mesh_.boundaryMesh()[patchI].faceCentres()[faceI];
-    const scalar radius = mag(fC.component(polarAxis_));
-
-    return 1.0 + (maxRWF() - 1.0)*radius/radialExtent();
 }
 
 

@@ -427,8 +427,6 @@ void dsmcLiouFangPressureInlet::controlParcelsAfterCollisions()
 
                 scalar sCosTheta = (inletVelocity_[f] & -sF/fA )/mostProbableSpeed;
 
-                //const scalar& RWF = cloud_.coordSystem().pRWF(patchId_, f); //cloud_.coordSystem().recalculatepRWF(faceI);
-
                 // From Bird eqn 4.22
                 accumulatedParcelsToInsert_[iD][f] +=
                 moleFractions_[iD]*
