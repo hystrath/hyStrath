@@ -87,22 +87,6 @@ inline scalar dsmcCoordinateSystem::nParticles
 }
 
 
-inline scalar dsmcCoordinateSystem::nParticles(const label celli)
-{
-    return timeStepModel_().nParticles(celli);
-}
-
-
-inline scalar dsmcCoordinateSystem::nParticles
-(
-    const label patchi,
-    const label facei
-)
-{
-    return timeStepModel_().nParticles(patchi, facei);
-}
-
-
 inline scalar dsmcCoordinateSystem::RWF(const label celli) const
 {
     return 1.0;

@@ -69,22 +69,6 @@ inline scalar dsmcAxisymmetric::nParticles
 }
 
 
-inline scalar dsmcAxisymmetric::nParticles(const label celli)
-{
-    return timeStepModel_().nParticles(celli)*RWF(celli);
-}
-
-
-inline scalar dsmcAxisymmetric::nParticles
-(
-    const label patchi,
-    const label facei
-)
-{
-    return timeStepModel_().nParticles(patchi, facei)*pRWF(patchi, facei);
-}
-
-
 inline scalar dsmcAxisymmetric::RWF(const label celli) const
 {
     return RWF_[celli];

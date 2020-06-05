@@ -69,22 +69,6 @@ inline scalar dsmcSpherical::nParticles
 }
 
 
-inline scalar dsmcSpherical::nParticles(const label celli)
-{
-    return timeStepModel_().nParticles(celli)*RWF(celli);
-}
-
-
-inline scalar dsmcSpherical::nParticles
-(
-    const label patchi,
-    const label facei
-)
-{
-    return timeStepModel_().nParticles(patchi, facei)*pRWF(patchi, facei);
-}
-
-
 inline scalar dsmcSpherical::RWF(const label celli) const
 {
     return RWF_[celli];

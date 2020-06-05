@@ -170,18 +170,6 @@ public:
             const label facei
         ) const;
 
-        //- Return non-const access to the number of real particles represented
-        //  by a DSMC parcel for a given cell
-        virtual inline scalar nParticles(const label celli);
-
-        //- Return non-const access to the number of real particles represented
-        //  by a parcel for a given patch/face couple
-        virtual inline scalar nParticles
-        (
-            const label patchi,
-            const label facei
-        );
-
         //- Return the local RWF for a given cell
         virtual inline scalar RWF(const label celli) const;
 
