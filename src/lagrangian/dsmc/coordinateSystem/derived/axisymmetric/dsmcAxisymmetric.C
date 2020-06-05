@@ -210,12 +210,12 @@ void dsmcAxisymmetric::checkCoordinateSystemInputs(const bool init)
     rWMethod_ = cloud_.particleProperties().subDict("axisymmetricProperties")
         .lookupOrDefault<word>("radialWeightingMethod", "cell");
 
-    if (rWMethod_ != "cell" and rWMethod_ != "particle")
+    if (rWMethod_ != "cell" and rWMethod_ != "particleAverage")
     {
         FatalErrorInFunction
             << "The radial weighting method is badly defined. Choices in "
-            << "constant/dsmcProperties are cell or particle. Please edit the "
-            << "entry: radialWeightingMethod."
+            << "constant/dsmcProperties are \"cell\" or \"particleAverage\". "
+            << "Please edit the entry: radialWeightingMethod."
             << exit(FatalError);
     }
 
@@ -329,14 +329,15 @@ void dsmcAxisymmetric::checkCoordinateSystemInputs(const bool init)
 
     if (init)
     {
-        // "particle" cannot be used in dsmcInitialise, "cell" is thus employed
+        // "particleAverage" cannot be used in dsmcInitialise, "cell" is thus
+        // employed
         rWMethod_ = "cell";
 
         updateRWF();
     }
     else
     {
-        if (rWMethod_ != "particle")
+        if (rWMethod_ != "particleAverage")
         {
             updateRWF();
         }
@@ -346,7 +347,7 @@ void dsmcAxisymmetric::checkCoordinateSystemInputs(const bool init)
 
 void dsmcAxisymmetric::evolve()
 {
-    if (rWMethod_ == "particle")
+    if (rWMethod_ == "particleAverage")
     {
         updateRWF();
     }
@@ -373,7 +374,7 @@ scalar dsmcAxisymmetric::recalculateRWF(const label cellI) const
 {
     scalar RWF = 1.0;
 
-    if (rWMethod_ == "particle")
+    if (rWMethod_ == "particleAverage")
     {
         const DynamicList<dsmcParcel*>& cellParcels(cloud_.cellOccupancy()[cellI]);
 

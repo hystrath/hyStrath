@@ -78,7 +78,7 @@ class dsmcAxisymmetric
         scalar maxRWF_;
 
         //- Radial weighting method employed
-        //  Default: "cell", other options: "particle"
+        //  Default: "cell", other options: "particleAverage"
         word rWMethod_;
 
         //- Radial weighting factor field
