@@ -357,12 +357,12 @@ Foam::scalar Foam::chemistry2Model<CompType, ThermoType>::omega
         if(this->modifiedTemperature())
         {
             kf = R.kf(p, modTemperature(colTf), c2);
-            kr = R.kr(kf, p, modTemperature(colTr), c2);
+            kr = R.kr(p, modTemperature(colTr), c2);
         }
         else
         {
             kf = R.kf(p, colTf, c2);
-            kr = R.kr(kf, p, colTr, c2);
+            kr = R.kr(p, colTr, c2);
         }
     }
     else if (this->CVModel_ == "CVDV")
@@ -393,12 +393,12 @@ Foam::scalar Foam::chemistry2Model<CompType, ThermoType>::omega
         if(this->modifiedTemperature())
         {
             kf = R.kf(p, modTemperature(colTf), c2)*CVDVCoeff;
-            kr = R.kr(kf, p, modTemperature(colTr), c2);
+            kr = R.kr(p, modTemperature(colTr), c2);
         }
         else
         {
             kf = R.kf(p, colTf, c2)*CVDVCoeff;
-            kr = R.kr(kf, p, colTr, c2);
+            kr = R.kr(p, colTr, c2);
         }
     }
     else
@@ -587,12 +587,12 @@ Foam::scalar Foam::chemistry2Model<CompType, ThermoType>::omega
         if(this->modifiedTemperature())
         {
             kf = R.kf(p, modTemperature(colTf), c2);
-            kr = R.kr(kf, p, modTemperature(colTr), c2); 
+            kr = R.kr(p, modTemperature(colTr), c2); 
         }
         else
         {
             kf = R.kf(p, colTf, c2);
-            kr = R.kr(kf, p, colTr, c2); 
+            kr = R.kr(p, colTr, c2); 
         }
     }
     else if (this->CVModel_ == "CVDV")
@@ -610,12 +610,12 @@ Foam::scalar Foam::chemistry2Model<CompType, ThermoType>::omega
         if(this->modifiedTemperature())
         {
             kf = R.kf(p, modTemperature(colTf), c2)*CVDVCoeff;
-            kr = R.kr(kf, p, modTemperature(colTr), c2);
+            kr = R.kr(p, modTemperature(colTr), c2);
         }
         else
         {
             kf = R.kf(p, colTf, c2)*CVDVCoeff;
-            kr = R.kr(kf, p, colTr, c2);
+            kr = R.kr(p, colTr, c2);
         }
     }
     else
