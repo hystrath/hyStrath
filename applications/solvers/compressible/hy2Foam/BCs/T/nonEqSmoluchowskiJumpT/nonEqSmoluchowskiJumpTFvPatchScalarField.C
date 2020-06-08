@@ -184,9 +184,9 @@ void Foam::nonEqSmoluchowskiJumpTFvPatchScalarField::updateCoeffs()
     const fvPatchScalarField& palpha =
         patch().lookupPatchField<volScalarField, scalar>(alphaName_); // NEW VINCENT 03/03/2016
     const fvPatchScalarField& pgammatr =
-        patch().lookupPatchField<volScalarField, scalar>(gammatrName_); // NEW VINCENT 03/03/2016     
+        patch().lookupPatchField<volScalarField, scalar>(gammatrName_); // NEW VINCENT 03/03/2016
     const fvPatchScalarField& pmfp =
-        patch().lookupPatchField<volScalarField, scalar>(mfpName_); // NEW VINCENT 28/02/2016           
+        patch().lookupPatchField<volScalarField, scalar>(mfpName_); // NEW VINCENT 28/02/2016
     const fvPatchScalarField& prho =
         patch().lookupPatchField<volScalarField, scalar>(rhoName_);
     /*const fvPatchField<scalar>& ppsi =
@@ -205,7 +205,7 @@ void Foam::nonEqSmoluchowskiJumpTFvPatchScalarField::updateCoeffs()
         thermophysicalProperties.subDict("mixture").subDict("transport")
         .lookup("Pr")
     );*/
-    
+
     // DELETION VINCENT 28/02/2016 ********************************************
     /*Field<scalar> C2
     (
@@ -215,7 +215,7 @@ void Foam::nonEqSmoluchowskiJumpTFvPatchScalarField::updateCoeffs()
         *(2.0 - accommodationCoeff_)/accommodationCoeff_
     );*/
     // END DELETION VINCENT 28/02/2016 ****************************************
-    
+
     Field<scalar> C2
     (
         pmfp*2.0/(pgammatr + 1.0)/(pmu/palpha) // Pr = mu*Cp/k = mu/alpha * Cp/Cv = mu/alpha * gamma

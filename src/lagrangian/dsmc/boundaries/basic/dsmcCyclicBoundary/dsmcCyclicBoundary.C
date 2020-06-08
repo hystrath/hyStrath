@@ -94,7 +94,7 @@ dsmcCyclicBoundary::dsmcCyclicBoundary
     if (!isA<cyclicPolyPatch>(patch))
     {
         FatalErrorIn("dsmcCyclicBoundary::dsmcCyclicBoundary()")
-            << "Patch: " << patchName_ << " is not a cyclic boundary. " 
+            << "Patch: " << patchName_ << " is not a cyclic boundary. "
             << nl << "in: "
             << t.system()/"boundariesDict"
             << exit(FatalError);
@@ -165,7 +165,7 @@ void dsmcCyclicBoundary::getCoupledFaces(const polyMesh& mesh)
                     (
                         patch
                     ).referPatchName();
-    
+
                     if(patchName == patchName_)
                     {
                         for(label i = 0; i < patch.size(); i++)
@@ -328,7 +328,7 @@ void dsmcCyclicBoundary::setNewBoundaryFields()
 //     if (!isA<cyclicPolyPatch>(patch))
 //     {
 //         FatalErrorIn("dsmcCyclicBoundary::dsmcCyclicBoundary()")
-//             << "Patch: " << patchName_ << " is not a cyclic boundary. " 
+//             << "Patch: " << patchName_ << " is not a cyclic boundary. "
 //             << nl << "in: "
 //             << t.system()/"boundariesDict"
 //             << exit(FatalError);
@@ -381,10 +381,10 @@ void dsmcCyclicBoundary::writeTimeData
     {
         forAll(yData, n)
         {
-            file 
-                << xData[n] << "\t" 
-                << yData[n].x() << "\t" << yData[n].y() 
-                << "\t" << yData[n].z() 
+            file
+                << xData[n] << "\t"
+                << yData[n].x() << "\t" << yData[n].y()
+                << "\t" << yData[n].z()
                 << endl;
         }
     }

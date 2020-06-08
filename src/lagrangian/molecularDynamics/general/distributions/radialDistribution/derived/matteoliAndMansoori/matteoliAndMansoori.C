@@ -85,7 +85,7 @@ matteoliAndMansoori::matteoliAndMansoori
         if(readCoefficients_)
         {
             dictionary coefficientsDict(propsDict_.subDict("coefficients"));
-    
+
             setCoefficients(coefficientsDict);
         }
     }
@@ -210,13 +210,13 @@ scalar matteoliAndMansoori::p2
 // {
 //     return g_;
 // }
-// 
-// 
+//
+//
 // const scalarField& matteoliAndMansoori::r() const
 // {
 //     return r_;
 // }
-// 
+//
 // const scalar& matteoliAndMansoori::binWidth() const
 // {
 //     return binWidth_;

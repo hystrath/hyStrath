@@ -58,7 +58,7 @@ timeFluxData::timeFluxData
 {}
 
 
-//- Construct from Time and timeDict 
+//- Construct from Time and timeDict
 timeFluxData::timeFluxData
 (
     Time& t,
@@ -108,15 +108,15 @@ void timeFluxData::setInitialData()
     Info << nl << endl;
 
 //     controlTimes_.setSize(totalNContSteps_+1, 0.0);
-// 
+//
 //     averagingTimes_.setSize(totalNAvSteps_+1, 0.0);
-// 
-// 
+//
+//
 //     forAll(controlTimes_, tT)
 //     {
 //         controlTimes_[tT] = startTime + tT*controlTime_.deltaT();
 //     }
-// 
+//
 //     forAll(averagingTimes_, tT)
 //     {
 //         averagingTimes_[tT] = startTime + tT*averagingTime_.deltaT();
@@ -127,7 +127,7 @@ void timeFluxData::setInitialData()
     nControlSteps_ = averagingTime_.deltaT()/controlTime_.deltaT();
 
 
-   //-- offsetting the controlling time index so that the time-interval finishes 
+   //-- offsetting the controlling time index so that the time-interval finishes
     //   one time-step ahead of the calcProp time.
 
     averagingTime_.timeIndex() = averagingTime_.nSteps();
@@ -137,13 +137,13 @@ void timeFluxData::setInitialData()
 
 void timeFluxData::checkAndModifyTimeProperties()
 {
-    //- checking 
+    //- checking
 
     bool changedProperties = false;
     const scalar& deltaTMD = mdTime_.deltaT();
 
     // - 1. averaging time
-    //   for now we ensure that the averaging interval is equal 
+    //   for now we ensure that the averaging interval is equal
     //   to the writing interval
 
     label& nAverages = averagingTime_.nSteps();
@@ -224,8 +224,8 @@ void timeFluxData::checkAndModifyTimeProperties()
     {
         FatalErrorIn("timeFluxData::timeFluxData()")
             << "Time data members have been changed."
-            << " Check and change them appropriately from the time dictionary" 
-            << nl 
+            << " Check and change them appropriately from the time dictionary"
+            << nl
             << exit(FatalError);
     }
 }
@@ -243,7 +243,7 @@ void timeFluxData::setTimeData(const dictionary& timeDict)
 {
     const label nAverages(readLabel(timeDict.lookup("nAverages")));
     const label nControls(readLabel(timeDict.lookup("nControls")));
- 
+
     averagingTime_.nSteps() = nAverages;
     controlTime_.nSteps() = nControls;
 
@@ -341,7 +341,7 @@ const label& timeFluxData::writeTimeIndex() const
 // {
 //     return controlTimes_;
 // }
-// 
+//
 // const scalarField& timeFluxData::averagingTimes() const
 // {
 //     return averagingTimes_;

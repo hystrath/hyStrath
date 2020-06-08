@@ -28,10 +28,10 @@ Class
 Description
 
     Create a set of bins within a cuboid domain from start point to end point.
-    Each bin is further divided in a perpendicular direction d1 into another 
+    Each bin is further divided in a perpendicular direction d1 into another
     set of bins,where a one dimensional profile is measured. The result are N
     number of one dimensional profiles.
-    
+
 
 SourceFiles
     boundBoxMultiOneDimBinsI.H
@@ -66,15 +66,15 @@ private:
 
         dictionary propsDict_;
 
-        
-        
+
+
         // outer bound box
-        
+
         dictionary outerDict_;
-        
+
         vector startPoint_;
         vector endPoint_;
-        
+
         vector unitVector_;
 
         label nBins_;
@@ -86,33 +86,33 @@ private:
         vector n2_;
 
         scalar area_;
-       
-        
-//         scalar rSEMag_;
-        
-        boundBox outerBB_;
-        
-        List<vector> rBins_;        
 
-        
+
+//         scalar rSEMag_;
+
+        boundBox outerBB_;
+
+        List<vector> rBins_;
+
+
         // inner bound boxes
-        
+
         dictionary innerDict_;
-        
-       
+
+
         label nBinsY_;
         vector unitVectorY_;
 
         vector startPointY_;
-        vector endPointY_;        
-        
-        scalar binWidthY_;
-        
-        List<boundBox> innerBBs_;
-        
+        vector endPointY_;
 
-        
-        
+        scalar binWidthY_;
+
+        List<boundBox> innerBBs_;
+
+
+
+
     // Private Member Functions
 
         void checkBoundBox

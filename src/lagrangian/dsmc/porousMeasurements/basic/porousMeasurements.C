@@ -35,8 +35,8 @@ Description
 namespace Foam
 {
 
-// * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //  
-  
+// * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
+
     defineTypeNameAndDebug(porousMeasurements, 0);
     defineRunTimeSelectionTable(porousMeasurements, fvMesh);
 }
@@ -72,14 +72,14 @@ Foam::porousMeasurements::New
             "porousMeasurement",
             "no"
         );
-        
-    porousMeasurementModel = "dsmc" 
+
+    porousMeasurementModel = "dsmc"
         + static_cast<word>(std::toupper(porousMeasurementModel[0]))
-        + porousMeasurementModel.substr(1) + "PorousMediumMeasurements";    
-    
-    Info<< "Selecting the porous measurement model:" << tab 
+        + porousMeasurementModel.substr(1) + "PorousMediumMeasurements";
+
+    Info<< "Selecting the porous measurement model:" << tab
         << porousMeasurementModel << "\n" << endl;
-    
+
     fvMeshConstructorTable::iterator cstrIter =
         fvMeshConstructorTablePtr_->find(porousMeasurementModel);
 

@@ -92,7 +92,7 @@ polyTemperatureMaxwellDemon::polyTemperatureMaxwellDemon
     );
 
     molIds_ = ids.molIds();
-    
+
     Info << "mol ids = " << molIds_ << endl;
 }
 
@@ -135,7 +135,7 @@ void polyTemperatureMaxwellDemon::controlAfterVelocityII()
         forAll(controlZone(), c)
         {
             const label& cellI = controlZone()[c];
-    
+
             const List<polyMolecule*>& molsInCell = molCloud_.cellOccupancy()[cellI];
 
             forAll(molsInCell, m)
@@ -149,14 +149,14 @@ void polyTemperatureMaxwellDemon::controlAfterVelocityII()
                         const scalar& massI = molCloud_.cP().mass(molI->id());
 
                         scalar sigma = sqrt (temperatures_[c]*molCloud_.redUnits().kB() / massI);
-    
+
                         vector molVel
                         (
                             sigma*molCloud_.rndGen().GaussNormalMD<scalar>(),
                             sigma*molCloud_.rndGen().GaussNormalMD<scalar>(),
                             sigma*molCloud_.rndGen().GaussNormalMD<scalar>()
                         );
-    
+
                         molI->v() = velocities_[c] + molVel;
                     }
                 }
@@ -171,7 +171,7 @@ void polyTemperatureMaxwellDemon::calculateProperties()
 
 void polyTemperatureMaxwellDemon::output
 (
-    const fileName& fixedPathName, 
+    const fileName& fixedPathName,
     const fileName& timePath
 )
 {}

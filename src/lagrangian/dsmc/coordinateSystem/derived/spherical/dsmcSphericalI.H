@@ -99,7 +99,7 @@ inline scalar dsmcSpherical::RWF
     {
         return recalculateRWF(celli, mixedRWMethod);
     }
-    
+
     return RWF_[celli];
 }
 

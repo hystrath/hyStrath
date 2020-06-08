@@ -119,43 +119,43 @@ void dsmcFixedHeatFluxFieldPatch::calculateProperties()
     nSamplesAverage_++;
 
     const scalar deltaT = mesh_.time().deltaTValue(); //TODO cloud_.deltaTValue(p.cell());
-    
+
     forAll(EcTotSum_, f)
     {
         EcTotSum_[f] += EcTot_[f];
         EcTot_[f] = 0.0;
     }
-    
+
     if(stepCounter_ >= nSamples_)
     {
         forAll(EcTotSum_, f)
-        { 
+        {
             if(fabs(EcTotSum_[f]) > VSMALL) // zero face temperature not allowed!
             {
                 const label& faceI = faces_[f];
                 scalar fA = mag(mesh_.faceAreas()[faceI]);
 
                 scalar heatFlux = EcTotSum_[f]/(deltaT*nSamplesAverage_*fA);
-                
+
                 scalar normalisedDesiredHeatFlux = desiredHeatFlux_ / (referenceCp_*referenceRho_*referenceU_*referenceTemperature_);
-                
+
                 scalar normalisedHeatFlux = heatFlux / (referenceCp_*referenceRho_*referenceU_*referenceTemperature_);
-                
+
                 scalar oldWallTemperature = newWallTemperature_[f];
-                
+
                 scalar deltaWallTemperature = relaxationFactor_*(normalisedHeatFlux - normalisedDesiredHeatFlux)*oldWallTemperature;
-                
+
                 newWallTemperature_[f] = oldWallTemperature + deltaWallTemperature;
-                    
+
                 if(newWallTemperature_[f] < VSMALL)
                 {
                     newWallTemperature_[f] = temperature_;
                 }
-            }                                    
+            }
         }
-        
+
         label wppIndex = patchId_;
-        
+
         forAll(newWallTemperature_, f)
         {
             if(newWallTemperature_[f] > VSMALL)
@@ -163,7 +163,7 @@ void dsmcFixedHeatFluxFieldPatch::calculateProperties()
                 wallTemperature_.boundaryFieldRef()[wppIndex][f] = newWallTemperature_[f];
             }
         }
-        
+
         IOdictionary newBoundariesDict
         (
             IOobject
@@ -175,30 +175,30 @@ void dsmcFixedHeatFluxFieldPatch::calculateProperties()
                 IOobject::NO_WRITE
             )
         );
-        
+
         PtrList<entry> patchBoundaryList(newBoundariesDict.lookup("dsmcPatchBoundaries"));
-        
+
         List< autoPtr<dsmcPatchBoundary> > patchBoundaryModels;
-        
+
         patchBoundaryModels.setSize(patchBoundaryList.size());
-        
+
         forAll(patchBoundaryModels, p)
         {
             const entry& boundaryI = patchBoundaryList[p];
             const dictionary& boundaryIDict = boundaryI.dict();
-                        
+
             const dictionary& patchNameDict = boundaryIDict.subDict("patchBoundaryProperties");
-            
+
             const word& patchName = patchNameDict.lookup("patchName");
-          
+
             if(patchName == patchName_)
-            {               
+            {
                 updateProperties(boundaryIDict);
             }
         }
-        
+
         stepCounter_ = 0.0;
-        
+
         if(resetAtOutput_)
         {
             EcTotSum_ = 0.0;
@@ -214,20 +214,20 @@ void dsmcFixedHeatFluxFieldPatch::controlParticle(dsmcParcel& p, dsmcParcel::tra
     vector& U = p.U();
 
     scalar& ERot = p.ERot();
-    
+
     labelList& vibLevel = p.vibLevel();
-    
+
 //     label& ELevel = p.ELevel();
 
     label typeId = p.typeId();
-    
+
     scalar m = cloud_.constProps(typeId).mass();
 
     scalar preIE = 0.5*m*(U & U) + ERot;
 //         + cloud_.constProps(typeId).electronicEnergyList()[ELevel];
-        
+
     preIE += cloud_.constProps(typeId).eVib_tot(vibLevel);
-    
+
     label faceId = findIndex(faces_, p.face());
 
     vector nw = p.normal();
@@ -266,12 +266,12 @@ void dsmcFixedHeatFluxFieldPatch::controlParticle(dsmcParcel& p, dsmcParcel::tra
     vector tw2 = nw^tw1;
 
     const scalar& T = newWallTemperature_[faceId];
-    
+
 
     scalar mass = cloud_.constProps(typeId).mass();
 
     scalar rotationalDof = cloud_.constProps(typeId).rotationalDegreesOfFreedom();
-    
+
     scalar vibrationalDof = cloud_.constProps(typeId).nVibrationalModes();
 
     U =
@@ -285,23 +285,23 @@ void dsmcFixedHeatFluxFieldPatch::controlParticle(dsmcParcel& p, dsmcParcel::tra
     U += velocity_;
 
     ERot = cloud_.equipartitionRotationalEnergy(T, rotationalDof);
-    
+
     vibLevel = cloud_.equipartitionVibrationalEnergyLevel(T, vibrationalDof, typeId);
 
     measurePropertiesAfterControl(p, 0.0);
-    
+
     scalar postIE = 0.5*m*(U & U) + ERot;
 //         + cloud_.constProps(typeId).electronicEnergyList()[p.ELevel()] ;
-        
+
     postIE += cloud_.constProps(typeId).eVib_tot(vibLevel);
-    
+
 //     ELevel = cloud_.equipartitionElectronicLevel
 //                     (
 //                         T,
 //                         cloud_.constProps(typeId).electronicDegeneracyList(),
 //                         cloud_.constProps(typeId).electronicEnergyList()
 //                     );
-    
+
     EcTot_[faceId] += cloud_.nParticles(patchId(), faceId)*(preIE - postIE);
 }
 
@@ -320,7 +320,7 @@ void dsmcFixedHeatFluxFieldPatch::updateProperties(const dictionary& newDict)
     updateBoundaryProperties(newDict);
 
     propsDict_ = newDict.subDict(typeName + "Properties");
-    
+
     setProperties();
 }
 

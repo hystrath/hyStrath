@@ -61,9 +61,9 @@ standardCyclic::standardCyclic
         || (theta_ > (constant::mathematical::pi + SMALL))
     )
     {
-        
+
         FatalErrorIn("standardCyclicBoundary::standardCyclicBoundary()")
-            << "Patch: " << patchName_ << " needs a rotational cyclic boundary model. " 
+            << "Patch: " << patchName_ << " needs a rotational cyclic boundary model. "
              << " Angle = " << theta_
             << nl << "in: "
             << t.system()/"boundariesDict"

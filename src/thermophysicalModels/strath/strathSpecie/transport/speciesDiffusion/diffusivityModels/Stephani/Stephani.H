@@ -26,12 +26,12 @@ Class
     Foam::binaryDiffusivityModels::Stephani
 
 Description
-    Stephani binary diffusivity model 
-    
+    Stephani binary diffusivity model
+
     (see Development of a Hybrid DSMC/CFD Method for Hypersonic Boundary Layer
      Flow over Discrete Surface Roughness by Kelly Ann Stephani (May 2012)
      THE UNIVERSITY OF TEXAS at AUSTIN, Appendix C)
-    
+
 SourceFiles
     Stephani.C
 
@@ -66,26 +66,26 @@ class Stephani
 
         //- Fundamental constants (more efficient)
         const scalar pi, kB, Runi;
-        
+
         //- Reduced molecular weight and reduced mass
         const scalar MStar_, mStar_;
-        
+
         //- Parameters for Stephani's model
         const scalar omegaref_, dref_, Tref_, constantOmegaNeutral1_;
-        
-        
+
+
     // Private member functions
-        
-        inline scalar constantExpressionInOmegaNeutral1() const 
+
+        inline scalar constantExpressionInOmegaNeutral1() const
         {
             return pi*sqr(dref_)/2.0*pow(Tref_, omegaref_ - 0.5)*
                 sqrt(kB/(2.0*pi*mStar_))*tgamma(3.5-omegaref_)/tgamma(2.5-omegaref_);
         }
-        
-        inline scalar omegaNeutral1(const scalar T) const 
+
+        inline scalar omegaNeutral1(const scalar T) const
         {
-            return constantOmegaNeutral1_*pow(T, 1.0-omegaref_);    
-        }    
+            return constantOmegaNeutral1_*pow(T, 1.0-omegaref_);
+        }
 
 
 public:
@@ -119,7 +119,7 @@ public:
 
         //- Binary diffusion coefficient [m^2/s]
         virtual tmp<volScalarField> D() const;
-         
+
         //- Binary diffusion coefficient for patch [m^2/s]
         virtual tmp<scalarField> D
         (
@@ -127,7 +127,7 @@ public:
             const scalarField& T,
             const label patchi
         ) const;
-         
+
 };
 
 

@@ -27,7 +27,7 @@ Class
 
 Description
     rarefied model.
-  
+
 SourceFiles
     rarefied.C
 
@@ -45,7 +45,7 @@ SourceFiles
 
 namespace Foam
 {
-  
+
 /*---------------------------------------------------------------------------*\
                              Class rarefied Declaration
 \*---------------------------------------------------------------------------*/
@@ -54,31 +54,31 @@ template<class ThermoType>
 class rarefied
 :
     public rarefactionParameter
-{  
+{
 
 protected:
-  
+
     // Protected data
-    
+
         //- Thermodynamic data of the species
         const PtrList<ThermoType>& speciesThermo_;
-        
+
         // Mole-fraction below which the contribution of the species is ignored
         const scalar miniXs_;
 
 
     // Protected member functions
-    
+
         //- Update the coefficients of the species equations
         virtual void updateCoefficients();
-    
+
 
 public:
 
     //- Runtime type information
     TypeName("rarefied");
 
-    
+
     // Constructors
 
         //- Construct from components
@@ -101,26 +101,26 @@ public:
         {
             return speciesThermo_[i].mu(p, Tt);
         }
-        
+
         //- Molecular weight [g/mol] of a specie given by index.
         inline scalar W(label i) const
         {
             return speciesThermo_[i].W();
         }
-        
+
         //- Molecular weight ratio for a pair of species given by index.
         inline scalar ratioW(label i, label j) const
         {
             return W(i)/W(j);
         }
-        
+
         //- Temperature exponent of viscosity for a specie given by index.
         inline scalar omega(label i) const
         {
             return speciesThermo_[i].omega();
         }
-        
-        //- Temperature-viscosity coefficient of a pair of species (i, j) 
+
+        //- Temperature-viscosity coefficient of a pair of species (i, j)
         //  given by index.
         inline scalar omegaPair(label i, label j) const
         {
@@ -133,28 +133,28 @@ public:
                 return 0.5*(omega(i)+omega(j));
             }
         }
-        
+
         //- Diameter of a specie given by index.
         inline scalar diameter(label i) const
         {
             return speciesThermo_[i].diameter();
         }
-        
+
         //- Diameter of a pair of species (i, j) given by index.
         inline scalar diameterPair(label i, label j) const
         {
             return 0.5*(diameter(i)+diameter(j));
         }
-        
+
         // Calculations and updates the different fields
         virtual void correct(const volVectorField& U);
-        
+
         //- Write the user-defined rarefied quantities
         virtual void write();
-                
+
         //- Read transportProperties dictionary
         virtual bool read();
-        
+
         //- Inner quantity calculation (Bird's book, 1993, Eq. 4.77)
         inline scalar innerQuantity(label i, label j, scalar Tt) const
         {
@@ -163,7 +163,7 @@ public:
         }
   };
 
-  
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 }	// End namespace Foam

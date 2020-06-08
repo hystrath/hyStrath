@@ -165,7 +165,7 @@ Foam::cachedRandomMD::cachedRandomMD
 (
     const label seed,
     const label cacheSizeMult,
-    const label numMols 
+    const label numMols
 )
 :
     seed_(1),
@@ -178,7 +178,7 @@ Foam::cachedRandomMD::cachedRandomMD
     {
         seed_ = seed;
     }
-    
+
     initialise(numMols);
 }
 

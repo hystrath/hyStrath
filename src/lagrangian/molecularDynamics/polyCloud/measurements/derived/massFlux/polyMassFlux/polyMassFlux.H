@@ -26,13 +26,13 @@ Class
     polyMassFlux
 
 Description
-    Instantaneous measurements of mass flow rate (here instantaneous is defined 
+    Instantaneous measurements of mass flow rate (here instantaneous is defined
     at every MD timestep)
-    
-    Apply to an existing surface 
-    
-    
-    
+
+    Apply to an existing surface
+
+
+
 SourceFiles
     polyMassFlux.C
 
@@ -69,7 +69,7 @@ private:
 
         //- subDictionary containing the properties
         dictionary propsDict_;
-    
+
         word fieldName_;
 
         fileName pathName_;
@@ -87,7 +87,7 @@ private:
         List<label> molIds_;
 
         vector fluxDirection_;
-    
+
         scalar cumulativeFlux_;
 
         DynamicList<scalar> massFlux_;

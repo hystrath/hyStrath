@@ -54,7 +54,7 @@ namespace Foam
 linearLeastSquaresFit::linearLeastSquaresFit
 (
     const scalarField& x,
-    const scalarField& y,         
+    const scalarField& y,
 //     scalarField sig,
 //     label mwt,
     scalar& a,
@@ -67,39 +67,39 @@ linearLeastSquaresFit::linearLeastSquaresFit
 
 {
 
-   
+
     a = 0.0;
     label nData = x.size();
     if(nData > 0)
-    { 
+    {
     scalar sx= 0.0;
     scalar sy= 0.0;
     scalar ss = 0.0;
     scalar sxoss = 0.0;
     scalar t =0.0;
     scalar st2 =0.0;
-    
+
     for (label i=0; i < nData; i++)
     {
         sx += x[i];
         sy += y[i];
     }
-    
+
     ss = nData;
-    
+
     sxoss=sx/ss;
-    
+
     for (label i=0; i < nData; i++)
     {
         t = x[i]-sxoss;
         st2 += t*t;
         a += t*y[i];
     }
-    
+
     a /= st2;
     b=(sy-(sx*a))/ss;
 //     siga=sqrt((1.0+sx*sx/(ss*st2))/ss);
-//     sigb=sqrt(1.0/st2);    
+//     sigb=sqrt(1.0/st2);
 //     chi2=0.0;
 //     q=0.0;
     }
@@ -135,9 +135,9 @@ linearLeastSquaresFit::~linearLeastSquaresFit()
 //             << "Attempted assignment to self"
 //             << abort(FatalError);
 //     }
-// 
+//
 //     Map<label>::operator=(rhs);
-// 
+//
 //     binWidth_ = rhs.binWidth();
 // }
 
@@ -151,14 +151,14 @@ linearLeastSquaresFit::~linearLeastSquaresFit()
 // {
 //     os  << d.binWidth_
 //         << static_cast<const Map<label>&>(d);
-// 
+//
 //     // Check state of Ostream
 //     os.check
 //     (
 //         "Ostream& operator<<(Ostream&, "
 //         "const linearLeastSquaresFit&)"
 //     );
-// 
+//
 //     return os;
 // }
 

@@ -115,7 +115,7 @@ Foam::CEATransport<Thermo>::viscosityCoeffs
             return mu_[Ti];
         }
     }
-    
+
     return mu_[temp_.size()-1];
 }
 
@@ -134,7 +134,7 @@ Foam::CEATransport<Thermo>::thermalConductivityCoeffs
             return kappa_[Ti];
         }
     }
-    
+
     return kappa_[temp_.size()-1];
 }
 
@@ -148,7 +148,7 @@ inline Foam::scalar Foam::CEATransport<Thermo>::mu
 ) const
 {
     const CEATransportArray& muCoeffs = viscosityCoeffs(Tt);
-    
+
     //NB: The coefficients in the dictionary tables are given in microPoise (cf Eilmer3, CEA-viscosity.cxx)
     return 1.0e-7*Foam::exp(muCoeffs[0]*::log(Tt) + muCoeffs[1]/Tt + muCoeffs[2]/Foam::sqr(Tt) + muCoeffs[3]);
 }
@@ -161,7 +161,7 @@ inline Foam::scalar Foam::CEATransport<Thermo>::kappatr
 ) const
 {
     const CEATransportArray& kappaCoeffs = thermalConductivityCoeffs(Tt);
-    
+
     //NB: The coefficients in the dictionary tables are given in microWatts/(cm.K) (cf Eilmer3, CEA-thermal-conductivity.cxx)
     return 1.0e-4*Foam::exp(kappaCoeffs[0]*::log(Tt) + kappaCoeffs[1]/Tt + kappaCoeffs[2]/Foam::sqr(Tt) + kappaCoeffs[3]);
 }
@@ -192,7 +192,7 @@ inline Foam::scalar Foam::CEATransport<Thermo>::alphatr
     else
     {
         return 0.0;
-    } 
+    }
 }
 
 
@@ -209,7 +209,7 @@ inline Foam::scalar Foam::CEATransport<Thermo>::alphave
     else
     {
         return 0.0;
-    } 
+    }
 }
 
 // * * * * * * * * * * * * * * * Member Operators  * * * * * * * * * * * * * //
@@ -280,7 +280,7 @@ inline Foam::CEATransport<Thermo> Foam::operator+
     scalar molr2 = ceat2.nMoles()/t.nMoles();
 
     DynamicList<FixedList<scalar, Foam::CEATransport<Thermo>::nCoeffs_>> mu, kappa;
-    
+
     return CEATransport<Thermo>
     (
         t,
@@ -306,7 +306,7 @@ inline Foam::CEATransport<Thermo> Foam::operator-
 
     scalar molr1 = ceat1.nMoles()/t.nMoles();
     scalar molr2 = ceat2.nMoles()/t.nMoles();
-    
+
     DynamicList<FixedList<scalar, Foam::CEATransport<Thermo>::nCoeffs_>> mu, kappa;
 
     return CEATransport<Thermo>

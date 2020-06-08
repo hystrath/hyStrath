@@ -65,7 +65,7 @@ private:
 
         // Thermo package that contains species patch data
         const rho2ReactionThermo& thermo_;
-        
+
 
 public:
 

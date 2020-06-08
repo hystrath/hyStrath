@@ -76,7 +76,7 @@ private:
 
         //- Species index
         word specieName_;
-        
+
         // Thermo package that contains species patch data
         const rho2ReactionThermo& thermo_;
 

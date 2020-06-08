@@ -26,7 +26,7 @@ Class
    forceAtTimeZero : force at time t = 0
    forceAtRampEndTime : maximum ramp force
    rampEndTime : time at which maximum ramp force is reached
- 
+
    optional
      relaxationTime : allows for an initial equilibration/relaxation time
      provided options to fixGradient (i.e. changes rampEndTime)
@@ -34,7 +34,7 @@ Class
 
      acrossMultipleRuns : allows you to pick up where your simulation has finished.
      No need to change your other options.
- 
+
 Description
 
 SourceFiles
@@ -71,26 +71,26 @@ private:
         dictionary propsDict_;
 
         vector force_;
-        
+
         vector direction_;
-        
+
         scalar initialForce_;
-        
+
         scalar finalForce_;
-        
+
         scalar endTime_;
-        
+
         scalar forceGradient_;
 
         scalar relaxationTime_;
-        
+
         scalar currentTime_;
 
         scalar deltaTMD_;
-    
+
         scalar c_;
-    
-    
+
+
 
 public:
 
@@ -128,9 +128,9 @@ public:
             void updateForce();
 
             vector force(const vector& position);
-            
+
             vector force(const scalar& time);
-            
+
         // Write
 
 

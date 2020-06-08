@@ -61,19 +61,19 @@ oscillatingVelocity::oscillatingVelocity
     wallMotion(time, dict),
     propsDict_(dict.subDict(typeName + "Properties")),
     velocity_(vector::zero),
-    unitVector_(propsDict_.lookup("unitVector")),    
+    unitVector_(propsDict_.lookup("unitVector")),
     initialVelocity_(readScalar(propsDict_.lookup("initialVelocity"))),
     amplitude_(readScalar(propsDict_.lookup("amplitude"))),
     period_(readScalar(propsDict_.lookup("period"))),
     offsetTime_(0.0),
     currentTime_(time_.startTime().value()),
 //     deltaTMD_(time.deltaT().value()),
-    deltaT_(readScalar(propsDict_.lookup("deltaT")))    
+    deltaT_(readScalar(propsDict_.lookup("deltaT")))
 {
     unitVector_ /= mag(unitVector_);
-    
-    velocity_ = unitVector_*initialVelocity_;    
-    
+
+    velocity_ = unitVector_*initialVelocity_;
+
 //     offsetTime_ = tauT_*Foam::asin(mag(velocity_)/mag(uMax_))/360;
 }
 
@@ -100,11 +100,11 @@ void oscillatingVelocity::updateVelocity()
 {
 //     const scalar t = time_.timeOutputValue();
     const scalar initialTime = time_.startTime().value();
-    
+
     currentTime_ += deltaT_;
-    
+
     scalar t = currentTime_-initialTime+offsetTime_;
-    
+
     velocity_ = amplitude_*Foam::sin(2.0*constant::mathematical::pi*t/period_)*unitVector_;
 }
 
@@ -121,14 +121,14 @@ void oscillatingVelocity::updateVelocity()
 // {
 //     os  << d.binWidth_
 //         << static_cast<const Map<label>&>(d);
-// 
+//
 //     // Check state of Ostream
 //     os.check
 //     (
 //         "Ostream& operator<<(Ostream&, "
 //         "const oscillatingVelocity&)"
 //     );
-// 
+//
 //     return os;
 // }
 

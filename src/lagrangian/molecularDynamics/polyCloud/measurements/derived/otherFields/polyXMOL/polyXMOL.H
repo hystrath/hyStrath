@@ -77,7 +77,7 @@ private:
 
         label iteration_;
 
-        // PDB in zone        
+        // PDB in zone
         bool zone_;
         word regionName_;
         label regionId_;
@@ -136,7 +136,7 @@ public:
 
         //- write field
         void writeField();
-}; 		
+};
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

@@ -40,11 +40,11 @@ namespace Foam
 
     addToRunTimeSelectionTable
     (
-        dsmcCoordinateSystem, 
+        dsmcCoordinateSystem,
         dsmcCartesian,
         fvMesh
     );
-    
+
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
 

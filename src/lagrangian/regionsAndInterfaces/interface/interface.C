@@ -161,7 +161,7 @@ void interface::handleBoundaries()
 {
     if(Pstream::parRun())
     {
-        // for all cells that have been visited at the boundary of the processor domain 
+        // for all cells that have been visited at the boundary of the processor domain
         // accept the faces at the processor boundary.
         forAll(boundaryCells_, cell)
         {

@@ -63,9 +63,9 @@ private:
 
         //- subDictionary containing the properties
         dictionary propsDict_;
-        
-        autoPtr<binModel> binModel_;        
-        
+
+        autoPtr<binModel> binModel_;
+
         //- time constant
         scalar tauT_;
 
@@ -75,21 +75,21 @@ private:
         labelList typeIds_;
 
         //- measurements
-        
+
         scalar averagingCounter_;
-        
+
         scalarField mols_;
         scalarField dsmcMols_;
         scalarField mass_;
         scalarField mcc_;
         vectorField mom_;
-        vectorField UCollected_;        
+        vectorField UCollected_;
         vectorField UMean_;
-        
+
         scalarField translationalTemperature_;
 
         scalarField chi_;
-        
+
         bool resetFieldsAtOutput_;
     // Private Member Functions
 
@@ -111,28 +111,28 @@ public:
             dsmcCloud& cloud,
             const dictionary& dict
         );
-    
+
         // Destructor
         ~temperatureBerendsenBins();
-    
+
     // Member Functions
-    
+
         void initialConfiguration();
 
         void controlParcelsBeforeMove();
         void controlParcelsBeforeCollisions();
         void controlParcelsAfterCollisions();
-    
+
         //- calculate any required properties
         void calculateProperties();
 
         //- output data
         void output
         (
-            const fileName& fixedPathName, 
+            const fileName& fixedPathName,
             const fileName& timePath
         );
-    
+
         //- update properties from a modified dictionary
         void updateProperties(const dictionary&);
 

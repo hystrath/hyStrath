@@ -99,17 +99,17 @@ namespace Foam
             const List<dsmcParcel*>& molsInCell = cellOccupancy[cellI];
             Random& rndGen(cloud_.rndGen());
 //             const scalar timeStepRatio = mesh_.time().deltaTValue()/1.0e-12;
-            
+
             forAll(molsInCell, mIC)
             {
                 dsmcParcel* p = molsInCell[mIC];
-                
+
                 if(rndGen.sample01<scalar>() > porosity_)
                 {
                     scalar mass = cloud_.constProps(p->typeId()).mass();
-                    
+
 //                     Info << "Velocity before control = " << p->U() << endl;
-                    
+
                     p->U() = sqrt(physicoChemical::k.value()*temperature_/mass)
                             *vector
                             (
@@ -117,7 +117,7 @@ namespace Foam
                                 rndGen_.GaussNormal<scalar>(),
                                 rndGen_.GaussNormal<scalar>()
                             );
-                            
+
 //                     Info << "Velocity after control = " << p->U() << endl;
                 }
             }

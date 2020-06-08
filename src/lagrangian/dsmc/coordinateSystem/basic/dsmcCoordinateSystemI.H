@@ -63,8 +63,8 @@ inline scalar dsmcCoordinateSystem::nParticlesOrg() const
 {
     return nParticlesOrg_;
 }
-        
-        
+
+
 inline const volScalarField& dsmcCoordinateSystem::nParticles() const
 {
     return timeStepModel_().nParticles();
@@ -95,8 +95,8 @@ inline scalar dsmcCoordinateSystem::nParticles(const label celli)
 {
     return timeStepModel_().nParticles(celli);
 }
-        
-        
+
+
 inline scalar dsmcCoordinateSystem::nParticles
 (
     const label patchi,

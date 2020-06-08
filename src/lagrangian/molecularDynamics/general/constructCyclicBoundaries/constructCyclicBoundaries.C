@@ -58,17 +58,17 @@ constructCyclicBoundaries::constructCyclicBoundaries
     forAll(bM, patchI)
     {
         const polyPatch& patch = bM[patchI];
-        
+
         if (isA<cyclicPolyPatch>(patch))
         {
             nCyclicBoundaries_++;
         }
     }
-    
+
     Info << "Number of cyclic boundaries = " << nCyclicBoundaries_<< endl;
 
     boundaryPoints_.setSize(nCyclicBoundaries_);
-    names_.setSize(nCyclicBoundaries_);    
+    names_.setSize(nCyclicBoundaries_);
     nFaces_.setSize(nCyclicBoundaries_);
     normal_.setSize(nCyclicBoundaries_);
     centroid_.setSize(nCyclicBoundaries_);
@@ -78,17 +78,17 @@ constructCyclicBoundaries::constructCyclicBoundaries
     forAll(bM, patchI)
     {
         const polyPatch& patch = bM[patchI];
-        
+
         if (isA<cyclicPolyPatch>(patch))
         {
             names_[c] = bM.names()[patchI];
             nFaces_[c] = patch.size();
             const cyclicPolyPatch& cyclicPatch =
                             refCast<const cyclicPolyPatch>(patch);
-                            
-            neighbourNames_[c] = cyclicPatch.neighbPatchName();            
+
+            neighbourNames_[c] = cyclicPatch.neighbPatchName();
             setPatchPoints(patchI, c);
-            
+
             c++;
         }
     }
@@ -120,30 +120,30 @@ void constructCyclicBoundaries::setPatchPoints
 
     label nFaces = 0;
     scalar A = 0.0;
-    vector nF = vector::zero;    
+    vector nF = vector::zero;
     vector CA = vector::zero;
-    
+
     for(label i = 0; i < patch.size(); i++)
     {
-        nFaces++;            
-        
+        nFaces++;
+
         label globalFaceI = patch.start() + i;
-        
+
         // normal surface area vector
-        vector sF = mesh_.faceAreas()[globalFaceI]; 
-        
+        vector sF = mesh_.faceAreas()[globalFaceI];
+
         // area of face
         scalar area = Foam::mag(sF);
-        
-        A += area; 
+
+        A += area;
         nF += sF/area; // normal vector
         const vector& C = mesh_.faceCentres()[globalFaceI];// centroid
         CA += C*area;
-        
+
         forAll(mesh_.faces()[globalFaceI], j)
         {
             const label& p = mesh_.faces()[globalFaceI][j];
-            
+
             if(findIndex(labelPoints, p) == -1)
             {
                 labelPoints.append(p);
@@ -151,62 +151,62 @@ void constructCyclicBoundaries::setPatchPoints
             }
         }
     }
-    
-//     Info << nl << "boundary = " << names_[c] << endl;    
-    
-   
+
+//     Info << nl << "boundary = " << names_[c] << endl;
+
+
     //points.shrink();
 
     normal_[c] = nF/nFaces;
-    
+
     centroid_[c] = CA/A;
 
 //     Info<< "centroid = " << centroid_[c]
 //         << ", normal = " << normal_[c]
 //         << endl;
-        
+
     // find the bounding 4 points
-    
+
     vector pointA = vector::zero;
     vector pointB = vector::zero;
-    vector pointC = vector::zero;    
+    vector pointC = vector::zero;
     vector pointD = vector::zero;
 
-    // a - find the point which is farthest away from centroid 
+    // a - find the point which is farthest away from centroid
     //   - if a rectangular plane, it is likely to be one of the corner points
-    
+
     scalar rMag = 0.0;
-    
+
     forAll(points, i)
     {
         scalar rD = mag(points[i]-centroid_[c]);
-        
+
         if(rD > rMag)
         {
             rMag = rD;
             pointA = points[i];
         }
     }
-    
+
 //     Info << "first point = " << pointA << endl;
-    
+
     // b- second point can be found along the diagonal of the rectangular point.
-    
+
     vector refV = -(pointA-centroid_[c])/rMag;
     pointB = centroid_[c] + rMag*refV;
-    
-//     Info << "second point (est) = " << pointB << endl;    
+
+//     Info << "second point (est) = " << pointB << endl;
 
     //- check
-    
+
     scalar tolerance = 0.1;
-    
+
     forAll(points, i)
     {
         scalar rD = mag(points[i]-pointB);
-        
+
 //         Info << "point = " << points[i] << ", rD = " << rD << endl;
-        
+
         if(rD < tolerance)
         {
             pointB = vector::zero;
@@ -214,63 +214,63 @@ void constructCyclicBoundaries::setPatchPoints
 //             Info << "second point found = " << points[i] << endl;
         }
     }
-    
-//     Info << "second point = " << pointB << endl;    
-    
+
+//     Info << "second point = " << pointB << endl;
+
     // c, - third point is found by now starting from point B
     //   and finding the farthest point in a third direction.
-    
+
     vector refV2 = normal_[c] ^ (-refV);
     scalar rMag2 = 0.0;
-    
+
     forAll(points, i)
     {
         scalar rD = mag((points[i]-pointB) & refV2);
-        
+
         if(rD > rMag2)
         {
             rMag2 = rD;
             pointC = points[i];
         }
-    }    
-    
-//     Info << "third point = " << pointC << endl;    
-    
+    }
+
+//     Info << "third point = " << pointC << endl;
+
     // d. fourth point is found by repeating step b.
     vector refV3 = -(pointC-centroid_[c])/rMag2;
     pointD = centroid_[c] + rMag2*refV3;
-    
-//     Info << "fourth point (est) = " << pointD << endl;    
+
+//     Info << "fourth point (est) = " << pointD << endl;
     // check
-    
+
     forAll(points, i)
     {
         scalar rD = mag(points[i]-pointD);
-        
+
         if(rD < tolerance)
         {
-            pointD = vector::zero;            
+            pointD = vector::zero;
             pointD = points[i];
-//             Info << "fourth point found = " << points[i] << endl;            
+//             Info << "fourth point found = " << points[i] << endl;
         }
-    }   
-    
-//     Info << "fourth point = " << pointD << endl;      
-    
+    }
+
+//     Info << "fourth point = " << pointD << endl;
+
     boundaryPoints_[c].setSize(4, vector::zero);
-    
+
     boundaryPoints_[c][0]=pointA;
     boundaryPoints_[c][1]=pointD;
     boundaryPoints_[c][2]=pointB;
     boundaryPoints_[c][3]=pointC;
 
-    
+
     // INFO
-    
+
     Info << nl << "Cyclic Boundary Name = " << names_[c]
          << ", Neighbour patch Name = " << neighbourNames_[c]
-         << endl;       
-    
+         << endl;
+
     Info<< nl << "centroid = " << centroid_[c]
         << nl << "normal = " << normal_[c]
         << nl << "nFaces = " << nFaces_[c]
@@ -283,14 +283,14 @@ void constructCyclicBoundaries::setCyclicBoundaries()
 {
     Info << nl <<  "Output" << nl << endl;
 
-    // create file names 
+    // create file names
     fileName pathName = mesh_.time().path()/"system";
     fileName nameFile = "cyclicBoundaries";
 
     {
         // deletes current content of file
         OFstream file(pathName/nameFile);
-    
+
         if(file.good())
         {
             file << endl;
@@ -328,15 +328,15 @@ void constructCyclicBoundaries::setCyclicBoundaries()
     // appends to the file
     {
         fileName fName(pathName/nameFile);
-    
+
         std::ofstream file(fName.c_str(),ios_base::app);
-    
+
         if(file.is_open())
         {
             file << nl << "cyclicBoundaries"  << nl
                     << "(" << nl;
 
-    
+
             const polyBoundaryMesh& bM = mesh_.boundaryMesh();
 
             label c = 0;
@@ -344,46 +344,46 @@ void constructCyclicBoundaries::setCyclicBoundaries()
             forAll(bM, patchI)
             {
                 const polyPatch& patch = bM[patchI];
-        
+
                 if (isA<cyclicPolyPatch>(patch))
                 {
                     file << "\t"<< "boundary"  << nl
                          << "\t" << "{" << nl
                          << "\t" << "\t" << "cyclicBoundaryProperties" << nl
                          << "\t" << "\t" << "{" << nl
-                         << "\t" << "\t" << "\t" << "patchName" 
+                         << "\t" << "\t" << "\t" << "patchName"
                          << "\t" << "\t" << "\t" << names_[c] << ";" << nl
-                         << "\t" << "\t" << "\t" << "neighbourPatchName" 
+                         << "\t" << "\t" << "\t" << "neighbourPatchName"
                          << "\t" << "\t" << "\t" << neighbourNames_[c] << ";" << nl
-                         << "\t" << "\t" << "\t" << "nFaces" 
+                         << "\t" << "\t" << "\t" << "nFaces"
                          << "\t" << "\t" << "\t" << nFaces_[c] << ";" << nl
-                         << "\t" << "\t" << "\t" << "normal" 
-                         << "\t" << "\t" << "\t" << "(" << normal_[c].x() 
+                         << "\t" << "\t" << "\t" << "normal"
+                         << "\t" << "\t" << "\t" << "(" << normal_[c].x()
                          << " "<< normal_[c].y() << " " << normal_[c].z() << ");" << nl
                          << "\t" << "\t" << "\t" << "boundaryPoints" << nl
                          << "\t" << "\t" << "\t" << "(" << nl;
 
                     forAll(boundaryPoints_[c], p)
                     {
-                        file << "\t" << "\t" << "\t" << "\t"<< "(" << boundaryPoints_[c][p].x() 
+                        file << "\t" << "\t" << "\t" << "\t"<< "(" << boundaryPoints_[c][p].x()
                              << " "<< boundaryPoints_[c][p].y() << " " << boundaryPoints_[c][p].z()
                              << ")" << nl;
                     }
 
                     file << "\t" << "\t" << "\t" << ");" << nl
                          << "\t" << "\t" << "}" << nl
-                         << "\t" << "\t" <<  "cyclicBoundaryModel" 
+                         << "\t" << "\t" <<  "cyclicBoundaryModel"
                          << "\t" << "\t" <<  "standardCyclic" << ";" << nl
                          << "\t"  << "}" << nl;
 
                     c++;
                 }
             }
-                    
+
             file << ");" << nl;
 
-            file<< nl 
-                << "// ************************************************************************* //" 
+            file<< nl
+                << "// ************************************************************************* //"
                 << nl;
         }
         else
@@ -392,7 +392,7 @@ void constructCyclicBoundaries::setCyclicBoundaries()
                 << "Cannot open file " << fName
                 << abort(FatalError);
         }
-    
+
         file.close();
     }
 }

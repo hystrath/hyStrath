@@ -198,7 +198,7 @@ autoPtr<rarefactionParameter> rarefactionParameters
 );
 rarefactionParameters->correct(U);
 
-   
+
 //---------------------------------------------------------
 // Heat flux vectors
 //---------------------------------------------------------

@@ -74,12 +74,12 @@ polyVelocityZoneControl::polyVelocityZoneControl
             {
                 X_ = Switch(propsDict_.lookup("X"));
             }
-    
+
             if (propsDict_.found("Y"))
             {
                 Y_ = Switch(propsDict_.lookup("Y"));
             }
-    
+
             if (propsDict_.found("Z"))
             {
                 Z_ = Switch(propsDict_.lookup("Z"));
@@ -166,17 +166,17 @@ void polyVelocityZoneControl::controlAfterForces()
 
         const scalar deltaTMD = time_.deltaT().value();
 
-        Info << "polyVelocityZoneControl: " << " target velocity: " << velocity_ 
-             << ", vel Meas: " << velocityMeasured << ", delta U: " << deltaU 
-             << ", acc: " <<  deltaU/deltaTMD 
+        Info << "polyVelocityZoneControl: " << " target velocity: " << velocity_
+             << ", vel Meas: " << velocityMeasured << ", delta U: " << deltaU
+             << ", acc: " <<  deltaU/deltaTMD
              << endl;
 
         forAll(controlZone(), c)
         {
             const label& cellI = controlZone()[c];
-    
+
             const List<polyMolecule*>& molsInCell = molCloud_.cellOccupancy()[cellI];
-    
+
             forAll(molsInCell, m)
             {
                 polyMolecule* molI = molsInCell[m];

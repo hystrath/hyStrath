@@ -113,7 +113,7 @@ public:
 
         //- Return access to the thermo package
         virtual rho2ReactionThermo& thermo() = 0;
-        
+
         //- Return pointer access to the thermo package
         rho2ReactionThermo* thermoPtr()
         {

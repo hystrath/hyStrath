@@ -86,12 +86,12 @@ private:
         scalar minBinWidth_;
         labelField n_;
 
-        
+
 
     // Private Member Functions
 
         label findBin(const scalar& r);
-        
+
 
 public:
 

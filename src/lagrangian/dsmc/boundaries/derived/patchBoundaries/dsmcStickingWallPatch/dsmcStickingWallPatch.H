@@ -68,53 +68,53 @@ class dsmcStickingWallPatch
 private:
 
     // Private data
-        
+
         dictionary propsDict_;
-        
+
 protected:
 
-    // Protected data        
-        
+    // Protected data
+
         //- typeIds to be adsorbed
         labelList typeIds_;
-        
+
         //- Adsorption probabilities for all species
         scalarList adsorptionProbs_;
-        
+
         //- Residence time for a particle stuck to the wall
         scalarList residenceTimes_;
-        
+
         //- Number of stuck particles per face
         scalarList nStuckParcels_;
-        
+
         //- Saturation limit per face [#]
         scalarList saturationLimit_;
-        
+
 
     // Protected member functions
-    
+
         virtual void setProperties();
-        
+
         //- Read the number of stuck particles on the patch
         void readPatchField();
-        
+
         //- Check if adsorption can be still operated on this face
         bool isNotSaturated(const label facei);
-        
+
         //- Adsorb a particle
         void adsorbParticle
         (
             dsmcParcel& p,
             scalar localTemperature = 0
         );
-        
+
         //- Check if a particle p should be released
         void testForDesorption(dsmcParcel& p);
-        
+
         //- Update boundaryFluxMeasurements after the particle desorbed
         void measurePropertiesAfterDesorption
         (
-            dsmcParcel& p, 
+            dsmcParcel& p,
             const scalar& heatOfReaction = 0
         );
 
@@ -151,7 +151,7 @@ public:
         //- control the mols
         virtual void controlParticle
         (
-            dsmcParcel& p, 
+            dsmcParcel& p,
             dsmcParcel::trackingData& td
         ) = 0;
 
@@ -161,7 +161,7 @@ public:
             const fileName& fixedPathName,
             const fileName& timePath
         );
-        
+
         void writeField();
 
         //- update properties from a modified dictionary
@@ -175,61 +175,61 @@ public:
         {
             return adsorptionProbs_;
         }
-        
+
         //- Return const access to all residence times
         const scalarList& residenceTimes() const
         {
             return residenceTimes_;
         }
-        
+
         //- Return const access to the number of stuck parcels
         const scalarList& nStuckParcels() const
         {
             return nStuckParcels_;
         }
-        
+
         //- Return const access to the number of stuck parcels for a given face
         const scalar& nStuckParcels(const label& facei) const
         {
             return nStuckParcels_[facei];
         }
-        
+
         //- Return const access to the surface coverage
         const scalarList& surfaceCoverage() const
         {
             return nStuckParcels()/saturationLimit()*cloud_.nParticles();
         }
-        
+
         //- Return const access to the surface coverage for a given face
         scalar surfaceCoverage(const label& facei) const
         {
             return nStuckParcels(facei)/saturationLimit(facei)
                 *cloud_.nParticles(patchId(), facei);
         }
-        
+
         //- Return const access to the patch saturation limit
         const scalarList& saturationLimit() const
         {
             return saturationLimit_;
         }
-        
+
         //- Return const access to the patch saturation limit for a given face
         const scalar& saturationLimit(const label& facei) const
         {
             return saturationLimit_[facei];
         }
-        
+
         //- Return const access to a molecule adsorption probability
         //  given by typeId
         scalar adsorptionProb(const label& typeId) const
         {
             const label& iD = findIndex(typeIds_, typeId);
-            
+
             if (iD != -1)
             {
                 return adsorptionProbs_[iD];
             }
-            
+
             FatalErrorIn
             (
                 "dsmcStickingDiffuseWallPatch::const scalar&\
@@ -237,21 +237,21 @@ public:
             )
                 << "typeId is not listed."
                 << exit(FatalError);
-                
+
             return 0;
         }
-        
+
         //- Return const access to a molecule residence time
         //  given by typeId
         scalar residenceTime(const label& typeId) const
         {
             const label& iD = findIndex(typeIds_, typeId);
-            
+
             if (iD != -1)
             {
                 return residenceTimes_[iD];
             }
-            
+
             FatalErrorIn
             (
                 "dsmcStickingWallPatch::const scalar&\
@@ -259,7 +259,7 @@ public:
             )
                 << "typeId is not listed."
                 << exit(FatalError);
-                
+
             return 0;
         }
 };

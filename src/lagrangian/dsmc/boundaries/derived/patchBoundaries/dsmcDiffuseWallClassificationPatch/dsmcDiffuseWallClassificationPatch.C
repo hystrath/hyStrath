@@ -73,7 +73,7 @@ dsmcDiffuseWallClassificationPatch::~dsmcDiffuseWallClassificationPatch()
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 void dsmcDiffuseWallClassificationPatch::initialConfiguration()
 {
-    
+
 }
 
 void dsmcDiffuseWallClassificationPatch::calculateProperties()
@@ -88,7 +88,7 @@ void dsmcDiffuseWallClassificationPatch::controlParticle(dsmcParcel& p, dsmcParc
     vector& U = p.U();
 
     scalar& ERot = p.ERot();
-    
+
     labelList& vibLevel = p.vibLevel();
 
     label typeId = p.typeId();
@@ -133,7 +133,7 @@ void dsmcDiffuseWallClassificationPatch::controlParticle(dsmcParcel& p, dsmcParc
     scalar mass = cloud_.constProps(typeId).mass();
 
     scalar rotationalDof = cloud_.constProps(typeId).rotationalDegreesOfFreedom();
-    
+
     scalar vibrationalDof = cloud_.constProps(typeId).nVibrationalModes();
 
     U =
@@ -147,9 +147,9 @@ void dsmcDiffuseWallClassificationPatch::controlParticle(dsmcParcel& p, dsmcParc
     U += velocity_;
 
     ERot = cloud_.equipartitionRotationalEnergy(T, rotationalDof);
-    
+
     vibLevel = cloud_.equipartitionVibrationalEnergyLevel(T, vibrationalDof, typeId);
-    
+
     //- "Class I or class III molecules are progressively
     //- transformed into class II molecule when it interacts with the
     //- body surface."
@@ -163,7 +163,7 @@ void dsmcDiffuseWallClassificationPatch::output
     const fileName& fixedPathName,
     const fileName& timePath
 )
-{	
+{
 }
 
 

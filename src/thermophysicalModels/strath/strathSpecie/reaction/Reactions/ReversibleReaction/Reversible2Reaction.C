@@ -78,27 +78,27 @@ Reversible2Reaction
     {
         is >> ni_[i];
     }
-    
+
     forAll(A0_, i)
     {
         is >> A0_[i];
     }
-    
+
     forAll(A1_, i)
     {
         is >> A1_[i];
     }
-    
+
     forAll(A2_, i)
     {
         is >> A2_[i];
     }
-    
+
     forAll(A3_, i)
     {
         is >> A3_[i];
     }
-    
+
     forAll(A4_, i)
     {
         is >> A4_[i];
@@ -243,16 +243,16 @@ Foam::scalar Foam::Reversible2Reaction
 ) const
 {
     const scalar Z = 1.0e4/T;
-    
+
     scalar nDMix = p/(constant::physicoChemical::k.value()*T);
     const label nLow(findBounds(nDMix)), nHigh(nLow+1);
-    
+
     const scalar A0Mix = boundedLinearInterpolation(nDMix, ni_[nLow], ni_[nHigh], A0_[nLow], A0_[nHigh]);
     const scalar A1Mix = boundedLinearInterpolation(nDMix, ni_[nLow], ni_[nHigh], A1_[nLow], A1_[nHigh]);
     const scalar A2Mix = boundedLinearInterpolation(nDMix, ni_[nLow], ni_[nHigh], A2_[nLow], A2_[nHigh]);
     const scalar A3Mix = boundedLinearInterpolation(nDMix, ni_[nLow], ni_[nHigh], A3_[nLow], A3_[nHigh]);
     const scalar A4Mix = boundedLinearInterpolation(nDMix, ni_[nLow], ni_[nHigh], A4_[nLow], A4_[nHigh]);
-    
+
     return exp(A0Mix/Z + A1Mix + A2Mix*log(Z) + A3Mix*Z + A4Mix*sqr(Z));
 }
 

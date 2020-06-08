@@ -47,7 +47,7 @@ inline Foam::decoupledEnergyModesThermo<EquationOfState>::decoupledEnergyModesTh
     {
         decoupledCvCoeffs_[coefLabel] = decoupledCvCoeffs[coefLabel];
     }
-    
+
     // NEW VINCENT 23/02/2016 *************************************************
     label nCoeffsMin = min(vibrationalList_.size(), vibrationalList.size());
     label nCoeffsMax = max(vibrationalList_.size(), vibrationalList.size());
@@ -69,11 +69,11 @@ inline Foam::decoupledEnergyModesThermo<EquationOfState>::decoupledEnergyModesTh
             for (register label coefLabel=0; coefLabel<nCoeffsMax; coefLabel++)
             {
                 vibrationalList_.append(vibrationalList[coefLabel]);
-            } 
-        }   
+            }
+        }
     }
     // END NEW VINCENT 23/02/2016 *********************************************
-    
+
     // NEW VINCENT 11/02/2016 *************************************************
     nCoeffsMin = min(electronicList_.size(), electronicList.size());
     nCoeffsMax = max(electronicList_.size(), electronicList.size());
@@ -97,11 +97,11 @@ inline Foam::decoupledEnergyModesThermo<EquationOfState>::decoupledEnergyModesTh
             for (register label coefLabel=0; coefLabel<nCoeffsMax; coefLabel++)
             {
                 electronicList_.append(electronicList[coefLabel]);
-            } 
-        }   
-    }  
+            }
+        }
+    }
     // END NEW VINCENT 11/02/2016 *********************************************
-    
+
 }
 
 
@@ -153,7 +153,7 @@ inline Foam::decoupledEnergyModesThermo<EquationOfState>::decoupledEnergyModesTh
     {
         decoupledCvCoeffs_[coefLabel] = dem.decoupledCvCoeffs_[coefLabel];
     }
-    
+
     // NEW VINCENT 23/02/2016 *************************************************
     label nCoeffsMin = min(vibrationalList_.size(), dem.vibrationalList_.size());
     label nCoeffsMax = max(vibrationalList_.size(), dem.vibrationalList_.size());
@@ -177,9 +177,9 @@ inline Foam::decoupledEnergyModesThermo<EquationOfState>::decoupledEnergyModesTh
                 vibrationalList_.append(dem.vibrationalList_[coefLabel]);
             }
         }
-    }    
-    // END NEW VINCENT 23/02/2016 ********************************************* 
-    
+    }
+    // END NEW VINCENT 23/02/2016 *********************************************
+
     // NEW VINCENT 11/02/2016 *************************************************
     nCoeffsMin = min(electronicList_.size(), dem.electronicList_.size());
     nCoeffsMax = max(electronicList_.size(), dem.electronicList_.size());
@@ -203,8 +203,8 @@ inline Foam::decoupledEnergyModesThermo<EquationOfState>::decoupledEnergyModesTh
                 electronicList_.append(dem.electronicList_[coefLabel]);
             }
         }
-    }    
-    // END NEW VINCENT 11/02/2016 ********************************************* 
+    }
+    // END NEW VINCENT 11/02/2016 *********************************************
 }
 
 
@@ -292,7 +292,7 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::cv_trans
 ) const
 {
     const cvCoeffsArray& a = cvCoeffs(Tt);
-    return this->RR*a[0];                         
+    return this->RR*a[0];
 }
 
 
@@ -304,7 +304,7 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::cv_r
 ) const
 {
     const cvCoeffsArray& a = cvCoeffs(Tt);
-    return this->RR*a[1];                         
+    return this->RR*a[1];
 }
 
 
@@ -315,7 +315,7 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::cv_t
     const scalar Tt
 ) const
 {
-    return this->cv_trans(p, Tt) + this->cv_r(p, Tt);                         
+    return this->cv_trans(p, Tt) + this->cv_r(p, Tt);
 }
 
 
@@ -329,16 +329,16 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::cv_v
     const cvCoeffsArray& a = cvCoeffs(Tv);
     const dynamicArray& v = vibrationalCoeffs(Tv);
     scalar tcv_v = 0.0;
-    
+
     if (Tv != 0.0 and v[0] != 0.0)
     {
         if(a[2] < 0.0)
         {
-            return this->RR*abs(a[2]); 
+            return this->RR*abs(a[2]);
         }
         else
         {
-            for 
+            for
             (
                 label vibMode=0;
                 vibMode < v.size();
@@ -346,12 +346,12 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::cv_v
             )
             {
                 scalar reducedT = v[vibMode+1] / Tv;
-                tcv_v += 
-                        v[vibMode] * sqr(reducedT) * exp(reducedT) 
+                tcv_v +=
+                        v[vibMode] * sqr(reducedT) * exp(reducedT)
                          / sqr(exp(reducedT) - 1.0);
-            }             
-        }            
-    } 
+            }
+        }
+    }
     return this->RR*a[2]*tcv_v;
 }
 
@@ -367,20 +367,20 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::cv_v_mode
     const cvCoeffsArray& a = cvCoeffs(Tv);
     const dynamicArray& v = vibrationalCoeffs(Tv);
     scalar tcv_v = 0.0;
-    
+
     if (Tv != 0.0 and v[0] != 0.0)
     {
         if(a[2] < 0.0)
         {
-            return this->RR*abs(a[2]); 
+            return this->RR*abs(a[2]);
         }
         else
         {
             scalar reducedT = v[2*vibMode+1] / Tv;
-            tcv_v = v[2*vibMode] * sqr(reducedT) * exp(reducedT) 
+            tcv_v = v[2*vibMode] * sqr(reducedT) * exp(reducedT)
                      / sqr(exp(reducedT) - 1.0);
-        }            
-    } 
+        }
+    }
     return this->RR*a[2]*tcv_v;
 }
 
@@ -393,8 +393,8 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::cv_el
 ) const
 {
     const cvCoeffsArray& a = cvCoeffs(Tv);
-    const dynamicArray& b = electronicCoeffs(Tv);    
-    scalar num1Cvel = 0.0;    
+    const dynamicArray& b = electronicCoeffs(Tv);
+    scalar num1Cvel = 0.0;
     scalar num2Cvel = 0.0;
     scalar num3Cvel = 0.0;
     scalar denCvel = 0.0;
@@ -402,7 +402,7 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::cv_el
     const scalar Tel = Tv;
     if (Tel != 0.0 and a[3] != 0.0)
     {
-        for 
+        for
         (
             label coefLabel=2;
             coefLabel < b.size();
@@ -413,8 +413,8 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::cv_el
             num2Cvel += b[coefLabel]*b[coefLabel+1]*exp(-b[coefLabel+1]/Tel);
             num3Cvel += b[coefLabel]*b[coefLabel+1]/sqr(Tel)*exp(-b[coefLabel+1]/Tel);
         }
-        
-        for 
+
+        for
         (
             label coefLabel=0;
             coefLabel < b.size();
@@ -423,7 +423,7 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::cv_el
         {
             denCvel += b[coefLabel]*exp(-b[coefLabel+1]/Tel);
         }
-        
+
         return this->RR*
         (
             a[3] * (num1Cvel/denCvel - num2Cvel*num3Cvel/sqr(denCvel))
@@ -432,7 +432,7 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::cv_el
     else
     {
         return this->RR*0.0;
-    }    
+    }
 }
 
 
@@ -444,7 +444,7 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::cv_e
 ) const
 {
     const cvCoeffsArray& a = cvCoeffs(Tv);
-    
+
     return this->RR*a[4];
 }
 
@@ -496,20 +496,20 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::evs_mode
     const cvCoeffsArray& a = cvCoeffs(Tv);
     const dynamicArray& v = vibrationalCoeffs(Tv);
     scalar tev = 0.0;
-        
+
     if (Tv != 0.0 and a[2] != 0.0)
     {
         if(a[2] == -1)
         {
-            return this->RR*abs(a[2])*Tv; 
+            return this->RR*abs(a[2])*Tv;
         }
         else
         {
             scalar reducedT = v[2*vibMode+1]/Tv;
-            tev = v[2*vibMode] * v[2*vibMode+1] / (exp(reducedT) - 1.0);   
+            tev = v[2*vibMode] * v[2*vibMode+1] / (exp(reducedT) - 1.0);
         }
-    } 
-    
+    }
+
     return this->RR*a[2]*tev;
 }
 
@@ -524,16 +524,16 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::evs
     const cvCoeffsArray& a = cvCoeffs(Tv);
     const dynamicArray& v = vibrationalCoeffs(Tv);
     scalar tev = 0.0;
-        
+
     if (Tv != 0.0 and a[2] != 0.0)
     {
         if(a[2] == -1)
         {
-            return this->RR*abs(a[2])*Tv; 
+            return this->RR*abs(a[2])*Tv;
         }
         else
         {
-            for 
+            for
             (
                 label vibMode=0;
                 vibMode < v.size();
@@ -542,10 +542,10 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::evs
             {
                 scalar reducedT = v[vibMode+1]/Tv;
                 tev += v[vibMode] * v[vibMode+1] / (exp(reducedT) - 1.0);
-            }    
+            }
         }
-    } 
-    
+    }
+
     return this->RR*a[2]*tev;
 }
 
@@ -561,11 +561,11 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::eels
     const dynamicArray& b = electronicCoeffs(Tv);
     scalar numEel = 0.0;
     scalar denEel = 0.0;
-    
+
     const scalar Tel = Tv;
     if (Tel != 0.0 and a[3] != 0.0)
     {
-        for 
+        for
         (
             label coefLabel=2;
             coefLabel < b.size();
@@ -574,8 +574,8 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::eels
         {
             numEel += b[coefLabel]*b[coefLabel+1]*exp(-b[coefLabel+1]/Tel);
         }
-        
-        for 
+
+        for
         (
             label coefLabel=0;
             coefLabel < b.size();
@@ -584,14 +584,14 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::eels
         {
             denEel += b[coefLabel]*exp(-b[coefLabel+1]/Tel);
         }
-        
+
         return this->RR*a[3]*numEel/denEel;
    }
    else
    {
       return this->RR*0.0;
-   }     
-     
+   }
+
 }
 
 
@@ -610,91 +610,91 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::ees
 template<class EquationOfState>
 inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::zetar
 (
-    const scalar p, 
-    const scalar Tt, 
+    const scalar p,
+    const scalar Tt,
     const scalar Tv
 ) const
 {
     const cvCoeffsArray& a = cvCoeffs(Tt);
-    
-    return 2.0*a[1]; 
+
+    return 2.0*a[1];
 }
 
 
 template<class EquationOfState>
 inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::zetav_mode
 (
-    const label vibMode, 
-    const scalar p, 
+    const label vibMode,
+    const scalar p,
     const scalar Tv
 ) const
 {
     const cvCoeffsArray& a = cvCoeffs(Tv);
     if (Tv != 0.0 and a[2] != 0.0)
     {
-        return this->evs_mode(vibMode, p, Tv) / (0.5*this->RR*Tv); 
+        return this->evs_mode(vibMode, p, Tv) / (0.5*this->RR*Tv);
     }
     else
     {
         return 0.0;
-    } 
+    }
 }
 
 
 template<class EquationOfState>
 inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::zetav
 (
-    const scalar p, 
+    const scalar p,
     const scalar Tv
 ) const
 {
     const cvCoeffsArray& a = cvCoeffs(Tv);
     if (Tv != 0.0 and a[2] != 0.0)
     {
-        return this->evs(p, Tv) / (0.5*this->RR*Tv); 
+        return this->evs(p, Tv) / (0.5*this->RR*Tv);
     }
     else
     {
         return 0.0;
-    } 
+    }
 }
 
 
 template<class EquationOfState>
 inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::zetael
 (
-    const scalar p, 
+    const scalar p,
     const scalar Tv
 ) const
 {
     const cvCoeffsArray& a = cvCoeffs(Tv);
     if (Tv != 0.0 and a[3] != 0.0)
     {
-        return this->eels(p, Tv) / (0.5*this->RR*Tv); 
+        return this->eels(p, Tv) / (0.5*this->RR*Tv);
     }
     else
     {
         return 0.0;
-    } 
+    }
 }
 
 
 template<class EquationOfState>
 inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::zetae
 (
-    const scalar p, 
+    const scalar p,
     const scalar Tv
 ) const
 {
     const cvCoeffsArray& a = cvCoeffs(Tv);
     if (Tv != 0.0 and a[4] != 0.0)
     {
-        return this->ees(p, Tv) / (0.5*this->RR*Tv); 
+        return this->ees(p, Tv) / (0.5*this->RR*Tv);
     }
     else
     {
         return 0.0;
-    } 
+    }
 }
 
 
@@ -717,7 +717,7 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::hc() cons
 {
     const scalar Tstd = advancedSpecie::Tstd;
     const cvCoeffsArray& a = cvCoeffs(Tstd);
-    
+
     return this->RR*a[5];
 }
 
@@ -764,11 +764,11 @@ inline void Foam::decoupledEnergyModesThermo<EquationOfState>::operator+=
             molr1*decoupledCvCoeffs_[coefLabel]
           + molr2*dem.decoupledCvCoeffs_[coefLabel];
     }
-    
+
     // NEW VINCENT 23/02/2016 *************************************************
     label nCoeffsMin = min(vibrationalList_.size(), dem.vibrationalList_.size());
     label nCoeffsMax = max(vibrationalList_.size(), dem.vibrationalList_.size());
-    
+
     if (nCoeffsMin != nCoeffsMax)
     {
         if (vibrationalList_.size() < nCoeffsMax)
@@ -798,7 +798,7 @@ inline void Foam::decoupledEnergyModesThermo<EquationOfState>::operator+=
             }
         }
     }
-    
+
     for
     (
         register label coefLabel=0;
@@ -811,13 +811,13 @@ inline void Foam::decoupledEnergyModesThermo<EquationOfState>::operator+=
           + molr2*dem.vibrationalList_[coefLabel];
     }
     // END NEW VINCENT 23/02/2016 *********************************************
-    
+
     // NEW VINCENT 11/02/2016 *************************************************
     nCoeffsMin = min(electronicList_.size(), dem.electronicList_.size());
     nCoeffsMax = max(electronicList_.size(), dem.electronicList_.size());
     /*Info << "+=/ "<< "nCoeffsMin: "<< nCoeffsMin<< ", " << "nCoeffsMax: "<< nCoeffsMax << endl;
     Info << "+=/ "<< "electronicList_.size(): "<< electronicList_.size()<< ", " << "dem.electronicList_.size(): "<< dem.electronicList_.size() << endl;*/
-    
+
     if (nCoeffsMin != nCoeffsMax)
     {
         if (electronicList_.size() < nCoeffsMax)
@@ -847,7 +847,7 @@ inline void Foam::decoupledEnergyModesThermo<EquationOfState>::operator+=
             }
         }
     }
-    
+
     for
     (
         register label coefLabel=0;
@@ -890,11 +890,11 @@ inline void Foam::decoupledEnergyModesThermo<EquationOfState>::operator-=
             molr1*decoupledCvCoeffs_[coefLabel]
           - molr2*dem.decoupledCvCoeffs_[coefLabel];
     }
-    
+
     // NEW VINCENT 23/02/2016 *************************************************
     label nCoeffsMin = min(vibrationalList_.size(), dem.vibrationalList_.size());
     label nCoeffsMax = max(vibrationalList_.size(), dem.vibrationalList_.size());
-    
+
     if (nCoeffsMin != nCoeffsMax)
     {
         if (vibrationalList_.size() < nCoeffsMax)
@@ -907,7 +907,7 @@ inline void Foam::decoupledEnergyModesThermo<EquationOfState>::operator-=
             )
             {
                 vibrationalList_.append(
-                    - molr2*dem.vibrationalList_[coefLabel]); // NEW VINCENT 23/02/2016    
+                    - molr2*dem.vibrationalList_[coefLabel]); // NEW VINCENT 23/02/2016
             }
         }
         else
@@ -924,7 +924,7 @@ inline void Foam::decoupledEnergyModesThermo<EquationOfState>::operator-=
             }
         }
     }
-    
+
     for
     (
         register label coefLabel=0;
@@ -937,13 +937,13 @@ inline void Foam::decoupledEnergyModesThermo<EquationOfState>::operator-=
           - molr2*dem.vibrationalList_[coefLabel];
     }
     // NEW VINCENT 23/02/2016 *************************************************
-    
+
     // NEW VINCENT 11/02/2016 *************************************************
     nCoeffsMin = min(electronicList_.size(), dem.electronicList_.size());
     nCoeffsMax = max(electronicList_.size(), dem.electronicList_.size());
     //Info << "-=/ "<< "nCoeffsMin: "<< nCoeffsMin<< ", " << "nCoeffsMax: "<< nCoeffsMax << endl;
     //Info << "-=/ "<< "electronicList_.size(): "<< electronicList_.size()<< ", " << "dem.electronicList_.size(): "<< dem.electronicList_.size() << endl;
-    
+
     if (nCoeffsMin != nCoeffsMax)
     {
         if (electronicList_.size() < nCoeffsMax)
@@ -956,7 +956,7 @@ inline void Foam::decoupledEnergyModesThermo<EquationOfState>::operator-=
             )
             {
                 electronicList_.append(
-                    - molr2*dem.electronicList_[coefLabel]); // NEW VINCENT 23/02/2016    
+                    - molr2*dem.electronicList_[coefLabel]); // NEW VINCENT 23/02/2016
             }
         }
         else
@@ -973,7 +973,7 @@ inline void Foam::decoupledEnergyModesThermo<EquationOfState>::operator-=
             }
         }
     }
-    
+
     for
     (
         register label coefLabel=0;
@@ -1019,11 +1019,11 @@ inline Foam::decoupledEnergyModesThermo<EquationOfState> Foam::operator+
             molr1*dem1.decoupledCvCoeffs_[coefLabel]
           + molr2*dem2.decoupledCvCoeffs_[coefLabel];
     }
-    
+
     // NEW VINCENT 24/02/2016 *************************************************
     label nCoeffsMin = min(dem1.vibrationalList_.size(), dem2.vibrationalList_.size());
     label nCoeffsMax = max(dem1.vibrationalList_.size(), dem2.vibrationalList_.size());
-    
+
     if (nCoeffsMin != nCoeffsMax)
     {
         if (dem1.vibrationalList_.size() < nCoeffsMax)
@@ -1052,8 +1052,8 @@ inline Foam::decoupledEnergyModesThermo<EquationOfState> Foam::operator+
                     molr1*dem1.vibrationalList_[coefLabel]);
             }
         }
-    }    
-    
+    }
+
     for
     (
         register label coefLabel=0;
@@ -1066,13 +1066,13 @@ inline Foam::decoupledEnergyModesThermo<EquationOfState> Foam::operator+
           + molr2*dem2.vibrationalList_[coefLabel]);
     }
     // NEW VINCENT 24/02/2016 *************************************************
-    
+
     // NEW VINCENT 11/02/2016 *************************************************
     nCoeffsMin = min(dem1.electronicList_.size(), dem2.electronicList_.size());
     nCoeffsMax = max(dem1.electronicList_.size(), dem2.electronicList_.size());
     //Info << "+/ "<< "nCoeffsMin: "<< nCoeffsMin<< ", " << "nCoeffsMax: "<< nCoeffsMax << endl;
     //Info << "+/ "<< "dem1.electronicList_.size(): "<< dem1.electronicList_.size()<< ", " << "dem2.electronicList_.size(): "<< dem2.electronicList_.size() << endl;
-    
+
     if (nCoeffsMin != nCoeffsMax)
     {
         if (dem1.electronicList_.size() < nCoeffsMax)
@@ -1101,8 +1101,8 @@ inline Foam::decoupledEnergyModesThermo<EquationOfState> Foam::operator+
                     molr1*dem1.electronicList_[coefLabel]);
             }
         }
-    }    
-    
+    }
+
     for
     (
         register label coefLabel=0;
@@ -1156,11 +1156,11 @@ inline Foam::decoupledEnergyModesThermo<EquationOfState> Foam::operator-
             molr1*dem1.decoupledCvCoeffs_[coefLabel]
           - molr2*dem2.decoupledCvCoeffs_[coefLabel];
     }
-    
+
     // NEW VINCENT 24/02/2016 *************************************************
     label nCoeffsMin = min(dem1.vibrationalList_.size(), dem2.vibrationalList_.size());
     label nCoeffsMax = max(dem1.vibrationalList_.size(), dem2.vibrationalList_.size());
-    
+
     if (nCoeffsMin != nCoeffsMax)
     {
         if (dem1.vibrationalList_.size() < nCoeffsMax)
@@ -1189,8 +1189,8 @@ inline Foam::decoupledEnergyModesThermo<EquationOfState> Foam::operator-
                     molr1*dem1.vibrationalList_[coefLabel]);
             }
         }
-    }  
-    
+    }
+
     for
     (
         register label coefLabel=0;
@@ -1203,13 +1203,13 @@ inline Foam::decoupledEnergyModesThermo<EquationOfState> Foam::operator-
           - molr2*dem2.vibrationalList_[coefLabel]);
     }
     // NEW VINCENT 24/02/2016 *************************************************
-    
+
     // NEW VINCENT 11/02/2016 *************************************************
     nCoeffsMin = min(dem1.electronicList_.size(), dem2.electronicList_.size());
     nCoeffsMax = max(dem1.electronicList_.size(), dem2.electronicList_.size());
     //Info << "-/ "<< "nCoeffsMin: "<< nCoeffsMin<< ", " << "nCoeffsMax: "<< nCoeffsMax << endl;
     //Info << "-/ "<< "dem1.electronicList_.size(): "<< dem1.electronicList_.size()<< ", " << "dem2.electronicList_.size(): "<< dem2.electronicList_.size() << endl;
-    
+
     if (nCoeffsMin != nCoeffsMax)
     {
         if (dem1.electronicList_.size() < nCoeffsMax)
@@ -1238,8 +1238,8 @@ inline Foam::decoupledEnergyModesThermo<EquationOfState> Foam::operator-
                     molr1*dem1.electronicList_[coefLabel]);
             }
         }
-    }  
-    
+    }
+
     for
     (
         register label coefLabel=0;

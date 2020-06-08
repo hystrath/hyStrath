@@ -151,7 +151,7 @@ void pdStateController::updateTime()
     time_++;
 
     const scalar& t = time_.time().timeOutputValue();
-    
+
     if((t - initialTime_) < timePeriod_)
     {
         time_.controlTimeInterval().endTime() = false;
@@ -213,10 +213,10 @@ void pdStateController::writeTimeData
     {
         forAll(yData, n)
         {
-            file 
-                << xData[n] << "\t" 
-                << yData[n].x() << "\t" << yData[n].y() 
-                << "\t" << yData[n].z() 
+            file
+                << xData[n] << "\t"
+                << yData[n].x() << "\t" << yData[n].y()
+                << "\t" << yData[n].z()
                 << endl;
         }
     }
@@ -235,7 +235,7 @@ void pdStateController::writeTimeData
     const scalarField& xData,
     const tensorField& yData
 )
-{ 
+{
     OFstream file(pathName/nameFile + ".xyz");
 
     if(file.good())
@@ -436,25 +436,25 @@ scalar pdStateController::avReqDensity()
 {
     scalar totalDensity = 0.0;
 
-    if(singleValueController_) 
+    if(singleValueController_)
     {
         totalDensity = density_;
     }
     else if(fieldController_)
     {
         label controlCells = controlZone().size();
-    
+
         forAll(densities_, c)
         {
             totalDensity += densities_[c];
         }
-    
+
         if (Pstream::parRun())
         {
             reduce(totalDensity, sumOp<scalar>());
             reduce(controlCells, sumOp<label>());
         }
-    
+
         if(controlCells > 0)
         {
             totalDensity /= scalar(controlCells);
@@ -468,25 +468,25 @@ vector pdStateController::avReqVelocity()
 {
     vector totalVel = vector::zero;
 
-    if(singleValueController_) 
+    if(singleValueController_)
     {
         totalVel = velocity_;
     }
     else if(fieldController_)
     {
         label controlCells = controlZone().size();
-    
+
         forAll(velocities_, c)
         {
             totalVel += velocities_[c];
         }
-    
+
         if (Pstream::parRun())
         {
             reduce(totalVel, sumOp<vector>());
             reduce(controlCells, sumOp<label>());
         }
-    
+
         if(controlCells > 0)
         {
             totalVel /= scalar(controlCells);
@@ -501,25 +501,25 @@ scalar pdStateController::avReqTemperature()
 {
     scalar totalTemp = 0.0;
 
-    if(singleValueController_) 
+    if(singleValueController_)
     {
         totalTemp = temperature_;
     }
     else if(fieldController_)
     {
         label controlCells = controlZone().size();
-    
+
         forAll(temperatures_, c)
         {
             totalTemp += temperatures_[c];
         }
-    
+
         if (Pstream::parRun())
         {
             reduce(totalTemp, sumOp<scalar>());
             reduce(controlCells, sumOp<label>());
         }
-    
+
         if(controlCells > 0)
         {
             totalTemp /= scalar(controlCells);
@@ -532,25 +532,25 @@ scalar pdStateController::avReqPressure()
 {
     scalar totalPressure = 0.0;
 
-    if(singleValueController_) 
+    if(singleValueController_)
     {
         totalPressure = pressure_;
     }
     else if(fieldController_)
     {
         label controlCells = controlZone().size();
-    
+
         forAll(pressures_, c)
         {
             totalPressure += pressures_[c];
         }
-    
+
         if (Pstream::parRun())
         {
             reduce(totalPressure, sumOp<scalar>());
             reduce(controlCells, sumOp<label>());
         }
-    
+
         if(controlCells > 0)
         {
             totalPressure /= scalar(controlCells);

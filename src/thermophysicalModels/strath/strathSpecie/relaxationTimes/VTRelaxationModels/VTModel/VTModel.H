@@ -26,7 +26,7 @@ Class
     Foam::VTModel
 
 Description
-    V-T relaxation model for multispecies binary diffusion coefficients 
+    V-T relaxation model for multispecies binary diffusion coefficients
 
 SourceFiles
     VTModel.C
@@ -54,37 +54,37 @@ class VTModel
 protected:
 
     // Protected data
-    
+
         //- Two-temperature model dictionary
         const IOdictionary dict2T_;
-        
+
         //- Thermophysical properties dictionary
         const IOdictionary dictThermoPhy_;
 
         //- Species having a vib. eq. being solved
         const wordList& solvedVibEqSpecies_;
-        
+
         //- Species
         const wordList& species_;
-        
+
         //- Pressure [Pa]
         const volScalarField& p_;
 
         //- Translational temperature [K]
         const volScalarField& Tt_;
-        
+
         //- Vibrational temperatures [K]
         const PtrList<volScalarField>& Tv_;
-        
+
         //- Number densities [m^-3]
         const PtrList<volScalarField>& nD_;
-        
 
-        //- V-T relaxation models 
-        PtrList<VTRelaxationModel> tauVTijModels_;   
+
+        //- V-T relaxation models
+        PtrList<VTRelaxationModel> tauVTijModels_;
 
         //- Interspecies V-T relaxation time
-        PtrList<volScalarField> tauVTij_;         
+        PtrList<volScalarField> tauVTij_;
 
 
     // Private Member Functions
@@ -113,7 +113,7 @@ public:
             const volScalarField& p,
             const volScalarField& Tt,
             const PtrList<volScalarField>& Tv,
-            const PtrList<volScalarField>& nD 
+            const PtrList<volScalarField>& nD
         );
 
 

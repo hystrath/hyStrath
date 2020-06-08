@@ -76,11 +76,11 @@ class decoupledTimeData
 
         // - sequential or synchronous
         word couplingOption_;
-// 
+//
 //         bool decoupledScheme_;
 //         bool molecularSwitch_;
-//         
-// 
+//
+//
 //         bool runSequential_;
 
 

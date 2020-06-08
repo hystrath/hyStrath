@@ -111,7 +111,7 @@ inline Foam::label Foam::dsmcCloud::nTerminalOutputs() const
 }
 
 
-inline const Foam::DynamicList<Foam::DynamicList<Foam::dsmcParcel*>>& 
+inline const Foam::DynamicList<Foam::DynamicList<Foam::dsmcParcel*>>&
 Foam::dsmcCloud::cellOccupancy() const
 {
     return cellOccupancy_;
@@ -130,7 +130,7 @@ inline Foam::scalarField& Foam::dsmcCloud::collisionSelectionRemainder()
 }
 
 
-inline const Foam::List<Foam::dsmcParcel::constantProperties>& 
+inline const Foam::List<Foam::dsmcParcel::constantProperties>&
 Foam::dsmcCloud::constProps() const
 {
     return constProps_;
@@ -276,9 +276,9 @@ inline Foam::scalarList Foam::dsmcCloud::infoMeasurements()
     forAllIter(dsmcCloud, *this, iter)
     {
         dsmcParcel& p = iter();
-        
+
         const dsmcParcel::constantProperties& cP = constProps(p.typeId());
-        
+
         const scalar nParticles = this->nParticles(p.cell());
 
         infoMeasurements[0] += cP.mass()*nParticles;
@@ -286,7 +286,7 @@ inline Foam::scalarList Foam::dsmcCloud::infoMeasurements()
         infoMeasurements[2] += p.ERot()*nParticles;
         infoMeasurements[3] += cP.eVib_tot(p.vibLevel())*nParticles;
         infoMeasurements[4] += cP.electronicEnergyList()[p.ELevel()]*nParticles;
-        
+
         if(p.isStuck())
         {
             infoMeasurements[5] += nParticles;
@@ -296,7 +296,7 @@ inline Foam::scalarList Foam::dsmcCloud::infoMeasurements()
             infoMeasurements[6] += nParticles;
         }
     }
-    
+
     return infoMeasurements;
 }
 
@@ -373,7 +373,7 @@ inline Foam::boundaryMeasurements& Foam::dsmcCloud::boundaryFluxMeasurements()
 }
 
 
-inline const Foam::boundaryMeasurements& 
+inline const Foam::boundaryMeasurements&
 Foam::dsmcCloud::boundaryFluxMeasurements() const
 {
     return boundaryMeas_;
@@ -386,7 +386,7 @@ inline Foam::cellMeasurements& Foam::dsmcCloud::cellPropMeasurements()
 }
 
 
-inline const Foam::cellMeasurements& 
+inline const Foam::cellMeasurements&
 Foam::dsmcCloud::cellPropMeasurements() const
 {
     return cellMeas_;

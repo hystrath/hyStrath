@@ -96,7 +96,7 @@ protected:
             vector velocity_;
             scalar temperature_;
 
-            //- targeted fields 
+            //- targeted fields
             scalarField densities_;
             vectorField velocities_;
             scalarField temperatures_;
@@ -128,7 +128,7 @@ public:
             ),
             (t, mesh, cloud, dict)
         );
-   
+
     // Constructors
 
         //- Construct from components
@@ -165,7 +165,7 @@ public:
         //- create an initial configuration
         virtual void initialConfiguration() = 0;
 
-        //- control 
+        //- control
  		virtual void controlParcelsBeforeMove() = 0;
         virtual void controlParcelsBeforeCollisions() = 0;
         virtual void controlParcelsAfterCollisions() = 0;
@@ -186,7 +186,7 @@ public:
 
         //reset fields if mesh has changed
         virtual void setNewBoundaryFields();
-        
+
         void writeTimeData
         (
             const fileName& pathName,
@@ -215,7 +215,7 @@ public:
             const word& patchName() const;
             const label& patchId() const;
 
-            //- return the targeted fields 
+            //- return the targeted fields
             const scalar& density() const;
             scalar& density();
 
@@ -225,7 +225,7 @@ public:
             const scalar& temperature() const;
             scalar& temperature();
 
-            //- return the targeted fields 
+            //- return the targeted fields
             const scalarField& densityField() const;
             scalarField& densityField();
 

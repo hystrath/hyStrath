@@ -112,20 +112,20 @@ void polyForce::controlAfterForces()
     model_->updateForce();
 
     // - if control switch is on
-    if(control_) 
+    if(control_)
     {
         Info << "polyForce: control" << endl;
 
         forAll(controlZone(), c)
         {
             const label& cellI = controlZone()[c];
-    
+
             const List<polyMolecule*>& molsInCell = molCloud_.cellOccupancy()[cellI];
-    
+
             forAll(molsInCell, m)
             {
                 polyMolecule* molI = molsInCell[m];
-    
+
                 if(findIndex(molIds_, molI->id()) != -1)
                 {
                     const scalar& massI = molCloud_.cP().mass(molI->id());

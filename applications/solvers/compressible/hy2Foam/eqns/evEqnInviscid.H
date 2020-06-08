@@ -1,6 +1,6 @@
 //scalar timeg = runTime.elapsedCpuTime();
 thermalRelaxModelVT().correct();
-//Info<< "VTcorrect time" << tab << runTime.elapsedCpuTime() - timeg << " s" << endl; 
+//Info<< "VTcorrect time" << tab << runTime.elapsedCpuTime() - timeg << " s" << endl;
 if(noSolvedVibEq > 1)
 {
     thermalRelaxModelVV().correct();
@@ -16,9 +16,9 @@ if(containsElectrons)
 forAll(rhoEvk, speciei)
 {
     // NEW VINCENT 29/12/2016 *************************************************
-    DynamicList<label> removedCellsFromMatrix; 
+    DynamicList<label> removedCellsFromMatrix;
     DynamicList<scalar> valuesToImpose;
-    
+
     forAll(Y[speciei], celli)
     {
         if(Y[speciei][celli] < Foam::rho2ReactionThermo::miniYforSolvingEvEqn)
@@ -26,40 +26,40 @@ forAll(rhoEvk, speciei)
             removedCellsFromMatrix.append(celli);
         }
     }
-    
+
     forAll(removedCellsFromMatrix, i)
     {
         valuesToImpose.append(0.0);
     }
     // END NEW VINCENT 29/12/2016 *********************************************
-    
+
     fvScalarMatrix rhoEvkInviscid
     (
-        fvm::ddt(rhoEvk[speciei]) 
-      + fvc::div(phiEvk[speciei]) 
+        fvm::ddt(rhoEvk[speciei])
+      + fvc::div(phiEvk[speciei])
       - thermalRelaxModelVT().QVT(speciei)
       - reaction->Scv(speciei)
     );
-    
+
     if(noSolvedVibEq > 1)
     {
         rhoEvkInviscid -= thermalRelaxModelVV().QVV(speciei);
     }
-    
+
     if(containsElectrons)
-    { 
+    {
         rhoEvkInviscid -= thermalRelaxModeleV().QeV(speciei)
             + reaction->Seiir(speciei);
-            
-        if(composition.vibTempAssociativity("e-") == speciei) 
+
+        if(composition.vibTempAssociativity("e-") == speciei)
         {
             rhoEvkInviscid += (fvc::grad(composition.pP("e-")) & U)
                 - thermalRelaxModelHE().QHE();
         }
     }
-    
+
     rhoEvkInviscid.setValues(removedCellsFromMatrix, valuesToImpose); // NEW VINCENT 29/12/2016
-    
+
     rhoEvkInviscid.solve
     (
         mesh.solver("rhoEv_" + composition.species()[speciei])
@@ -75,8 +75,8 @@ forAll(rhoEvk, speciei)
         {
             hevk[speciei][celli] = 0.0; //composition.Hvels(speciei, 1.0, 210.0);
         }*/
-    } 
-       
+    }
+
     hevk[speciei].correctBoundaryConditions();
     rhoEvk[speciei].boundaryFieldRef() = pD[speciei].boundaryField()*hevk[speciei].boundaryField();
 }

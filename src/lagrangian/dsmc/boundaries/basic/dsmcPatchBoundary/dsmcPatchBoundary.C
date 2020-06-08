@@ -97,8 +97,8 @@ dsmcPatchBoundary::dsmcPatchBoundary
     if (isA<cyclicPolyPatch>(patch))
     {
         FatalErrorIn("dsmcCyclicBoundary::dsmcCyclicBoundary()")
-            << "Patch: " << patchName_ 
-            << " is a cyclic boundary. It should be a patch." 
+            << "Patch: " << patchName_
+            << " is a cyclic boundary. It should be a patch."
             << nl << "in: "
             << t.system()/"boundariesDict"
             << exit(FatalError);
@@ -111,17 +111,17 @@ dsmcPatchBoundary::dsmcPatchBoundary
         faces_[i] = globalFaceI;
         cells_[i] = patch.faceCells()[i];
         nFaces_++;
-        
+
         //- area on one processor
-        patchSurfaceArea_ += mag(mesh_.faceAreas()[globalFaceI]); 
+        patchSurfaceArea_ += mag(mesh_.faceAreas()[globalFaceI]);
     }
-    
+
     totalPatchSurfaceArea_ = patchSurfaceArea_;
 
     if(Pstream::parRun())
     {
         //- total area on all processors
-        reduce(totalPatchSurfaceArea_, sumOp<scalar>());  
+        reduce(totalPatchSurfaceArea_, sumOp<scalar>());
     }
 }
 
@@ -155,7 +155,7 @@ autoPtr<dsmcPatchBoundary> dsmcPatchBoundary::New
             << dsmcPatchBoundaryName
             << ", constructor not in hash table" << endl << endl
             << "    Valid patch boundary types are :" << endl;
-            
+
         Info<< dictionaryConstructorTablePtr_->toc() << abort(FatalError);
     }
 
@@ -182,11 +182,11 @@ void dsmcPatchBoundary::setBoundaryFields()
 void dsmcPatchBoundary::setNewBoundaryFields()
 {
     const polyPatch& patch = mesh_.boundaryMesh()[patchId_];
-    
+
     //- initialise data members
     faces_.setSize(patch.size());
     cells_.setSize(patch.size());
-    
+
     nFaces_ = 0;
     patchSurfaceArea_ = 0.0;
 
@@ -199,17 +199,17 @@ void dsmcPatchBoundary::setNewBoundaryFields()
         faces_[i] = globalFaceI;
         cells_[i] = patch.faceCells()[i];
         nFaces_++;
-        
+
         //- area on one processor
-        patchSurfaceArea_ += mag(mesh_.faceAreas()[globalFaceI]); 
+        patchSurfaceArea_ += mag(mesh_.faceAreas()[globalFaceI]);
     }
-    
+
     totalPatchSurfaceArea_ = patchSurfaceArea_;
 
     if(Pstream::parRun())
     {
         //- total area on all processors
-        reduce(totalPatchSurfaceArea_, sumOp<scalar>());  
+        reduce(totalPatchSurfaceArea_, sumOp<scalar>());
     }
 }
 
@@ -217,14 +217,14 @@ void dsmcPatchBoundary::setNewBoundaryFields()
 void dsmcPatchBoundary::calculateWallUnitVectors
 (
     dsmcParcel& p,
-    vector& nw, 
-    vector& tw1, 
+    vector& nw,
+    vector& tw1,
     vector& tw2
 )
 {
     nw = p.normal();
     nw /= mag(nw);
-    
+
     vector& U = p.U();
 
     // Normal velocity magnitude
@@ -232,9 +232,9 @@ void dsmcPatchBoundary::calculateWallUnitVectors
 
     // Wall tangential velocity (flow direction)
     vector Ut = U - U_dot_nw*nw;
-    
+
     Random& rndGen = cloud_.rndGen();
-    
+
     while (mag(Ut) < SMALL)
     {
         // If the incident velocity is parallel to the face normal, no
@@ -270,10 +270,10 @@ void dsmcPatchBoundary::measurePropertiesBeforeControl(dsmcParcel& p)
         const label wppLocalFace = wpp.whichFace(p.face());
 
         const scalar fA = mag(wpp.faceAreas()[wppLocalFace]);
-        
+
         const scalar deltaT = cloud_.deltaTValue(p.cell());
-    
-        const dsmcParcel::constantProperties& 
+
+        const dsmcParcel::constantProperties&
             constProps(cloud_.constProps(p.typeId()));
 
         const scalar m = constProps.mass();
@@ -282,15 +282,15 @@ void dsmcPatchBoundary::measurePropertiesBeforeControl(dsmcParcel& p)
         nw /= mag(nw);
 
         const scalar U_dot_nw = p.U() & nw;
-    
+
         const vector& Ut = p.U() - U_dot_nw*nw;
-    
+
         const scalar invMagUnfADt = 1.0/max(mag(U_dot_nw)*fA*deltaT, SMALL);
 
         //- Update boundary flux measurements
         cloud_.boundaryFluxMeasurements()
             .rhoNBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfADt;
-        
+
         if(constProps.rotationalDegreesOfFreedom() > 0)
         {
            cloud_.boundaryFluxMeasurements()
@@ -300,48 +300,48 @@ void dsmcPatchBoundary::measurePropertiesBeforeControl(dsmcParcel& p)
         if(constProps.nElectronicLevels() > 1)
         {
            cloud_.boundaryFluxMeasurements()
-              .rhoNElecBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfADt; 
+              .rhoNElecBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfADt;
         }
 
         cloud_.boundaryFluxMeasurements()
             .rhoMBF()[p.typeId()][wppIndex][wppLocalFace] += m*invMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
-            .linearKEBF()[p.typeId()][wppIndex][wppLocalFace] += 
+            .linearKEBF()[p.typeId()][wppIndex][wppLocalFace] +=
                 0.5*m*(p.U() & p.U())*invMagUnfADt;
-            
+
         cloud_.boundaryFluxMeasurements()
-            .mccSpeciesBF()[p.typeId()][wppIndex][wppLocalFace] += 
+            .mccSpeciesBF()[p.typeId()][wppIndex][wppLocalFace] +=
                 m*(p.U() & p.U())*invMagUnfADt;
-            
+
         cloud_.boundaryFluxMeasurements()
-            .momentumBF()[p.typeId()][wppIndex][wppLocalFace] += 
+            .momentumBF()[p.typeId()][wppIndex][wppLocalFace] +=
                 m*Ut*invMagUnfADt;
-            
+
         cloud_.boundaryFluxMeasurements()
-            .rotationalEBF()[p.typeId()][wppIndex][wppLocalFace] += 
+            .rotationalEBF()[p.typeId()][wppIndex][wppLocalFace] +=
                 p.ERot()*invMagUnfADt;
-            
+
         cloud_.boundaryFluxMeasurements()
-            .rotationalDofBF()[p.typeId()][wppIndex][wppLocalFace] += 
+            .rotationalDofBF()[p.typeId()][wppIndex][wppLocalFace] +=
                 constProps.rotationalDegreesOfFreedom()*invMagUnfADt;
 
         const scalar EVibP_tot = constProps.eVib_tot(p.vibLevel());
-        
+
         cloud_.boundaryFluxMeasurements()
             .vibrationalEBF()[p.typeId()][wppIndex][wppLocalFace] +=
                 EVibP_tot*invMagUnfADt;
-                
+
         forAll(p.vibLevel(), mode)
         {
             cloud_.boundaryFluxMeasurements()
-                .evmsBF()[p.typeId()][mode][wppIndex][wppLocalFace] += 
+                .evmsBF()[p.typeId()][mode][wppIndex][wppLocalFace] +=
                     constProps.eVib_m(mode, p.vibLevel()[mode])
-                   *invMagUnfADt;      
+                   *invMagUnfADt;
         }
 
         cloud_.boundaryFluxMeasurements()
-            .electronicEBF()[p.typeId()][wppIndex][wppLocalFace] += 
+            .electronicEBF()[p.typeId()][wppIndex][wppLocalFace] +=
                 constProps.electronicEnergyList()[p.ELevel()]
               * invMagUnfADt;
 
@@ -356,109 +356,109 @@ void dsmcPatchBoundary::measurePropertiesBeforeControl(dsmcParcel& p)
 
 void dsmcPatchBoundary::measurePropertiesAfterControl
 (
-    dsmcParcel& p, 
+    dsmcParcel& p,
     const scalar& heatOfReaction
 )
 {
     if(measurePropertiesAtWall_)
-    {       
+    {
         const label wppIndex = patchId_;
         const polyPatch& wpp = mesh_.boundaryMesh()[wppIndex];
         const label wppLocalFace = wpp.whichFace(p.face());
-    
+
         const scalar fA = mag(wpp.faceAreas()[wppLocalFace]);
-    
+
         const scalar deltaT = cloud_.deltaTValue(p.cell());
-    
-        const dsmcParcel::constantProperties& 
+
+        const dsmcParcel::constantProperties&
             constProps(cloud_.constProps(p.typeId()));
-    
+
         const scalar m = constProps.mass();
-    
+
         vector nw = wpp.faceAreas()[wppLocalFace];
         nw /= mag(nw);
-    
+
         const scalar U_dot_nw = p.U() & nw;
-    
+
         const vector Ut = p.U() - U_dot_nw*nw;
-    
+
         const scalar invMagUnfADt = 1.0/max(mag(U_dot_nw)*fA*deltaT, SMALL);
 
         //- Update boundary flux measurements
         cloud_.boundaryFluxMeasurements()
             .rhoNBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfADt;
-        
+
         if(constProps.rotationalDegreesOfFreedom() > 0)
         {
            cloud_.boundaryFluxMeasurements()
-              .rhoNIntBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfADt; 
+              .rhoNIntBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfADt;
         }
-        
+
         if(constProps.nElectronicLevels() > 1)
         {
            cloud_.boundaryFluxMeasurements()
               .rhoNElecBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfADt;
         }
-        
+
         cloud_.boundaryFluxMeasurements()
             .rhoMBF()[p.typeId()][wppIndex][wppLocalFace] += m*invMagUnfADt;
-            
+
         cloud_.boundaryFluxMeasurements()
-            .linearKEBF()[p.typeId()][wppIndex][wppLocalFace] += 
+            .linearKEBF()[p.typeId()][wppIndex][wppLocalFace] +=
                 0.5*m*(p.U() & p.U())*invMagUnfADt;
-        
+
         cloud_.boundaryFluxMeasurements()
-            .mccSpeciesBF()[p.typeId()][wppIndex][wppLocalFace] += 
+            .mccSpeciesBF()[p.typeId()][wppIndex][wppLocalFace] +=
                 m*(p.U() & p.U())*invMagUnfADt;
-        
+
         cloud_.boundaryFluxMeasurements()
-            .momentumBF()[p.typeId()][wppIndex][wppLocalFace] += 
+            .momentumBF()[p.typeId()][wppIndex][wppLocalFace] +=
                 m*Ut*invMagUnfADt;
-        
+
         cloud_.boundaryFluxMeasurements()
-            .rotationalEBF()[p.typeId()][wppIndex][wppLocalFace] += 
+            .rotationalEBF()[p.typeId()][wppIndex][wppLocalFace] +=
                 p.ERot()*invMagUnfADt;
-        
+
         cloud_.boundaryFluxMeasurements()
-            .rotationalDofBF()[p.typeId()][wppIndex][wppLocalFace] += 
+            .rotationalDofBF()[p.typeId()][wppIndex][wppLocalFace] +=
                 constProps.rotationalDegreesOfFreedom()*invMagUnfADt;
-        
+
         const scalar EVibP_tot = constProps.eVib_tot(p.vibLevel());
-        
+
         cloud_.boundaryFluxMeasurements()
-            .vibrationalEBF()[p.typeId()][wppIndex][wppLocalFace] += 
+            .vibrationalEBF()[p.typeId()][wppIndex][wppLocalFace] +=
                 EVibP_tot*invMagUnfADt;
-                    
+
         forAll(p.vibLevel(), mode)
         {
             cloud_.boundaryFluxMeasurements()
-                .evmsBF()[p.typeId()][mode][wppIndex][wppLocalFace] += 
+                .evmsBF()[p.typeId()][mode][wppIndex][wppLocalFace] +=
                     constProps.eVib_m(mode, p.vibLevel()[mode])
-                   *invMagUnfADt;       
+                   *invMagUnfADt;
         }
-        
+
         cloud_.boundaryFluxMeasurements()
-            .electronicEBF()[p.typeId()][wppIndex][wppLocalFace] += 
+            .electronicEBF()[p.typeId()][wppIndex][wppLocalFace] +=
                 constProps.electronicEnergyList()[p.ELevel()]*invMagUnfADt;
-        
+
         //- post-interaction energy
         scalar postIE = 0.5*m*(p.U() & p.U()) + p.ERot() + EVibP_tot
             + constProps.electronicEnergyList()[p.ELevel()];
-        
+
         //- post-interaction momentum
         const vector& postIMom = m*p.U();
-    
+
         const scalar nParticle = cloud_.nParticles(wppIndex, wppLocalFace);
-        
+
         const scalar deltaQ = nParticle
             * (preIE_ - postIE + (heatOfReaction*physicoChemical::k.value()))
             / (deltaT*fA);
-            
+
         const vector deltaFD = nParticle*(preIMom_ - postIMom)/(deltaT*fA);
-        
+
         cloud_.boundaryFluxMeasurements()
             .qBF()[p.typeId()][wppIndex][wppLocalFace] += deltaQ;
-            
+
         cloud_.boundaryFluxMeasurements()
             .fDBF()[p.typeId()][wppIndex][wppLocalFace] += deltaFD;
     }

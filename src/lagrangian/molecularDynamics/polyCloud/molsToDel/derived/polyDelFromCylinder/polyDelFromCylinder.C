@@ -61,17 +61,17 @@ polyDelFromCylinder::polyDelFromCylinder
 {
 
     // check if start point is in the mesh
-   
+
     if(mesh_.findCell(startPoint_) == -1)
     {
-        Info<< "WARNING: starting point " << startPoint_ 
+        Info<< "WARNING: starting point " << startPoint_
             << " is selected outside the mesh."
             << endl;
     }
 
     if(mesh_.findCell(endPoint_) == -1)
     {
-        Info<< "WARNING: end point " << endPoint_ 
+        Info<< "WARNING: end point " << endPoint_
             << " is selected outside the mesh."
             << endl;
     }
@@ -85,14 +85,14 @@ polyDelFromCylinder::polyDelFromCylinder
     );
 
     molIds_ = ids.molIds();
-    
+
     bool invert = false;
 
     if (propsDict_.found("invert"))
     {
         invert = Switch(propsDict_.lookup("invert"));
-    }    
-    
+    }
+
     if(invert)
     {
         findMolsToDelOutside();
@@ -115,9 +115,9 @@ polyDelFromCylinder::~polyDelFromCylinder()
 void polyDelFromCylinder::findMolsToDelInside()
 {
     DynamicList<polyMolecule*> molsToDel;
-    
+
     IDLList<polyMolecule>::iterator mol(molCloud_.begin());
-    
+
     label initialSize = molCloud_.size();
 
     scalar rSEMag = mag(endPoint_ - startPoint_);
@@ -155,17 +155,17 @@ void polyDelFromCylinder::findMolsToDelInside()
     //molsToDel.shrink();
 
     forAll(molsToDel, m)
-    {        
+    {
         Info <<  molsToDel[m]->position() << endl;
-        
+
         deleteMolFromMoleculeCloud(*molsToDel[m]);
     }
 
     label molsKept = initialSize - molsToDel.size();
 
-    Info<< tab << " initial polyMolecules: " <<  initialSize 
+    Info<< tab << " initial polyMolecules: " <<  initialSize
         << ", polyMolecules kept: " <<  molsKept
-        << ", polyMolecules removed: " << molsToDel.size() 
+        << ", polyMolecules removed: " << molsToDel.size()
         << endl;
 
 
@@ -193,15 +193,15 @@ void polyDelFromCylinder::findMolsToDelOutside()
         const vector& rI = mol().position();
         vector rSI = rI - startPoint_;
         scalar centreLineDistance = rSI & unitVector_;
-        
+
         bool del = true;
-         
+
         if(findIndex(molIds_, mol().id()) == -1)
         {
             del = false;
         }
 
- 
+
         //- step 1: test polyMolecule is between starting point and end point
         if((centreLineDistance <= rSEMag) && (centreLineDistance >= 0.0))
         {
@@ -218,7 +218,7 @@ void polyDelFromCylinder::findMolsToDelOutside()
                 }
             }
         }
-        
+
         if(del)
         {
             polyMolecule* molI = &mol();
@@ -235,9 +235,9 @@ void polyDelFromCylinder::findMolsToDelOutside()
 
     label molsKept = initialSize - molsToDel.size();
 
-    Info<< tab << " initial polyMolecules: " <<  initialSize 
+    Info<< tab << " initial polyMolecules: " <<  initialSize
         << ", polyMolecules kept: " <<  molsKept
-        << ", polyMolecules removed: " << molsToDel.size() 
+        << ", polyMolecules removed: " << molsToDel.size()
         << endl;
 
 

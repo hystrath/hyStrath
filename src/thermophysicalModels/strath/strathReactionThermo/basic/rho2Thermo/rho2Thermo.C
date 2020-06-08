@@ -55,16 +55,16 @@ Foam::wordList Foam::rho2Thermo::rhoBoundaryTypes() // NEW VINCENT 13/04/2016
             rhoBoundaryTypes[patchi] = fixedRhoFvPatchScalarField::typeName;
         }
     }
-    
+
     return rhoBoundaryTypes;
-} 
+}
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 Foam::rho2Thermo::rho2Thermo(const fvMesh& mesh, const word& phaseName)
 :
     multi2Thermo(mesh, phaseName),
-    
+
     rho_
     (
         IOobject
@@ -107,7 +107,7 @@ Foam::rho2Thermo::rho2Thermo(const fvMesh& mesh, const word& phaseName)
         mesh,
         dimensionedScalar("mu", dimensionSet(1, -1, -1, 0, 0), 1e-6)
     ),
-    
+
     kappatr_
     (
         IOobject
@@ -121,7 +121,7 @@ Foam::rho2Thermo::rho2Thermo(const fvMesh& mesh, const word& phaseName)
         mesh,
         dimensionSet(1, 1, -3, -1, 0)
     ),
-    
+
     kappave_
     (
         IOobject
@@ -135,7 +135,7 @@ Foam::rho2Thermo::rho2Thermo(const fvMesh& mesh, const word& phaseName)
         mesh,
         dimensionSet(1, 1, -3, -1, 0)
     ),
-    
+
     alphatr_
     (
         IOobject
@@ -149,7 +149,7 @@ Foam::rho2Thermo::rho2Thermo(const fvMesh& mesh, const word& phaseName)
         mesh,
         dimMass/dimLength/dimTime
     ),
-    
+
     alphave_
     (
         IOobject
@@ -189,7 +189,7 @@ Foam::rho2Thermo::rho2Thermo
         dimDensity,
         rhoBoundaryTypes()
     ),
-    
+
     psi_
     (
         IOobject
@@ -218,7 +218,7 @@ Foam::rho2Thermo::rho2Thermo
         dimensionedScalar("mu", dimensionSet(1, -1, -1, 0, 0), 1e-6)
         //dimensionSet(1, -1, -1, 0, 0)
     ),
-    
+
     kappatr_
     (
         IOobject
@@ -232,7 +232,7 @@ Foam::rho2Thermo::rho2Thermo
         mesh,
         dimensionSet(1, 1, -3, -1, 0)
     ),
-    
+
     kappave_
     (
         IOobject
@@ -246,7 +246,7 @@ Foam::rho2Thermo::rho2Thermo
         mesh,
         dimensionSet(1, 1, -3, -1, 0)
     ),
-    
+
     alphatr_
     (
         IOobject
@@ -260,7 +260,7 @@ Foam::rho2Thermo::rho2Thermo
         mesh,
         dimMass/dimLength/dimTime
     ),
-    
+
     alphave_
     (
         IOobject
@@ -456,7 +456,7 @@ Foam::tmp<Foam::scalarField> Foam::rho2Thermo::kappaEff
             this->Tt_.boundaryField()[patchi],
             patchi
         )*alphaEff(alphat, patchi);*/
-        
+
     // Both kappa_transrot and alpha_turbulent are known
     return
     (

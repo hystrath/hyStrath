@@ -167,7 +167,7 @@ void polyFluxController::setFacesInfo()
                 }
             }
         }
-        
+
         //processorFaces.shrink();
 
         processorFaces_.setSize(processorFaces.size(), -1);
@@ -204,9 +204,9 @@ void polyFluxController::setFacesInfo()
         forAll(processorFaces_, f)
         {
             const label& faceI = processorFaces_[f];
-            zoneSurfaceArea_ += 0.5*mag(mesh_.faceAreas()[faceI]);           
+            zoneSurfaceArea_ += 0.5*mag(mesh_.faceAreas()[faceI]);
         }
-    
+
 
         if(Pstream::parRun())
         {
@@ -221,20 +221,20 @@ void polyFluxController::setFacesInfo()
                     }
                 }
             }
-        
+
             //- receiving
             for (int p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
                     scalar zoneSurfaceAreaProc;
-    
+
                     const int proc = p;
                     {
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> zoneSurfaceAreaProc;
                     }
-        
+
                     zoneSurfaceArea_ += zoneSurfaceAreaProc;
                 }
             }
@@ -281,7 +281,7 @@ const labelList& polyFluxController::controlZone() const
     return mesh_.faceZones()[regionId_];
 }
 
-label polyFluxController::isFaceOnControlZone(const label& faceI) 
+label polyFluxController::isFaceOnControlZone(const label& faceI)
 {
     const label f = findIndex(controlZone(), faceI);
 

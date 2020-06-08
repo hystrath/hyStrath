@@ -68,7 +68,7 @@ class nonEqMaxwellSlipUFvPatchVectorField
 
         //- tauMC field name, default = "tauMC"
         word tauMCName_;
-        
+
         //- Mean free path field name, default = "mfp" // NEW VINCENT 28/02/2016
         word mfpName_;
 
@@ -77,7 +77,7 @@ class nonEqMaxwellSlipUFvPatchVectorField
 
         // Wall velocity vector
         vector vectorUwall_; // NEW VINCENT 21/10/2016
-        
+
         // Wall velocity
         vectorField Uwall_;
 

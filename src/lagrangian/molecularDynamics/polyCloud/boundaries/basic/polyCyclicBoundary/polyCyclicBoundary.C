@@ -81,7 +81,7 @@ polyCyclicBoundary::polyCyclicBoundary
     if (!isA<cyclicPolyPatch>(patch))
     {
         FatalErrorIn("cyclicBoundary::cyclicBoundary()")
-            << "Patch: " << patchName_ << " is not a cyclic boundary. " 
+            << "Patch: " << patchName_ << " is not a cyclic boundary. "
             << nl << "in: "
             << t.system()/"boundariesDict"
             << exit(FatalError);

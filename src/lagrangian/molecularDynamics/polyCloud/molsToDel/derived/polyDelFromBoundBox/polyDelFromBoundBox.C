@@ -56,7 +56,7 @@ polyDelFromBoundBox::polyDelFromBoundBox
     molIds_(),
     invert_(false)
 {
-    
+
     molIds_.clear();
 
     selectIds ids
@@ -66,7 +66,7 @@ polyDelFromBoundBox::polyDelFromBoundBox
     );
 
     molIds_ = ids.molIds();
-    
+
     vector startPoint = propsDict_.lookup("startPoint");
     vector endPoint = propsDict_.lookup("endPoint");
 
@@ -76,8 +76,8 @@ polyDelFromBoundBox::polyDelFromBoundBox
     if (propsDict_.found("invert"))
     {
         invert_ = Switch(propsDict_.lookup("invert"));
-    }    
-    
+    }
+
     findMolsToDel();
 }
 
@@ -95,11 +95,11 @@ void polyDelFromBoundBox::findMolsToDel()
     DynamicList<polyMolecule*> molsToDel;
 
     label initialSize = molCloud_.size();
-    
-    
-    {    
+
+
+    {
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
-        
+
         for
         (
             mol = molCloud_.begin();
@@ -127,12 +127,12 @@ void polyDelFromBoundBox::findMolsToDel()
                         polyMolecule* molI = &mol();
                         molsToDel.append(molI);
                     }
-                }                
-            } 
+                }
+            }
 
         }
     }
-    
+
     //molsToDel.shrink();
 
     forAll(molsToDel, m)
@@ -142,9 +142,9 @@ void polyDelFromBoundBox::findMolsToDel()
 
     label molsKept = initialSize - molsToDel.size();
 
-    Info<< tab << " initial polyMolecules: " <<  initialSize 
+    Info<< tab << " initial polyMolecules: " <<  initialSize
         << ", polyMolecules kept: " <<  molsKept
-        << ", polyMolecules removed: " << molsToDel.size() 
+        << ", polyMolecules removed: " << molsToDel.size()
         << endl;
 
 

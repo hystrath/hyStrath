@@ -25,22 +25,22 @@ if
         PtrList<scalar> ev_pos(phiEvk.size());
         PtrList<scalar> ev_neg(phiEvk.size());
         PtrList<scalar> phiEv(phiEvk.size());
-        
+
         forAll(pDens_pos, speciei)
-        { 
+        {
             pDens_pos.set
             (
                 speciei,
                 new scalar(pD_pos[speciei][facei])
             );
-            
+
             pDens_neg.set
             (
                 speciei,
                 new scalar(pD_neg[speciei][facei])
             );
         }
-        
+
         forAll(ev_pos, speciei)
         {
             ev_pos.set
@@ -48,20 +48,20 @@ if
                 speciei,
                 new scalar(evk_pos[speciei][facei])
             );
-            
+
             ev_neg.set
             (
                 speciei,
                 new scalar(evk_neg[speciei][facei])
             );
-            
+
             phiEv.set
             (
                 speciei,
                 new scalar(phiEvk[speciei][facei])
             );
         }
-        
+
         fluxMap[fluxScheme]
         (
             downgradeSingleT,
@@ -90,13 +90,13 @@ if
             phiEv,
             phiEp[facei]
         );
-        
+
         forAll(phiEvk, speciei)
         {
             phiEvk[speciei][facei] = phiEv[speciei];
         }
     }
-    
+
     //- Boundary faces
     forAll(mesh.boundaryMesh(), patchi)
     {
@@ -109,9 +109,9 @@ if
                 PtrList<scalar> pev_pos(phiEvk.size());
                 PtrList<scalar> pev_neg(phiEvk.size());
                 PtrList<scalar> pphiEv(phiEvk.size());
-                
+
                 forAll(ppDens_pos, speciei)
-                { 
+                {
                     ppDens_pos.set
                     (
                         speciei,
@@ -120,7 +120,7 @@ if
                             pD_pos[speciei].boundaryField()[patchi][facei]
                         )
                     );
-                    
+
                     ppDens_neg.set
                     (
                         speciei,
@@ -130,7 +130,7 @@ if
                         )
                     );
                 }
-                
+
                 forAll(pev_pos, speciei)
                 {
                     pev_pos.set
@@ -141,7 +141,7 @@ if
                             evk_pos[speciei].boundaryField()[patchi][facei]
                         )
                     );
-                    
+
                     pev_neg.set
                     (
                         speciei,
@@ -150,7 +150,7 @@ if
                             evk_neg[speciei].boundaryField()[patchi][facei]
                         )
                     );
-                    
+
                     pphiEv.set
                     (
                         speciei,
@@ -160,7 +160,7 @@ if
                         )
                     );
                 }
-        
+
                 fluxMap[fluxScheme]
                 (
                     downgradeSingleT,
@@ -189,7 +189,7 @@ if
                     pphiEv,
                     phiEp.boundaryFieldRef()[patchi][facei]
                 );
-                
+
                 forAll(phiEvk, speciei)
                 {
                     phiEvk[speciei].boundaryFieldRef()[patchi][facei] =

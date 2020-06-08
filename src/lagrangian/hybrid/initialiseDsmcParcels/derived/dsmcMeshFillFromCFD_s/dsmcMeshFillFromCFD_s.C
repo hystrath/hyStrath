@@ -557,9 +557,9 @@ void dsmcMeshFillFromCFD_s::setInitialConfiguration()
                     );
 
                     U += velocity;
-                    
+
                     label newParcel = -1;
-                    
+
                     label classification = 0;
 
                     const scalar& RWF = cloud_.coordSystem().recalculateRWF(cellI);

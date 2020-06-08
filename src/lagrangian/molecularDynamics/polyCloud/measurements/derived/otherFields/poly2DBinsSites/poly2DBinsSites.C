@@ -63,14 +63,14 @@ poly2DBinsSites::poly2DBinsSites
     atoms_(),
 
     N_(),
-    
+
 
     nAvTimeSteps_(0.0),
     resetAtOutput_(true)
 {
-    
+
     const cellZoneMesh& cellZones = mesh_.cellZones();
-    
+
     regionId_ = cellZones.findZoneID(regionName_);
 
     if(regionId_ == -1)
@@ -80,7 +80,7 @@ poly2DBinsSites::poly2DBinsSites
             << time_.time().system()/"fieldPropertiesDict"
             << exit(FatalError);
     }
-    
+
     // choose molecule ids to sample
 
     molSiteIds_.clear();
@@ -94,50 +94,50 @@ poly2DBinsSites::poly2DBinsSites
     molSiteIds_ = ids.siteIds();
 
 
-    
+
     // create bin model
     binModel_ = autoPtr<twoDimBinModel>
     (
         twoDimBinModel::New(mesh, propsDict_)
     );
-    
+
     List<label> nBins = binModel_->nBins();
-    
+
     label nBinsX = nBins[0];
     label nBinsY = nBins[1];
 
 //     Info << "nBinsX = " << nBinsX << endl;
 //     Info << "nBinsY = " << nBinsY << endl;
-    
+
     atoms_.setSize(nBinsX);
 
     N_.setSize(nBinsX);
-    
+
     forAll(atoms_, i)
     {
         atoms_[i].setSize(nBinsY, 0.0);
         N_[i].setSize(nBinsY, 0.0);
     }
-    
+
 //     Info << "atoms_ = " << atoms_ << endl;
-//     Info << "mom_ = " << mom_ << endl;        
-    
-   
-    
+//     Info << "mom_ = " << mom_ << endl;
+
+
+
     // read in stored data from dictionary
 
     resetAtOutput_ = Switch(propsDict_.lookup("resetAtOutput"));
-    
+
     {
         Info << nl << "Storage..." << endl;
-        
+
         bool resetStorage = false;
-        
+
         if (propsDict_.found("resetStorage"))
         {
             resetStorage = Switch(propsDict_.lookup("resetStorage"));
-        }    
-        
+        }
+
         if(resetStorage)
         {
             Info<< "WARNING: storage will be reset."
@@ -151,13 +151,13 @@ poly2DBinsSites::poly2DBinsSites
                 << " This is NOT good if you have been testing your simulation a number of times "
                 << " Delete your storage directory before moving to important runs"
                 << " or type resetStorage = yes, for just the first simulation run."
-                << endl;            
+                << endl;
         }
-        
-        resetAtOutput_ = Switch(propsDict_.lookup("resetAtOutput"));    
-        
-        
-        // stored data activation in dictionary        
+
+        resetAtOutput_ = Switch(propsDict_.lookup("resetAtOutput"));
+
+
+        // stored data activation in dictionary
 
         pathName_ = time_.time().path()/"storage";
         nameFile_ = "binsData_"+fieldName_;
@@ -178,7 +178,7 @@ poly2DBinsSites::poly2DBinsSites
         IFstream file(pathName_/nameFile_);
 
         bool foundFile = file.good();
-        
+
         if(!foundFile)
         {
             Info << nl << "File not found: " << nameFile_ << nl << endl;
@@ -192,7 +192,7 @@ poly2DBinsSites::poly2DBinsSites
             Info << "Reading from storage, e.g. noAvTimeSteps = " << nAvTimeSteps_ << endl;
         }
     }
-   
+
 }
 
 
@@ -212,9 +212,9 @@ void poly2DBinsSites::calculateField()
 {
 //     Info << "atoms = " << atoms_ << endl;
 //     Info << "mom = " << mom_ << endl;
-    
+
     nAvTimeSteps_ += 1.0;
-    
+
     forAll(mesh_.cellZones()[regionId_], c)
     {
         const label& cellI = mesh_.cellZones()[regionId_][c];
@@ -223,19 +223,19 @@ void poly2DBinsSites::calculateField()
         forAll(molsInCell, mIC)
         {
             polyMolecule* molI = molsInCell[mIC];
-            
+
             forAll(molI->sitePositions(), i)
             {
                 label siteId = molCloud_.cP().siteNames_to_siteIdList()[molI->id()][i];
-        
+
                 if(findIndex(molSiteIds_, siteId) != -1)
                 {
-//                     Info<< "siteId = " << siteId 
+//                     Info<< "siteId = " << siteId
 //                         << ", in siteIdList = " << molCloud_.cP().siteIds()[siteId]
 //                         << endl;
-                    
+
                     const vector& rI = molI->sitePositions()[i];
-                    
+
                     List<label> n = binModel_->isPointWithinBin(rI, cellI);
 
                     if((n[0]+n[1]) >= 0)
@@ -248,10 +248,10 @@ void poly2DBinsSites::calculateField()
         }
     }
 
-    if(time_.outputTime()) 
+    if(time_.outputTime())
     {
         List<scalarField> atoms = atoms_;
-       
+
 
         if(Pstream::parRun())
         {
@@ -263,27 +263,27 @@ void poly2DBinsSites::calculateField()
                 }
             }
         }
-        
+
         const scalar& nAvTimeSteps = nAvTimeSteps_;
-        
+
         forAll(atoms, i)
         {
 //             scalar volume = binModel_->binVolume(i);
-            
+
             forAll(atoms[i], j)
-            {       
+            {
                 N_[i][j] = atoms[i][j]/(nAvTimeSteps);
 
             }
         }
-    
+
 
 
         if(resetAtOutput_)
         {
             //- reset fields
             nAvTimeSteps_ = 0.0;
-            
+
             forAll(atoms, i)
             {
                 forAll(atoms[i], j)
@@ -307,7 +307,7 @@ void poly2DBinsSites::writeToStorage()
     {
         file << nAvTimeSteps_ << endl;
         file << atoms_ << endl;
-//         file << mom_ << endl; 
+//         file << mom_ << endl;
     }
     else
     {
@@ -345,50 +345,50 @@ void poly2DBinsSites::writeField()
     {
         if(Pstream::master())
         {
-            
-            scalarField binsX = binModel_->binPositionsX();
-            scalarField binsY = binModel_->binPositionsY();            
-            
 
-            
+            scalarField binsX = binModel_->binPositionsX();
+            scalarField binsY = binModel_->binPositionsY();
+
+
+
             writeTimeData
             (
                 timePath_,
                 "bins_twoDim_"+fieldName_+"_binsX.xy",
                 binsX
-            ); 
-            
+            );
+
             writeTimeData
             (
                 timePath_,
                 "bins_twoDim_"+fieldName_+"_binsY.xy",
                 binsY
-            );           
+            );
 
             writeTimeData
             (
                 timePath_,
                 "bins_twoDim_"+fieldName_+"_N.xy",
                 N_
-            );           
-            
-            
-            
+            );
+
+
+
             const reducedUnits& rU = molCloud_.redUnits();
-            
+
             writeTimeData
             (
                 timePath_,
                 "bins_twoDim_"+fieldName_+"_binsX_SI.xy",
                 binsX*rU.refLength()
-            ); 
-            
+            );
+
             writeTimeData
             (
                 timePath_,
                 "bins_twoDim_"+fieldName_+"_binsY_SI.xy",
                 binsY*rU.refLength()
-            );           
+            );
         }
     }
 }

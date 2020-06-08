@@ -41,7 +41,7 @@ Description
 namespace Foam
 {
     // Chemistry models based on sensibleEnthalpy
-    
+
     // NEW VINCENT ************************************************************
     make2ChemistryModel
     (
@@ -55,28 +55,28 @@ namespace Foam
         rho2ChemistryModel,
         demGasHThermoPhysicsH2TGD
     );
-    
+
     make2ChemistryModel
     (
         chemistry2Model,
         rho2ChemistryModel,
         demBEGasHThermoPhysicsH2TGD
     );
-    
+
     make2ChemistryModel
     (
         chemistry2Model,
         rho2ChemistryModel,
         demPLEGasHThermoPhysicsH2TGD
     );
-    
+
     make2ChemistryModel
     (
         chemistry2Model,
         rho2ChemistryModel,
         demCEAGasHThermoPhysicsH2TGD
     );
-    
+
     // Chemistry moldels based on sensibleInternalEnergy
     make2ChemistryModel
     (
@@ -84,35 +84,35 @@ namespace Foam
         rho2ChemistryModel,
         demConstGasEThermoPhysicsH2TGD
     );
-    
+
     make2ChemistryModel
     (
         chemistry2Model,
         rho2ChemistryModel,
         demGasEThermoPhysicsH2TGD
     );
-    
+
     make2ChemistryModel
     (
         chemistry2Model,
         rho2ChemistryModel,
         demBEGasEThermoPhysicsH2TGD
     );
-    
+
     make2ChemistryModel
     (
         chemistry2Model,
         rho2ChemistryModel,
         demPLEGasEThermoPhysicsH2TGD
-    );  
-    
+    );
+
     make2ChemistryModel
     (
         chemistry2Model,
         rho2ChemistryModel,
         demCEAGasEThermoPhysicsH2TGD
-    );     
-          
+    );
+
 }
 
 // ************************************************************************* //

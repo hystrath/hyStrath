@@ -34,17 +34,17 @@ License
 
 namespace Foam
 {
-  
-// * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //  
-  
+
+// * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
+
     defineTypeNameAndDebug(relaxationTimeModel, 0);
     defineRunTimeSelectionTable(relaxationTimeModel, fvMesh);
 }
 
 
-// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //  
+// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
-  
+
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 Foam::relaxationTimeModel::relaxationTimeModel
@@ -57,17 +57,17 @@ Foam::relaxationTimeModel::relaxationTimeModel
     (
         thermo.twoTemperatureDictionary()
     ),
-    
-    mesh_(thermo.Tt().mesh()), 
+
+    mesh_(thermo.Tt().mesh()),
     thermo_(thermo),
     turbulence_(turbulence)
-    
-{  
+
+{
     const word dict2T(IOdictionary::name()), dictThermoPhy
     (
         fileName(thermo.lookup("foamChemistryThermoFile")).name()
     );
-    
+
     // Construct the relaxation time model
     tauVTijModel_.set
     (
@@ -76,14 +76,14 @@ Foam::relaxationTimeModel::relaxationTimeModel
             dict2T,
             dictThermoPhy,
             solvedVibEqSpecies(),
-            species(), 
-            thermo.p(), 
-            thermo.Tt(), 
-            thermo.composition().Tv(), 
+            species(),
+            thermo.p(),
+            thermo.Tt(),
+            thermo.composition().Tv(),
             thermo.composition().nD()
         )
-    );    
-    
+    );
+
     QVT_.setSize(solvedVibEqSpecies().size()); //NEW VINCENT 05/08/2016
     //QVTmode_.setSize(species().size()); // TODO ONGOING WORK
 
@@ -91,7 +91,7 @@ Foam::relaxationTimeModel::relaxationTimeModel
     {
         QVT_.set
         (
-            speciei, 
+            speciei,
             new volScalarField
             (
                 IOobject
@@ -107,7 +107,7 @@ Foam::relaxationTimeModel::relaxationTimeModel
             )
         );
     }
-    
+
     /*forAll(QVTmode_, speciei) // TODO ONGOING WORK
     {
         QVTmode_.set
@@ -116,14 +116,14 @@ Foam::relaxationTimeModel::relaxationTimeModel
             new PtrList<volScalarField>(thermo.composition().noVibrationalTemp(speciei))
         );
     }
-    
+
     forAll(QVTmode_, speciei)
     {
       forAll(QVTmode_[speciei], vibMode)
       {
         QVTmode_[speciei].set
         (
-            vibMode, 
+            vibMode,
             new volScalarField
             (
                 IOobject
@@ -164,7 +164,7 @@ Foam::relaxationTimeModel::VTRelaxationSource()
             dimensionedScalar("QVT", dimensionSet(1, -1, -3, 0, 0), 0.0)
         )
     );
-    
+
     return tQVT;
 }*/
 

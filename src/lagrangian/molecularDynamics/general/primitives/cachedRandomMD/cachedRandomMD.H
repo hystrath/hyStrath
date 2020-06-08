@@ -119,9 +119,9 @@ public:
         (
             const label seed,
             const label cacheSizeMult,
-            const label numMols 
+            const label numMols
         );
-        
+
     // Destructor
     ~cachedRandomMD();
 
@@ -143,8 +143,8 @@ public:
             inline label sampleI() const;
 
             //- Return the cacheSizeMult_
-            inline label cacheSizeMult() const;            
-            
+            inline label cacheSizeMult() const;
+
         // Manipulation
 
             //- Return non-const access to the sample marker

@@ -72,17 +72,17 @@ polyFadeEquilibrateMolecules::polyFadeEquilibrateMolecules
     );
 
     molIds_ = ids.molIds();
-    
+
     tauT_ = readScalar(propsDict_.lookup("tauT"));
 
     if(tauT_ > 0.0)
     {
         n_ = readLabel(propsDict_.lookup("n"));
     }
-    
-    deltaT_ = time_.deltaT().value(); 
+
+    deltaT_ = time_.deltaT().value();
     t_ = 0.0;
-    
+
     readProperties();
 }
 
@@ -125,9 +125,9 @@ void polyFadeEquilibrateMolecules::controlDuringForces
 void polyFadeEquilibrateMolecules::controlAfterForces()
 {
     IDLList<polyMolecule>::iterator mol(molCloud_.begin());
-    
+
     t_ += deltaT_;
-    
+
     for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
     {
         if(findIndex(molIds_, mol().id()) != -1)
@@ -138,9 +138,9 @@ void polyFadeEquilibrateMolecules::controlAfterForces()
             }
             else
             {
-                mol().fraction() = 1.0 
+                mol().fraction() = 1.0
                         - 0.5*mag(Foam::pow((2.0*(t_-tauT_)/tauT_), scalar(n_)));
-            }            
+            }
         }
     }
 }

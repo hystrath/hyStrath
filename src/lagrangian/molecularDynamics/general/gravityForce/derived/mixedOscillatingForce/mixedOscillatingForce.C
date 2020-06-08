@@ -70,24 +70,24 @@ mixedOscillatingForce::mixedOscillatingForce
     deltaT_(readScalar(propsDict_.lookup("deltaT")))
 {
     unitVector_ /= mag(unitVector_);
-        
-    periodCoeffs_ = List<scalar>(propsDict_.lookup("coeffs"));   
-    
+
+    periodCoeffs_ = List<scalar>(propsDict_.lookup("coeffs"));
+
 //     scalar initialForce = (readScalar(propsDict_.lookup("force")));
 
 //     force_ = unitVector_*initialForce;
 
     //offsetTime_ = Foam::asin(initialForce/amplitude_)/(360.0*omega_);
-    
-    
+
+
     bool outputForces = false;
-    
+
     if (propsDict_.found("output"))
     {
-        outputForces = Switch(propsDict_.lookup("output"));    
-        
+        outputForces = Switch(propsDict_.lookup("output"));
+
         if(outputForces)
-        {    
+        {
             output(time);
         }
     }
@@ -118,13 +118,13 @@ void mixedOscillatingForce::updateForce()
 //     const scalar initialTime = time_.startTime().value();
 
     currentTime_ += deltaT_;
-    
+
 //     scalar t = currentTime_-initialTime+offsetTime_;
-    
+
     scalar t = currentTime_;
-    
+
     scalar period = getPeriod(t);
-    
+
     force_ = amplitude_*Foam::sin(2.0*constant::mathematical::pi*t/period)*unitVector_;
 }
 
@@ -138,37 +138,37 @@ vector mixedOscillatingForce::force(const scalar& time)
 scalar mixedOscillatingForce::getPeriod(const scalar& t)
 {
     scalar period = 0.0;
-    
+
     label M = periodCoeffs_.size() - 1;
-    
+
     forAll(periodCoeffs_, j)
     {
         period += periodCoeffs_[j]*pow(t, (M-j));
     }
-    
+
     return period;
 }
 
 void mixedOscillatingForce::output(Time& time)
 {
     label N = 4e6;
-    
-    scalarField t(N, 0.0);     
-    scalarField period(N, 0.0);   
+
+    scalarField t(N, 0.0);
+    scalarField period(N, 0.0);
     scalarField forces(N, 0.0);
-    
+
     for (label i=0; i< N; i++)
     {
         updateForce();
-        
+
         t[i] = currentTime_;
         forces[i]=force_.x();
-        
+
         scalar p = getPeriod(currentTime_);
-        period[i]=p;        
+        period[i]=p;
     }
-    
-    fileName casePath(time.path());   
+
+    fileName casePath(time.path());
 
     writeTimeData
     (
@@ -184,9 +184,9 @@ void mixedOscillatingForce::output(Time& time)
         "mixedOscillatingForce_period.xy",
         t,
         period
-    );    
-    
-    
+    );
+
+
 }
 
 void mixedOscillatingForce::write

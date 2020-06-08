@@ -76,7 +76,7 @@ polyIntegrators::polyIntegrators
         )
     )
 {
-    
+
     int_ = autoPtr<polyIntegrator>
     (
         polyIntegrator::New(time_, molCloud, controlDict_)

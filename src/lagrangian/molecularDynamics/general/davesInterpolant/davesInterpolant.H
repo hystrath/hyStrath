@@ -27,7 +27,7 @@ Class
 
 Description
 
-    
+
 SourceFiles
     davesInterpolantI.H
     davesInterpolant.C
@@ -57,22 +57,22 @@ namespace Foam
 class davesInterpolant
 {
     // Private data
-        
+
         //- subDictionary containing the properties
         dictionary propsDict_;
 
         label nDataPoints_;
-        
-        
+
+
         scalarField density_;
 
-        List< List<scalar> > strain_;        
+        List< List<scalar> > strain_;
         List< List<scalar> > viscosity_;
         List< List<scalar> > slipLength_;
 
-        
-        
-        
+
+
+
     // Private Member Functions
 
 //         void setRadius();

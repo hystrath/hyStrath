@@ -1,4 +1,4 @@
-    
+
 // --- Solve energy, VISCOUS
 if(!inviscid)
 {
@@ -8,18 +8,18 @@ if(!inviscid)
       - fvm::laplacian(turbulence->alphaEff(), e) + fvc::laplacian(turbulence->alphaEff(), ev)
       - fvm::laplacian(transport().alphave(), e) + fvc::laplacian(transport().alphave(), et)
     );
-    
+
     if(speciesDiffusionName != "noSpeciesDiffusion")
     {
         eEqnViscous += fvc::div(speciesDiffusion().multiSpeciesHeatSource(), "div(diffusiveFluxes)");
     }
-    
+
     eEqnViscous.solve();
-    
+
     et.ref() = e() - ev();
     et.correctBoundaryConditions();
     e.boundaryFieldRef() = et.boundaryField() + ev.boundaryField();
-    
+
     rhoE = rho*(e + 0.5*magSqr(U));
 }
 

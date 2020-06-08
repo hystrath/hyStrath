@@ -596,7 +596,7 @@ Foam::scalar Foam::Specie2Mixture<MixtureType>::HEvel
 }
 
 
-/*template<class MixtureType> TODO ONGOING WORK 
+/*template<class MixtureType> TODO ONGOING WORK
 Foam::scalar Foam::Specie2Mixture<MixtureType>::HEvel_mode
 (
     const label speciei,
@@ -714,7 +714,7 @@ Foam::scalar Foam::Specie2Mixture<MixtureType>::TvelHEvel
 }
 
 
-/*template<class MixtureType> TODO ONGOING WORK 
+/*template<class MixtureType> TODO ONGOING WORK
 Foam::scalar Foam::Specie2Mixture<MixtureType>::TvelHEvel_mode
 (
     const label speciei,
@@ -753,7 +753,7 @@ Foam::scalar Foam::Specie2Mixture<MixtureType>::zetav
 }
 
 
-/*template<class MixtureType> TODO ONGOING WORK 
+/*template<class MixtureType> TODO ONGOING WORK
 Foam::scalar Foam::Specie2Mixture<MixtureType>::zetav_mode
 (
     const label speciei,

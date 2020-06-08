@@ -28,7 +28,7 @@ if (alphaTemp < 1.0)
     (
         mag(reaction->Sh())/(alphaTemp*rho*thermo.Cv_t()*thermo.Tt()) // NEW VINCENT: was Cp*T
     );
-    
+
 
     Info<< "    Temperature = "
         << gMin(1/(rDeltaTT.field() + VSMALL)) << ", "
@@ -69,11 +69,11 @@ if
 Info<< "    Overall     = "
     << gMin(1/rDeltaT.internalField())
     << ", " << gMax(1/rDeltaT.internalField()) << endl;
-    
-    
+
+
 */ //TODO VINCENT :: UNSTABLE
 
-///*****************************************************************************************  
+///*****************************************************************************************
 
 //---------------------------------------------------------
 // Set the reciprocal time-step from the local Courant number
@@ -104,5 +104,5 @@ fvc::smooth(rDeltaT, rDeltaTSmoothingCoeff);
 
 Info<< "    Overall     = " << min(1/rDeltaT).value()
     << ", " << max(1/rDeltaT).value() << nl << endl;
-      
+
 

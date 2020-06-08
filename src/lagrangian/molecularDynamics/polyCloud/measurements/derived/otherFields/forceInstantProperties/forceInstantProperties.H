@@ -27,7 +27,7 @@ Class
 
 
 Description
-    Measures instantaneous force in a bounded box 
+    Measures instantaneous force in a bounded box
 
 SourceFiles
     forceInstantPropertiesI.H
@@ -69,39 +69,39 @@ private:
         dictionary propsDict_;
 
         propertyField fields_;
-        
+
         word fieldName_;
-        
+
 //         List<boundedBox> boxes_;
 
-        // interaction between wall and fluid 
-        
-        // include wall Ids 
+        // interaction between wall and fluid
+
+        // include wall Ids
         List<label> molIdsWall_;
-        
+
         // Include fluid Ids (e.g. fluid species)
         List<label> molIdsFluid_;
 
         vector force_;
-        
+
         scalar pairs_;
-        
-        DynamicList<vector> forceField_;      
+
+        DynamicList<vector> forceField_;
         DynamicList<scalar> pairsField_;
-        
+
         // Private Member Functions
 
 //         void setBoundBoxes();
 
 
-  
+
 public:
-	
+
 	//- Runtime type information
 	TypeName("forceInstantProperties");
-	
+
 	// Constructors
-	
+
 	//- Construct from components
 	forceInstantProperties
 	(
@@ -144,7 +144,7 @@ public:
 	void writeField();
 
 	//void updateProperties(const dictionary&);
-}; 		
+};
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

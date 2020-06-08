@@ -60,21 +60,21 @@ inline Foam::List<Foam::referredCell>& Foam::cellInteractions<ParticleType>::ref
 }
 
 template<class ParticleType>
-inline const Foam::List<Foam::DynamicList<ParticleType*> >& 
+inline const Foam::List<Foam::DynamicList<ParticleType*> >&
     Foam::cellInteractions<ParticleType>::refCellsParticles() const
 {
     return refCellsParticles_;
 }
 
 template<class ParticleType>
-inline Foam::List<Foam::DynamicList<ParticleType*> >& 
-    Foam::cellInteractions<ParticleType>::refCellsParticles() 
+inline Foam::List<Foam::DynamicList<ParticleType*> >&
+    Foam::cellInteractions<ParticleType>::refCellsParticles()
 {
     return refCellsParticles_;
 }
 
 template<class ParticleType>
-inline const Foam::List<Foam::DynamicList<ParticleType*> >& 
+inline const Foam::List<Foam::DynamicList<ParticleType*> >&
     Foam::cellInteractions<ParticleType>::ripl() const
 {
     return ripl_;

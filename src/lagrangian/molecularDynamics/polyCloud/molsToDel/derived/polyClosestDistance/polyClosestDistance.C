@@ -53,9 +53,9 @@ polyClosestDistance::polyClosestDistance
 :
     polyMolsToDeleteModel(molCloud, dict),
     propsDict_(dict.subDict(typeName + "Properties")),
-    distance_(readScalar(propsDict_.lookup("distance")))    
+    distance_(readScalar(propsDict_.lookup("distance")))
 {
- 
+
     {
         const word molIdName = propsDict_.lookup("molIdToDelete");
 
@@ -70,7 +70,7 @@ polyClosestDistance::polyClosestDistance
                 << "Cannot find id: " << molIdName << nl << "in dictionary."
                 << exit(FatalError);
         }
-        
+
         molToDeleteId_ = molId;
     }
 
@@ -88,10 +88,10 @@ polyClosestDistance::polyClosestDistance
                 << "Cannot find id: " << molIdName << nl << "in dictionary."
                 << exit(FatalError);
         }
-        
+
         refMolId_ = molId;
-    }    
-    
+    }
+
     findMolsToDel();
 }
 
@@ -108,14 +108,14 @@ void polyClosestDistance::findMolsToDel()
 {
     DynamicList<polyMolecule*> molsToDel;
     DynamicList<label> trackingNumbers;
-    
+
     label initialSize = molCloud_.size();
-    
-    
-    {    
+
+
+    {
         IDLList<polyMolecule>::iterator molI(molCloud_.begin());
         IDLList<polyMolecule>::iterator molJ(molCloud_.begin());
-        
+
         for
         (
             molI = molCloud_.begin();
@@ -123,22 +123,22 @@ void polyClosestDistance::findMolsToDel()
             ++molI
         )
         {
-           
+
             for
             (
                 molJ = molCloud_.begin();
                 molJ != molCloud_.end();
                 ++molJ
-            )        
+            )
             {
-                
+
                 if
                 (
                     (molI().id() == refMolId_) &&
                     (molJ().id() == molToDeleteId_) &&
                     (mag(molJ().position() - molI().position()) < distance_)
                 )
-                {    
+                {
 
                     if(findIndex(trackingNumbers, molJ().trackingNumber()) == -1)
                     {
@@ -150,7 +150,7 @@ void polyClosestDistance::findMolsToDel()
             }
         }
     }
-    
+
     //molsToDel.shrink();
 
     forAll(molsToDel, m)
@@ -160,9 +160,9 @@ void polyClosestDistance::findMolsToDel()
 
     label molsKept = initialSize - molsToDel.size();
 
-    Info<< tab << " initial polyMolecules: " <<  initialSize 
+    Info<< tab << " initial polyMolecules: " <<  initialSize
         << ", polyMolecules kept: " <<  molsKept
-        << ", polyMolecules removed: " << molsToDel.size() 
+        << ", polyMolecules removed: " << molsToDel.size()
         << endl;
 
 

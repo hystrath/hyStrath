@@ -48,11 +48,11 @@ void pressureFlux::setBoundBox
 (
     const dictionary& propsDict,
     boundedBox& bb,
-    const word& name 
+    const word& name
 )
 {
     const dictionary& dict(propsDict.subDict(name));
-    
+
     vector startPoint = dict.lookup("startPoint");
     vector endPoint = dict.lookup("endPoint");
 
@@ -69,16 +69,16 @@ pressureFlux::pressureFlux
 :
     polyStateController(t,  molCloud, dict),
     propsDict_(dict.subDict(typeName + "Properties")),
-    fileName_(propsDict_.lookup("fileName")),  
+    fileName_(propsDict_.lookup("fileName")),
     molIds_()
 //     nTimeSteps_(0.0),
 //     force_(vector::zero)
-   
+
 {
     writeInTimeDir_ = true;
     writeInCase_ = true;
 
-    
+
     molIds_.clear();
 
     selectIds ids
@@ -89,29 +89,29 @@ pressureFlux::pressureFlux
 
     molIds_ = ids.molIds();
 
-    
+
     setBoundBox(propsDict_, box_, "controlBoundBox");
-    
+
     d_ = propsDict_.lookup("forceDirection");
     d_ /= mag(d_);
-    
+
     area_ = readScalar(propsDict_.lookup("area"));
 
-    targetPressure_ = readScalar(propsDict_.lookup("pressureMPa"));    
-    
+    targetPressure_ = readScalar(propsDict_.lookup("pressureMPa"));
+
     targetPressure_ *= 1e6;
-    
+
     targetPressure_ /= molCloud_.redUnits().refPressure();
-    
+
     Info << "target Pressure RU " <<  targetPressure_ << endl;
 
     min_ = 100.0; // default
-    
+
     if (propsDict_.found("minMols"))
     {
-        min_ = readScalar(propsDict_.lookup("minMols"));         
+        min_ = readScalar(propsDict_.lookup("minMols"));
     }
-    
+
     force_ = vector::zero;
     nTimeSteps_ = 0.0;
 }
@@ -148,12 +148,12 @@ void pressureFlux::controlAfterForces()
 {
     Info << "pressureFlux: control" << endl;
 
-    // measure number of molecules in box 
-    
+    // measure number of molecules in box
+
     scalar nMols = 0.0;
     {
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
-        
+
         for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
         {
             if(findIndex(molIds_, mol().id()) != -1)
@@ -163,18 +163,18 @@ void pressureFlux::controlAfterForces()
                     nMols += 1.0;
                 }
             }
-        }    
+        }
     }
-    
+
     if(Pstream::parRun())
     {
         reduce(nMols, sumOp<scalar>());
     }
-    
+
     nMols_ += nMols;
-    
+
     vector force = vector::zero;
-    
+
     if(nMols > min_)
     {
         force = targetPressure_*area_*d_/nMols;
@@ -183,9 +183,9 @@ void pressureFlux::controlAfterForces()
     {
         FatalErrorIn("polyBinsMethod::polyBinsMethod()")
             << "Too few number of molecules inside control region = "
-            << nMols 
-            << nl 
-            << exit(FatalError);         
+            << nMols
+            << nl
+            << exit(FatalError);
     }
 
     IDLList<polyMolecule>::iterator mol(molCloud_.begin());
@@ -197,16 +197,16 @@ void pressureFlux::controlAfterForces()
             if(box_.contains(mol().position()))
             {
                 const scalar& massI = molCloud_.cP().mass(mol().id());
-                
+
                 mol().a() += force/massI;
 
                 force_ += force;
             }
         }
     }
-    
+
     nTimeSteps_ += 1.0;
-    
+
 }
 
 
@@ -229,9 +229,9 @@ void pressureFlux::output
         if(Pstream::master())
         {
             scalarField timeField(1, time_.time().timeOutputValue());
-            vectorField force(1, force_/nTimeSteps_);            
+            vectorField force(1, force_/nTimeSteps_);
             scalarField nMols(1, nMols_/nTimeSteps_);
-            
+
             writeTimeData
             (
                 fixedPathName,
@@ -240,7 +240,7 @@ void pressureFlux::output
                 force,
                 true
             );
-            
+
             writeTimeData
             (
                 fixedPathName,
@@ -248,14 +248,14 @@ void pressureFlux::output
                 timeField,
                 nMols,
                 true
-            );            
+            );
         }
-        
+
         force_ = vector::zero;
         nTimeSteps_ = 0.0;
     }
-    
-    
+
+
 }
 
 void pressureFlux::updateProperties(const dictionary& newDict)

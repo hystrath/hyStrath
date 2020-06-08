@@ -4,7 +4,7 @@ if(thermo.twoTemperatureDictionary().subDict("thermalRelaxationModels").lookupOr
     //---------------------------------------------------------
     // Re-definition of the relaxation models
     //---------------------------------------------------------
-    
+
     // Vibrational-Translational (V-T) energy transfer
     thermalRelaxModelVT.clear();
 
@@ -52,9 +52,9 @@ if(thermo.twoTemperatureDictionary().subDict("thermalRelaxationModels").lookupOr
             turbulence()
         );
     }
-    
+
     thermo.twoTemperatureDictionary().subDict("thermalRelaxationModels").set<bool>("applyChanges", false);
-    
+
     noSubRestart += 1;
 }
 

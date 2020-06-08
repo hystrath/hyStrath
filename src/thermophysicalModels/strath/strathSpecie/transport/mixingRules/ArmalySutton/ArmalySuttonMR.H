@@ -27,7 +27,7 @@ Class
 
 Description
     ArmalySuttonMR model.
-  
+
 SourceFiles
     ArmalySuttonMR.C
 
@@ -43,7 +43,7 @@ SourceFiles
 
 namespace Foam
 {
-  
+
 /*---------------------------------------------------------------------------*\
                              Class ArmalySuttonMR Declaration
 \*---------------------------------------------------------------------------*/
@@ -52,40 +52,40 @@ template<class ThermoType>
 class ArmalySuttonMR
 :
     public mixingRule
-{  
+{
 
 protected:
-  
+
     // Protected data
-    
+
         //- Thermodynamic data of the species
         const PtrList<ThermoType>& speciesThermo_;
-        
+
         // Scaling parameter in the Armaly-Sutton mixing rule
         PtrList<volScalarField> phi_;
-        
+
         // Additional quantities in Armaly-Sutton mixing rule
         scalarSymmetricSquareMatrix AijZ_, Bij_;
-        
+
         // Original or corrected Armaly-Sutton formulation?
         bool correctedArmalySutton_;
-        
+
         // Mole-fraction below which the contribution of the species is ignored
         const scalar miniXs_;
 
 
     // Protected member functions
-    
+
         //- Update the coefficients of the species equations
         virtual void updatePhi();
-    
+
 
 public:
 
     //- Runtime type information
     TypeName("ArmalySutton");
 
-    
+
     // Constructors
 
         //- Construct from components
@@ -109,71 +109,71 @@ public:
         {
             return speciesThermo_[i].W();
         }
-        
+
         //- Viscosity for a specie given by index. Defined here
         //  becouse depends on thermoType template
         inline virtual scalar mu(const label i, const scalar p, const scalar Tt) const
         {
             return speciesThermo_[i].mu(p, Tt);
         }
-        
-        //- Thermal conductivity, trans-rotational mode, 
+
+        //- Thermal conductivity, trans-rotational mode,
         //  for a specie given by index.
         inline virtual scalar kappatr(const label i, const scalar p, const scalar Tt) const
         {
             return speciesThermo_[i].kappatr(p, Tt);
         }
-        
-        //- Thermal conductivity, vib-electronic mode, 
+
+        //- Thermal conductivity, vib-electronic mode,
         //  for a specie given by index.
         inline virtual scalar kappave(const label i, const scalar p, const scalar Tt, const scalar Tve) const
         {
             return speciesThermo_[i].kappave(p, Tt, Tve);
         }
-        
-        //- Thermal diffusivity [kg/ms], trans-rotational mode, 
+
+        //- Thermal diffusivity [kg/ms], trans-rotational mode,
         //  for a specie given by index.
         inline virtual scalar alphatr(const label i, const scalar p, const scalar Tt) const
         {
             return speciesThermo_[i].alphatr(p, Tt);
         }
-        
-        //- Thermal diffusivity [kg/ms], vib-electronic mode, 
+
+        //- Thermal diffusivity [kg/ms], vib-electronic mode,
         //  for a specie given by index.
         inline virtual scalar alphave(const label i, const scalar p, const scalar Tt, const scalar Tve) const
         {
             return speciesThermo_[i].alphave(p, Tt, Tve);
         }
-        
-        
+
+
         //Quantities in Armaly-Sutton mixing rule scaling parameter
         inline scalar AijZ(const label i, const label j)
         {
             return AijZ_[max(i,j)][min(i,j)];
         }
-        
+
         inline scalar Fij(const label i, const label j)
         {
             // Assumed equal to 1 for all interactions
             return 1.0;
         }
-        
+
         inline scalar Bij(const label i, const label j)
         {
             return Bij_[max(i,j)][min(i,j)];
         }
-        
+
         // Calculations and updates of the different fields
         virtual void correct();
-        
+
         //- Write the user-defined ArmalySuttonMR quantities
         virtual void write();
-                
+
         //- Read transportProperties dictionary
         virtual bool read();
   };
 
-  
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 }	// End namespace Foam

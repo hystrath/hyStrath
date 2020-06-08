@@ -71,7 +71,7 @@ protected:
         //- subDictionary containing the properties
 //         dictionary controllerDict_;
 
-        Time& time_; 
+        Time& time_;
 
         //- name of control zone
         word regionName_;
@@ -108,7 +108,7 @@ public:
             ),
             (t, molCloud, dict)
         );
-   
+
     // Constructors
 
         //- Construct from components
@@ -143,24 +143,24 @@ public:
 
         //- control molecules at various stages of time-step
         virtual void controlBeforeVelocityI() = 0;
-        
+
         virtual void controlBeforeMove() = 0;
-        
+
         virtual void controlBeforeForces() = 0;
-        
+
         virtual void controlDuringForces
         (
             polyMolecule* molI,
             polyMolecule* molJ
         ) = 0;
-        
+
         virtual void controlAfterForces() = 0;
-        
+
         virtual void controlAfterVelocityII() = 0;
 
         //- calculate any required properties
         virtual void calculateProperties() = 0;
-        
+
         //- output data
         virtual void output
         (

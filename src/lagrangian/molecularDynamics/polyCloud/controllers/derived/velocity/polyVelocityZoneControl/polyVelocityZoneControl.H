@@ -26,7 +26,7 @@ Class
     polyVelocityZoneControl
 
 Description
-    simple velocity controller in a zone 
+    simple velocity controller in a zone
 
     parallelised
 
@@ -71,7 +71,7 @@ private:
         scalar lambda_;
 
         vector velocity_;
-        
+
         bool componentControl_;
         bool X_;
         bool Y_;
@@ -112,20 +112,20 @@ public:
         (
             polyMolecule* molI,
             polyMolecule* molJ
-        );        
+        );
         void controlAfterForces();
         void controlAfterVelocityII();
-        
+
         //- calculate any required properties (end of time-step)
-        void calculateProperties(); 
-        
+        void calculateProperties();
+
         //- output data (optional)
         void output
         (
-            const fileName& fixedPathName, 
+            const fileName& fixedPathName,
             const fileName& timePath
         );
-        
+
         //- update properties from a modified dictionary (optional)
         void updateProperties(const dictionary&);
 };

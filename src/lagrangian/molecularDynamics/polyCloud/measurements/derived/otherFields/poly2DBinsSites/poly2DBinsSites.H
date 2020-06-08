@@ -89,14 +89,14 @@ private:
 
 
         scalar nAvTimeSteps_;
-        
+
         bool resetAtOutput_;
-        
-        
-        
+
+
+
     // Private Member Functions
-        
-        
+
+
             void writeToStorage();
 
             bool readFromStorage();
@@ -149,7 +149,7 @@ public:
 
         //- write field
         void writeField();
-}; 		
+};
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

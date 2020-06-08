@@ -63,8 +63,8 @@ private:
         //- subDictionary containing the properties
         dictionary propsDict_;
 
-        
-        
+
+
     // Private Member Functions
 
 
@@ -82,7 +82,7 @@ public:
             const polyMesh& mesh,
             polyMoleculeCloud& molCloud,
             const reducedUnits& redUnits,
-            const word& name,         
+            const word& name,
             const dictionary& dict
         );
 
@@ -95,11 +95,11 @@ public:
         scalar unscaledEnergy(const scalar r) const;
 
         scalar force(const scalar r) const;
-        
-        scalar energy(const scalar r) const;        
+
+        scalar energy(const scalar r) const;
 
         void write(const fileName& pathName);
-        
+
         //- Read dictionary
 //         bool read
 //         (

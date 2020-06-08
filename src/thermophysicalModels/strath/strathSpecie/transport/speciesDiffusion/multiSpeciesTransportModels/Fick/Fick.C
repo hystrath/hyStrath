@@ -31,7 +31,7 @@ License
 
 template<class ThermoType>
 void Foam::Fick<ThermoType>::updateCoefficients()
-{     
+{
     DijModel_().update();
 
     forAll(species(), speciei)
@@ -41,15 +41,15 @@ void Foam::Fick<ThermoType>::updateCoefficients()
         forAll(species(), speciej)
         {
             if (speciej != speciei and thermo_.composition().particleType(speciej) != 0)
-            {     
+            {
                 tmpSum += thermo_.composition().X(speciej) / Dij(speciei, speciej);
             }
         }
 
         const volScalarField& Xi = thermo_.composition().X(speciei);
-        
-        D_[speciei] = thermo_.rho()*(1.0 - Xi) 
-            / (tmpSum + dimensionedScalar("VSMALL", dimTime/dimArea, Foam::VSMALL));   
+
+        D_[speciei] = thermo_.rho()*(1.0 - Xi)
+            / (tmpSum + dimensionedScalar("VSMALL", dimTime/dimArea, Foam::VSMALL));
 
         forAll(D_[speciei], celli)
         {
@@ -58,7 +58,7 @@ void Foam::Fick<ThermoType>::updateCoefficients()
                 D_[speciei][celli] = 0;
             }
         }
-        
+
         forAll(D_[speciei].boundaryField(), patchi)
         {
             forAll(D_[speciei].boundaryField()[patchi], facei)
@@ -66,11 +66,11 @@ void Foam::Fick<ThermoType>::updateCoefficients()
                 if (1.0 - Xi.boundaryField()[patchi][facei] < miniXs_)
                 {
                     D_[speciei].boundaryFieldRef()[patchi][facei] = 0;
-                }  
+                }
             }
         }
     }
-} 
+}
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
@@ -83,22 +83,22 @@ Foam::Fick<ThermoType>::Fick
 )
 :
     multiSpeciesTransportModel(thermo, turbulence),
-    
+
     speciesThermo_
     (
         dynamic_cast<const multi2ComponentMixture<ThermoType>&>
             (this->thermo_).speciesData()
     ),
-    
+
     miniXs_(1.0e-12)
-{    
+{
     D_.setSize(species().size());
-    
+
     forAll(species(), speciei)
     {
         D_.set
         (
-            speciei, 
+            speciei,
             new volScalarField
             (
                 IOobject
@@ -113,7 +113,7 @@ Foam::Fick<ThermoType>::Fick
                 dimensionedScalar("D", dimMass/dimLength/dimTime, 0.0)
             )
         );
-    } 
+    }
 }
 
 
@@ -128,21 +128,21 @@ void Foam::Fick<ThermoType>::correct()
     {
         pressureGradientContributionToSpeciesMassFlux();
     }
-    
+
     if(addTemperatureGradientTerm_)
     {
         temperatureGradientContributionToSpeciesMassFlux();
     }
-    
+
     forAll(species(), speciei)
     {
         calculateJ(speciei);
     }
-    
+
     calculateSumDiffusiveFluxes();
 }
 
-    
+
 template<class ThermoType>
 bool Foam::Fick<ThermoType>::read()
 {
@@ -155,6 +155,6 @@ bool Foam::Fick<ThermoType>::read()
         return false;
     }
 }
-   
+
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

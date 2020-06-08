@@ -108,7 +108,7 @@ label cuboidBin::isPointWithinBin
     )
     {
 
-        if(n == nBins_) 
+        if(n == nBins_)
         {
             n--;
         }
@@ -117,13 +117,13 @@ label cuboidBin::isPointWithinBin
         {
             vector rBin = startPoint_ + (0.5+scalar(n))*binWidth_*unitVector_;
             vector rBI = rBin - rI;
-    
+
             scalar dist1 = mag(rBI & n1_);
-    
+
             if(dist1 <= d1_)
             {
                 scalar dist2 = mag(rBI & n2_);
-    
+
                 if(dist2 <= d2_)
                 {
                     binNumber = n;

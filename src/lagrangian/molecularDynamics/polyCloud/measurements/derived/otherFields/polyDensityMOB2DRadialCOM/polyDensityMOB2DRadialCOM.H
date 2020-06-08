@@ -72,8 +72,8 @@ private:
 
         word regionName_;
         label regionId_;
-	
-        // added by Jun Zhang for polymolecules	
+
+        // added by Jun Zhang for polymolecules
 	    List<label> molIds_;
 
         vector startPoint_;

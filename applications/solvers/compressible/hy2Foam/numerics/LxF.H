@@ -9,7 +9,7 @@
 // -----------------------------------------------------------------------------
 // Lax-Fridrichs flux function
 // -----------------------------------------------------------------------------
-void LxFFlux 
+void LxFFlux
 (
     const bool& downgradeSingleT,
     const bool& downgradeSingleTv,
@@ -39,9 +39,9 @@ void LxFFlux
 )
 {
     // Maximum eigenvalue
-    amaxSf = 0.5 * mag((U_pos + U_neg) & Sf) + 
+    amaxSf = 0.5 * mag((U_pos + U_neg) & Sf) +
         0.5 * (cSf_pos + cSf_neg);
-        
+
     aByU = (U_pos + U_neg)/2.0;
 
     const scalar Un_pos = U_pos & Sf;
@@ -50,7 +50,7 @@ void LxFFlux
     const scalar rhoE_pos = rho_pos * (e_pos + 0.5 * magSqr(U_pos));
     const scalar rhoE_neg = rho_neg * (e_neg + 0.5 * magSqr(U_neg));
 
-    rhoFlux = (rho_pos * Un_pos + rho_neg * Un_neg) 
+    rhoFlux = (rho_pos * Un_pos + rho_neg * Un_neg)
            - amaxSf * (rho_neg - rho_pos);
 
     rhoUFlux = (p_pos * Sf + rhoU_pos * Un_pos)

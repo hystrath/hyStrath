@@ -54,21 +54,21 @@ class dsmcTimeStepModel
 {
 
 protected:
-    
+
     // Protected data
-        
+
         //- Const reference to the mesh
         const fvMesh& mesh_;
-        
+
         //- Number of real particles represented by a DSMC parcel
         volScalarField nParticles_;
 
-        
-        
+
+
 private:
 
     // Private Member Functions
-    
+
         //- Disallow default bitwise copy construct
         dsmcTimeStepModel(const dsmcTimeStepModel&);
 
@@ -83,8 +83,8 @@ public:
 
     //- Runtime type information
     TypeName("dsmcTimeStepModel");
-    
-    
+
+
     // Declare run-time constructor selection table
     #ifndef SWIG
     declareRunTimeSelectionTable
@@ -100,8 +100,8 @@ public:
         (t, mesh, cloud)
     );
     #endif
-    
-    
+
+
     // Constructors
 
         //- Constructor
@@ -113,8 +113,8 @@ public:
         );
 
 
-    // Selectors	  
-  
+    // Selectors
+
         //- Return a reference to the selected time-step model
         static autoPtr<dsmcTimeStepModel> New
         (
@@ -122,8 +122,8 @@ public:
             const polyMesh& mesh,
             dsmcCloud& cloud
         );
-        
-        
+
+
     // Destructor
 
         virtual ~dsmcTimeStepModel();
@@ -132,25 +132,25 @@ public:
     // Member Functions
 
       // Access
-      
-        //- Return const access to the time-step value given in the 
+
+        //- Return const access to the time-step value given in the
         //  controlDict dictionary
         inline scalar deltaTValueOrg() const;
-        
+
         //- Return const access to the time-step field
         virtual inline const scalarField& deltaTField() const;
-        
+
         //- Return const access to the time-step for a given cell
         virtual inline scalar deltaTValue(label celli = 0) const;
-        
+
         //- Return const access to the number of real particles represented by
         //  a DSMC parcel
         virtual inline const volScalarField& nParticles() const;
-        
+
         //- Return const access to the number of real particles represented by
         //  a DSMC parcel for a given cell
         virtual inline scalar nParticles(const label celli) const;
-        
+
         //- Return const access to the number of real particles represented by
         //  a parcel for a given patch/face couple
         virtual inline scalar nParticles
@@ -158,11 +158,11 @@ public:
             const label patchi,
             const label facei
         ) const;
-        
+
         //- Return non-const access to the number of real particles represented
         //  by a DSMC parcel for a given cell
         virtual inline scalar nParticles(const label celli);
-        
+
         //- Return non-const access to the number of real particles represented
         //  by a parcel for a given patch/face couple
         virtual inline scalar nParticles
@@ -170,27 +170,27 @@ public:
             const label patchi,
             const label facei
         );
-        
-        
+
+
       // Check
-      
+
         //- Check the validity of the time-step model inputs present in
         //  constant/dsmcProperties and assign inputs to data members if
         //  correct.
         virtual void checkTimeStepModelInputs() = 0;
-      
-      
+
+
       // Edit
-      
+
         //- Update function
         virtual void update() = 0;
-        
+
         //- Initialise nParticles field
         void initialisenParticles(const scalar value);
-        
+
 
       // Write
-      
+
         //- Write time-step model info
         virtual void writeTimeStepModelInfo() const = 0;
 

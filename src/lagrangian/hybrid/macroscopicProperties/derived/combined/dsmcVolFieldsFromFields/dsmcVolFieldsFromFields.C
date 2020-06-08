@@ -24,7 +24,7 @@ License
 
 Description
 
-Measures overall temperature, including vibrational temperature, for a single species gas 
+Measures overall temperature, including vibrational temperature, for a single species gas
 or a gas mixture and writes the results to a volume scalar field that can be viewed in Paraview.
 
 Translational, rotatational and vibrational temperature field will also be written automatically.
@@ -136,7 +136,7 @@ dsmcVolFieldsFromFields::dsmcVolFieldsFromFields
                 (
                     cloud_.constProps(iD).nVibrationalModes()
                 );
-                    
+
                 forAll(mesh_.cells(), cell)
                 {
                     if (EVib.size() > 0)
@@ -153,14 +153,14 @@ dsmcVolFieldsFromFields::dsmcVolFieldsFromFields
         forAll(mesh_.cells(), cell)
         {
             const scalar nTVBynEq = nTBynEq*V_[cell];
-            
+
             eRotU_[cell] = heatFluxRotVector_[cell].x() * nTVBynEq
                 + rotationalEMean_[cell] * UMean_[cell].x();
             eRotV_[cell] = heatFluxRotVector_[cell].y() * nTVBynEq
                 + rotationalEMean_[cell] * UMean_[cell].y();
             eRotW_[cell] = heatFluxRotVector_[cell].z() * nTVBynEq
                 + rotationalEMean_[cell] * UMean_[cell].z();
-                
+
             eVibU_[cell] = heatFluxVibVector_[cell].x() * nTVBynEq
                 + eVib_[cell] * UMean_[cell].x();
             eVibV_[cell] = heatFluxVibVector_[cell].y() * nTVBynEq
@@ -181,7 +181,7 @@ dsmcVolFieldsFromFields::~dsmcVolFieldsFromFields()
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 void dsmcVolFieldsFromFields::calculateField()
-{  
+{
     dsmcVolFields::calculateField();
 
     forAllConstIter(dsmcCloud, cloud_, iter)
@@ -192,9 +192,9 @@ void dsmcVolFieldsFromFields::calculateField()
         if (iD != -1)
         {
             const label cell = p.cell();
-                
+
             scalar vibEn = cloud_.constProps(p.typeId()).eVib_tot(p.vibLevel());
-            
+
             eRotU_[cell] += p.ERot()*p.U().x();
             eRotV_[cell] += p.ERot()*p.U().y();
             eRotW_[cell] += p.ERot()*p.U().z();
@@ -204,7 +204,7 @@ void dsmcVolFieldsFromFields::calculateField()
             eVib_[cell] += vibEn;
         }
     }
-    
+
     if (time_.time().outputTime())
     {
         forAll(rhoNMean_, cell)
@@ -269,7 +269,7 @@ void dsmcVolFieldsFromFields::calculateField()
                 heatFluxVibVector_[cell] = vector::zero;
                 heatFluxVector_[cell] = vector::zero;
             }
-            
+
             heatFluxTraVector_.write();
             heatFluxRotVector_.write();
             heatFluxVibVector_.write();
@@ -302,7 +302,7 @@ void dsmcVolFieldsFromFields::calculateField()
 void dsmcVolFieldsFromFields::resetField()
 {
     dsmcVolFields::resetField();
-    
+
     eRotU_.clear();
     eRotV_.clear();
     eRotW_.clear();
@@ -310,7 +310,7 @@ void dsmcVolFieldsFromFields::resetField()
     eVibV_.clear();
     eVibW_.clear();
     eVib_.clear();
-    
+
     eRotU_.setSize(mesh_.nCells(), 0.0);
     eRotV_.setSize(mesh_.nCells(), 0.0);
     eRotW_.setSize(mesh_.nCells(), 0.0);

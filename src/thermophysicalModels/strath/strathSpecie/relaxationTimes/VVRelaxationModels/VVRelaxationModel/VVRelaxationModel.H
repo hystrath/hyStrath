@@ -68,16 +68,16 @@ class VVRelaxationModel
 protected:
 
     // Protected data
-    
+
         //- Two-temperature model dictionary
         const dictionary& dict1_;
-        
+
         //- Thermophysical properties dictionary
         const dictionary& dict2_;
 
         //- Species name
         const word& name1_, name2_;
-        
+
         //- Species label associated with thee names
         const label& lname1_, lname2_;
 
@@ -86,19 +86,19 @@ protected:
 
         // Translational temperature [K]
         const volScalarField& Tt_;
-        
+
         // Vibrational temperatures [K]
         const PtrList<volScalarField>& Tv_;
-        
+
         // Number densities [m^-3]
-        const PtrList<volScalarField>& nD_;       
-                        
+        const PtrList<volScalarField>& nD_;
+
         //- Overwrite the default coefficients for V-V energy transfers
         bool VVOverwriteDefault_;
-        
+
         //- If overwrite is on, are the coefficients species dependent
         bool VVSpeciesDependent_;
-        
+
         //- If overwrite is on, does the colliding pair matters
         bool VVCollidingPartner_;
 
@@ -119,7 +119,7 @@ public:
 
 
     // Declare run-time constructor selection table
-    
+
       declareRunTimeSelectionTable
       (
           autoPtr,
@@ -184,10 +184,10 @@ public:
 
 
     // Member Functions
-    
+
         //- V-T relaxation time [s]
          virtual tmp<volScalarField> tauVV() const = 0;
-         
+
         //- V-T relaxation time for patch [s]
         virtual tmp<scalarField> tauVV
         (
@@ -195,9 +195,9 @@ public:
             const scalarField& p,
             const scalarField& Tt,
             const PtrList<scalarField>& Tv,
-            const PtrList<scalarField>& nD            
+            const PtrList<scalarField>& nD
         ) const = 0;
-       
+
 };
 
 

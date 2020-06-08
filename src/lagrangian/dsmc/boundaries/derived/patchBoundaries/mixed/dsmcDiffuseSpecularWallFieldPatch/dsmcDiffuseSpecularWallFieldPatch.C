@@ -38,8 +38,8 @@ defineTypeNameAndDebug(dsmcDiffuseSpecularWallFieldPatch, 0);
 
 addToRunTimeSelectionTable
 (
-    dsmcPatchBoundary, 
-    dsmcDiffuseSpecularWallFieldPatch, 
+    dsmcPatchBoundary,
+    dsmcDiffuseSpecularWallFieldPatch,
     dictionary
 );
 
@@ -90,17 +90,17 @@ void dsmcDiffuseSpecularWallFieldPatch::controlParticle
 )
 {
     measurePropertiesBeforeControl(p);
-    
+
     if (diffuseFraction_ > cloud_.rndGen().sample01<scalar>())
     {
         //- Calculation of the local patch temperature
-        const scalar& localPatchTemperature = 
+        const scalar& localPatchTemperature =
             dsmcFieldPatchBoundary::patchLocalTemperature(p);
-            
+
         //- Calculation of the local patch velocity
-        const vector& localPatchVelocity = 
-            dsmcFieldPatchBoundary::patchLocalVelocity(p);    
-            
+        const vector& localPatchVelocity =
+            dsmcFieldPatchBoundary::patchLocalVelocity(p);
+
         //- Diffuse reflection with local info on T and U
         dsmcDiffuseWallPatch::performDiffuseReflection
         (

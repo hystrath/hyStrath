@@ -38,8 +38,8 @@ defineTypeNameAndDebug(dsmcDiffuseWallFieldPatch, 0);
 
 addToRunTimeSelectionTable
 (
-    dsmcPatchBoundary, 
-    dsmcDiffuseWallFieldPatch, 
+    dsmcPatchBoundary,
+    dsmcDiffuseWallFieldPatch,
     dictionary
 );
 
@@ -49,18 +49,18 @@ addToRunTimeSelectionTable
 void dsmcDiffuseWallFieldPatch::performDiffuseFieldReflection(dsmcParcel& p)
 {
     //- Calculation of the wall velocity to be added to U
-    const vector& localPatchVelocity = 
+    const vector& localPatchVelocity =
         dsmcFieldPatchBoundary::patchLocalVelocity(p);
-    
+
     //- Calculation of the local patch temperature
-    const scalar& localPatchTemperature = 
+    const scalar& localPatchTemperature =
         dsmcFieldPatchBoundary::patchLocalTemperature(p);
-    
+
     //- Diffuse reflection with local info on T and U
     dsmcDiffuseWallPatch::performDiffuseReflection
     (
-        p, 
-        localPatchTemperature, 
+        p,
+        localPatchTemperature,
         localPatchVelocity
     );
 }
@@ -107,7 +107,7 @@ void dsmcDiffuseWallFieldPatch::calculateProperties()
 
 void dsmcDiffuseWallFieldPatch::controlParticle
 (
-    dsmcParcel& p, 
+    dsmcParcel& p,
     dsmcParcel::trackingData& td
 )
 {

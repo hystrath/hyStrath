@@ -28,13 +28,13 @@ Class
 Description
 
 	Stores all the information for the boundary models. Models are defined
-    within the boundariesDict. This class selects & builds the models 
+    within the boundariesDict. This class selects & builds the models
     automatically. We assume that boundaries are divided into three:
 
-    1. Patch models -- actions on instantaneous collisions with a patch boundary 
+    1. Patch models -- actions on instantaneous collisions with a patch boundary
 
-    2. cyclic boundary models -- actions on instantaneous collisions with 
-                                a cyclic boundary 
+    2. cyclic boundary models -- actions on instantaneous collisions with
+                                a cyclic boundary
 
     3. General boundary models -- time-dependent actions on molecules close to
                                   the boundary (e.g. fluxes)
@@ -94,7 +94,7 @@ class polyBoundaries
         List< autoPtr<polyCyclicBoundary> > cyclicBoundaryModels_;
         List<label> cyclicBoundaryToModelId_;
 
-        //- general boundary models 
+        //- general boundary models
         PtrList<entry> generalBoundaryList_;
         List<word> generalBoundaryNames_;
         List<label> generalBoundaryIds_;
@@ -104,8 +104,8 @@ class polyBoundaries
 public:
 
     // Constructors
-    
-        //- Null Constructor 
+
+        //- Null Constructor
         polyBoundaries
         (
             Time& t,
@@ -134,7 +134,7 @@ public:
         void outputResults();
 
         void checkPatchBoundaryModels(const polyMesh& mesh);
-        
+
         void checkCyclicBoundaryModels(const polyMesh& mesh);
 
 

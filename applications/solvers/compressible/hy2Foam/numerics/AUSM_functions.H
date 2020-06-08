@@ -74,7 +74,7 @@ surfaceScalarField splitMachDeg4_neg
 )
 {
     surfaceScalarField sMD4_neg = splitMachDeg1_neg(interpolatedMach);
-    
+
     forAll(sMD4_neg, intFacei)
     {
         if(mag(interpolatedMach[intFacei]) < 1.0)
@@ -95,7 +95,7 @@ surfaceScalarField splitMachDeg4_neg
             }
         }
     }
-    
+
     return sMD4_neg;
 }
 
@@ -112,7 +112,7 @@ surfaceScalarField splitPressureDeg5_pos
     {
         if(mag(interpolatedMach[intFacei]) < 1.0)
         {
-            sPD5_pos[intFacei] = splitMachDeg2_pos(interpolatedMach)[intFacei]*(2.0-interpolatedMach[intFacei]) 
+            sPD5_pos[intFacei] = splitMachDeg2_pos(interpolatedMach)[intFacei]*(2.0-interpolatedMach[intFacei])
                 - 16.0*AUSM_alpha[intFacei]*interpolatedMach[intFacei]*splitMachDeg2_neg(interpolatedMach)[intFacei];
         }
     }
@@ -123,12 +123,12 @@ surfaceScalarField splitPressureDeg5_pos
         {
             if(mag(interpolatedMach.boundaryField()[patchi][facei]) < 1.0)
             {
-                sPD5_pos.boundaryFieldRef()[patchi][facei] = splitMachDeg2_pos(interpolatedMach).boundaryField()[patchi][facei]*(2.0-interpolatedMach.boundaryField()[patchi][facei]) 
+                sPD5_pos.boundaryFieldRef()[patchi][facei] = splitMachDeg2_pos(interpolatedMach).boundaryField()[patchi][facei]*(2.0-interpolatedMach.boundaryField()[patchi][facei])
                     - 16.0*AUSM_alpha.boundaryField()[patchi][facei]*interpolatedMach.boundaryField()[patchi][facei]*splitMachDeg2_neg(interpolatedMach).boundaryField()[patchi][facei];
             }
         }
     }
-    
+
     return sPD5_pos;
 }
 
@@ -140,23 +140,23 @@ surfaceScalarField splitPressureDeg5_neg
 )
 {
     surfaceScalarField sPD5_neg = splitMachDeg1_neg(interpolatedMach)/(interpolatedMach+1e-06); //- 1e-6: safe-guard for fluid initially at rest
-    
+
     forAll(sPD5_neg, intFacei)
     {
         if(mag(interpolatedMach[intFacei]) < 1.0)
         {
-            sPD5_neg[intFacei] = splitMachDeg2_neg(interpolatedMach)[intFacei]*(-2.0-interpolatedMach[intFacei]) 
+            sPD5_neg[intFacei] = splitMachDeg2_neg(interpolatedMach)[intFacei]*(-2.0-interpolatedMach[intFacei])
                 + 16.0*AUSM_alpha[intFacei]*interpolatedMach[intFacei]*splitMachDeg2_pos(interpolatedMach)[intFacei];
         }
     }
-    
+
     forAll(sPD5_neg.boundaryField(), patchi)
     {
         forAll(sPD5_neg.boundaryField()[patchi], facei)
         {
             if(mag(interpolatedMach.boundaryField()[patchi][facei]) < 1.0)
             {
-                sPD5_neg.boundaryFieldRef()[patchi][facei] = splitMachDeg2_neg(interpolatedMach).boundaryField()[patchi][facei]*(-2.0-interpolatedMach.boundaryField()[patchi][facei]) 
+                sPD5_neg.boundaryFieldRef()[patchi][facei] = splitMachDeg2_neg(interpolatedMach).boundaryField()[patchi][facei]*(-2.0-interpolatedMach.boundaryField()[patchi][facei])
                     + 16.0*AUSM_alpha.boundaryField()[patchi][facei]*interpolatedMach.boundaryField()[patchi][facei]*splitMachDeg2_pos(interpolatedMach).boundaryField()[patchi][facei];
             }
         }

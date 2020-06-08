@@ -96,14 +96,14 @@ polyDensityMOB2DRadialCOM::polyDensityMOB2DRadialCOM
     nAvTimeSteps_(0.0),
     resetAtOutput_(true)
 {
-    resetAtOutput_ = Switch(propsDict_.lookup("resetAtOutput"));  
-    
+    resetAtOutput_ = Switch(propsDict_.lookup("resetAtOutput"));
+
     const cellZoneMesh& cellZones = mesh_.cellZones();
 
     regionId_ = cellZones.findZoneID(regionName_);
 
     if(regionId_ == -1)
-    { 
+    {
         FatalErrorIn("polyDensityRadialMOBZone::polyDensityRadialMOBZone()")
             << "Cannot find region: " << regionName_ << nl << "in: "
             << time_.time().system()/"fieldPropertiesDict"
@@ -119,7 +119,7 @@ polyDensityMOB2DRadialCOM::polyDensityMOB2DRadialCOM
     );
 
     molIds_ = ids.molIds();
-    
+
     avVolume_ = radius_*radius_*constant::mathematical::pi*binWidthX_/nBinsY_;
 
     DynamicList<scalar> radii(0);
@@ -143,12 +143,12 @@ polyDensityMOB2DRadialCOM::polyDensityMOB2DRadialCOM
         {
             break;
         }
-        
+
     }
-    
+
     binWidths.shrink();
-    radii.shrink(); 
-    
+    radii.shrink();
+
     nBinsY_ = binWidths.size();
 
     magRadii_.setSize(nBinsY_, 0.0);
@@ -165,7 +165,7 @@ polyDensityMOB2DRadialCOM::polyDensityMOB2DRadialCOM
     {
         magRadii_[n] = radii[n];
         binWidths_[n] = binWidths[n];
-        
+
         if(n == 0)
         {
             volume_[n] = constant::mathematical::pi*binWidths_[n]*binWidths_[n]*binWidthX_;
@@ -231,7 +231,7 @@ label polyDensityMOB2DRadialCOM::findBin(const scalar& r)
             n++;
         }
     }
-    
+
     return n;
 }
 
@@ -245,13 +245,13 @@ void polyDensityMOB2DRadialCOM::createField()
 void polyDensityMOB2DRadialCOM::calculateField()
 {
     nAvTimeSteps_ += 1.0;
-    
+
     const boundBox& globalBb = mesh_.bounds();
     vector domainLength = globalBb.max() - globalBb.min();
     scalar domainLengthX = fabs(domainLength.x());
     scalar domainLengthY = fabs(domainLength.y());
     scalar domainLengthZ = fabs(domainLength.z());
-        
+
 
     {
         const List< DynamicList<polyMolecule*> >& cellOccupancy
@@ -269,48 +269,48 @@ void polyDensityMOB2DRadialCOM::calculateField()
             if(molsInCell.size() > 0)
             {
                 forAll(molsInCell, mIC)
-                {                    
+                {
                     polyMolecule* molI = molsInCell[mIC];
 
-                    vector rI = molI->position(); 
+                    vector rI = molI->position();
                     vector roC = rI - oldCenterOfMass_;
-                    
+
                     if(fabs(roC.x())>domainLengthX/2.0)
                     {
                         if(rI.x() > oldCenterOfMass_.x())
-                        {    
+                        {
                             rI.x() -= domainLengthX;
                         }
                         else
-                        {    
+                        {
                             rI.x() += domainLengthX;
                         }
                     }
-                    
+
                     if(fabs(roC.y())>domainLengthY/2.0)
-                    {                        
+                    {
                         if(rI.y() > oldCenterOfMass_.y())
-                        {    
+                        {
                             rI.y() -= domainLengthY;
                         }
                         else
-                        {    
+                        {
                             rI.y() += domainLengthY;
-                        }   
+                        }
                     }
-                    
+
                     if(fabs(roC.z())>domainLengthZ/2.0)
-                    {                        
+                    {
                         if(rI.z() > oldCenterOfMass_.z())
-                        {    
+                        {
                             rI.z() -= domainLengthZ;
                         }
                         else
-                        {    
+                        {
                             rI.z() += domainLengthZ;
-                        }   
+                        }
                     }
-                    
+
                     if(findIndex(molIds_, molI->id()) != -1)
                     {
                         const scalar& massI = molCloud_.cP().mass(molI->id());
@@ -359,7 +359,7 @@ void polyDensityMOB2DRadialCOM::calculateField()
 
         centreOfMass =  ((centreOfMass ^ unitVectorX_)^ unitVectorX_)*(-1.0)
                         + (startPoint_ & unitVectorX_) * unitVectorX_;
-           
+
         if(centreOfMass.x() > globalBb.max().x())
         {
             centreOfMass.x() -= domainLengthX;
@@ -384,9 +384,9 @@ void polyDensityMOB2DRadialCOM::calculateField()
         {
             centreOfMass.z() += domainLengthZ;
         }
-        
+
          oldCenterOfMass_ = centreOfMass;
-            
+
         forAll(cells, c)
         {
             const label& cellI = cells[c];
@@ -398,52 +398,52 @@ void polyDensityMOB2DRadialCOM::calculateField()
                 {
                     polyMolecule* molI = molsInCell[mIC];
 
-                    vector rI = molI->position(); 
+                    vector rI = molI->position();
 
                     vector rSI = rI - centreOfMass;
-                    
+
                     if(fabs(rSI.x())>domainLengthX/2.0)
-                    {   
+                    {
                         if(rI.x() > centreOfMass.x())
-                        {    
+                        {
                             rI.x() -= domainLengthX;
                         }
                         else
-                        {    
+                        {
                             rI.x() += domainLengthX;
                         }
                     }
-                    
+
                     if(fabs(rSI.y())>domainLengthY/2.0)
                     {
                         if(rI.y() > centreOfMass.y())
-                        {    
+                        {
                             rI.y() -= domainLengthY;
                         }
                         else
-                        {    
+                        {
                             rI.y() += domainLengthY;
                         }
                     }
-                    
+
                     if(fabs(rSI.z())>domainLengthZ/2.0)
-                    { 
+                    {
                         if(rI.z() > centreOfMass.z())
-                        {    
+                        {
                             rI.z() -= domainLengthZ;
                         }
                         else
-                        {    
+                        {
                             rI.z() += domainLengthZ;
                         }
                     }
-                    
+
                     scalar rD = rSI & unitVectorX_;
 
                     if((rD <= h_) && (rD >= 0.0))
-                    {   
+                    {
                         scalar rN = mag((rD*unitVectorX_ + centreOfMass) - rI);
-                        
+
                         if(rN <= radius_)
                         {
                             label nY = findBin(rN);
@@ -463,7 +463,7 @@ void polyDensityMOB2DRadialCOM::calculateField()
 
                                 if(findIndex(molIds_, molI->id()) != -1)
                                 {
-                                    mols_[nX][nY] += 1.0;                                    
+                                    mols_[nX][nY] += 1.0;
                                 }
                             }
                         }
@@ -513,7 +513,7 @@ void polyDensityMOB2DRadialCOM::calculateField()
                 }
             }
         }
-        
+
 //         const scalar& nAvTimeSteps = time_.nAvTimeSteps().value();
 
 
@@ -525,12 +525,12 @@ void polyDensityMOB2DRadialCOM::calculateField()
                 densityField_[x][y] = mols[x][y]/(nAvTimeSteps_*volume_[y]);
             }
         }
-        
+
         //- reset fields
         if(resetAtOutput_)
         {
             nAvTimeSteps_ = 0.0;
-            
+
             forAll(mols_, x)
             {
                 mols_[x] = 0.0;
@@ -616,7 +616,7 @@ const propertyField& polyDensityMOB2DRadialCOM::fields() const
 // {
 //     //- the main properties should be updated first
 //     updateBasicFieldProperties(newDict);
-// 
+//
 // }
 
 } // End namespace Foam

@@ -61,7 +61,7 @@ private:
 
         //- subDictionary containing the properties
         dictionary propsDict_;
-        
+
         dictionary timeDictVel_;
         timeDataMeas timeVel_;
 
@@ -109,28 +109,28 @@ public:
             dsmcCloud& cloud,
             const dictionary& dict
         );
-    
+
         // Destructor
         ~temperatureController();
-    
+
     // Member Functions
-    
+
         void initialConfiguration();
 
         void controlParcelsBeforeMove();
         void controlParcelsBeforeCollisions();
         void controlParcelsAfterCollisions();
-    
+
         //- calculate any required properties
         void calculateProperties();
 
         //- output data
         void output
         (
-            const fileName& fixedPathName, 
+            const fileName& fixedPathName,
             const fileName& timePath
         );
-    
+
         //- update properties from a modified dictionary
         void updateProperties(const dictionary&);
 

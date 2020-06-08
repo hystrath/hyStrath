@@ -27,7 +27,7 @@ Class
 
 Description
 
-    Used for applying instantaneous actions on dsmcParcels colliding with a 
+    Used for applying instantaneous actions on dsmcParcels colliding with a
     boundary patch.
 
 SourceFiles
@@ -72,9 +72,9 @@ protected:
         const fvMesh& mesh_;
 
         dsmcCloud& cloud_;
-        
+
         Time& time_;
-        
+
     // 		dictionary timeDict_;
 
     //         timeDataMeas time_;
@@ -102,7 +102,7 @@ protected:
         vector velocity_;
         scalar temperature_;
 
-        //- targeted fields 
+        //- targeted fields
         scalarField densities_;
         vectorField velocities_;
         scalarField temperatures_;
@@ -142,8 +142,8 @@ public:
             ),
             (t, mesh, molCloud, dict)
         );
-   
-   
+
+
     // Constructors
 
         //- Construct from components
@@ -177,17 +177,17 @@ public:
         //- Calculate the wall unit vectors
         void calculateWallUnitVectors
         (
-            dsmcParcel& p, 
-            vector& nw, 
-            vector& tw1, 
+            dsmcParcel& p,
+            vector& nw,
+            vector& tw1,
             vector& tw2
         );
-        
+
         void measurePropertiesBeforeControl(dsmcParcel& p);
-        
+
         void measurePropertiesAfterControl
         (
-            dsmcParcel& p, 
+            dsmcParcel& p,
             const scalar& heatOfReaction = 0
         );
 
@@ -237,7 +237,7 @@ public:
             const fileName& fixedPathName,
             const fileName& timePath
         ) = 0;
-    
+
 //         virtual void writeField
 //         (
 //         ) = 0;
@@ -258,11 +258,11 @@ public:
 
         //- return the name of the control patch
         const word& patchName() const;
-        
+
         //- return the ID of the control patch
         const label& patchId() const;
 
-        //- return the targeted fields 
+        //- return the targeted fields
         const scalar& density() const;
         scalar& density();
 
@@ -272,7 +272,7 @@ public:
         const scalar& temperature() const;
         scalar& temperature();
 
-        //- return the targeted fields 
+        //- return the targeted fields
         const scalarField& densityField() const;
         scalarField& densityField();
 

@@ -47,14 +47,14 @@ coulombEqn::coulombEqn
     const polyMesh& mesh,
     polyMoleculeCloud& molCloud,
     const reducedUnits& redUnits,
-    const word& name, 
+    const word& name,
     const dictionary& dict
 )
 :
     pairPotentialModel(mesh, molCloud, redUnits, name, dict),
-    constant_(1.0/(4.0 * constant::mathematical::pi * 8.854187817e-12))   
+    constant_(1.0/(4.0 * constant::mathematical::pi * 8.854187817e-12))
 {
- 
+
     if(redUnits.runReducedUnits())
     {
         constant_ = (1.0/(4.0 * constant::mathematical::pi * redUnits.epsilonPermittivity()));
@@ -82,23 +82,23 @@ scalar coulombEqn::unscaledEnergy(const scalar r) const
 scalar coulombEqn::force(const scalar r) const
 {
     scalar force = constant_*( 1/(r*r) );
-    
+
     return force;
 }
-    
+
 scalar coulombEqn::energy(const scalar r) const
 {
     scalar energy = constant_*(1/r);
-    
+
     return energy;
 }
 
 // void coulombEqn::interaction (const scalar r, scalar& force, scalar& energy)
 // {
 //     scalar oneOnR = (1/r);
-//     
+//
 //     force = constant_*(oneOnR*oneOnR);
-//     
+//
 //     energy = constant_*oneOnR;
 // }
 
@@ -109,7 +109,7 @@ const dictionary& coulombEqn::dict() const
 
 void  coulombEqn::write(const fileName& pathName)
 {
-    
+
 }
 
 } // End namespace Foam

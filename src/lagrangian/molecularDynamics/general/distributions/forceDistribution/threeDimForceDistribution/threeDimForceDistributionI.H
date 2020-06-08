@@ -113,8 +113,8 @@ inline const label& threeDimForceDistribution::nBinsZ() const
 // {
 //     return radialDistribution_;
 // }
-// 
-// 
+//
+//
 // inline List< scalar > radialDistribution::radialPosition() const
 // {
 //     return radialPosition_;

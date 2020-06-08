@@ -36,9 +36,9 @@ Foam::multiSpeciesTransportModel::New
 )
 {
     const word partialModelName = word(thermo.transportDictionary().subDict("transportModels").lookup("multiSpeciesTransport"));
-        
+
     const word modelName = partialModelName + '<' + thermo.partialThermoName() + '>';
-    
+
     Info<< "Loading the multispecies transport model:" << tab << partialModelName << "\n" << endl;
 
     fvMeshConstructorTable::iterator cstrIter =

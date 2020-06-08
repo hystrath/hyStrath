@@ -40,7 +40,7 @@ namespace Foam
 
 //- for a molecule i, perform the intermolecular force calculation, with
 //  molecules within the same cell, within the real interaction cells, and referred
-//  interaction cells. 
+//  interaction cells.
 void waterMoleculeCloud::calculateForceOnMolecule
 (
     waterMolecule* mol
@@ -59,7 +59,7 @@ void waterMoleculeCloud::calculateForceOnMolecule
 
 //     List<label> siteIdsI = constPropI.siteIds();
 //     List<bool> pairPotentialSitesI = constPropI.pairPotentialSites();
-//     List<bool> electrostaticSitesI = constPropI.electrostaticSites();    
+//     List<bool> electrostaticSitesI = constPropI.electrostaticSites();
 
     const pairPotentialList& pairPot(pot_.pairPotentials());
     const waterReferredCellList& referredInteractionList = il_.ril();
@@ -88,41 +88,41 @@ void waterMoleculeCloud::calculateForceOnMolecule
             forAll(constPropI.pairPotSites(), pI)
             {
                 label sI = constPropI.pairPotSites()[pI];
-        
+
                 forAll(constPropJ.pairPotSites(), pJ)
                 {
                     label sJ = constPropJ.pairPotSites()[pJ];
 
                     vector rsIsJ =
                         mol->sitePositions()[sI] - molJ->sitePositions()[sJ];
-    
+
                     scalar rsIsJMagSq = magSqr(rsIsJ);
 
                     label idsI = constPropI.sites()[sI].siteId();
                     label idsJ = constPropJ.sites()[sJ].siteId();
-    
+
                     if(pairPot.rCutSqr(idsI, idsJ, rsIsJMagSq))
                     {
                         scalar rsIsJMag = mag(rsIsJ);
-    
+
                         vector fsIsJ =
                             (rsIsJ/rsIsJMag)
                         *pairPot.force(idsI, idsJ, rsIsJMag);
-    
+
                         mol->siteForces()[sI] += fsIsJ;
-    
+
                         scalar potentialEnergy
                         (
                             pairPot.energy(idsI, idsJ, rsIsJMag)
                         );
-    
+
                         mol->potentialEnergy() += 0.5*potentialEnergy;
-    
+
                         vector rIJ = mol->position() - molJ->position();
-    
+
                         tensor virialContribution =
                             (rsIsJ*fsIsJ)*(rsIsJ & rIJ)/rsIsJMagSq;
-    
+
                         mol->rf() += virialContribution;
                     }
                 }
@@ -130,56 +130,56 @@ void waterMoleculeCloud::calculateForceOnMolecule
 
             {
                 vector rIJ = mol->position() - molJ->position();
-        
+
                 scalar rIJMag = mag(rIJ);
-        
+
                 if(mol->R() > rIJMag)
                 {
                     mol->R() = rIJMag;
                 }
             }
-        
+
             forAll(constPropI.electrostaticSites(), pI)
             {
                 label sI = constPropI.electrostaticSites()[pI];
-        
+
                 forAll(constPropJ.electrostaticSites(), pJ)
                 {
                     label sJ = constPropJ.electrostaticSites()[pJ];
 
                     vector rsIsJ =
                         mol->sitePositions()[sI] - molJ->sitePositions()[sJ];
-    
+
                     scalar rsIsJMagSq = magSqr(rsIsJ);
-    
+
                     if(rsIsJMagSq <= electrostatic.rCutSqr())
                     {
                         scalar rsIsJMag = mag(rsIsJ);
-    
+
                         scalar chargeI = constPropI.sites()[sI].siteCharge();
-        
-                        scalar chargeJ = constPropJ.sites()[sJ].siteCharge();              
-            
+
+                        scalar chargeJ = constPropJ.sites()[sJ].siteCharge();
+
                         vector fsIsJ =
                             (rsIsJ/rsIsJMag)
                             *chargeI*chargeJ
                             *electrostatic.force(rsIsJMag);
-            
+
                         mol->siteForces()[sI] += fsIsJ;
-    
+
                         scalar potentialEnergy
                         (
                             chargeI*chargeJ
                             *electrostatic.energy(rsIsJMag)
                         );
-    
+
                         mol->potentialEnergy() += 0.5*potentialEnergy;
-    
+
                         vector rIJ = mol->position() - molJ->position();
-    
+
                         tensor virialContribution =
                             (rsIsJ*fsIsJ)*(rsIsJ & rIJ)/rsIsJMagSq;
-    
+
                         mol->rf() += virialContribution;
                     }
                 }
@@ -201,14 +201,14 @@ void waterMoleculeCloud::calculateForceOnMolecule
             const waterMolecule::constantProperties& constPropJ(constProps(idJ));
 
 //             List<label> siteIdsJ = constPropJ.siteIds();
-        
+
 //             List<bool> pairPotentialSitesJ = constPropJ.pairPotentialSites();
 //             List<bool> electrostaticSitesJ = constPropJ.electrostaticSites();
 
             forAll(constPropI.pairPotSites(), pI)
             {
                 label sI = constPropI.pairPotSites()[pI];
-        
+
                 forAll(constPropJ.pairPotSites(), pJ)
                 {
                     label sJ = constPropJ.pairPotSites()[pJ];
@@ -220,29 +220,29 @@ void waterMoleculeCloud::calculateForceOnMolecule
                     label idsJ = constPropJ.sites()[sJ].siteId();
 
                     scalar rsIsJMagSq = magSqr(rsIsJ);
-    
+
                     if(pairPot.rCutSqr(idsI, idsJ, rsIsJMagSq))
                     {
                         scalar rsIsJMag = mag(rsIsJ);
-    
+
                         vector fsIsJ =
                             (rsIsJ/rsIsJMag)
                         *pairPot.force(idsI, idsJ, rsIsJMag);
-    
+
                         mol->siteForces()[sI] += fsIsJ;
-    
+
                         scalar potentialEnergy
                         (
                             pairPot.energy(idsI, idsJ, rsIsJMag)
                         );
-    
+
                         mol->potentialEnergy() += 0.5*potentialEnergy;
-    
+
                         vector rIJ = mol->position() - molJ->position();
-    
+
                         tensor virialContribution =
                             (rsIsJ*fsIsJ)*(rsIsJ & rIJ)/rsIsJMagSq;
-    
+
                         mol->rf() += virialContribution;
                     }
                 }
@@ -250,9 +250,9 @@ void waterMoleculeCloud::calculateForceOnMolecule
 
             {
                 vector rIJ = mol->position() - molJ->position();
-        
+
                 scalar rIJMag = mag(rIJ);
-        
+
                 if(mol->R() > rIJMag)
                 {
                     mol->R() = rIJMag;
@@ -262,44 +262,44 @@ void waterMoleculeCloud::calculateForceOnMolecule
             forAll(constPropI.electrostaticSites(), pI)
             {
                 label sI = constPropI.electrostaticSites()[pI];
-        
+
                 forAll(constPropJ.electrostaticSites(), pJ)
                 {
                     label sJ = constPropJ.electrostaticSites()[pJ];
 
                     vector rsIsJ =
                         mol->sitePositions()[sI] - molJ->sitePositions()[sJ];
-    
+
                     scalar rsIsJMagSq = magSqr(rsIsJ);
-    
+
                     if(rsIsJMagSq <= electrostatic.rCutSqr())
                     {
                         scalar rsIsJMag = mag(rsIsJ);
-    
+
                         scalar chargeI = constPropI.sites()[sI].siteCharge();
 
-                        scalar chargeJ = constPropJ.sites()[sJ].siteCharge();              
-            
+                        scalar chargeJ = constPropJ.sites()[sJ].siteCharge();
+
                         vector fsIsJ =
                             (rsIsJ/rsIsJMag)
                             *chargeI*chargeJ
                             *electrostatic.force(rsIsJMag);
-            
+
                         mol->siteForces()[sI] += fsIsJ;
-    
+
                         scalar potentialEnergy
                         (
                             chargeI*chargeJ
                             *electrostatic.energy(rsIsJMag)
                         );
-    
+
                         mol->potentialEnergy() += 0.5*potentialEnergy;
-    
+
                         vector rIJ = mol->position() - molJ->position();
-    
+
                         tensor virialContribution =
                             (rsIsJ*fsIsJ)*(rsIsJ & rIJ)/rsIsJMagSq;
-    
+
                         mol->rf() += virialContribution;
                     }
                 }
@@ -307,7 +307,7 @@ void waterMoleculeCloud::calculateForceOnMolecule
         }
     }
 
-    //- referred cells 
+    //- referred cells
 
     const labelList& refCellIds = referredInteractionList.refCellIds()[cell];
 
@@ -329,7 +329,7 @@ void waterMoleculeCloud::calculateForceOnMolecule
             forAll(constPropI.pairPotSites(), pI)
             {
                 label sI = constPropI.pairPotSites()[pI];
-        
+
                 forAll(constPropRef.pairPotSites(), pJ)
                 {
                     label sRef = constPropRef.pairPotSites()[pJ];
@@ -337,31 +337,31 @@ void waterMoleculeCloud::calculateForceOnMolecule
                     vector rsRealsRef =
                         mol->sitePositions()[sI]
                     - molRef->sitePositions()[sRef];
-    
+
                     scalar rsRealsRefMagSq = magSqr(rsRealsRef);
-        
+
                     label idsI = constPropI.sites()[sI].siteId();
                     label idsRef = constPropRef.sites()[sRef].siteId();
 
                     if (pairPot.rCutSqr(idsI, idsRef, rsRealsRefMagSq))
                     {
                         scalar rsRealsRefMag = mag(rsRealsRef);
-    
+
                         vector fsRealsRef =
                             (rsRealsRef/rsRealsRefMag)
                         *pairPot.force(idsI, idsRef, rsRealsRefMag);
-    
+
                         mol->siteForces()[sI] += fsRealsRef;
-    
+
                         scalar potentialEnergy
                         (
                             pairPot.energy(idsI, idsRef, rsRealsRefMag)
                         );
-    
+
                         mol->potentialEnergy() += 0.5*potentialEnergy;
-    
+
                         vector rRealRef = mol->position() - molRef->position();
-    
+
                         mol->rf() +=
                             (rsRealsRef*fsRealsRef)
                         *(rsRealsRef & rRealRef)
@@ -372,9 +372,9 @@ void waterMoleculeCloud::calculateForceOnMolecule
 
             {
                 vector rIJ = mol->position() - molRef->position();
-        
+
                 scalar rIJMag = mag(rIJ);
-        
+
                 if(mol->R() > rIJMag)
                 {
                     mol->R() = rIJMag;
@@ -384,7 +384,7 @@ void waterMoleculeCloud::calculateForceOnMolecule
             forAll(constPropI.electrostaticSites(), pI)
             {
                 label sI = constPropI.electrostaticSites()[pI];
-        
+
                 forAll(constPropRef.electrostaticSites(), pJ)
                 {
                     label sRef = constPropRef.electrostaticSites()[pJ];
@@ -392,34 +392,34 @@ void waterMoleculeCloud::calculateForceOnMolecule
                     vector rsRealsRef =
                         mol->sitePositions()[sI]
                         - molRef->sitePositions()[sRef];
-    
+
                     scalar rsRealsRefMagSq = magSqr(rsRealsRef);
-    
+
                     if (rsRealsRefMagSq <= electrostatic.rCutSqr())
                     {
                         scalar rsRealsRefMag = mag(rsRealsRef);
-    
+
                         scalar chargeReal = constPropI.sites()[sI].siteCharge();
-        
-                        scalar chargeRef = constPropRef.sites()[sRef].siteCharge();                
-            
+
+                        scalar chargeRef = constPropRef.sites()[sRef].siteCharge();
+
                         vector fsRealsRef =
                             (rsRealsRef/rsRealsRefMag)
                             *chargeReal*chargeRef
                             *electrostatic.force(rsRealsRefMag);
-    
+
                         mol->siteForces()[sI] += fsRealsRef;
-    
+
                         scalar potentialEnergy
                         (
                             chargeReal*chargeRef
                             *electrostatic.energy(rsRealsRefMag)
                         );
-    
+
                         mol->potentialEnergy() += 0.5*potentialEnergy;
-    
+
                         vector rRealRef = mol->position() - molRef->position();
-    
+
                         mol->rf() +=
                             (rsRealsRef*fsRealsRef)
                         *(rsRealsRef & rRealRef)
@@ -429,7 +429,7 @@ void waterMoleculeCloud::calculateForceOnMolecule
             }
         }
     }
-    
+
     mol->setSitePositions(constPropI);
 
     const List<vector>& siteForces = mol->siteForces();
@@ -467,7 +467,7 @@ void waterMoleculeCloud::calculateShortestRadius
 
 /*    List<label> siteIdsI = constPropI.siteIds();
     List<bool> pairPotentialSitesI = constPropI.pairPotentialSites();
-    List<bool> electrostaticSitesI = constPropI.electrostaticSites();  */ 
+    List<bool> electrostaticSitesI = constPropI.electrostaticSites();  */
 
     const pairPotentialList& pairPot(pot_.pairPotentials());
     const pairPotential& electrostatic = pairPot.electrostatic();
@@ -498,14 +498,14 @@ void waterMoleculeCloud::calculateShortestRadius
             forAll(constPropI.pairPotSites(), pI)
             {
                 label sI = constPropI.pairPotSites()[pI];
-        
+
                 forAll(constPropJ.pairPotSites(), pJ)
                 {
                     label sJ = constPropJ.pairPotSites()[pJ];
-        
+
                     vector rsIsJ =
                         mol->sitePositions()[sI] - molJ->sitePositions()[sJ];
-    
+
                     scalar rsIsJMagSq = magSqr(rsIsJ);
 
                     label idsI = constPropI.sites()[sI].siteId();
@@ -514,7 +514,7 @@ void waterMoleculeCloud::calculateShortestRadius
                     if(pairPot.rCutSqr(idsI, idsJ, rsIsJMagSq))
                     {
                         scalar rsIsJMag = mag(rsIsJ);
-    
+
                         if(mol->R() > rsIsJMag)
                         {
                             mol->R() = rsIsJMag;
@@ -527,20 +527,20 @@ void waterMoleculeCloud::calculateShortestRadius
             forAll(constPropI.electrostaticSites(), pI)
             {
                 label sI = constPropI.electrostaticSites()[pI];
-        
+
                 forAll(constPropJ.electrostaticSites(), pJ)
                 {
                     label sJ = constPropJ.electrostaticSites()[pJ];
 
                     vector rsIsJ =
                         mol->sitePositions()[sI] - molJ->sitePositions()[sJ];
-    
+
                     scalar rsIsJMagSq = magSqr(rsIsJ);
-    
+
                     if(rsIsJMagSq <= electrostatic.rCutSqr())
                     {
                         scalar rsIsJMag = mag(rsIsJ);
-    
+
                         if(mol->R() > rsIsJMag)
                         {
                             mol->R() = rsIsJMag;
@@ -550,7 +550,7 @@ void waterMoleculeCloud::calculateShortestRadius
             }
         }
     }
-      
+
     //- molecules within owner cell
     forAll(cellOccupancy_[cell], mols)
     {
@@ -566,14 +566,14 @@ void waterMoleculeCloud::calculateShortestRadius
             forAll(constPropI.pairPotSites(), pI)
             {
                 label sI = constPropI.pairPotSites()[pI];
-        
+
                 forAll(constPropJ.pairPotSites(), pJ)
                 {
                     label sJ = constPropJ.pairPotSites()[pJ];
 
                     vector rsIsJ =
                         mol->sitePositions()[sI] - molJ->sitePositions()[sJ];
-    
+
                     scalar rsIsJMagSq = magSqr(rsIsJ);
 
                     label idsI = constPropI.sites()[sI].siteId();
@@ -582,7 +582,7 @@ void waterMoleculeCloud::calculateShortestRadius
                     if(pairPot.rCutSqr(idsI, idsJ, rsIsJMagSq))
                     {
                         scalar rsIsJMag = mag(rsIsJ);
-    
+
                         if(mol->R() > rsIsJMag)
                         {
                             mol->R() = rsIsJMag;
@@ -596,20 +596,20 @@ void waterMoleculeCloud::calculateShortestRadius
             forAll(constPropI.electrostaticSites(), pI)
             {
                 label sI = constPropI.electrostaticSites()[pI];
-        
+
                 forAll(constPropJ.electrostaticSites(), pJ)
                 {
                     label sJ = constPropJ.electrostaticSites()[pJ];
 
                     vector rsIsJ =
                         mol->sitePositions()[sI] - molJ->sitePositions()[sJ];
-    
+
                     scalar rsIsJMagSq = magSqr(rsIsJ);
-    
+
                     if(rsIsJMagSq <= electrostatic.rCutSqr())
                     {
                         scalar rsIsJMag = mag(rsIsJ);
-    
+
                         if(mol->R() > rsIsJMag)
                         {
                             mol->R() = rsIsJMag;
@@ -621,7 +621,7 @@ void waterMoleculeCloud::calculateShortestRadius
     }
 
 
-    //- referred cells 
+    //- referred cells
 
     const labelList& refCellIds = referredInteractionList.refCellIds()[cell];
 
@@ -643,15 +643,15 @@ void waterMoleculeCloud::calculateShortestRadius
             forAll(constPropI.pairPotSites(), pI)
             {
                 label sI = constPropI.pairPotSites()[pI];
-        
+
                 forAll(constPropRef.pairPotSites(), pJ)
                 {
                     label sRef = constPropRef.pairPotSites()[pJ];
-        
+
                     vector rsRealsRef =
                         mol->sitePositions()[sI]
                     - molRef->sitePositions()[sRef];
-    
+
                     scalar rsRealsRefMagSq = magSqr(rsRealsRef);
 
                     label idsI = constPropI.sites()[sI].siteId();
@@ -660,7 +660,7 @@ void waterMoleculeCloud::calculateShortestRadius
                     if (pairPot.rCutSqr(idsI, idsRef, rsRealsRefMagSq))
                     {
                         scalar rsRealsRefMag = mag(rsRealsRef);
-    
+
                         if(mol->R() > rsRealsRefMag)
                         {
                             mol->R() = rsRealsRefMag;
@@ -672,7 +672,7 @@ void waterMoleculeCloud::calculateShortestRadius
             forAll(constPropI.electrostaticSites(), pI)
             {
                 label sI = constPropI.electrostaticSites()[pI];
-        
+
                 forAll(constPropRef.electrostaticSites(), pJ)
                 {
                     label sRef = constPropRef.electrostaticSites()[pJ];
@@ -680,13 +680,13 @@ void waterMoleculeCloud::calculateShortestRadius
                     vector rsRealsRef =
                         mol->sitePositions()[sI]
                     - molRef->sitePositions()[sRef];
-    
+
                     scalar rsRealsRefMagSq = magSqr(rsRealsRef);
-    
+
                     if (rsRealsRefMagSq <= electrostatic.rCutSqr())
                     {
                         scalar rsRealsRefMag = mag(rsRealsRef);
-    
+
                         if(mol->R() > rsRealsRefMag)
                         {
                             mol->R() = rsRealsRefMag;
@@ -702,8 +702,8 @@ void waterMoleculeCloud::calculateShortestRadius
 
 
 // update the forces and energies on those molecules occupying real cells,
-// only within interaction range -- i.e. direct interaction list -- 
-// due to the insertion of a molecule. 
+// only within interaction range -- i.e. direct interaction list --
+// due to the insertion of a molecule.
 void waterMoleculeCloud::updateForceOnRealCellMoleculesDueToInsertion
 (
     waterMolecule* mol
@@ -747,51 +747,51 @@ void waterMoleculeCloud::updateForceOnRealCellMoleculesDueToInsertion
             const waterMolecule::constantProperties& constPropJ(constProps(idJ));
 
             scalar massJ = constPropJ.mass();
-        
+
             forAll(constPropI.pairPotSites(), pI)
             {
                 label sI = constPropI.pairPotSites()[pI];
-        
+
                 forAll(constPropJ.pairPotSites(), pJ)
                 {
                     label sJ = constPropJ.pairPotSites()[pJ];
-        
+
                     vector rsIsJ =
                         mol->sitePositions()[sI] - molJ->sitePositions()[sJ];
-    
+
                     scalar rsIsJMagSq = magSqr(rsIsJ);
-        
+
                     label idsI = constPropI.sites()[sI].siteId();
                     label idsJ = constPropJ.sites()[sJ].siteId();
 
                     if(pairPot.rCutSqr(idsI, idsJ, rsIsJMagSq))
                     {
                         scalar rsIsJMag = mag(rsIsJ);
-    
+
                         vector fsIsJ =
                             (rsIsJ/rsIsJMag)
                         *pairPot.force(idsI, idsJ, rsIsJMag);
-    
+
                         molJ->siteForces()[sJ] += -fsIsJ;
-    
+
                         molJ->a() += -fsIsJ/massJ;
-            
+
                         molJ->tau() += (constPropJ.sites()[sJ].siteReferencePosition() ^ (molJ->Q().T() & -fsIsJ));
 
                         scalar potentialEnergy
                         (
                             pairPot.energy(idsI, idsJ, rsIsJMag)
                         );
-    
+
                         molJ->potentialEnergy() += 0.5*potentialEnergy;
 
                         vector rIJ = mol->position() - molJ->position();
-    
+
                         tensor virialContribution =
                             (rsIsJ*fsIsJ)*(rsIsJ & rIJ)/rsIsJMagSq;
 
     //                             tensor virialContribution = (rsIsJ*fsIsJ);
-    
+
                         molJ->rf() += virialContribution;
                     }
                 }
@@ -799,9 +799,9 @@ void waterMoleculeCloud::updateForceOnRealCellMoleculesDueToInsertion
 
             {
                 vector rIJ = mol->position() - molJ->position();
-        
+
                 scalar rIJMag = mag(rIJ);
-        
+
                 if(molJ->R() > rIJMag)
                 {
                     molJ->R() = rIJMag;
@@ -811,32 +811,32 @@ void waterMoleculeCloud::updateForceOnRealCellMoleculesDueToInsertion
             forAll(constPropI.electrostaticSites(), pI)
             {
                 label sI = constPropI.electrostaticSites()[pI];
-        
+
                 forAll(constPropJ.electrostaticSites(), pJ)
                 {
                     label sJ = constPropJ.electrostaticSites()[pJ];
 
                     vector rsIsJ =
                         mol->sitePositions()[sI] - molJ->sitePositions()[sJ];
-    
+
                     scalar rsIsJMagSq = magSqr(rsIsJ);
-    
+
                     scalar chargeI = constPropI.sites()[sI].siteCharge();
-        
+
                     scalar chargeJ = constPropJ.sites()[sJ].siteCharge();
-                    
+
                     if(rsIsJMagSq <= electrostatic.rCutSqr())
                     {
                         scalar rsIsJMag = mag(rsIsJ);
-    
+
                         vector fsIsJ =
                             (rsIsJ/rsIsJMag)
                             *chargeI*chargeJ*electrostatic.force(rsIsJMag);
-    
+
                         molJ->siteForces()[sJ] += -fsIsJ;
-    
+
                         molJ->a() += -fsIsJ/massJ;
-            
+
                         molJ->tau() += (constPropJ.sites()[sJ].siteReferencePosition() ^ (molJ->Q().T() & -fsIsJ));
 
                         scalar potentialEnergy
@@ -844,11 +844,11 @@ void waterMoleculeCloud::updateForceOnRealCellMoleculesDueToInsertion
                                 chargeI*chargeJ
                                 *electrostatic.energy(rsIsJMag)
                         );
-    
+
                         molJ->potentialEnergy() += 0.5*potentialEnergy;
-    
+
                         vector rIJ = mol->position() - molJ->position();
-    
+
                         tensor virialContribution =
                             (rsIsJ*fsIsJ)*(rsIsJ & rIJ)/rsIsJMagSq;
 
@@ -860,7 +860,7 @@ void waterMoleculeCloud::updateForceOnRealCellMoleculesDueToInsertion
             }
         }
     }
-      
+
     //- molecules within owner cell
     forAll(cellOccupancy_[cell], mols)
     {
@@ -874,16 +874,16 @@ void waterMoleculeCloud::updateForceOnRealCellMoleculesDueToInsertion
             const waterMolecule::constantProperties& constPropJ(constProps(idJ));
 
 //             List<label> siteIdsJ = constPropJ.siteIds();
-//         
+//
 //             List<bool> pairPotentialSitesJ = constPropJ.pairPotentialSites();
 //             List<bool> electrostaticSitesJ = constPropJ.electrostaticSites();
 
             scalar massJ = constPropJ.mass();
-        
+
 //             forAll(siteIdsI, sI)
 //             {
 //                 label idsI(siteIdsI[sI]);
-//         
+//
 //                 forAll(siteIdsJ, sJ)
 //                 {
 //                     label idsJ(siteIdsJ[sJ]);
@@ -891,47 +891,47 @@ void waterMoleculeCloud::updateForceOnRealCellMoleculesDueToInsertion
             forAll(constPropI.pairPotSites(), pI)
             {
                 label sI = constPropI.pairPotSites()[pI];
-        
+
                 forAll(constPropJ.pairPotSites(), pJ)
                 {
                     label sJ = constPropJ.pairPotSites()[pJ];
 
                     vector rsIsJ =
                         mol->sitePositions()[sI] - molJ->sitePositions()[sJ];
-        
+
                     label idsI = constPropI.sites()[sI].siteId();
                     label idsJ = constPropJ.sites()[sJ].siteId();
 
                     scalar rsIsJMagSq = magSqr(rsIsJ);
-    
+
                     if(pairPot.rCutSqr(idsI, idsJ, rsIsJMagSq))
                     {
                         scalar rsIsJMag = mag(rsIsJ);
-    
+
                         vector fsIsJ =
                             (rsIsJ/rsIsJMag)
                         *pairPot.force(idsI, idsJ, rsIsJMag);
-    
+
                         molJ->siteForces()[sJ] += -fsIsJ;
-    
+
                         molJ->a() += -fsIsJ/massJ;
-            
+
                         molJ->tau() += (constPropJ.sites()[sJ].siteReferencePosition() ^ (molJ->Q().T() & -fsIsJ));
 
                         scalar potentialEnergy
                         (
                             pairPot.energy(idsI, idsJ, rsIsJMag)
                         );
-    
+
                         molJ->potentialEnergy() += 0.5*potentialEnergy;
-    
+
                         vector rIJ = mol->position() - molJ->position();
-    
+
                         tensor virialContribution =
                             (rsIsJ*fsIsJ)*(rsIsJ & rIJ)/rsIsJMagSq;
 
     //                             tensor virialContribution = (rsIsJ*fsIsJ);
-    
+
                         molJ->rf() += virialContribution;
                     }
                 }
@@ -939,9 +939,9 @@ void waterMoleculeCloud::updateForceOnRealCellMoleculesDueToInsertion
 
             {
                 vector rIJ = mol->position() - molJ->position();
-        
+
                 scalar rIJMag = mag(rIJ);
-        
+
                 if(molJ->R() > rIJMag)
                 {
                     molJ->R() = rIJMag;
@@ -951,32 +951,32 @@ void waterMoleculeCloud::updateForceOnRealCellMoleculesDueToInsertion
             forAll(constPropI.electrostaticSites(), pI)
             {
                 label sI = constPropI.electrostaticSites()[pI];
-        
+
                 forAll(constPropJ.electrostaticSites(), pJ)
                 {
                     label sJ = constPropJ.electrostaticSites()[pJ];
 
                     vector rsIsJ =
                         mol->sitePositions()[sI] - molJ->sitePositions()[sJ];
-    
+
                     scalar rsIsJMagSq = magSqr(rsIsJ);
-    
+
                     scalar chargeI = constPropI.sites()[sI].siteCharge();
 
                     scalar chargeJ = constPropJ.sites()[sJ].siteCharge();
-                    
+
                     if(rsIsJMagSq <= electrostatic.rCutSqr())
                     {
                         scalar rsIsJMag = mag(rsIsJ);
-    
+
                         vector fsIsJ =
                             (rsIsJ/rsIsJMag)
                             *chargeI*chargeJ*electrostatic.force(rsIsJMag);
-    
+
                         molJ->siteForces()[sJ] += -fsIsJ;
-    
+
                         molJ->a() += -fsIsJ/massJ;
-            
+
                         molJ->tau() += (constPropJ.sites()[sJ].siteReferencePosition() ^ (molJ->Q().T() & -fsIsJ));
 
                         scalar potentialEnergy
@@ -984,11 +984,11 @@ void waterMoleculeCloud::updateForceOnRealCellMoleculesDueToInsertion
                                 chargeI*chargeJ
                                 *electrostatic.energy(rsIsJMag)
                         );
-    
+
                         molJ->potentialEnergy() += 0.5*potentialEnergy;
-    
+
                         vector rIJ = mol->position() - molJ->position();
-    
+
                         tensor virialContribution =
                             (rsIsJ*fsIsJ)*(rsIsJ & rIJ)/rsIsJMagSq;
 
@@ -1004,7 +1004,7 @@ void waterMoleculeCloud::updateForceOnRealCellMoleculesDueToInsertion
 
 
 // update the forces and energies on those molecules occupying referred cells,
-// only within interaction range due to the insertion of a molecule. 
+// only within interaction range due to the insertion of a molecule.
 // Here we only consider referred cells belonging to periodic patches, since
 // the molecules are available on the same mesh and hence no parallel processing
 // is necessary. Does not consider those referred cells belonging to processor patches
@@ -1016,58 +1016,58 @@ void waterMoleculeCloud::updateForceOnRealCellMoleculesDueToInsertion
 //     const label& cell = mol->cell();
 //     const label& idI = mol->id();
 //     const vector& posI = mol->position();
-// 
+//
 //     vector rIJ;
 //     scalar rIJMag;
 //     scalar rIJMagSq;
 //     scalar fIJMag;
 //     label idJ;
 // //     scalar massJ;
-// 
-//     //- referred cells 
-// 
+//
+//     //- referred cells
+//
 //     const labelList& refCellIds = referredInteractionList_.refCellIds()[cell];
-// 
+//
 //     forAll(refCellIds, r)
 //     {
 //         const label& refCellId = refCellIds[r];
 //         waterReferredCell& refCellI = referredInteractionList_[refCellId];
-// 
+//
 //         if(refCellI.sourceProc() == Pstream::myProcNo())
 //         {
 //             const label& sourceCell = refCellI.sourceCell();
-// 
+//
 //             List<molecule*>& molsInCell = cellOccupancy_[sourceCell];
-// 
+//
 //             forAll(refCellI, r)
 //             {
 //                 waterReferredMolecule* molJ = &(refCellI[r]);
-//             
+//
 //                 molecule* molR = molsInCell[r];
-//     
+//
 //                 idJ = molJ->id();
 //                 rIJ = posI - molJ->position();
-//                 
+//
 //                 rIJMagSq = magSqr(rIJ);
-//                 
+//
 //                 if(pairPotentials_.rCutSqr(idI, idJ, rIJMagSq))
 //                 {
 //                     rIJMag = mag(rIJ);
-//                     
+//
 //                     fIJMag = pairPotentials_.force(idI, idJ, rIJMag);
-//                     
+//
 //                     // Acceleration increment for mol
 //                     molR->A() += rIJ*fIJMag/(molR->mass());
-//                     
+//
 //                     scalar potentialEnergy
 //                     (
 //                         pairPotentials_.energy(idI, idJ, rIJMag)
 //                     );
-//                     
+//
 //                     molR->pE() += 0.5*potentialEnergy;
-//                     
+//
 //                     molR->rDotf() += 0.5*fIJMag*rIJMagSq;
-//                     
+//
 //                     //- shortest radius between molecules
 //                     if(molR->R() > rIJMag)
 //                     {
@@ -1081,7 +1081,7 @@ void waterMoleculeCloud::updateForceOnRealCellMoleculesDueToInsertion
 
 
 //- insert molecule within the referred cells and update the forces of
-//  molecules within the list of real interaction cells 
+//  molecules within the list of real interaction cells
 //  if procNo is myProcNo(), then it will treat referred cells associated
 //  with periodic patches.
 void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToInsertion
@@ -1098,7 +1098,7 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToInsertion
 
 
     const pairPotentialList& pairPot(pot_.pairPotentials());
-    const pairPotential& electrostatic = pairPot.electrostatic(); 
+    const pairPotential& electrostatic = pairPot.electrostatic();
 
     waterReferredCellList& referredInteractionList = il_.ril();
     const List<receivingReferralList>& cellReceivingReferralLists = il_.cellReceivingReferralLists();
@@ -1125,10 +1125,10 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToInsertion
         label idR = molR->id();
 
         const waterMolecule::constantProperties& constPropR = constProps(idR);
-   
+
 
         const labelList& realCells = refCellI.realCellsForInteraction();
-        
+
         forAll(realCells, rC)
         {
             const label& realCellI = realCells[rC];
@@ -1138,17 +1138,17 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToInsertion
             forAll(molsInCell, m)
             {
                 waterMolecule* molJ = molsInCell[m];
-    
+
                 idJ = molJ->id();
 
                 const waterMolecule::constantProperties& constPropJ(constProps(idJ));
-    
+
                 scalar massJ = constPropJ.mass();
-            
+
                 forAll(constPropR.pairPotSites(), pI)
                 {
                     label sR = constPropR.pairPotSites()[pI];
-            
+
                     forAll(constPropJ.pairPotSites(), pJ)
                     {
                         label sJ = constPropJ.pairPotSites()[pJ];
@@ -1158,24 +1158,24 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToInsertion
 
                         vector rsRsJ =
                             molR->sitePositions()[sR] - molJ->sitePositions()[sJ];
-        
+
                         scalar rsRsJMagSq = magSqr(rsRsJ);
-        
+
                         if(pairPot.rCutSqr(idsR, idsJ, rsRsJMagSq))
                         {
                             scalar rsRsJMag = mag(rsRsJ);
-        
+
                             vector fsRsJ =
                                 (rsRsJ/rsRsJMag)
                             *pairPot.force(idsR, idsJ, rsRsJMag);
 
-                            // - update site forces            
+                            // - update site forces
                             molJ->siteForces()[sJ] += -fsRsJ;
-        
+
                             // - update whole waterMolecule
 
                             molJ->a() += -fsRsJ/massJ;
-    
+
                             molJ->tau() += (constPropJ.sites()[sJ].siteReferencePosition() ^ (molJ->Q().T() & -fsRsJ));
 
                             scalar potentialEnergy
@@ -1184,9 +1184,9 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToInsertion
                             );
 
                             molJ->potentialEnergy() += 0.5*potentialEnergy;
-        
+
                             vector rRJ = molR->position() - molJ->position();
-        
+
                             tensor virialContribution =
                                 (rsRsJ*fsRsJ)*(rsRsJ & rRJ)/rsRsJMagSq;
 
@@ -1199,9 +1199,9 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToInsertion
 
                 {
                     vector rIJ = molR->position() - molJ->position();
-            
+
                     scalar rIJMag = mag(rIJ);
-            
+
                     if(molJ->R() > rIJMag)
                     {
                         molJ->R() = rIJMag;
@@ -1211,16 +1211,16 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToInsertion
                 forAll(constPropR.electrostaticSites(), pI)
                 {
                     label sR = constPropR.electrostaticSites()[pI];
-            
+
                     forAll(constPropJ.electrostaticSites(), pJ)
                     {
                         label sJ = constPropJ.electrostaticSites()[pJ];
 
                         vector rsRsJ =
                             molR->sitePositions()[sR] - molJ->sitePositions()[sJ];
-        
+
                         scalar rsRsJMagSq = magSqr(rsRsJ);
-        
+
                         if(rsRsJMagSq <= electrostatic.rCutSqr())
                         {
                             scalar rsRsJMag = mag(rsRsJ);
@@ -1232,13 +1232,13 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToInsertion
                                 (rsRsJ/rsRsJMag)
                                 *chargeR*chargeJ*electrostatic.force(rsRsJMag);
 
-                            // - update site forces            
+                            // - update site forces
                             molJ->siteForces()[sJ] += -fsRsJ;
-        
+
                             // - update whole molecule
 
                             molJ->a() += -fsRsJ/massJ;
-    
+
                             molJ->tau() += (constPropJ.sites()[sJ].siteReferencePosition() ^ (molJ->Q().T() & -fsRsJ));
 
                             scalar potentialEnergy
@@ -1248,9 +1248,9 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToInsertion
                             );
 
                             molJ->potentialEnergy() += 0.5*potentialEnergy;
-        
+
                             vector rRJ = molR->position() - molJ->position();
-        
+
                             tensor virialContribution =
                                 (rsRsJ*fsRsJ)*(rsRsJ & rRJ)/rsRsJMagSq;
 //                                 tensor virialContribution = rsRsJ*fsRsJ;
@@ -1269,7 +1269,7 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToInsertion
 
 
 // update the forces and energies on those molecules occupying referred cells,
-// only within interaction range due to the insertion of a molecule. 
+// only within interaction range due to the insertion of a molecule.
 // Here we are only considering referred cells from processor patches.
 // This function must be called by all processors due to communication purposes.
 // void moleculeCloud::updateForceOnRealCellMoleculesDueToInsertionParallel
@@ -1279,25 +1279,25 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToInsertion
 // )
 // {
 //     List< DynamicList<label> > cellsOnProcs(Pstream::nProcs());
-// 
+//
 //     if(procN == Pstream::myProcNo())
 //     {
 //         molecule* newMol = last();
 //         const label& molId = newMol->id();
 //         const vector& molPosition = newMol->position();
-// 
+//
 //         const labelList& cellRefIds = referredInteractionList_.refCellIds()[cellI];
-//        
+//
 //         forAll(cellRefIds, c)
 //         {
 //             const waterReferredCell& refCellI = referredInteractionList_[cellRefIds[c]];
-// 
+//
 //             if(refCellI.sourceProc() != Pstream::myProcNo())
 //             {
 //                 cellsOnProcs[refCellI.sourceProc()].append(refCellI.sourceCell());
 //             }
 //         }
-// 
+//
 //         //- sending
 //         for (int i = 0; i < Pstream::nProcs(); i++)
 //         {
@@ -1311,7 +1311,7 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToInsertion
 //             }
 //         }
 //     }
-// 
+//
 //     //- receiving
 //     if(procN != Pstream::myProcNo())
 //     {
@@ -1319,52 +1319,52 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToInsertion
 //         label idI;
 //         vector posI;
 //         label cellFromProc;
-// 
+//
 //         const int proc = procN;
 //         {
 //             IPstream fromNeighbour(proc);
 //             fromNeighbour >> cellLabels >> idI >> posI >> cellFromProc;
 //         }
-// 
+//
 //         vector rIJ;
 //         scalar rIJMag;
 //         scalar rIJMagSq;
 //         scalar fIJMag;
 //         label idJ;
 // //         scalar massJ;
-// 
+//
 //         forAll(cellLabels, c)
 //         {
 //             const label& cell = cellLabels[c];
-// 
+//
 //             forAll(cellOccupancy_[cell], mols)
 //             {
 //                 molecule* molJ = cellOccupancy_[cell][mols];
-//         
+//
 //                 idJ = molJ->id();
 // //                 massJ = molJ->mass();
 //                 rIJ = posI - molJ->position();
-//                 
+//
 //                 rIJMagSq = magSqr(rIJ);
-//                 
+//
 //                 if(pairPotentials_.rCutSqr(idI, idJ, rIJMagSq))
 //                 {
 //                     rIJMag = mag(rIJ);
-//                 
+//
 //                     fIJMag = pairPotentials_.force(idI, idJ, rIJMag);
-//                 
+//
 //                     // Acceleration increment for mol
 //                     molJ->A() += rIJ*fIJMag/(molJ->mass());
-//                 
+//
 //                     scalar potentialEnergy
 //                     (
 //                         pairPotentials_.energy(idI, idJ, rIJMag)
 //                     );
-//                 
+//
 //                     molJ->pE() += 0.5*potentialEnergy;
-//                 
+//
 //                     molJ->rDotf() += 0.5*fIJMag*rIJMagSq;
-//                 
+//
 //                     //- shortest radius between molecules
 //                     if(molJ->R() > rIJMag)
 //                     {
@@ -1373,21 +1373,21 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToInsertion
 //                 }
 //             }
 //         }
-// 
+//
 //         //- place molecule in referred cell
 //         const labelList& cellRefIds = referredInteractionList_.refCellIds()[cellLabels[0]];
-//         
+//
 //         forAll(cellRefIds, c)
 //         {
 //             waterReferredCell& refCellI = referredInteractionList_[cellRefIds[c]];
-// 
+//
 //             if((refCellI.sourceProc() == procN) && (refCellI.sourceCell() == cellFromProc))
 //             {
 //                 refCellI.append
 //                 (
 //                     waterReferredMolecule(idI, posI)
 //                 );
-// 
+//
 //                 refCellI.shrink();
 //             }
 //         }
@@ -1398,8 +1398,8 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToInsertion
 //- MOLECULAR DELETION OPERATIONS
 
 // update the forces and energies on those molecules occupying real cells,
-// only within interaction range -- i.e. direct interaction list -- 
-// due to the deletion of a molecule. 
+// only within interaction range -- i.e. direct interaction list --
+// due to the deletion of a molecule.
 void waterMoleculeCloud::updateForceOnRealCellMoleculesDueToDeletion
 (
     waterMolecule* mol
@@ -1417,7 +1417,7 @@ void waterMoleculeCloud::updateForceOnRealCellMoleculesDueToDeletion
 //     List<bool> electrostaticSitesI = constPropI.electrostaticSites();
 
     const pairPotentialList& pairPot(pot_.pairPotentials());
-    const pairPotential& electrostatic = pairPot.electrostatic();    
+    const pairPotential& electrostatic = pairPot.electrostatic();
 
 //     const waterReferredCellList& referredInteractionList = il_.ril();
     const waterDirectInteractionList& directInteractionCellList = il_.dil();
@@ -1444,51 +1444,51 @@ void waterMoleculeCloud::updateForceOnRealCellMoleculesDueToDeletion
             const waterMolecule::constantProperties& constPropJ(constProps(idJ));
 
 //             List<label> siteIdsJ = constPropJ.siteIds();
-//         
+//
 //             List<bool> pairPotentialSitesJ = constPropJ.pairPotentialSites();
 //             List<bool> electrostaticSitesJ = constPropJ.electrostaticSites();
 
             scalar massJ = constPropJ.mass();
-        
+
             forAll(constPropI.pairPotSites(), pI)
             {
                 label sI = constPropI.pairPotSites()[pI];
-        
+
                 forAll(constPropJ.pairPotSites(), pJ)
                 {
                     label sJ = constPropJ.pairPotSites()[pJ];
 
                     vector rsIsJ =
                         mol->sitePositions()[sI] - molJ->sitePositions()[sJ];
-    
+
                     label idsI = constPropI.sites()[sI].siteId();
                     label idsJ = constPropJ.sites()[sJ].siteId();
-    
+
                     scalar rsIsJMagSq = magSqr(rsIsJ);
-    
+
                     if(pairPot.rCutSqr(idsI, idsJ, rsIsJMagSq))
                     {
                         scalar rsIsJMag = mag(rsIsJ);
-    
+
                         vector fsIsJ =
                             (rsIsJ/rsIsJMag)
                         *pairPot.force(idsI, idsJ, rsIsJMag);
-    
+
                         molJ->siteForces()[sJ] += fsIsJ;
-    
+
                         molJ->a() += fsIsJ/massJ;
-            
+
                         molJ->tau() += (constPropJ.sites()[sJ].siteReferencePosition() ^ (molJ->Q().T() & fsIsJ));
 
                         scalar potentialEnergy
                         (
                             pairPot.energy(idsI, idsJ, rsIsJMag)
                         );
-    
+
                         molJ->potentialEnergy() -= 0.5*potentialEnergy;
-    
+
                         vector rIJ = mol->position() - molJ->position();
-    
+
                         tensor virialContribution =
                             (rsIsJ*fsIsJ)*(rsIsJ & rIJ)/rsIsJMagSq;
 
@@ -1503,36 +1503,36 @@ void waterMoleculeCloud::updateForceOnRealCellMoleculesDueToDeletion
             forAll(constPropI.electrostaticSites(), pI)
             {
                 label sI = constPropI.electrostaticSites()[pI];
-        
+
                 forAll(constPropJ.electrostaticSites(), pJ)
                 {
                     label sJ = constPropJ.electrostaticSites()[pJ];
 
                     vector rsIsJ =
                         mol->sitePositions()[sI] - molJ->sitePositions()[sJ];
-    
+
                     scalar rsIsJMagSq = magSqr(rsIsJ);
-    
+
                     scalar chargeI = constPropI.sites()[sI].siteCharge();
-        
+
                     scalar chargeJ = constPropJ.sites()[sJ].siteCharge();
-                    
+
                     if(rsIsJMagSq <= electrostatic.rCutSqr())
                     {
                         scalar rsIsJMag = mag(rsIsJ);
-                
+
                         vector fsIsJ =
                             (rsIsJ/rsIsJMag)
                             *chargeI*chargeJ*electrostatic.force(rsIsJMag);
-    
+
 //                         molJ->siteForces()[sJ] += -fsIsJ;
-//     
+//
 //                         molJ->a() += -fsIsJ/massJ;
 
                         molJ->siteForces()[sJ] += fsIsJ;
-    
+
                         molJ->a() += fsIsJ/massJ;
-            
+
 //                         molJ->tau() += (constPropJ.siteReferencePositions()[sJ] ^ (molJ->Q().T() & -fsIsJ));
 
                         molJ->tau() += (constPropJ.sites()[sJ].siteReferencePosition() ^ (molJ->Q().T() & fsIsJ));
@@ -1542,24 +1542,24 @@ void waterMoleculeCloud::updateForceOnRealCellMoleculesDueToDeletion
                                 chargeI*chargeJ
                             *electrostatic.energy(rsIsJMag)
                         );
-    
+
 //                         molJ->potentialEnergy() += 0.5*potentialEnergy;
                         molJ->potentialEnergy() -= 0.5*potentialEnergy;
 
                         vector rIJ = mol->position() - molJ->position();
-    
+
                         tensor virialContribution =
                             (rsIsJ*fsIsJ)*(rsIsJ & rIJ)/rsIsJMagSq;
 
 //                             tensor virialContribution = (rsIsJ*fsIsJ);
-    
+
                         molJ->rf() -= virialContribution;
                     }
                 }
             }
         }
     }
-      
+
     //- molecules within owner cell
     forAll(cellOccupancy_[cell], mols)
     {
@@ -1573,34 +1573,34 @@ void waterMoleculeCloud::updateForceOnRealCellMoleculesDueToDeletion
             const waterMolecule::constantProperties& constPropJ(constProps(idJ));
 
 //             List<label> siteIdsJ = constPropJ.siteIds();
-//         
+//
 //             List<bool> pairPotentialSitesJ = constPropJ.pairPotentialSites();
 //             List<bool> electrostaticSitesJ = constPropJ.electrostaticSites();
 
             scalar massJ = constPropJ.mass();
-        
+
 //             forAll(siteIdsI, sI)
 //             {
 //                 label idsI(siteIdsI[sI]);
-//         
+//
 //                 forAll(siteIdsJ, sJ)
 //                 {
 //                     label idsJ(siteIdsJ[sJ]);
-//         
+//
 //                     if (pairPotentialSitesI[sI] && pairPotentialSitesJ[sJ])
 //                     {
 
             forAll(constPropI.pairPotSites(), pI)
             {
                 label sI = constPropI.pairPotSites()[pI];
-        
+
                 forAll(constPropJ.pairPotSites(), pJ)
                 {
                     label sJ = constPropJ.pairPotSites()[pJ];
 
                     vector rsIsJ =
                         mol->sitePositions()[sI] - molJ->sitePositions()[sJ];
-    
+
                     scalar rsIsJMagSq = magSqr(rsIsJ);
 
                     label idsI = constPropI.sites()[sI].siteId();
@@ -1609,30 +1609,30 @@ void waterMoleculeCloud::updateForceOnRealCellMoleculesDueToDeletion
                     if(pairPot.rCutSqr(idsI, idsJ, rsIsJMagSq))
                     {
                         scalar rsIsJMag = mag(rsIsJ);
-    
+
                         vector fsIsJ =
                             (rsIsJ/rsIsJMag)
                         *pairPot.force(idsI, idsJ, rsIsJMag);
-    
+
                         molJ->siteForces()[sJ] += fsIsJ;
-    
+
                         molJ->a() += fsIsJ/massJ;
-            
+
                         molJ->tau() += (constPropJ.sites()[sJ].siteReferencePosition() ^ (molJ->Q().T() & fsIsJ));
 
                         scalar potentialEnergy
                         (
                             pairPot.energy(idsI, idsJ, rsIsJMag)
                         );
-    
+
                         molJ->potentialEnergy() -= 0.5*potentialEnergy;
-    
+
                         vector rIJ = mol->position() - molJ->position();
-    
+
                         tensor virialContribution =
                             (rsIsJ*fsIsJ)*(rsIsJ & rIJ)/rsIsJMagSq;
 //                             tensor virialContribution = (rsIsJ*fsIsJ);
-    
+
                         molJ->rf() -= virialContribution;
                     }
                 }
@@ -1641,31 +1641,31 @@ void waterMoleculeCloud::updateForceOnRealCellMoleculesDueToDeletion
             forAll(constPropI.electrostaticSites(), pI)
             {
                 label sI = constPropI.electrostaticSites()[pI];
-        
+
                 forAll(constPropJ.electrostaticSites(), pJ)
                 {
                     label sJ = constPropJ.electrostaticSites()[pJ];
 
                     vector rsIsJ =
                         mol->sitePositions()[sI] - molJ->sitePositions()[sJ];
-    
+
                     scalar rsIsJMagSq = magSqr(rsIsJ);
-    
+
                     scalar chargeI = constPropI.sites()[sI].siteCharge();
-        
+
                     scalar chargeJ = constPropJ.sites()[sJ].siteCharge();
-                    
+
                     if(rsIsJMagSq <= electrostatic.rCutSqr())
                     {
                                     scalar rsIsJMag = mag(rsIsJ);
-                
+
                         vector fsIsJ = (rsIsJ/rsIsJMag)*chargeI*chargeJ*electrostatic.force(rsIsJMag);
-        
+
 //                         molJ->siteForces()[sJ] += -fsIsJ;
-//     
+//
 //                         molJ->a() += -fsIsJ/massJ;
                         molJ->siteForces()[sJ] += fsIsJ;
-    
+
                         molJ->a() += fsIsJ/massJ;
 
 //                         molJ->tau() += (constPropJ.siteReferencePositions()[sJ] ^ (molJ->Q().T() & -fsIsJ));
@@ -1676,13 +1676,13 @@ void waterMoleculeCloud::updateForceOnRealCellMoleculesDueToDeletion
                                 chargeI*chargeJ
                             *electrostatic.energy(rsIsJMag)
                         );
-    
+
 //                         molJ->potentialEnergy() += 0.5*potentialEnergy;
 
                         molJ->potentialEnergy() -= 0.5*potentialEnergy;
 
                         vector rIJ = mol->position() - molJ->position();
-    
+
                         tensor virialContribution =
                             (rsIsJ*fsIsJ)*(rsIsJ & rIJ)/rsIsJMagSq;
 
@@ -1700,9 +1700,9 @@ void waterMoleculeCloud::updateForceOnRealCellMoleculesDueToDeletion
 
 
 // update the forces and energies on those molecules occupying referred cells,
-// only within interaction range due to the deletion of a molecule. 
+// only within interaction range due to the deletion of a molecule.
 // Here we are only considering referred cells from periodic patches, since these
-// cells and their molecules are available on the same mesh unlike 
+// cells and their molecules are available on the same mesh unlike
 // processor-referred-cells
 // void moleculeCloud::updateForceOnReferredCellMoleculesDueToDeletion
 // (
@@ -1712,58 +1712,58 @@ void waterMoleculeCloud::updateForceOnRealCellMoleculesDueToDeletion
 //     const label& cell = mol->cell();
 //     const label& idI = mol->id();
 //     const vector& posI = mol->position();
-// 
+//
 //     vector rIJ;
 //     scalar rIJMag;
 //     scalar rIJMagSq;
 //     scalar fIJMag;
 //     label idJ;
 // //     scalar massJ;
-// 
-//     //- referred cells 
-// 
+//
+//     //- referred cells
+//
 //     const labelList& refCellIds = referredInteractionList_.refCellIds()[cell];
-// 
+//
 //     forAll(refCellIds, r)
 //     {
 //         const label& refCellId = refCellIds[r];
 //         waterReferredCell& refCellI = referredInteractionList_[refCellId];
-// 
+//
 //         if(refCellI.sourceProc() == Pstream::myProcNo())
 //         {
 //             const label& sourceCell = refCellI.sourceCell();
-// 
+//
 //             List<molecule*>& molsInCell = cellOccupancy_[sourceCell];
-// 
+//
 //             forAll(refCellI, r)
 //             {
 //                 waterReferredMolecule* molJ = &(refCellI[r]);
-//             
+//
 //                 molecule* molR = molsInCell[r];
-//     
+//
 //                 idJ = molJ->id();
 // //                 massJ = molR->mass();
 //                 rIJ = posI - molJ->position();
-//                 
+//
 //                 rIJMagSq = magSqr(rIJ);
-//                 
+//
 //                 if(pairPotentials_.rCutSqr(idI, idJ, rIJMagSq))
 //                 {
 //                     rIJMag = mag(rIJ);
-//                     
+//
 //                     fIJMag = pairPotentials_.force(idI, idJ, rIJMag);
-//                     
-//                     
+//
+//
 //                     // Acceleration increment for mol
 //                     molR->A() -= rIJ*fIJMag/(molR->mass());
-//                     
+//
 //                     scalar potentialEnergy
 //                     (
 //                         pairPotentials_.energy(idI, idJ, rIJMag)
 //                     );
-//                     
+//
 //                     molR->pE() -= 0.5*potentialEnergy;
-//                     
+//
 //                     molR->rDotf() -= 0.5*fIJMag*rIJMagSq;
 //                 }
 //             }
@@ -1809,7 +1809,7 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToDeletion
         forAll(refCellI, rM)
         {
             waterReferredMolecule* molR = &(refCellI[rM]);
-    
+
             label idR = molR->id();
             const vector& posR = molR->position();
 
@@ -1817,12 +1817,12 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToDeletion
             const vector refPos = refCellITemp.referPosition(posI);
 
             scalar deltaR = magSqr(refPos - posR);
-    
+
             if((minR > deltaR) && (idI == idR))
             {
                 refMolID = rM;
                 minR = deltaR;
-//                 Info << "incoming molecule: position: " << refPos << ", id: " << idI 
+//                 Info << "incoming molecule: position: " << refPos << ", id: " << idI
 //                 << ", chosen molecule: position: " << posR << ", id: " << idR << endl;
             }
         }
@@ -1843,11 +1843,11 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToDeletion
             const vector& posRTrue = molRTrue->position();
 
 
-            Info << "WARNING. Incoming molecule: position: " << refPos << ", id: " << idI 
-                 << " properly chosen molecule: position " << posRTrue << ", id: " 
+            Info << "WARNING. Incoming molecule: position: " << refPos << ", id: " << idI
+                 << " properly chosen molecule: position " << posRTrue << ", id: "
                  << idRTrue << ", refMolID: " << refMolID
-                 << ", old chosen molecule: position: " << posR << ", id: " << idR  
-                 << ", refMolID: " << cellMolRemoveId << ", waterReferredCell: " << sCI 
+                 << ", old chosen molecule: position: " << posR << ", id: " << idR
+                 << ", refMolID: " << cellMolRemoveId << ", waterReferredCell: " << sCI
                  << endl;
         }
 
@@ -1856,33 +1856,33 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToDeletion
         if(refMolID != -1)
         {
             waterReferredMolecule* molR = &(refCellI[refMolID]);
-    
+
             label idR = molR->id();
     //         const vector& posR = molR->position();
-    
+
             const waterMolecule::constantProperties& constPropR = constProps(idR);
-        
+
 //             List<label> siteIdsR = constPropR.siteIds();
-    
+
             const labelList& realCells = refCellI.realCellsForInteraction();
-            
+
             forAll(realCells, rC)
             {
                 const label& realCellI = realCells[rC];
-    
+
                 List<waterMolecule*>& molsInCell = cellOccupancy_[realCellI];
-    
+
                 forAll(molsInCell, m)
                 {
                     waterMolecule* molJ = molsInCell[m];
-        
+
                     idJ = molJ->id();
     //                 rIJ = posR - molJ->position();
-    
+
                     const waterMolecule::constantProperties& constPropJ(constProps(idJ));
-        
+
 //                     List<label> siteIdsJ = constPropJ.siteIds();
-//                 
+//
 //                     List<bool> pairPotentialSitesJ = constPropJ.pairPotentialSites();
 //                     List<bool> electrostaticSitesJ = constPropJ.electrostaticSites();
 
@@ -1891,34 +1891,34 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToDeletion
                     forAll(constPropR.pairPotSites(), pI)
                     {
                         label sR = constPropR.pairPotSites()[pI];
-                
+
                         forAll(constPropJ.pairPotSites(), pJ)
                         {
                             label sJ = constPropJ.pairPotSites()[pJ];
-                
+
                             vector rsRsJ =
                                 molR->sitePositions()[sR] - molJ->sitePositions()[sJ];
 
                             label idsR = constPropR.sites()[sR].siteId();
-                            label idsJ = constPropJ.sites()[sJ].siteId();         
+                            label idsJ = constPropJ.sites()[sJ].siteId();
 
                             scalar rsRsJMagSq = magSqr(rsRsJ);
-            
+
                             if(pairPot.rCutSqr(idsR, idsJ, rsRsJMagSq))
                             {
                                 scalar rsRsJMag = mag(rsRsJ);
-            
+
                                 vector fsRsJ =
                                     (rsRsJ/rsRsJMag)
                                 *pairPot.force(idsR, idsJ, rsRsJMag);
 
-                                // - update site forces            
+                                // - update site forces
                                 molJ->siteForces()[sJ] += fsRsJ;
-            
+
                                 // - update whole molecule
 
                                 molJ->a() += fsRsJ/massJ;
-        
+
                                 molJ->tau() += (constPropJ.sites()[sJ].siteReferencePosition() ^ (molJ->Q().T() & fsRsJ));
 
                                 scalar potentialEnergy
@@ -1927,9 +1927,9 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToDeletion
                                 );
 
                                 molJ->potentialEnergy() -= 0.5*potentialEnergy;
-            
+
                                 vector rRJ = molR->position() - molJ->position();
-            
+
                                 tensor virialContribution =
                                     (rsRsJ*fsRsJ)*(rsRsJ & rRJ)/rsRsJMagSq;
 
@@ -1940,38 +1940,38 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToDeletion
                             }
                         }
                     }
-                            
+
                     forAll(constPropR.electrostaticSites(), pI)
                     {
                         label sR = constPropR.electrostaticSites()[pI];
-                
+
                         forAll(constPropJ.electrostaticSites(), pJ)
                         {
                             label sJ = constPropJ.electrostaticSites()[pJ];
 
                             vector rsRsJ =
                                 molR->sitePositions()[sR] - molJ->sitePositions()[sJ];
-                    
+
                             scalar rsRsJMagSq = magSqr(rsRsJ);
-                    
+
                             if(rsRsJMagSq <= electrostatic.rCutSqr())
                             {
                                 scalar rsRsJMag = mag(rsRsJ);
-                    
+
                                 scalar chargeR = constPropR.sites()[sR].siteCharge();
-            
+
                                 scalar chargeJ = constPropJ.sites()[sJ].siteCharge();
-                                
+
                                 vector fsRsJ =
                                     (rsRsJ/rsRsJMag)
                                     *chargeR*chargeJ*electrostatic.force(rsRsJMag);
-            
-                                // - update site forces            
+
+                                // - update site forces
 //                                 molJ->siteForces()[sJ] += -fsRsJ;
                                 molJ->siteForces()[sJ] += fsRsJ;
 
                                 // - update whole molecule
-            
+
 //                                 molJ->a() += -fsRsJ/massJ;
                                 molJ->a() += fsRsJ/massJ;
 
@@ -1983,13 +1983,13 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToDeletion
                                     chargeR*chargeJ
                                     *electrostatic.force(rsRsJMag)
                                 );
-            
+
 //                                 molJ->potentialEnergy() += 0.5*potentialEnergy;
 
                                 molJ->potentialEnergy() -= 0.5*potentialEnergy;
 
                                 vector rRJ = molR->position() - molJ->position();
-                    
+
                                 tensor virialContribution =
                                     (rsRsJ*fsRsJ)*(rsRsJ & rRJ)/rsRsJMagSq;
 
@@ -2002,7 +2002,7 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToDeletion
                     }
                 }
             }
-    
+
             //- remove molecule from referred cell
             refCellI.deleteReferredMolecule(refMolID);
         }
@@ -2011,7 +2011,7 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToDeletion
 
 
 // update the forces and energies on those molecules occupying referred cells,
-// only within interaction range due to the deletion of a molecule. 
+// only within interaction range due to the deletion of a molecule.
 // Here we are only considering referred cells from processor patches.
 // This function must be called by all processors due to communication purposes.
 // void moleculeCloud::updateForceOnReferredCellMoleculesDueToDeletionParallel
@@ -2022,25 +2022,25 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToDeletion
 // )
 // {
 //     List< DynamicList<label> > cellsOnProcs(Pstream::nProcs());
-// 
+//
 //     if(procN == Pstream::myProcNo())
 //     {
 //         molecule* delMol = cellOccupancy_[cellI][cellId];
 //         const label& molId = delMol->id();
 //         const vector& molPosition = delMol->position();
-// 
+//
 //         const labelList& cellRefIds = referredInteractionList_.refCellIds()[cellI];
-//        
+//
 //         forAll(cellRefIds, c)
 //         {
 //             const waterReferredCell& refCellI = referredInteractionList_[cellRefIds[c]];
-// 
+//
 //             if(refCellI.sourceProc() != Pstream::myProcNo())
 //             {
 //                 cellsOnProcs[refCellI.sourceProc()].append(refCellI.sourceCell());
 //             }
 //         }
-// 
+//
 //         //- sending
 //         for (int i = 0; i < Pstream::nProcs(); i++)
 //         {
@@ -2049,13 +2049,13 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToDeletion
 //                 const int proc = i;
 //                 {
 //                     OPstream toNeighbour(proc);
-//                     toNeighbour << cellsOnProcs[i].shrink() << molId 
+//                     toNeighbour << cellsOnProcs[i].shrink() << molId
 //                                 << molPosition << cellI << cellId;
 //                 }
 //             }
 //         }
 //     }
-// 
+//
 //     //- receiving
 //     if(procN != Pstream::myProcNo())
 //     {
@@ -2064,67 +2064,67 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToDeletion
 //         vector posI;
 //         label cellFromProc;
 //         label cellIdFromProc;
-// 
+//
 //         const int proc = procN;
 //         {
 //             IPstream fromNeighbour(proc);
-//             fromNeighbour >> cellLabels >> idI >> posI 
+//             fromNeighbour >> cellLabels >> idI >> posI
 //                           >> cellFromProc >> cellIdFromProc;
 //         }
-// 
+//
 //         vector rIJ;
 //         scalar rIJMag;
 //         scalar rIJMagSq;
 //         scalar fIJMag;
 //         label idJ;
 //         scalar massJ;
-// 
+//
 //         forAll(cellLabels, c)
 //         {
 //             const label& cell = cellLabels[c];
-// 
+//
 //             forAll(cellOccupancy_[cell], mols)
 //             {
 //                 molecule* molJ = cellOccupancy_[cell][mols];
-//         
+//
 //                 idJ = molJ->id();
 //                 massJ = molJ->mass();
 //                 rIJ = posI - molJ->position();
-//                 
+//
 //                 rIJMagSq = magSqr(rIJ);
-//                 
+//
 //                 if(pairPotentials_.rCutSqr(idI, idJ, rIJMagSq))
 //                 {
 //                     rIJMag = mag(rIJ);
-//                 
+//
 //                     fIJMag = pairPotentials_.force(idI, idJ, rIJMag);
-//                 
+//
 //                     // Acceleration increment for mol
 //                     molJ->A() -= rIJ*fIJMag/(massJ);
-//                 
+//
 //                     scalar potentialEnergy
 //                     (
 //                         pairPotentials_.energy(idI, idJ, rIJMag)
 //                     );
-//                 
+//
 //                     molJ->pE() -= 0.5*potentialEnergy;
-//                 
+//
 //                     molJ->rDotf() -= 0.5*fIJMag*rIJMagSq;
 //                 }
 //             }
 //         }
-// 
+//
 //         //- rebuild referred cells
 //         const labelList& cellRefIds = referredInteractionList_.refCellIds()[cellLabels[0]];
-//         
+//
 //         forAll(cellRefIds, c)
 //         {
 //             waterReferredCell& refCellI = referredInteractionList_[cellRefIds[c]];
-// 
+//
 //             if((refCellI.sourceProc() == procN) && (refCellI.sourceCell() == cellFromProc))
 //             {
 //                 DynamicList<waterReferredMolecule> referredMols(0);
-// 
+//
 //                 forAll(refCellI, r)
 //                 {
 //                     if(r != cellIdFromProc)
@@ -2135,7 +2135,7 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToDeletion
 //                         );
 //                     }
 //                 }
-// 
+//
 //                 refCellI.clear();
 //                 refCellI.transfer(referredMols.shrink());
 //             }
@@ -2146,11 +2146,11 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToDeletion
 
 // void waterMoleculeCloud::insertMolInCellOccupancy(waterMolecule* mol)
 // {
-// 
+//
 // //     Info << "inserting molecule in cell: " << mol->cell() << endl;
-// 
+//
 //     cellOccupancy_[mol->cell()].append(mol);
-// 
+//
 //     cellOccupancy_[mol->cell()].shrink();
 // }
 
@@ -2163,29 +2163,29 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToDeletion
 // )
 // {
 //     DynamicList<waterMolecule*> updatedMolsInCell(0);
-// 
+//
 //     const label& cellI = molI->cell();
-// 
+//
 //     {
 //         const List<waterMolecule*>& molsInCell = cellOccupancy_[cellI];
-//     
+//
 //         forAll(molsInCell, m)
 //         {
 //             waterMolecule* molJ = molsInCell[m];
-//     
+//
 //             if(molI != molJ)
 //             {
 //                 updatedMolsInCell.append(molJ);
 //             }
 //         }
 //     }
-// 
+//
 //     updatedMolsInCell.shrink();
 //     cellOccupancy_[cellI].clear();
 //     cellOccupancy_[cellI].transfer(updatedMolsInCell);
 // }
-// 
-// 
+//
+//
 // void waterMoleculeCloud::removeMolFromCellOccupancy
 // (
 //     const label& cellMolId,
@@ -2193,7 +2193,7 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToDeletion
 // )
 // {
 //     DynamicList<waterMolecule*> molsInCell(0);
-// 
+//
 //     forAll(cellOccupancy_[cell], c)
 //     {
 //         if(c != cellMolId)
@@ -2201,7 +2201,7 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToDeletion
 //             molsInCell.append(cellOccupancy_[cell][c]);
 //         }
 //     }
-// 
+//
 //     molsInCell.shrink();
 //     cellOccupancy_[cell].clear();
 //     cellOccupancy_[cell].transfer(molsInCell);
@@ -2249,7 +2249,7 @@ label waterMoleculeCloud::numberOfMolsWithinRCut
             waterMolecule* molJ = molsCellJ[m];
             rIJ = posI - molJ->position();
             rIJMagSq = magSqr(rIJ);
-            
+
             if(rIJMagSq <= rCutMaxSqr_)
             {
                 nMols++;
@@ -2266,7 +2266,7 @@ label waterMoleculeCloud::numberOfMolsWithinRCut
         {
             rIJ = posI - molJ->position();
             rIJMagSq = magSqr(rIJ);
-            
+
             if(rIJMagSq <= rCutMaxSqr_)
             {
                 nMols++;
@@ -2287,7 +2287,7 @@ label waterMoleculeCloud::numberOfMolsWithinRCut
 
             rIJ = posI - molJ->position();
             rIJMagSq = magSqr(rIJ);
-            
+
             if(rIJMagSq <= rCutMaxSqr_)
             {
                 nMols++;
@@ -2331,14 +2331,14 @@ void waterMoleculeCloud::updateNeighbouringRadii
             waterMolecule* molJ = molsCellJ[m];
 
             vector rIJ = molI->position() - molJ->position();
-    
+
             scalar rIJMag = mag(rIJ);
-    
+
             if(molI->R() > rIJMag)
             {
                 molI->R() = rIJMag;
             }
-    
+
             if(molJ->R() > rIJMag)
             {
                 molJ->R() = rIJMag;
@@ -2355,14 +2355,14 @@ void waterMoleculeCloud::updateNeighbouringRadii
         if(molJ != molI)
         {
             vector rIJ = molI->position() - molJ->position();
-    
+
             scalar rIJMag = mag(rIJ);
-    
+
             if(molI->R() > rIJMag)
             {
                 molI->R() = rIJMag;
             }
-    
+
             if(molJ->R() > rIJMag)
             {
                 molJ->R() = rIJMag;
@@ -2370,20 +2370,20 @@ void waterMoleculeCloud::updateNeighbouringRadii
         }
     }
 
-    //- referred cells 
+    //- referred cells
 
     // refer in molecules due to periodic boundary conditions
     {
         waterReferredCellList& ril = il_.ril();
-    
+
         const labelList& refCellsPerIds = ril.refCellIdsPer()[molI->cell()];
-    
+
         forAll(refCellsPerIds, r)
         {
             const label& refCellId = refCellsPerIds[r];
-    
+
             waterReferredCell& refCellI = ril[refCellId];//*****
-    
+
             refCellI.referInMolecule
             (
                 waterReferredMolecule
@@ -2412,9 +2412,9 @@ void waterMoleculeCloud::updateNeighbouringRadii
             const waterReferredMolecule* molRef = &(refCellI[refMols]);
 
             vector rRealRef = molI->position() - molRef->position();
-    
+
             scalar rRealRefMag = mag(rRealRef);
-    
+
             if(molI->R() > rRealRefMag)
             {
                 molI->R() = rRealRefMag;
@@ -2429,7 +2429,7 @@ void waterMoleculeCloud::updateRadii()
 //     const pairPotential& electrostatic = pairPot.electrostatic();
 
     const waterReferredCellList& referredInteractionList = il_.ril();
-    
+
     forAll(referredInteractionList, refCellId)
     {
         const waterReferredCell& refCellI = referredInteractionList[refCellId];
@@ -2440,23 +2440,23 @@ void waterMoleculeCloud::updateRadii()
 
 //             label idRef = molRef->id();
 
-       
+
             const labelList& realCells = refCellI.realCellsForInteraction();
-            
+
             forAll(realCells, rC)
             {
                 const label& realCellI = realCells[rC];
-    
+
                 List<waterMolecule*>& molsInCell = cellOccupancy_[realCellI];
-    
+
                 forAll(molsInCell, m)
                 {
                     waterMolecule* molReal = molsInCell[m];
 
                     vector rRealRef = molReal->position() - molRef->position();
-            
+
                     scalar rRealRefMag = mag(rRealRef);
-            
+
                     if(molReal->R() > rRealRefMag)
                     {
                         molReal->R() = rRealRefMag;

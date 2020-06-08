@@ -58,7 +58,7 @@ polyTemperatureBerendsen::polyTemperatureBerendsen
     peculiar_(false)
 {
     temperature_ = readScalar(propsDict_.lookup("temperature"));
-    
+
     molIds_.clear();
 
     selectIds ids
@@ -67,8 +67,8 @@ polyTemperatureBerendsen::polyTemperatureBerendsen
         propsDict_
     );
 
-    molIds_ = ids.molIds();    
-    
+    molIds_ = ids.molIds();
+
     if (propsDict_.found("componentControl"))
     {
         componentControl_ = Switch(propsDict_.lookup("componentControl"));
@@ -79,12 +79,12 @@ polyTemperatureBerendsen::polyTemperatureBerendsen
             {
                 X_ = Switch(propsDict_.lookup("X"));
             }
-    
+
             if (propsDict_.found("Y"))
             {
                 Y_ = Switch(propsDict_.lookup("Y"));
             }
-    
+
             if (propsDict_.found("Z"))
             {
                 Z_ = Switch(propsDict_.lookup("Z"));
@@ -137,8 +137,8 @@ void polyTemperatureBerendsen::controlAfterForces()
 
 void polyTemperatureBerendsen::controlAfterVelocityII()
 {
-	const scalar deltaTMD = time_.deltaT().value(); 
-    
+	const scalar deltaTMD = time_.deltaT().value();
+
     if(control_)
     {
         // - calculate streaming velocity
@@ -149,11 +149,11 @@ void polyTemperatureBerendsen::controlAfterVelocityII()
         {
             const label& cellI = controlZone()[c];
             const List<polyMolecule*>& molsInCell = molCloud_.cellOccupancy()[cellI];
-        
+
             forAll(molsInCell, m)
             {
                 polyMolecule* molI = molsInCell[m];
-                
+
                 if(findIndex(molIds_, molI->id()) != -1)
                 {
                     const scalar& massI = molCloud_.cP().mass(molI->id());
@@ -186,13 +186,13 @@ void polyTemperatureBerendsen::controlAfterVelocityII()
         {
             const label& cellI = controlZone()[c];
             const List<polyMolecule*>& molsInCell = molCloud_.cellOccupancy()[cellI];
-        
+
             forAll(molsInCell, m)
             {
                 polyMolecule* molI = molsInCell[m];
 
 
-                if(findIndex(molIds_, molI->id()) != -1)            
+                if(findIndex(molIds_, molI->id()) != -1)
                 {
                     const scalar& massI = molCloud_.cP().mass(molI->id());
 
@@ -201,7 +201,7 @@ void polyTemperatureBerendsen::controlAfterVelocityII()
 
                     const diagTensor& molMoI(molCloud_.cP().momentOfInertia(molI->id()));
 
-                    // angular speed 
+                    // angular speed
                     const vector& molOmega(inv(molMoI) & molI->pi());
                     angularKeSum += 0.5*(molOmega & molMoI & molOmega);
                 }
@@ -225,7 +225,7 @@ void polyTemperatureBerendsen::controlAfterVelocityII()
 
             const reducedUnits& rU = molCloud_.redUnits();
 
-            Info<< "Temp Berendsen, zone : " << regionName() 
+            Info<< "Temp Berendsen, zone : " << regionName()
                 << " T = " << tempMeasI << " (reduced units) "
                 << " T = " << tempMeasI*rU.refTemp() << " (SI units) "
                 << endl;
@@ -247,8 +247,8 @@ void polyTemperatureBerendsen::controlAfterVelocityII()
             forAll(molsInCell, m)
             {
                 polyMolecule* molI = molsInCell[m];
-                
-                if(findIndex(molIds_, molI->id()) != -1)            
+
+                if(findIndex(molIds_, molI->id()) != -1)
                 {
                     if(!peculiar_)
                     {
@@ -287,7 +287,7 @@ void polyTemperatureBerendsen::calculateProperties()
 
 void polyTemperatureBerendsen::output
 (
-    const fileName& fixedPathName, 
+    const fileName& fixedPathName,
     const fileName& timePath
 )
 {}

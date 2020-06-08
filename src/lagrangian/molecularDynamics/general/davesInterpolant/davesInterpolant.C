@@ -48,30 +48,30 @@ davesInterpolant::davesInterpolant
     const IOdictionary& dict
 )
 :
-    propsDict_(dict)   
+    propsDict_(dict)
 {
     PtrList<entry> infoList(propsDict_.lookup("data"));
-    
+
     nDataPoints_ = infoList.size();
-    
+
     density_.setSize(nDataPoints_, 0.0);
     strain_.setSize(nDataPoints_);
     viscosity_.setSize(nDataPoints_);
     slipLength_.setSize(nDataPoints_);
-    
+
     forAll(infoList, i)
     {
         const entry& setI = infoList[i];
         const dictionary& dictI = setI.dict();
-        
+
         scalar rhoN = readScalar(dictI.lookup("numberDensity"));
-        
+
         density_[i] = rhoN;
-        
+
         List<scalar> strain = List<scalar>(dictI.lookup("strainRate"));
-        List<scalar> viscosity = List<scalar>(dictI.lookup("viscosity"));   
-        List<scalar> slipLength = List<scalar>(dictI.lookup("slipLength")); 
-        
+        List<scalar> viscosity = List<scalar>(dictI.lookup("viscosity"));
+        List<scalar> slipLength = List<scalar>(dictI.lookup("slipLength"));
+
         label sizeOfList = strain.size();
 
         if( sizeOfList != viscosity.size() )
@@ -81,7 +81,7 @@ davesInterpolant::davesInterpolant
                 << ", Check the viscosity at rhoN = " << rhoN
                 << exit(FatalError);
         }
-        
+
         if( sizeOfList != slipLength.size() )
         {
             FatalErrorIn("davesInterpolant::davesInterpolant()")
@@ -97,11 +97,11 @@ davesInterpolant::davesInterpolant
         forAll(strain, j)
         {
             strain_[i][j] = strain[j];
-            viscosity_[i][j] = viscosity[j];            
-            slipLength_[i][j] = slipLength[j];            
+            viscosity_[i][j] = viscosity[j];
+            slipLength_[i][j] = slipLength[j];
         }
     }
-    
+
     Info << "densities = " <<  density_ << endl;
 }
 

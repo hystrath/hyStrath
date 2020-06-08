@@ -25,7 +25,7 @@ License
 Class
 
 Description
-    The model which outputs standard properties to the terminal screen 
+    The model which outputs standard properties to the terminal screen
     in an MD simulation run.
 
 SourceFiles
@@ -123,7 +123,7 @@ public:
         void writeField();
 
         const propertyField& fields() const;
-}; 		
+};
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

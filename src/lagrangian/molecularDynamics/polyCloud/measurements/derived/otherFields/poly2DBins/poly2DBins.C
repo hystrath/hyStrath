@@ -69,9 +69,9 @@ poly2DBins::poly2DBins
     nAvTimeSteps_(0.0),
     resetAtOutput_(true)
 {
-    
+
     const cellZoneMesh& cellZones = mesh_.cellZones();
-    
+
     regionId_ = cellZones.findZoneID(regionName_);
 
     if(regionId_ == -1)
@@ -81,7 +81,7 @@ poly2DBins::poly2DBins
             << time_.time().system()/"fieldPropertiesDict"
             << exit(FatalError);
     }
-    
+
     // choose molecule ids to sample
 
     molIds_.clear();
@@ -95,55 +95,55 @@ poly2DBins::poly2DBins
     molIds_ = ids.molIds();
 
 
-    
+
     // create bin model
     binModel_ = autoPtr<twoDimBinModel>
     (
         twoDimBinModel::New(mesh, propsDict_)
     );
-    
+
     List<label> nBins = binModel_->nBins();
-    
+
     label nBinsX = nBins[0];
     label nBinsY = nBins[1];
 
 //     Info << "nBinsX = " << nBinsX << endl;
 //     Info << "nBinsY = " << nBinsY << endl;
-    
+
     mass_.setSize(nBinsX);
     mom_.setSize(nBinsX);
 
     rhoM_.setSize(nBinsX);
     UCAM_.setSize(nBinsX);
-    
+
     forAll(mass_, i)
     {
         mass_[i].setSize(nBinsY, 0.0);
         mom_[i].setSize(nBinsY, vector::zero);
-        
+
         rhoM_[i].setSize(nBinsY, 0.0);
         UCAM_[i].setSize(nBinsY, vector::zero);
     }
-    
+
 //     Info << "mass_ = " << mass_ << endl;
-//     Info << "mom_ = " << mom_ << endl;        
-    
-   
-    
+//     Info << "mom_ = " << mom_ << endl;
+
+
+
     // read in stored data from dictionary
 
     resetAtOutput_ = Switch(propsDict_.lookup("resetAtOutput"));
-    
+
     {
         Info << nl << "Storage..." << endl;
-        
+
         bool resetStorage = false;
-        
+
         if (propsDict_.found("resetStorage"))
         {
             resetStorage = Switch(propsDict_.lookup("resetStorage"));
-        }    
-        
+        }
+
         if(resetStorage)
         {
             Info<< "WARNING: storage will be reset."
@@ -157,13 +157,13 @@ poly2DBins::poly2DBins
                 << " This is NOT good if you have been testing your simulation a number of times "
                 << " Delete your storage directory before moving to important runs"
                 << " or type resetStorage = yes, for just the first simulation run."
-                << endl;            
+                << endl;
         }
-        
-        resetAtOutput_ = Switch(propsDict_.lookup("resetAtOutput"));    
-        
-        
-        // stored data activation in dictionary        
+
+        resetAtOutput_ = Switch(propsDict_.lookup("resetAtOutput"));
+
+
+        // stored data activation in dictionary
 
         pathName_ = time_.time().path()/"storage";
         nameFile_ = "binsData_"+fieldName_;
@@ -184,7 +184,7 @@ poly2DBins::poly2DBins
         IFstream file(pathName_/nameFile_);
 
         bool foundFile = file.good();
-        
+
         if(!foundFile)
         {
             Info << nl << "File not found: " << nameFile_ << nl << endl;
@@ -198,7 +198,7 @@ poly2DBins::poly2DBins
             Info << "Reading from storage, e.g. noAvTimeSteps = " << nAvTimeSteps_ << endl;
         }
     }
-   
+
 }
 
 
@@ -218,9 +218,9 @@ void poly2DBins::calculateField()
 {
 //     Info << "mass = " << mass_ << endl;
 //     Info << "mom = " << mom_ << endl;
-    
+
     nAvTimeSteps_ += 1.0;
-    
+
     forAll(mesh_.cellZones()[regionId_], c)
     {
         const label& cellI = mesh_.cellZones()[regionId_][c];
@@ -247,10 +247,10 @@ void poly2DBins::calculateField()
         }
     }
 
-    if(time_.outputTime()) 
+    if(time_.outputTime())
     {
         List<scalarField> mass = mass_;
-        List<vectorField> mom = mom_;        
+        List<vectorField> mom = mom_;
 
         if(Pstream::parRun())
         {
@@ -263,31 +263,31 @@ void poly2DBins::calculateField()
                 }
             }
         }
-        
+
         const scalar& nAvTimeSteps = nAvTimeSteps_;
-        
+
         forAll(mass, i)
         {
             scalar volume = binModel_->binVolume(i);
-            
+
             forAll(mass[i], j)
-            {       
+            {
                 rhoM_[i][j] = mass[i][j]/(nAvTimeSteps*volume);
-                
+
                 if(mass[i][j] > 0)
                 {
                     UCAM_[i][j] = mom[i][j]/mass[i][j];
                 }
             }
         }
-    
+
 
 
         if(resetAtOutput_)
         {
             //- reset fields
             nAvTimeSteps_ = 0.0;
-            
+
             forAll(mass, i)
             {
                 forAll(mass[i], j)
@@ -312,7 +312,7 @@ void poly2DBins::writeToStorage()
     {
         file << nAvTimeSteps_ << endl;
         file << mass_ << endl;
-        file << mom_ << endl; 
+        file << mom_ << endl;
     }
     else
     {
@@ -350,12 +350,12 @@ void poly2DBins::writeField()
     {
         if(Pstream::master())
         {
-            
-            scalarField binsX = binModel_->binPositionsX();
-            scalarField binsY = binModel_->binPositionsY();            
-            
 
-            // new write out 
+            scalarField binsX = binModel_->binPositionsX();
+            scalarField binsY = binModel_->binPositionsY();
+
+
+            // new write out
             {
                 OFstream file(timePath_/"bins_twoDim_"+fieldName_+"_rhoM_II.xy");
 
@@ -365,9 +365,9 @@ void poly2DBins::writeField()
                     {
                         forAll(binsX, i)
                         {
-                            file 
-                                << binsX[i] << "\t" 
-                                << binsY[j] << "\t" 
+                            file
+                                << binsX[i] << "\t"
+                                << binsY[j] << "\t"
                                 << rhoM_[i][j] << "\t"
                                 << endl;
                         }
@@ -378,7 +378,7 @@ void poly2DBins::writeField()
                     FatalErrorIn("void writeTimeData::writeTimeData()")
                         << "Cannot open file " << file.name()
                         << abort(FatalError);
-                }            
+                }
             }
             {
                 OFstream file(timePath_/"bins_twoDim_"+fieldName_+"_U_CAM_II_X.xy");
@@ -389,9 +389,9 @@ void poly2DBins::writeField()
                     {
                         forAll(binsX, i)
                         {
-                            file 
-                                << binsX[i] << "\t" 
-                                << binsY[j] << "\t" 
+                            file
+                                << binsX[i] << "\t"
+                                << binsY[j] << "\t"
                                 << UCAM_[i][j].x() << "\t"
                                 << endl;
                         }
@@ -402,9 +402,9 @@ void poly2DBins::writeField()
                     FatalErrorIn("void writeTimeData::writeTimeData()")
                         << "Cannot open file " << file.name()
                         << abort(FatalError);
-                }            
-            }      
-            
+                }
+            }
+
             {
                 OFstream file(timePath_/"bins_twoDim_"+fieldName_+"_U_CAM_II_Y.xy");
 
@@ -414,9 +414,9 @@ void poly2DBins::writeField()
                     {
                         forAll(binsX, i)
                         {
-                            file 
-                                << binsX[i] << "\t" 
-                                << binsY[j] << "\t" 
+                            file
+                                << binsX[i] << "\t"
+                                << binsY[j] << "\t"
                                 << UCAM_[i][j].y() << "\t"
                                 << endl;
                         }
@@ -427,7 +427,7 @@ void poly2DBins::writeField()
                     FatalErrorIn("void writeTimeData::writeTimeData()")
                         << "Cannot open file " << file.name()
                         << abort(FatalError);
-                }            
+                }
             }
             {
                 OFstream file(timePath_/"bins_twoDim_"+fieldName_+"_U_CAM_II_Z.xy");
@@ -438,9 +438,9 @@ void poly2DBins::writeField()
                     {
                         forAll(binsX, i)
                         {
-                            file 
-                                << binsX[i] << "\t" 
-                                << binsY[j] << "\t" 
+                            file
+                                << binsX[i] << "\t"
+                                << binsY[j] << "\t"
                                 << UCAM_[i][j].z() << "\t"
                                 << endl;
                         }
@@ -451,45 +451,45 @@ void poly2DBins::writeField()
                     FatalErrorIn("void writeTimeData::writeTimeData()")
                         << "Cannot open file " << file.name()
                         << abort(FatalError);
-                }            
-            }            
-            
+                }
+            }
+
             writeTimeData
             (
                 timePath_,
                 "bins_twoDim_"+fieldName_+"_binsX.xy",
                 binsX
-            ); 
-            
+            );
+
             writeTimeData
             (
                 timePath_,
                 "bins_twoDim_"+fieldName_+"_binsY.xy",
                 binsY
-            );           
+            );
 
             writeTimeData
             (
                 timePath_,
                 "bins_twoDim_"+fieldName_+"_rhoM.xy",
                 rhoM_
-            );           
-            
+            );
+
             writeTimeData
             (
                 timePath_,
                 "bins_twoDim_"+fieldName_+"_U_CAM_X.xy",
                 UCAM_,
                 "x"
-            );  
-            
+            );
+
             writeTimeData
             (
                 timePath_,
                 "bins_twoDim_"+fieldName_+"_U_CAM_Y.xy",
                 UCAM_,
                 "y"
-            ); 
+            );
 
             writeTimeData
             (
@@ -497,48 +497,48 @@ void poly2DBins::writeField()
                 "bins_twoDim_"+fieldName_+"_U_CAM_Z.xy",
                 UCAM_,
                 "z"
-            );            
-            
-            
-            
+            );
+
+
+
             const reducedUnits& rU = molCloud_.redUnits();
-            
+
             writeTimeData
             (
                 timePath_,
                 "bins_twoDim_"+fieldName_+"_binsX_SI.xy",
                 binsX*rU.refLength()
-            ); 
-            
+            );
+
             writeTimeData
             (
                 timePath_,
                 "bins_twoDim_"+fieldName_+"_binsY_SI.xy",
                 binsY*rU.refLength()
-            );           
+            );
 
             writeTimeData
             (
                 timePath_,
                 "bins_twoDim_"+fieldName_+"_rhoM_SI.xy",
                 rhoM_*rU.refMassDensity()
-            );           
-            
+            );
+
             writeTimeData
             (
                 timePath_,
                 "bins_twoDim_"+fieldName_+"_U_CAM_X_SI.xy",
                 UCAM_*rU.refVelocity(),
                 "x"
-            );  
-            
+            );
+
             writeTimeData
             (
                 timePath_,
                 "bins_twoDim_"+fieldName_+"_U_CAM_Y_SI.xy",
                 UCAM_*rU.refVelocity(),
                 "y"
-            ); 
+            );
 
             writeTimeData
             (
@@ -546,18 +546,18 @@ void poly2DBins::writeField()
                 "bins_twoDim_"+fieldName_+"_U_CAM_Z_SI.xy",
                 UCAM_*rU.refVelocity(),
                 "z"
-            );             
+            );
 
 //             scalarField bins = binModel_->binPositionsX();
 //             scalarField binsY = binModel_->binPositionsY();
-// 
+//
 //             forAll(rhoM_, i)
 //             {
 //                 std::string s;
 //                 std::stringstream out;
 //                 out << bins[i];
 //                 s = out.str();
-// 
+//
 //                 writeTimeData
 //                 (
 //                     timePath_,
@@ -565,7 +565,7 @@ void poly2DBins::writeField()
 //                     binsY,
 //                     rhoM_[i]
 //                 );
-// 
+//
 //                 writeTimeData
 //                 (
 //                     timePath_,
@@ -573,9 +573,9 @@ void poly2DBins::writeField()
 //                     binsY,
 //                     UCAM_[i]
 //                 );
-//                 
+//
 //                 const reducedUnits& rU = molCloud_.redUnits();
-//     
+//
 //                 if(rU.outputSIUnits())
 //                 {
 //                     writeTimeData
@@ -585,7 +585,7 @@ void poly2DBins::writeField()
 //                         binsY*rU.refLength(),
 //                         rhoM_[i]*rU.refMassDensity()
 //                     );
-// 
+//
 //                     writeTimeData
 //                     (
 //                         timePath_,

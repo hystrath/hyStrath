@@ -52,7 +52,7 @@ Foam::nonEqSmoluchowskiJumpTvMixFvPatchScalarField::nonEqSmoluchowskiJumpTvMixFv
     valueFraction() = 0.0;
 }
 
-    
+
 Foam::nonEqSmoluchowskiJumpTvMixFvPatchScalarField::nonEqSmoluchowskiJumpTvMixFvPatchScalarField
 (
     const nonEqSmoluchowskiJumpTvMixFvPatchScalarField& ptf,
@@ -178,9 +178,9 @@ void Foam::nonEqSmoluchowskiJumpTvMixFvPatchScalarField::updateCoeffs()
     const fvPatchScalarField& palpha =
         patch().lookupPatchField<volScalarField, scalar>(alphaName_);
     const fvPatchScalarField& pgammatr =
-        patch().lookupPatchField<volScalarField, scalar>(gammatrName_);  
+        patch().lookupPatchField<volScalarField, scalar>(gammatrName_);
     const fvPatchScalarField& pmfp =
-        patch().lookupPatchField<volScalarField, scalar>(mfpName_);        
+        patch().lookupPatchField<volScalarField, scalar>(mfpName_);
     const fvPatchScalarField& prho =
         patch().lookupPatchField<volScalarField, scalar>(rhoName_);
     const fvPatchVectorField& pU =

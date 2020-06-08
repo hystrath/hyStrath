@@ -73,7 +73,7 @@ fadeInitialise::fadeInitialise
     molIds_ = ids.molIds();
 
     n_ = readLabel(propsDict_.lookup("n"));
-    tauT_ = readScalar(propsDict_.lookup("tauT"));   
+    tauT_ = readScalar(propsDict_.lookup("tauT"));
     deltaT_ = time_.time().deltaT().value();
     t_ = 0.0;
 }
@@ -94,7 +94,7 @@ void fadeInitialise::initialConfiguration()
     for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
     {
         if(findIndex(molIds_, mol().id()) != -1)
-        {         
+        {
             mol().fraction() = 0.0;
         }
     }
@@ -128,7 +128,7 @@ void fadeInitialise::controlAfterVelocityII()
 void fadeInitialise::calculateProperties()
 {
     t_ += deltaT_;
-    
+
     if(t_ < tauT_)
     {
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
@@ -136,14 +136,14 @@ void fadeInitialise::calculateProperties()
         for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
         {
             if(findIndex(molIds_, mol().id()) != -1)
-            {    
+            {
                 if(t_ < 0.5*tauT_)
                 {
                     mol().fraction() = 0.5*Foam::pow((2.0*t_/tauT_), scalar(n_));
                 }
                 else
                 {
-                    mol().fraction() = 1.0 
+                    mol().fraction() = 1.0
                             - 0.5*mag(Foam::pow((2.0*(t_-tauT_)/tauT_), scalar(n_)));
                 }
             }
@@ -154,11 +154,11 @@ void fadeInitialise::calculateProperties()
         Info << "End of equilibration" << endl;
 
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
-        
+
         for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
         {
             if(findIndex(molIds_, mol().id()) != -1)
-            {        
+            {
                 mol().fraction() = 1.0;
             }
         }

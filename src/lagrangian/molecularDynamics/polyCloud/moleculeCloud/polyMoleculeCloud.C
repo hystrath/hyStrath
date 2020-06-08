@@ -48,7 +48,7 @@ void Foam::polyMoleculeCloud::buildConstProps()
 
     const List<word>& idList(pot_.idList());
 
-    constPropList_.setSize(idList.size()); 
+    constPropList_.setSize(idList.size());
 
     const List<word>& siteIdList(pot_.siteIdList());
 
@@ -81,15 +81,15 @@ void Foam::polyMoleculeCloud::buildConstProps()
         if(cloudType == "polyMoleculeCloud")
         {
             List<word> siteIdNames = molDict.lookup("siteIds");
-    
+
             List<label> siteIds(siteIdNames.size());
-    
+
             forAll(siteIdNames, sI)
             {
                 const word& siteId = siteIdNames[sI];
-    
+
                 siteIds[sI] = findIndex(siteIdList, siteId);
-    
+
                 if (siteIds[sI] == -1)
                 {
                     FatalErrorIn("polyMoleculeCloud.C") << nl
@@ -97,9 +97,9 @@ void Foam::polyMoleculeCloud::buildConstProps()
                         << nl << abort(FatalError);
                 }
             }
-    
+
             polyMolecule::constantProperties& constProp = constPropList_[i];
-    
+
             constProp = polyMolecule::constantProperties(molDict, redUnits_, siteIds);
         }
     }
@@ -113,7 +113,7 @@ void Foam::polyMoleculeCloud::setSiteSizesAndPositions()
     for (mol = this->begin(); mol != this->end(); ++mol)
     {
 //         const polyMolecule::constantProperties& cP = constProps(mol().id());
-        
+
         mol().setSiteSizes(cP_.nSites(mol().id()));
 
         mol().setSitePositions(cP_);
@@ -138,7 +138,7 @@ void Foam::polyMoleculeCloud::buildCellOccupancy()
     {
         cellOccupancy_[mol().cell()].append(&mol());
     }
-    
+
     forAll(cellOccupancy_, cO)
     {
         cellOccupancy_[cO].shrink();
@@ -151,7 +151,7 @@ void Foam::polyMoleculeCloud::checkForOverlaps()
     if(p_.checkPotentialOverlaps())
     {
         const scalar& potLim = p_.potentialEnergyLimit();
-        
+
         Info<< nl << "Removing high energy overlaps, limit = "
             << potLim
             << ", from removalOrder list = " << p_.removalOrder()
@@ -353,7 +353,7 @@ void Foam::polyMoleculeCloud::checkForOverlaps()
 
         molsToDelete.clear();
     }
-    
+
     buildCellOccupancy();
 
     prepareInteractions();
@@ -383,15 +383,15 @@ void Foam::polyMoleculeCloud::removeHighEnergyOverlaps()
     }
 
     buildCellOccupancy();
-    
+
     label nMolsDeleted = 0;
 
     prepareInteractions();
 
     setIPL();
-    
+
     iL_.setRIPL();
-    
+
     label nMolsInt = 0;
     label nMolsExt = 0;
     label nMolsRef = 0;
@@ -407,7 +407,7 @@ void Foam::polyMoleculeCloud::removeHighEnergyOverlaps()
             nMolsExt = ipl_[c].size();
             nMolsInt = cellOccupancy_[c].size();
             nMolsRef = iL_.ripl()[c].size();
-                 
+
             for (int i = 0; i < nMolsInt; i++)
             {
                 molI = cellOccupancy_[c][i];
@@ -548,11 +548,11 @@ void Foam::polyMoleculeCloud::removeHighEnergyOverlaps()
     {
         reduce(newSize, sumOp<label>());
     }
-    
+
     if (Pstream::parRun())
     {
         reduce(nMolsDeleted, sumOp<label>());
-    }    
+    }
 
     if(nMolsDeleted > 0)
     {
@@ -563,7 +563,7 @@ void Foam::polyMoleculeCloud::removeHighEnergyOverlaps()
                 << nMolsDeleted <<  endl;
         }
     }
-    
+
 }*/
 
 
@@ -597,7 +597,7 @@ void Foam::polyMoleculeCloud::checkMoleculesInMesh()
 
     for (mol = this->begin(); mol != this->end(); ++mol)
     {
-        
+
         label cell = -1;
         label tetFace = -1;
         label tetPt = -1;
@@ -609,7 +609,7 @@ void Foam::polyMoleculeCloud::checkMoleculesInMesh()
             tetFace,
             tetPt
         );
-        
+
         if(cell != -1)
         {
             if(mol().cell() != cell)
@@ -629,7 +629,7 @@ void Foam::polyMoleculeCloud::checkMoleculesInMesh()
 
     if(noOfModifiedMols > 0)
     {
-        Pout<< tab << " molecules that changed cell = " 
+        Pout<< tab << " molecules that changed cell = "
             << noOfModifiedMols
             << endl;
     }
@@ -652,8 +652,8 @@ void Foam::polyMoleculeCloud::checkMoleculesInMesh()
         reduce(molsRemoved, sumOp<label>());
     }
 
-    Info<< tab <<" molecules removed from outside mesh = " 
-        << molsRemoved 
+    Info<< tab <<" molecules removed from outside mesh = "
+        << molsRemoved
         << endl;
 }
 
@@ -667,7 +667,7 @@ Foam::polyMoleculeCloud::polyMoleculeCloud
     const polyMesh& mesh,
 //     const potentials& p,
     const reducedUnits& rU,
-    const constantMoleculeProperties& cP, 
+    const constantMoleculeProperties& cP,
     cachedRandomMD& rndGen
 )
 :
@@ -677,8 +677,8 @@ Foam::polyMoleculeCloud::polyMoleculeCloud
     redUnits_(rU),
     cP_(cP),
     rndGen_(rndGen),
-    int_(t, mesh_, *this),    
-    p_(mesh, *this, rU, cP), 
+    int_(t, mesh_, *this),
+    p_(mesh, *this, rU, cP),
     cellOccupancy_(mesh_.nCells()),
 //     constPropList_(),
     fields_(t, mesh_, *this),
@@ -686,7 +686,7 @@ Foam::polyMoleculeCloud::polyMoleculeCloud
     controllers_(t, mesh, *this),
     trackingInfo_(mesh, *this),
     moleculeTracking_(),
-    cyclics_(t, mesh_, -1), 
+    cyclics_(t, mesh_, -1),
     iL_(mesh, rU, cyclics_, p_.rCutMax(), "poly"),
     ipl_(mesh.nCells()),
 	clock_(t, "evolve", true)
@@ -696,7 +696,7 @@ Foam::polyMoleculeCloud::polyMoleculeCloud
     rndGen.initialise(this->size() != 0 ? this->size() : 10000); //Initialise the random number cache (initialise to 10000 if size is zero)
 
 //     buildConstProps();
-    
+
     setSiteSizesAndPositions();
 
     checkMoleculesInMesh();
@@ -706,24 +706,24 @@ Foam::polyMoleculeCloud::polyMoleculeCloud
     p_.pairPots().initialiseExclusionModels();
 
     int_.integrator()->init();
-    
+
     //check and remove high energy overalps
     checkForOverlaps();
 //     controllers_.initialConfig();
-    
+
     buildCellOccupancy();
 
-    
+
     fields_.createFields();
     boundaries_.setInitialConfig();
     controllers_.initialConfig();
-    
+
     clearLagrangianFields();
     calculateForce();
     updateAcceleration();
-    
 
-    
+
+
     // TESTS
     writeReferredCloud();
 }
@@ -738,7 +738,7 @@ Foam::polyMoleculeCloud::polyMoleculeCloud
 //     const potentials& p,
     const reducedUnits& rU,
     const constantMoleculeProperties& cP,
-    cachedRandomMD& rndGen, 
+    cachedRandomMD& rndGen,
     const word& option,
     const bool& clearFields
 )
@@ -747,9 +747,9 @@ Foam::polyMoleculeCloud::polyMoleculeCloud
     mesh_(mesh),
     redUnits_(rU),
     cP_(cP),
-    rndGen_(rndGen),    
-    int_(t, mesh_, *this),    
-    p_(mesh, *this, rU, cP), 
+    rndGen_(rndGen),
+    int_(t, mesh_, *this),
+    p_(mesh, *this, rU, cP),
     cellOccupancy_(mesh_.nCells()),
 //     constPropList_(),
     fields_(t, mesh_),
@@ -772,7 +772,7 @@ Foam::polyMoleculeCloud::polyMoleculeCloud
     {
         reduce(initialMolecules, sumOp<label>());
     }
-   
+
     if(clearFields)
     {
         Info << "clearing existing field of molecules " << endl;
@@ -784,7 +784,7 @@ Foam::polyMoleculeCloud::polyMoleculeCloud
     else
     {
         updateTrackingNumbersAfterRead();
-        setSiteSizesAndPositions();        
+        setSiteSizesAndPositions();
     }
 
     if((option == "mdInitialise") && clearFields)
@@ -821,21 +821,21 @@ Foam::polyMoleculeCloud::polyMoleculeCloud
     {
         buildCellOccupancy();
     }
-    else 
+    else
     {
         Info << "ERROR" << endl;
     }
 
     label finalMolecules = this->size();
-    
+
     if (Pstream::parRun())
     {
         reduce(finalMolecules, sumOp<label>());
     }
 
-    Info << nl << "Initial molecules = " << initialMolecules 
+    Info << nl << "Initial molecules = " << initialMolecules
          << ", modified molecules = " << finalMolecules - initialMolecules
-         << ", total molecules: " << finalMolecules 
+         << ", total molecules: " << finalMolecules
          << endl;
 }
 
@@ -847,7 +847,7 @@ Foam::autoPtr<Foam::polyMoleculeCloud> Foam::polyMoleculeCloud::New
     Time& t,
     const polyMesh& mesh,
     const reducedUnits& rU,
-    const constantMoleculeProperties& cP, 
+    const constantMoleculeProperties& cP,
     cachedRandomMD& rndGen
 )
 {
@@ -862,7 +862,7 @@ Foam::autoPtr<Foam::polyMoleculeCloud> Foam::polyMoleculeCloud::New
     Time& t,
     const polyMesh& mesh,
     const reducedUnits& rU,
-    const constantMoleculeProperties& cP, 
+    const constantMoleculeProperties& cP,
     cachedRandomMD& rndGen,
     const word& option,
     const bool& clearFields
@@ -921,7 +921,7 @@ void  Foam::polyMoleculeCloud::createMolecule
 }
 
 
-// Evolve functions 
+// Evolve functions
 
 void Foam::polyMoleculeCloud::evolve()
 {
@@ -1072,7 +1072,7 @@ void Foam::polyMoleculeCloud::controlAfterForces()
 
 void Foam::polyMoleculeCloud::controlAfterVelocity()
 {
-    controllers_.controlVelocitiesII();    
+    controllers_.controlVelocitiesII();
 }
 
 void Foam::polyMoleculeCloud::postTimeStep()
@@ -1091,7 +1091,7 @@ void Foam::polyMoleculeCloud::postTimeStep()
         writeReferredCloud();
     }
 
-    trackingInfo_.clean(); 
+    trackingInfo_.clean();
 }
 
 
@@ -1126,20 +1126,20 @@ void Foam::polyMoleculeCloud::readNewField()
         WarningIn("readNewField()")
             << "Cannot read particle positions file " << nl
             << "    " << ioP.objectPath() << nl
-            << "    assuming the initial cloud contains 0 particles." << endl;        
-    }    
-    
+            << "    assuming the initial cloud contains 0 particles." << endl;
+    }
+
     particle::readFields(*this);
 
     polyMolecule::readFields(*this);
 
     if (this->size() != initialSize)
     {
-        Info << "Changed polyMoleculeCloud size, from: " 
+        Info << "Changed polyMoleculeCloud size, from: "
                 << initialSize << ", to: " << this->size() << endl;
     }
 
-    setSiteSizesAndPositions();    
+    setSiteSizesAndPositions();
 }
 
 
@@ -1268,32 +1268,32 @@ void Foam::polyMoleculeCloud::writeXYZ(const fileName& fName) const
     }
 }
 
-// new function added to write the referred cloud 
+// new function added to write the referred cloud
 // - to visualise the particles in ParaFOAM/VMD
 void Foam::polyMoleculeCloud::writeReferredCloud()
 {
     if(iL_.write())
     {
         const Time& runTime = mesh_.time();
-        
+
         Info << "Writing out referred cloud" << endl;
 
         fileName timePath(runTime.path()/runTime.timeName()/"lagrangian");
-        
+
         if (!isDir(timePath))
         {
             mkDir(timePath);
         }
-        
-        fileName fName1(timePath/"referredCloud.xmol"); // VMD          
+
+        fileName fName1(timePath/"referredCloud.xmol"); // VMD
         fileName fName2(timePath/"referredCloud_RU.xmol");  //ParaFOAM
-        
+
         label nParticles = iL_.referredCloud().size();
-        
+
         Info << "number of particles = " << nParticles << endl;
 
         label nSites = 0;
-        
+
         forAllIter
         (
             IDLList<polyMolecule>,
@@ -1305,13 +1305,13 @@ void Foam::polyMoleculeCloud::writeReferredCloud()
         }
 
         Info << "number of sites = " << nSites << endl;
-        
+
         OFstream os1(fName1);
         OFstream os2(fName2);
-        
+
         os1 << nSites << nl << "referred polyMoleculeCloud site positions in angstroms" << nl;
-        os2 << nSites << nl << "referred polyMoleculeCloud site positions in reduced units" << nl;    
-        
+        os2 << nSites << nl << "referred polyMoleculeCloud site positions in reduced units" << nl;
+
         forAllIter
         (
             IDLList<polyMolecule>,
@@ -1322,7 +1322,7 @@ void Foam::polyMoleculeCloud::writeReferredCloud()
 //             const polyMolecule::constantProperties& cP = constProps(mol().id());
 
             forAll(mol().sitePositions(), j)
-            {            
+            {
             	const point& sP = mol().sitePositions()[j];
 
 //                 os1 << pot_.siteIdList()[cP.sites()[j].siteId()]
@@ -1331,9 +1331,9 @@ void Foam::polyMoleculeCloud::writeReferredCloud()
                         << ' ' << sP.y()*redUnits_.refLength()*1e10
                         << ' ' << sP.z()*redUnits_.refLength()*1e10
                         << nl;
-                        
+
 //                 os2 << pot_.siteIdList()[cP.sites()[j].siteId()]
-                   os2 << cP_.siteNames(mol().id())[j]    
+                   os2 << cP_.siteNames(mol().id())[j]
                         << ' ' << sP.x()
                         << ' ' << sP.y()
                         << ' ' << sP.z()
@@ -1346,17 +1346,17 @@ void Foam::polyMoleculeCloud::writeReferredCloud()
 void Foam::polyMoleculeCloud::updateTrackingNumbersAfterRead()
 {
     const_iterator mol(this->begin());
-    
+
     label tN = 0;
-    
+
     for (mol = this->begin(); mol != this->end(); ++mol)
     {
         if(mol().trackingNumber() > tN)
         {
             tN = mol().trackingNumber();
         }
-    } 
-    
+    }
+
     //- parallel-processing
     if(Pstream::parRun())
     {
@@ -1373,7 +1373,7 @@ void Foam::polyMoleculeCloud::updateTrackingNumbersAfterRead()
                 }
             }
         }
-    
+
         //- receiving
         for (int p = 0; p < Pstream::nProcs(); p++)
         {
@@ -1393,8 +1393,8 @@ void Foam::polyMoleculeCloud::updateTrackingNumbersAfterRead()
                 }
             }
         }
-    }    
-    
+    }
+
     moleculeTracking_.trackingIndex() = tN+1;
 }
 
@@ -1403,9 +1403,9 @@ Foam::label Foam::polyMoleculeCloud::getTrackingNumber()
     return moleculeTracking_.getTrackingNumber();
 }
 
-// This function is not being used.It is a test to see if the max number of possible 
+// This function is not being used.It is a test to see if the max number of possible
 // labels have been exceeded. The maximum is usually so large that this is hardly ever possible.
-// It may only be required for systems with an enormous turnover of molecules (adds and deletes).   
+// It may only be required for systems with an enormous turnover of molecules (adds and deletes).
 void Foam::polyMoleculeCloud::resetTrackingNumbers()
 {
     moleculeTracking_.resetTrackingNumbers();
@@ -1439,11 +1439,11 @@ void Foam::polyMoleculeCloud::removeMolFromCellOccupancy
 
     {
         const List<polyMolecule*>& molsInCell = cellOccupancy_[cellI];
-    
+
         forAll(molsInCell, m)
         {
             polyMolecule* molJ = molsInCell[m];
-    
+
             if(molI != molJ)
             {
                 updatedMolsInCell.append(molJ);

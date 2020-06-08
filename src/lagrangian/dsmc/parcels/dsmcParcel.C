@@ -51,31 +51,31 @@ bool Foam::dsmcParcel::move
 
         if (newParcel() != -1)
         {
-            stepFraction() = td.cloud().rndGen().sample01<scalar>(); 
+            stepFraction() = td.cloud().rndGen().sample01<scalar>();
             newParcel() = -1;
         }
-        
+
         //scalar tEnd = (1.0 - stepFraction())*trackTime; // OLD FORMULATION
         label orgCell = cell(); // NEW VINCENT
         scalar tEnd = (1.0 - stepFraction())*td.cloud().deltaTValue(orgCell); // NEW VINCENT
         //const scalar dtMax = tEnd; // OLD FORMULATION
-        
+
         // For reduced-D cases, the velocity used to track needs to be
         // constrained, but the actual U_ of the parcel must not be
         // altered or used, as it is altered by patch interactions one
         // needs to retain its 3D value for collision purposes.
         vector Utracking = U_;
-            
+
         while (td.keepParticle && !td.switchProcessor && tEnd > ROOTVSMALL)
         {
             Utracking = U_;
-            
+
             if (td.cloud().coordSystem().type() == "dsmcCartesian")
             {
-                // Apply correction to position for reduced-D cases, 
+                // Apply correction to position for reduced-D cases,
                 // but not for axisymmetric cases
                 meshTools::constrainToMeshCentre(mesh, position());
-                
+
                 // Apply correction to velocity to constrain tracking for
                 // reduced-D cases,  but not for axisymmetric cases
                 meshTools::constrainDirection(mesh, mesh.solutionD(), Utracking);
@@ -84,7 +84,7 @@ bool Foam::dsmcParcel::move
             //- Set the Lagrangian time-step
             //scalar dt = min(dtMax, tEnd); // OLD FORMULATION
             scalar dt = tEnd; // NEW VINCENT
-            
+
             orgCell = cell(); // NEW VINCENT
             dt *= trackToFace(position() + dt*Utracking, td, true);
             const label destCell = cell(); // NEW VINCENT
@@ -93,13 +93,13 @@ bool Foam::dsmcParcel::move
 
             stepFraction() = 1.0 - tEnd/td.cloud().deltaTValue(orgCell); // NEW VINCENT
             //stepFraction() = 1.0 - tEnd/trackTime; // OLD FORMULATION
-            
+
             /*if (destCell != orgCell)
             {
                 tEnd *= td.cloud().deltaTValue(destCell)
                     /td.cloud().deltaTValue(orgCell);
             } // NEW VINCENT*/
-                
+
             //- face tracking info
             if (face() != -1)
             {

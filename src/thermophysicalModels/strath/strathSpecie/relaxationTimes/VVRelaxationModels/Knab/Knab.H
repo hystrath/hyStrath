@@ -27,7 +27,7 @@ Class
 
 Description
     Knab V-V Relaxation model.
-    
+
 SourceFiles
     Knab.C
 
@@ -59,21 +59,21 @@ class Knab
     public VVRelaxationModel
 {
     // Private data
-        
+
         // Coefficient
         scalar A12_;
-        
+
         // Molecular weight, species i [g/mol]
         scalar W1_;
-        
+
         // Reduced mass
         scalar W12_;
-        
+
         // Cross-sectional diameter
-        scalar sigma12_;   
-        
+        scalar sigma12_;
+
         // Probability
-        scalar P21_; 
+        scalar P21_;
 
 
 public:
@@ -110,7 +110,7 @@ public:
 
         //- V-V relaxation time [s]
         virtual tmp<volScalarField> tauVV() const;
-         
+
         //- V-V relaxation time for patch [s]
         virtual tmp<scalarField> tauVV
         (
@@ -118,9 +118,9 @@ public:
             const scalarField& p,
             const scalarField& Tt,
             const PtrList<scalarField>& Tv,
-            const PtrList<scalarField>& nD 
+            const PtrList<scalarField>& nD
         ) const;
-        
+
 };
 
 

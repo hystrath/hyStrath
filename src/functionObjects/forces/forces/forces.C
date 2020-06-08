@@ -438,7 +438,7 @@ Foam::tmp<Foam::volScalarField> Foam::functionObjects::forces::rho() const
     {
         return(lookupObject<volScalarField>(rhoName_));
     }*/
-    
+
     return(lookupObject<volScalarField>("rho")); // NEW VINCENT: compressible cases with forceCoeff active
 }
 

@@ -73,9 +73,9 @@ Foam::basic2ChemistryModel::basic2ChemistryModel(const fvMesh& mesh)
         mesh,
         dimensionedScalar("deltaTChem0", dimTime, deltaTChemIni_)
     ),
-    
+
     modifiedTemperature_(lookupOrDefault<Switch>("modifiedTemperature", false)) // NEW VINCENT 16/02/2017
-    
+
 {
     if(modifiedTemperature_)
     {
@@ -83,8 +83,8 @@ Foam::basic2ChemistryModel::basic2ChemistryModel(const fvMesh& mesh)
         modTCoeffs_.set(0, new scalar(readScalar(subDict("modifiedTemperatureCoeffs").lookup("Tmin"))));
         modTCoeffs_.set(1, new scalar(readScalar(subDict("modifiedTemperatureCoeffs").lookup("epsilon"))));
     }
-    
-    
+
+
     if(isDict("chemistryVibrationCoupling")) // NEW VINCENT 13/08/2016
     {
         CVModel_ = subDict("chemistryVibrationCoupling").lookupOrDefault<word>("model", word::null);
@@ -93,31 +93,31 @@ Foam::basic2ChemistryModel::basic2ChemistryModel(const fvMesh& mesh)
     {
         CVModel_ = "none";
     }
-    
+
     if (CVModel_ == "ParkTTv")
     {
         exponentPark_ = readScalar(subDict("chemistryVibrationCoupling").subDict(CVModel_ + "Coeffs").lookup("exponentTtr"));
-        
+
         ScvModel_ = subDict("chemistryVibrationCoupling").subDict(CVModel_ + "Coeffs").lookupOrDefault<word>("sourceTermModel", "preferential");
-        
+
         if (ScvModel_ != "preferential" and ScvModel_ != "nonPreferential")
         {
             FatalErrorIn("Foam::basic2ChemistryModel::basic2ChemistryModel(const fvMesh& mesh)")
                 << "ScvModel_ model can either be 'preferential' or 'nonPreferential'."
                 << exit(FatalError);
         }
-        
+
         if (ScvModel_ == "preferential")
         {
             preferentialModel_ = subDict("chemistryVibrationCoupling").subDict(CVModel_ + "Coeffs").subDict("preferentialModel").lookupOrDefault<word>("factorType", word::null);
-            
+
             if (preferentialModel_ != "constant" and preferentialModel_ != "lineFitted")
             {
                 FatalErrorIn("Foam::basic2ChemistryModel::basic2ChemistryModel(const fvMesh& mesh)")
                     << "ScvModel_ preferential model can either be defined as 'constant' or 'lineFitted'."
                     << exit(FatalError);
-            }    
-        } 
+            }
+        }
     }
     else if (CVModel_ != "CVDV" and CVModel_ != "none")
     {

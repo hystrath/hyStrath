@@ -33,13 +33,13 @@ Description
 namespace Foam
 {
 
-//- Null Constructor 
+//- Null Constructor
 dsmcBoundaries::dsmcBoundaries
 (
     Time& t,
     const polyMesh& mesh
 )
-:    
+:
     time_(t),
     dsmcBoundariesDict_
     (
@@ -122,36 +122,36 @@ dsmcBoundaries::dsmcBoundaries
     generalBoundaryIds_(generalBoundaryList_.size()),
     gMFixedPathNames_(generalBoundaryList_.size()),
     generalBoundaryModels_(generalBoundaryList_.size()),
-    
+
     isAFieldPatch_(false),
     isAAbsorbingPatch_(false),
     isAStickingPatch_(false)
-    
+
 {
     Info << "Creating the boundary models: " << nl << endl;
 
     label nFieldBoundaryPatch = 0;
-    
+
     //- patch boundaries
     if(patchBoundaryModels_.size() > 0)
     {
         label nAbsorbingBoundaryPatch = 0;
         label nStickingBoundaryPatch = 0;
-        
+
         forAll(patchBoundaryModels_, p)
         {
             const entry& boundaryI = patchBoundaryList_[p];
             const dictionary& boundaryIDict = boundaryI.dict();
-    
+
             patchBoundaryModels_[p] = autoPtr<dsmcPatchBoundary>
             (
                 dsmcPatchBoundary::New(t, mesh, cloud, boundaryIDict)
             );
-    
+
             patchBoundaryNames_[p] = patchBoundaryModels_[p]->type();
             patchBoundaryIds_[p] = p;
             nPatchBoundaryModels_++;
-            
+
             if
             (
                 patchBoundaryModels_[p]->type()
@@ -160,7 +160,7 @@ dsmcBoundaries::dsmcBoundaries
             {
                 nAbsorbingBoundaryPatch++;
             }
-            
+
             if
             (
                 patchBoundaryModels_[p]->type()
@@ -169,7 +169,7 @@ dsmcBoundaries::dsmcBoundaries
             {
                 nStickingBoundaryPatch++;
             }
-            
+
             if
             (
                 patchBoundaryModels_[p]->type()
@@ -179,12 +179,12 @@ dsmcBoundaries::dsmcBoundaries
                 nFieldBoundaryPatch++;
             }
         }
-        
+
         if(nAbsorbingBoundaryPatch > 0)
         {
             isAAbsorbingPatch_ = true;
         }
-        
+
         if(nStickingBoundaryPatch > 0)
         {
             isAStickingPatch_ = true;
@@ -200,12 +200,12 @@ dsmcBoundaries::dsmcBoundaries
         {
             const entry& boundaryI = cyclicBoundaryList_[c];
             const dictionary& boundaryIDict = boundaryI.dict();
-    
+
             cyclicBoundaryModels_[c] = autoPtr<dsmcCyclicBoundary>
             (
                 dsmcCyclicBoundary::New(t, mesh, cloud, boundaryIDict)
             );
-    
+
             cyclicBoundaryNames_[c] = cyclicBoundaryModels_[c]->type();
             cyclicBoundaryIds_[c] = c;
             nCyclicBoundaryModels_++;
@@ -221,16 +221,16 @@ dsmcBoundaries::dsmcBoundaries
         {
             const entry& boundaryI = generalBoundaryList_[g];
             const dictionary& boundaryIDict = boundaryI.dict();
-    
+
             generalBoundaryModels_[g] = autoPtr<dsmcGeneralBoundary>
             (
                 dsmcGeneralBoundary::New(t, mesh, cloud, boundaryIDict)
             );
-    
+
             generalBoundaryNames_[g] = generalBoundaryModels_[g]->type();
             generalBoundaryIds_[g] = g;
             nGeneralBoundaryModels_++;
-            
+
             if
             (
                 generalBoundaryModels_[g]->type()
@@ -241,14 +241,14 @@ dsmcBoundaries::dsmcBoundaries
             }
         }
     }
-    
+
     if(nFieldBoundaryPatch > 0)
     {
         isAFieldPatch_ = true;
     }
 
     //- creating directories
-    if(nPatchBoundaryModels_ > 0) 
+    if(nPatchBoundaryModels_ > 0)
     {
         // directory: case/boundaries
         fileName boundariesPath(time_.path()/"boundaries");
@@ -268,10 +268,10 @@ dsmcBoundaries::dsmcBoundaries
 
         // directory: case/boundaries/dsmc/patchBoundaryModels
         fileName patchBoundaryModelsPath(dsmcBoundariesPath/"patchBoundaryModels");
-    
+
         if (!isDir(patchBoundaryModelsPath))
         {
-            mkDir(patchBoundaryModelsPath);    
+            mkDir(patchBoundaryModelsPath);
         }
 
         forAll(patchBoundaryModels_, p)
@@ -283,19 +283,19 @@ dsmcBoundaries::dsmcBoundaries
 
                 if (!isDir(patchBoundaryModelPath))
                 {
-                    mkDir(patchBoundaryModelPath);    
+                    mkDir(patchBoundaryModelPath);
                 }
-    
+
                 const word& patchName = patchBoundaryModels_[p]->patchName();
 
-                // directory: case/controllers/dsmc/patchBoundaryModels/<patchBoundaryModel>/<patchName>    
+                // directory: case/controllers/dsmc/patchBoundaryModels/<patchBoundaryModel>/<patchName>
                 fileName patchPath(patchBoundaryModelPath/patchName);
-   
+
                 if (!isDir(patchPath))
                 {
-                    mkDir(patchPath);    
+                    mkDir(patchPath);
                 }
-    
+
                 pBFixedPathNames_[p] = patchPath;
             }
         }
@@ -303,7 +303,7 @@ dsmcBoundaries::dsmcBoundaries
 
 
     //- creating directories
-    if(nCyclicBoundaryModels_ > 0) 
+    if(nCyclicBoundaryModels_ > 0)
     {
         // directory: case/boundaries
         fileName boundariesPath(time_.path()/"boundaries");
@@ -323,10 +323,10 @@ dsmcBoundaries::dsmcBoundaries
 
         // directory: case/boundaries/dsmc/cyclicBoundaryModels
         fileName cyclicBoundaryModelsPath(dsmcBoundariesPath/"cyclicBoundaryModels");
-    
+
         if (!isDir(cyclicBoundaryModelsPath))
         {
-            mkDir(cyclicBoundaryModelsPath);    
+            mkDir(cyclicBoundaryModelsPath);
         }
 
         forAll(cyclicBoundaryModels_, c)
@@ -338,26 +338,26 @@ dsmcBoundaries::dsmcBoundaries
 
                 if (!isDir(cyclicBoundaryModelPath))
                 {
-                    mkDir(cyclicBoundaryModelPath);    
+                    mkDir(cyclicBoundaryModelPath);
                 }
-    
+
                 const word& patchName = cyclicBoundaryModels_[c]->patchName();
 
-                // directory: case/controllers/dsmc/cyclicBoundaryModels/<cyclicBoundaryModel>/<patchName>      
+                // directory: case/controllers/dsmc/cyclicBoundaryModels/<cyclicBoundaryModel>/<patchName>
                 fileName patchPath(cyclicBoundaryModelPath/patchName);
-   
+
                 if (!isDir(patchPath))
                 {
-                    mkDir(patchPath);    
+                    mkDir(patchPath);
                 }
-    
+
                 cMFixedPathNames_[c] = patchPath;
             }
         }
     }
 
     //- creating directories
-    if(nGeneralBoundaryModels_ > 0) 
+    if(nGeneralBoundaryModels_ > 0)
     {
         // directory: case/boundaries
         fileName boundariesPath(time_.path()/"boundaries");
@@ -377,10 +377,10 @@ dsmcBoundaries::dsmcBoundaries
 
         // directory: case/boundaries/dsmc/cyclicBoundaryModels
         fileName generalBoundaryModelsPath(dsmcBoundariesPath/"generalBoundaryModels");
-    
+
         if (!isDir(generalBoundaryModelsPath))
         {
-            mkDir(generalBoundaryModelsPath);    
+            mkDir(generalBoundaryModelsPath);
         }
 
         forAll(generalBoundaryModels_, g)
@@ -392,19 +392,19 @@ dsmcBoundaries::dsmcBoundaries
 
                 if (!isDir(generalBoundaryModelPath))
                 {
-                    mkDir(generalBoundaryModelPath);    
+                    mkDir(generalBoundaryModelPath);
                 }
-    
+
                 const word& patchName = generalBoundaryModels_[g]->patchName();
 
-                // directory: case/controllers/dsmc/generalBoundaryModels/<generalBoundaryModel>/<patchName>      
+                // directory: case/controllers/dsmc/generalBoundaryModels/<generalBoundaryModel>/<patchName>
                 fileName patchPath(generalBoundaryModelPath/patchName);
-   
+
                 if (!isDir(patchPath))
                 {
-                    mkDir(patchPath);    
+                    mkDir(patchPath);
                 }
-    
+
                 gMFixedPathNames_[g] = patchPath;
             }
         }
@@ -424,7 +424,7 @@ void dsmcBoundaries::checkCyclicBoundaryModels(const polyMesh& mesh)
     forAll(mesh.boundaryMesh(), patchi)
     {
         const polyPatch& patch = mesh.boundaryMesh()[patchi];
-    
+
         if(isA<cyclicPolyPatch>(patch))
         {
             label patchIndex = patch.index();
@@ -432,7 +432,7 @@ void dsmcBoundaries::checkCyclicBoundaryModels(const polyMesh& mesh)
             forAll(cyclicBoundaryModels_, c)
             {
                 const label& patchId = cyclicBoundaryModels_[c]->patchId();
- 
+
                 if(patchIndex == patchId)
                 {
                     nPolyPatches++;
@@ -446,8 +446,8 @@ void dsmcBoundaries::checkCyclicBoundaryModels(const polyMesh& mesh)
     {
         FatalErrorIn("dsmcBoundaries::checkBoundaryModels(const polyMesh& mesh)")
             << nl
-            << " Number of cyclic boundary models = "  << nCyclicBoundaryModels_ 
-            << " chosen in the boundaryiesDict are inconsistent." 
+            << " Number of cyclic boundary models = "  << nCyclicBoundaryModels_
+            << " chosen in the boundaryiesDict are inconsistent."
             << abort(FatalError);
     }
 }
@@ -463,7 +463,7 @@ void dsmcBoundaries::checkPatchBoundaryModels(const polyMesh& mesh)
     forAll(mesh.boundaryMesh(), patchi)
     {
         const polyPatch& patch = mesh.boundaryMesh()[patchi];
-    
+
         if
         (
             isA<polyPatch>(patch) &&
@@ -483,7 +483,7 @@ void dsmcBoundaries::checkPatchBoundaryModels(const polyMesh& mesh)
             forAll(patchBoundaryModels_, p)
             {
                 const label& patchId = patchBoundaryModels_[p]->patchId();
- 
+
                 if(patchIndex == patchId)
                 {
                     nPatches++;
@@ -497,8 +497,8 @@ void dsmcBoundaries::checkPatchBoundaryModels(const polyMesh& mesh)
                     << nl
                     << " Only one patch boundary model per poly-patch, [name: "
                     << patch.name()
-                    << "]. No of models chosen for this patch are: " 
-                    << nPatches  << ", in " 
+                    << "]. No of models chosen for this patch are: "
+                    << nPatches  << ", in "
                     << mesh.time().system()/"boundariesDict"
                     << abort(FatalError);
             }
@@ -511,9 +511,9 @@ void dsmcBoundaries::checkPatchBoundaryModels(const polyMesh& mesh)
     {
         FatalErrorIn("dsmcBoundaries::checkPatchBoundaryModels(const polyMesh& mesh)")
             << nl
-            << " Number of poly-patches = "  << nPolyPatches 
-            << " in constant/polyMesh/boundary, are not equal to the number of patch models = " 
-            << nPatchBoundaryModels_  << ", defined in " 
+            << " Number of poly-patches = "  << nPolyPatches
+            << " in constant/polyMesh/boundary, are not equal to the number of patch models = "
+            << nPatchBoundaryModels_  << ", defined in "
             << mesh.time().system()/"boundariesDict"
             << abort(FatalError);
     }
@@ -623,13 +623,13 @@ void dsmcBoundaries::outputResults()
     if(runTime.outputTime())
     {
         {
-            List<fileName> timePathNames(pBFixedPathNames_.size()); 
-    
+            List<fileName> timePathNames(pBFixedPathNames_.size());
+
             if(nPatchBoundaryModels_ > 0)
             {
                 // directory: case/<timeDir>/uniform
                 fileName uniformTimePath(runTime.path()/runTime.timeName()/"uniform");
-            
+
                 if (!isDir(uniformTimePath))
                 {
                     mkDir(uniformTimePath);
@@ -645,18 +645,18 @@ void dsmcBoundaries::outputResults()
 
                 // directory: case/<timeDir>/uniform/boundaries/dsmc
                 fileName dsmcTimePath(boundariesTimePath/"dsmc");
-            
+
                 if (!isDir(dsmcTimePath))
                 {
-                    mkDir(dsmcTimePath);    
+                    mkDir(dsmcTimePath);
                 }
 
                 // directory: case/<timeDir>/uniform/boundaries/dsmc/patchBoundaryModels
                 fileName dsmcPatchBoundaryModelsTimePath(dsmcTimePath/"patchBoundaryModels");
-            
+
                 if (!isDir(dsmcPatchBoundaryModelsTimePath))
                 {
-                    mkDir(dsmcPatchBoundaryModelsTimePath);    
+                    mkDir(dsmcPatchBoundaryModelsTimePath);
                 }
 
                 forAll(patchBoundaryModels_, p)
@@ -667,10 +667,10 @@ void dsmcBoundaries::outputResults()
                         patchBoundaryModels_[p]->writeInCase()
                     )
                     {
-						
+
 //                         // directory: case/<timeDir>/uniform/controllers/dsmc/patchBoundaryModels/<patchBoundaryModel>
 //                         fileName pBTimePath(dsmcPatchBoundaryModelsTimePath/pBFixedPathNames_[p]);
-// 
+//
 //                         if(!isDir(pBTimePath))
 //                         {
 //                             mkDir(pBTimePath);
@@ -697,13 +697,13 @@ void dsmcBoundaries::outputResults()
         }
 
         {
-            List<fileName> timePathNames(cMFixedPathNames_.size()); 
-    
+            List<fileName> timePathNames(cMFixedPathNames_.size());
+
             if(nCyclicBoundaryModels_ > 0)
             {
                 // directory: case/<timeDir>/uniform
                 fileName uniformTimePath(runTime.path()/runTime.timeName()/"uniform");
-            
+
                 if (!isDir(uniformTimePath))
                 {
                     mkDir(uniformTimePath);
@@ -719,18 +719,18 @@ void dsmcBoundaries::outputResults()
 
                 // directory: case/<timeDir>/uniform/boundaries/dsmc
                 fileName dsmcTimePath(boundariesTimePath/"dsmc");
-            
+
                 if (!isDir(dsmcTimePath))
                 {
-                    mkDir(dsmcTimePath);    
+                    mkDir(dsmcTimePath);
                 }
 
                 // directory: case/<timeDir>/uniform/boundaries/dsmc/cyclicBoundaryModels
                 fileName dsmcCyclicBoundaryModelsTimePath(dsmcTimePath/"cyclicBoundaryModels");
-            
+
                 if (!isDir(dsmcCyclicBoundaryModelsTimePath))
                 {
-                    mkDir(dsmcCyclicBoundaryModelsTimePath);    
+                    mkDir(dsmcCyclicBoundaryModelsTimePath);
                 }
 
                 forAll(cyclicBoundaryModels_, c)
@@ -769,13 +769,13 @@ void dsmcBoundaries::outputResults()
         }
 
         {
-            List<fileName> timePathNames(gMFixedPathNames_.size()); 
-    
+            List<fileName> timePathNames(gMFixedPathNames_.size());
+
             if(nGeneralBoundaryModels_ > 0)
             {
                 // directory: case/<timeDir>/uniform
                 fileName uniformTimePath(runTime.path()/runTime.timeName()/"uniform");
-            
+
                 if (!isDir(uniformTimePath))
                 {
                     mkDir(uniformTimePath);
@@ -791,18 +791,18 @@ void dsmcBoundaries::outputResults()
 
                 // directory: case/<timeDir>/uniform/boundaries/dsmc
                 fileName dsmcTimePath(boundariesTimePath/"dsmc");
-            
+
                 if (!isDir(dsmcTimePath))
                 {
-                    mkDir(dsmcTimePath);    
+                    mkDir(dsmcTimePath);
                 }
 
                 // directory: case/<timeDir>/uniform/boundaries/dsmc/generalBoundaryModels
                 fileName dsmcGeneralBoundaryModelsTimePath(dsmcTimePath/"generalBoundaryModels");
-            
+
                 if (!isDir(dsmcGeneralBoundaryModelsTimePath))
                 {
-                    mkDir(dsmcGeneralBoundaryModelsTimePath);    
+                    mkDir(dsmcGeneralBoundaryModelsTimePath);
                 }
 
                 forAll(generalBoundaryModels_, g)
@@ -844,42 +844,42 @@ void dsmcBoundaries::outputResults()
 
         {
             patchBoundaryList_.clear();
-        
+
             patchBoundaryList_ = dsmcBoundariesDict_.lookup("dsmcPatchBoundaries");
-        
+
             forAll(patchBoundaryModels_, p)
             {
                 const entry& boundaryI = patchBoundaryList_[p];
                 const dictionary& boundaryIDict = boundaryI.dict();
-    
+
                 patchBoundaryModels_[p]->updateProperties(boundaryIDict);
             }
         }
 
         {
             cyclicBoundaryList_.clear();
-        
+
             cyclicBoundaryList_ = dsmcBoundariesDict_.lookup("dsmcCyclicBoundaries");
-        
+
             forAll(cyclicBoundaryModels_, c)
             {
                 const entry& boundaryI = cyclicBoundaryList_[c];
                 const dictionary& boundaryIDict = boundaryI.dict();
-    
+
                 cyclicBoundaryModels_[c]->updateProperties(boundaryIDict);
             }
         }
 
         {
             generalBoundaryList_.clear();
-        
+
             generalBoundaryList_ = dsmcBoundariesDict_.lookup("dsmcGeneralBoundaries");
-        
+
             forAll(generalBoundaryModels_, g)
             {
                 const entry& boundaryI = generalBoundaryList_[g];
                 const dictionary& boundaryIDict = boundaryI.dict();
-    
+
                 generalBoundaryModels_[g]->updateProperties(boundaryIDict);
             }
         }

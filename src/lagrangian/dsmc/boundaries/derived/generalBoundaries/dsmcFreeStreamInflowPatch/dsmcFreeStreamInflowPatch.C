@@ -106,8 +106,8 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
             const label faceI = faces_[f];
             const vector sF = mesh_.faceAreas()[faceI];
             const scalar fA = mag(sF);
-            
-            const scalar deltaT = 
+
+            const scalar deltaT =
                 cloud_.deltaTValue
                 (
                     mesh_.boundaryMesh()[patchId_].faceCells()[f]
@@ -130,9 +130,9 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
             scalar sCosTheta = (velocity_ & -sF/fA )/mostProbableSpeed;
 
             //const scalar RWF = cloud_.coordSystem().pRWF(patchId_, f);
-            
+
             // From Bird eqn 4.22
-            accumulatedParcelsToInsert_[i][f] += 
+            accumulatedParcelsToInsert_[i][f] +=
                 (
                     fA*numberDensities_[i]*deltaT*mostProbableSpeed
                     *
@@ -194,12 +194,12 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
         // domain
         vector n = sF;
         n /= -mag(n);
-        
+
         //- Wall tangential unit vector. Use the direction between the
         //  face centre and the first vertex in the list
-        vector t1 = fC - mesh_.points()[mesh_.faces()[faceI][0]]; 
+        vector t1 = fC - mesh_.points()[mesh_.faces()[faceI][0]];
         t1 /= mag(t1);
-        
+
         //- Other tangential unit vector.  Rescaling in case face is not
         //  flat and n and t1 aren't perfectly orthogonal
         vector t2 = n^t1;
@@ -210,7 +210,7 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
             const label typeId = typeIds_[m];
 
             scalar& faceAccumulator = accumulatedParcelsToInsert_[m][f];
-            
+
             // Number of whole particles to insert
             label nI = max(label(faceAccumulator), 0);
 
@@ -220,10 +220,10 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
             {
                 nI++;
             }
-            
+
             faceAccumulator -= nI;
             parcelsToAdd[m] += nI;
-            
+
             const scalar mass = cloud_.constProps(typeId).mass();
 
             for (label i = 0; i < nI; i++)
@@ -288,7 +288,7 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
                 // component
                 scalar uNormal;
                 scalar uNormalThermal;
-                
+
                 if(abs(faceVelocity & n) > VSMALL)
                 {
                     // Select a velocity using Bird eqn 12.5
@@ -345,9 +345,9 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
                     cloud_.constProps(typeId).electronicDegeneracyList(),
                     cloud_.constProps(typeId).electronicEnergyList()
                 );
-                
+
                 label newParcel = patchId();
-                
+
                 const scalar RWF = cloud_.coordSystem().RWF(cellI);
 
                 cloud_.addNewParcel
@@ -365,7 +365,7 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
                     0,
                     vibLevel
                 );
-                
+
                 parcelsInserted[m] += 1.0;
             }
         }
@@ -379,8 +379,8 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
             reduce(parcelsToAdd[m], sumOp<scalar>());
             reduce(parcelsInserted[m], sumOp<scalar>());
 
-            Info<< "Patch " << patchName_ << ", Specie: " 
-                << cloud_.typeIdList()[typeIds_[m]] 
+            Info<< "Patch " << patchName_ << ", Specie: "
+                << cloud_.typeIdList()[typeIds_[m]]
                 << ", target parcels to insert: " << parcelsToAdd[m]
                 <<", inserted parcels: " << parcelsInserted[m]
                 << endl;
@@ -390,7 +390,7 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
     {
         forAll(parcelsInserted, m)
         {
-            Info<< "Patch " << patchName_ << ", Specie: " 
+            Info<< "Patch " << patchName_ << ", Specie: "
                 << cloud_.typeIdList()[typeIds_[m]]
                 << ", target parcels to insert: " << parcelsToAdd[m]
                 <<", inserted parcels: " << parcelsInserted[m]
@@ -482,12 +482,12 @@ void dsmcFreeStreamInflowPatch::setProperties()
     }
 
     // read in the mass density per specie
-    
+
     const dictionary& numberDensitiesDict
     (
         propsDict_.subDict("numberDensities")
     );
-    
+
     numberDensities_.clear();
 
     numberDensities_.setSize(typeIds_.size(), 0.0);
@@ -512,7 +512,7 @@ void dsmcFreeStreamInflowPatch::setProperties()
 
 
 void dsmcFreeStreamInflowPatch::setNewBoundaryFields()
-{    
+{
     patchId_ = mesh_.boundaryMesh().findPatchID(patchName_);
 
     const polyPatch& patch = mesh_.boundaryMesh()[patchId_];
@@ -523,7 +523,7 @@ void dsmcFreeStreamInflowPatch::setNewBoundaryFields()
 
     //- loop through all faces and set the boundary cells
     //- no conflict with parallelisation because the faces are unique
-    
+
     nFaces_ = 0;
     patchSurfaceArea_ = 0.0;
 
@@ -541,11 +541,11 @@ void dsmcFreeStreamInflowPatch::setNewBoundaryFields()
     {
         reduce(patchSurfaceArea_, sumOp<scalar>());
     }
-    
+
    forAll(accumulatedParcelsToInsert_, m)
     {
         accumulatedParcelsToInsert_[m].setSize(nFaces_, 0.0);
-    } 
+    }
 }
 
 

@@ -38,8 +38,8 @@ defineTypeNameAndDebug(dsmcDiffuseSpecularWallRotationFieldPatch, 0);
 
 addToRunTimeSelectionTable
 (
-    dsmcPatchBoundary, 
-    dsmcDiffuseSpecularWallRotationFieldPatch, 
+    dsmcPatchBoundary,
+    dsmcDiffuseSpecularWallRotationFieldPatch,
     dictionary
 );
 
@@ -73,7 +73,7 @@ dsmcDiffuseSpecularWallRotationFieldPatch::dsmcDiffuseSpecularWallRotationFieldP
     writeInTimeDir_ = false;
     writeInCase_ = false;
     measurePropertiesAtWall_ = true;
-    
+
     setProperties();
 }
 
@@ -97,7 +97,7 @@ void dsmcDiffuseSpecularWallRotationFieldPatch::calculateProperties()
 
 void dsmcDiffuseSpecularWallRotationFieldPatch::controlParticle
 (
-    dsmcParcel& p, 
+    dsmcParcel& p,
     dsmcParcel::trackingData& td
 )
 {
@@ -106,18 +106,18 @@ void dsmcDiffuseSpecularWallRotationFieldPatch::controlParticle
     if (diffuseFraction() > cloud_.rndGen().sample01<scalar>())
     {
         //- Calculation of the wall velocity to be added to U
-        const vector& localPatchVelocity = 
+        const vector& localPatchVelocity =
             dsmcRotationPatchBoundary::wallVelocity(p);
-        
+
         //- Calculation of the local patch temperature
-        const scalar& localPatchTemperature = 
+        const scalar& localPatchTemperature =
             dsmcFieldPatchBoundary::patchLocalTemperature(p);
-        
+
         //- Diffuse reflection
         dsmcDiffuseWallPatch::performDiffuseReflection
         (
-            p, 
-            localPatchTemperature, 
+            p,
+            localPatchTemperature,
             localPatchVelocity
         );
     }
@@ -125,7 +125,7 @@ void dsmcDiffuseSpecularWallRotationFieldPatch::controlParticle
     {
         //- Specular reflection
         dsmcSpecularWallPatch::performSpecularReflection(p);
-        
+
     }
 
     measurePropertiesAfterControl(p);
@@ -144,7 +144,7 @@ void dsmcDiffuseSpecularWallRotationFieldPatch::updateProperties(const dictionar
 {
     //- the main properties should be updated first
     updateBoundaryProperties(newDict);
-    
+
     setProperties();
 }
 

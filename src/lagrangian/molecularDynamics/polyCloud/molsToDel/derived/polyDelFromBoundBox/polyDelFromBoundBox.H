@@ -68,13 +68,13 @@ private:
 
         //- subDictionary containing the properties
         dictionary propsDict_;
-        
+
         boundBox box_;
-        
+
         List<label> molIds_;
 
         bool invert_;
-        
+
     // Private Member Functions
 
         void checkBoundBox
@@ -107,7 +107,7 @@ public:
 
     // Member Functions
 
- 
+
 };
 
 

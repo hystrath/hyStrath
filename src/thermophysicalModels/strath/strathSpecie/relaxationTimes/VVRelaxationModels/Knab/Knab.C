@@ -37,7 +37,7 @@ namespace Foam
         addToRunTimeSelectionTable
         (
             VVRelaxationModel,
-            Knab, 
+            Knab,
             dictionary
         );
     }
@@ -61,19 +61,19 @@ Foam::VVRelaxationModels::Knab::Knab
 )
 :
     VVRelaxationModel(name1, name2, lname1, lname2, dict1, dict2, p, Tt, Tv, nD)
-{   
+{
     W1_ = 1.0e-3*readScalar(dict2.subDict(name1).subDict("specie").lookup("molWeight"));
     const scalar W2 = 1.0e-3*readScalar(dict2.subDict(name2).subDict("specie").lookup("molWeight"));
-      
+
     W12_ = (W1_ * W2) / (W1_ + W2);
-    
+
     if (not VVOverwriteDefault_)
     {
         P21_ = 0.01;
         sigma12_ = 1.0e-20;
     }
     else if (VVSpeciesDependent_ and VVCollidingPartner_)
-    {        
+    {
         if (dict1.subDict("KnabCoefficients").isDict(name1+"_"+name2))
         {
             P21_ = readScalar(dict1.subDict("KnabCoefficients").subDict(name1+"_"+name2).lookup("P21"));
@@ -93,19 +93,19 @@ Foam::VVRelaxationModels::Knab::Knab
         {
             P21_ = readScalar(dict1.subDict("KnabCoefficients").subDict("allSpecies").lookup("P21"));
             sigma12_ = readScalar(dict1.subDict("KnabCoefficients").subDict("allSpecies").lookup("sigma12"));
-        }    
+        }
     }
     else if (VVSpeciesDependent_ and dict1.subDict("KnabCoefficients").isDict(name1))
-    {        
+    {
         P21_ = readScalar(dict1.subDict("KnabCoefficients").subDict(name1).lookup("P21"));
         sigma12_ = readScalar(dict1.subDict("KnabCoefficients").subDict(name1).lookup("sigma12"));
-    } 
+    }
     else
     {
         P21_ = readScalar(dict1.subDict("KnabCoefficients").subDict("allSpecies").lookup("P21"));
-        sigma12_ = readScalar(dict1.subDict("KnabCoefficients").subDict("allSpecies").lookup("sigma12"));   
+        sigma12_ = readScalar(dict1.subDict("KnabCoefficients").subDict("allSpecies").lookup("sigma12"));
     }
-    
+
 }
 
 
@@ -139,7 +139,7 @@ Foam::VVRelaxationModels::Knab::tauVV() const
     {
         tauVV[celli] = P21_*sigma12_/sqrt(W12_);
     }
-    
+
 
     forAll(this->Tt_.boundaryField(), patchi)
     {

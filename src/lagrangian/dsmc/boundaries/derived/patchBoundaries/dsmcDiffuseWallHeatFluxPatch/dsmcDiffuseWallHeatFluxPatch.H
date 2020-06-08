@@ -68,7 +68,7 @@ private:
 
     // Private data
         dictionary propsDict_;
-		
+
 		scalarField faceAreas_;
 		scalar preIE_;
 		scalar postIE_;
@@ -122,7 +122,7 @@ public:
             const fileName& fixedPathName,
             const fileName& timePath
         );
-		
+
 		void writeField();
 
         //- update properties from a modified dictionary

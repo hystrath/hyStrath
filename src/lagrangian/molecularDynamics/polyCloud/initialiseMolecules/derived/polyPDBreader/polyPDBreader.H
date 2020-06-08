@@ -67,19 +67,19 @@ private:
 //         dictionary propsDict_;
 
         scalar temperature_;
-        
+
         vector bulkVelocity_;
-        
+
         vector startPoint_;
-        
+
         bool tethered_;
         bool frozen_;
-        
-        
+
+
         List<label> molIds_;
-        List<word> molIdNames_;      
-        
-        
+        List<word> molIdNames_;
+
+
     // Private Member Functions
 
         void testForBoundBox
@@ -88,7 +88,7 @@ private:
             vector& vMax,
             const vector& globalPosition
         );
-        
+
 public:
 
     //- Runtime type information

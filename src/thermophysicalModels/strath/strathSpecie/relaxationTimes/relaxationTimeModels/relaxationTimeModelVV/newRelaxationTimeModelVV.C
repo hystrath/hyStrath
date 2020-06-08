@@ -51,8 +51,8 @@ Foam::relaxationTimeModelVV::New
         );
 
         word partialVVname = word(thermo2TModel.subDict("thermalRelaxationModels").subDict("VV").lookup("relaxationType"));
-        
-        VVModelName = partialVVname +'<' + thermo.partialThermoName() + '>'; 
+
+        VVModelName = partialVVname +'<' + thermo.partialThermoName() + '>';
 
         Info<< "Loading the V-V relaxation time model:" << tab << partialVVname << "\n" << endl;
     }

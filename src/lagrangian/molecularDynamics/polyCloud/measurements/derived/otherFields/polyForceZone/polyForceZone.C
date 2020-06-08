@@ -81,15 +81,15 @@ polyForceZone::polyForceZone
 	forceField_(1, vector::zero),
 
     nAvTimeSteps_(0.0),
-    resetAtOutput_(true)    
+    resetAtOutput_(true)
 {
     bool readFromStore = true;
-    
+
     if (propsDict_.found("readFromStorage"))
     {
         readFromStore = Switch(propsDict_.lookup("readFromStorage"));
-    }        
-    
+    }
+
     resetAtOutput_ = Switch(propsDict_.lookup("resetAtOutput"));
 
     if (!resetAtOutput_ && readFromStore)
@@ -119,13 +119,13 @@ polyForceZone::polyForceZone
         }
         else
         {
-            Info << "Reading from storage, e.g. noAvTimeSteps = " << nAvTimeSteps_ << endl;              
+            Info << "Reading from storage, e.g. noAvTimeSteps = " << nAvTimeSteps_ << endl;
 //             Pout<< "Properties read-in are: mols = " << mols_ << ", mass = " << mass_
 //                 << ", averagingTime = " << nAvTimeSteps_
 //                 << endl;
         }
     }
-    
+
     // build bound boxes
 
     setBoundBoxes();
@@ -164,9 +164,9 @@ void polyForceZone::createField()
 void polyForceZone::calculateField()
 {
     nAvTimeSteps_ += 1.0;
-    
+
 //     vector force = vector::zero;
-    
+
     {
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
 
@@ -183,7 +183,7 @@ void polyForceZone::calculateField()
                         forAll(mol().siteForces(), i)
                         {
                             force_ += mol().siteForces()[i];
-                            
+
 //                             Pout << "force = " << mol().siteForces()[i] << endl;
                         }
                     }
@@ -215,7 +215,7 @@ void polyForceZone::calculateField()
             nAvTimeSteps_ = 0.0;
             force_ = vector::zero;
         }
-        else 
+        else
         {
             writeToStorage();
         }
@@ -257,7 +257,7 @@ bool polyForceZone::readFromStorage()
         force_ = force;
     }
 
-    return goodFile;    
+    return goodFile;
 }
 
 void polyForceZone::writeField()
@@ -269,7 +269,7 @@ void polyForceZone::writeField()
         if(Pstream::master())
         {
             scalarField timeField(1, runTime.timeOutputValue());
-            
+
             writeTimeData
             (
                 casePath_,
@@ -280,7 +280,7 @@ void polyForceZone::writeField()
             );
 
             const reducedUnits& rU = molCloud_.redUnits();
-    
+
             if(rU.outputSIUnits())
             {
                 writeTimeData

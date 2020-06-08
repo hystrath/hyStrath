@@ -27,7 +27,7 @@ Class
 
 Description
     noeVEnergyTransfer disables e-V energy transfer.
-  
+
 SourceFiles
     noeVEnergyTransfer.C
 
@@ -42,7 +42,7 @@ SourceFiles
 
 namespace Foam
 {
-  
+
 /*---------------------------------------------------------------------------*\
                              Class noeVEnergyTransfer Declaration
 \*---------------------------------------------------------------------------*/
@@ -51,28 +51,28 @@ template<class ThermoType>
 class noeVEnergyTransfer
 :
     public relaxationTimeModeleV
-{  
+{
 
 protected:
-  
+
     // Protected data
-    
+
         //- Thermodynamic data of the species
         const PtrList<ThermoType>& speciesThermo_;
 
 
     // Protected member functions
-    
+
         //- Update the coefficients of the species equations
         virtual void updateCoefficients();
-    
+
 
 public:
 
     //- Runtime type information
     TypeName("noeVEnergyTransfer");
 
-    
+
     // Constructors
 
         //- Construct from components
@@ -96,15 +96,15 @@ public:
         {
             return speciesThermo_[i].W();
         }
-        
+
         // Correct the e-V relaxation times and e-V energy transfers
         virtual void correct();
-                
+
         //- Read transportProperties dictionary
         virtual bool read();
   };
 
-  
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 }	// End namespace Foam

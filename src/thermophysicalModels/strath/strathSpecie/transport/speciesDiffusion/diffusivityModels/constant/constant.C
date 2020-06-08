@@ -37,7 +37,7 @@ namespace Foam
         addToRunTimeSelectionTable
         (
             binaryDiffusivityModel,
-            constant, 
+            constant,
             dictionary
         );
     }
@@ -59,24 +59,24 @@ Foam::binaryDiffusivityModels::constant::constant
 :
     binaryDiffusivityModel(name1, name2, dictThermo, dictTransport, p, pe, T)
 {
-    word coupleName = name1 + "_" + name2;    
+    word coupleName = name1 + "_" + name2;
     if(name1 != name2)
     {
         if (dictTransport.subDict("transportModels").subDict("diffusiveFluxesParameters")
             .subDict("constantBinaryDiffusivityModelCoefficients").lookupEntryPtr(coupleName, 1, 1) == NULL)
         {
             coupleName = name2 + "_" + name1;
-            
+
             if (dictTransport.subDict("transportModels").subDict("diffusiveFluxesParameters")
                 .subDict("constantBinaryDiffusivityModelCoefficients").lookupEntryPtr(coupleName, 1, 1) == NULL)
             {
                 coupleName = name1;
-                
+
                 if (dictTransport.subDict("transportModels").subDict("diffusiveFluxesParameters")
                     .subDict("constantBinaryDiffusivityModelCoefficients").lookupEntryPtr(coupleName, 1, 1) == NULL)
                 {
                     coupleName = "allSpecies";
-                    
+
                     if (dictTransport.subDict("transportModels").subDict("diffusiveFluxesParameters")
                         .subDict("constantBinaryDiffusivityModelCoefficients").lookupEntryPtr(coupleName, 1, 1) == NULL)
                     {
@@ -85,20 +85,20 @@ Foam::binaryDiffusivityModels::constant::constant
                             "Foam::binaryDiffusivityModels::constant::constant(...)"
                         )   << "Missing entry in constantBinaryDiffusivityModelCoefficients dict"
                             << exit(FatalError);
-                    }                    
+                    }
                 }
             }
-        } 
+        }
     }
     else
     {
         coupleName = name1;
-        
+
         if (dictTransport.subDict("transportModels").subDict("diffusiveFluxesParameters")
             .subDict("constantBinaryDiffusivityModelCoefficients").lookupEntryPtr(coupleName, 1, 1) == NULL)
         {
             coupleName = "allSpecies";
-            
+
             if (dictTransport.subDict("transportModels").subDict("diffusiveFluxesParameters")
                 .subDict("constantBinaryDiffusivityModelCoefficients").lookupEntryPtr(coupleName, 1, 1) == NULL)
             {
@@ -107,10 +107,10 @@ Foam::binaryDiffusivityModels::constant::constant
                     "Foam::binaryDiffusivityModels::constant::constant(...)"
                 )   << "Missing entry in constantBinaryDiffusivityModelCoefficients dict"
                     << exit(FatalError);
-            }                    
+            }
         }
     }
-    
+
     Dvalue_ = readScalar(dictTransport.subDict("transportModels").subDict("diffusiveFluxesParameters")
             .subDict("constantBinaryDiffusivityModelCoefficients").lookup(coupleName));
 }

@@ -27,7 +27,7 @@ Class
 
 Description
     maxwellianmfp model.
-    
+
 SourceFiles
     maxwellianmfp.C
 
@@ -59,7 +59,7 @@ class maxwellianmfp
 
         // Molecular weight of the species [g/mol]
         scalar molW_;
-        
+
 public:
 
     //- Runtime type information
@@ -90,7 +90,7 @@ public:
 
         //- Mean free path [m]
         virtual tmp<volScalarField> mfp() const;
-         
+
         //- Mean free path for patch [m]
         virtual tmp<scalarField> mfp
         (
@@ -98,7 +98,7 @@ public:
             const scalarField& p,
             const scalarField& Tt
         ) const;
-        
+
 };
 
 

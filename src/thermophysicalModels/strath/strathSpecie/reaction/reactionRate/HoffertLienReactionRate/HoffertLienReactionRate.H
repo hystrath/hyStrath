@@ -32,12 +32,12 @@ Description
 SourceFiles
     HoffertLienReactionRateI.H
 
-Journal article    
-    Quasi-One-Dimensional, Nonequilibrium Gas Dynamics of Partially Ionized 
-        Two-Temperature Argon 
+Journal article
+    Quasi-One-Dimensional, Nonequilibrium Gas Dynamics of Partially Ionized
+        Two-Temperature Argon
     Martin I. Hoffert, and Hwachii Lien
     The Physics of Fluids 10, 1769 (1967)
-    doi: 10.1063/1.1762356    
+    doi: 10.1063/1.1762356
 
 \*---------------------------------------------------------------------------*/
 

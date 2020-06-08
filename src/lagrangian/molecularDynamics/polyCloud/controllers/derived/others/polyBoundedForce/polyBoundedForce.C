@@ -43,7 +43,7 @@ addToRunTimeSelectionTable(polyStateController, polyBoundedForce, dictionary);
 
 void polyBoundedForce::setBoundBoxes()
 {
- 
+
     PtrList<entry> boxList(propsDict_.lookup("boxes"));
 
     boxes_.setSize(boxList.size());
@@ -77,7 +77,7 @@ polyBoundedForce::polyBoundedForce
     molIds_(),
     nTimeSteps_(0.0),
     force_(vector::zero)
-   
+
 {
     writeInTimeDir_ = true;
     writeInCase_ = true;
@@ -151,11 +151,11 @@ void polyBoundedForce::controlAfterForces()
                     if(boxes_[b].contains(mol().position()))
                     {
                         vector force = vector::zero;
-                        
-                        if(model_->timeVarying())   
+
+                        if(model_->timeVarying())
                         {
                             const scalar t = time_.timeOutputValue();
-                            
+
                             force = model_->force(t);
                         }
                         else if(model_->spaceVarying())
@@ -163,7 +163,7 @@ void polyBoundedForce::controlAfterForces()
                             force = model_->force(mol().position());
                         }
                         const scalar& massI = molCloud_.cP().mass(mol().id());
-                        
+
                         mol().a() += force/massI;
 
                         force_ += force;
@@ -171,7 +171,7 @@ void polyBoundedForce::controlAfterForces()
                 }
             }
         }
-        
+
         nTimeSteps_ += 1.0;
     }
 }
@@ -196,18 +196,18 @@ void polyBoundedForce::output
     if(runTime.outputTime())
     {
 //         vector force = force_;
-// 
+//
 //         if(Pstream::parRun())
 //         {
 //             reduce(force, sumOp<vector>());
 //         }
-// 
+//
 //         if(Pstream::master())
 //         {
 //             vectorField forces(1, force/nTimeSteps_);
-//             
+//
 //             scalarField timeField(1, time_.time().timeOutputValue());
-//    
+//
 //             writeTimeData
 //             (
 //                 fixedPathName,
@@ -215,7 +215,7 @@ void polyBoundedForce::output
 //                 timeField,
 //                 forces,
 //                 true
-//             );            
+//             );
 //         }
     }
 }

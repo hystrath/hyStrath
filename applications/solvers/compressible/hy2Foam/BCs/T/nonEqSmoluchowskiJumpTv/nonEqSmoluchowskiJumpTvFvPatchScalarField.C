@@ -53,13 +53,13 @@ Foam::nonEqSmoluchowskiJumpTvFvPatchScalarField::nonEqSmoluchowskiJumpTvFvPatchS
     specieName_ = fieldName.substr(fieldName.find("_") + 1);
     alphaName_ = "alphave_"+specieName_;
     //mfpName_ = "mfpvib_"+specieName_; // NEW VINCENT 11/05/2016
-    
+
     refValue() = 0.0;
     refGrad() = 0.0;
     valueFraction() = 0.0;
 }
 
-    
+
 Foam::nonEqSmoluchowskiJumpTvFvPatchScalarField::nonEqSmoluchowskiJumpTvFvPatchScalarField
 (
     const nonEqSmoluchowskiJumpTvFvPatchScalarField& ptf,
@@ -102,7 +102,7 @@ Foam::nonEqSmoluchowskiJumpTvFvPatchScalarField::nonEqSmoluchowskiJumpTvFvPatchS
     specieName_ = fieldName.substr(fieldName.find("_") + 1);
     alphaName_ = "alphave_" + specieName_;
     //mfpName_ = "mfpvib_"+specieName_; // NEW VINCENT 11/05/2016
-    
+
     if
     (
         mag(accommodationCoeff_) < SMALL
@@ -193,9 +193,9 @@ void Foam::nonEqSmoluchowskiJumpTvFvPatchScalarField::updateCoeffs()
     const fvPatchScalarField& palpha =
         patch().lookupPatchField<volScalarField, scalar>(alphaName_); // NEW VINCENT 03/03/2016
     const fvPatchScalarField& pgammatr =
-        patch().lookupPatchField<volScalarField, scalar>(gammatrName_); // NEW VINCENT 03/03/2016     
+        patch().lookupPatchField<volScalarField, scalar>(gammatrName_); // NEW VINCENT 03/03/2016
     const fvPatchScalarField& pmfp =
-        patch().lookupPatchField<volScalarField, scalar>(mfpName_); // NEW VINCENT 28/02/2016           
+        patch().lookupPatchField<volScalarField, scalar>(mfpName_); // NEW VINCENT 28/02/2016
     const fvPatchScalarField& prho =
         patch().lookupPatchField<volScalarField, scalar>(rhoName_);
     const fvPatchVectorField& pU =

@@ -143,14 +143,14 @@ public:
     // Member Functions
 
 //         const scalarField& g() const;
-// 
+//
 //         const scalarField& r() const;
-// 
+//
 //         const scalar& binWidth() const;
 
         void setRDF(radialDistribution& rdf, const Time& runTime);
 
-}; 		
+};
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

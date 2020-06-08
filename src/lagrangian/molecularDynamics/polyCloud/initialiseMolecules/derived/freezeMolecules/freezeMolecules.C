@@ -53,7 +53,7 @@ freezeMolecules::freezeMolecules
 :
     polyConfiguration(molCloud, dict)
 {
-    
+
     molIds_.clear();
 
     selectIds ids
@@ -82,13 +82,13 @@ void freezeMolecules::setInitialConfiguration()
 //     label initialSize = molCloud_.size();
 
     boundedBox bb;
-    
+
     setBoundBox(mdInitialiseDict_, bb, "boundBox");
-    
+
     IDLList<polyMolecule>::iterator mol(molCloud_.begin());
-    
+
     label nFrozen = 0;
-    
+
     for
     (
         mol = molCloud_.begin();
@@ -105,20 +105,20 @@ void freezeMolecules::setInitialConfiguration()
             }
         }
     }
-    
+
     Info << "No of frozen atoms = " << nFrozen << endl;
-    
+
 }
 
 void freezeMolecules::setBoundBox
 (
     const dictionary& propsDict,
     boundedBox& bb,
-    const word& name 
+    const word& name
 )
 {
     const dictionary& dict(propsDict.subDict(name));
-    
+
     vector startPoint = dict.lookup("startPoint");
     vector endPoint = dict.lookup("endPoint");
 

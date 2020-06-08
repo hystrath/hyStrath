@@ -39,8 +39,8 @@ defineTypeNameAndDebug(dsmcStickingDiffuseWallPatch, 0);
 
 addToRunTimeSelectionTable
 (
-    dsmcPatchBoundary, 
-    dsmcStickingDiffuseWallPatch, 
+    dsmcPatchBoundary,
+    dsmcStickingDiffuseWallPatch,
     dictionary
 );
 
@@ -73,7 +73,7 @@ dsmcStickingDiffuseWallPatch::dsmcStickingDiffuseWallPatch
     writeInTimeDir_ = false;
     writeInCase_ = false;
     measurePropertiesAtWall_ = true;
-    
+
     setProperties();
 }
 
@@ -96,28 +96,28 @@ void dsmcStickingDiffuseWallPatch::calculateProperties()
 
 void dsmcStickingDiffuseWallPatch::controlParticle
 (
-    dsmcParcel& p, 
+    dsmcParcel& p,
     dsmcParcel::trackingData& td
 )
-{   
+{
     if(p.isFree())
     {
         const label& iD = findIndex(typeIds_, p.typeId());
-    
+
         measurePropertiesBeforeControl(p);
-    
+
         if(iD != -1)
         {
             //- particle considered for adsorption
             const scalar& adsorbtionProbability = adsorptionProbs_[iD];
-            
+
             const label wppIndex = patchId();
 
-            const label wppLocalFace = 
+            const label wppLocalFace =
                 mesh_.boundaryMesh()[wppIndex].whichFace(p.face());
-            
+
             //Info << "Ndot_" << mesh_.time().value() << endl;
-    
+
             if
             (
                 adsorbtionProbability > cloud_.rndGen().sample01<scalar>()
@@ -131,30 +131,30 @@ void dsmcStickingDiffuseWallPatch::controlParticle
                     getLocalTemperature(p.position()[depthAxis()])
                 );
             }
-            else 
+            else
             {
                 //- diffuse reflection
                 dsmcDiffuseWallPatch::performDiffuseReflection(p);
-                
+
                 measurePropertiesAfterControl(p);
-            }   
+            }
         }
-        else 
+        else
         {
             //- otherwise, it is treated as a diffuse reflection
             dsmcDiffuseWallPatch::performDiffuseReflection(p);
-            
+
             measurePropertiesAfterControl(p);
         }
     }
-    
+
     //- Separate loop as the particle may have been stuck in the previous loop
     //  If the particle is stuck, consider parcel for release, i.e., desorption
     if(p.isStuck())
     {
         dsmcStickingWallPatch::testForDesorption(p);
     }
-    
+
     //- Update the boundaryMeasurement relative to this sticking patch
     cloud_.boundaryFluxMeasurements().updatenStuckParcelOnPatch
     (
@@ -163,7 +163,7 @@ void dsmcStickingDiffuseWallPatch::controlParticle
     );
 }
 
-    
+
 void dsmcStickingDiffuseWallPatch::output
 (
     const fileName& fixedPathName,

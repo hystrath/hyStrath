@@ -61,30 +61,30 @@ class dsmcSphericalPatchBoundary
 private:
 
     // Private data
-    
+
         dictionary propsDict_;
-        
+
 
 protected:
 
-    // Protected data        
+    // Protected data
 
         //- Centre point, default: (0, 0, 0)
         const vector centrePoint_;
-        
+
         //- Angular velocities, default: 0.0
         const scalar angularVelocityXPlane_;
-        
+
         const scalar angularVelocityYPlane_;
-        
+
         const scalar angularVelocityZPlane_;
-        
-        
+
+
     // Protected member functions
-    
+
         vector wallVelocity(const dsmcParcel& p);
-        
-        
+
+
 
 public:
 

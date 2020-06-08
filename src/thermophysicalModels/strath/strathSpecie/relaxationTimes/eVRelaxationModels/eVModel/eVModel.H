@@ -54,27 +54,27 @@ class eVModel
 protected:
 
     // Protected data
-    
+
         //- Two-temperature model dictionary
         const IOdictionary dict2T_;
-        
+
         //- Thermophysical properties dictionary
         const IOdictionary dictThermoPhy_;
 
         //- Species
         const wordList& species_;
-        
+
         //- Pressure [Pa]
         const volScalarField& p_;
 
         //- Vibrational temperature [K]
         const volScalarField& Tv_;
-        
-        //- e-V relaxation models 
-        PtrList<eVRelaxationModel> taueViModels_;   
+
+        //- e-V relaxation models
+        PtrList<eVRelaxationModel> taueViModels_;
 
         //- e-V relaxation time
-        PtrList<volScalarField> taueVi_;         
+        PtrList<volScalarField> taueVi_;
 
 
     // Private Member Functions

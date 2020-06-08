@@ -68,32 +68,32 @@ rampForceII::rampForceII
     deltaTMD_(time.deltaT().value())
 {
     timeVarying_ = true;
-    
+
     Info << "current time = " << currentTime_ << endl;
 
     direction_ /= mag(direction_);
 
     forceGradient_ = (finalForce_ - initialForce_)/endTime_;
-    
+
     Info << " Force gradient = " << forceGradient_ << endl;
-    
+
     if(propsDict_.found("relaxationTime"))
     {
         relaxationTime_ = readScalar(propsDict_.lookup("relaxationTime"));
-        
+
         bool fixGradient = false;
-        
+
         if (propsDict_.found("fixGradient"))
         {
             fixGradient = Switch(propsDict_.lookup("fixGradient"));
         }
-        
+
         if (relaxationTime_ > 0.0)
         {
             if(!fixGradient)
             {
                 forceGradient_ = (finalForce_ - initialForce_)/(endTime_-relaxationTime_);
-                
+
                 Info<< nl
                     << " WARNING: Force gradient changed to include initial relaxation time."
                     << " Force gradient = " << forceGradient_ << endl;
@@ -101,24 +101,24 @@ rampForceII::rampForceII
             else
             {
                 endTime_ += relaxationTime_;
-                
+
                 Info<< nl
                     << " WARNING: forceAtRampEndTime changed to include initial relaxation time,"
                     << " = " << endTime_ << endl;
             }
         }
     }
-    
+
     // y intercept
     c_ = finalForce_ - (forceGradient_*endTime_);
-    
+
     force_ = direction_*initialForce_;
-    
-    
+
+
     if(propsDict_.found("acrossMultipleRuns"))
     {
         bool acrossMultipleRuns = Switch(propsDict_.lookup("acrossMultipleRuns"));
-        
+
         if(acrossMultipleRuns)
         {
             force_ = (currentTime_*forceGradient_ + c_)*direction_;
@@ -126,7 +126,7 @@ rampForceII::rampForceII
             Info << " ... continuing where we left off ..., force = " << force_ << endl;
         }
     }
-    
+
 }
 
 
@@ -156,7 +156,7 @@ void rampForceII::updateForce()
     currentTime_ += deltaTMD_;
 
     if(currentTime_ > relaxationTime_)
-    {    
+    {
         if(currentTime_ <= endTime_)
         {
             force_ = ((forceGradient_*currentTime_) + c_)*direction_;

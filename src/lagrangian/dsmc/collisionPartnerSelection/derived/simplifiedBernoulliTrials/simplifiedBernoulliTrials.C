@@ -98,7 +98,7 @@ void simplifiedBernoulliTrials::collide()
     label collisionCandidates = 0;
 
     label collisions = 0;
-	
+
     const List<DynamicList<dsmcParcel*> > cellOccupancy = cloud_.cellOccupancy();
 
     const polyMesh& mesh = cloud_.mesh();
@@ -106,39 +106,39 @@ void simplifiedBernoulliTrials::collide()
     forAll(cellOccupancy, cellI)
     {
         const scalar deltaT = cloud_.deltaTValue(cellI);
-        
+
         const scalar nParticle = cloud_.nParticles(cellI, true);
-        
+
         const DynamicList<dsmcParcel*>& cellParcels(cellOccupancy[cellI]);
 
         label nC(cellParcels.size());
 
         if (nC > 1)
-        {   
+        {
             scalar prob1 = (nParticle*deltaT)/(mesh.cellVolumes()[cellI]);
             label k = -1;
             label candidateP = -1;
             label candidateQ = -1;
-                
+
             for(label p = 0 ; p < nC-1 ; p++)
-            {                
+            {
                 // Select the first collision candidate
                 candidateP = p;
-            
+
                 k = nC-1 - p;
                 //label random = rndGen_.position<label>(1, k); OLD
                 label random = cloud_.randomLabel(1, k);
                 candidateQ = p + random;
-                
+
                 dsmcParcel& parcelP = *cellParcels[candidateP];
-                dsmcParcel& parcelQ = *cellParcels[candidateQ];  
+                dsmcParcel& parcelQ = *cellParcels[candidateQ];
 
                 scalar sigmaTcR = cloud_.binaryCollision().sigmaTcR
                 (
                     parcelP,
                     parcelQ
                 );
-            
+
                 scalar Probability = k*prob1*sigmaTcR;
 
                 if (Probability > rndGen_.sample01<scalar>())
@@ -161,7 +161,7 @@ void simplifiedBernoulliTrials::collide()
                             (
                                 parcelP,
                                 parcelQ
-                            );                                    
+                            );
                         }
                         // if reaction unsuccessful use conventional collision model
                         if(cloud_.reactions().reactions()[rMId]->relax())
@@ -183,7 +183,7 @@ void simplifiedBernoulliTrials::collide()
                             cellI
                         );
                     }
-                    
+
                     collisions++;
                 }
             }

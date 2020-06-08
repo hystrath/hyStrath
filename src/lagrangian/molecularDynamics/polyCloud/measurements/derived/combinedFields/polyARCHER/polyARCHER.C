@@ -57,9 +57,9 @@ polyARCHER::polyARCHER
 )
 :
     polyField(t, mesh, molCloud, dict),
-    propsDict_(dict.subDict(typeName + "Properties")),    
+    propsDict_(dict.subDict(typeName + "Properties")),
     fields_(t, mesh, "dummy"),
-    nameOfFile_(propsDict_.lookup("fileName"))    
+    nameOfFile_(propsDict_.lookup("fileName"))
 {
     pathName_ = time_.time().path();
 }
@@ -87,7 +87,7 @@ scalar polyARCHER::getTotalEnergy()
 
     {
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
-    
+
         for
         (
             mol = molCloud_.begin();
@@ -96,7 +96,7 @@ scalar polyARCHER::getTotalEnergy()
         )
         {
             label molId = mol().id();
-    
+
             scalar molMass(molCloud_.cP().mass(molId));
 
             const vector& molV(mol().v());
@@ -104,7 +104,7 @@ scalar polyARCHER::getTotalEnergy()
             const diagTensor& molMoI(molCloud_.cP().momentOfInertia(mol().id()));
 
             const vector& molOmega(inv(molMoI) & mol().pi());
-    
+
             kE += 0.5*molMass*magSqr(molV);
             angularKE += 0.5*(molOmega & molMoI & molOmega);
             PE += mol().potentialEnergy();
@@ -120,12 +120,12 @@ scalar polyARCHER::getTotalEnergy()
     }
 
     scalar totalEnergy = 0.0;
-    
+
     if(nMols > 0)
     {
         totalEnergy = (kE + angularKE + PE)/nMols;
-    }            
-    
+    }
+
     return totalEnergy;
 }
 

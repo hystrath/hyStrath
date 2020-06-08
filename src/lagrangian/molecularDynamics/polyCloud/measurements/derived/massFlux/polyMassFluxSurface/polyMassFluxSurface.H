@@ -30,7 +30,7 @@ Description
 
 
 NOTES
-    To understand this measurement model, one needs to look at how the cloudTracker works, 
+    To understand this measurement model, one needs to look at how the cloudTracker works,
     as well as how processor patches are defined on the mesh.
 
     - cloud tracker fields are generated every time-step (used by measurement models)
@@ -42,9 +42,9 @@ NOTES
       right. For example note how the surface area of the total face zone is calculated.
       Faces on processor patches are given a weighting of 0.5 so that when communication
       occurs the correct zonal surface area is computed. The same is said for polyMolecule
-      crossings. In the cloudTracker class only one face on the processor patch gets 
-      gets assigned the flux. Thereby synchronisation between processors gives the 
-      correct total flux.        
+      crossings. In the cloudTracker class only one face on the processor patch gets
+      gets assigned the flux. Thereby synchronisation between processors gives the
+      correct total flux.
 
 SourceFiles
     polyMassFluxSurface.C
@@ -81,7 +81,7 @@ private:
 
         //- subDictionary containing the properties
         dictionary propsDict_;
-    
+
         word fieldName_;
 
         fileName pathName_;
@@ -165,7 +165,7 @@ private:
             polyMolecule* molI,
             polyMolecule* molJ
         );
-        
+
         void measureDuringForceComputationSite
         (
             polyMolecule* molI,

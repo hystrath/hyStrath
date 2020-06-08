@@ -34,15 +34,15 @@ License
 
 namespace Foam
 {
-  
-// * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //  
-  
+
+// * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
+
     defineTypeNameAndDebug(relaxationTimeModelVV, 0);
     defineRunTimeSelectionTable(relaxationTimeModelVV, fvMesh);
 }
 
 
-// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //  
+// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
@@ -57,17 +57,17 @@ Foam::relaxationTimeModelVV::relaxationTimeModelVV
     (
         thermo.twoTemperatureDictionary()
     ),
-    
-    mesh_(thermo.Tt().mesh()), 
+
+    mesh_(thermo.Tt().mesh()),
     thermo_(thermo),
     turbulence_(turbulence)
-    
-{  
+
+{
     const word dict2T(IOdictionary::name()), dictThermoPhy
     (
         fileName(thermo.lookup("foamChemistryThermoFile")).name()
     );
-    
+
     // Construct the relaxation time model
     tauVVijModel_.set
     (
@@ -75,22 +75,22 @@ Foam::relaxationTimeModelVV::relaxationTimeModelVV
         (
             dict2T,
             dictThermoPhy,
-            solvedVibEqSpecies(), // NEW VINCENT 06/08/2016 
-            thermo.p(), 
-            thermo.Tt(), 
-            thermo.composition().Tv(), 
+            solvedVibEqSpecies(), // NEW VINCENT 06/08/2016
+            thermo.p(),
+            thermo.Tt(),
+            thermo.composition().Tv(),
             thermo.composition().nD()
         )
     );
-    
+
     QVV_.setSize(solvedVibEqSpecies().size());
-    
-        
+
+
     forAll(solvedVibEqSpecies(), speciei)
     {
         QVV_.set
         (
-            speciei, 
+            speciei,
             new volScalarField
             (
                 IOobject
@@ -105,7 +105,7 @@ Foam::relaxationTimeModelVV::relaxationTimeModelVV
                 dimensionedScalar("QVV", dimensionSet(1,-1,-3,0,0), 0.0)
             )
         );
-    } 
+    }
 }
 
 
@@ -130,7 +130,7 @@ Foam::relaxationTimeModelVV::VVRelaxationSource()
             dimensionedScalar("QVV", dimensionSet(1, -1, -3, 0, 0), 0.0)
         )
     );
-    
+
     return tQVV;
 }*/
 

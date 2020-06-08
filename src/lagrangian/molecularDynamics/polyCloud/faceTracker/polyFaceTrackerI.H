@@ -57,32 +57,32 @@ namespace Foam
 // {
 //     return crossedMols_;
 // }
-// 
+//
 // inline const scalarField& polyFaceTracker::netMassFlux() const
 // {
 //     return netMassFlux_;
 // }
-// 
+//
 // inline const vectorField& polyFaceTracker::netMomFlux() const
 // {
 //     return netMomFlux_;
 // }
-// 
+//
 // inline const vectorField& polyFaceTracker::forceFlux() const
 // {
 //     return forceFlux_;
 // }
-// 
+//
 // inline const scalarField& polyFaceTracker::pEFlux() const
 // {
 //     return pEFlux_;
 // }
-// 
+//
 // inline const scalarField& polyFaceTracker::kEFlux() const
 // {
 //     return kEFlux_;
 // }
-// 
+//
 // inline const scalarField& polyFaceTracker::energyFlux() const
 // {
 //     return energyFlux_;
@@ -180,8 +180,8 @@ inline const surfaceVectorField& polyFaceTracker::forceFlux() const
 //         const_cast<const referredCell&>(b)
 //     );
 // }
-// 
-// 
+//
+//
 // inline bool operator!=
 // (
 //     const referredCell& a,

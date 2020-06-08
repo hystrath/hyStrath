@@ -38,11 +38,11 @@ namespace Foam
 
 void polyARCHER::outputInitialisation()
 {
-    
+
     {
         // deletes current content of file
         OFstream file(pathName_/nameOfFile_);
-    
+
         if(file.good())
         {
             file << endl;
@@ -56,7 +56,7 @@ void polyARCHER::outputInitialisation()
     }
 
     // Initialisation
-    
+
     fileName fName(pathName_/nameOfFile_);
 
     std::ofstream file(fName.c_str(),ios_base::app);
@@ -71,7 +71,7 @@ void polyARCHER::outputInitialisation()
         file << "|   \\  /    A nd           | Web:      www.OpenFOAM.org                      | " << nl;
         file << "|    \\/     M anipulation  |                                                 | " << nl;
         file << "*---------------------------------------------------------------------------*" << nl;
-        
+
         file << "OpenFOAM running on ARCHER - temporary log file" <<  nl;
         file << "number of procs = " << Pstream::nProcs() << nl;
         file << nl;
@@ -91,7 +91,7 @@ void polyARCHER::outputTime()
     fileName fName(pathName_/nameOfFile_);
 
     scalar TE = getTotalEnergy();
-    
+
     std::ofstream file(fName.c_str(),ios_base::app);
     file.precision(11);
 
@@ -104,11 +104,11 @@ void polyARCHER::outputTime()
          << " s   av. sim. = " << molCloud_.clock().averageTime()
          << " s   tot. = " << molCloud_.clock().totalDuration() << " s"
          << nl;
-        
+
         file<< "ExecutionTime = " << time_.elapsedCpuTime() << " s"
             << "  ClockTime = " << time_.elapsedClockTime() << " s"
             << nl;
-        file<< nl;            
+        file<< nl;
     }
     else
     {
@@ -117,8 +117,8 @@ void polyARCHER::outputTime()
             << abort(FatalError);
     }
 
-    file.close();    
-    
+    file.close();
+
 }
 
 } // End namespace Foam

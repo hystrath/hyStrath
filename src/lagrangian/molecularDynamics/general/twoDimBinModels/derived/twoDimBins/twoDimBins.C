@@ -70,7 +70,7 @@ twoDimBins::twoDimBins
 
     dX_(readScalar(propsDict_.lookup("dX"))),
     dY_(readScalar(propsDict_.lookup("dY"))),
-    
+
     binWidthX_(2.0*dX_/nBinsX_),
     binWidthY_(2.0*dY_/nBinsY_)
 
@@ -78,15 +78,15 @@ twoDimBins::twoDimBins
 
     unitVectorX_ /= mag(unitVectorX_);
     unitVectorY_ /= mag(unitVectorY_);
-    
+
     vector midPoint = startPoint_ + (startPoint_ - endPoint_)*0.5;
-    
+
     startPointX_ = midPoint - dX_*unitVectorX_;
     endPointX_ = midPoint + dX_*unitVectorX_;
-    
+
     startPointY_ = midPoint - dY_*unitVectorY_;
     endPointY_ = midPoint + dY_*unitVectorY_;
-    
+
 }
 
 
@@ -111,7 +111,7 @@ List<label> twoDimBins::isPointWithinBin
     List<label> binNumbers;
 binNumbers.append(-1);
 binNumbers.append(-1);
-    
+
     scalar rSEMag = mag(endPoint_ - startPoint_);
 
     vector rSI = rI - startPoint_;
@@ -167,7 +167,7 @@ void twoDimBins::write
 vector twoDimBins::position(/*const vector& h,*/ const scalar& r, const scalar& theta)
 {
     vector p = vector::zero;
-//     vector p = r*cos(theta)*angleUnitVectorY_ 
+//     vector p = r*cos(theta)*angleUnitVectorY_
 //                                     + r*sin(theta)*angleUnitVectorX_;
     return p;
 }

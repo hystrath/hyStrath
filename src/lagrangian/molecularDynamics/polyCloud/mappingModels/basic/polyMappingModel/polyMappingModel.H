@@ -85,7 +85,7 @@ public:
             ),
             (molCloud, dict)
         );
-   
+
     // Constructors
 
         //- Construct from components

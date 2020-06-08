@@ -33,13 +33,13 @@ Description
 
     Any binModel may be applied. So far implemented the following:
 
-        normal, cylindrical, multi sub-zones, cuboid 
+        normal, cylindrical, multi sub-zones, cuboid
 
     Choice of properties to output also available.
 
     This is an implemented model for running transient measurements ( very costly )
-    
-    
+
+
 SourceFiles
     polyInstantBinsMethodI.H
     polyInstantBinsMethod.C
@@ -87,7 +87,7 @@ private:
         autoPtr<binModel> binModel_;
 
         label nBins_;
-        
+
         word regionName_;
         label regionId_;
         word fieldName_;
@@ -103,7 +103,7 @@ private:
 //         Field<DynamicList<scalar> > angularKeSum_;
 //         Field<DynamicList<scalar> > dof_;
 //         Field<DynamicList<tensor> > kineticTensor_;
-//         Field<DynamicList<tensor> > virialTensor_        
+//         Field<DynamicList<tensor> > virialTensor_
 
         // fields
 //         Field<DynamicList<scalar> > N_;
@@ -118,16 +118,16 @@ private:
 
         bool overideVolume_;
         List<scalar> volumes_;
-        
+
 //         scalar nAvTimeSteps_;
-        
+
 //         bool resetAtOutput_;
-        
-        
-        
+
+
+
     // Private Member Functions
-        
-        
+
+
 //             void writeToStorage();
 
 //             bool readFromStorage();
@@ -180,7 +180,7 @@ public:
 
         //- write field
         void writeField();
-}; 		
+};
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

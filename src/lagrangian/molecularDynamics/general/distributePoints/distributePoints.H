@@ -31,9 +31,9 @@ Description
     - Randomly - straightforward
     - Uniformly - the problem of distributing a number of points
             uniformly in a rectangle or cuboid is something which
-            has not yet been determined properly in mathematics. 
-            
-    
+            has not yet been determined properly in mathematics.
+
+
     Note this: replaces the obsolete "randomPointsInSquareZone"
 
 
@@ -52,8 +52,8 @@ SourceFiles
 #include "polyMesh.H"
 #include "cachedRandomMD.H"
 #include "Time.H"
-#include "boundedBox.H" 
-#include "distribution.H" 
+#include "boundedBox.H"
+#include "distribution.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -73,32 +73,32 @@ class distributePoints
         cachedRandomMD& rndGen_;
 
     // Private Member Functions
-    
+
 public:
 
     // Static data members
 
     // Constructors
 
-    
+
      distributePoints
      (
          cachedRandomMD& rndGen
      );
-    
+
      distributePoints
      (
-         const boundedBox& bb,         
+         const boundedBox& bb,
          cachedRandomMD& rndGen
-     );     
-     
+     );
+
 //         //- Construct null
 //         distributePoints
 // 		(
 // 			const label rndSeed,
 // 			const label rndCacheSize
 // 		);
-// 
+//
 //         //- Construct
 //         distributePoints
 //         (
@@ -120,7 +120,7 @@ public:
 		List<vector> uniform(const label& nPoints);
         void testUniform();
         void outputProperties(const List<vector>& r);
-            
+
         // Access
 
         // Check

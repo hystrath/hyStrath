@@ -33,7 +33,7 @@ Description
 
     Any binModel may be applied. So far implemented the following:
 
-        normal, cylindrical, multi sub-zones, cuboid 
+        normal, cylindrical, multi sub-zones, cuboid
 
     Choice of properties to output also available.
 
@@ -121,15 +121,15 @@ private:
         List<bool> outputField_;
 
         scalar nAvTimeSteps_;
-        
+
 //         bool averagingAcrossManyRuns_;
         bool resetAtOutput_;
-        
-        
-        
+
+
+
     // Private Member Functions
-        
-        
+
+
             void writeToStorage();
 
             bool readFromStorage();
@@ -182,7 +182,7 @@ public:
 
         //- write field
         void writeField();
-}; 		
+};
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

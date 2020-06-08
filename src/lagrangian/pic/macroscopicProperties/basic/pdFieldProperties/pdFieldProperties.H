@@ -61,7 +61,7 @@ class pdFieldProperties
 
     // Private data
 
-        //- The entire field-properties dictionary 
+        //- The entire field-properties dictionary
         //  (it contains multiple subDictionaries)
 
         Time& time_;

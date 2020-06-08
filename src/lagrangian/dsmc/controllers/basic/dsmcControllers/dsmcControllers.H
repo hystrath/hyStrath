@@ -27,10 +27,10 @@ Class
 
 Description
 
-	Stores all the information for the dsmcControllers models defined within 
+	Stores all the information for the dsmcControllers models defined within
     the dsmcControllersDict, and selects & builds the models automatically.
 
-    
+
 
 \*---------------------------------------------------------------------------*/
 
@@ -87,12 +87,12 @@ class dsmcControllers
         List<fileName> fCFixedPathNames_;
 		List< autoPtr<dsmcFluxController> > fluxControllers_;
 
-        
+
 public:
 
     // Constructors
 
-        //- Null Constructor 
+        //- Null Constructor
         dsmcControllers
         (
             Time& t,
@@ -118,7 +118,7 @@ public:
         //- update time information
         void updateTimeInfo();
 
-        //- different control stages 
+        //- different control stages
         void controlBeforeMove();
         void controlBeforeCollisions();
         void controlAfterCollisions();
@@ -128,7 +128,7 @@ public:
 
         //- output controller properties
         void outputResults();
-        
+
         // Access
 
             const label& nStateControllers() const;
@@ -139,8 +139,8 @@ public:
             inline List< autoPtr<dsmcFluxController> >& fluxControllers();
             inline const List< autoPtr<dsmcFluxController> >& fluxControllers() const;
 
-            inline const List<word>& stateControllersNames() const; 
-    
+            inline const List<word>& stateControllersNames() const;
+
 };
 
 

@@ -109,7 +109,7 @@ public:
             vector force(const vector& position);
 
             vector force(const scalar& time);
-            
+
         // Write
 
 

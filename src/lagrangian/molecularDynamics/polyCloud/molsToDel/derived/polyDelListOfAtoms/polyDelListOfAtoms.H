@@ -67,12 +67,12 @@ private:
 
         //- subDictionary containing the properties
         dictionary propsDict_;
-                
+
         List<label> molIds_;
-        
+
         List<vector>molPoints_;
-        
-        
+
+
     // Private Member Functions
 
 
@@ -99,7 +99,7 @@ public:
 
     // Member Functions
 
- 
+
 };
 
 

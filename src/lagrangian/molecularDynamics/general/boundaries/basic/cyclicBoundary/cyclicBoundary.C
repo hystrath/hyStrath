@@ -30,7 +30,7 @@ Description
 #include "polyBoundaryMeshEntries.H"
 #include "cyclicPolyPatch.H"
 // #include "graph.H"
-#include "boundedBox.H" 
+#include "boundedBox.H"
 
 namespace Foam
 {
@@ -57,7 +57,7 @@ cyclicBoundary::cyclicBoundary
     patchId_(0),
 //     separation_(0.0),
     separationVector_(vector::zero),
-    
+
     theta_(constant::mathematical::pi),
     rotate_(false)
 //     rotationAxis_(vector::zero),
@@ -77,10 +77,10 @@ cyclicBoundary::cyclicBoundary
     if(patchId_ == -1)
     {
         FatalErrorIn("cyclicBoundary::cyclicBoundary()")
-            << "Cannot find patch on mesh: " << patchName_ 
+            << "Cannot find patch on mesh: " << patchName_
             << exit(FatalError);
     }
-    
+
     /*
     const polyPatch& patch = mesh_.boundaryMesh()[patchId_];
 
@@ -88,24 +88,24 @@ cyclicBoundary::cyclicBoundary
     if (!isA<cyclicPolyPatch>(patch))
     {
         FatalErrorIn("cyclicBoundary::cyclicBoundary()")
-            << "Patch: " << patchName_ << " is not a cyclic boundary. " 
+            << "Patch: " << patchName_ << " is not a cyclic boundary. "
             << nl << "in: "
             << t.system()/"boundariesDict"
             << exit(FatalError);
     }
- 
+
     if (isA<coupledPolyPatch>(patch))
     {
         const coupledPolyPatch& cpp = refCast<const coupledPolyPatch>(patch);
-        
+
         if (cpp.separated())
         {
             separationVector_ = cpp.separation()[0];
         }
     }*/
 
-    
-    boundaryPoints_ = List<vector>(boundaryDict_.lookup("boundaryPoints"));    
+
+    boundaryPoints_ = List<vector>(boundaryDict_.lookup("boundaryPoints"));
 
     if(boundaryPoints_.size() < 4)
     {
@@ -115,37 +115,37 @@ cyclicBoundary::cyclicBoundary
     }
 
     centroid_ = vector::zero;
-    
+
     forAll(boundaryPoints_, p)
     {
         centroid_ += boundaryPoints_[p];
     }
 
     centroid_ /= boundaryPoints_.size();
-    
+
     nF_ = boundaryDict_.lookup("normal");
-    
+
     nFaces_ = (readLabel(boundaryDict_.lookup("nFaces")));
-    
-    
+
+
     //- Neighbour patch
-    
+
     const word neighbPatchName = boundaryDict_.lookup("neighbourPatchName");
-    
+
     patchNameN_ = neighbPatchName;
-    
-    patchNId_ = mesh_.boundaryMesh().findPatchID(patchNameN_);    
+
+    patchNId_ = mesh_.boundaryMesh().findPatchID(patchNameN_);
 
     if(patchNId_ == -1)
     {
         FatalErrorIn("cyclicBoundary::cyclicBoundary()")
-            << "Cannot find neighbouring patch on mesh: " << patchNameN_ 
+            << "Cannot find neighbouring patch on mesh: " << patchNameN_
             << exit(FatalError);
     }
-    
+
     Info << "neighbour patch name = " << patchNameN_ << endl;
     Info << "neighbour patch id = " << patchNId_ << endl;
-    
+
 //     const polyPatch& patchN = mesh_.boundaryMesh()[patchNId_];
 
 
@@ -204,12 +204,12 @@ void cyclicBoundary::setCoupledPatchInfo
 )
 {
     separationVector_ = centroid - centroid_;
-    
+
 //     Info << "separationVector CPP = " << separationVector_
-//          << ", new separationVector = " << separationVector 
+//          << ", new separationVector = " << separationVector
 //          << endl;
-         
-    theta_ = acos(nF_ & nF); 
+
+    theta_ = acos(nF_ & nF);
 //     Info << "theta_ " << theta_ << endl;
     if
     (
@@ -218,11 +218,11 @@ void cyclicBoundary::setCoupledPatchInfo
     )
     {
         rotate_ = true;
-        
+
         FatalErrorIn("cyclicBoundary::cyclicBoundary()")
-            << "Patch: " << patchName_ << "is a rotational cyclic. " 
+            << "Patch: " << patchName_ << "is a rotational cyclic. "
             << " Angle = " << theta_
-            << "Rotational cyclics have not been implemented" 
+            << "Rotational cyclics have not been implemented"
             << exit(FatalError);
     }
 }
@@ -287,7 +287,7 @@ const word& cyclicBoundary::patchNameN() const
     return patchNameN_;
 }
 
-const label& cyclicBoundary::patchIdN() const 
+const label& cyclicBoundary::patchIdN() const
 {
     return patchNId_;
 }

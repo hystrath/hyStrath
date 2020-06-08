@@ -45,7 +45,7 @@ mixed2VELEnergyFvPatchScalarField
 {
     word fieldName = iF.name();
     specieName_ = fieldName.substr(fieldName.find("_") + 1);
-    
+
     valueFraction() = 0.0;
     refValue() = 0.0;
     refGrad() = 0.0;

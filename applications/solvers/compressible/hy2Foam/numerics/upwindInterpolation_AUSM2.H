@@ -107,7 +107,7 @@ surfaceScalarField Machf //- Step VI
 
 Machf -= AUSM_Kp/scalingFunction*max(1.0-AUSM_sigma*meanSqrMach, 0.0)*(p_neg-p_pos)
   / (0.5*(rho_pos+rho_neg)*sqr(cf/mesh.magSf()));
-  
+
 Info << "Machf: " << Machf << endl;
 
 Info << "p_pos: " << p_pos << endl;
@@ -118,7 +118,7 @@ Info << "splitPressureDeg5_pos(Mach_pos, AUSM_alpha): " << splitPressureDeg5_pos
 
 Info << "splitPressureDeg5_neg(Mach_neg, AUSM_alpha): " << splitPressureDeg5_neg(Mach_neg, AUSM_alpha) << endl;
 
-surfaceScalarField pf 
+surfaceScalarField pf
 (
     "pf",
     splitPressureDeg5_pos(Mach_pos, AUSM_alpha)*p_pos + splitPressureDeg5_neg(Mach_neg, AUSM_alpha)*p_neg

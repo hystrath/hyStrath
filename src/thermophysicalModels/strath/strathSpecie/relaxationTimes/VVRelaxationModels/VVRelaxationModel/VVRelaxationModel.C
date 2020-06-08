@@ -52,13 +52,13 @@ Foam::VVRelaxationModel::VVRelaxationModel
     const PtrList<volScalarField>& nD
 )
 :
-    dict1_(dict1), 
-    dict2_(dict2),   
-    name1_(name1),    
+    dict1_(dict1),
+    dict2_(dict2),
+    name1_(name1),
     name2_(name2),
-    lname1_(lname1),    
-    lname2_(lname2),      
-    p_(p),   
+    lname1_(lname1),
+    lname2_(lname2),
+    p_(p),
     Tt_(Tt),
     Tv_(Tv),
     nD_(nD),

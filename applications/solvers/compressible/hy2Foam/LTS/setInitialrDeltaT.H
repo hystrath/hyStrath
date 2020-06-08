@@ -15,7 +15,7 @@ IOdictionary fvSchemes
 
 bool activateLTS = false;
 
-word ddtSchemes = Foam::word(fvSchemes.subDict("ddtSchemes").lookup("default")); 
+word ddtSchemes = Foam::word(fvSchemes.subDict("ddtSchemes").lookup("default"));
 if(ddtSchemes == "localEuler")
 {
     activateLTS = true;

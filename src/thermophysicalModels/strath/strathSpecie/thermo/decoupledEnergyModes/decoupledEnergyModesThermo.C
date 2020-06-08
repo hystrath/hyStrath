@@ -55,12 +55,12 @@ Foam::decoupledEnergyModesThermo<EquationOfState>::decoupledEnergyModesThermo(Is
     {
         is >> decoupledCvCoeffs_[i];
     }
-    
+
     forAll(vibrationalList_, i)
     {
         is >> vibrationalList_[i];
     }
-    
+
     forAll(electronicList_, i)
     {
         is >> electronicList_[i];
@@ -121,14 +121,14 @@ Foam::Ostream& Foam::operator<<
     {
         os << dem.decoupledCvCoeffs_[i] << ' ';
     }
-    
+
     os << nl << "    ";
 
     forAll(dem.vibrationalList_, i)
     {
         os << dem.vibrationalList_[i] << ' ';
     }
-    
+
     os << nl << "    ";
 
     forAll(dem.electronicList_, i)

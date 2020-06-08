@@ -32,9 +32,9 @@ License
 Foam::tabulated2KnTTransport<Thermo>::tabulated2KnTTransport(Istream& is)
 :
     Thermo(is)
-{    
+{
     is.check("tabulated2KnTTransport<Thermo>::tabulated2KnTTransport(Istream&)");
-    
+
     mu_ = interpolation2DTable<scalar>("constant/tabulatedKnTData/muTable");
     //mu_.outOfBounds(interpolation2DTable<scalar>::EXTRAPOLATE);
     kappa_ = interpolation2DTable<scalar>("constant/tabulatedKnTData/kappaTable");

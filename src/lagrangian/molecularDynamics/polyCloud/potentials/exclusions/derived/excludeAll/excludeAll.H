@@ -101,7 +101,7 @@ public:
             polyMolecule* molI,
             polyMolecule* molJ
         );
-        
+
         bool excludeSites
         (
             polyMolecule* molI,
@@ -109,7 +109,7 @@ public:
             const label& siteI,
             const label& siteJ
         );
-        
+
 
         // Write
 

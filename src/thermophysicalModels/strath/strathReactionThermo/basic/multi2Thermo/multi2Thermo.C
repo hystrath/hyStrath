@@ -207,7 +207,7 @@ Foam::wordList Foam::multi2Thermo::hevelMix2BoundaryTypes()
 Foam::multi2Thermo::multi2Thermo(const fvMesh& mesh, const word& phaseName)
 :
     fluid2Thermo(mesh, phaseName),
-      
+
     twoTemperatureDictionary_
     (
         IOobject
@@ -223,7 +223,7 @@ Foam::multi2Thermo::multi2Thermo(const fvMesh& mesh, const word& phaseName)
             IOobject::NO_WRITE
         )
     ),
-        
+
     Tt_
     (
         IOobject
@@ -237,7 +237,7 @@ Foam::multi2Thermo::multi2Thermo(const fvMesh& mesh, const word& phaseName)
         mesh,
         dimTemperature
     ),
-    
+
     Tv_
     (
         IOobject
@@ -251,7 +251,7 @@ Foam::multi2Thermo::multi2Thermo(const fvMesh& mesh, const word& phaseName)
         mesh,
         dimTemperature
     ),
-    
+
     het_
     (
         IOobject
@@ -267,7 +267,7 @@ Foam::multi2Thermo::multi2Thermo(const fvMesh& mesh, const word& phaseName)
         this->het2BoundaryTypes(),
         this->het2BoundaryBaseTypes()
     ),
-    
+
     hevMix_
     (
         IOobject
@@ -281,7 +281,7 @@ Foam::multi2Thermo::multi2Thermo(const fvMesh& mesh, const word& phaseName)
         mesh,
         dimEnergy/dimMass
     ),
-    
+
     heelMix_
     (
         IOobject
@@ -295,7 +295,7 @@ Foam::multi2Thermo::multi2Thermo(const fvMesh& mesh, const word& phaseName)
         mesh,
         dimEnergy/dimMass
     ),
-    
+
     zetar_
     (
         IOobject
@@ -309,7 +309,7 @@ Foam::multi2Thermo::multi2Thermo(const fvMesh& mesh, const word& phaseName)
         mesh,
         dimless
     ),
-    
+
     zetav_
     (
         IOobject
@@ -323,7 +323,7 @@ Foam::multi2Thermo::multi2Thermo(const fvMesh& mesh, const word& phaseName)
         mesh,
         dimless
     ),
-    
+
     zetael_
     (
         IOobject
@@ -337,13 +337,13 @@ Foam::multi2Thermo::multi2Thermo(const fvMesh& mesh, const word& phaseName)
         mesh,
         dimless
     ),
-    
+
     downgradeSingleTv_(lookupOrDefault<Switch>("downgradeToSingleTv", false)),
-    
+
     downgradeSingleTemperature_(lookupOrDefault<Switch>("downgradeToSingleTemperature", false)),
-    
+
     downgradeSingleVibMode_(lookupOrDefault<Switch>("downgradeToSingleVibMode", true)),
-    
+
     hyLight_(lookupOrDefault<Switch>("hyLight", true))
 {
     if(downgradeSingleTv_)
@@ -394,7 +394,7 @@ Foam::multi2Thermo::multi2Thermo
 )
 :
     fluid2Thermo(mesh, dict, phaseName),
-    
+
     twoTemperatureDictionary_
     (
         IOobject
@@ -413,7 +413,7 @@ Foam::multi2Thermo::multi2Thermo
             IOobject::NO_WRITE
         )
     ),
-    
+
     Tt_
     (
         IOobject
@@ -427,7 +427,7 @@ Foam::multi2Thermo::multi2Thermo
         mesh,
         dimTemperature
     ),
-    
+
     Tv_
     (
         IOobject
@@ -441,7 +441,7 @@ Foam::multi2Thermo::multi2Thermo
         mesh,
         dimTemperature
     ),
-    
+
     het_
     (
         IOobject
@@ -457,7 +457,7 @@ Foam::multi2Thermo::multi2Thermo
         this->het2BoundaryTypes(),
         this->het2BoundaryBaseTypes()
     ),
-    
+
     hevMix_
     (
         IOobject
@@ -471,7 +471,7 @@ Foam::multi2Thermo::multi2Thermo
         mesh,
         dimEnergy/dimMass
     ),
-    
+
     heelMix_
     (
         IOobject
@@ -485,7 +485,7 @@ Foam::multi2Thermo::multi2Thermo
         mesh,
         dimEnergy/dimMass
     ),
-    
+
     zetar_
     (
         IOobject
@@ -499,7 +499,7 @@ Foam::multi2Thermo::multi2Thermo
         mesh,
         dimless
     ),
-    
+
     zetav_
     (
         IOobject
@@ -513,7 +513,7 @@ Foam::multi2Thermo::multi2Thermo
         mesh,
         dimless
     ),
-    
+
     zetael_
     (
         IOobject
@@ -527,13 +527,13 @@ Foam::multi2Thermo::multi2Thermo
         mesh,
         dimless
     ),
-    
+
     downgradeSingleTv_(lookupOrDefault<Switch>("downgradeToSingleTv", false)),
-    
+
     downgradeSingleTemperature_(lookupOrDefault<Switch>("downgradeToSingleTemperature", false)),
-    
+
     downgradeSingleVibMode_(lookupOrDefault<Switch>("downgradeToSingleVibMode", true)),
-    
+
     hyLight_(lookupOrDefault<Switch>("hyLight", true))
 {
     if(downgradeSingleTv_)
@@ -602,7 +602,7 @@ const Foam::multi2Thermo& Foam::multi2Thermo::lookup2Thermo
 )
 {
     // NOTE VINCENT 20/02/2016: adapted from basicThermo.C
-    return pf.db().lookupObject<multi2Thermo>(dictName); 
+    return pf.db().lookupObject<multi2Thermo>(dictName);
 }
 
 

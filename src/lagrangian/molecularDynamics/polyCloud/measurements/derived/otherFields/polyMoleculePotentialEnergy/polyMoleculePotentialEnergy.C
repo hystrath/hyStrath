@@ -98,14 +98,14 @@ void polyMoleculePotentialEnergy::createField()
             if(molTrackingNumber_ == molI->trackingNumber())
             {
                 if(Pstream::parRun())
-                {     
-                    Pout << "molecule at position: " << molI->position() 
+                {
+                    Pout << "molecule at position: " << molI->position()
                         << ", PE: " << molI->potentialEnergy()
                         << endl;
                 }
                 else
                 {
-                    Info << "molecule at position: " << molI->position() 
+                    Info << "molecule at position: " << molI->position()
                         << ", PE: " << molI->potentialEnergy()
                         << endl;
                 }
@@ -130,15 +130,15 @@ void polyMoleculePotentialEnergy::calculateField()
             notFound = false;
 
             if(Pstream::parRun())
-            {     
-                Pout << "molecule at position: " << mol().position() 
+            {
+                Pout << "molecule at position: " << mol().position()
                     << ", PE: " << mol().potentialEnergy()
                     << ", current processor: " << Pstream::myProcNo()
                     << endl;
             }
             else
             {
-                Info << "molecule at position: " << mol().position() 
+                Info << "molecule at position: " << mol().position()
                     << ", PE: " << mol().potentialEnergy()
                     << endl;
             }

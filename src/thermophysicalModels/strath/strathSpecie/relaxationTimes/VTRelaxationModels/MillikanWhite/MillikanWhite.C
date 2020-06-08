@@ -39,7 +39,7 @@ namespace Foam
         addToRunTimeSelectionTable
         (
             VTRelaxationModel,
-            MillikanWhite, 
+            MillikanWhite,
             dictionary
         );
     }
@@ -63,14 +63,14 @@ Foam::VTRelaxationModels::MillikanWhite::MillikanWhite
 )
 :
     VTRelaxationModel(name1, name2, lname1, lname2, dict2T, dictThermoPhy, p, Tt, Tv, nD)
-{   
+{
     const scalar W1 = readScalar(dictThermoPhy.subDict(name1).subDict("specie").lookup("molWeight"));
     const scalar W2 = readScalar(dictThermoPhy.subDict(name2).subDict("specie").lookup("molWeight"));
     DynamicList<scalar> vibData(dictThermoPhy.subDict(name1).subDict("thermodynamics").lookup("vibrationalList"));
     const scalar TH1 = vibData[1];
-    
+
     word subDictName = word::null;
-    
+
     if (not VTFullCoeffsForm_)
     {
         scalar W12 = (W1 * W2) / (W1 + W2);
@@ -78,7 +78,7 @@ Foam::VTRelaxationModels::MillikanWhite::MillikanWhite
         B12_ = pow(W12, 0.25);
         scalar preAij = 0.0;
         scalar preMij = 0.0;
-        
+
         if (not VTOverwriteDefault_)
         {
             preAij  = 1.16e-3;
@@ -86,7 +86,7 @@ Foam::VTRelaxationModels::MillikanWhite::MillikanWhite
             offset_ = 18.42;
         }
         else if (VTSpeciesDependent_ and VTCollidingPartner_)
-        {        
+        {
             if (dict2T.subDict("MillikanWhiteCoefficients").isDict(name1+"_"+name2))
             {
                 subDictName = name1+"_"+name2;
@@ -102,23 +102,23 @@ Foam::VTRelaxationModels::MillikanWhite::MillikanWhite
             else
             {
                 subDictName = "allSpecies";
-                
-            }    
+
+            }
         }
         else if (VTSpeciesDependent_ and dict2T.subDict("MillikanWhiteCoefficients").isDict(name1))
-        {        
+        {
             subDictName = name1;
-        } 
+        }
         else
         {
-            subDictName = "allSpecies";      
+            subDictName = "allSpecies";
         }
-        
-        preAij = readScalar(dict2T.subDict("MillikanWhiteCoefficients").subDict(subDictName).lookup("preAij")); 
-        preMij = readScalar(dict2T.subDict("MillikanWhiteCoefficients").subDict(subDictName).lookup("preMij")); 
+
+        preAij = readScalar(dict2T.subDict("MillikanWhiteCoefficients").subDict(subDictName).lookup("preAij"));
+        preMij = readScalar(dict2T.subDict("MillikanWhiteCoefficients").subDict(subDictName).lookup("preMij"));
         A12_ *= preAij;
         B12_ *= preMij;
-    } 
+    }
     else
     {
         if (not VTOverwriteDefault_)
@@ -128,7 +128,7 @@ Foam::VTRelaxationModels::MillikanWhite::MillikanWhite
             offset_ = 18.42;
         }
         else if (VTSpeciesDependent_ and VTCollidingPartner_)
-        {        
+        {
             if (dict2T.subDict("MillikanWhiteCoefficients").isDict(name1+"_"+name2))
             {
                 subDictName = name1+"_"+name2;
@@ -144,20 +144,20 @@ Foam::VTRelaxationModels::MillikanWhite::MillikanWhite
             else
             {
                 subDictName = "allSpecies";
-            }    
+            }
         }
         else if (VTSpeciesDependent_ and dict2T.subDict("MillikanWhiteCoefficients").isDict(name1))
-        {        
+        {
             subDictName = name1;
-        } 
+        }
         else
         {
-            subDictName = "allSpecies";     
+            subDictName = "allSpecies";
         }
-    }  
-    
-    offset_ = readScalar(dict2T.subDict("MillikanWhiteCoefficients").subDict(subDictName).lookup("offset")); 
-    
+    }
+
+    offset_ = readScalar(dict2T.subDict("MillikanWhiteCoefficients").subDict(subDictName).lookup("offset"));
+
 }
 
 
@@ -190,10 +190,10 @@ Foam::VTRelaxationModels::MillikanWhite::tauVT() const
     forAll(this->Tt_, celli)
     {
         tauVT[celli] =
-            1.01325e5 / this->p_[celli] * exp(A12_*(pow(this->Tt_[celli], -1.0/3.0) 
+            1.01325e5 / this->p_[celli] * exp(A12_*(pow(this->Tt_[celli], -1.0/3.0)
                 - B12_) - offset_);
     }
-    
+
 
     forAll(this->Tt_.boundaryField(), patchi)
     {
@@ -204,7 +204,7 @@ Foam::VTRelaxationModels::MillikanWhite::tauVT() const
         forAll(pTt, facei)
         {
             ptauVT[facei] =
-            1.01325e5 / pp[facei] * exp(A12_*(pow(pTt[facei], -1.0/3.0) 
+            1.01325e5 / pp[facei] * exp(A12_*(pow(pTt[facei], -1.0/3.0)
                 - B12_) - offset_);
         }
     }
@@ -219,7 +219,7 @@ Foam::tmp<Foam::scalarField> Foam::VTRelaxationModels::MillikanWhite::tauVT
     const scalarField& p,
     const scalarField& Tt,
     const PtrList<scalarField>& Tv,
-    const PtrList<scalarField>& nD  
+    const PtrList<scalarField>& nD
 ) const
 {
     tmp<scalarField> ttauVT(new scalarField(Tt.size()));
@@ -228,7 +228,7 @@ Foam::tmp<Foam::scalarField> Foam::VTRelaxationModels::MillikanWhite::tauVT
     forAll(Tt, facei)
     {
         tauVT[facei] =
-            1.01325e5 / p[facei] * exp(A12_*(pow(Tt[facei], -1.0/3.0) 
+            1.01325e5 / p[facei] * exp(A12_*(pow(Tt[facei], -1.0/3.0)
                 - B12_) - offset_);
     }
 

@@ -40,14 +40,14 @@ Foam::noHEEnergyTransfer<ThermoType>::noHEEnergyTransfer
 )
 :
     relaxationTimeModelHE(thermo, turbulence),
-    
+
     speciesThermo_
     (
         dynamic_cast<const multi2ComponentMixture<ThermoType>&>
             (this->thermo_).speciesData()
     )
-{    
-    
+{
+
 }
 
 
@@ -55,8 +55,8 @@ Foam::noHEEnergyTransfer<ThermoType>::noHEEnergyTransfer
 
 template<class ThermoType>
 void Foam::noHEEnergyTransfer<ThermoType>::correct()
-{}  
-    
+{}
+
 
 template<class ThermoType>
 bool Foam::noHEEnergyTransfer<ThermoType>::read()
@@ -70,6 +70,6 @@ bool Foam::noHEEnergyTransfer<ThermoType>::read()
         return false;
     }
 }
-   
+
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

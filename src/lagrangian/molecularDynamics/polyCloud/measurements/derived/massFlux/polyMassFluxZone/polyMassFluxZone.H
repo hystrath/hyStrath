@@ -84,24 +84,24 @@ private:
         vector unitVector_;
 
         bool useBoundBox_;
-        
+
         boundedBox bb_;
-        
+
         List<label> molIds_;
 
         DynamicList<scalar> massFlux_;
 
 
     // Private Member Functions
-        
+
         void setBoundBox
         (
             const dictionary& propsDict,
             boundedBox& bb,
-            const word& name 
+            const word& name
         );
 
-        
+
 public:
 
     //- Runtime type information
@@ -149,7 +149,7 @@ public:
 
         //- write field
         void writeField();
-}; 		
+};
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

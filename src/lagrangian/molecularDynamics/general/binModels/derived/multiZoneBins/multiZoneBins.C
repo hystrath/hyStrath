@@ -84,7 +84,7 @@ multiZoneBins::multiZoneBins
         forAll(zoneNames, i)
         {
             const word& zoneName(zoneNames[i]);
-    
+
             if(findIndex(regionNames, zoneName) == -1)
             {
                 regionNames.append(zoneName);
@@ -112,11 +112,11 @@ multiZoneBins::multiZoneBins
     forAll(regionIds_, r)
     {
         regionIds_[r] = cellZones.findZoneID(zoneNames[r]);
-    
+
         if(regionIds_[r] == -1)
         {
             FatalErrorIn("multiZoneBins::multiZoneBins()")
-                << "Cannot find region: " << zoneNames[r] 
+                << "Cannot find region: " << zoneNames[r]
                 << " in mesh's cell zones."
                 << nl << "in: "
                 << mesh_.time().system()/"fieldPropertiesDict"
@@ -165,7 +165,7 @@ multiZoneBins::multiZoneBins
             else
             {
                 FatalErrorIn("multiZoneBins::multiZoneBins()")
-                    << "There is an overlap present in cell-zone: " << zoneNames[r] 
+                    << "There is an overlap present in cell-zone: " << zoneNames[r]
                     << " with zone: " << zoneNames[cellRegionAddressing_[cellI]]
                     << nl << "in: "
                     << mesh_.time().system()/"fieldPropertiesDict"
@@ -228,7 +228,7 @@ multiZoneBins::multiZoneBins
                     }
                 }
             }
-        
+
             //- receiving
             for (int p = 0; p < Pstream::nProcs(); p++)
             {
@@ -242,7 +242,7 @@ multiZoneBins::multiZoneBins
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> rMaxProc >> rMinProc;
                     }
-        
+
                     if(rMaxProc > rMax)
                     {
                         rMax = rMaxProc;
@@ -297,7 +297,7 @@ scalarField multiZoneBins::binPositions()
     if(nBins_ > 0)
     {
         positions[0] = 0.5*binWidths_[0];
-    
+
         for (label i = 1; i < nBins_; i++)
         {
             positions[i] = positions[i-1] + 0.5*binWidths_[i-1] + 0.5*binWidths_[i];
@@ -319,7 +319,7 @@ vectorField multiZoneBins::bins()
 
         for (label i = 1; i < nBins_; i++)
         {
-            positions[i] = positions[i-1] + 0.5*binWidths_[i-1]*unitVector_ 
+            positions[i] = positions[i-1] + 0.5*binWidths_[i-1]*unitVector_
                                           + 0.5*binWidths_[i]*unitVector_;
         }
     }

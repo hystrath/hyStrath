@@ -67,8 +67,8 @@ private:
 
     // Private data
     dictionary propsDict_;
-    
-    labelList typeIds_; 
+
+    labelList typeIds_;
     List<scalarField> moleFractions_;
     scalar outletPressure_;
     scalarField cellVolume_;
@@ -150,7 +150,7 @@ public:
 
     //- update properties from a modified dictionary
     void updateProperties(const dictionary&);
-    
+
     //reset fields if mesh has changed
     void setNewBoundaryFields();
 

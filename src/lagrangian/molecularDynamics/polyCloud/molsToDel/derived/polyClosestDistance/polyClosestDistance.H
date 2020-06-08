@@ -68,17 +68,17 @@ private:
 
         //- subDictionary containing the properties
         dictionary propsDict_;
-        
+
         scalar distance_;
 //         List<label> molIds_;
 
         // mol id of molecules to be deleted
         label molToDeleteId_;
-        
+
         // mol id of reference molecules
         label refMolId_;
-        
-        
+
+
     // Private Member Functions
 
         void checkBoundBox
@@ -111,7 +111,7 @@ public:
 
     // Member Functions
 
- 
+
 };
 
 

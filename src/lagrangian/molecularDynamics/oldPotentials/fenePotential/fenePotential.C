@@ -86,15 +86,15 @@ void fenePotential::setPotential()
     rCut_ = readScalar(dict.lookup("rCut"));
 
     dr_ = readScalar(dict.lookup("dr"));
-    
+
     r0_ = readScalar(dict.lookup("Ro"));
 
     r0in_ = readScalar(dict.lookup("Roin"));
-    
-    k_ = readScalar(dict.lookup("k"));    
+
+    k_ = readScalar(dict.lookup("k"));
 
     // modify to reduced units
-    
+
 
 
     r0_ /= rU_.refLength();
@@ -105,9 +105,9 @@ void fenePotential::setPotential()
 
 
     rCutSqr_ = rCut_*rCut_;
-    
+
     setLookUpTables();
-    
+
     outputProperties();
 }
 
@@ -126,21 +126,21 @@ fenePotential::~fenePotential()
 
 void fenePotential::setLookUpTables()
 {
-    nBins_ = label(rCut_ / dr_)+1; 
-    
+    nBins_ = label(rCut_ / dr_)+1;
+
     U_.setSize(nBins_, 0.0);
     f_.setSize(nBins_, 0.0);
-    
+
     for (label i=0; i<nBins_; ++i)
     {
         scalar r = dr_*i;
-        
+
         U_[i] = Ufene(r);
         f_[i] = fFene(r);
     }
-    
+
 }
-    
+
 void fenePotential::outputProperties()
 {
     if(Pstream::master())
@@ -154,7 +154,7 @@ void fenePotential::outputProperties()
         {
             forAll(U_, i)
             {
-                fileFij 
+                fileFij
                     << dr_*i << "\t"
                     << U_[i] << "\t"
                     << f_[i]
@@ -181,9 +181,9 @@ void fenePotential::outputProperties()
 //             << "Attempted assignment to self"
 //             << abort(FatalError);
 //     }
-// 
+//
 //     Map<label>::operator=(rhs);
-// 
+//
 //     binWidth_ = rhs.binWidth();
 // }
 
@@ -197,14 +197,14 @@ void fenePotential::outputProperties()
 // {
 //     os  << d.binWidth_
 //         << static_cast<const Map<label>&>(d);
-// 
+//
 //     // Check state of Ostream
 //     os.check
 //     (
 //         "Ostream& operator<<(Ostream&, "
 //         "const fenePotential&)"
 //     );
-// 
+//
 //     return os;
 // }
 

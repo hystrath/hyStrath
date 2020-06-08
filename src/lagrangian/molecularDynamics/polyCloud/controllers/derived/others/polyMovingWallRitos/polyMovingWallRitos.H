@@ -73,7 +73,7 @@ private:
         List<label> molIds_;
 
         vector velocity_;
-        
+
     // Private Member Functions
 
         void readProperties();
@@ -99,7 +99,7 @@ public:
 
 
     // Member Functions
-        
+
         //- create an initial configuration
         void initialConfiguration();
 
@@ -111,20 +111,20 @@ public:
         (
             polyMolecule* molI,
             polyMolecule* molJ
-        );        
+        );
         void controlAfterForces();
         void controlAfterVelocityII();
-        
+
         //- calculate any required properties (end of time-step)
-        void calculateProperties(); 
-        
+        void calculateProperties();
+
         //- output data (optional)
         void output
         (
-            const fileName& fixedPathName, 
+            const fileName& fixedPathName,
             const fileName& timePath
         );
-        
+
         //- update properties from a modified dictionary (optional)
         void updateProperties(const dictionary&);
  };

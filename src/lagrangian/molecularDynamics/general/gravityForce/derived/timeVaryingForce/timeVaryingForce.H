@@ -61,20 +61,20 @@ private:
         dictionary propsDict_;
 
         vector force_;
-        
-        vector forceDirection_;        
-        
+
+        vector forceDirection_;
+
         label nBins_;
-        
+
         scalar offsetTime_;
-        
+
         scalar binWidth_;
-        
+
         // read in forces
-     
+
         scalarField forces_;
-        
-        
+
+
         vector getForce(const scalar& t);
 
 public:
@@ -113,7 +113,7 @@ public:
             vector force(const vector& position);
 
             vector force(const scalar& time);
-            
+
         // Write
 
 

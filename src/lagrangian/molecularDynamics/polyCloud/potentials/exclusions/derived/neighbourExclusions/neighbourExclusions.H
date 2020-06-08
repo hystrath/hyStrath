@@ -26,21 +26,21 @@ Class
 
 
 Description
-    Prevents interaction only between specific pairs of molecules 
-    
-    code changes required for changes in fluid density 
-    
-    
+    Prevents interaction only between specific pairs of molecules
+
+    code changes required for changes in fluid density
+
+
     reminder:
-    
+
     FALSE = interact
-    TRUE = do not interact 
-    
+    TRUE = do not interact
+
     OR
-    
+
     FALSE = do not exclude interactions
     TRUE = exclude interactions
-    
+
 SourceFiles
     neighbourExclusionsI.H
     neighbourExclusions.C
@@ -78,7 +78,7 @@ private:
         List<label> tNsB_;
 
         List<DynamicList<label> > fullTNs_;
-        
+
 
 public:
 
@@ -111,7 +111,7 @@ public:
         // Check
 
         // Edit
-        
+
         void initialiseExclusions();
 
         bool excludeMolecules
@@ -119,7 +119,7 @@ public:
             polyMolecule* molI,
             polyMolecule* molJ
         );
-        
+
         bool excludeSites
         (
             polyMolecule* molI,
@@ -127,7 +127,7 @@ public:
             const label& siteI,
             const label& siteJ
         );
-        
+
 
         // Write
 

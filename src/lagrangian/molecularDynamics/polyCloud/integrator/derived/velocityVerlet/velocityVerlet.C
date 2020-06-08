@@ -54,8 +54,8 @@ velocityVerlet::velocityVerlet
 )
 :
     polyIntegrator(t, molCloud, dict)
-/*    propsDict_(dict.subDict(typeName + "Properties")),*/    
-  
+/*    propsDict_(dict.subDict(typeName + "Properties")),*/
+
 {}
 
 
@@ -68,7 +68,7 @@ velocityVerlet::~velocityVerlet()
 
 void velocityVerlet::init()
 {
-    
+
 }
 
 void velocityVerlet::evolve()

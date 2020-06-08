@@ -181,7 +181,7 @@ inline scalar brennerPotential::fIJ(const scalar& r)
 
     if ( (r < rIJ2_) && (r >= rIJ1_) )
     {
-        
+
        fij = 0.5*
              (
                 1.0+
@@ -225,7 +225,7 @@ inline scalar brennerPotential::G(const scalar& cosThetaIJK)
                     -(
                         (c0_*c0_)/
                         (
-                            (d0_*d0_) 
+                            (d0_*d0_)
                             + (1.0 +cosThetaIJK)*(1.0+cosThetaIJK)
                         )
                     )
@@ -335,7 +335,7 @@ inline scalar brennerPotential::splineInterpolation
     hmm[j][8] = 0.0;
     hmm[j][9] = 0.0;
     hmm[j][10] = 0.0;
-   
+
     hmm.source()[j] = 0.0;
 
     j++;
@@ -353,7 +353,7 @@ inline scalar brennerPotential::splineInterpolation
     hmm[j][8] = 0.0;
     hmm[j][9] = 0.0;
     hmm[j][10] = 0.0;
-   
+
     hmm.source()[j] = y[2] - b[3];
 
 
@@ -372,7 +372,7 @@ inline scalar brennerPotential::splineInterpolation
     hmm[j][8] = 0.0;
     hmm[j][9] = 0.0;
     hmm[j][10] = 0.0;
-   
+
     hmm.source()[j] = 0.0;
 
 
@@ -391,14 +391,14 @@ inline scalar brennerPotential::splineInterpolation
     hmm[j][8] = 0.0;
     hmm[j][9] = 0.0;
     hmm[j][10] = 0.0;
-   
+
     hmm.source()[j] = 0.0;
 
 
 
     j++;
 
-    // (C) z = 1, 
+    // (C) z = 1,
 
     hmm[j][0] = 0.0;
     hmm[j][1] = 0.0;
@@ -411,7 +411,7 @@ inline scalar brennerPotential::splineInterpolation
     hmm[j][8] = 0.0;
     hmm[j][9] = 0.0;
     hmm[j][10] = 0.0;
-   
+
     hmm.source()[j] = y[3]-c[3];
 
 
@@ -430,7 +430,7 @@ inline scalar brennerPotential::splineInterpolation
     hmm[j][8] = 0.0;
     hmm[j][9] = 0.0;
     hmm[j][10] = -1.0;
-   
+
     hmm.source()[j] = 0.0;
 
     j++;
@@ -448,14 +448,14 @@ inline scalar brennerPotential::splineInterpolation
     hmm[j][8] = 0.0;
     hmm[j][9] = -2.0;
     hmm[j][10] = 0.0;
-   
+
     hmm.source()[j] = 0.0;
 
 
 
     j++;
 
-    // (D) z = 1, 
+    // (D) z = 1,
 
     hmm[j][0] = 0.0;
     hmm[j][1] = 0.0;
@@ -468,12 +468,12 @@ inline scalar brennerPotential::splineInterpolation
     hmm[j][8] = 1.0;
     hmm[j][9] = 1.0;
     hmm[j][10] = 1.0;
-   
+
     hmm.source()[j] = y[4]-d[3];
 
     j++;
 
-    // (D) z = 1, 
+    // (D) z = 1,
 
     hmm[j][0] = 0.0;
     hmm[j][1] = 0.0;
@@ -486,7 +486,7 @@ inline scalar brennerPotential::splineInterpolation
     hmm[j][8] = 3.0;
     hmm[j][9] = 2.0;
     hmm[j][10] = 1.0;
-   
+
     hmm.source()[j] = 0.0;
 
     scalarField m(11,0.0);
@@ -606,7 +606,7 @@ inline scalar brennerPotential::splineInterpolationII
     hmm[j][5] = 0.0;
     hmm[j][6] = 0.0;
     hmm[j][7] = 0.0;
-   
+
     hmm.source()[j] = 0.0;
 
     j++;
@@ -621,7 +621,7 @@ inline scalar brennerPotential::splineInterpolationII
     hmm[j][5] = 0.0;
     hmm[j][6] = 0.0;
     hmm[j][7] = 0.0;
-   
+
     hmm.source()[j] = y[2] - b[3];
 
 
@@ -637,7 +637,7 @@ inline scalar brennerPotential::splineInterpolationII
     hmm[j][5] = 0.0;
     hmm[j][6] = 0.0;
     hmm[j][7] = -1.0;
-   
+
     hmm.source()[j] = 0.0;
 
 
@@ -654,7 +654,7 @@ inline scalar brennerPotential::splineInterpolationII
     hmm[j][6] = -2.0;
     hmm[j][7] = 0.0;
 
-   
+
     hmm.source()[j] = 0.0;
 
     j++;
@@ -669,7 +669,7 @@ inline scalar brennerPotential::splineInterpolationII
     hmm[j][6] = 1.0;
     hmm[j][7] = 1.0;
 
-   
+
     hmm.source()[j] = y[3]-c[3];
 
     j++;
@@ -682,7 +682,7 @@ inline scalar brennerPotential::splineInterpolationII
     hmm[j][5] = 3.0;
     hmm[j][6] = 2.0;
     hmm[j][7] = 1.0;
-   
+
     hmm.source()[j] = 0.0;
 
 

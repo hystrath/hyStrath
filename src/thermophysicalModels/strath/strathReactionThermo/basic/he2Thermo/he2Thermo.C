@@ -74,7 +74,7 @@ void Foam::he2Thermo<BasicThermo, MixtureType>::init()
             patchi
         );
     }
-    
+
     this->hetBoundaryCorrection(this->het_);
 }
 
@@ -1049,7 +1049,7 @@ Foam::he2Thermo<BasicThermo, MixtureType>::Cv_t() const
             pCvt[facei] = /*this->patchFaceMixture_Cv_t
             (
                 //&Foam::species::multiThermo<BasicThermo, MixtureType>::Cv_t,
-                patchi, 
+                patchi,
                 facei,
                 pp[facei],
                 pTt[facei]
@@ -1201,7 +1201,7 @@ Foam::he2Thermo<BasicThermo, MixtureType>::Cp_t() const
         {
             pCpt[facei] = /*this->patchFaceMixture_Cp_t
             (
-                patchi, 
+                patchi,
                 facei,
                 pp[facei],
                 pTt[facei]

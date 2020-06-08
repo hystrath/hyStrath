@@ -130,7 +130,7 @@ public:
             {
                 return this->het_;
             }
-            
+
             //- Vibrational Enthalpy/Internal energy [J/kg]
             //  Non-const access allowed for transport equations
             virtual volScalarField& hev()
@@ -143,7 +143,7 @@ public:
             {
                 return this->hevMix_;
             }
-            
+
             //- Electronic Enthalpy/Internal energy [J/kg]
             //  Non-const access allowed for transport equations
             virtual volScalarField& heel()
@@ -156,7 +156,7 @@ public:
             {
                 return this->heelMix_;
             }
-            
+
             //- Vib-electronic Enthalpy/Internal energy [J/kg]
             //  Non-const access allowed for transport equations
             virtual volScalarField& hevel()
@@ -176,7 +176,7 @@ public:
 
             // Old templates with 2 arguments considers thermal equilibrium: Ttr=Tve
             // This modification has been done on 11 Feb 2016
-            
+
             //- Equilibrium heat capacity at constant pressure for patch [J/kg/K]
             virtual tmp<scalarField> Cp
             (
@@ -187,7 +187,7 @@ public:
             {
                 return Cp(p, T, T, patchi);
             };
-            
+
             //- Equilibrium heat capacity at constant volume for patch [J/kg/K]
             virtual tmp<scalarField> Cv
             (
@@ -198,7 +198,7 @@ public:
             {
                 return Cv(p, T, T, patchi);
             };
-            
+
             //- Equilibrium gamma = Cp/Cv for patch []
             virtual tmp<scalarField> gamma
             (
@@ -209,7 +209,7 @@ public:
             {
                 return gamma(p, T, T, patchi);
             };
-            
+
             // NEW VINCENT ****************************************************
           //- het
             //- Trans-rotational Enthalpy/Internal energy
@@ -220,7 +220,7 @@ public:
                 const volScalarField& Tt
             ) const;
 
-            //- Trans-rotational Enthalpy/Internal 
+            //- Trans-rotational Enthalpy/Internal
             //  energy for cell-set [J/kg]
             virtual tmp<scalarField> het
             (
@@ -229,7 +229,7 @@ public:
                 const labelList& cells
             ) const;
 
-            //- Trans-rotational Enthalpy/Internal 
+            //- Trans-rotational Enthalpy/Internal
             //  energy for patch [J/kg]
             virtual tmp<scalarField> het
             (
@@ -237,7 +237,7 @@ public:
                 const scalarField& Tt,
                 const label patchi
             ) const;
-            
+
           //- hev
             //- Vibrational Enthalpy/Internal energy
             //  for given pressure and temperature [J/kg]
@@ -262,8 +262,8 @@ public:
                 const scalarField& Tv,
                 const label patchi
             ) const;
-            
-          //- heel  
+
+          //- heel
             //- Electronic Enthalpy/Internal energy
             //  for given pressure and temperature [J/kg]
             virtual tmp<volScalarField> heel
@@ -279,7 +279,7 @@ public:
                 const scalarField& Tv,
                 const labelList& cells
             ) const;
-            
+
             //- Electronic Enthalpy/Internal energy for patch [J/kg]
             virtual tmp<scalarField> heel
             (
@@ -287,8 +287,8 @@ public:
                 const scalarField& Tv,
                 const label patchi
             ) const;
-            
-          //- hevel  
+
+          //- hevel
             //- Vib-electronic Enthalpy/Internal energy
             //  for given pressure and temperature [J/kg]
             virtual tmp<volScalarField> hevel
@@ -304,7 +304,7 @@ public:
                 const scalarField& Tv,
                 const labelList& cells
             ) const;
-            
+
             //- Vib-electronic Enthalpy/Internal energy for patch [J/kg]
             virtual tmp<scalarField> hevel
             (
@@ -312,8 +312,8 @@ public:
                 const scalarField& Tv,
                 const label patchi
             ) const;
-            
-          //- zetar  
+
+          //- zetar
             //- Degrees of freedom associated with the rotational energy mode
             //  for given pressure and temperature [-]
             virtual tmp<volScalarField> zetar
@@ -341,9 +341,9 @@ public:
                 const scalarField& Tt,
                 const scalarField& Tv,
                 const label patchi
-            ) const; 
-            
-          //- zetav 
+            ) const;
+
+          //- zetav
             //- Degrees of freedom associated with the vibrational energy mode
             //  for given pressure and temperature [-]
             virtual tmp<volScalarField> zetav
@@ -369,8 +369,8 @@ public:
                 const scalarField& Tv,
                 const label patchi
             ) const;
-            
-          //- zetael 
+
+          //- zetael
             //- Degrees of freedom associated with the electronic energy mode
             //  for given pressure and temperature [-]
             virtual tmp<volScalarField> zetael
@@ -395,14 +395,14 @@ public:
                 const scalarField& p,
                 const scalarField& Tv,
                 const label patchi
-            ) const;               
+            ) const;
             // END NEW VINCENT ************************************************
 
             //- Chemical enthalpy [J/kg]
             virtual tmp<volScalarField> hc() const;
 
             // NEW VINCENT ****************************************************
-            //- Trans-rotational temperature from enthalpy/internal 
+            //- Trans-rotational temperature from enthalpy/internal
             //  energy for cell-set
             virtual tmp<scalarField> TtHEt
             (
@@ -421,8 +421,8 @@ public:
                 const scalarField& T0,      // starting temperature
                 const label patchi
             ) const;
-            
-            //- Vibrational temperature from enthalpy/internal 
+
+            //- Vibrational temperature from enthalpy/internal
             //  energy for cell-set
             virtual tmp<scalarField> TvHEv
             (
@@ -440,8 +440,8 @@ public:
                 const scalarField& T0,      // starting temperature
                 const label patchi
             ) const;
-            
-            //- Vib-electronic temperature from enthalpy/internal 
+
+            //- Vib-electronic temperature from enthalpy/internal
             //  energy for cell-set
             virtual tmp<scalarField> TvelHEvel
             (
@@ -460,7 +460,7 @@ public:
                 const label patchi
             ) const;
             // END NEW VINCENT ************************************************
-            
+
             //- Heat capacity at constant pressure for patch [J/kg/K]
             virtual tmp<scalarField> Cp
             (
@@ -484,7 +484,7 @@ public:
 
             //- Heat capacity at constant volume [J/kg/K]
             virtual tmp<volScalarField> Cv() const;
-            
+
             // NEW VINCENT **********************************************
             //- Heat capacity at constant volume [J/kg/K]
             //  trans-rotational energy mode
@@ -498,11 +498,11 @@ public:
                 const scalarField& Tt,
                 const label patchi
             ) const;
-            
+
             //- Heat capacity at constant volume [J/kg/K]
             //  vibrational energy mode
             virtual tmp<volScalarField> Cv_v() const;
-            
+
             //- Heat capacity at constant volume for patch[J/kg/K]
             //  vibrational energy mode
             virtual tmp<scalarField> Cv_v
@@ -511,7 +511,7 @@ public:
                 const scalarField& Tv,
                 const label patchi
             ) const;
-            
+
             //- Heat capacity at constant pressure [J/kg/K]
             //  trans-rotational energy mode
             virtual tmp<volScalarField> Cp_t() const;
@@ -554,7 +554,7 @@ public:
                 const scalarField& Tt,
                 const label patchi
             ) const;
-            
+
             //- Thermal diffusivity of the mixture [kg/m/s]
             //  vibrational energy mode
             virtual tmp<volScalarField> alpha_v() const;

@@ -101,7 +101,7 @@ label cylinderBin::isPointWithinBin
     )
     {
 
-        if(n == nBins_) 
+        if(n == nBins_)
         {
             n--;
         }
@@ -110,9 +110,9 @@ label cylinderBin::isPointWithinBin
         {
             vector rBin = startPoint_ + scalar(n)*binWidth_*unitVector_;
             vector rBI = rBin - rI;
-    
+
             scalar distSqr = magSqr(rBI) - magSqr(rBI & unitVector_);
-    
+
             if(distSqr <= rMaxSqr_)
             {
                 binNumber = n;

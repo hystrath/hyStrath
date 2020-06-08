@@ -55,7 +55,7 @@ class VariableSoftSphere
         //- Reference temperature
         const scalar Tref_;
 
-        
+
 
 public:
 

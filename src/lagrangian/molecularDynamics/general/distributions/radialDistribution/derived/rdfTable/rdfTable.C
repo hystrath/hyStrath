@@ -57,26 +57,26 @@ rdfTable::rdfTable
 //     rdf_()
 {
 //     word rdfName(propsDict_.lookup("name"));
-// 
+//
 //     readFromFile_ = Switch(propsDict_.lookup("readFromFile"));
-// 
+//
 //     if(!readFromFile_)
 //     {
 //         autoPtr<rdfModel> rdfTemp
 //         (
 //             rdfModel::New(t, propsDict_)
 //         );
-//     
+//
 //         const scalarField& g = rdfTemp->g();
 //         const scalarField& r = rdfTemp->r();
 //         const scalar& binWidth = rdfTemp->binWidth();
-//     
+//
 //         rdf_ = radialDistribution(g, r, binWidth, rdfName);
 //     }
 //     else
 //     {
 //         rdf_ = radialDistribution(rdfName);
-// 
+//
 //         rdf_.readRDF(time_.time());
 //     }
 }

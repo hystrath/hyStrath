@@ -46,13 +46,13 @@ namespace Foam
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-inline List<label> selectSiteIds::siteIds() 
+inline List<label> selectSiteIds::siteIds()
 {
     return siteIds_;
 }
 
 
-inline List<word> selectSiteIds::siteIdNames() 
+inline List<word> selectSiteIds::siteIdNames()
 {
     return siteIdNames_;
 }

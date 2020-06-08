@@ -35,10 +35,10 @@ void Foam::LewisNumber<ThermoType>::updateCoefficients()
     // rho*Ds = Le*kappa_tr/Cp_tr - NEW VINCENT 16/05/2016
     /*std::clock_t start;
     double duration;*/
-    
+
     //this->D_[0] = this->turbulence_.kappaEff()*Le_ / this->thermo_.Cp_t(); //TODO
     this->D_[0] = this->thermo_.kappatr()*Le_ / this->thermo_.Cp_t();
-    
+
     /*start = std::clock();
     volScalarField kk = this->turbulence_.kappaEff();
     duration = (std::clock() - start) / double(CLOCKS_PER_SEC);
@@ -47,22 +47,22 @@ void Foam::LewisNumber<ThermoType>::updateCoefficients()
     volScalarField Cpt = this->thermo_.Cp_t();
     duration = (std::clock() - start) / double(CLOCKS_PER_SEC);
     Info << "timer Cpt load: " << duration << endl;*/
-    
+
     if(this->thermo_.composition().particleType(0) == 3)
     {
         this->D_[0] *= 2.0; // Ambipolar diffusion for charged particles
     }
-    
+
     for(int speciei=1; speciei < this->D_.size(); speciei++)
     {
         this->D_[speciei] = this->D_[0];
-        
+
         if(this->thermo_.composition().particleType(speciei) == 3)
         {
             this->D_[speciei] *= 2.0; // Ambipolar diffusion for charged particles
         }
     }
-} 
+}
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
@@ -75,9 +75,9 @@ Foam::LewisNumber<ThermoType>::LewisNumber
 )
 :
     Fick<ThermoType>(thermo, turbulence),
-    
+
     Le_(readScalar(IOdictionary::subDict("transportModels")
-        .subDict("diffusiveFluxesParameters").lookup("LewisNumber"))) 
+        .subDict("diffusiveFluxesParameters").lookup("LewisNumber")))
 {}
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

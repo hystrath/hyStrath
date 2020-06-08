@@ -92,7 +92,7 @@ bool Foam::polyMolecule::move
             dt *= trackToFace(position() + dt*v_, td, false);
 
             //- face tracking info
-            if( this->face() != -1 )   
+            if( this->face() != -1 )
             {
                 //--  monitoring flux properties
                 td.cloud().tracker().updateFields
@@ -117,7 +117,7 @@ void Foam::polyMolecule::setAsReferred()
 void Foam::polyMolecule::updateHalfVelocity
 (
 //     const constantProperties& constProps,
-    const constantMoleculeProperties& cP,       
+    const constantMoleculeProperties& cP,
     const scalar& trackTime
 )
 {
@@ -143,7 +143,7 @@ void Foam::polyMolecule::updateHalfVelocity
 void Foam::polyMolecule::updateAcceleration
 (
 //     const constantProperties& constProps
-    const constantMoleculeProperties& cP    
+    const constantMoleculeProperties& cP
 )
 {
 //     scalar m = constProps.mass();
@@ -162,10 +162,10 @@ void Foam::polyMolecule::updateAcceleration
 void Foam::polyMolecule::updateAfterMove
 (
 //     const constantProperties& constProps,
-    const constantMoleculeProperties& cP,    
+    const constantMoleculeProperties& cP,
     const scalar& trackTime
 )
-{   
+{
     if (!cP.pointMolecule(id_))
     {
         const diagTensor& momentOfInertia(cP.momentOfInertia(id_));
@@ -206,7 +206,7 @@ void Foam::polyMolecule::updateAfterMove
 void Foam::polyMolecule::transformProperties(const tensor& T)
 {
     particle::transformProperties(T);
-    
+
     Q_ = T & Q_;
 
     v_ = transform(T, v_);
@@ -221,7 +221,7 @@ void Foam::polyMolecule::transformProperties(const tensor& T)
 
     sitePositions_ = position_ + (T & (sitePositions_ - position_));
 
-    siteForces_ = T & siteForces_;    
+    siteForces_ = T & siteForces_;
 }
 
 

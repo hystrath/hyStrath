@@ -64,11 +64,11 @@ pairPotentials::pairPotentials
     exclusions_(pairPotentialsList_.size())
 
 {
-   
+
     if(pairPotentialsList_.size() > 0 )
     {
         Info << nl << "Creating potentials: " << nl << endl;
-    
+
         forAll(pairPotentialsList_, i)
         {
             const entry& potI = pairPotentialsList_[i];
@@ -79,60 +79,60 @@ pairPotentials::pairPotentials
             (
                 pairPotentialModel::New(mesh, molCloud, redUnits, headerName, potIDict)
             );
-    
+
             pairNames_[i] = pairPotentials_[i]->type();
             pairIds_[i] = i;
-            
+
             exclusions_[i] = pairPotentials_[i]->exclusions();
         }
-        
-        testPairPotentials();        
+
+        testPairPotentials();
     }
     else
     {
          FatalErrorIn("pairPotentials.C") << nl
                 << " Something went wrong. You have no potentials in your system/potentialDict"
-                << nl << nl << "Check that the format is as follows: " 
+                << nl << nl << "Check that the format is as follows: "
                 << " pairs " << nl
                 << " ( " << nl
                 << "    enter your pair potentials here "
-                << " ); " 
-                << nl << abort(FatalError);       
+                << " ); "
+                << nl << abort(FatalError);
     }
-    
+
     // making directory
     pathName_ = mesh_.time().path()/"potentials";
 
     if(isDir(pathName_) )
     {
         rmDir(pathName_);
-    }     
-    
-    mkDir(pathName_);    
-   
-    // electrostatic potential 
-    
+    }
+
+    mkDir(pathName_);
+
+    // electrostatic potential
+
     word headerName = "electrostatic";
-    
+
     dictionary& dict = potentialsDict_.subDict(headerName);
-    
+
     electrostaticPotential_ = autoPtr<pairPotentialModel>
     (
         pairPotentialModel::New(mesh, molCloud, redUnits, headerName, dict)
     );
 
     Info << "exclusions = " << exclusions_ << endl;
-    
+
     rCut_ = maxRCut();
 //     rCutSqr_ = rCut_*rCut_;
-    
-    
+
+
     // write out potentials
     forAll(pairPotentials_, i)
     {
         pairPotentials_[i]->output(pathName_);
     }
-    
+
     electrostaticPotential_->output(pathName_);
 
 }
@@ -148,34 +148,34 @@ void pairPotentials::testPairPotentials()
     Info << nl << "Testing pair potentials..." << nl << endl;
 
     // check that all pair sites have pair potential combinations defined in potentialDict
-    // and create the linked lists 
+    // and create the linked lists
 
     const List<word>& pairSites = cP_.pairPotSiteIdList();
-    
+
     Info << "cP_.pairPotSiteIdList() " << cP_.pairPotSiteIdList() << endl;
-    
+
     // imp: first to set size of lists
     pairPotIdList_to_pairPotentials_.setSize(pairSites.size());
-    
+
     forAll(pairSites, i)
     {
-        pairPotIdList_to_pairPotentials_[i].setSize(pairSites.size(), -1); 
+        pairPotIdList_to_pairPotentials_[i].setSize(pairSites.size(), -1);
     }
-    
+
     forAll(pairSites, i)
     {
         forAll(pairSites, j)
         {
             bool pairsFound = false;
-            
+
             forAll(pairPotentials_, k)
             {
                 const List<word>& ids = pairPotentials_[k]->idList();
-                
+
                 if
                 (
                     ( (ids[0] == pairSites[i]) && (ids[1] == pairSites[j]) ) ||
-                    ( (ids[1] == pairSites[i]) && (ids[0] == pairSites[j]) ) 
+                    ( (ids[1] == pairSites[i]) && (ids[0] == pairSites[j]) )
                 )
                 {
                     pairPotIdList_to_pairPotentials_[i][j] = k;
@@ -183,30 +183,30 @@ void pairPotentials::testPairPotentials()
                     pairsFound = true;
                 }
             }
-            
+
             if(!pairsFound)
             {
                 FatalErrorIn("pairPotentials.C") << nl
                         << " You did not specify the following pair combination => "
                         << pairSites[i] << "-" << pairSites[j]
                         << nl << " in the system/potentialDict."
-                        << nl << abort(FatalError);                 
-                
+                        << nl << abort(FatalError);
+
             }
         }
     }
-    
+
     // create linked lists for sites
-    
+
     const List<word>& sites = cP_.siteIds();
-    
+
     siteIdList_to_pairPotentials_.setSize(sites.size());
-    
+
     forAll(sites, i)
     {
-        siteIdList_to_pairPotentials_[i].setSize(sites.size(), -1); 
+        siteIdList_to_pairPotentials_[i].setSize(sites.size(), -1);
     }
-    
+
     forAll(sites, i)
     {
         forAll(sites, j)
@@ -214,11 +214,11 @@ void pairPotentials::testPairPotentials()
             forAll(pairPotentials_, k)
             {
                 const List<word>& ids = pairPotentials_[k]->idList();
-                
+
                 if
                 (
                     ( (ids[0] == sites[i]) && (ids[1] == sites[j]) ) ||
-                    ( (ids[1] == sites[i]) && (ids[0] == sites[j]) ) 
+                    ( (ids[1] == sites[i]) && (ids[0] == sites[j]) )
                 )
                 {
                     siteIdList_to_pairPotentials_[i][j] = k;
@@ -227,7 +227,7 @@ void pairPotentials::testPairPotentials()
             }
         }
     }
-    
+
     Info << "siteIdList_to_pairPotentials_ = " << siteIdList_to_pairPotentials_ << endl;
 }
 
@@ -237,7 +237,7 @@ void pairPotentials::testPairPotentials()
 scalar pairPotentials::maxRCut()
 {
     scalar rCut = 0.0;
-    
+
     forAll(pairPotentials_, i)
     {
         if(pairPotentials_[i]->rCut() > rCut)
@@ -245,16 +245,16 @@ scalar pairPotentials::maxRCut()
             rCut = pairPotentials_[i]->rCut();
         }
     }
-    
+
     if(electrostaticPotential_->rCut() > rCut)
     {
         rCut = electrostaticPotential_->rCut();
-    }    
+    }
 
     Info << nl  << "rCut = " << rCut << nl << endl;
-    
+
     return rCut;
-}        
+}
 
 scalar pairPotentials::force
 (
@@ -295,7 +295,7 @@ bool pairPotentials::rCutSqr
 scalar pairPotentials::rMin
 (
     const label& k
-) 
+)
 {
      return pairPotentials_[k]->rMin();
 }
@@ -307,7 +307,7 @@ bool pairPotentials::excludeSites
     const label& sI,
     const label& sJ,
     const label& k
-) 
+)
 {
     if(!exclusions_[k])
     {
@@ -345,8 +345,8 @@ void pairPotentials::initialiseExclusionModels()
 //     const label sJ
 // ) const
 // {
-//     
-//     
+//
+//
 // }
 
 // supply molId I, molId J and i and j pot site indexes (see format of pairPotNames_ in cP_)

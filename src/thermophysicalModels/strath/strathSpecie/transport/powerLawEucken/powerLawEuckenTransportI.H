@@ -115,7 +115,7 @@ inline Foam::scalar Foam::powerLawEuckenTransport<Thermo>::mu
         *(this->W()*1.0e-3/constant::physicoChemical::NA.value())*Tref)
         /(constant::mathematical::twoPi*pow(dref_, 2.0)*(5.0-2.0*omega_)
             *(7.0-2.0*omega_));
-    
+
     return mu_ref*pow(Tt/Tref, omega_);
 }
 
@@ -173,7 +173,7 @@ inline Foam::scalar Foam::powerLawEuckenTransport<Thermo>::alphatr
     else
     {
         return 0.0;
-    } 
+    }
 }
 
 
@@ -190,7 +190,7 @@ inline Foam::scalar Foam::powerLawEuckenTransport<Thermo>::alphave
     else
     {
         return 0.0;
-    } 
+    }
 }
 
 // * * * * * * * * * * * * * * * Member Operators  * * * * * * * * * * * * * //

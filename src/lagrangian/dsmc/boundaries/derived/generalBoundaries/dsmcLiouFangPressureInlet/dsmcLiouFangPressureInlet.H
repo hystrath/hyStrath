@@ -77,7 +77,7 @@ private:
     scalar inletTemperature_;
     scalar theta_;
     scalar n_; // inlet number density
-    
+
 
     void setProperties();
 
@@ -123,7 +123,7 @@ public:
 
     //- update properties from a modified dictionary
     void updateProperties(const dictionary&);
-    
+
     //reset fields if mesh has changed
     void setNewBoundaryFields();
 

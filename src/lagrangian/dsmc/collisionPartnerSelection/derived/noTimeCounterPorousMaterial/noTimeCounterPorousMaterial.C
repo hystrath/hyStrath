@@ -101,7 +101,7 @@ void noTimeCounterPorousMaterial::collide()
     forAll(cellOccupancy, cellI)
     {
         const scalar deltaT = cloud_.deltaTValue(cellI);
-        
+
         const DynamicList<dsmcParcel*>& cellParcels(cellOccupancy[cellI]);
 
         label nC(cellParcels.size());
@@ -151,38 +151,38 @@ void noTimeCounterPorousMaterial::collide()
             cloud_.collisionSelectionRemainder()[cellI] = selectedPairs - nCandidates;
 
             collisionCandidates += nCandidates;
-            
+
             label porousCollisions = 0;
-            
+
             for (label c = 0; c < nCandidates; c++)
             {
                 if(cloud_.rndGen().sample01<scalar>() > porosity_)
                 {
                     //label candidateP = rndGen_.position<label>(0, nC - 1); OLD
                     label candidateP = cloud_.randomLabel(0, nC-1);
-                    
+
                     dsmcParcel& p = *cellParcels[candidateP];
-                    
+
                     scalar mass = cloud_.constProps(p.typeId()).mass();
-                    
+
 //                     scalar rand1 = cloud_.rndGen().sample01<scalar>();
 //                     scalar rand2 = cloud_.rndGen().sample01<scalar>();
 //                     scalar rand3 = cloud_.rndGen().sample01<scalar>();
-//                     
+//
 //                     if(cloud_.rndGen().sample01<scalar>() > 0.5)
 //                     {
-//                        rand1 *= -1.0; 
+//                        rand1 *= -1.0;
 //                     }
 //                     if(cloud_.rndGen().sample01<scalar>() > 0.5)
 //                     {
-//                        rand2 *= -1.0; 
+//                        rand2 *= -1.0;
 //                     }
 //                     if(cloud_.rndGen().sample01<scalar>() > 0.5)
 //                     {
-//                        rand3 *= -1.0; 
+//                        rand3 *= -1.0;
 //                     }
-                    
-                    
+
+
                     p.U() = sqrt(physicoChemical::k.value()*temperature_/mass)
                             *vector
                             (
@@ -190,15 +190,15 @@ void noTimeCounterPorousMaterial::collide()
                                 rndGen_.GaussNormal<scalar>(),
                                 rndGen_.GaussNormal<scalar>()
                             );
-                            
+
 //                     Info << "Velocity after control = " << p->U() << endl;
-                    
+
                     porousCollisions++;
                 }
             }
 
             nCandidates -= porousCollisions;
-            
+
             for (label c = 0; c < nCandidates; c++)
             {
                 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -285,7 +285,7 @@ void noTimeCounterPorousMaterial::collide()
                     // find which reaction model parcel p and q should use
                     label rMId = cloud_.reactions().returnModelId(parcelP, parcelQ);
 
-//                             Info << " parcelP id: " <<  parcelP.typeId() 
+//                             Info << " parcelP id: " <<  parcelP.typeId()
 //                                 << " parcelQ id: " << parcelQ.typeId()
 //                                 << " reaction model: " << rMId
 //                                 << endl;
@@ -312,7 +312,7 @@ void noTimeCounterPorousMaterial::collide()
                             (
                                 parcelP,
                                 parcelQ
-                            );                                    
+                            );
                         }
                         // if reaction unsuccessful use conventional collision model
                         if(cloud_.reactions().reactions()[rMId]->relax())

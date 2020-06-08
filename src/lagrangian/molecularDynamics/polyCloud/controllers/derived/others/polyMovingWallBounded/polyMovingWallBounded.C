@@ -77,8 +77,8 @@ polyMovingWallBounded::polyMovingWallBounded
     vector startPoint = propsDict_.lookup("startPoint");
     vector endPoint = propsDict_.lookup("endPoint");
 
-    bb_.resetBoundedBox(startPoint, endPoint);    
-    
+    bb_.resetBoundedBox(startPoint, endPoint);
+
     readProperties();
 }
 
@@ -93,19 +93,19 @@ void polyMovingWallBounded::initialConfiguration()
 {
     {
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
-        
+
         for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
         {
             if(findIndex(molIds_, mol().id()) != -1)
             {
                 if(bb_.contains(mol().position()))
-                {  
+                {
                     mol().special() = 0; // unfreeze
                 }
             }
         }
-    }    
-    
+    }
+
 }
 
 void polyMovingWallBounded::controlBeforeVelocityI()
@@ -114,22 +114,22 @@ void polyMovingWallBounded::controlBeforeVelocityI()
     velocity_ = wallMotionModel_->velocity();
 
 //     Info << "polyMovingWallBounded: control velocity = " << velocity_ << endl;
-        
+
     {
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
-        
+
         for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
         {
             if(findIndex(molIds_, mol().id()) != -1)
             {
                 if(bb_.contains(mol().position()))
-                {  
+                {
                     mol().a() = vector::zero;
-                    mol().v() = velocity_;                    
+                    mol().v() = velocity_;
                 }
             }
         }
-    }   
+    }
 }
 
 void polyMovingWallBounded::controlBeforeMove()

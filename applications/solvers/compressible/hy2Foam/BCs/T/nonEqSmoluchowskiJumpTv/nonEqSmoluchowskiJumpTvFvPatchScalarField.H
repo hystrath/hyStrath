@@ -55,7 +55,7 @@ class nonEqSmoluchowskiJumpTvFvPatchScalarField
 
         //- Name of the species
         word specieName_;
-        
+
         //- Velocity field name, default = "U"
         word UName_;
 
@@ -64,13 +64,13 @@ class nonEqSmoluchowskiJumpTvFvPatchScalarField
 
         //- Dynamic viscosity field name, default = "mu"
         word muName_;
-        
+
         //- Thermal diffusivity field name, default = "alphave_speciei"
         word alphaName_; // NEW VINCENT 03/03/2016
-        
+
         //- Ratio of specific heat capacities field name, default = "gammatr"
         word gammatrName_; // NEW VINCENT 03/03/2016
-        
+
         //- Mean free path field name, default = "mfp"
         word mfpName_; // NEW VINCENT 28/02/2016
 

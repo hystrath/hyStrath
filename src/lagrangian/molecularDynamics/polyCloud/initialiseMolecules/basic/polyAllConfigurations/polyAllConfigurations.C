@@ -32,7 +32,7 @@ Description
 
 namespace Foam
 {
-//- Null Constructor 
+//- Null Constructor
 polyAllConfigurations::polyAllConfigurations
 (
     const polyMesh& mesh
@@ -88,7 +88,7 @@ polyAllConfigurations::polyAllConfigurations
         {
             const entry& configurationI = configurationList_[c];
             const dictionary& configurationIDict = configurationI.dict();
-    
+
             configurations_[c] = autoPtr<polyConfiguration>
             (
                 polyConfiguration::New(molCloud, configurationIDict)

@@ -15,13 +15,13 @@
             IOobject::NO_WRITE
         )
     );
-    
+
     //Initialise seed to system time
     label rndSeed = clock::getTime();
-    
+
     //Determine the size of the random cache by multiplying by the number of molecules
     label rndCacheSizeMultiplier = 20;
-    
+
     //Read the random seed and over-write system time (if it exists in the dictionary)
     if (randomDict.headerOk())
     {
@@ -32,12 +32,12 @@
             rndCacheSizeMultiplier = readLabel(randomDict.lookup("randomCacheSizeMultiplier"));
     }
 
-    randomDict.close();    
-    
+    randomDict.close();
+
     cachedRandomMD rndGen(rndSeed, rndCacheSizeMultiplier);
-    
+
     IOstream::defaultPrecision(2); //Set write precision for random value output
-    
+
     fileName outputFile(runTime.path()/"random_"+argv[0]);
     OFstream os(outputFile);
 
@@ -65,4 +65,4 @@
             IOstream::defaultPrecision(6);
     }
 
-    controlDict.close();    
+    controlDict.close();

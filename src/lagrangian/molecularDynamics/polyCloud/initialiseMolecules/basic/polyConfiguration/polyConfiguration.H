@@ -69,7 +69,7 @@ protected:
         label nMolsAdded_;
 
     // Private Member Functions
-    
+
         // insert knowing from beforehand what cell info is
         void insertMolecule
         (
@@ -77,30 +77,30 @@ protected:
             const label cell,
             const label tetFace,
             const label tetPt,
-            const label& id,          
+            const label& id,
             const bool& tethered,
             const bool& frozen,
             const scalar& temperature,
             const vector& bulkVelocity
         );
-        
+
         // insert and determine cell info in function
         void insertMolecule
         (
             const point& position,
-            const label& id,         
+            const label& id,
             const bool& tethered,
             const bool& frozen,
             const scalar& temperature,
             const vector& bulkVelocity
         );
-        
+
 
         void deleteMolecule
         (
             polyMolecule& mol
-        );        
-        
+        );
+
         vector equipartitionLinearVelocity
         (
             scalar temperature,
@@ -131,7 +131,7 @@ public:
             ),
             (molCloud, dict)
         );
-   
+
     // Constructors
 
         //- Construct from components

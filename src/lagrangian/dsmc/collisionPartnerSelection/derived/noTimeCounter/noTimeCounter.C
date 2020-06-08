@@ -100,9 +100,9 @@ void noTimeCounter::collide()
     forAll(cellOccupancy, cellI)
     {
         const scalar deltaT = cloud_.deltaTValue(cellI);
-        
+
         const DynamicList<dsmcParcel*>& cellParcels(cellOccupancy[cellI]);
-        
+
         const scalar& cellVolume = mesh.cellVolumes()[cellI];
 
         const label nC(cellParcels.size());
@@ -141,14 +141,14 @@ void noTimeCounter::collide()
             // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
             scalar sigmaTcRMax = cloud_.sigmaTcRMax()[cellI];
-            
+
             //scalar selectedPairs = 0.0;
-            
+
             scalar selectedPairs =
                 cloud_.collisionSelectionRemainder()[cellI]
                 + 0.5*nC*(nC - 1)*cloud_.nParticles(cellI, true)*sigmaTcRMax*deltaT
                 /cellVolume;
-               
+
             const label nCandidates(selectedPairs);
 
             cloud_.collisionSelectionRemainder()[cellI] = selectedPairs - nCandidates;
@@ -223,9 +223,9 @@ void noTimeCounter::collide()
 
                 chargeP = cloud_.constProps(parcelP.typeId()).charge();
                 chargeQ = cloud_.constProps(parcelQ.typeId()).charge();
-                
+
                 //do not allow electron-electron collisions
-                
+
                 if(!(chargeP == -1 && chargeQ == -1))
                 {
 
@@ -234,7 +234,7 @@ void noTimeCounter::collide()
                         parcelP,
                         parcelQ
                     );
-                    
+
 
                     // Update the maximum value of sigmaTcR stored, but use the
                     // initial value in the acceptance-rejection criteria because
@@ -253,7 +253,7 @@ void noTimeCounter::collide()
                         // find which reaction model parcel p and q should use
                         label rMId = cloud_.reactions().returnModelId(parcelP, parcelQ);
 
-    //                             Info << " parcelP id: " <<  parcelP.typeId() 
+    //                             Info << " parcelP id: " <<  parcelP.typeId()
     //                                 << " parcelQ id: " << parcelQ.typeId()
     //                                 << " reaction model: " << rMId
     //                                 << endl;
@@ -280,7 +280,7 @@ void noTimeCounter::collide()
                                 (
                                     parcelP,
                                     parcelQ
-                                );                                    
+                                );
     //                         }
                             // if reaction unsuccessful use conventional collision model
                             if(cloud_.reactions().reactions()[rMId]->relax())
@@ -315,9 +315,9 @@ void noTimeCounter::collide()
     reduce(collisionCandidates, sumOp<label>());
 
     cloud_.sigmaTcRMax().correctBoundaryConditions();
-    
+
     infoCounter_++;
-        
+
     if(infoCounter_ >= cloud_.nTerminalOutputs())
     {
         if (collisionCandidates)
@@ -327,13 +327,13 @@ void noTimeCounter::collide()
     //             << "    Acceptance rate                 = "
     //             << scalar(collisions)/scalar(collisionCandidates) << nl
                 << endl;
-                
+
             infoCounter_ = 0;
         }
         else
         {
             Info<< "    No collisions" << endl;
-            
+
             infoCounter_ = 0;
         }
     }

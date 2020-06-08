@@ -35,25 +35,25 @@ namespace Foam
     // Chemistry solvers based on sensibleEnthalpy
 
     make2ChemistrySolverTypes(rho2ChemistryModel, demConstGasHThermoPhysicsH2TGD);
-    
+
     make2ChemistrySolverTypes(rho2ChemistryModel, demGasHThermoPhysicsH2TGD);
-    
+
     make2ChemistrySolverTypes(rho2ChemistryModel, demBEGasHThermoPhysicsH2TGD);
-    
+
     make2ChemistrySolverTypes(rho2ChemistryModel, demPLEGasHThermoPhysicsH2TGD);
-    
+
     make2ChemistrySolverTypes(rho2ChemistryModel, demCEAGasHThermoPhysicsH2TGD);
 
     // Chemistry solvers based on sensibleInternalEnergy
-    
+
     make2ChemistrySolverTypes(rho2ChemistryModel, demConstGasEThermoPhysicsH2TGD);
-    
+
     make2ChemistrySolverTypes(rho2ChemistryModel, demGasEThermoPhysicsH2TGD);
-    
+
     make2ChemistrySolverTypes(rho2ChemistryModel, demBEGasEThermoPhysicsH2TGD);
-    
+
     make2ChemistrySolverTypes(rho2ChemistryModel, demPLEGasEThermoPhysicsH2TGD);
-    
+
     make2ChemistrySolverTypes(rho2ChemistryModel, demCEAGasEThermoPhysicsH2TGD);
 }
 

@@ -59,7 +59,7 @@ class buckinghamPotential
 
         scalar rho_;
         scalar alpha_;
-        scalar C_;        
+        scalar C_;
 
 
 public:

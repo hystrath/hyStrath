@@ -25,8 +25,8 @@ Class
     potentials
 
 Description
-    The first point of contact of storage and access of potentials 
-    
+    The first point of contact of storage and access of potentials
+
 
 SourceFiles
     potentialsI.H
@@ -59,38 +59,38 @@ class potentials
     // Private data
 
         const polyMesh& mesh_;
-        
+
         polyMoleculeCloud& molCloud_;
 
         const reducedUnits& redUnits_;
-        
+
         const constantMoleculeProperties& cP_;
-        
+
         pairPotentials pairPotentials_;
-        
+
         scalar potentialEnergyLimit_;
 
         labelList removalOrder_;
-        
+
         // largest rCut of all pair and electrostatic potentials
-        scalar rCutMax_; 
-        
-        
+        scalar rCutMax_;
+
+
         bool checkPotentialOverlaps_;
-        
-        // add exclusions functionality here 
-        
+
+        // add exclusions functionality here
+
 
         // user defined potentials go here and chosen from potentialsDict
-        
-        
-        
-        
+
+
+
+
     // Private Member Functions
 
         void readPotentialDict();
 
-        
+
         //- Disallow default bitwise copy construct
         potentials(const potentials&);
 
@@ -101,7 +101,7 @@ class potentials
 public:
 
         friend class polyMolecule;
-        
+
     // Constructors
 
         //- Construct from standard quantities
@@ -130,19 +130,19 @@ public:
 //             inline const List<word>& siteIdList() const;
 
 //             bool interactSites(polyMolecule* molI, polyMolecule* molJ, siteI, siteJ);
-            
+
 //             const pairPotentials& pairPots() const;
-            pairPotentials& pairPots();            
+            pairPotentials& pairPots();
 //             pairPotentials& pairPotentials();
-            
+
             inline const scalar& potentialEnergyLimit() const;
 
             inline const labelList& removalOrder() const;
 
 //             inline const pairPotentialList& pairPotentials() const;
-            
+
             const scalar& rCutMax() const;
-            
+
             bool checkPotentialOverlaps();
 };
 

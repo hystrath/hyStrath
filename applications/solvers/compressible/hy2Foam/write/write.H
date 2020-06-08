@@ -5,15 +5,15 @@ transport().write();
 composition.write();
 
 //- Write diffusion fluxes
-if (not hyLight) 
+if (not hyLight)
 {
     volVectorField sumDiffusiveFluxes = speciesDiffusion().sumDiffusiveFluxes();
     sumDiffusiveFluxes.write();
-    forAll(Y, speciei) 
+    forAll(Y, speciei)
     {
         volVectorField Jnc = speciesDiffusion().J(speciei);
         Jnc.write();
-        
+
         volVectorField Jc
         (
             IOobject
@@ -29,13 +29,13 @@ if (not hyLight)
         Jc.write();
     }
 }
-         
+
 if (not downgradeSingleT)
 {
-    if (not hyLight) 
+    if (not hyLight)
     {
         thermo.T().write();
-        
+
         if (noSolvedVibEq > 1)
         {
             thermo.Tv().write();
@@ -49,14 +49,14 @@ if (downgradeSingleTv)
 }
 
 
-if (writeWallHeatFlux) 
-{       
+if (writeWallHeatFlux)
+{
     surfaceScalarField heatFlux_convtr =
         -fvc::interpolate(turbulence->alphaEff())*fvc::snGrad(et);
-        
+
     surfaceScalarField heatFlux_convve =
         -fvc::interpolate(transport().alphave())*fvc::snGrad(ev);
-    
+
     surfaceScalarField heatFlux = heatFlux_convtr + heatFlux_convve;
 
     const surfaceScalarField::Boundary& patchHeatFlux = heatFlux.boundaryField();
@@ -67,27 +67,27 @@ if (writeWallHeatFlux)
         if (isA<wallFvPatch>(mesh.boundary()[patchi]))
         {
             wallHeatFlux.boundaryFieldRef()[patchi] = patchHeatFlux[patchi];
-            
-            const scalar int_tot_whf = 
+
+            const scalar int_tot_whf =
                 gSum
                 (
                     mesh.magSf().boundaryField()[patchi]
                    *patchHeatFlux[patchi]
                 );
-                
-            const scalar int_convtr_whf = 
+
+            const scalar int_convtr_whf =
                 gSum
                 (
                     mesh.magSf().boundaryField()[patchi]
                    *heatFlux_convtr.boundaryField()[patchi]
                 )/int_tot_whf*100.0;
-                
-            const scalar int_convve_whf = 
+
+            const scalar int_convve_whf =
                 gSum
                 (
                     mesh.magSf().boundaryField()[patchi]
                    *heatFlux_convve.boundaryField()[patchi]
-                )/int_tot_whf*100.0;           
+                )/int_tot_whf*100.0;
 
             Info<< "Patch " << patchi
                 << " named " << patchHeatFlux[patchi].patch().name()
@@ -112,10 +112,10 @@ if (reaction->lookupOrDefault<bool>("applyChangesAtWriteTime", false))
 if (reaction->lookupOrDefault<bool>("applyChangesAtWriteTimeAndWait", false))
 {
     label restartIn = reaction->lookupOrDefault<label>("restartIn", 120);
-    
+
     Info << "Waiting " << restartIn << " seconds before restart\n\n\n";
-         
-    Foam::sleep(restartIn);     
-    
+
+    Foam::sleep(restartIn);
+
     return true;
 }

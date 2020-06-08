@@ -72,51 +72,51 @@ protected:
         const polyMesh& mesh_;
 
         polyMoleculeCloud& molCloud_;
-        
+
         const reducedUnits& rU_;
-        
+
         dictionary  pairPotentialProperties_;
-       
-        // ids header of dictionary e.g. A-B 
+
+        // ids header of dictionary e.g. A-B
         word name_;
-        
+
         // split ids [0] = A; [1] = B
         List<word> idList_;
-        
+
         scalar rCut_;
         scalar rCutSqr_;
-        
+
         scalar rMin_;
-        
-        scalar dr_;        
-        
+
+        scalar dr_;
+
         bool useTables_;
-        
+
 //         word energyScalingFunction_;
 
 
         scalar fMin_;
-        scalar energyMin_;        
-       
+        scalar energyMin_;
+
         List<scalar> forceLookup_;
         List<scalar> energyLookup_;
-        
+
         mutable energyScalingFunction* esfPtr_;
 
-        bool writeTables_;        
+        bool writeTables_;
 
-        bool exclusions_;        
-        
+        bool exclusions_;
+
         autoPtr<exclusionModel> exclusionModel_;
-        
-        
+
+
     // Private Member Functions
-        
+
         void scaleEnergy
         (
             scalar& e,
             const scalar r
-        ) const;        
+        ) const;
 
 public:
 
@@ -138,7 +138,7 @@ public:
             ),
             (mesh, molCloud, redUnits, name, dict)
         );
-   
+
     // Constructors
 
         //- Construct from components
@@ -171,19 +171,19 @@ public:
 
 
     // Member Functions
-        
+
         void setLookupTables();
 
 
 
         scalar energyLookUpFromTable (const scalar r) const;
         scalar forceLookUpFromTable (const scalar r) const;
-        
+
         virtual scalar energy (const scalar r) const = 0;
         virtual scalar force (const scalar r) const = 0;
-//         virtual scalar interaction (const scalar r, scalar& force, scalar& energy) const = 0;        
-        
-        
+//         virtual scalar interaction (const scalar r, scalar& force, scalar& energy) const = 0;
+
+
         List<Pair<scalar> > energyTable() const;
         List<Pair<scalar> > forceTable() const;
 
@@ -206,7 +206,7 @@ public:
         const dictionary& pairPotentialProperties() const;
 
         void output(const fileName& pathName);
-        
+
         void writeEnergyAndForceTables(const fileName& pathName);
 
         //- Read pairPotential dictionary
@@ -216,17 +216,17 @@ public:
 //         ) = 0;
 
         virtual void write(const fileName& pathName) = 0;
-        
+
 
         inline const word& name() const;
         inline const List<word>& idList() const;
         inline scalar rMin() const;
         inline scalar dr() const;
         inline scalar rCut() const;
-        inline scalar rCutSqr() const;        
-        inline bool writeTables() const;        
-        inline bool exclusions() const;    
-        
+        inline scalar rCutSqr() const;
+        inline bool writeTables() const;
+        inline bool exclusions() const;
+
         inline autoPtr<exclusionModel>& excludeModel();
 };
 

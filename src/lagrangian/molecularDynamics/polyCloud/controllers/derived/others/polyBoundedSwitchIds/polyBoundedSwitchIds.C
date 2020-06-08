@@ -54,7 +54,7 @@ polyBoundedSwitchIds::polyBoundedSwitchIds
 )
 :
     polyStateController(t,  molCloud, dict),
-    propsDict_(dict.subDict(typeName + "Properties"))   
+    propsDict_(dict.subDict(typeName + "Properties"))
 {
     writeInTimeDir_ = false;
     writeInCase_ = false;
@@ -71,7 +71,7 @@ polyBoundedSwitchIds::polyBoundedSwitchIds
 
         initialMolIds_ = ids.molIds();
     }
-    
+
     {
         finalMolIds_.clear();
 
@@ -83,8 +83,8 @@ polyBoundedSwitchIds::polyBoundedSwitchIds
         );
 
         finalMolIds_ = ids.molIds();
-    }    
-    
+    }
+
     readProperties();
 
     vector startPoint = propsDict_.lookup("startPoint");
@@ -125,9 +125,9 @@ void polyBoundedSwitchIds::controlAfterForces()
     Info << "polyBoundedSwitchIds: control" << endl;
 
     IDLList<polyMolecule>::iterator mol(molCloud_.begin());
-    
+
     label nMols = 0;
-    
+
     for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
     {
         if(findIndex(initialMolIds_, mol().id()) != -1)
@@ -139,13 +139,13 @@ void polyBoundedSwitchIds::controlAfterForces()
             }
         }
     }
-    
+
 
     if(Pstream::parRun())
     {
         reduce(nMols, sumOp<label>());
-    }    
-    
+    }
+
     Info << "number of molecules switched = " << nMols << endl;
 }
 

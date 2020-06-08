@@ -45,16 +45,16 @@ addToRunTimeSelectionTable(pairPotentialModel, lennardJonesEqn, dictionary);
 lennardJonesEqn::lennardJonesEqn
 (
     const polyMesh& mesh,
-    polyMoleculeCloud& molCloud, 
+    polyMoleculeCloud& molCloud,
     const reducedUnits& redUnits,
-    const word& name, 
+    const word& name,
     const dictionary& dict
 )
 :
     pairPotentialModel(mesh, molCloud, redUnits, name, dict),
     propsDict_(dict.subDict(typeName + "Coeffs")),
     sigma_(readScalar(propsDict_.lookup("sigma"))),
-    epsilon_(readScalar(propsDict_.lookup("epsilon")))    
+    epsilon_(readScalar(propsDict_.lookup("epsilon")))
 {
     if(redUnits.runReducedUnits())
     {
@@ -63,10 +63,10 @@ lennardJonesEqn::lennardJonesEqn
     }
 
     useTables_ = false;
-    
+
 
     F_at_Rmin_ = rawForce(rMin_);
-    E_at_Rmin_ = rawEnergy(rMin_);    
+    E_at_Rmin_ = rawEnergy(rMin_);
 }
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
@@ -98,33 +98,33 @@ scalar lennardJonesEqn::rawForce(const scalar r) const
     scalar ir2 = (sigma_/r)*(sigma_/r);
 
     // (rIJ/sigma)^-6
-    scalar ir6 = ir2*ir2*ir2;    
-        
+    scalar ir6 = ir2*ir2*ir2;
+
     return 24.0*epsilon_*ir6*(2.0*ir6 - 1.0)*sqrt(ir2);
 }
 
-   
+
 scalar lennardJonesEqn::energy(const scalar r) const
 {
     scalar energy = E_at_Rmin_;
-    
+
     if(r > rMin_)
     {
         energy = rawEnergy(r);
-    }    
-    
+    }
+
     return energy;
 }
 
 scalar lennardJonesEqn::force(const scalar r) const
 {
     scalar force = F_at_Rmin_;
-    
+
     if(r > rMin_)
     {
         force = rawForce(r);
-    }    
-    
+    }
+
     return force;
 }
 
@@ -137,24 +137,24 @@ scalar lennardJonesEqn::force(const scalar r) const
 // )
 // {
 //     pairPotentialModel::read(pairPotentialProperties, rU);
-// 
+//
 //     lennardJonesEqnCoeffs_ = pairPotentialProperties.subDict(typeName + "Coeffs");
-// 
+//
 //     lennardJonesEqnCoeffs_.lookup("sigma") >> sigma_;
 //     lennardJonesEqnCoeffs_.lookup("epsilon") >> epsilon_;
-// 
+//
 //     if(rU.runReducedUnits())
 //     {
 //         sigma_ /= rU.refLength();
 //         epsilon_ /= rU.refEnergy();
 //     }
-// 
+//
 //     return true;
 // }
 
 void lennardJonesEqn::write(const fileName& pathName)
 {
-    
+
 }
 
 const dictionary& lennardJonesEqn::dict() const

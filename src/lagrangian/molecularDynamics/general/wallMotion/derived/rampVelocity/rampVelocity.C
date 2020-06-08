@@ -111,7 +111,7 @@ void rampVelocity::updateVelocity()
 
 
 // * * * * * * * * * * * * * * * Member Operators  * * * * * * * * * * * * * //
-// 
+//
 // void rampVelocity::operator=(const rampVelocity& rhs)
 // {
 //     // Check for assignment to self
@@ -121,9 +121,9 @@ void rampVelocity::updateVelocity()
 //             << "Attempted assignment to self"
 //             << abort(FatalError);
 //     }
-// 
+//
 //     Map<label>::operator=(rhs);
-// 
+//
 //     binWidth_ = rhs.binWidth();
 // }
 
@@ -137,14 +137,14 @@ void rampVelocity::updateVelocity()
 // {
 //     os  << d.binWidth_
 //         << static_cast<const Map<label>&>(d);
-// 
+//
 //     // Check state of Ostream
 //     os.check
 //     (
 //         "Ostream& operator<<(Ostream&, "
 //         "const rampVelocity&)"
 //     );
-// 
+//
 //     return os;
 // }
 

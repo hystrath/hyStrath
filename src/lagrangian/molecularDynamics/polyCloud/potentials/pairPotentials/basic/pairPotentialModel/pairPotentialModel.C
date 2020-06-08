@@ -45,7 +45,7 @@ defineRunTimeSelectionTable(pairPotentialModel, dictionary);
 pairPotentialModel::pairPotentialModel
 (
     const polyMesh& mesh,
-    polyMoleculeCloud& molCloud, 
+    polyMoleculeCloud& molCloud,
     const reducedUnits& redUnits,
     const word& name,
     const dictionary& dict
@@ -54,7 +54,7 @@ pairPotentialModel::pairPotentialModel
     mesh_(mesh),
     molCloud_(molCloud),
     rU_(redUnits),
-    pairPotentialProperties_(dict),    
+    pairPotentialProperties_(dict),
     name_(name),
     idList_(),
     rCut_(readScalar(dict.lookup("rCut"))),
@@ -65,15 +65,15 @@ pairPotentialModel::pairPotentialModel
     energyLookup_(0),
     esfPtr_(NULL),
     writeTables_(false),
-    exclusions_(false)   
+    exclusions_(false)
 {
-    writeTables_ = false;  
+    writeTables_ = false;
 
     if (dict.found("writeTables"))
     {
         writeTables_ = Switch(dict.lookup("writeTables"));
     }
-    
+
     if(rU_.runReducedUnits())
     {
         rCut_ /= rU_.refLength();
@@ -81,15 +81,15 @@ pairPotentialModel::pairPotentialModel
         dr_ /= rU_.refLength();
         rCutSqr_ = rCut_*rCut_;
     }
-    
+
     // splitting the name using a delimeter "A-B" => "A" and "B"
     idList_.setSize(2);
-    
+
 //     Info << nl << "name = " << name_ << endl;
-    
+
     std::string s = name_;
     std::string delimiter = "-";
-    
+
     size_t pos = 0;
     std::string token;
 
@@ -99,26 +99,26 @@ pairPotentialModel::pairPotentialModel
         s.erase(0, pos + delimiter.length());
         idList_[1]=s;
     }
-    
+
 //     Info << " idList = " << idList_ << endl;
-    
-    
-    // exclusions 
+
+
+    // exclusions
     if(dict.found("exclusionModel"))
     {
         exclusionModel_ = autoPtr<exclusionModel>
         (
             exclusionModel::New(mesh, molCloud_, dict)
         );
-        
+
         if(exclusionModel_->type() != "noExclusions")
         {
             exclusions_ = true;
         }
     }
-    
-/*    Info << "pairPotentialModel, " << name_ <<" exclusionModel =  " 
-    << exclusions_ << endl;  */  
+
+/*    Info << "pairPotentialModel, " << name_ <<" exclusionModel =  "
+    << exclusions_ << endl;  */
 }
 
 
@@ -128,8 +128,8 @@ autoPtr<pairPotentialModel> pairPotentialModel::New
 (
     const polyMesh& mesh,
     polyMoleculeCloud& molCloud,
-    const reducedUnits& redUnits, 
-    const word& name, 
+    const reducedUnits& redUnits,
+    const word& name,
     const dictionary& dict
 )
 {
@@ -198,7 +198,7 @@ void pairPotentialModel::setLookupTables()
         energyLookup_[k] = scaledEnergy(k*dr_ + rMin_);
         forceLookup_[k] = -energyDerivative((k*dr_ + rMin_), true);
     }
-    
+
     fMin_ = forceLookup_[0];
     energyMin_ = energyLookup_[0];
 }
@@ -223,7 +223,7 @@ scalar pairPotentialModel::forceLookUpFromTable(const scalar r) const
                 (k_rIJ - k)*forceLookup_[k+1]
             + (k + 1 - k_rIJ)*forceLookup_[k];
         }
-    
+
         return f;
     }
 }
@@ -346,7 +346,7 @@ scalar pairPotentialModel::energyDerivative
 // )
 // {
 //     pairPotentialProperties_ = pairPotentialProperties;
-// 
+//
 //     return true;
 // }
 
@@ -360,16 +360,16 @@ void pairPotentialModel::writeEnergyAndForceTables(const fileName& pathName)
 {
     Info<< "Writing energy and force to file for potential "
             << name_ << endl;
-            
-    label nBins = label((rCut_ - rMin_)/dr_) + 1;            
-    
+
+    label nBins = label((rCut_ - rMin_)/dr_) + 1;
+
     scalarField U(nBins, 0.0);
     scalarField f(nBins, 0.0);
-    
+
     for (label i=0; i<nBins; ++i)
     {
         scalar r = rMin_+dr_*i;
-        
+
         U[i] = energy(r);
         f[i] = force(r);
     }
@@ -380,7 +380,7 @@ void pairPotentialModel::writeEnergyAndForceTables(const fileName& pathName)
         {
             forAll(U, i)
             {
-                file 
+                file
                     << dr_*i << "\t"
                     << U[i] << "\t"
                     << f[i]
@@ -394,7 +394,7 @@ void pairPotentialModel::writeEnergyAndForceTables(const fileName& pathName)
                 << abort(FatalError);
         }
     }
-    
+
     {
         OFstream file(pathName/name_+"-SI.xy");
 
@@ -402,7 +402,7 @@ void pairPotentialModel::writeEnergyAndForceTables(const fileName& pathName)
         {
             forAll(U, i)
             {
-                file 
+                file
                     << dr_*i*rU_.refLength() << "\t"
                     << U[i]*rU_.refEnergy() << "\t"
                     << f[i]*rU_.refForce()
@@ -414,8 +414,8 @@ void pairPotentialModel::writeEnergyAndForceTables(const fileName& pathName)
             FatalErrorIn("void pairPotentialModel::write()")
                 << "Cannot open file " << file.name()
                 << abort(FatalError);
-        }  
-    } 
+        }
+    }
 }
 
 const dictionary& pairPotentialModel::pairPotentialProperties() const

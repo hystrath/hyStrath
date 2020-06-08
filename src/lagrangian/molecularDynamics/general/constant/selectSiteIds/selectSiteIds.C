@@ -63,13 +63,13 @@ selectSiteIds::selectSiteIds
     if(sites.size() > 0)
     {
         if
-        ( 
+        (
             (sites.size() == 1) &&
             (sites[0] == "ALL")
         )
         {
             siteIds_.setSize(cP.nSiteTypes(), -1);
-            
+
             forAll(cP.siteIds(), i)
             {
                 siteIds_[i] = i;
@@ -78,26 +78,26 @@ selectSiteIds::selectSiteIds
         else
         {
             DynamicList<word> sitesReduced(0);
-        
+
             forAll(sites, i)
             {
                 const word& siteName(sites[i]);
-        
+
                 if(findIndex(sitesReduced, siteName) == -1)
                 {
                     sitesReduced.append(siteName);
                 }
             }
-        
+
             siteIds_.setSize(sitesReduced.size(), -1);
             siteIdNames_.setSize(sitesReduced.size());
-            
+
             forAll(sitesReduced, i)
             {
                 const word& siteName(sitesReduced[i]);
-        
+
                 label siteId(findIndex(cP.siteIds(), siteName));
-        
+
                 if(siteId == -1)
                 {
                     FatalErrorIn
@@ -108,7 +108,7 @@ selectSiteIds::selectSiteIds
                         << " in siteIds dictionary = " << sites
                         << nl << exit(FatalError);
                 }
-        
+
                 siteIds_[i] = siteId;
                 siteIdNames_[i] = siteName;
             }
@@ -139,13 +139,13 @@ selectSiteIds::selectSiteIds
     if(sites.size() > 0)
     {
         if
-        ( 
+        (
             (sites.size() == 1) &&
             (sites[0] == "ALL")
         )
         {
             siteIds_.setSize(cP.nSiteTypes(), -1);
-            
+
             forAll(cP.siteIds(), i)
             {
                 siteIds_[i] = i;
@@ -154,26 +154,26 @@ selectSiteIds::selectSiteIds
         else
         {
             DynamicList<word> sitesReduced(0);
-        
+
             forAll(sites, i)
             {
                 const word& siteName(sites[i]);
-        
+
                 if(findIndex(sitesReduced, siteName) == -1)
                 {
                     sitesReduced.append(siteName);
                 }
             }
-        
+
             siteIds_.setSize(sitesReduced.size(), -1);
             siteIdNames_.setSize(sitesReduced.size());
-            
+
             forAll(sitesReduced, i)
             {
                 const word& siteName(sitesReduced[i]);
-        
+
                 label siteId(findIndex(cP.siteIds(), siteName));
-        
+
                 if(siteId == -1)
                 {
                     FatalErrorIn
@@ -184,9 +184,9 @@ selectSiteIds::selectSiteIds
                         << " in siteIds dictionary = " << sites
                         << nl << exit(FatalError);
                 }
-        
+
                 siteIds_[i] = siteId;
-                siteIdNames_[i] = siteName;                
+                siteIdNames_[i] = siteName;
             }
         }
     }
@@ -229,9 +229,9 @@ selectSiteIds::~selectSiteIds()
 //             << "Attempted assignment to self"
 //             << abort(FatalError);
 //     }
-// 
+//
 //     Map<label>::operator=(rhs);
-// 
+//
 //     binWidth_ = rhs.binWidth();
 // }
 
@@ -245,14 +245,14 @@ selectSiteIds::~selectSiteIds()
 // {
 //     os  << d.binWidth_
 //         << static_cast<const Map<label>&>(d);
-// 
+//
 //     // Check state of Ostream
 //     os.check
 //     (
 //         "Ostream& operator<<(Ostream&, "
 //         "const selectSiteIds&)"
 //     );
-// 
+//
 //     return os;
 // }
 

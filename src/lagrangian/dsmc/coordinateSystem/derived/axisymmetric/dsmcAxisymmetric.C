@@ -41,7 +41,7 @@ namespace Foam
 
     addToRunTimeSelectionTable
     (
-        dsmcCoordinateSystem, 
+        dsmcCoordinateSystem,
         dsmcAxisymmetric,
         fvMesh
     );
@@ -57,25 +57,25 @@ void Foam::dsmcAxisymmetric::axisymmetricWeighting()
         forAll(molsInCell, mIC)
         {
             dsmcParcel* p = molsInCell[mIC];
-            
+
             const scalar oldRadialWeight = p->RWF();
-                        
+
             const scalar newRadialWeight = RWF(c);
 
             p->RWF() = newRadialWeight;
-            
-            if (oldRadialWeight > newRadialWeight) 
+
+            if (oldRadialWeight > newRadialWeight)
             {
                 //- particle might be cloned
                 scalar prob = (oldRadialWeight/newRadialWeight) - 1.0;
-                
+
                 while(prob > 1.0)
                 {
                     //- add a particle and reduce prob by 1.0
                     vector U = p->U();
-                    
+
                     U.component(angularCoordinate_) *= -1.0;
-                    
+
                     cloud_.addNewParcel
                     (
                         p->position(),
@@ -91,14 +91,14 @@ void Foam::dsmcAxisymmetric::axisymmetricWeighting()
                         p->classification(),
                         p->vibLevel()
                     );
-                    
+
                     prob -= 1.0;
                 }
-                
+
                 if (prob > cloud_.rndGen().sample01<scalar>())
                 {
                     vector U = p->U();
-                    
+
                     U.component(angularCoordinate_) *= -1.0;
 
                     cloud_.addNewParcel
@@ -119,13 +119,13 @@ void Foam::dsmcAxisymmetric::axisymmetricWeighting()
                 }
             }
             else if (newRadialWeight > oldRadialWeight)
-            {           
+            {
                 //- particle might be deleted
                 if ((oldRadialWeight/newRadialWeight) < cloud_.rndGen().sample01<scalar>())
                 {
                     cloud_.deleteParticle(*p);
-                } 
-            } 
+                }
+            }
         }
     }
 }
@@ -137,11 +137,11 @@ void dsmcAxisymmetric::updateRWF()
     {
         RWF_[celli] = recalculateRWF(celli);
     }
-    
+
     forAll(RWF_.boundaryField(), patchi)
     {
         fvPatchScalarField& pRWF = RWF_.boundaryFieldRef()[patchi];
-        
+
         forAll(pRWF, facei)
         {
             pRWF[facei] = recalculatepRWF(patchi, facei);
@@ -155,7 +155,7 @@ void dsmcAxisymmetric::writeAxisymmetricInfo() const
     Info<< nl << "Axisymmetric simulation:" << nl
         << "- revolution axis label" << tab << revolutionAxis_ << nl
         << "- polar axis label" << tab << polarAxis_ << nl
-        << "- angular coordinate label" << tab << angularCoordinate_ << nl 
+        << "- angular coordinate label" << tab << angularCoordinate_ << nl
         << "- radial weighting method" << tab << rWMethod_ << "-based" << nl
         << "- radial extent" << tab << radialExtent_ << nl
         << "- maximum radial weighting factor" << tab << maxRWF_ << nl
@@ -209,7 +209,7 @@ void dsmcAxisymmetric::checkCoordinateSystemInputs(const bool init)
 {
     rWMethod_ = cloud_.particleProperties().subDict("axisymmetricProperties")
         .lookupOrDefault<word>("radialWeightingMethod", "cell");
-    
+
     if
     (
         rWMethod_ != "cell" and rWMethod_ != "particle"
@@ -225,20 +225,20 @@ void dsmcAxisymmetric::checkCoordinateSystemInputs(const bool init)
            "mixed. Please edit the entry: radialWeightingMethod"
         << exit(FatalError);
     }
-    
-    const word& revolutionAxis = 
+
+    const word& revolutionAxis =
         cloud_.particleProperties().subDict("axisymmetricProperties")
             .lookupOrDefault<word>("revolutionAxis", word::null);
-        
-    const word& polarAxis = 
+
+    const word& polarAxis =
         cloud_.particleProperties().subDict("axisymmetricProperties")
             .lookupOrDefault<word>("polarAxis", word::null);
-        
+
     if (revolutionAxis == "z")
     {
         revolutionAxis_ = 2;
-        
-        if (polarAxis == word::null) 
+
+        if (polarAxis == word::null)
         {
             polarAxis_ = (revolutionAxis_ + 1)%3;
             angularCoordinate_ = (revolutionAxis_ + 2)%3;
@@ -267,8 +267,8 @@ void dsmcAxisymmetric::checkCoordinateSystemInputs(const bool init)
     else if (revolutionAxis == "y")
     {
         revolutionAxis_ = 1;
-        
-        if (polarAxis == word::null) 
+
+        if (polarAxis == word::null)
         {
             polarAxis_ = (revolutionAxis_ + 1)%3;
             angularCoordinate_ = (revolutionAxis_ + 2)%3;
@@ -312,12 +312,12 @@ void dsmcAxisymmetric::checkCoordinateSystemInputs(const bool init)
             << exit(FatalError);
         }
     }
-    
+
     radialExtent_ = gMax
         (
             mesh_.faceCentres().component(polarAxis_)
         );
-        
+
     if (!(radialExtent_ > 0))
     {
         radialExtent_ = -gMin
@@ -325,20 +325,20 @@ void dsmcAxisymmetric::checkCoordinateSystemInputs(const bool init)
             mesh_.faceCentres().component(polarAxis_)
         );
     }
-        
+
     maxRWF_ = readScalar
         (
             cloud_.particleProperties().subDict("axisymmetricProperties")
                 .lookup("maxRadialWeightingFactor")
         );
-    
+
     writeCoordinateSystemInfo();
-         
+
     if (init)
     {
         // "particle" cannot be used in dsmcInitialise, "cell" is thus employed
-        rWMethod_ = "cell"; 
-        
+        rWMethod_ = "cell";
+
         updateRWF();
     }
     else
@@ -357,7 +357,7 @@ void dsmcAxisymmetric::evolve()
     {
         updateRWF();
     }
-    
+
     axisymmetricWeighting();
     cloud_.reBuildCellOccupancy();
 }
@@ -371,31 +371,31 @@ scalar dsmcAxisymmetric::recalculatepRWF
 {
     const point& fC = mesh_.boundaryMesh()[patchI].faceCentres()[faceI];
     const scalar radius = mag(fC.component(polarAxis_));
-    
-    return 1.0 + (maxRWF() - 1.0)*radius/radialExtent(); 
+
+    return 1.0 + (maxRWF() - 1.0)*radius/radialExtent();
 }
 
 
 scalar dsmcAxisymmetric::recalculateRWF
 (
-    const label cellI, 
+    const label cellI,
     const bool mixedRWMethod
 ) const
 {
     scalar RWF = 1.0;
-    
+
     if (rWMethod_ == "particle" or (mixedRWMethod and rWMethod_ == "mixed"))
     {
         const DynamicList<dsmcParcel*>& cellParcels(cloud_.cellOccupancy()[cellI]);
-        
+
         RWF = 0.0;
         label nMols = 0;
-        
+
         forAll(cellParcels, i)
         {
             const dsmcParcel& p = *cellParcels[i];
-            
-            const scalar radius = 
+
+            const scalar radius =
                 sqrt
                 (
                     sqr(p.position().component(polarAxis_))
@@ -403,21 +403,21 @@ scalar dsmcAxisymmetric::recalculateRWF
                 );
 
             RWF += 1.0 + (maxRWF() - 1.0)*radius/radialExtent();
-            
+
             nMols++;
         }
-        
+
         RWF /= max(nMols, 1);
     }
     else
     {
         const point& cC = mesh_.cellCentres()[cellI];
         const scalar radius = mag(cC.component(polarAxis_));
-    
+
         RWF += (maxRWF() - 1.0)*radius/radialExtent();
     }
-    
-    return RWF;    
+
+    return RWF;
 }
 
 

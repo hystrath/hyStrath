@@ -14,14 +14,14 @@ forAll (rhoEvk_mode, speciei)
     forAll (rhoEvk_mode[speciei], vibMode)
     {
         rhoEvk_mode[speciei][vibMode] = pD[speciei]*hevk_mode[speciei][vibMode];
-        
+
         if (composition.particleType(speciei) == 2)
         {
             if (containsElectrons)
-            { 
+            {
                 solve
                 (
-                    fvm::ddt(rhoEvk_mode[speciei][vibMode]) 
+                    fvm::ddt(rhoEvk_mode[speciei][vibMode])
                   //+ fvc::div(phiEvk_mode[speciei][vibMode])  // TODO create this in declaration/uppwind declarations
                   ==
                     thermalRelaxModelVT().QVT_mode(speciei, vibMode)
@@ -35,7 +35,7 @@ forAll (rhoEvk_mode, speciei)
             {
                 solve
                 (
-                    fvm::ddt(rhoEvk_mode[speciei][vibMode]) 
+                    fvm::ddt(rhoEvk_mode[speciei][vibMode])
                   //+ fvc::div(phiEvk_mode[speciei][vibMode]) // TODO create this in declaration/uppwind declarations
                   ==
                     thermalRelaxModelVT().QVT_mode(speciei, vibMode)
@@ -45,7 +45,7 @@ forAll (rhoEvk_mode, speciei)
                 );
             }
         }
-        
+
         if (composition.particleType(speciei) == 2)
         {
             forAll(pD[speciei], celli)
@@ -58,9 +58,9 @@ forAll (rhoEvk_mode, speciei)
                 {
                     hevk_mode[speciei][vibMode][celli] = 0.0;
                 }
-            }    
+            }
         }
-        
+
         hevk_mode[speciei][vibMode].correctBoundaryConditions(); //TODO correct bdry cdts
     }
 }
@@ -87,15 +87,15 @@ if (!inviscid)
             solve
             (
                 fvm::ddt(pD[speciei], hevk[speciei]) - fvc::ddt(pD[speciei], hevk[speciei])
-              - fvm::laplacian(speciesDiffusion().rhoD(speciei), hevk[speciei], "laplacian(D,ev)")  
+              - fvm::laplacian(speciesDiffusion().rhoD(speciei), hevk[speciei], "laplacian(D,ev)")
               - fvm::laplacian(transport().alphave(speciei), hevk[speciei])
             );
-            
+
         }
-            
+
         rhoEvk[speciei] = pD[speciei]*hevk[speciei];
     }
- 
+
     thermo.correct();
     thermo.correct2T();
     transport().correct();

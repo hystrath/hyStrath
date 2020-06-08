@@ -20,14 +20,14 @@ License
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 Class
     dsmcAbsorbingStickingDiffuseWallPatch
-    
-Description    
-    Wall interaction where a particle can be adsorbed according to a 
-    probability. Othwerwise, its properties are drawn from a Maxwellian 
+
+Description
+    Wall interaction where a particle can be adsorbed according to a
+    probability. Othwerwise, its properties are drawn from a Maxwellian
     distribution corresponding to a specified temperature
-    
+
     SINGLE VALUE: temperature and velocity required in boundariesDict
-    
+
 SourceFiles
     dsmcAbsorbingStickingDiffuseWallPatch.C
 \*---------------------------------------------------------------------------*/
@@ -59,14 +59,14 @@ class dsmcAbsorbingStickingDiffuseWallPatch
 private:
 
     // Private data
-    
-        
-        
-protected:        
+
+
+
+protected:
 
     // Protected member functions
-            
-        
+
+
 
 public:
 
@@ -109,7 +109,7 @@ public:
             const fileName& fixedPathName,
             const fileName& timePath
         );
-        
+
         void writeField();
 
         //- update properties from a modified dictionary
@@ -117,8 +117,8 @@ public:
 
 
     // Access
-    
-    
+
+
 };
 
 

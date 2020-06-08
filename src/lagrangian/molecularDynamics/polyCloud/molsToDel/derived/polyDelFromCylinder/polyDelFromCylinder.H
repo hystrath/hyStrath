@@ -71,13 +71,13 @@ private:
         scalar radius_;
 
         List<label> molIds_;
-       
-       
+
+
 
     // Private Member Functions
 
         void findMolsToDelInside();
-        
+
         void findMolsToDelOutside();
 
 public:
@@ -101,7 +101,7 @@ public:
 
     // Member Functions
 
- 
+
 };
 
 

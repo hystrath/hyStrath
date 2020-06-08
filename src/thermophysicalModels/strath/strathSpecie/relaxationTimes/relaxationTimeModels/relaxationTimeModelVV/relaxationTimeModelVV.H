@@ -49,7 +49,7 @@ SourceFiles
 
 namespace Foam
 {
-  
+
 /*---------------------------------------------------------------------------*\
                     Class relaxationTimeModelVV Declaration
 \*---------------------------------------------------------------------------*/
@@ -59,9 +59,9 @@ class relaxationTimeModelVV
 
     public IOdictionary
 {
-    
-protected:  
-  
+
+protected:
+
     // Protected data
 
         //- Mesh
@@ -78,15 +78,15 @@ protected:
 
         //- V-V relaxation time [s]
         PtrList<volScalarField> tauVV_;
-        
+
         //- V-V source term in the vib. energy equations [kg/m^3/s]
         PtrList<volScalarField> QVV_;
 
 
 private:
-  
+
     // Private member functions
-      
+
         //- Disallow copy construct
         relaxationTimeModelVV(const relaxationTimeModelVV&);
 
@@ -95,13 +95,13 @@ private:
 
 
 public:
- 
+
     //- Runtime type information
     TypeName("relaxationTimeModelVV");
 
-      
+
     // Declare run-time constructor selection table
-       
+
 #ifndef SWIG
     declareRunTimeSelectionTable
     (
@@ -115,9 +115,9 @@ public:
         (thermo, turbulence)
     );
 #endif
-  
 
-    // Constructors	  
+
+    // Constructors
 
         //- Construct from components
         relaxationTimeModelVV
@@ -127,8 +127,8 @@ public:
         );
 
 
-    // Selectors	  
-  
+    // Selectors
+
         //- Return a reference to the selected multispecies transport model
 
         static autoPtr<relaxationTimeModelVV> New
@@ -146,18 +146,18 @@ public:
 
     // Member Functions
 
-        // Access   
-           
+        // Access
+
             //- Return the const interspecies V-V relaxation time field
-            inline const volScalarField& tauVVij(label i, label j) const;  
-            
-            //- Return the const source term in vib. energy equations 
+            inline const volScalarField& tauVVij(label i, label j) const;
+
+            //- Return the const source term in vib. energy equations
             //  due to V-V energy transfer
             inline const volScalarField& QVV(label speciei) const;
-            
+
             //- Return the table of species
             inline const speciesTable& species() const;
-            
+
             //- Return the table of species having a vib. eq. being solved
             inline const speciesTable& solvedVibEqSpecies() const;
 
@@ -167,7 +167,7 @@ public:
 
         //- Source term in vib. energy equations due to V-V energy transfer
         //tmp<volScalarField> VVRelaxationSource();
-        
+
         //- Correct the V-V relaxation times and V-V energy transfer
         virtual void correct() = 0;
 

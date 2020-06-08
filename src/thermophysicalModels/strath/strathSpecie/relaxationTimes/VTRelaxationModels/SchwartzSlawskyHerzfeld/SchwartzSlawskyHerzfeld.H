@@ -27,7 +27,7 @@ Class
 
 Description
     SchwartzSlawskyHerzfeld (SSH) V-T Relaxation model.
-    
+
 SourceFiles
     SchwartzSlawskyHerzfeld.C
 
@@ -65,52 +65,52 @@ class SchwartzSlawskyHerzfeld
 
         // Are species 1 and 2 one and only species?
         bool matchingSpeciesIndices_;
-        
+
         // Species positions in the species() list
         label species1_, species2_;
-        
+
         // SSH OR MWP VT energy exchange?
         bool SHHon_;
-        
+
         // Temperatures for the linear interpolation
         scalar Tlow_, Thigh_;
-        
+
         // Weight of a single particle, species 1 [kg]
-        scalar m1_; 
-        
+        scalar m1_;
+
         // Reduced mass [kg]
-        scalar mu12_; 
-        
+        scalar mu12_;
+
         // Characteristic vibrational temperature, species 1 [K]
-        scalar TH1_; 
-        
+        scalar TH1_;
+
         // Interatomic distnce of the molecule 1, at the ground vibrational level
-        scalar rp1_; 
-        
+        scalar rp1_;
+
         // factor in ZVs
-        scalar fms_; 
-        
+        scalar fms_;
+
         // Number density of the mixture
-        scalarField nD12_;   
-        
+        scalarField nD12_;
+
         // Lennard and Jones parameters
-        FixedList<scalar, 2> sigma12_, epsilon12_; 
-        
-        
+        FixedList<scalar, 2> sigma12_, epsilon12_;
+
+
         //- Interaction with atoms: switch to MWP
-        
+
         // Coefficients
-        scalar A12_, B12_; 
-        
+        scalar A12_, B12_;
+
         // Molecular weight, species i [g/mol]
-        scalar W1_;   
-        
+        scalar W1_;
+
         // Offset term in the exponential
-        scalar offset_;   
-        
+        scalar offset_;
+
         // Coefficients related to Park's correction
-        scalar sigma1_, sigma2_; 
-        
+        scalar sigma1_, sigma2_;
+
         // Fundamental constants
         scalar pi, kB, hPlanck;
 
@@ -149,7 +149,7 @@ public:
 
         //- V-T relaxation time [s]
         virtual tmp<volScalarField> tauVT() const;
-         
+
         //- V-T relaxation time for patch [s]
         virtual tmp<scalarField> tauVT
         (
@@ -157,15 +157,15 @@ public:
             const scalarField& p,
             const scalarField& Tt,
             const PtrList<scalarField>& Tv,
-            const PtrList<scalarField>& nD 
+            const PtrList<scalarField>& nD
         ) const;
-        
+
         scalar linearInterpolation //- bounded
         (
             const scalar xpt,
-            const scalar x1, 
+            const scalar x1,
             const scalar x2,
-            const scalar y1, 
+            const scalar y1,
             const scalar y2
         ) const
         {
@@ -182,8 +182,8 @@ public:
                 return max(min(y1 + (xpt-x1)*(y2-y1)/(x2-x1), y2), y1);
             //}
         }
-        
-        scalar sigmaLJmixture 
+
+        scalar sigmaLJmixture
         (
             const word name1,
             const scalar molW1,
@@ -207,8 +207,8 @@ public:
                 return 0.5*(sigma1+sigma2)*pow(ksi, -1.0/6.0);
             }
         }
-        
-        scalar epsilonLJmixture 
+
+        scalar epsilonLJmixture
         (
             const scalar molW1,
             const scalar sigma1,
@@ -221,8 +221,8 @@ public:
             scalar ksi = 1.0; //+ 0.25*polarizability2*sqr(molW1/2.0/sqrt(epsilon1*pow3(sigma1)))*sqrt(epsilon1/epsilon2)/pow3(sigma2);
             return sqrt(epsilon1*epsilon2)*sqr(ksi);
         }
-        
-        
+
+
         bool similarPolarization
         (
             const word name1,
@@ -230,25 +230,25 @@ public:
         ) const
         {
             bool pol1(false), pol2(false);
-            if (name1.find("+") != std::string::npos or name1.find("-") != std::string::npos) 
+            if (name1.find("+") != std::string::npos or name1.find("-") != std::string::npos)
             {
                 pol1 = true;
             }
-            if (name2.find("+") != std::string::npos or name2.find("-") != std::string::npos) 
+            if (name2.find("+") != std::string::npos or name2.find("-") != std::string::npos)
             {
                 pol2 = true;
             }
             return (not(pol1 xor pol2));
-        } 
-        
-        
+        }
+
+
         inline bool similarSpecies
         (
             const label name1,
             const label name2
         ) const
         {
-            if (name1 == name2) 
+            if (name1 == name2)
             {
                 return true;
             }
@@ -257,10 +257,10 @@ public:
                 return false;
             }
         }
-        
-        
+
+
         template <class T>
-        T nDmixture 
+        T nDmixture
         (
             const T nD1,
             const T nD2
@@ -275,12 +275,12 @@ public:
                 return nD1+nD2;
             }
         }
-        
+
         inline scalar deltaE() const
         {
             return kB*TH1_;
         }
-        
+
         inline scalar beta
         (
             const scalar Tt
@@ -291,7 +291,7 @@ public:
                 *kB*Tt*deltaE()));
             return pow(0.5*coeff1*coeff2, 1.0/19.0);
         }
-        
+
         inline scalar deltaStarmixture
         (
             const scalar Tt
@@ -299,7 +299,7 @@ public:
         {
             return 1.0/sigma12interpolation(Tt)*(12.0/pow(2.0*beta(Tt), 1.0/6.0))*(1.0+21.0/19.0*beta(Tt));
         }
-        
+
         inline scalar alphasr
         (
             const scalar Tt
@@ -308,7 +308,7 @@ public:
             return (16.0*pow4(pi)*mu12_*sqr(deltaE()))
                 /(sqr(hPlanck*deltaStarmixture(Tt))*kB);
         }
-        
+
         inline scalar chiStarsr
         (
             const scalar Tt
@@ -316,7 +316,7 @@ public:
         {
             return 0.5*pow(alphasr(Tt)/Tt, 1.0/3.0);
         }
-        
+
         inline scalar rcStarmixture
         (
             const scalar Tt
@@ -324,7 +324,7 @@ public:
         {
             return sigma12interpolation(Tt)/(pow(2.0*beta(Tt), 1.0/6.0)*(1.0+2.0/19.0*beta(Tt)));
         }
-        
+
         inline scalar collisionalArea
         (
             const scalar Tt
@@ -332,7 +332,7 @@ public:
         {
             return sqr(rcStarmixture(Tt)/sigma12interpolation(Tt));
         }
-        
+
         inline scalar Z0s
         (
             const scalar Tt
@@ -340,7 +340,7 @@ public:
         {
             return deltaStarmixture(Tt)*rp1_ + 5.0/2.0/sqr(deltaStarmixture(Tt)*rp1_);
         }
-        
+
         inline scalar ZPlussr
         (
             const scalar Tt
@@ -349,8 +349,8 @@ public:
             scalar inter = Tt*kB;
             return exp(-4.0/pi*sqrt(epsilon12interpolation(Tt)*chiStarsr(Tt)/inter) -16.0/(3.0*sqr(pi))*epsilon12interpolation(Tt)/inter);
         }
-        
-        
+
+
         inline scalar ZTsr
         (
             const scalar Tt
@@ -360,7 +360,7 @@ public:
             scalar inter2 = sqr(pi)*sqrt(1.5/pi)*sqr(deltaE()/(kB*alphasr(Tt))) * pow(Tt/alphasr(Tt), 1.0/6.0);
             return inter1*inter2;
         }
-        
+
         inline scalar ZVs
         (
             const label i,
@@ -375,13 +375,13 @@ public:
             //inter1 += 0.5/sqr(pi)*alphasr(Tt)/TH1_*sqr(kB*TH1_/deltaE());
             return inter1*reducedMass(m1_,m1_)/mu12_*alphasr(Tt)/TH1_*sqr(kB*TH1_/deltaE());
         }
-        
+
         inline scalar fms
         (
             const word name
         ) const
         {
-            if (name.find("2") != std::string::npos) 
+            if (name.find("2") != std::string::npos)
             {
                 return 1.0;
             }
@@ -395,7 +395,7 @@ public:
                 return 1.0/(mNO*Cpbarsquare);
             }
         }
-        
+
         inline scalar P10sr
         (
             const scalar Tt
@@ -408,7 +408,7 @@ public:
             Info << "ZPlussr(Tt): " << ZPlussr(Tt)<< endl;*/
             return collisionalArea(Tt)/(Z0s(Tt)*ZVs(1,Tt)*ZTsr(Tt)*ZPlussr(Tt));
         }
-        
+
         inline scalar Zcollsr
         (
             const scalar Tt,
@@ -419,7 +419,7 @@ public:
             return 2.0*sqr(sigma12interpolation(Tt))*max(nDmixture<scalar>(nD1, nD2), Foam::SMALL)
               * sqrt(2.0*pi*kB*Tt/mu12_);
         }
-        
+
         inline scalar sigma12interpolation
         (
             const scalar Tt
@@ -427,7 +427,7 @@ public:
         {
             return linearInterpolation(Tt, Tlow_, Thigh_, sigma12_[0], sigma12_[1]);
         }
-        
+
         inline scalar epsilon12interpolation
         (
             const scalar Tt
@@ -435,7 +435,7 @@ public:
         {
             return linearInterpolation(Tt, Tlow_, Thigh_, epsilon12_[0], epsilon12_[1]);
         }
-        
+
         inline scalar reducedMass
         (
             const scalar m1,
@@ -444,7 +444,7 @@ public:
         {
             return m1*m2/(m1+m2);
         }
-        
+
 };
 
 

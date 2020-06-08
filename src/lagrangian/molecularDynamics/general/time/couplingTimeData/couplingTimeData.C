@@ -61,7 +61,7 @@ couplingTimeData::couplingTimeData
 {}
 
 
-//- Construct from Time and timeDict 
+//- Construct from Time and timeDict
 couplingTimeData::couplingTimeData
 (
     Time& continuumTime,
@@ -108,7 +108,7 @@ couplingTimeData::couplingTimeData
             couplingTimeInterval_/
             readScalar(molecularTime.controlDict().lookup("deltaT"))
         ),
-        couplingTimeInterval_    
+        couplingTimeInterval_
     ),
     continuumSolution_(false),
     molecularSolution_(false),
@@ -157,7 +157,7 @@ couplingTimeData::couplingTimeData
         if(molecularOnInterval > couplingTimeInterval_)
         {
             FatalErrorIn("couplingTimeData::couplingTimeData()")
-                << "molecularOnInterval: " <<  molecularOnInterval 
+                << "molecularOnInterval: " <<  molecularOnInterval
                 << "should be less than couplingTimeInterval: " << couplingTimeInterval_
                 << nl << continuumTime_.systemPath()/"couplingDict"
                 << exit(FatalError);
@@ -166,7 +166,7 @@ couplingTimeData::couplingTimeData
         if(molecularOnInterval <= 0.0)
         {
             FatalErrorIn("couplingTimeData::couplingTimeData()")
-                << "molecularOnInterval: " <<  molecularOnInterval 
+                << "molecularOnInterval: " <<  molecularOnInterval
                 << "should be greater than 0. "
                 << nl << continuumTime_.systemPath()/"couplingDict"
                 << exit(FatalError);
@@ -193,10 +193,10 @@ couplingTimeData::couplingTimeData
         molecularTimeOff_.deltaT() = scalar(nStepsOff)*deltaTMD;
         molecularTimeOff_.nSteps() = nStepsOff;
     }
-    else 
+    else
     {
         FatalErrorIn("couplingTimeData::couplingTimeData()")
-            << "Coupling options available: sequential or sequential in " 
+            << "Coupling options available: sequential or sequential in "
             << nl << continuumTime_.systemPath()/"couplingDict"
             << exit(FatalError);
     }
@@ -226,18 +226,18 @@ couplingTimeData::couplingTimeData
         Info << " molecular-time interval on = " << molecularTimeOn_.deltaT() << endl;
         Info << " molecular-time interval off = " << molecularTimeOff_.deltaT() << endl;
 
-        Info << " decoupled ratio = " 
-             << couplingTimeInterval_/molecularTimeOn_.deltaT() 
+        Info << " decoupled ratio = "
+             << couplingTimeInterval_/molecularTimeOn_.deltaT()
              << nl << endl;
     }
 
-    scalar continuumError = 
+    scalar continuumError =
     mag
     (
         scalar(continuumTimeInt_.nSteps()) - (couplingTimeInterval_/deltaTC)
     );
 
-    scalar molecularError = 
+    scalar molecularError =
     mag
     (
         scalar(molecularTimeInt_.nSteps()) - (couplingTimeInterval_/deltaTMD)
@@ -289,11 +289,11 @@ couplingTimeData::couplingTimeData
 // void couplingTimeData::setInitialData()
 // {
 //     Info << nl << "TimeData Statistics: " << endl;
-// 
+//
 //     scalar deltaTMD = readScalar(time_.controlDict().lookup("deltaT"));
-// 
+//
 //     mdTime_.deltaT() = deltaTMD;
-// 
+//
 //     if(timeMeasOption_ == "write")
 //     {
 //         samplingTime_.nSteps() = 1;
@@ -303,79 +303,79 @@ couplingTimeData::couplingTimeData
 //     {
 //         const label nSamples = readLabel(timeDict_.lookup("nSamples"));
 //         const label nAverages = readLabel(timeDict_.lookup("nAverages"));
-// 
+//
 //         samplingTime_.nSteps() = nSamples;
 //         averagingTime_.nSteps() = nAverages;
-// 
+//
 //         checkAndModifyTimeProperties();
 //     }
 //     else
 //     {
 //         FatalErrorIn("couplingTimeData::setInitialData()")
 //             << "timeOption: \"" << timeMeasOption_
-//             << "\" is not one of the available options." << nl 
+//             << "\" is not one of the available options." << nl
 //             << exit(FatalError);
 //     }
-// 
+//
 //     samplingTime_.deltaT() = deltaTMD * scalar(samplingTime_.nSteps());
 //     averagingTime_.deltaT() = deltaTMD * scalar(averagingTime_.nSteps());
-// 
+//
 //     Info << " nSamples: " << samplingTime_.nSteps()
 //          << ", time interval: " << samplingTime_.deltaT()
 //          << endl;
-// 
+//
 //     Info << " nAverages: " << averagingTime_.nSteps()
 //          << ", time interval: " << averagingTime_.deltaT()
 //          << endl;
-// 
-// 
+//
+//
 //     const scalar& endTime = time_.endTime().value();
 //     const scalar& startTime = time_.startTime().value();
-// 
+//
 //     totalNAvSteps_ = label((endTime - startTime) / averagingTime_.deltaT());
-// 
+//
 // //     totalNCalcSteps_ = label((endTime - startTime) / calcPropTime_.deltaT());
-// 
+//
 //     totalNSampSteps_ = label((endTime - startTime) / samplingTime_.deltaT());
-// 
+//
 //     Info << " total no. of sampling steps: " << totalNSampSteps_ << endl;
 //     Info << " total no. of averaging Steps: " << totalNAvSteps_ << endl;
 // //     Info << " total no. of calc Steps: " << totalNCalcSteps_ << endl;
-// 
+//
 //     Info << nl << endl;
-// 
+//
 //     averagingTimes_.setSize(totalNAvSteps_+1, 0.0);
-// 
+//
 //     forAll(averagingTimes_, tT)
 //     {
 //         averagingTimes_[tT] = startTime + tT*averagingTime_.deltaT();
 //     }
-// 
+//
 //     nAvTimeSteps_.value() = scalar(averagingTime_.nSteps());
-// 
+//
 //     samplingTimes_.setSize(totalNSampSteps_+1, 0.0);
-// 
+//
 //     forAll(samplingTimes_, tT)
 //     {
 //         samplingTimes_[tT] = startTime + tT*samplingTime_.deltaT();
 //     }
-// 
+//
 // }
 
 
 // void couplingTimeData::checkAndModifyTimeProperties()
 // {
-//     //- checking 
-// 
+//     //- checking
+//
 //     bool changedProperties = false;
-// 
+//
 //     const label nAveragesOriginal = averagingTime_.nSteps();
 //     const label nSamplesOriginal = samplingTime_.nSteps();
-// 
+//
 //     // - 1. averaging time
-// 
+//
 //     label& nAverages = averagingTime_.nSteps();
-// 
+//
 //     if(nAverages < 1)
 //     {
 //         nAverages = 1;
@@ -397,10 +397,10 @@ couplingTimeData::couplingTimeData
 //             }
 //         }
 //     }
-// 
+//
 //     // - 2. sampling time
 //     label& nSamples = samplingTime_.nSteps();
-// 
+//
 //     if(nSamples < 1)
 //     {
 //         nSamples = 1;
@@ -422,19 +422,19 @@ couplingTimeData::couplingTimeData
 //             }
 //         }
 //     }
-// 
+//
 //     if(changedProperties)
 //     {
 //         Info << "initial nSamples: " << nSamplesOriginal
 //              << ", modified nSamples: " << samplingTime_.nSteps() << endl;
-// 
+//
 //         Info << "initial nAverages: " << nAveragesOriginal
 //              << ", modified nAverages: " << averagingTime_.nSteps() << endl;
-// 
+//
 //         FatalErrorIn("couplingTimeData::couplingTimeData()")
 //             << "Time properties are inconsistent."
-//             << " Check and change them appropriately from the time dictionary" 
-//             << nl 
+//             << " Check and change them appropriately from the time dictionary"
+//             << nl
 //             << exit(FatalError);
 //     }
 // }
@@ -453,13 +453,13 @@ couplingTimeData::~couplingTimeData()
 //     const label nSamples(readLabel(timeDict.lookup("nSamples")));
 //     const label nAverages(readLabel(timeDict.lookup("nAverages")));
 // //     const label nCalcProp(readLabel(timeDict.lookup("nCalcProp")));
-//     
-//  
+//
+//
 //     samplingTime_.nSteps() = nSamples;
 //     averagingTime_.nSteps() = nAverages;
 // //     calcPropTime_.nSteps() = nCalcProp;
-//     
-// 
+//
+//
 //     setInitialData();
 // }
 
@@ -520,7 +520,7 @@ bool& couplingTimeData::molecularSolution()
 // {
 //     return samplingTime_.endTime();
 // }
-// 
+//
 // const bool& couplingTimeData::averagingTime() const
 // {
 //     return averagingTime_.endTime();
@@ -530,60 +530,60 @@ bool& couplingTimeData::molecularSolution()
 // {
 //     return calcPropTime_.endTime();
 // }
-// 
+//
 
 
 // const label& couplingTimeData::nSamples() const
 // {
 //     return samplingTime_.nSteps();
 // }
-// 
-// 
+//
+//
 // const label& couplingTimeData::nAverages() const
 // {
 //     return averagingTime_.nSteps();
 // }
-// 
+//
 // const dimensionedScalar& couplingTimeData::nAvTimeSteps() const
 // {
 //     return nAvTimeSteps_;
 // }
-// 
+//
 // // const label& couplingTimeData::nCalcProp() const
 // // {
 // //     return calcPropTime_.nSteps();
 // // }
-// 
+//
 // const label& couplingTimeData::totalNSampSteps() const
 // {
 //     return totalNSampSteps_;
 // }
-// 
+//
 // const label& couplingTimeData::totalNAvSteps() const
 // {
 //     return totalNAvSteps_;
 // }
-// 
+//
 // const label& couplingTimeData::averagingTimeIndex() const
 // {
 //     return averagingTimeIndex_;
 // }
-// 
+//
 // const label& couplingTimeData::samplingTimeIndex() const
 // {
 //     return samplingTimeIndex_;
 // }
-// 
+//
 // // const label& couplingTimeData::totalNCalcSteps() const
 // // {
 // //     return totalNCalcSteps_;
 // // }
-// 
+//
 // // const label& couplingTimeData::calcTimeIndex() const
 // // {
 // //     return calcTimeIndex_;
 // // }
-// 
+//
 // const scalarField& couplingTimeData::averagingTimes() const
 // {
 //     return averagingTimes_;
@@ -592,17 +592,17 @@ bool& couplingTimeData::molecularSolution()
 // {
 //     return samplingTimes_;
 // }
-// 
+//
 // const timeInterval& couplingTimeData::mdTimeInterval() const
 // {
 //     return mdTime_;
 // }
-// 
+//
 // const timeInterval& couplingTimeData::sampleTimeInterval() const
 // {
 //     return samplingTime_;
 // }
-// 
+//
 // const timeInterval& couplingTimeData::averageTimeInterval() const
 // {
 //     return averagingTime_;
@@ -649,12 +649,12 @@ const bool& couplingTimeData::continuumToMolecularBCs() const
 
 const bool& couplingTimeData::molecularToContinuumBCs() const
 {
-    return molecularToContinuumBCs_;    
+    return molecularToContinuumBCs_;
 }
 
 const bool& couplingTimeData::molecularSwitch() const
 {
-    return molecularSwitch_;    
+    return molecularSwitch_;
 }
 
 
@@ -663,7 +663,7 @@ void couplingTimeData::solversToRun()
 {
     if(couplingOption_ == "sequential")
     {
-        //-switch solvers 
+        //-switch solvers
 
         if(molecularTimeInt_.endTime())
         {
@@ -673,7 +673,7 @@ void couplingTimeData::solversToRun()
             //- temporary
             molecularTimeInt_.endTime() = false;
         }
-    
+
         if(continuumTimeInt_.endTime())
         {
             continuumSolution_ = false;
@@ -687,7 +687,7 @@ void couplingTimeData::solversToRun()
     {
         if
         (
-            (!molecularTimeInt_.endTime()) && 
+            (!molecularTimeInt_.endTime()) &&
             (continuumTimeInt_.endTime())
         )
         {
@@ -695,10 +695,10 @@ void couplingTimeData::solversToRun()
             molecularSolution_ = true;
         }
 
-        // - just in case 
+        // - just in case
         if
         (
-            (molecularTimeInt_.endTime()) && 
+            (molecularTimeInt_.endTime()) &&
             (!continuumTimeInt_.endTime())
         )
         {
@@ -708,7 +708,7 @@ void couplingTimeData::solversToRun()
 
         if
         (
-            (molecularTimeInt_.endTime()) && 
+            (molecularTimeInt_.endTime()) &&
             (continuumTimeInt_.endTime())
         )
         {
@@ -773,7 +773,7 @@ void couplingTimeData::boundaryConditions()
         {
             molecularToContinuumBCs_ = false;
         }
-    
+
         if(continuumTimeInt_.endTime())
         {
             continuumToMolecularBCs_ = true;
@@ -790,7 +790,7 @@ void couplingTimeData::boundaryConditions()
         if
         (
             (molecularTimeInt_.endTime()) &&
-            (continuumTimeInt_.endTime()) 
+            (continuumTimeInt_.endTime())
         )
         {
             molecularToContinuumBCs_ = true;
@@ -814,7 +814,7 @@ void couplingTimeData::boundaryConditions()
         {
             molecularToContinuumBCs_ = false;
         }
-    
+
         if(continuumTimeInt_.endTime())
         {
             continuumToMolecularBCs_ = true;

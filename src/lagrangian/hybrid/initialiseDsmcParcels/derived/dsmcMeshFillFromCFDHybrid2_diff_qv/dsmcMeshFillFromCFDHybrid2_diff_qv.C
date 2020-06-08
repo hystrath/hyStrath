@@ -197,7 +197,7 @@ void dsmcMeshFillFromCFDHybrid2_diff_qv::setInitialConfiguration()
     forAll(molecules, moleculeI)
     {
         const scalarList& thetaV = cloud_.constProps(moleculeI).thetaV();
-        
+
         const dimensionedScalar mass("mass", dimMass,
             cloud_.constProps(moleculeI).mass());
 
@@ -497,7 +497,7 @@ void dsmcMeshFillFromCFDHybrid2_diff_qv::setInitialConfiguration()
                             * (exp(thetaV[0] / TvInitial[moleculeI][cellI]) - 1.0)
                             * (exp(thetaV[0] / TvInitial[moleculeI][cellI]) - 1.0)
                             / exp(thetaV[0] / TvInitial[moleculeI][cellI]);
-                            
+
                         // TODO write the extension to polyatomics
                     }
                 }
@@ -598,13 +598,13 @@ void dsmcMeshFillFromCFDHybrid2_diff_qv::setInitialConfiguration()
                     vector U;
 
                     scalar ERot = 0.0;
-                    
+
                     labelList vibLevel
                     (
                         cloud_.constProps(i).thetaV().size(),
                         0.0
                     );
-                    
+
                     label ELevel = 0; // TODO by generalisedChapmanEnskog
 
                     cloud_.generalisedChapmanEnskog
@@ -625,11 +625,11 @@ void dsmcMeshFillFromCFDHybrid2_diff_qv::setInitialConfiguration()
                     );
 
                     U += velocity;
-                    
+
                     label newParcel = -1;
-                    
+
                     label classification = 0;
-                    
+
                     const scalar& RWF = cloud_.coordSystem().recalculateRWF(cellI);
 
                     cloud_.addNewParcel

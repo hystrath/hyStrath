@@ -93,12 +93,12 @@ temperatureBinsController::temperatureBinsController
             {
                 X_ = true;
             }
-    
+
             if (propsDict_.found("Y"))
             {
                 Y_ = true;
             }
-    
+
             if (propsDict_.found("Z"))
             {
                 Z_ = true;
@@ -115,8 +115,8 @@ temperatureBinsController::temperatureBinsController
     }
 
 //     readProperties();
-	
-	// standard to reading typeIds ------------ 
+
+	// standard to reading typeIds ------------
     const List<word> molecules (propsDict_.lookup("typeIds"));
 
     DynamicList<word> moleculesReduced(0);
@@ -152,7 +152,7 @@ temperatureBinsController::temperatureBinsController
         typeIds_[i] = typeId;
     }
     // ---------------------------------------------------
-    
+
 }
 
 
@@ -166,12 +166,12 @@ temperatureBinsController::~temperatureBinsController()
 void temperatureBinsController::initialConfiguration()
 {
     const scalar& deltaTBin = (endTemperature_ - startTemperature_)/(nBins_ - 1);
-    
+
     forAll(binTemperatures_, n)
     {
         binTemperatures_[n] = startTemperature_ + n*deltaTBin;
     }
-    
+
     Info << "binTemperatures_ = " << binTemperatures_ << endl;
 }
 
@@ -192,7 +192,7 @@ void temperatureBinsController::calculateProperties()
         {
             const label& cellI = cells[c];
             const List<dsmcParcel*>& molsInCell = cellOccupancy[cellI];
-    
+
             forAll(molsInCell, mIC)
             {
                 dsmcParcel* p = molsInCell[mIC];
@@ -218,9 +218,9 @@ void temperatureBinsController::calculateProperties()
                     {
 
                         const scalar nParticle = cloud_.nParticles(cellI);
-                    
+
                         const scalar mass = cloud_.constProps(p->typeId()).mass()*nParticle;
-                        
+
                         massV_[n] += mass;
                         momV_[n] += p->U()*mass;
                     }
@@ -249,7 +249,7 @@ void temperatureBinsController::calculateProperties()
                     }
                 }
             }
-        
+
             //- receiving
             for (int p = 0; p < Pstream::nProcs(); p++)
             {
@@ -257,13 +257,13 @@ void temperatureBinsController::calculateProperties()
                 {
                     scalarField massProc;
                     vectorField momProc;
-    
+
                     const int proc = p;
                     {
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> massProc >> momProc;
                     }
-    
+
                     mass += massProc;
                     mom += momProc;
                 }
@@ -280,24 +280,24 @@ void temperatureBinsController::calculateProperties()
             }
         }
 
-        //- reset 
+        //- reset
         if(time_.resetFieldsAtOutput())
         {
             massV_ = 0.0;
             momV_ = vector::zero;
         }
     }
-    
+
     if(time_.samplingTime())
     {
         const List< DynamicList<dsmcParcel*> >& cellOccupancy
             = cloud_.cellOccupancy();
-    
+
         forAll(cells, c)
         {
             const label& cell = cells[c];
             const List<dsmcParcel*>& molsInCell = cellOccupancy[cell];
-    
+
             forAll(molsInCell, mIC)
             {
                 dsmcParcel* p = molsInCell[mIC];
@@ -322,9 +322,9 @@ void temperatureBinsController::calculateProperties()
                     if(findIndex(typeIds_, p->typeId()) != -1)
                     {
                         const scalar nParticle = cloud_.nParticles(cell);
-                    
+
                         const scalar mass = cloud_.constProps(p->typeId()).mass()*nParticle;
-                        
+
                         mcc_[n] += mass*mag(p->U())*mag(p->U());
                         m_[n] += mass;
                         nParcels_[n] += nParticle;
@@ -355,7 +355,7 @@ void temperatureBinsController::calculateProperties()
                     }
                 }
             }
-        
+
             //- receiving
             for (int p = 0; p < Pstream::nProcs(); p++)
             {
@@ -379,8 +379,8 @@ void temperatureBinsController::calculateProperties()
         }
 
         measuredTranslationalTemperature_ = scalar(0.0);
-        
-        const scalar& deltaTDSMC = mesh_.time().deltaTValue(); // time step 
+
+        const scalar& deltaTDSMC = mesh_.time().deltaTValue(); // time step
 
         forAll(measuredTranslationalTemperature_, n)
         {
@@ -393,8 +393,8 @@ void temperatureBinsController::calculateProperties()
                     );
 
                 chi_[n] = sqrt(1.0 + (deltaTDSMC/tauT_)*((binTemperatures_[n]/measuredTranslationalTemperature_[n]) - 1.0) );
-                
-                Info<< "target temperature: " << binTemperatures_[n] 
+
+                Info<< "target temperature: " << binTemperatures_[n]
                     << " measured T: " << measuredTranslationalTemperature_[n]
                     << " chi: " << chi_[n]
                     << endl;
@@ -413,7 +413,7 @@ void temperatureBinsController::calculateProperties()
 
 void temperatureBinsController::controlParcelsBeforeMove()
 {
-	
+
 }
 
 
@@ -437,7 +437,7 @@ void temperatureBinsController::controlParcelsBeforeCollisions()
     if(control_ && time_.controlTime())
     {
         Info << "temperatureBinsController: control" << endl;
-        
+
         const labelList& cells = mesh_.cellZones()[regionId_];
 
         const List< DynamicList<dsmcParcel*> >& cellOccupancy
@@ -449,11 +449,11 @@ void temperatureBinsController::controlParcelsBeforeCollisions()
         {
             const label& cell = cells[c];
             const List<dsmcParcel*>& molsInCell = cellOccupancy[cell];
-    
+
             forAll(molsInCell, mIC)
             {
                 dsmcParcel* p = molsInCell[mIC];
-                
+
                 const vector& rI = p->position(); //position
                 vector rSI = rI - startPoint_;
                 scalar rD = rSI & unitVector_;

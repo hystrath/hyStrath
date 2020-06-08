@@ -66,7 +66,7 @@ buckinghamPotential::buckinghamPotential
     {
         rho_ /= rU.refLength();
         alpha_ /= rU.refEnergy();
-        
+
         C_ /= rU.refEnergy();
 
         scalar l = rU.refLength();
@@ -110,7 +110,7 @@ bool buckinghamPotential::read
     {
         rho_ /= rU.refLength();
         alpha_ /= rU.refEnergy();
-        
+
         C_ /= rU.refEnergy();
 
         scalar l = rU.refLength();

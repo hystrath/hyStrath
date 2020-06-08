@@ -66,7 +66,7 @@ protected:
         const pairPotentialModel& pairPot_;
 
         const reducedUnits& rU_;
-        
+
 
     // Private Member Functions
 

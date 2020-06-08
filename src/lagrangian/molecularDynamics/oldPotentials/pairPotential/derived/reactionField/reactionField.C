@@ -62,7 +62,7 @@ reactionField::reactionField
     (
         pairPotentialProperties.subDict(typeName + "Coeffs")
     ),
-    dielectricConst_(readScalar(reactionFieldCoeffs_.lookup("dielectricConst"))), 
+    dielectricConst_(readScalar(reactionFieldCoeffs_.lookup("dielectricConst"))),
     oneOverFourPiEps0_(1.0/(4.0 * constant::mathematical::pi * 8.854187817e-12))
 {
     if(rU.runReducedUnits())

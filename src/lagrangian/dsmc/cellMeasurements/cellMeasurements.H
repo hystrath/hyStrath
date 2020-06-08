@@ -101,7 +101,7 @@ public:
         );
 
         void clean();
-        
+
         void reset();
 
         // Access
@@ -111,7 +111,7 @@ public:
         // Check
 
         // Edit
-        
+
         inline scalarField& collisionSeparation();
         inline scalarField& nColls();
 

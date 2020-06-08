@@ -83,34 +83,34 @@ private:
 
         label iteration_;
 
-        
+
         word option_;
-        
-        // zone        
-        
+
+        // zone
+
         word regionName_;
         label regionId_;
 
         // bound boxes
-        
+
         List<boundedBox> boxes_;
-        
+
         label timeIndex_;
         label nSteps_;
-        
+
         bool variableMols_;
         label nSiteEstimate_;
         vector rDummy_;
         word molOption_;
         label nSitesMol_;
-        
+
         scalar startTime_;
         scalar endTime_;
         scalar accumulatedTime_;
         scalar deltaT_;
-    
+
         bool writeFirstTimeStep_;
-        
+
     // Private Member Functions
 
             void write();
@@ -118,10 +118,10 @@ private:
             void writeInZone(List<labelField>& molIds, List<vectorField>& sites);
 
             void writeInMesh(List<labelField>& molIds, List<vectorField>& sites);
-            
-            void writeInBoundBox(List<labelField>& molIds, List<vectorField>& sites);            
 
-            
+            void writeInBoundBox(List<labelField>& molIds, List<vectorField>& sites);
+
+
 public:
 
     //- Runtime type information
@@ -168,7 +168,7 @@ public:
 
         //- write field
         void writeField();
-}; 		
+};
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

@@ -31,12 +31,12 @@ License
 
 template<class ThermoType>
 void Foam::noVTEnergyTransfer<ThermoType>::updateCoefficients()
-{     
+{
     forAll(species(), i)
     {
         tauVT_[i] = dimensionedScalar("GREAT", dimTime, Foam::GREAT);
     }
-    
+
     /*forAll(species(), i) // TODO ONGOING WORK
     {
         forAll(tauVTmode_[i], m)
@@ -44,7 +44,7 @@ void Foam::noVTEnergyTransfer<ThermoType>::updateCoefficients()
             tauVTmode_[i][m] = dimensionedScalar("GREAT", dimTime, Foam::GREAT);
         }
     }*/
-} 
+}
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
@@ -57,21 +57,21 @@ Foam::noVTEnergyTransfer<ThermoType>::noVTEnergyTransfer
 )
 :
     relaxationTimeModel(thermo, turbulence),
-    
+
     speciesThermo_
     (
         dynamic_cast<const multi2ComponentMixture<ThermoType>&>
             (this->thermo_).speciesData()
     )
-{    
+{
     tauVT_.setSize(solvedVibEqSpecies().size());
     //tauVTmode_.setSize(species().size()); // TODO ONGOING WORK
-    
+
     forAll(tauVT_, speciei)
     {
         tauVT_.set
         (
-            speciei, 
+            speciei,
             new volScalarField
             (
                 IOobject
@@ -86,8 +86,8 @@ Foam::noVTEnergyTransfer<ThermoType>::noVTEnergyTransfer
                 dimensionedScalar("tauVT", dimTime, 0.0)
             )
         );
-    } 
-    
+    }
+
     /*forAll(tauVTmode_, speciei) // TODO ONGOING WORK
     {
         tauVTmode_.set
@@ -96,14 +96,14 @@ Foam::noVTEnergyTransfer<ThermoType>::noVTEnergyTransfer
             new PtrList<volScalarField>(thermo_.composition().noVibrationalTemp(speciei))
         );
     }
-    
+
     forAll(tauVTmode_, speciei)
     {
       forAll(tauVTmode_[speciei], vibMode)
       {
         tauVTmode_[speciei].set
         (
-            vibMode, 
+            vibMode,
             new volScalarField
             (
                 IOobject
@@ -127,8 +127,8 @@ Foam::noVTEnergyTransfer<ThermoType>::noVTEnergyTransfer
 
 template<class ThermoType>
 void Foam::noVTEnergyTransfer<ThermoType>::correct()
-{}  
-    
+{}
+
 
 template<class ThermoType>
 bool Foam::noVTEnergyTransfer<ThermoType>::read()
@@ -142,6 +142,6 @@ bool Foam::noVTEnergyTransfer<ThermoType>::read()
         return false;
     }
 }
-   
+
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

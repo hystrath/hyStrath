@@ -66,7 +66,7 @@ private:
         //- subDictionary containing the properties
 //         dictionary propsDict_;
 //         fileName timePath_;
-        
+
         word option_;
 
     // Private Member Functions
@@ -78,7 +78,7 @@ private:
             const label& cell,
             const label& id,
             const label& tetFace,
-            const label& tetPt,         
+            const label& tetPt,
             const bool& tethered,
             const bool& frozen,
             const scalar& phi,
@@ -89,12 +89,12 @@ private:
         );
 
         void fixedPropertiesFromDict();
-        
+
         void fixedPropertiesFromFile();
-        
+
         void multiIdFixedProperties();
-        
-        
+
+
 public:
 
     //- Runtime type information

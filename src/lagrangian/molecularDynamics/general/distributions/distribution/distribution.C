@@ -150,7 +150,7 @@ scalar distribution::median()
 
     if(normDist.size())
     {
-        if 
+        if
         (
             normDist.size() == 1
         )
@@ -167,13 +167,13 @@ scalar distribution::median()
             scalar xkm1 = normDist[0].first();
             scalar Sk = (normDist[0].second() + normDist[1].second())*binWidth_;
             scalar Skm1 = normDist[0].second()*binWidth_;
-                    
+
             median = (0.5 - Skm1)*(xk - xkm1)/(Sk - Skm1) + xkm1;
         }
         else
         {
             label lastNonZeroIndex = 0;
-        
+
             forAll(normDist,nD)
             {
                 if
@@ -185,15 +185,15 @@ scalar distribution::median()
                     scalar xkm1 = normDist[lastNonZeroIndex].first();
                     scalar Sk = runningSum + (normDist[nD].second()*binWidth_);
                     scalar Skm1 = runningSum;
-                    
+
                     median = (0.5 - Skm1)*(xk - xkm1)/(Sk - Skm1) + xkm1;
-                    
+
                     break;
                 }
                 else if (normDist[nD].second() > 0.0)
                 {
                     runningSum += normDist[nD].second()*binWidth_;
-                    
+
                     lastNonZeroIndex = nD;
                 }
             }
@@ -447,7 +447,7 @@ List< Pair<scalar> > distribution::normalisedShifted(const scalar& shiftValue)
     {
         oldDist[u].first() -= shiftValue;
     }
-    
+
     scalar lowestOldBin = oldDist[0].first()/binWidth_ - 0.5;
 
     label lowestNewKey = label
@@ -459,7 +459,7 @@ List< Pair<scalar> > distribution::normalisedShifted(const scalar& shiftValue)
 
     label newKey = lowestNewKey;
 
-//     Info << shiftValue 
+//     Info << shiftValue
 //         << nl << lowestOldBin
 //         << nl << lowestNewKey
 //         << nl << interpolationStartDirection
@@ -544,7 +544,7 @@ List< Pair<scalar> > distribution::normalisedShifted(const scalar& shiftValue)
 //     }
 
 //     Info << "Shifted normalisation = " << checkNormalisation << endl;
-    
+
     return newDist;
 }
 

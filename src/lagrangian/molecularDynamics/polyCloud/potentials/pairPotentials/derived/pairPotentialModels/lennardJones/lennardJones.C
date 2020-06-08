@@ -45,16 +45,16 @@ addToRunTimeSelectionTable(pairPotentialModel, lennardJones, dictionary);
 lennardJones::lennardJones
 (
     const polyMesh& mesh,
-    polyMoleculeCloud& molCloud, 
+    polyMoleculeCloud& molCloud,
     const reducedUnits& redUnits,
-    const word& name, 
+    const word& name,
     const dictionary& dict
 )
 :
     pairPotentialModel(mesh, molCloud, redUnits, name, dict),
     propsDict_(dict.subDict(typeName + "Coeffs")),
     sigma_(readScalar(propsDict_.lookup("sigma"))),
-    epsilon_(readScalar(propsDict_.lookup("epsilon")))    
+    epsilon_(readScalar(propsDict_.lookup("epsilon")))
 {
     if(redUnits.runReducedUnits())
     {
@@ -62,7 +62,7 @@ lennardJones::lennardJones
         epsilon_ /= redUnits.refEnergy();
     }
 
-    setLookupTables();    
+    setLookupTables();
 }
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
@@ -87,7 +87,7 @@ scalar lennardJones::force(const scalar r) const
 {
     return forceLookUpFromTable(r);
 }
-    
+
 scalar lennardJones::energy(const scalar r) const
 {
     return energyLookUpFromTable(r);
@@ -100,24 +100,24 @@ scalar lennardJones::energy(const scalar r) const
 // )
 // {
 //     pairPotentialModel::read(pairPotentialProperties, rU);
-// 
+//
 //     lennardJonesCoeffs_ = pairPotentialProperties.subDict(typeName + "Coeffs");
-// 
+//
 //     lennardJonesCoeffs_.lookup("sigma") >> sigma_;
 //     lennardJonesCoeffs_.lookup("epsilon") >> epsilon_;
-// 
+//
 //     if(rU.runReducedUnits())
 //     {
 //         sigma_ /= rU.refLength();
 //         epsilon_ /= rU.refEnergy();
 //     }
-// 
+//
 //     return true;
 // }
 
 void lennardJones::write(const fileName& pathName)
 {
-    
+
 }
 
 const dictionary& lennardJones::dict() const

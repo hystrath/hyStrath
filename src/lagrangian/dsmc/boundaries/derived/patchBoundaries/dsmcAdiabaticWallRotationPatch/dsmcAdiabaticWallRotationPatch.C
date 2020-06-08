@@ -58,14 +58,14 @@ dsmcAdiabaticWallRotationPatch::dsmcAdiabaticWallRotationPatch
     writeInTimeDir_ = false;
     writeInCase_ = false;
     measurePropertiesAtWall_ = true;
-    
+
     wallVelocity_ = readScalar(propsDict_.lookup("velocity"));
     referenceTemperature_ = readScalar(propsDict_.lookup("referenceTemperature"));
     rotationAxis_ = propsDict_.lookup("rotationAxis");
     centrePoint_ = propsDict_.lookup("centrePoint");
     rotationAxis_ /= mag(rotationAxis_);
-    
-    
+
+
     // test
 
 }
@@ -89,27 +89,27 @@ void dsmcAdiabaticWallRotationPatch::calculateProperties()
 
 void dsmcAdiabaticWallRotationPatch::controlParticle(dsmcParcel& p, dsmcParcel::trackingData& td)
 {
-    
+
     // wall velocity
     vector uNew = (
                     (p.position() - centrePoint_)/mag((p.position() - centrePoint_))
                   )
                   ^ rotationAxis_;
-                  
+
     uNew /= mag(uNew);
     uNew *= wallVelocity_;
-    
+
     vector& U = p.U();
-    
+
     measurePropertiesBeforeControl(p);
-    
+
     scalar EInc = magSqr(U - uNew);
-    
+
     U -= uNew;
-    
+
 //     Info << "Energy before = " << magSqr(U) << endl;
-    
-    
+
+
 //     Info << "Energy before = " << EInc << endl;
 
     label typeId = p.typeId();
@@ -151,8 +151,8 @@ void dsmcAdiabaticWallRotationPatch::controlParticle(dsmcParcel& p, dsmcParcel::
 
 //         scalar T = boundaryT_.boundaryField()[wppIndex][wppLocalFace];
 
-    scalar mass = cloud_.constProps(typeId).mass();   
-    
+    scalar mass = cloud_.constProps(typeId).mass();
+
 //     Info << "Position = " << p.position() << endl;
 //     Info << "Velocity = " << uNew << endl;
 
@@ -165,41 +165,41 @@ void dsmcAdiabaticWallRotationPatch::controlParticle(dsmcParcel& p, dsmcParcel::
 //                 + rndGen.GaussNormal<scalar>()*tw2
 //                 - sqrt(-2.0*log(max(1 - rndGen.sample01<scalar>(), VSMALL)))*nw
 //             );
-//         
+//
 //         vector Urefl = U;
-// 
+//
 //         scalar reScale = 1.0;
-//         
+//
 //         //quadratic formula
-//         
+//
 //         scalar a = magSqr(Urefl);
-//         
+//
 //         scalar b = 2.0*(Urefl & uNew);
-//             
+//
 //         scalar c = magSqr(uNew) - magSqr(Uinc);
-//         
+//
 //         if( (sqr(b) - 4.0*a*c) > VSMALL)
 //         {
 //             reScale = (-b + sqrt(sqr(b) - 4.0*a*c))/(2.0*a);
-//             
+//
 //             U *= reScale;
-//                 
+//
 //             if( (((U & nw) + (nw & uNew)))/(Urefl & nw) < VSMALL)
 //             {
-//                 reScale = (-b - sqrt(sqr(b) - 4.0*a*c))/(2.0*a); 
-//                 
+//                 reScale = (-b - sqrt(sqr(b) - 4.0*a*c))/(2.0*a);
+//
 //                 U = Urefl*reScale;
 //             }
-// 
+//
 //             if( (((U & nw) + (nw & uNew)))/(Urefl & nw) > VSMALL)
-//             {   
+//             {
 //                 U += uNew;
 // //                 Info << "Energy final = " << magSqr(U) << endl;
 //                 break;
 //             }
 //         }
 //     }
-    
+
     U =
         sqrt(physicoChemical::k.value()*referenceTemperature_/mass)
         *(
@@ -207,17 +207,17 @@ void dsmcAdiabaticWallRotationPatch::controlParticle(dsmcParcel& p, dsmcParcel::
             + rndGen.GaussNormal<scalar>()*tw2
             - sqrt(-2.0*log(max(1 - rndGen.sample01<scalar>(), VSMALL)))*nw
         );
-        
+
     scalar reScale = sqrt(EInc/magSqr(U));
-    
+
     U *= reScale;
-    
+
 //     Info << "Energy after 1 = " << magSqr(U) << endl;
-    
+
     U += uNew;
-    
+
     measurePropertiesAfterControl(p, 0.0);
-    
+
 //     Info << "Energy after 2 = " << magSqr(U) << endl;
 }
 

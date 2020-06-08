@@ -28,13 +28,13 @@ Class
 Description
 
 	Stores all the information for the boundary models. Models are defined
-  within the boundariesDict. This class selects & builds the models 
+  within the boundariesDict. This class selects & builds the models
   automatically. We assume that boundaries are divided into three:
 
-  1. Patch models -- actions on instantaneous collisions with a patch boundary 
+  1. Patch models -- actions on instantaneous collisions with a patch boundary
 
-  2. cyclic boundary models -- actions on instantaneous collisions with 
-                               a cyclic boundary 
+  2. cyclic boundary models -- actions on instantaneous collisions with
+                               a cyclic boundary
 
   3. General boundary models -- time-dependent actions on molecules close to
                                 the boundary
@@ -91,13 +91,13 @@ class dsmcBoundaries
       List< autoPtr<dsmcCyclicBoundary> > cyclicBoundaryModels_;
       List<label> cyclicBoundaryToModelId_;
 
-      //- general boundary models 
+      //- general boundary models
       PtrList<entry> generalBoundaryList_;
       List<word> generalBoundaryNames_;
       List<label> generalBoundaryIds_;
       List<fileName> gMFixedPathNames_;
       List< autoPtr<dsmcGeneralBoundary> > generalBoundaryModels_;
-      
+
       //- Check if there is at least one boundary patch having
       //  'Field' in their typename
       bool isAFieldPatch_;
@@ -105,14 +105,14 @@ class dsmcBoundaries
       bool isAAbsorbingPatch_;
       //  'Sticking' in their typename
       bool isAStickingPatch_;
-      
+
 
 
   public:
 
     // Constructors
 
-      //- Null Constructor 
+      //- Null Constructor
       dsmcBoundaries
       (
           Time& t,
@@ -175,7 +175,7 @@ class dsmcBoundaries
       inline const List< autoPtr<dsmcGeneralBoundary> >& generalBoundaryModels() const;
       inline const List<word>& generalBoundaryNames() const;
       inline const List<label>& generalBoundaryIds() const;
-      
+
       const bool& isAFieldPatch() const;
       const bool& isAAbsorbingPatch() const;
       const bool& isAStickingPatch() const;

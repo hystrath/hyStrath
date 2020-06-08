@@ -94,9 +94,9 @@ void uniformVelocity::updateVelocity()
 //             << "Attempted assignment to self"
 //             << abort(FatalError);
 //     }
-// 
+//
 //     Map<label>::operator=(rhs);
-// 
+//
 //     binWidth_ = rhs.binWidth();
 // }
 
@@ -110,14 +110,14 @@ void uniformVelocity::updateVelocity()
 // {
 //     os  << d.binWidth_
 //         << static_cast<const Map<label>&>(d);
-// 
+//
 //     // Check state of Ostream
 //     os.check
 //     (
 //         "Ostream& operator<<(Ostream&, "
 //         "const uniformVelocity&)"
 //     );
-// 
+//
 //     return os;
 // }
 

@@ -68,13 +68,13 @@ private:
 
         // truncate
         scalar F_at_Rmin_;
-        scalar E_at_Rmin_;        
-        
+        scalar E_at_Rmin_;
+
     // Private Member Functions
 
         scalar rawForce(const scalar r) const;
         scalar rawEnergy(const scalar r) const;
-        
+
 public:
 
     //- Runtime type information
@@ -86,9 +86,9 @@ public:
         lennardJonesEqn
         (
             const polyMesh& mesh,
-            polyMoleculeCloud& molCloud,         
+            polyMoleculeCloud& molCloud,
             const reducedUnits& redUnits,
-            const word& name,         
+            const word& name,
             const dictionary& dict
         );
 
@@ -101,16 +101,16 @@ public:
         scalar unscaledEnergy(const scalar r) const;
 
         scalar force(const scalar r) const;
-        
+
         scalar energy(const scalar r) const;
-        
-        
+
+
         //- Read dictionary
 //         bool read
 //         (
 //             const dictionary& pairPotentialProperties,
 //         );
-        
+
         void write(const fileName& pathName);
 
         const dictionary& dict() const;

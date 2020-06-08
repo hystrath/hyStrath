@@ -54,30 +54,30 @@ class dsmcInstantaneousPorousMediumMeasurements
 :
     public porousMeasurements
 {
-    
+
     // Private data
 
         //- Const reference to the mesh
         const fvMesh& mesh_;
-        
+
         //- Reference to the DSMC cloud
         dsmcCloud& cloud_;
-        
+
         //- Indicate the fraction of the dsmcCloud that should be used
         scalar trackingProbability_;
-        
+
         //- Dimensionality of the problem (i.e., 1: 1D)
         label dimensionality_;
-        
+
         //- Initial simulation time
         scalar initialSimulationTime_;
-        
+
         //- Average total distance travelled by all tracked parcels recorded
         scalar mediumTotalDistanceTravelled_;
-        
+
 
     // Private Member Functions
-    
+
         //- Write instantaneous porous measurements info
         void writeInstantaneousPorousMeasurementsInfo() const;
 
@@ -87,7 +87,7 @@ public:
 
     //- Runtime type information
     TypeName("dsmcInstantaneousPorousMediumMeasurements");
-    
+
     // Constructors
 
         //- Constructor
@@ -107,39 +107,39 @@ public:
     // Member Functions
 
       // Access
-      
-        
-        
+
+
+
       // Check
-      
+
         //- Check the validity of the porous measurement inputs present in
         //  constant/dsmcProperties and assign inputs to data members if
         //  correct.
         virtual void checkPorousMeasurementsInputs();
-      
-      
+
+
       // Edit
-      
+
         //- Update function
         virtual void update();
-        
+
         //- Effect of a specular interaction on porous medium measurements
         virtual void specularInteraction(dsmcParcel& p, const vector& nw);
-        
+
         //- Effect of a diffuse interaction on porous medium measurements
         virtual void diffuseInteraction(dsmcParcel& p);
-        
-        //- Effect of a cyclic membrane interaction on porous medium 
+
+        //- Effect of a cyclic membrane interaction on porous medium
         //  measurements
         virtual void cyclicMembraneInteraction
         (
             dsmcParcel& p,
             const vector& orgPos
         );
-        
+
 
       // Write
-      
+
         //- Write porous measurements info
         virtual void writePorousMeasurementsInfo() const;
 

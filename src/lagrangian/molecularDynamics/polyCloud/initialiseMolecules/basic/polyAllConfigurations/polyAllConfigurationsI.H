@@ -46,13 +46,13 @@ inline const List< autoPtr<polyConfiguration> >& polyAllConfigurations::configur
 // {
 //     return fluxControllers_;
 // }
-// 
+//
 // inline const List< autoPtr<fluxController> >& controllers::fluxControllers() const
 // {
 //     return fluxControllers_;
 // }
-// 
-// 
+//
+//
 // inline const List<word>& controllers::stateControllersNames() const
 // {
 //     return sCNames_;

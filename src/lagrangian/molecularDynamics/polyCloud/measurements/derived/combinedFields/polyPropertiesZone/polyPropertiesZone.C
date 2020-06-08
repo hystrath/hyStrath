@@ -102,15 +102,15 @@ polyPropertiesZone::polyPropertiesZone
             << time_.time().system()/"fieldPropertiesDict"
             << exit(FatalError);
     }
-    
+
     bool readFromStore = true;
-    
+
     if (propsDict_.found("readFromStorage"))
     {
         readFromStore = Switch(propsDict_.lookup("readFromStorage"));
-    }    
+    }
 
-    resetAtOutput_ = Switch(propsDict_.lookup("resetAtOutput"));  
+    resetAtOutput_ = Switch(propsDict_.lookup("resetAtOutput"));
 
 	if (!resetAtOutput_ && readFromStore)
     {
@@ -139,12 +139,12 @@ polyPropertiesZone::polyPropertiesZone
         }
         else
         {
-            Info << "Reading from storage, e.g. noAvTimeSteps = " << nAvTimeSteps_ << endl;            
+            Info << "Reading from storage, e.g. noAvTimeSteps = " << nAvTimeSteps_ << endl;
 //             Pout<< "Properties read-in are: mols = " << mols_ << ", mass = " << mass_
 //                 << ", averagingTime = " << nAvTimeSteps_
 //                 << endl;
         }
-       
+
     }
 
     //-set the total volume
@@ -186,7 +186,7 @@ polyPropertiesZone::polyPropertiesZone
         forAll(measurements, i)
         {
             const word& propertyName(measurements[i]);
-    
+
             if(findIndex(propertyNames, propertyName) == -1)
             {
                 propertyNames.append(propertyName);
@@ -233,12 +233,12 @@ polyPropertiesZone::polyPropertiesZone
                 (propertyName != "pressure") &&
                 (propertyName != "energy")
             )
-            {    
+            {
                 FatalErrorIn("atomisticBinsMethod::atomisticBinsMethod()")
                     << "Cannot find measurement property: " << propertyName
                     << nl << "in: "
                     << time_.time().system()/"fieldPropertiesDict"
-                    << exit(FatalError);            
+                    << exit(FatalError);
             }
         }
     }
@@ -257,17 +257,17 @@ void polyPropertiesZone::createField()
 void polyPropertiesZone::calculateField()
 {
     nAvTimeSteps_ += 1.0;
-    
+
     scalar mols = 0.0;
     scalar mass = 0.0;
     vector mom = vector::zero;
     vector angularSpeed = vector::zero;
 
-    forAll(mesh_.cellZones()[regionId_], c) 
+    forAll(mesh_.cellZones()[regionId_], c)
     {
         const label& cellI = mesh_.cellZones()[regionId_][c];
         const List<polyMolecule*>& molsInCell = molCloud_.cellOccupancy()[cellI];
-    
+
         forAll(molsInCell, m)
         {
             polyMolecule* molI = molsInCell[m];
@@ -281,7 +281,7 @@ void polyPropertiesZone::calculateField()
 
                 const diagTensor& molMoI(molCloud_.cP().momentOfInertia(molI->id()));
 
-                // angular speed 
+                // angular speed
                 const vector& molOmega(inv(molMoI) & molI->pi());
 
                 angularSpeed += molOmega;
@@ -293,23 +293,23 @@ void polyPropertiesZone::calculateField()
     // - parallel processing
     if(Pstream::parRun())
     {
-        reduce(mols, sumOp<scalar>());            
+        reduce(mols, sumOp<scalar>());
         reduce(mass, sumOp<scalar>());
         reduce(mom, sumOp<vector>());
         reduce(angularSpeed, sumOp<vector>());
     }
-    
+
     vector velocity = vector::zero;
-    
+
     if(mass > 0.0)
     {
         velocity = mom/mass;
     }
-    
-    velocityB_ += velocity;    
-    
+
+    velocityB_ += velocity;
+
     vector angularVelocity = vector::zero;
-    
+
     if(mols > 0.0)
     {
         angularVelocity = angularSpeed/mols;
@@ -353,12 +353,12 @@ void polyPropertiesZone::calculateField()
 
                 const diagTensor& molMoI(molCloud_.cP().momentOfInertia(molI->id()));
 
-                // angular speed 
+                // angular speed
                 const vector& molOmega(inv(molMoI) & molI->pi());
                 angularKeSum += 0.5*(molOmega & molMoI & molOmega);
 
 
-                kineticTensor += ( massI*(molI->v() - velocity)*(molI->v() - velocity) ) 
+                kineticTensor += ( massI*(molI->v() - velocity)*(molI->v() - velocity) )
                                     + ( ((molOmega - angularVelocity) & molMoI) * (molOmega-angularVelocity) );
 
                 kineticTensor2 += ( massI*(molI->v() - velocity)*(molI->v() - velocity) );
@@ -380,7 +380,7 @@ void polyPropertiesZone::calculateField()
     peSum_ += peSum;
     angularKeSum_ += angularKeSum;
 
-    if(time_.outputTime()) 
+    if(time_.outputTime())
     {
         //- parallel communication
         scalar mols = mols_;
@@ -411,16 +411,16 @@ void polyPropertiesZone::calculateField()
             reduce(angularKeSum, sumOp<scalar>());
         }
 
-        const scalar& nAvTimeSteps = nAvTimeSteps_; 
+        const scalar& nAvTimeSteps = nAvTimeSteps_;
 
         // density
-        
+
         molField_[timeIndex_] = mols/nAvTimeSteps;
         densityField_[timeIndex_] = mols/(totalVolume_*nAvTimeSteps);
         massDensityField_[timeIndex_] = mass/(totalVolume_*nAvTimeSteps);
 
 
-        // velocity 
+        // velocity
         vector velocityA = vector::zero;
 
         if(mass > 0.0)
@@ -519,7 +519,7 @@ void polyPropertiesZone::calculateField()
             peSum_ = 0.0;
             angularKeSum_ = 0.0;
         }
-        else 
+        else
         {
             writeToStorage();
         }
@@ -535,18 +535,18 @@ void polyPropertiesZone::writeToStorage()
         file << nAvTimeSteps_ << endl;
         file << mols_ << endl;
         file << mass_ << endl;
-        file << mom_ << endl; 
-        file << kE_ << endl;        
+        file << mom_ << endl;
+        file << kE_ << endl;
         file << velocityB_ << endl;
         file << virialTensor_ << endl;
         file << kineticTensor_ << endl;
         file << kineticTensor2_ << endl;
-        file << dof_ << endl;        
+        file << dof_ << endl;
         file << keSum_ << endl;
         file << peSum_ << endl;
         file << angularKeSum_ << endl;
 
-              
+
     }
     else
     {
@@ -568,12 +568,12 @@ bool polyPropertiesZone::readFromStorage()
         scalar mols;
         scalar mass;
         vector mom;
-        scalar kE;        
+        scalar kE;
         vector velocityB;
         tensor virialTensor;
         tensor kineticTensor;
         tensor kineticTensor2;
-        scalar dof;        
+        scalar dof;
         scalar keSum;
         scalar peSum;
         scalar angularKeSum;
@@ -587,7 +587,7 @@ bool polyPropertiesZone::readFromStorage()
         file >> virialTensor;
         file >> kineticTensor;
         file >> kineticTensor2;
-        file >> dof;        
+        file >> dof;
         file >> keSum;
         file >> peSum;
         file >> angularKeSum;
@@ -598,16 +598,16 @@ bool polyPropertiesZone::readFromStorage()
         mom_ = mom;
         kE_ = kE;
         velocityB_ = velocityB;
-        virialTensor_ = virialTensor;        
+        virialTensor_ = virialTensor;
         kineticTensor_ = kineticTensor;
         kineticTensor2_ = kineticTensor2;
-        dof_ = dof;        
+        dof_ = dof;
         keSum_ = keSum;
         peSum_ = peSum;
         angularKeSum_ = angularKeSum;
     }
 
-    return goodFile;    
+    return goodFile;
 }
 
 
@@ -633,7 +633,7 @@ void polyPropertiesZone::writeField()
                     molField_,
                     true
                 );
-    
+
                 writeTimeData
                 (
                     casePath_,
@@ -642,7 +642,7 @@ void polyPropertiesZone::writeField()
                     densityField_,
                     true
                 );
-    
+
                 writeTimeData
                 (
                     casePath_,
@@ -665,7 +665,7 @@ void polyPropertiesZone::writeField()
                     velocityFieldA_,
                     true
                 );
-    
+
                 writeTimeData
                 (
                     casePath_,
@@ -674,7 +674,7 @@ void polyPropertiesZone::writeField()
                     velocityFieldB_,
                     true
                 );
-    
+
                 writeTimeData
                 (
                     casePath_,
@@ -710,7 +710,7 @@ void polyPropertiesZone::writeField()
                     stressField_,
                     true
                 );
-    
+
                 writeTimeData
                 (
                     casePath_,
@@ -728,7 +728,7 @@ void polyPropertiesZone::writeField()
                     stressField2_,
                     true
                 );
-    
+
                 writeTimeData
                 (
                     casePath_,
@@ -751,7 +751,7 @@ void polyPropertiesZone::writeField()
                     kEField_,
                     true
                 );
-    
+
                 writeTimeData
                 (
                     casePath_,
@@ -760,7 +760,7 @@ void polyPropertiesZone::writeField()
                     pEField_,
                     true
                 );
-    
+
                 writeTimeData
                 (
                     casePath_,
@@ -772,7 +772,7 @@ void polyPropertiesZone::writeField()
             }
 
             const reducedUnits& rU = molCloud_.redUnits();
-    
+
             if(rU.outputSIUnits())
             {
                 // output densities
@@ -787,7 +787,7 @@ void polyPropertiesZone::writeField()
                         molField_,
                         true
                     );
-    
+
                     writeTimeData
                     (
                         casePath_,
@@ -796,7 +796,7 @@ void polyPropertiesZone::writeField()
                         densityField_*rU.refNumberDensity(),
                         true
                     );
-    
+
                     writeTimeData
                     (
                         casePath_,
@@ -819,7 +819,7 @@ void polyPropertiesZone::writeField()
                         velocityFieldA_*rU.refVelocity(),
                         true
                     );
-        
+
                     writeTimeData
                     (
                         casePath_,
@@ -854,7 +854,7 @@ void polyPropertiesZone::writeField()
                         stressField_*rU.refPressure(),
                         true
                     );
-        
+
                     writeTimeData
                     (
                         casePath_,
@@ -876,7 +876,7 @@ void polyPropertiesZone::writeField()
                         kEField_*rU.refEnergy(),
                         true
                     );
-        
+
                     writeTimeData
                     (
                         casePath_,
@@ -885,7 +885,7 @@ void polyPropertiesZone::writeField()
                         pEField_*rU.refEnergy(),
                         true
                     );
-        
+
                     writeTimeData
                     (
                         casePath_,

@@ -89,7 +89,7 @@ Foam::mhd::mhdModel::New
 
     dictionaryConstructorTable::iterator cstrIter =
         dictionaryConstructorTablePtr_->find(modelType);
-    
+
     if (cstrIter == dictionaryConstructorTablePtr_->end())
     {
         FatalErrorIn

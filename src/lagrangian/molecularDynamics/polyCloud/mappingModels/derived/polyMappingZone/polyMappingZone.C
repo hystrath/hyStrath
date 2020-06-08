@@ -81,7 +81,7 @@ polyMappingZone::~polyMappingZone()
 void polyMappingZone::findMolsToMap()
 {
     DynamicList<polyMolecule*> molsToDelete;
-    
+
     {
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
 
@@ -107,13 +107,13 @@ void polyMappingZone::findMolsToMap()
                     tetFace,
                     tetPt
                 );
-                
+
                 if(cell == -1)
                 {
                     polyMolecule* molI = &mol();
                     molsToDelete.append(molI);
                 }
-                
+
                 mol().position() = newPos;
                 mol().cell() = cell;
                 mol().tetFace() = tetFace;

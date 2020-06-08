@@ -37,7 +37,7 @@ namespace Foam
         addToRunTimeSelectionTable
         (
             basicMfpModel,
-            variableHardSphere, 
+            variableHardSphere,
             dictionary
         );
     }
@@ -57,9 +57,9 @@ Foam::basicMfpModels::variableHardSphere::variableHardSphere
 )
 :
     basicMfpModel(name, speciesIndex, dict, dictThermoPhy, p, Tt)
-{   
+{
     molW_ = 1.0e-3*readScalar(dictThermoPhy.subDict(name).subDict("specie").lookup("molWeight"));
-    omega_ = readScalar(dictThermoPhy.subDict(name).subDict("specie").lookup("omega")); 
+    omega_ = readScalar(dictThermoPhy.subDict(name).subDict("specie").lookup("omega"));
 }
 
 
@@ -93,7 +93,7 @@ Foam::basicMfpModels::variableHardSphere::mfp() const
     {
         mfp[celli] = 2.0/15.0*(5.0-2.0*omega_)*(7.0-2.0*omega_)*sqrt(molW_/(constant::mathematical::twoPi*constant::physicoChemical::R.value()*this->Tt_[celli]));
     }
-    
+
 
     forAll(this->Tt_.boundaryField(), patchi)
     {

@@ -133,8 +133,8 @@ void dsmcFreeStreamInflowFieldPatch::controlParcelsBeforeMove()
             const label& faceI = faces_[f];
             const vector& sF = mesh_.faceAreas()[faceI];
             const scalar fA = mag(sF);
-            
-            const scalar deltaT = 
+
+            const scalar deltaT =
                 cloud_.deltaTValue
                 (
                     mesh_.boundaryMesh()[patchId_].faceCells()[f]
@@ -158,7 +158,7 @@ void dsmcFreeStreamInflowFieldPatch::controlParcelsBeforeMove()
 
             //const scalar RWF = cloud_.coordSystem().pRWF(patchId_, f);
             // From Bird eqn 4.22
-            accumulatedParcelsToInsert_[i][f] += 
+            accumulatedParcelsToInsert_[i][f] +=
                 (
                     fA*numberDensities_[i][f]*deltaT*mostProbableSpeed
                     *
@@ -221,7 +221,7 @@ void dsmcFreeStreamInflowFieldPatch::controlParcelsBeforeMove()
 
         // Wall tangential unit vector. Use the direction between the
         // face centre and the first vertex in the list
-        vector t1 = fC - mesh_.points()[mesh_.faces()[faceI][0]]; 
+        vector t1 = fC - mesh_.points()[mesh_.faces()[faceI][0]];
         t1 /= mag(t1);
 
         // Other tangential unit vector.  Rescaling in case face is not
@@ -346,14 +346,14 @@ void dsmcFreeStreamInflowFieldPatch::controlParcelsBeforeMove()
                     faceRotationalTemperature,
                     cloud_.constProps(typeId).rotationalDegreesOfFreedom()
                 );
-                
+
                 labelList vibLevel = cloud_.equipartitionVibrationalEnergyLevel
                 (
                     faceVibrationalTemperature,
                     cloud_.constProps(typeId).nVibrationalModes(),
                     typeId
                 );
-                
+
                 label ELevel = cloud_.equipartitionElectronicLevel
                 (
                     faceElectronicTemperature,
@@ -361,11 +361,11 @@ void dsmcFreeStreamInflowFieldPatch::controlParcelsBeforeMove()
                     cloud_.constProps(typeId).electronicEnergyList()
                 );
 
-            
+
                 label newParcel = patchId();
-                
+
                 const scalar& RWF = cloud_.coordSystem().RWF(cellI);
-              
+
                 cloud_.addNewParcel
                 (
                     p,
@@ -392,7 +392,7 @@ void dsmcFreeStreamInflowFieldPatch::controlParcelsBeforeMove()
        reduce(parcelsToAdd[m], sumOp<scalar>());
        reduce(parcelsInserted[m], sumOp<scalar>());
 
-       Info<< "Patch " << patchId() << ", specie: " << typeIds_[m] 
+       Info<< "Patch " << patchId() << ", specie: " << typeIds_[m]
            << ", target parcels to insert: " << parcelsToAdd[m]
            <<", inserted parcels: " << parcelsInserted[m]
            << endl;
@@ -475,11 +475,11 @@ void dsmcFreeStreamInflowFieldPatch::setProperties()
 //     (
 //         propsDict_.subDict("numberDensities")
 //     );
-    
+
 //     numberDensities_.clear();
-// 
+//
 //     numberDensities_.setSize(typeIds_.size(), 0.0);
-// 
+//
 //     forAll(numberDensities_, i)
 //     {
 //         numberDensities_[i] = readScalar
@@ -495,7 +495,7 @@ void dsmcFreeStreamInflowFieldPatch::setProperties()
     {
         accumulatedParcelsToInsert_[m].setSize(nFaces_, 0.0);
     }
-    
+
     inletTemperatures_.setSize(nFaces_, vector::zero);
     inletVelocities_.setSize(nFaces_, vector::zero);
 
@@ -508,13 +508,13 @@ void dsmcFreeStreamInflowFieldPatch::setProperties()
     {
         inletVelocities_[f] = boundaryU_.boundaryField()[patchId_][f];
     }
-    
+
     boundaryNumberDensity_.setSize(typeIds_.size());
-    
+
     forAll(boundaryNumberDensity_, i)
     {
         const word& moleculeName(moleculesReduced[i]);
-        
+
         word nameBoundaryDensity ("boundaryNumberDensity_" + moleculeName);
 
         boundaryNumberDensity_[i].reset
@@ -535,11 +535,11 @@ void dsmcFreeStreamInflowFieldPatch::setProperties()
     }
 
     numberDensities_.setSize(typeIds_.size());
-    
+
     forAll(numberDensities_, i)
     {
         numberDensities_[i].setSize(nFaces_, 0.0);
-        
+
         forAll(numberDensities_[i], f)
         {
             numberDensities_[i][f] = boundaryNumberDensity_[i]->boundaryField()[patchId_][f];

@@ -96,7 +96,7 @@ polyFieldProperties::polyFieldProperties
     if(fields_.size() > 0 )
     {
         fileName fieldPath(time_.path()/"fieldMeasurements");
-    
+
         if (!isDir(fieldPath))
         {
             mkDir(fieldPath);
@@ -115,17 +115,17 @@ polyFieldProperties::polyFieldProperties
         mkDir(polyFieldsPath);
 
         Info << "Creating fields: " << nl << endl;
-    
+
         forAll(fields_, f)
         {
             const entry& fieldI = fieldList_[f];
             const dictionary& fieldIDict = fieldI.dict();
-    
+
             fields_[f] = autoPtr<polyField>
             (
                 polyField::New(time_, mesh, molCloud, fieldIDict)
             );
-    
+
             fieldNames_[f] = fields_[f]->type();
             fieldIds_[f] = f;
 
@@ -168,7 +168,7 @@ void polyFieldProperties::createFields()
 void polyFieldProperties::calculateFields()
 {
 	Info << "Calculate fields" << endl;
- 
+
     forAll(fields_, f)
     {
         fields_[f]->calculateField();

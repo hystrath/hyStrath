@@ -46,7 +46,7 @@ namespace Foam
 //     for(label i = 0; i < noOfBins_; i++)
 //     {
 //         magRadii_[i] = 0.5*binWidth_ + scalar(i)*binWidth_;
-// 
+//
 //         radii_[i] = startPoint_ + (0.5*binWidth_ + scalar(i)*binWidth_)*unitVector_;
 //     }
 // }
@@ -156,7 +156,7 @@ threeDimForceDistribution::~threeDimForceDistribution()
 
 void threeDimForceDistribution::addToDistribution
 (
-    const vector& r, 
+    const vector& r,
     const vector& force,
     const scalar& energy
 )
@@ -177,7 +177,7 @@ void threeDimForceDistribution::addToDistribution
         label nX = label(rX/binWidthX_);
         label nY = label(rY/binWidthY_);
         label nZ = label(rZ/binWidthZ_);
-    
+
         if
         (
             (nX < nBinsX_) &&
@@ -216,7 +216,7 @@ bool threeDimForceDistribution::isWithinDistributionRange(const vector& r)
         label nX = label(rX/binWidthX_);
         label nY = label(rY/binWidthY_);
         label nZ = label(rZ/binWidthZ_);
-    
+
         if
         (
             (nX < nBinsX_) &&
@@ -257,7 +257,7 @@ void threeDimForceDistribution::scaleForceDistribution
     const List< List< scalarField> >& values
 )
 {
-    //check 
+    //check
     if(forces_.size() == values.size())
     {
         forAll(forces_, x)
@@ -289,13 +289,13 @@ void threeDimForceDistribution::scaleForceDistribution
 // List< Pair<scalar> > threeDimForceDistribution::fMag()
 // {
 //     List< Pair<scalar> > forceDistrib(magForces_.size());
-// 
+//
 //     forAll(forceDistrib, bin)
 //     {
 //         forceDistrib[bin].first() = magRadii_[bin];
 //         forceDistrib[bin].second() = magForces_[bin];
 //     }
-// 
+//
 //     return forceDistrib;
 // }
 
@@ -323,20 +323,20 @@ void threeDimForceDistribution::write
 {
 //     if(runTime.outputTime())
 //     {
-        // - rescale the distribution 
+        // - rescale the distribution
 //         forAll(forces_, x)
 //         {
 //             forAll(forces_[x], y)
 //             {
 //                 forAll(forces_[x][y], z)
 //                 {
-// 
+//
 //                     if(mols_[x][y][z] > 0.0)
 //                     {
 //                         forces_[x][y][z] /= mols_[x][y][z];
 //                         energies_[x][y][z] /= mols_[x][y][z];
 //                     }
-//                 }       
+//                 }
 //             }
 //         }
 
@@ -365,15 +365,15 @@ void threeDimForceDistribution::write
                 {
                     for (label k = 0; k < nBinsZ_; k++)
                     {
-                        vector pos = startPoint_ + 
+                        vector pos = startPoint_ +
                                     (0.5+scalar(i))*binWidthX_*unitVectorX_ +
                                     (0.5+scalar(j))*binWidthY_*unitVectorY_ +
                                     (0.5+scalar(k))*binWidthZ_*unitVectorZ_;
-    
-                        positionsFile 
+
+                        positionsFile
                             << "(" << pos.x() << " " << pos.y() << " "
                             << pos.z() << ") " << mesh.findCell(pos)
-                            << endl;  
+                            << endl;
                     }
                 }
             }
@@ -402,15 +402,15 @@ void threeDimForceDistribution::write
                 {
                     for (label k = 0; k < nBinsZ_; k++)
                     {
-                        vector pos = startPoint_ + 
+                        vector pos = startPoint_ +
                                     (0.5+scalar(i))*binWidthX_*unitVectorX_ +
                                     (0.5+scalar(j))*binWidthY_*unitVectorY_ +
                                     (0.5+scalar(k))*binWidthZ_*unitVectorZ_;
-    
-                        positionsFile2 
+
+                        positionsFile2
                             << "(" << pos.x() << " " << pos.y() << " "
-                            << pos.z() << ")" 
-                            << endl;  
+                            << pos.z() << ")"
+                            << endl;
                     }
                 }
             }
@@ -440,9 +440,9 @@ void threeDimForceDistribution::write
                 {
                     for (label k = 0; k < nBinsZ_; k++)
                     {
-                        forcesFile 
+                        forcesFile
                             << "(" << forces_[i][j][k].x() << " " << forces_[i][j][k].y() << " "
-                            << forces_[i][j][k].z() << ") " 
+                            << forces_[i][j][k].z() << ") "
                             << endl;
                     }
                 }
@@ -472,8 +472,8 @@ void threeDimForceDistribution::write
                 {
                     for (label k = 0; k < nBinsZ_; k++)
                     {
-                        energiesFile 
-                            << energies_[i][j][k]  
+                        energiesFile
+                            << energies_[i][j][k]
                             << endl;
                     }
                 }

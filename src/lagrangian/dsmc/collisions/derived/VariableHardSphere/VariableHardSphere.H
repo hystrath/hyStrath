@@ -49,7 +49,7 @@ class VariableHardSphere
 {
 
 protected:
- 
+
     // Protected data
 
         //- The coefficients dictionary
@@ -99,7 +99,7 @@ public:
             const label cellI,
             scalar cR = -1
         );
-        
+
         //- Scatter parcels P and Q
         virtual void scatter
         (
@@ -108,7 +108,7 @@ public:
             const label cellI,
             scalar cR = -1
         );
-        
+
         //- Calculate post-collision velocities
         virtual void postCollisionVelocities
         (
@@ -118,7 +118,7 @@ public:
             vector& UQ,
             scalar cR = -1
         );
-        
+
         //- Calculate post-reaction velocities for both products
         virtual void postReactionVelocities
         (
@@ -128,7 +128,7 @@ public:
             vector& UQ,
             scalar cR
         );
-        
+
         //- Apply energy redistribution
         virtual void redistribute
         (

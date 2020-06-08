@@ -50,7 +50,7 @@ namespace Foam
 // {
 //     return remainingCells_;
 // }
-// 
+//
 // inline const labelList& layerRegions::regionsCells() const
 // {
 //     return regionsCells_;
@@ -150,8 +150,8 @@ inline void ovRegion::setNewInterfacePoints()
 // {
 //     return acceptedPoints_;
 // }
-// 
-// 
+//
+//
 // inline const labelList& ovRegion::newInterfacePoints() const
 // {
 //     return newInterfacePoints_;

@@ -55,18 +55,18 @@ polyLangevin::polyLangevin
     molIds_(),
     storedVelocities_(),
     gamma_(readScalar(propsDict_.lookup("gamma"))),
-    controlOn_(true),    
+    controlOn_(true),
     switchOffAfterTime_(false),
     currentTime_(0.0),
-    switchOffTime_(GREAT)    
+    switchOffTime_(GREAT)
 {
     writeInTimeDir_ = false;
     writeInCase_ = true;
 
 //     singleValueController() = true;
-    
-    deltaT_ = time_.deltaT().value(); 
-    
+
+    deltaT_ = time_.deltaT().value();
+
     // choose molecule ids to sample
 
     molIds_.clear();
@@ -78,7 +78,7 @@ polyLangevin::polyLangevin
     );
 
     molIds_ = ids.molIds();
-    
+
     if (propsDict_.found("temperature"))
     {
         temperature_ = readScalar(propsDict_.lookup("temperature"));
@@ -86,40 +86,40 @@ polyLangevin::polyLangevin
     else
     {
         const reducedUnits& rU = molCloud_.redUnits();
-        
+
         temperature_ = readScalar(propsDict_.lookup("temperatureKelvin"));
-        
+
         temperature_ /= rU.refTemp();
     }
 //     friction_ = 1.0 - (0.5*gamma_*deltaT_);
 //     noise_ = sqrt((6.0*gamma_*temperature_) / deltaT_);
-    
+
 //     Info<< "friction coefficient: " << friction_
 //         << ", noise: " << noise_
-//         << endl;    
+//         << endl;
     sigma1_ = (1.0 - exp(-1.0*gamma_*deltaT_))/(1.0*gamma_);
-    sigma2_ = (1.0 - exp(-2.0*gamma_*deltaT_))/(2.0*gamma_);    
-    
+    sigma2_ = (1.0 - exp(-2.0*gamma_*deltaT_))/(2.0*gamma_);
+
     if (propsDict_.found("switchOffAfterTime"))
-    {   
+    {
         switchOffAfterTime_ = true;
         switchOffTime_ = readScalar(propsDict_.lookup("switchOffAfterTime"));
-    }    
-    
+    }
+
     elapsedtime_ = 0.0;
-    
+
     variableGamma_ = false;
-    
+
     if (propsDict_.found("variableGamma"))
-    {   
+    {
         variableGamma_ = Switch(propsDict_.lookup("variableGamma"));
-        
+
         if(variableGamma_)
         {
-            deltaGamma_ = readScalar(propsDict_.lookup("deltaGamma"));            
-            timeInterval_ = readScalar(propsDict_.lookup("timeInterval"));            
+            deltaGamma_ = readScalar(propsDict_.lookup("deltaGamma"));
+            timeInterval_ = readScalar(propsDict_.lookup("timeInterval"));
         }
-    }    
+    }
 //     storedVelocities_.setSize(molCloud_.size(), vector::zero);
 //     trackingNumbers_.setSize(molCloud_.size(), -1);
 }
@@ -145,7 +145,7 @@ void polyLangevin::controlBeforeVelocityI()
 
 void polyLangevin::measureTemperature()
 {
- 
+
     scalar kE = 0.0;
     scalar dof = 0.0;
     scalar angularKeSum = 0.0;
@@ -153,10 +153,10 @@ void polyLangevin::measureTemperature()
     // - kinetic energy (from thermal velocities)
     {
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
-    
+
         for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
         {
-            if(findIndex(molIds_, mol().id()) != -1)            
+            if(findIndex(molIds_, mol().id()) != -1)
             {
                 const scalar& massI = molCloud_.cP().mass(mol().id());
 
@@ -165,7 +165,7 @@ void polyLangevin::measureTemperature()
 
                 const diagTensor& molMoI(molCloud_.cP().momentOfInertia(mol().id()));
 
-                // angular speed 
+                // angular speed
                 const vector& molOmega(inv(molMoI) & mol().pi());
                 angularKeSum += 0.5*(molOmega & molMoI & molOmega);
             }
@@ -201,12 +201,12 @@ void polyLangevin::controlBeforeMove()
     if(controlOn_)
     {
         storedVelocities_ = vector::zero;
-        
+
 //         Info << "temperatureLangevin: control 1" << endl;
-        
+
         scalar sigma1 = sigma1_;
         scalar sigma2 = sigma2_;
-        
+
         const scalar& kB = molCloud_.redUnits().kB();
 //         label i = 0;
 
@@ -214,69 +214,69 @@ void polyLangevin::controlBeforeMove()
         DynamicList<vector> velocities;
 
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
-    
+
         for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
         {
-            
+
             if(!mol().frozen())
             {
                 const scalar& massI = molCloud_.cP().mass(mol().id());
-                
+
                 scalar termA = sqrt(2*gamma_*massI*kB*temperature_)/massI;
-                
+
                 vector z1 = vector::zero;
-                vector z2 = vector::zero;   
-                
+                vector z2 = vector::zero;
+
                 // assumption
     //             scalar sigma1 = (1.0 - exp(-1.0*gamma_*deltaT_))/(1.0*gamma_);
     //             scalar sigma2 = (1.0 - exp(-2.0*gamma_*deltaT_))/(2.0*gamma_);
-                
+
                 vector R1 = vector
                             (
                                 molCloud_.rndGen().GaussNormalMD<scalar>(),
                                 molCloud_.rndGen().GaussNormalMD<scalar>(),
                                 molCloud_.rndGen().GaussNormalMD<scalar>()
                             );
-                            
+
                 vector R2 = vector
                             (
                                 molCloud_.rndGen().GaussNormalMD<scalar>(),
                                 molCloud_.rndGen().GaussNormalMD<scalar>(),
                                 molCloud_.rndGen().GaussNormalMD<scalar>()
                             );
-                            
+
                 z1 = sqrt(sigma2)*R1;
                 z2 = R1*(sigma1-sigma2)/sqrt(sigma2) + R2*sqrt(deltaT_ - (sigma1*sigma1/sigma2));
-                
-                
+
+
                 const label& tN = mol().trackingNumber();
-                
+
                 storedVelocities_[tN] = exp(-gamma_*deltaT_)*mol().v() + termA*z1;
-                
+
                 TNs.append(tN);
                 velocities.append(storedVelocities_[tN]);
-                
+
                 // New velocity to temporary hack the move function
                 vector newVel = (
                                     ( ( 1.0 - exp(-gamma_*deltaT_) )*mol().v()/gamma_ )
                                     + (termA*z2/gamma_)
-                                    
+
                                 )/deltaT_;
-                                    
+
                 mol().v() = newVel;
             }
         }
-        
+
         TNs.shrink();
         velocities.shrink();
-        
+
         if(Pstream::parRun())
-        {        
-            List<label> tNsTransf(TNs.size());        
-            List<vector> velTransf(TNs.size());        
+        {
+            List<label> tNsTransf(TNs.size());
+            List<vector> velTransf(TNs.size());
             tNsTransf.transfer(TNs);
             velTransf.transfer(velocities);
-            
+
             //- sending
             for (int p = 0; p < Pstream::nProcs(); p++)
             {
@@ -289,7 +289,7 @@ void polyLangevin::controlBeforeMove()
                     }
                 }
             }
-        
+
             //- receiving
             for (int p = 0; p < Pstream::nProcs(); p++)
             {
@@ -303,7 +303,7 @@ void polyLangevin::controlBeforeMove()
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> tNsProc >> velProc;
                     }
-            
+
                     forAll(tNsProc, i)
                     {
                         storedVelocities_[tNsProc[i]] = velProc[i];
@@ -342,23 +342,23 @@ void polyLangevin::controlAfterForces()
 void polyLangevin::controlAfterVelocityII()
 {
     measureTemperature();
-    
+
     if(controlOn_)
     {
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
-    
+
         for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
         {
             const label& tN = mol().trackingNumber();
-            
+
             if(!mol().frozen())
             {
                 mol().v() = storedVelocities_[tN] + 0.5*deltaT_*mol().a();
             }
         }
     }
-    
-    
+
+
     if(switchOffAfterTime_)
     {
         currentTime_ += deltaT_;
@@ -368,21 +368,21 @@ void polyLangevin::controlAfterVelocityII()
             controlOn_ = false;
         }
     }
-    
-    
+
+
     if(variableGamma_)
     {
         elapsedtime_ += deltaT_;
-        
+
         if(elapsedtime_ >= timeInterval_)
         {
             elapsedtime_ = 0.0;
             gamma_ += deltaGamma_;
-        }        
-        
+        }
+
 //         Info << "gamma = " << gamma_ << endl;
     }
-    
+
 }
 
 
@@ -392,7 +392,7 @@ void polyLangevin::calculateProperties()
 
 void polyLangevin::output
 (
-    const fileName& fixedPathName, 
+    const fileName& fixedPathName,
     const fileName& timePath
 )
 {}

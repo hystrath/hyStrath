@@ -159,7 +159,7 @@ inline Foam::scalar Foam::constantTransport<Thermo>::alphatr
     else
     {
         return 0.0;
-    } 
+    }
 }
 
 
@@ -176,7 +176,7 @@ inline Foam::scalar Foam::constantTransport<Thermo>::alphave
     else
     {
         return 0.0;
-    } 
+    }
 }
 
 

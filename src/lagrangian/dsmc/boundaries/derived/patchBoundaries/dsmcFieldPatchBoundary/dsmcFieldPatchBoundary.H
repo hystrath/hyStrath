@@ -64,11 +64,11 @@ class dsmcFieldPatchBoundary
 private:
 
     // Private data
-    
+
 
 protected:
 
-    // Protected data        
+    // Protected data
 
         //- boundary temperature
         //volScalarField boundaryT_;
@@ -77,14 +77,14 @@ protected:
         //- boundary velocity
         //volVectorField boundaryU_;
         vectorList boundaryU_;
-        
-        
+
+
     // Protected member functions
-    
+
         //- Read the temperature and velocity fields on the patch
         void readPatchFields();
-    
-        
+
+
 
 public:
 
@@ -133,11 +133,11 @@ public:
 
 
     // Access
-    
+
       //- Return the patch temperature at the parcel
       scalar patchLocalTemperature(const dsmcParcel& p) const;
-        
-      //- Return the patch velocity at the parcel  
+
+      //- Return the patch velocity at the parcel
       const vector& patchLocalVelocity(const dsmcParcel& p) const;
 
 };

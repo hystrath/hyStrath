@@ -31,15 +31,15 @@ License
 
 namespace Foam
 {
-  
-// * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //  
-  
+
+// * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
+
     defineTypeNameAndDebug(relaxationTimeModelHE, 0);
     defineRunTimeSelectionTable(relaxationTimeModelHE, fvMesh);
 }
 
 
-// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //  
+// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
@@ -54,11 +54,11 @@ Foam::relaxationTimeModelHE::relaxationTimeModelHE
     (
         thermo.twoTemperatureDictionary()
     ),
-    
-    mesh_(thermo.Tt().mesh()), 
+
+    mesh_(thermo.Tt().mesh()),
     thermo_(thermo),
     turbulence_(turbulence),
-    
+
     QHE_
     (
         IOobject
@@ -72,7 +72,7 @@ Foam::relaxationTimeModelHE::relaxationTimeModelHE
         mesh_,
         dimensionedScalar("Qhe", dimensionSet(1, -1, -3, 0, 0), 0.0)
     )
-    
+
 {}
 
 
@@ -97,7 +97,7 @@ Foam::relaxationTimeModelHE::HERelaxationSource()
             dimensionedScalar("Qhe", dimensionSet(1, -1, -3, 0, 0), 0.0)
         )
     );
-    
+
     return tQHE;
 }*/
 

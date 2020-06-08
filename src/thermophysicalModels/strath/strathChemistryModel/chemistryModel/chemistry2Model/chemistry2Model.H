@@ -77,13 +77,13 @@ class chemistry2Model
         //  of given type and return the characteristic time
         template<class DeltaTType>
         scalar solve(const DeltaTType& deltaT);
-        
+
         //- Return the modified temperature when bounding (fixed min value) is
         //  required. Useful when equilibrium constant is a very small value
         //  cf Scalabrin's PhD thesis (2007), Eq. 3.13, p37
         //  from experience, needed for electron impact reactions
         scalar modTemperature(const scalar T) const;
-        
+
 
 protected:
 
@@ -105,32 +105,32 @@ protected:
 
         //- Number of reactions
         label nReaction_;
-        
+
         //- Temperature below which the reaction rates are assumed 0
         scalar Treact_;
 
         //- List of reaction rate per specie [kg/m3/s]
         PtrList<DimensionedField<scalar, volMesh> > RR_;
-        
+
         // NEW VINCENT 25/03/2016 *********************************************
         //- List of forward reaction rate per specie [kg/m3/s]
         PtrList<DimensionedField<scalar, volMesh> > RRf_;
-        
-        //- List of reaction rate for N+ and O+ species for electron impact 
+
+        //- List of reaction rate for N+ and O+ species for electron impact
         //  reactions only [kg/m3/s]
         PtrList<DimensionedField<scalar, volMesh> > RRIonisedAtomseii_;
-        
+
         // Park TTv model
           //- Factor in the preferential model, default value: 0.3
           PtrList<FixedList<scalar, 2> > preferentialFactor_;
-          
-        // CVDV model 
-          //- Reciprocal U factor 
+
+        // CVDV model
+          //- Reciprocal U factor
           scalar reciprocalUFactor_;
-            
-          //- Number of vibrational energy levels considered in the simple 
+
+          //- Number of vibrational energy levels considered in the simple
           //  harmonic oscillator model
-          PtrList<label> simpleHarmonicOscillatorVibCutOff_; 
+          PtrList<label> simpleHarmonicOscillatorVibCutOff_;
         // END NEW VINCENT 25/03/2016 *****************************************
 
 
@@ -139,8 +139,8 @@ protected:
         //- Write access to chemical source terms
         //  (e.g. for multi-chemistry model)
         inline PtrList<DimensionedField<scalar, volMesh> >& RR();
-        
-        
+
+
 public:
 
     //- Runtime type information
@@ -170,29 +170,29 @@ public:
 
         //- The number of reactions
         inline label nReaction() const;
-        
+
         //- Temperature below which the reaction rates are assumed 0
         inline scalar Treact() const;
 
         //- Temperature below which the reaction rates are assumed 0
         inline scalar& Treact();
-        
+
         // NEW VINCENT 25/07/2016 *********************************************
         inline scalar energyLevelSimpleHarmonicOscillator
         (
-            const label speciei, 
+            const label speciei,
             const label alpha
         ) const;
-        
+
         inline scalar termQ(const label speciei, const scalar T) const;
         // END NEW VINCENT 25/07/2016 *****************************************
-        
+
         //- dc/dt = omega, rate of change in concentration, for each species
         virtual tmp<scalarField> omega
         (
             const scalarField& c,
             const scalar T,
-            const scalar Tv, // NEW VINCENT 
+            const scalar Tv, // NEW VINCENT
             const scalar p
         ) const;
 
@@ -203,7 +203,7 @@ public:
             const Reaction2<ThermoType>& R,
             const scalarField& c,
             const scalar T,
-            const scalar Tv, // NEW VINCENT 
+            const scalar Tv, // NEW VINCENT
             const scalar p,
             scalar& pf,
             scalar& cf,
@@ -212,8 +212,8 @@ public:
             scalar& cr,
             label& rRef
         ) const;
-        
-        
+
+
         //- Return the reaction rate for reaction r and the reference
         //  species and charateristic times -> overloaded for Tv[speciei]
         virtual scalar omega
@@ -222,7 +222,7 @@ public:
             const scalarField& c,
             const scalar T,
             const scalar Tv, // NEW VINCENT
-            const List<scalar>& spTv, // NEW VINCENT  
+            const List<scalar>& spTv, // NEW VINCENT
             const scalar p,
             scalar& pf,
             scalar& cf,
@@ -240,8 +240,8 @@ public:
             label iReaction,
             const scalarField& c,
             const scalar T,
-            const scalar Tv, // NEW VINCENT 
-            const List<scalar>& spTv, // NEW VINCENT 
+            const scalar Tv, // NEW VINCENT
+            const List<scalar>& spTv, // NEW VINCENT
             const scalar p,
             scalar& pf,
             scalar& cf,
@@ -269,16 +269,16 @@ public:
             (
                 const label i
             );
-            
+
             // NEW VINCENT 25/03/2016 *****************************************
-            //- Return const access to the forward chemical source terms for 
+            //- Return const access to the forward chemical source terms for
             //  specie, i
             inline const DimensionedField<scalar, volMesh>& RRf
             (
                 const label i
             ) const;
 
-            //- Return non const access to forward chemical source terms 
+            //- Return non const access to forward chemical source terms
             //  units: [kg/m/s3]
             virtual DimensionedField<scalar, volMesh>& RRf
             (
@@ -306,12 +306,12 @@ public:
 
             //- Return source for enthalpy equation [kg/m/s3]
             virtual tmp<volScalarField> Sh() const;
-            
+
             // BRAND NEW VINCENT **********************************************
-            //- Return chemistry-vibrational coupling source term 
+            //- Return chemistry-vibrational coupling source term
             //  in the vibrational equation [kg/m/s3]
             virtual tmp<volScalarField> Scv(label i) const;
-            
+
             //- Return energy removed from free-electrons during impact
             //  ionisation reactions [kg/m/s3]
             virtual tmp<volScalarField> Seiir(label i) const;
@@ -351,7 +351,7 @@ public:
                 scalar& deltaT,
                 scalar& subDeltaT
             ) const;
-            
+
             virtual void solve
             (
                 scalarField& c,

@@ -67,15 +67,15 @@ private:
 
         //- ids of mols
         List<label> molIds_;
-        
-        
+
+
     // Private Member Functions
 
         void setBoundBox
         (
             const dictionary& propsDict,
             boundedBox& bb,
-            const word& name 
+            const word& name
         );
 
 public:

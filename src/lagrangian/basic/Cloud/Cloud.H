@@ -258,7 +258,7 @@ public:
 
             //- Remove particle from cloud and delete
             void deleteParticle(ParticleType&);
-            
+
             //- Remove lost particles from cloud and delete
             void deleteLostParticles(); // NEW VINCENT FROM OPENFOAM-dev
 
@@ -269,7 +269,7 @@ public:
             //  passing the TrackingData to the track function
             template<class TrackData>
             void move(TrackData& td, const scalar trackTime);
-            
+
             //- Remap the cells of particles corresponding to the
             //  mesh topology change
             template<class TrackData>

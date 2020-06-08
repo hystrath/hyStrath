@@ -157,9 +157,9 @@ void dsmcGeneralBoundary::updateTime()
 {
 //     time_++;
 //     timeMeas_++;
-// 
+//
 //     const scalar& t = time_.time().timeOutputValue();
-// 
+//
 //     if((t - initialTime_) < timePeriod_)
 //     {
 //         time_.controlTimeInterval().endTime() = false;
@@ -184,7 +184,7 @@ void dsmcGeneralBoundary::setNewBoundaryFields()
 
     //- loop through all faces and set the boundary cells
     //- no conflict with parallelisation because the faces are unique
-    
+
     nFaces_ = 0;
     patchSurfaceArea_ = 0.0;
 

@@ -99,19 +99,19 @@ Foam::polyStandardFields::polyStandardFields
             vector::zero
         )
     )
-    
-    
+
+
 {
 //     volScalarField qCopy = q_;
-    
+
 //     wordList qBFCopy = q_.boundaryField().types();
-   
+
     forAll(mesh_.boundaryMesh(), i)
-    {        
+    {
         if (isA<polyPatch>(mesh_.boundaryMesh()[i]))
         {
             if(mesh_.boundaryMesh()[i].type() == "patch")
-            {  
+            {
                 Info << "Remember to change the type entries in q, rhoN, etc to 'zeroGradient' for the '" <<
                 mesh_.boundaryMesh()[i].name() << "' patch!" << endl << endl;
             }
@@ -124,12 +124,12 @@ Foam::polyStandardFields::polyStandardFields
 (
     const fvMesh& mesh,
     polyMoleculeCloud& cloud,
-    const word& fieldName 
+    const word& fieldName
 )
 :
     mesh_(mesh),
     cloud_(cloud),
-    fieldName_(fieldName),    
+    fieldName_(fieldName),
     rhoN_
     (
         IOobject
@@ -177,7 +177,7 @@ Foam::polyStandardFields::polyStandardFields
 {
     mass_.setSize();
     momentum_.setSize();
-    
+
 }
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
@@ -205,9 +205,9 @@ void polyStandardFields::readIn()
     dict.readIfPresent("mass", mass_);
     dict.readIfPresent("momentum", momentum_);
     dict.readIfPresent("nTimeSteps", nTimeSteps_);
-    
+
 //     Info << "Some properties read in: "
-//          << "mols = " << mols_[0] 
+//          << "mols = " << mols_[0]
 //          << ", mass = " << mass_[0]
 //          << ", averagingCounter = " << averagingCounter_
 //          << endl;
@@ -232,16 +232,16 @@ void polyStandardFields::writeOut()
         );
 
         dict.add("mass", mass_);
-        dict.add("momentum", momentum_);        
-        dict.add("nTimeSteps", nTimeSteps_); 
-        
+        dict.add("momentum", momentum_);
+        dict.add("nTimeSteps", nTimeSteps_);
+
         IOstream::streamFormat fmt = time_.time().writeFormat();
 //         Pout << "fmt = " << fmt << endl;
         IOstream::versionNumber ver = time_.time().writeVersion();
         IOstream::compressionType cmp = time_.time().writeCompression();
-    
+
         dict.regIOobject::writeObject(fmt, ver, cmp);
-        
+
 //         Info<< "Some properties written out: "
 //             << "mols = " << mols_[0]
 //             << ", mass = " << mass_[0]
@@ -253,7 +253,7 @@ void polyStandardFields::writeOut()
 void Foam::polyStandardFields::calculateFields()
 {
     scalarField& mass = mass_.internalField();
-    
+
     scalarField& rhoN = rhoN_.internalField();
 
     scalarField& rhoM = rhoM_.internalField();
@@ -268,14 +268,14 @@ void Foam::polyStandardFields::calculateFields()
             if(findIndex(molIds_, mol().id()) != -1)
             {
                 label cellI mol().cell();
-                
+
                 const polyMolecule::constantProperties& constProp = molCloud_.constProps(mol().id());
                 const scalar& massI = constProp.mass();
-                
+
                 mass[cellI] += massI;
-                rhoN[cellI] += 1.0;                
+                rhoN[cellI] += 1.0;
                 rhoM[cellI] += massI;
-                
+
                 const label& nMols = molCloud_.cellOccupancy[cellI];
                 if(nMols > 0)
                 {
@@ -317,7 +317,7 @@ void Foam::polyStandardFields::resetFields()
     rotationalE_ = dimensionedScalar("zero",  dimensionSet(1, -1, -2, 0, 0), 0.0);
 
     rotationalDof_ = dimensionedScalar("zero",  dimensionSet(0, -3, 0, 0, 0), VSMALL);
-    
+
     vibrationalE_ = dimensionedScalar("zero",  dimensionSet(1, -1, -2, 0, 0), 0.0);
 
     vibrationalDof_ = dimensionedScalar("zero",  dimensionSet(0, -3, 0, 0, 0), VSMALL);

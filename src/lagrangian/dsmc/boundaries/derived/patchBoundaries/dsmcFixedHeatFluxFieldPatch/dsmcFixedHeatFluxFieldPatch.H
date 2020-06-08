@@ -69,15 +69,15 @@ private:
 
     // Private data
         dictionary propsDict_;
-        
+
         volScalarField wallTemperature_;
 
         scalarField EcTot_;
 
         scalarField EcTotSum_;
-        
+
         scalarField newWallTemperature_;
-        
+
         // user-defined wall heat flux
         scalar desiredHeatFlux_;
 
@@ -85,23 +85,23 @@ private:
         scalar relaxationFactor_;
 
         label stepCounter_;
-        
+
         label nSamples_;
-        
+
         label nSamplesAverage_;
-        
+
         scalar referenceCp_;
-        
+
         scalar referenceRho_;
-        
+
         scalar referenceU_;
-        
+
         scalar referenceTemperature_;
-        
+
         bool resetAtOutput_;
 
         void setProperties();
-        
+
         void initialTemperatureEstimate();
 
 public:

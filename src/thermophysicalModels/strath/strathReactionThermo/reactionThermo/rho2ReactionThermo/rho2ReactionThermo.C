@@ -55,7 +55,7 @@ Foam::FixedList<Foam::scalar, 2> Foam::rho2ReactionThermo::minMaxTemperatureFiel
 Foam::word Foam::rho2ReactionThermo::transportToTypedef(const word transportModel)
 {
     word typeDefName = word::null;
-    
+
     if(transportModel == "constant")
     {
         typeDefName = "demConstGasEThermoPhysicsH2TGD";
@@ -76,7 +76,7 @@ Foam::word Foam::rho2ReactionThermo::transportToTypedef(const word transportMode
     {
         typeDefName = "demCEAGasEThermoPhysicsH2TGD";
     }
-    
+
     return typeDefName;
 }
 
@@ -86,37 +86,37 @@ void Foam::rho2ReactionThermo::correctChemFractions()
     const PtrList<Foam::volScalarField>& Y = composition().Y();
     const scalarField& pCells = this->p_.internalField();
     const scalarField& rhoCells = this->rho_.internalField();
-       
+
     PtrList<Foam::volScalarField>& X = composition().X();
     PtrList<Foam::volScalarField>& nD = composition().nD();
     PtrList<Foam::volScalarField>& pP = composition().pP();
     PtrList<Foam::volScalarField>& pD = composition().pD();
-    
+
     volScalarField& Wmix = composition().Wmix();
-    
-    scalarField sumX(0*X[0].internalField()), sumnD(0*nD[0].internalField()), 
+
+    scalarField sumX(0*X[0].internalField()), sumnD(0*nD[0].internalField()),
         sumpP(0*pP[0].internalField()), sumpD(0*pD[0].internalField());
-    
+
     forAll(Y, speciei)
-    {           
+    {
         const scalarField& YCells = Y[speciei].internalField();
-        
+
         scalarField& XCells = X[speciei].primitiveFieldRef();
         scalarField& nDCells = nD[speciei].primitiveFieldRef();
         scalarField& pPCells = pP[speciei].primitiveFieldRef();
         scalarField& pDCells = pD[speciei].primitiveFieldRef();
-        
+
         if(speciei < Y.size() - 1) // NEW VINCENT 25/04/2016
-        // This loop ensures that the sum of the chemical quantities are bounded 
+        // This loop ensures that the sum of the chemical quantities are bounded
         // (needs to be < Y.size()-1 to be activated)
-        { 
+        {
             forAll(pCells, celli)
-            { 
+            {
                 XCells[celli] = composition().molarFraction(speciei, YCells[celli], celli);
                 pPCells[celli] = composition().partialPressure(XCells[celli], pCells[celli]);
                 nDCells[celli] = composition().numberDensity(speciei, YCells[celli], rhoCells[celli]);
                 pDCells[celli] = composition().partialDensity(YCells[celli], rhoCells[celli]);
-                
+
                 sumX[celli] += XCells[celli];
                 sumnD[celli] += nDCells[celli];
                 sumpP[celli] += pPCells[celli];
@@ -124,35 +124,35 @@ void Foam::rho2ReactionThermo::correctChemFractions()
             }//end cells loop
         }
         else
-        {  
+        {
             forAll(pCells, celli)
-            { 
-                XCells[celli] = max(1 - sumX[celli], 0); 
+            {
+                XCells[celli] = max(1 - sumX[celli], 0);
                 nDCells[celli] = composition().numberDensity(speciei, YCells[celli], rhoCells[celli]);
                 pPCells[celli] = max(pCells[celli] - sumpP[celli], 0);
                 pDCells[celli] = max(rhoCells[celli] - sumpD[celli], 0);
             }//end cells loop
-        }  
-    }//end species loop 
-    
-    
+        }
+    }//end species loop
+
+
     forAll(this->p_.boundaryField(), patchi)
     {
         const fvPatchScalarField& pp  = this->p_.boundaryField()[patchi];
         const fvPatchScalarField& prho = this->rho_.boundaryField()[patchi];
-        
-        scalarField sumX(0*X[0].boundaryField()[patchi]), sumnD(0*nD[0].boundaryField()[patchi]), 
+
+        scalarField sumX(0*X[0].boundaryField()[patchi]), sumnD(0*nD[0].boundaryField()[patchi]),
             sumpP(0*pP[0].boundaryField()[patchi]), sumpD(0*pD[0].boundaryField()[patchi]);
-        
+
         forAll(Y, speciei)
         {
             const fvPatchScalarField& pY = Y[speciei].boundaryField()[patchi];
-            
+
             fvPatchScalarField& pX = X[speciei].boundaryFieldRef()[patchi];
             fvPatchScalarField& pnD = nD[speciei].boundaryFieldRef()[patchi];
             fvPatchScalarField& ppP = pP[speciei].boundaryFieldRef()[patchi];
-            fvPatchScalarField& ppD = pD[speciei].boundaryFieldRef()[patchi]; 
-            
+            fvPatchScalarField& ppD = pD[speciei].boundaryFieldRef()[patchi];
+
             if(speciei < Y.size() - 1) // NEW VINCENT 25/04/2016
             {
                 forAll(pp, facei)
@@ -161,27 +161,27 @@ void Foam::rho2ReactionThermo::correctChemFractions()
                     pnD[facei] = composition().numberDensity(speciei, pY[facei], prho[facei]);
                     ppP[facei] = composition().partialPressure(pX[facei], pp[facei]);
                     ppD[facei] = composition().partialDensity(pY[facei], prho[facei]);
-                    
+
                     sumX[facei] += pX[facei];
                     sumnD[facei] += pnD[facei];
                     sumpP[facei] += ppP[facei];
                     sumpD[facei] += ppD[facei];
-                }//end faces loop  
+                }//end faces loop
             }
             else
             {
                 forAll(pp, facei)
-                { 
+                {
                     pX[facei] = max(1 - sumX[facei], 0);
                     pnD[facei] = composition().numberDensity(speciei, pY[facei], prho[facei]);
                     ppP[facei] = max(pp[facei] - sumpP[facei], 0);
                     ppD[facei] = max(prho[facei] - sumpD[facei], 0);
-                }//end faces loop 
-            }      
-        }//end species loop 
-    }//end patches loop 
-    
-    Wmix = composition().molWeightMixture(); // NEW VINCENT 26/04/2017       
+                }//end faces loop
+            }
+        }//end species loop
+    }//end patches loop
+
+    Wmix = composition().molWeightMixture(); // NEW VINCENT 26/04/2017
 }
 
 
@@ -193,39 +193,39 @@ void Foam::rho2ReactionThermo::correctOverallTemperature()
     const PtrList<Foam::volScalarField>& Tv = composition().Tv();
     const scalarField& pCells = this->p_.internalField();
     const scalarField& TtCells = this->Tt_.internalField();
-    
+
     PtrList<Foam::volScalarField>& zetar = composition().zetar();
     PtrList<Foam::volScalarField>& zetav = composition().zetav();
     PtrList<Foam::volScalarField>& zetael = composition().zetael();
-    
+
     volScalarField numTMix = this->T_;
     volScalarField denTMix = this->T_;
-    
+
     scalarField& zetarCellsMix = this->zetar_.primitiveFieldRef();
     scalarField& zetaelCellsMix = this->zetael_.primitiveFieldRef();
     scalarField& numTCellsMix = numTMix.primitiveFieldRef();
     scalarField& denTCellsMix = denTMix.primitiveFieldRef();
     scalarField& TCells = this->T_.primitiveFieldRef();
-    
+
     //- Initialisations
     zetarCellsMix = 0.0;
     zetaelCellsMix = 0.0;
     numTCellsMix = 0.0;
     denTCellsMix = 0.0;
-    
+
     forAll(this->p_.boundaryField(), patchi)
     {
         fvPatchScalarField& pzetarMix = this->zetar_.boundaryFieldRef()[patchi];
         fvPatchScalarField& pzetaelMix = this->zetael_.boundaryFieldRef()[patchi];
         fvPatchScalarField& pnumTMix = numTMix.boundaryFieldRef()[patchi];
         fvPatchScalarField& pdenTMix = denTMix.boundaryFieldRef()[patchi];
-            
+
         pzetarMix = 0.0;
         pzetaelMix = 0.0;
         pnumTMix = 0.0;
         pdenTMix = 0.0;
     }
-        
+
     //- Field calculations
     forAll(Y, speciei)
     {
@@ -236,14 +236,14 @@ void Foam::rho2ReactionThermo::correctOverallTemperature()
         const scalarField& zetavCells = zetav[speciei].internalField();
         scalarField& zetarCells = zetar[speciei].primitiveFieldRef();
         scalarField& zetaelCells = zetael[speciei].primitiveFieldRef();
-        
+
         forAll(pCells, celli)
-        {           
+        {
             zetarCells[celli] = composition().zetar(speciei, pCells[celli], TtCells[celli], TvCells[celli]);
             zetaelCells[celli] = composition().zetael(speciei, pCells[celli], TvCells[celli]);
             zetarCellsMix[celli] += XCells[celli]*zetarCells[celli];
             zetaelCellsMix[celli] += XCells[celli]*zetaelCells[celli];
-            
+
             if(composition().species()[speciei] == "e-")
             {
                 numTCellsMix[celli] += 3.0*TvCells[celli]*YCells[celli];
@@ -252,10 +252,10 @@ void Foam::rho2ReactionThermo::correctOverallTemperature()
             else
             {
                 numTCellsMix[celli] += ((3.0 + zetarCells[celli])*TtCells[celli] + (zetavCells[celli] + zetaelCells[celli])*TvCells[celli])*YCells[celli];
-                denTCellsMix[celli] += (3.0 + zetarCells[celli] + zetavCells[celli] + zetaelCells[celli])*YCells[celli]; 
+                denTCellsMix[celli] += (3.0 + zetarCells[celli] + zetavCells[celli] + zetaelCells[celli])*YCells[celli];
             }
         }//end cells loop
-    
+
         //- Patch values calculations
         forAll(this->p_.boundaryField(), patchi)
         {
@@ -265,22 +265,22 @@ void Foam::rho2ReactionThermo::correctOverallTemperature()
             const fvPatchScalarField& pX = X[speciei].boundaryField()[patchi];
             const fvPatchScalarField& pTv = Tv[speciei].boundaryField()[patchi];
             const fvPatchScalarField& pzetav = zetav[speciei].boundaryField()[patchi];
-            
+
             fvPatchScalarField& pzetar = zetar[speciei].boundaryFieldRef()[patchi];
             fvPatchScalarField& pzetael = zetael[speciei].boundaryFieldRef()[patchi];
-            
+
             fvPatchScalarField& pzetarMix = this->zetar_.boundaryFieldRef()[patchi];
             fvPatchScalarField& pzetaelMix = this->zetael_.boundaryFieldRef()[patchi];
             fvPatchScalarField& pnumTMix = numTMix.boundaryFieldRef()[patchi];
             fvPatchScalarField& pdenTMix = denTMix.boundaryFieldRef()[patchi];
-            
-            forAll(pTt, facei) 
+
+            forAll(pTt, facei)
             {
                 pzetar[facei] = composition().zetar(speciei, pp[facei], pTt[facei], pTv[facei]);
                 pzetael[facei] = composition().zetael(speciei, pp[facei], pTv[facei]);
                 pzetarMix[facei] += pX[facei]*pzetar[facei];
                 pzetaelMix[facei] += pX[facei]*pzetael[facei];
-                
+
                 if(composition().species()[speciei] == "e-")
                 {
                     pnumTMix[facei] += 3.0*pTv[facei]*pY[facei];
@@ -294,24 +294,24 @@ void Foam::rho2ReactionThermo::correctOverallTemperature()
             }//end faces loop
         }//end patches loop
     }//end species loop
-    
+
     forAll(pCells, celli)
     {
         TCells[celli] = numTCellsMix[celli]/denTCellsMix[celli];
     }
-    
+
     forAll(this->p_.boundaryField(), patchi)
     {
         const fvPatchScalarField& pnumTMix = numTMix.boundaryField()[patchi];
         const fvPatchScalarField& pdenTMix = denTMix.boundaryField()[patchi];
         fvPatchScalarField& pT = this->T_.boundaryFieldRef()[patchi];
-        
-        forAll(pT, facei) 
+
+        forAll(pT, facei)
         {
             pT[facei] = pnumTMix[facei]/pdenTMix[facei];
         }
     }
-    
+
 }
 
 
@@ -321,7 +321,7 @@ void Foam::rho2ReactionThermo::correctOverallTemperature()
 void Foam::rho2ReactionThermo::initialiseLight()
 {
     correctChemFractions();
-    
+
     //- Declarations
     const bool downgradeSingleTemperature = this->downgradeSingleTemperature();
     const bool downgradeSingleTv = this->downgradeSingleTv();
@@ -329,20 +329,20 @@ void Foam::rho2ReactionThermo::initialiseLight()
     const PtrList<Foam::volScalarField>& X = composition().X();
     const scalarField& pCells = this->p_.internalField();
     const scalarField& TtCells = this->Tt_.internalField();
-    
+
     PtrList<Foam::volScalarField>& hvel = composition().hevel();
     PtrList<Foam::volScalarField>& Tv = composition().Tv();
-    
+
     const scalarField& TvCellsMix = this->Tv_.internalField();
     scalarField& htCellsMix = this->het_.primitiveFieldRef();
     scalarField& hvelCellsMix = this->hevel().primitiveFieldRef();
     scalarField& hCellsMix = composition().e().primitiveFieldRef();
     scalarField& psiCellsMix = this->psi_.primitiveFieldRef();
     scalarField& rhoCellsMix = this->rho_.primitiveFieldRef();
-    
+
     //- Cells values
     forAll(pCells, celli)
-    { 
+    {
         //- Initialisation
         htCellsMix[celli] = 0.0;
         hvelCellsMix[celli] = 0.0;
@@ -352,19 +352,19 @@ void Foam::rho2ReactionThermo::initialiseLight()
 
         //- Calculation
         forAll(Y, speciei)
-        {           
+        {
             const scalarField& YCells = Y[speciei].internalField();
             htCellsMix[celli] += YCells[celli]*composition().HEt(speciei, pCells[celli], TtCells[celli]);
         }
-        
+
         forAll(Y, speciei)
-        {           
+        {
             const scalarField& YCells = Y[speciei].internalField();
             const scalarField& XCells = X[speciei].internalField();
-            
+
             scalarField& hvelCells = hvel[speciei].primitiveFieldRef();
             scalarField& TvCells = Tv[speciei].primitiveFieldRef();
-            
+
             if (TvCells[celli] != 0.0)
             {
                 if(downgradeSingleTemperature)
@@ -375,14 +375,14 @@ void Foam::rho2ReactionThermo::initialiseLight()
                 {
                     TvCells[celli] = TvCellsMix[celli];
                 }
-                
+
                 hvelCells[celli] = composition().HEvel(speciei, pCells[celli], TvCells[celli]);
                 hvelCellsMix[celli] += YCells[celli]*hvelCells[celli];
-                
+
                 hCellsMix[celli] += YCells[celli]*hvelCells[celli];
             }
-            
-            if(composition().particleType(speciei) > 0) 
+
+            if(composition().particleType(speciei) > 0)
             {
                 // NOTE VINCENT: Because of the way composition().rho is implemented, it requires X instead of Y
                 psiCellsMix[celli] += XCells[celli]*composition().psi(speciei, pCells[celli], TtCells[celli]);
@@ -394,77 +394,77 @@ void Foam::rho2ReactionThermo::initialiseLight()
                 rhoCellsMix[celli] += XCells[celli]*composition().rho(speciei, pCells[celli], TvCells[celli]);
             }
         }
-        
+
         hCellsMix[celli] += htCellsMix[celli];
     }
-    
+
     //- Patch values calculations
     forAll(this->Tt_.boundaryField(), patchi)
     {
         const fvPatchScalarField& pp = this->p_.boundaryField()[patchi];
         const fvPatchScalarField& pTt = this->Tt_.boundaryField()[patchi];
         fvPatchScalarField& pTvMix = this->Tv_.boundaryFieldRef()[patchi];
-        
+
         fvPatchScalarField& phtMix = this->het_.boundaryFieldRef()[patchi];
         fvPatchScalarField& phvelMix = this->hevel().boundaryFieldRef()[patchi];
         fvPatchScalarField& phMix = composition().e().boundaryFieldRef()[patchi];
-        
-        if (pTt.fixesValue()) 
+
+        if (pTt.fixesValue())
         // the temperature is fixed ... the energy is calculated at patches
         {
             forAll(pTt, facei)
-            {  
-                //- Initialisation 
+            {
+                //- Initialisation
                 phtMix[facei] = 0.0;
                 phvelMix[facei] = 0.0;
                 phMix[facei] = 0.0;
-                
+
                 //- Calculation
                 forAll(Y, speciei)
                 {
                     const fvPatchScalarField& pY = Y[speciei].boundaryField()[patchi];
                     fvPatchScalarField& pTv = Tv[speciei].boundaryFieldRef()[patchi];
-                    
+
                     fvPatchScalarField& phvel = hvel[speciei].boundaryFieldRef()[patchi];
-                    
+
                     phtMix[facei] += pY[facei]*composition().HEt(speciei, pp[facei], pTt[facei]);
-                    
+
                     if (pTv[facei] != 0.0)
                     {
                         if(downgradeSingleTv)
                         {
                             pTv[facei] = pTvMix[facei];
                         }
-                        
-                        phvel[facei] = composition().HEvel(speciei, pp[facei], pTv[facei]);    
-                        phvelMix[facei] += pY[facei]*phvel[facei]; 
-                          
+
+                        phvel[facei] = composition().HEvel(speciei, pp[facei], pTv[facei]);
+                        phvelMix[facei] += pY[facei]*phvel[facei];
+
                         phMix[facei] += pY[facei]*phvel[facei];
                     }
                 }
-                
+
                 phMix[facei] += phtMix[facei];
             }
         }
-        else 
+        else
         // condition on the energy fields ... the temperatures are calculated at patches
         {
             forAll(pTt, facei)
-            {  
-                //- Initialisation 
+            {
+                //- Initialisation
                 phtMix[facei] = 0.0;
                 phvelMix[facei] = 0.0; // NEW VINCENT 14/02/2017
                 phMix[facei] = 0.0;
-                
+
                 //- Calculation
                 forAll(Y, speciei)
                 {
                     const fvPatchScalarField& pY = Y[speciei].boundaryField()[patchi];
                     fvPatchScalarField& phvel = hvel[speciei].boundaryFieldRef()[patchi];
                     fvPatchScalarField& pTv = Tv[speciei].boundaryFieldRef()[patchi];
-                    
+
                     phtMix[facei] += pY[facei]*composition().HEt(speciei, pp[facei], pTt[facei]);
-                    
+
                     if(pTv[facei] != 0.0)
                     {
                         if(downgradeSingleTemperature)
@@ -489,36 +489,36 @@ void Foam::rho2ReactionThermo::initialiseLight()
                             phvel[facei] = composition().HEvel(speciei, pp[facei], pTvMol[facei]); // NEW VINCENT 14/02/2017
                             pTv[facei] = pTvMol[facei];
                         }
-                        
+
                         phvelMix[facei] += pY[facei]*phvel[facei];
-                        
+
                         phMix[facei] += pY[facei]*phvel[facei];
                     }
                 }//end species loop
-                
+
                 phMix[facei] += phtMix[facei];
             }//end faces loop
         }
-        
+
         fvPatchScalarField& ppsiMix = this->psi_.boundaryFieldRef()[patchi];
         fvPatchScalarField& prhoMix = this->rho_.boundaryFieldRef()[patchi];
-        
+
         //- Initialisation
-        forAll(pTt, facei) 
+        forAll(pTt, facei)
         {
             ppsiMix[facei] = 0.0;
             prhoMix[facei] = 0.0;
         }
-        
+
         //- Calculation
         forAll(Y, speciei)
         {
             const fvPatchScalarField& pX = X[speciei].boundaryField()[patchi];
             const fvPatchScalarField& pTv = Tv[speciei].boundaryField()[patchi];
-                
-            forAll(pTt, facei) 
+
+            forAll(pTt, facei)
             {
-                if(composition().particleType(speciei) > 0) 
+                if(composition().particleType(speciei) > 0)
                 {
                     ppsiMix[facei] += pX[facei]*composition().psi(speciei, pp[facei], pTt[facei]);
                     prhoMix[facei] += pX[facei]*composition().rho(speciei, pp[facei], pTt[facei]);
@@ -540,7 +540,7 @@ void Foam::rho2ReactionThermo::initialiseLight()
 void Foam::rho2ReactionThermo::initialise()
 {
     correctChemFractions();
-    
+
     //- Declarations
     const bool downgradeSingleTemperature = this->downgradeSingleTemperature();
     const bool downgradeSingleTv = this->downgradeSingleTv();
@@ -548,17 +548,17 @@ void Foam::rho2ReactionThermo::initialise()
     const PtrList<Foam::volScalarField>& X = composition().X();
     const scalarField& pCells = this->p_.internalField();
     const scalarField& TtCells = this->Tt_.internalField();
-    
+
     PtrList<Foam::volScalarField>& hv = composition().hev();
     PtrList<Foam::volScalarField>& hel = composition().heel();
     PtrList<Foam::volScalarField>& hvel = composition().hevel();
     PtrList<Foam::volScalarField>& Tv = composition().Tv();
     PtrList<Foam::volScalarField>& zetav = composition().zetav();
-    
-    //PtrList<PtrList<Foam::volScalarField> >& hvel_mode = composition().hevel_mode(); // NEW VINCENT 23/03/2016 TODO ONGOING WORK 
-    //PtrList<PtrList<Foam::volScalarField> >& Tv_mode = composition().Tv_mode(); // NEW VINCENT 14/03/2016 TODO ONGOING WORK 
-    //PtrList<PtrList<Foam::volScalarField> >& zetav_mode = composition().zetav_mode(); // NEW VINCENT 14/03/2016 TODO ONGOING WORK 
-    
+
+    //PtrList<PtrList<Foam::volScalarField> >& hvel_mode = composition().hevel_mode(); // NEW VINCENT 23/03/2016 TODO ONGOING WORK
+    //PtrList<PtrList<Foam::volScalarField> >& Tv_mode = composition().Tv_mode(); // NEW VINCENT 14/03/2016 TODO ONGOING WORK
+    //PtrList<PtrList<Foam::volScalarField> >& zetav_mode = composition().zetav_mode(); // NEW VINCENT 14/03/2016 TODO ONGOING WORK
+
     scalarField& TvCellsMix = this->Tv_.primitiveFieldRef();
     scalarField& htCellsMix = this->het_.primitiveFieldRef();
     scalarField& hvCellsMix = this->hevMix_.primitiveFieldRef();
@@ -572,7 +572,7 @@ void Foam::rho2ReactionThermo::initialise()
 
     //- Cells values
     forAll(pCells, celli)
-    { 
+    {
         //- Initialisation
         htCellsMix[celli] = 0.0;
         hvCellsMix[celli] = 0.0;
@@ -585,28 +585,28 @@ void Foam::rho2ReactionThermo::initialise()
         }
         zetavCellsMix[celli] = 0.0;
         totZetavCellsMix[celli] = 0.0;
-        
+
         psiCellsMix[celli] = 0.0;
         rhoCellsMix[celli] = 0.0;
-        
+
         //- Calculation
         forAll(Y, speciei)
-        {           
+        {
             const scalarField& YCells = Y[speciei].internalField();
             htCellsMix[celli] += YCells[celli]*composition().HEt(speciei, pCells[celli], TtCells[celli]);
         }
-        
+
         forAll(Y, speciei)
-        {           
+        {
             const scalarField& YCells = Y[speciei].internalField();
             const scalarField& XCells = X[speciei].internalField();
-            
+
             scalarField& hvCells = hv[speciei].primitiveFieldRef();
             scalarField& helCells = hel[speciei].primitiveFieldRef();
             scalarField& hvelCells = hvel[speciei].primitiveFieldRef();
             scalarField& TvCells = Tv[speciei].primitiveFieldRef();
             scalarField& zetavCells = zetav[speciei].primitiveFieldRef();
-            
+
             if (TvCells[celli] != 0.0)
             {
                 if(downgradeSingleTemperature)
@@ -617,24 +617,24 @@ void Foam::rho2ReactionThermo::initialise()
                 {
                     TvCells[celli] = TvCellsMix[celli];
                 }
-                
+
                 hvCells[celli] = composition().HEv(speciei, pCells[celli], TvCells[celli]);
                 helCells[celli] = composition().HEel(speciei, pCells[celli], TvCells[celli]);
                 hvelCells[celli] = composition().HEvel(speciei, pCells[celli], TvCells[celli]);
-                /*forAll(hvel_mode[speciei], vibMode) TODO ONGOING WORK 
+                /*forAll(hvel_mode[speciei], vibMode) TODO ONGOING WORK
                 {
-                    hvel_mode[speciei][vibMode].internalField()[celli] = 
+                    hvel_mode[speciei][vibMode].internalField()[celli] =
                         composition().HEvel_mode
                         (
-                            speciei, 
-                            vibMode, 
-                            pCells[celli], 
+                            speciei,
+                            vibMode,
+                            pCells[celli],
                             Tv_mode[speciei][vibMode].internalField()[celli]
                         ); // NEW VINCENT 23/03/2016
                 }*/
-                
-                zetavCells[celli] = composition().zetav(speciei, pCells[celli], TvCells[celli]);     
-                
+
+                zetavCells[celli] = composition().zetav(speciei, pCells[celli], TvCells[celli]);
+
                 hvCellsMix[celli] += YCells[celli]*hvCells[celli];
                 helCellsMix[celli] += YCells[celli]*helCells[celli];
                 hvelCellsMix[celli] += YCells[celli]*hvelCells[celli];
@@ -646,8 +646,8 @@ void Foam::rho2ReactionThermo::initialise()
                 zetavCellsMix[celli] += XCells[celli]*zetavCells[celli];
                 totZetavCellsMix[celli] += XCells[celli]*zetavCells[celli];
             }
-            
-            if(composition().particleType(speciei) > 0) 
+
+            if(composition().particleType(speciei) > 0)
             {
                 // NOTE VINCENT: Because of the way composition().rho is implemented, it requires X instead of Y
                 psiCellsMix[celli] += XCells[celli]*composition().psi(speciei, pCells[celli], TtCells[celli]);
@@ -659,15 +659,15 @@ void Foam::rho2ReactionThermo::initialise()
                 rhoCellsMix[celli] += XCells[celli]*composition().rho(speciei, pCells[celli], TvCells[celli]);
             }
         }//end species loop
-        
+
         if(not downgradeSingleTv and totZetavCellsMix[celli] != 0.0)
         {
             TvCellsMix[celli] /= totZetavCellsMix[celli];
         }
-        
+
         hCellsMix[celli] += htCellsMix[celli];
     }//end cells loop
-    
+
     //- Patch values
     forAll(this->Tt_.boundaryField(), patchi)
     {
@@ -682,13 +682,13 @@ void Foam::rho2ReactionThermo::initialise()
         fvPatchScalarField& pTvMix = this->Tv_.boundaryFieldRef()[patchi];
         fvPatchScalarField& pzetavMix = this->zetav_.boundaryFieldRef()[patchi];
         fvPatchScalarField ptotZetavMix = pzetavMix;
-        
+
         if(pTt.fixesValue())
         // the temperature is fixed ... the energy is calculated at patches
         {
             forAll(pTt, facei)
-            {  
-                //- Initialisation 
+            {
+                //- Initialisation
                 phtMix[facei] = 0.0;
                 phvMix[facei] = 0.0;
                 phelMix[facei] = 0.0;
@@ -700,61 +700,61 @@ void Foam::rho2ReactionThermo::initialise()
                 }
                 pzetavMix[facei] = 0.0;
                 ptotZetavMix[facei] = 0.0;
-                
+
                 //- Calculation
                 forAll(Y, speciei)
                 {
                     const fvPatchScalarField& pY = Y[speciei].boundaryField()[patchi];
                     const fvPatchScalarField& pX = X[speciei].boundaryField()[patchi];
-                    
+
                     fvPatchScalarField& phv = hv[speciei].boundaryFieldRef()[patchi];
                     fvPatchScalarField& phel = hel[speciei].boundaryFieldRef()[patchi];
                     fvPatchScalarField& phvel = hvel[speciei].boundaryFieldRef()[patchi];
                     fvPatchScalarField& pTv = Tv[speciei].boundaryFieldRef()[patchi];
                     fvPatchScalarField& pzetav = zetav[speciei].boundaryFieldRef()[patchi];
-                    
+
                     phtMix[facei] += pY[facei]*composition().HEt(speciei, pp[facei], pTt[facei]);
-                    
+
                     if (pTv[facei] != 0.0)
                     {
                         if(downgradeSingleTv)
                         {
                             pTv[facei] = pTvMix[facei];
                         }
-                        
-                        phv[facei] = composition().HEv(speciei, pp[facei], pTv[facei]);               
+
+                        phv[facei] = composition().HEv(speciei, pp[facei], pTv[facei]);
                         phel[facei] = composition().HEel(speciei, pp[facei], pTv[facei]);
                         phvel[facei] = composition().HEvel(speciei, pp[facei], pTv[facei]);
-                        pzetav[facei] = composition().zetav(speciei, pp[facei], pTv[facei]);    
-                        
+                        pzetav[facei] = composition().zetav(speciei, pp[facei], pTv[facei]);
+
                         phvMix[facei] += pY[facei]*phv[facei];
-                        phelMix[facei] += pY[facei]*phel[facei];  
-                        phvelMix[facei] += pY[facei]*phvel[facei];   
+                        phelMix[facei] += pY[facei]*phel[facei];
+                        phvelMix[facei] += pY[facei]*phvel[facei];
                         phMix[facei] += pY[facei]*phvel[facei];
-                        
+
                         if(not downgradeSingleTv)
                         {
                             pTvMix[facei] += pX[facei]*pzetav[facei]*pTv[facei];
                         }
-                        
+
                         pzetavMix[facei] += pX[facei]*pzetav[facei];
                         ptotZetavMix[facei] += pX[facei]*pzetav[facei];
                     }
                 }//end species loop
-                
+
                 phMix[facei] += phtMix[facei];
-                
+
                 if(not downgradeSingleTv and ptotZetavMix[facei] != 0.0)
                 {
                     pTvMix[facei] /= ptotZetavMix[facei];
                 }
             }//end faces loop
         }
-        else 
+        else
         // condition on the energy fields ... the temperatures are calculated at patches
         {
             forAll(pTt, facei)
-            {  
+            {
                 phtMix[facei] = 0.0;
                 phvMix[facei] = 0.0;
                 phelMix[facei] = 0.0;
@@ -766,39 +766,39 @@ void Foam::rho2ReactionThermo::initialise()
                 }
                 pzetavMix[facei] = 0.0;
                 ptotZetavMix[facei] = 0.0;
-                
+
                 forAll(Y, speciei)
                 {
                     const fvPatchScalarField& pY = Y[speciei].boundaryField()[patchi];
                     const fvPatchScalarField& pX = X[speciei].boundaryField()[patchi];
-                    
+
                     fvPatchScalarField& phv = hv[speciei].boundaryFieldRef()[patchi];
                     fvPatchScalarField& phel = hel[speciei].boundaryFieldRef()[patchi];
                     fvPatchScalarField& phvel = hvel[speciei].boundaryFieldRef()[patchi];
                     fvPatchScalarField& pTv = Tv[speciei].boundaryFieldRef()[patchi];
                     fvPatchScalarField& pzetav = zetav[speciei].boundaryFieldRef()[patchi];
-                    
+
                     phtMix[facei] += pY[facei]*composition().HEt(speciei, pp[facei], pTt[facei]);
-                    
+
                     if (pTv[facei] != 0.0)
                     {
                         if(downgradeSingleTemperature)
                         {
-                            phv[facei] = composition().HEv(speciei, pp[facei], pTt[facei]);               
+                            phv[facei] = composition().HEv(speciei, pp[facei], pTt[facei]);
                             phel[facei] = composition().HEel(speciei, pp[facei], pTt[facei]);
                             phvel[facei] = composition().HEvel(speciei, pp[facei], pTt[facei]);
                             pTv[facei] = pTt[facei];
                         }
                         else if(downgradeSingleTv)
                         {
-                            phv[facei] = composition().HEv(speciei, pp[facei], pTvMix[facei]);               
+                            phv[facei] = composition().HEv(speciei, pp[facei], pTvMix[facei]);
                             phel[facei] = composition().HEel(speciei, pp[facei], pTvMix[facei]);
                             phvel[facei] = composition().HEvel(speciei, pp[facei], pTvMix[facei]);
                             pTv[facei] = pTvMix[facei];
                         }
                         else if(composition().vibTempAssociativity(speciei) == -1)
                         {
-                            phv[facei] = composition().HEv(speciei, pp[facei], pTv[facei]);               
+                            phv[facei] = composition().HEv(speciei, pp[facei], pTv[facei]);
                             phel[facei] = composition().HEel(speciei, pp[facei], pTv[facei]);
                             phvel[facei] = composition().HEvel(speciei, pp[facei], pTv[facei]);
                             pTv[facei] = TvelEvels(speciei, phvel[facei], pp[facei], pTv[facei]);
@@ -809,51 +809,51 @@ void Foam::rho2ReactionThermo::initialise()
                             phvel[facei] = composition().HEvel(speciei, pp[facei], pTvMol[facei]);
                             pTv[facei] = pTvMol[facei];
                         }
-                        
+
                         phvMix[facei] += pY[facei]*phv[facei];
                         phelMix[facei] += pY[facei]*phel[facei];
                         phvelMix[facei] += pY[facei]*phvel[facei];
                         phMix[facei] += pY[facei]*phvel[facei];
                         pzetav[facei] = composition().zetav(speciei, pp[facei], pTv[facei]);
-                        
+
                         if(not downgradeSingleTv)
                         {
                             pTvMix[facei] += pX[facei]*pzetav[facei]*pTv[facei];
                         }
-                        
+
                         pzetavMix[facei] += pX[facei]*pzetav[facei];
                         ptotZetavMix[facei] += pX[facei]*pzetav[facei];
                     }
                 }//end species loop
-                
+
                 phMix[facei] += phtMix[facei];
-                
+
                 if(not downgradeSingleTv and ptotZetavMix[facei] != 0.0)
                 {
                     pTvMix[facei] /= ptotZetavMix[facei];
                 }
             }//end faces loop
         }
-        
+
         fvPatchScalarField& ppsiMix = this->psi_.boundaryFieldRef()[patchi];
         fvPatchScalarField& prhoMix = this->rho_.boundaryFieldRef()[patchi];
-        
+
         //- Initialisation
-        forAll(pTt, facei) 
+        forAll(pTt, facei)
         {
             ppsiMix[facei] = 0.0;
             prhoMix[facei] = 0.0;
         }
-        
+
         //- Calculation
         forAll(Y, speciei)
         {
             const fvPatchScalarField& pX = X[speciei].boundaryField()[patchi];
             const fvPatchScalarField& pTv = Tv[speciei].boundaryField()[patchi];
-                
+
             forAll(pTt, facei)
             {
-                if(composition().particleType(speciei) > 0) 
+                if(composition().particleType(speciei) > 0)
                 {
                     ppsiMix[facei] += pX[facei]*composition().psi(speciei, pp[facei], pTt[facei]);
                     prhoMix[facei] += pX[facei]*composition().rho(speciei, pp[facei], pTt[facei]);
@@ -866,10 +866,10 @@ void Foam::rho2ReactionThermo::initialise()
             }
         }
     }
-    
+
     correctOverallTemperature();
 }
-        
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -//
 
@@ -902,7 +902,7 @@ void Foam::rho2ReactionThermo::calculateFromDSMC
         forAll(this->Tt_.boundaryField(), patchi)
         {
             scalarList cellsWithBoundaries(0);
-            
+
             if(this->Tt_.boundaryField()[patchi].size())
             {
                 const labelList& cellsNextToPatchi
@@ -919,7 +919,7 @@ void Foam::rho2ReactionThermo::calculateFromDSMC
                     }
                 }
             }
-            
+
             pZone.set(patchi, new scalarList(cellsWithBoundaries));
         }
 
@@ -946,7 +946,7 @@ void Foam::rho2ReactionThermo::calculateFromDSMC
             htCells[celli] = 0.0;
             hvelCellsMix[celli] = 0.0;
             psiCells[celli] = 0.0;
-           
+
             TtCells[celli] = fixedTtCells[celli];
             rhoCells[celli] = fixedRhoCells[celli];
         }
@@ -958,13 +958,13 @@ void Foam::rho2ReactionThermo::calculateFromDSMC
             scalarField& TvCells = Tv[speciei].primitiveFieldRef();
             const scalarField& fixedTvCells = fixedTv[speciei].primitiveField();
             scalarField& hvelCells = hvel[speciei].primitiveFieldRef();
-               
+
             forAll(zone, idx)
             {
                 const label celli = zone[idx];
                 YCells[celli] = fixedYCells[celli];
                 TvCells[celli] = fixedTvCells[celli];
-               
+
                 htCells[celli] += YCells[celli]*composition().HEt(speciei, pCells[celli], TtCells[celli]);
 
                 if(TvCells[celli] != 0.0)
@@ -976,7 +976,7 @@ void Foam::rho2ReactionThermo::calculateFromDSMC
                 {
                     hvelCells[celli] = 0.0;
                 }
-               
+
                 if(composition().particleType(speciei) > 0)
                 {
                     psiCells[celli] += composition().molarFraction(speciei, YCells[celli], celli)
@@ -1046,7 +1046,7 @@ void Foam::rho2ReactionThermo::calculateFromDSMC
                         pTv[facei] = fixedpTv[facei];
 
                         pht[facei] += pY[facei] * composition().HEt(speciei, pp[facei], pTt[facei]);
-   
+
                         if(pTv[facei] != 0.0)
                         {
                             phvel[facei] = composition().HEvel(speciei,
@@ -1080,7 +1080,7 @@ void Foam::rho2ReactionThermo::calculateFromDSMC
             }
         }//end patches loop
     }
-   
+
     correctChemFractions();
 }
 
@@ -1099,17 +1099,17 @@ void Foam::rho2ReactionThermo::calculate()
     const scalarField& pCells = this->p_.internalField();
     const scalarField& hCellsMix = composition().e().internalField();
     const scalarField& htCellsMix = this->het_.internalField();
-    
+
     PtrList<Foam::volScalarField>& Tv = composition().Tv();
     PtrList<Foam::volScalarField>& hv = composition().hev();
     PtrList<Foam::volScalarField>& hel = composition().heel();
     PtrList<Foam::volScalarField>& hvel = composition().hevel();
     PtrList<Foam::volScalarField>& zetav = composition().zetav();
-    
-    /*PtrList<PtrList<Foam::volScalarField> >& Tv_mode = composition().Tv_mode(); // NEW VINCENT 14/03/2016 TODO ONGOING WORK 
-    PtrList<PtrList<Foam::volScalarField> >& hevel_mode = composition().hevel_mode(); // NEW VINCENT 23/03/2016 TODO ONGOING WORK 
+
+    /*PtrList<PtrList<Foam::volScalarField> >& Tv_mode = composition().Tv_mode(); // NEW VINCENT 14/03/2016 TODO ONGOING WORK
+    PtrList<PtrList<Foam::volScalarField> >& hevel_mode = composition().hevel_mode(); // NEW VINCENT 23/03/2016 TODO ONGOING WORK
     PtrList<PtrList<Foam::volScalarField> >& zetav_mode = composition().zetav_mode(); // NEW VINCENT 14/03/2016 TODO ONGOING WORK*/
-    
+
     scalarField& TtCells = this->Tt_.primitiveFieldRef();
     scalarField& TvCellsMix = this->Tv_.primitiveFieldRef();
     scalarField& hvCellsMix = this->hevMix_.primitiveFieldRef();
@@ -1118,12 +1118,12 @@ void Foam::rho2ReactionThermo::calculate()
     scalarField& psiCellsMix = this->psi_.primitiveFieldRef();
     scalarField& zetavCellsMix = this->zetav_.primitiveFieldRef();
     scalarField totZetavCellsMix = zetavCellsMix;
-    
-    
+
+
     //- Initialisations
     hvCellsMix = 0.0;
     helCellsMix = 0.0;
-    if(not downgradeSingleTv) 
+    if(not downgradeSingleTv)
     {
         TvCellsMix = 0.0;
         hvelCellsMix = 0.0;
@@ -1131,8 +1131,8 @@ void Foam::rho2ReactionThermo::calculate()
     zetavCellsMix = 0.0;
     totZetavCellsMix = 0.0;
     psiCellsMix = 0.0;
-    
-       
+
+
     //- Overall temperature calculation (single-temperature model)
     //  or trans-rotational temperature calculation (two-temperature model)
     PtrList<scalar> YList (Y.size());
@@ -1141,9 +1141,9 @@ void Foam::rho2ReactionThermo::calculate()
     {
         forAll(Y, speciei)
         {
-            YList.set(speciei, 
+            YList.set(speciei,
             new scalar(Y[speciei].internalField()[celli]));
-        } 
+        }
 
         if(downgradeSingleTemperature)
         {
@@ -1183,7 +1183,7 @@ void Foam::rho2ReactionThermo::calculate()
                 YList
             );
         }
-    }//end cell loop 
+    }//end cell loop
 
     forAll(this->Tt_.boundaryField(), patchi)
     {
@@ -1203,14 +1203,14 @@ void Foam::rho2ReactionThermo::calculate()
             {
                 phtMix[facei] = 0.0;
             }
-            
+
             //- Calculation
             forAll(Y, speciei)
             {
                 const fvPatchScalarField& pY = Y[speciei].boundaryField()[patchi];
-                
+
                 forAll(pTt, facei)
-                {  
+                {
                     phtMix[facei] += pY[facei]*composition().HEt(speciei, pp[facei], pTt[facei]);
                 }
             }
@@ -1223,8 +1223,8 @@ void Foam::rho2ReactionThermo::calculate()
                 forAll(YList, speciei)
                 {
                     YList[speciei] = Y[speciei].boundaryField()[patchi][facei];
-                } 
-            
+                }
+
                 if(downgradeSingleTemperature)
                 {
                     pTt[facei] = TEs
@@ -1244,7 +1244,7 @@ void Foam::rho2ReactionThermo::calculate()
                         pTt[facei],
                         YList
                     );
-                    
+
                     pTvMix[facei] = TvelEvels
                     (
                         phvelMix[facei],
@@ -1265,7 +1265,7 @@ void Foam::rho2ReactionThermo::calculate()
                 }
             }//end faces loop
         }
-        
+
         if(isA<wallFvPatch>(wallPatches[patchi].patch())) // NEW VINCENT 22/08/2016
         // to increase the stability of the 2T model in near-wall high Kn-number regions
         {
@@ -1276,20 +1276,20 @@ void Foam::rho2ReactionThermo::calculate()
             }
         }
     }//end patches loop
-    
+
 
     //- Cells values calculation
     forAll(Y, speciei)
-    {  
+    {
         const scalarField& YCells = Y[speciei].internalField();
         const scalarField& XCells = X[speciei].internalField();
-        
+
         scalarField& TvCells = Tv[speciei].primitiveFieldRef();
         scalarField& hvCells = hv[speciei].primitiveFieldRef();
         scalarField& helCells = hel[speciei].primitiveFieldRef();
         scalarField& hvelCells = hvel[speciei].primitiveFieldRef();
         scalarField& zetavCells = zetav[speciei].primitiveFieldRef();
-        
+
         forAll(pCells, celli)
         {
             if (TvCells[celli] != 0.0)
@@ -1313,14 +1313,14 @@ void Foam::rho2ReactionThermo::calculate()
                     {
                         if(TtCells[celli] > vibrationalCutOffTemp)
                         {
-                            if(YCells[celli] > miniYforSolvingEvEqn) 
+                            if(YCells[celli] > miniYforSolvingEvEqn)
                             // NEW VINCENT 08/02/2017 -> means that evEqn IS solved because Y_m large enough
                             {
                                 if(sign(hvelCells[celli]) == -1) // TODO analyse and revise if necessary
                                 {
                                     //Info << "hvelCells[" << celli << "]" << tab << hvelCells[celli] << endl;
                                     //Info << "B1: TvCells[" << celli << "]" << tab << TvCells[celli] << endl;
-                                    
+
                                     hvelCells[celli] = composition().HEvel(speciei, pCells[celli], vibrationalCutOffTemp);
                                     TvCells[celli] = TvelEvels(speciei, hvelCells[celli], pCells[celli], TvCells[celli]);
                                     //Info << "A1: TvCells[" << celli << "]" << tab << TvCells[celli] << endl;
@@ -1343,17 +1343,17 @@ void Foam::rho2ReactionThermo::calculate()
                             TvCells[celli] = TtCells[celli];
                             //Info << "A4: TvCells[" << celli << "]" << tab << TvCells[celli] << endl;
                         }
-                        
+
                         hvelCellsMix[celli] += YCells[celli]*hvelCells[celli];
                         zetavCells[celli] = composition().zetav(speciei, pCells[celli], TvCells[celli]);
                     }
                     else
                     {
                         //TODO ONGOING WORK
-                        /*zetavCells[celli] = 0.0;  
+                        /*zetavCells[celli] = 0.0;
                         TvCells[celli] = 0.0;
                         hvelCells[celli] = 0.0;
-                        
+
                         forAll(Tv_mode[speciei], mode)
                         {
                             scalarField& hvelmodeCells = hevel_mode[speciei][mode].internalField();
@@ -1361,7 +1361,7 @@ void Foam::rho2ReactionThermo::calculate()
                             scalarField& zetavmodeCells = zetav_mode[speciei][mode].internalField();
                             TvmodeCells[celli] = composition().TvelHEvel_mode
                                 (
-                                    speciei, mode, hvelmodeCells[celli], 
+                                    speciei, mode, hvelmodeCells[celli],
                                     pCells[celli], TvmodeCells[celli]
                                 );
                             zetavmodeCells[celli] = composition().zetav_mode(speciei, mode, pCells[celli], TvmodeCells[celli]);
@@ -1369,13 +1369,13 @@ void Foam::rho2ReactionThermo::calculate()
                             hvelCells[celli] += hvelmodeCells[celli];
                             TvCells[celli] += TvmodeCells[celli]*zetavmodeCells[celli];
                         }
-                        
+
                         TvCells[celli] /= zetavCells[celli];*/
-                    }     
-                } 
+                    }
+                }
                 else
                 {
-                    // If no molecule in the flow-field, then necessarily the 1-T solver is run using 
+                    // If no molecule in the flow-field, then necessarily the 1-T solver is run using
                     // downgradeSingleTemperature because the electronic energy equation is not
                     // implemented and it cannot be substituted by a vibrational energy equation.
                     // Therefore, the following always works. VINCENT 08/08/2016
@@ -1383,11 +1383,11 @@ void Foam::rho2ReactionThermo::calculate()
                     hvelCells[celli] = composition().HEvel(speciei, pCells[celli], TvCells[celli]);
                     zetavCells[celli] = composition().zetav(speciei, pCells[celli], TvCells[celli]);
                     hvelCellsMix[celli] += YCells[celli]*hvelCells[celli];
-                } 
-                
+                }
+
                 hvCells[celli] = composition().HEv(speciei, pCells[celli], TvCells[celli]);
                 helCells[celli] = composition().HEel(speciei, pCells[celli], TvCells[celli]);
-            
+
                 hvCellsMix[celli] += YCells[celli]*hvCells[celli];
                 helCellsMix[celli] += YCells[celli]*helCells[celli];
                 if(not downgradeSingleTv)
@@ -1397,8 +1397,8 @@ void Foam::rho2ReactionThermo::calculate()
                 zetavCellsMix[celli] += XCells[celli]*zetavCells[celli];
                 totZetavCellsMix[celli] += XCells[celli]*zetavCells[celli];
             }
-            
-            if(composition().particleType(speciei) > 0) 
+
+            if(composition().particleType(speciei) > 0)
             {
                 psiCellsMix[celli] += XCells[celli]*composition().psi(speciei, pCells[celli], TtCells[celli]);
             }
@@ -1408,7 +1408,7 @@ void Foam::rho2ReactionThermo::calculate()
             }
         }//end cells loop
     }//end species loop
-    
+
     forAll(pCells, celli)
     {
         if(not downgradeSingleTv and totZetavCellsMix[celli] != 0.0)
@@ -1422,7 +1422,7 @@ void Foam::rho2ReactionThermo::calculate()
     {
         const fvPatchScalarField& pp = this->p_.boundaryField()[patchi];
         const fvPatchScalarField& pTt = this->Tt_.boundaryField()[patchi];
-        
+
         fvPatchScalarField& phMix = composition().e().boundaryFieldRef()[patchi];
         fvPatchScalarField& phtMix = this->het_.boundaryFieldRef()[patchi];
         fvPatchScalarField& phvMix = this->hevMix_.boundaryFieldRef()[patchi];
@@ -1431,25 +1431,25 @@ void Foam::rho2ReactionThermo::calculate()
         fvPatchScalarField& pTvMix = this->Tv_.boundaryFieldRef()[patchi];
         fvPatchScalarField& pzetavMix = this->zetav_.boundaryFieldRef()[patchi];
         fvPatchScalarField ptotZetavMix = pzetavMix;
-        
+
         fvPatchScalarField& ppsiMix = this->psi_.boundaryFieldRef()[patchi];
-        
+
         //- Re-set of mixture quantities boundaryField
         forAll(pTt, facei)
         {
             phvMix[facei] = 0.0;
             phelMix[facei] = 0.0;
-            if(not downgradeSingleTv) 
+            if(not downgradeSingleTv)
             {
                 phvelMix[facei] = 0.0;
                 pTvMix[facei] = 0.0;
             }
             pzetavMix[facei] = 0.0;
             ptotZetavMix[facei] = 0.0;
-        
+
             ppsiMix[facei] = 0.0;
         }
-        
+
         if (pTt.fixesValue())
         // the temperature is fixed ... the energy is calculated at patches
         {
@@ -1462,9 +1462,9 @@ void Foam::rho2ReactionThermo::calculate()
                 fvPatchScalarField& phel = hel[speciei].boundaryFieldRef()[patchi];
                 fvPatchScalarField& phvel = hvel[speciei].boundaryFieldRef()[patchi];
                 fvPatchScalarField& pzetav = zetav[speciei].boundaryFieldRef()[patchi];
-                
+
                 forAll(pTt, facei)
-                {  
+                {
                     if(pTv[facei] != 0.0)
                     {
                         if(downgradeSingleTemperature)
@@ -1493,7 +1493,7 @@ void Foam::rho2ReactionThermo::calculate()
                             pzetav[facei] = composition().zetav(speciei, pp[facei], pTv[facei]);
                             pTvMix[facei] += pX[facei]*pzetav[facei]*pTv[facei];
                         }
-                        
+
                         phvMix[facei] += pY[facei]*phv[facei];
                         phelMix[facei] += pY[facei]*phel[facei];
                         pzetavMix[facei] += pX[facei]*pzetav[facei];
@@ -1501,14 +1501,14 @@ void Foam::rho2ReactionThermo::calculate()
                     }
                 }//end faces loop
             }//end species loop
-            
+
             forAll(pTt, facei)
             {
                 phMix[facei] = phtMix[facei] + phvelMix[facei];
 
                 if(not downgradeSingleTv and ptotZetavMix[facei] != 0.0)
                 {
-                    pTvMix[facei] /= ptotZetavMix[facei];  
+                    pTvMix[facei] /= ptotZetavMix[facei];
                 }
             }
         }
@@ -1523,11 +1523,11 @@ void Foam::rho2ReactionThermo::calculate()
                     const fvPatchScalarField& pX = X[speciei].boundaryField()[patchi];
                     const fvPatchScalarField& phv = hv[speciei].boundaryField()[patchi];
                     const fvPatchScalarField& phel = hel[speciei].boundaryField()[patchi];
-                    
+
                     fvPatchScalarField& phvel = hvel[speciei].boundaryFieldRef()[patchi];
                     fvPatchScalarField& pTv = Tv[speciei].boundaryFieldRef()[patchi];
                     fvPatchScalarField& pzetav = zetav[speciei].boundaryFieldRef()[patchi];
-                    
+
                     if (pTv[facei] != 0.0)
                     {
                         if(downgradeSingleTemperature)
@@ -1550,14 +1550,14 @@ void Foam::rho2ReactionThermo::calculate()
                             {
                                 if(pTt[facei] > vibrationalCutOffTemp)
                                 {
-                                    if(pY[facei] > miniYforSolvingEvEqn) 
+                                    if(pY[facei] > miniYforSolvingEvEqn)
                                     // NEW VINCENT 08/02/2017 -> < means that evEqn IS solved because Y_m large enough
                                     {
                                         if(sign(phvel[facei]) == -1) // NEW VINCENT 09/02/2017
                                         {
                                             phvel[facei] = composition().HEvel(speciei, pp[facei], vibrationalCutOffTemp);
                                         }
-                                        
+
                                         pTv[facei] = TvelEvels(speciei, phvel[facei], pp[facei], pTv[facei]);
                                     }
                                     else
@@ -1565,60 +1565,60 @@ void Foam::rho2ReactionThermo::calculate()
                                         pTv[facei] = TlowPatches_; //pTt[facei]; // TODO improve the treatment
                                     }
                                 }
-                                
+
                                 pzetav[facei] = composition().zetav(speciei, pp[facei], pTv[facei]);
                                 phvelMix[facei] += pY[facei]*phvel[facei];
                                 pTvMix[facei] += pX[facei]*pzetav[facei]*pTv[facei];
                             }
                             else
                             {
-                                //TODO ONGOING WORK 
+                                //TODO ONGOING WORK
                                 /*pzetav[facei] = 0.0;
                                 pTv[facei] = 0.0;
 
                                 forAll(Tv_mode[speciei], mode)
                                 {
-                                    Tv_mode[speciei][mode].boundaryField()[patchi][facei] = 
+                                    Tv_mode[speciei][mode].boundaryField()[patchi][facei] =
                                         composition().TvelHEvel_mode(speciei, mode, phvel[facei], pp[facei], Tv_mode[speciei][mode].boundaryField()[patchi][facei]);
-                                    zetav_mode[speciei][mode].boundaryField()[patchi][facei] = 
+                                    zetav_mode[speciei][mode].boundaryField()[patchi][facei] =
                                         composition().zetav_mode(speciei, mode, pp[facei], Tv_mode[speciei][mode].boundaryField()[patchi][facei]);
                                     pzetav[facei] += zetav_mode[speciei][mode].boundaryField()[patchi][facei];
                                     pTv[facei] += Tv_mode[speciei][mode].internalField()[facei]*zetav_mode[speciei][mode].boundaryField()[patchi][facei];
                                 }
-                                
+
                                 pTv[facei] /= pzetav[facei];*/
-                            } 
+                            }
                         }
-                        else 
+                        else
                         // ions, electrons, and atoms if Eel is on
                         {
                             const fvPatchScalarField& pTvMol = Tv[composition().vibTempAssociativity(speciei)].boundaryField()[patchi];
                             pTv[facei] = pTvMol[facei];
                             pzetav[facei] = composition().zetav(speciei, pp[facei], pTv[facei]);
                         }
-                    
+
                         phvMix[facei] += pY[facei]*phv[facei];
                         phelMix[facei] += pY[facei]*phel[facei];
                         pzetavMix[facei] += pX[facei]*pzetav[facei];
                         ptotZetavMix[facei] += pX[facei]*pzetav[facei];
                     }
                 }//end species loop
-                
+
                 if(not downgradeSingleTv and ptotZetavMix[facei] != 0.0)
                 {
                     pTvMix[facei] /= ptotZetavMix[facei];
                 }
             }//end faces loop
         }
-        
+
         forAll(Y, speciei)
         {
             const fvPatchScalarField& pX = X[speciei].boundaryField()[patchi];
             const fvPatchScalarField& pTv = Tv[speciei].boundaryField()[patchi];
-            
-            forAll(pTt, facei) 
+
+            forAll(pTt, facei)
             {
-                if(composition().particleType(speciei) > 0) 
+                if(composition().particleType(speciei) > 0)
                 {
                     ppsiMix[facei] += pX[facei]*composition().psi(speciei, pp[facei], pTt[facei]);
                 }
@@ -1645,15 +1645,15 @@ void Foam::rho2ReactionThermo::calculateLight()
     const scalarField& pCells = this->p_.internalField();
     const scalarField& hCellsMix = composition().e().internalField();
     const scalarField& htCellsMix = this->het_.internalField();
-    
+
     PtrList<Foam::volScalarField>& Tv = composition().Tv();
     PtrList<Foam::volScalarField>& hvel = composition().hevel();
-    
+
     scalarField& TtCells = this->Tt_.primitiveFieldRef();
     scalarField& TvCellsMix = this->Tv_.primitiveFieldRef();
     scalarField& hvelCellsMix = this->hevel().primitiveFieldRef();
     scalarField& psiCellsMix = this->psi_.primitiveFieldRef();
-       
+
     // Overall temperature calculation (single-temperature model)
     // or trans-rotational temperature calculation (two-temperature model)
     PtrList<scalar> YList(Y.size());
@@ -1664,10 +1664,10 @@ void Foam::rho2ReactionThermo::calculateLight()
         {
             YList.set
             (
-                speciei, 
+                speciei,
                 new scalar(Y[speciei].internalField()[celli])
             );
-        } 
+        }
 
         if(downgradeSingleTemperature)
         {
@@ -1707,7 +1707,7 @@ void Foam::rho2ReactionThermo::calculateLight()
                 YList
             );
         }
-    }//end cells loop 
+    }//end cells loop
 
     forAll(this->Tt_.boundaryField(), patchi)
     {
@@ -1718,7 +1718,7 @@ void Foam::rho2ReactionThermo::calculateLight()
         fvPatchScalarField& phtMix = this->het_.boundaryFieldRef()[patchi];
         fvPatchScalarField& pTt = this->Tt_.boundaryFieldRef()[patchi];
         fvPatchScalarField& pTvMix = this->Tv_.boundaryFieldRef()[patchi]; // NEW VINCENT 16/08/2016
-        
+
         if(pTt.fixesValue())
         // the temperature is fixed ... the energy is calculated at patches
         {
@@ -1727,14 +1727,14 @@ void Foam::rho2ReactionThermo::calculateLight()
             {
                 phtMix[facei] = 0.0;
             }
-            
+
             //- Calculation
             forAll(Y, speciei)
             {
                 const fvPatchScalarField& pY = Y[speciei].boundaryField()[patchi];
-                
+
                 forAll(pTt, facei)
-                {  
+                {
                     phtMix[facei] += pY[facei]*composition().HEt(speciei, pp[facei], pTt[facei]);
                 }
             }
@@ -1747,8 +1747,8 @@ void Foam::rho2ReactionThermo::calculateLight()
                 forAll(Y, speciei)
                 {
                     YList[speciei] = Y[speciei].boundaryField()[patchi][facei];
-                } 
-            
+                }
+
                 if(downgradeSingleTemperature)
                 {
                     pTt[facei] = TEs
@@ -1768,7 +1768,7 @@ void Foam::rho2ReactionThermo::calculateLight()
                         pTt[facei],
                         YList
                     );
-                    
+
                     pTvMix[facei] = TvelEvels
                     (
                         phvelMix[facei],
@@ -1789,7 +1789,7 @@ void Foam::rho2ReactionThermo::calculateLight()
                 }
             }//end faces loop
         }
-        
+
         if(isA<wallFvPatch>(wallPatches[patchi].patch())) // NEW VINCENT 22/08/2016
         // to increase the stability of the 2T model in near-wall high-Kn number regions
         {
@@ -1800,8 +1800,8 @@ void Foam::rho2ReactionThermo::calculateLight()
             }
         }
     }//end patches loop
-    
-    
+
+
     //- Re-set of mixture quantities internalField
     if(not downgradeSingleTv) hvelCellsMix = 0.0;
     psiCellsMix = 0.0;
@@ -1813,9 +1813,9 @@ void Foam::rho2ReactionThermo::calculateLight()
         const scalarField& XCells = X[speciei].internalField();
         scalarField& TvCells = Tv[speciei].primitiveFieldRef();
         scalarField& hvelCells = hvel[speciei].primitiveFieldRef();
-            
+
         forAll(YCells, celli)
-        {  
+        {
             if(TvCells[celli] != 0.0)
             {
                 if(downgradeSingleTemperature)
@@ -1833,7 +1833,7 @@ void Foam::rho2ReactionThermo::calculateLight()
                 {
                     if(TtCells[celli] > vibrationalCutOffTemp)
                     {
-                        if(YCells[celli] > miniYforSolvingEvEqn) 
+                        if(YCells[celli] > miniYforSolvingEvEqn)
                         // NEW VINCENT 08/02/2017 -> < means that evEqn IS solved because Y_m large enough
                         {
                             if(sign(hvelCells[celli]) == -1)
@@ -1852,22 +1852,22 @@ void Foam::rho2ReactionThermo::calculateLight()
                     {
                         TvCells[celli] = TtCells[celli];
                     }
-                    
+
                     hvelCellsMix[celli] += YCells[celli]*hvelCells[celli];
-                } 
+                }
                 else
                 {
-                    // If no molecule in the flow-field, then necessarily the 1-T solver is run using 
+                    // If no molecule in the flow-field, then necessarily the 1-T solver is run using
                     // downgradeSingleTemperature because the electronic energy equation is not
                     // implemented and it cannot be substituted by a vibrational energy equation.
                     // Therefore, the following always works. VINCENT 08/08/2016
                     TvCells[celli] = Tv[composition().vibTempAssociativity(speciei)].internalField()[celli];
                     hvelCells[celli] = composition().HEvel(speciei, pCells[celli], TvCells[celli]);
                     hvelCellsMix[celli] += YCells[celli]*hvelCells[celli];
-                } 
+                }
             }
-            
-            if(composition().particleType(speciei) > 0) 
+
+            if(composition().particleType(speciei) > 0)
             {
                 psiCellsMix[celli] += XCells[celli]*composition().psi(speciei, pCells[celli], TtCells[celli]);
             }
@@ -1878,7 +1878,7 @@ void Foam::rho2ReactionThermo::calculateLight()
         }//end cells loop
     }//end species loop
 
-    
+
     //- Patch values calculation
     forAll(this->Tt_.boundaryField(), patchi)
     {
@@ -1889,14 +1889,14 @@ void Foam::rho2ReactionThermo::calculateLight()
         fvPatchScalarField& phMix = composition().e().boundaryFieldRef()[patchi];
         fvPatchScalarField& phvelMix = this->hevel().boundaryFieldRef()[patchi];
         fvPatchScalarField& ppsiMix = this->psi_.boundaryFieldRef()[patchi];
-        
+
         //- Re-set of mixture quantities boundaryField
         forAll(pTt, facei)
         {
             if(not downgradeSingleTv) phvelMix[facei] = 0.0;
             ppsiMix[facei] = 0.0;
         }
-        
+
         if(pTt.fixesValue())
         // the temperature is fixed ... the energy is calculated at patches
         {
@@ -1905,9 +1905,9 @@ void Foam::rho2ReactionThermo::calculateLight()
                 const fvPatchScalarField& pY = Y[speciei].boundaryField()[patchi];
                 fvPatchScalarField& pTv = Tv[speciei].boundaryFieldRef()[patchi];
                 fvPatchScalarField& phvel = hvel[speciei].boundaryFieldRef()[patchi];
-                
+
                 forAll(pTt, facei)
-                {  
+                {
                     if(pTv[facei] != 0.0)
                     {
                         if(downgradeSingleTemperature)
@@ -1928,7 +1928,7 @@ void Foam::rho2ReactionThermo::calculateLight()
                     }
                 }//end faces loop
             }//end species loop
-            
+
             forAll(pTt, facei)
             {
                 phMix[facei] = phtMix[facei] + phvelMix[facei];
@@ -1942,7 +1942,7 @@ void Foam::rho2ReactionThermo::calculateLight()
                 const fvPatchScalarField& pY = Y[speciei].boundaryField()[patchi];
                 fvPatchScalarField& phvel = hvel[speciei].boundaryFieldRef()[patchi];
                 fvPatchScalarField& pTv = Tv[speciei].boundaryFieldRef()[patchi];
-                
+
                 forAll(pTt, facei)
                 {
                     if (pTv[facei] != 0.0)
@@ -1962,14 +1962,14 @@ void Foam::rho2ReactionThermo::calculateLight()
                         {
                             if(pTt[facei] > vibrationalCutOffTemp)
                             {
-                                if(pY[facei] > miniYforSolvingEvEqn) 
+                                if(pY[facei] > miniYforSolvingEvEqn)
                                 // NEW VINCENT 08/02/2017 -> < means that evEqn IS solved because Y_m large enough
                                 {
                                     if(sign(phvel[facei]) == -1) // NEW VINCENT 09/02/2017
                                     {
                                         phvel[facei] = composition().HEvel(speciei, pp[facei], vibrationalCutOffTemp);
                                     }
-                                    
+
                                     pTv[facei] = TvelEvels(speciei, phvel[facei], pp[facei], pTv[facei]);
                                 }
                                 else
@@ -1981,7 +1981,7 @@ void Foam::rho2ReactionThermo::calculateLight()
                             {
                                 pTv[facei] = pTt[facei];
                             }
-                            
+
                             phvelMix[facei] += pY[facei]*phvel[facei];
                         }
                         else
@@ -1993,21 +1993,21 @@ void Foam::rho2ReactionThermo::calculateLight()
                     }
                 }//end faces loop
             }//end species loop
-            
+
             forAll(pTt, facei)
             {
                 phtMix[facei] = phMix[facei] - phvelMix[facei]; // NEW VINCENT 25/09/2016
             }
         }
-        
+
         forAll(Y, speciei)
         {
             const fvPatchScalarField& pX = X[speciei].boundaryField()[patchi];
             const fvPatchScalarField& pTv = Tv[speciei].boundaryField()[patchi];
-            
-            forAll(pTt, facei) 
+
+            forAll(pTt, facei)
             {
-                if(composition().particleType(speciei) > 0) 
+                if(composition().particleType(speciei) > 0)
                 {
                     ppsiMix[facei] += pX[facei]*composition().psi(speciei, pp[facei], pTt[facei]);
                 }
@@ -2027,18 +2027,18 @@ void Foam::rho2ReactionThermo::calculateLight()
 void Foam::rho2ReactionThermo::calculateHEVK()
 {
     // Tve is set according to the vibTempAssociativity table for particles whose vib energy is not solved
-    
+
     //- Declarations
     const bool downgradeSingleTv = this->downgradeSingleTv();
-    
+
     const scalarField& pCells = this->p_.internalField();
     const scalarField& TvCellsMix = this->Tv_.internalField();
     PtrList<Foam::volScalarField>& Tv = composition().Tv();
     PtrList<Foam::volScalarField>& hvel = composition().hevel();
-       
+
     //- Cells values
     forAll(Tv, speciei)
-    {  
+    {
         scalarField& TvCells = Tv[speciei].primitiveFieldRef();
         scalarField& hvelCells = hvel[speciei].primitiveFieldRef();
 
@@ -2067,14 +2067,14 @@ void Foam::rho2ReactionThermo::calculateHEVK()
         {
             fvPatchScalarField& pTv = Tv[speciei].boundaryFieldRef()[patchi];
             const fvPatchScalarField& pTvMix = this->Tv_.boundaryField()[patchi];
-            
+
             if(pTv.size() != 0) // NEW VINCENT 04/08/2016
-            {    
+            {
                 if(pTv[0] != 0.0)
                 {
                     const fvPatchScalarField& pp = this->p_.boundaryField()[patchi];
                     fvPatchScalarField& phvel = hvel[speciei].boundaryFieldRef()[patchi];
-                        
+
                     if(downgradeSingleTv)
                     {
                         forAll(pTv, facei)
@@ -2101,7 +2101,7 @@ void Foam::rho2ReactionThermo::calculateHEVK()
 void Foam::rho2ReactionThermo::limitVelocityAtWallBoundary(volVectorField::Boundary& Ubdry)
 {
     const volScalarField::Boundary wallPatches = this->Tt_.boundaryField();
-    
+
     //- Patch values
     forAll(Ubdry, patchi)
     {
@@ -2109,7 +2109,7 @@ void Foam::rho2ReactionThermo::limitVelocityAtWallBoundary(volVectorField::Bound
         // to increase the stability of the 2T model in near-wall high Kn-number regions
         {
             fvPatchVectorField& pU = Ubdry[patchi];
-            
+
             forAll(pU, facei)
             {
                 if(pU[facei].component(0) > UhighPatches_) pU[facei].component(0) = UhighPatches_;
@@ -2150,7 +2150,7 @@ Foam::rho2ReactionThermo::rho2ReactionThermo
             this->hevelMix2BoundaryBaseTypes()
         );
     }
-    
+
     if(isDict("temperatureBounds"))
     {
         Tlow_ = subDict("temperatureBounds").lookupOrDefault<scalar>("Tlow", 100);
@@ -2165,7 +2165,7 @@ Foam::rho2ReactionThermo::rho2ReactionThermo
         TlowPatches_ = Tlow_;
         ThighPatches_ = Thigh_;
     }
-    
+
     if(isDict("velocityBounds"))
     {
         UhighPatches_ = subDict("velocityBounds").lookupOrDefault<scalar>("UhighPatches", Foam::GREAT);

@@ -161,7 +161,7 @@ public:
         const word& timeOption() const;
 
 //         const timeInterval& calcPropTimeInterval() const;
-       
+
 //         timeInterval& calcPropTimeInterval();
 
 //         const scalarField& averagingTimes() const;

@@ -27,8 +27,8 @@ Class
 
 Description
 
-    
-    
+
+
 SourceFiles
     poly1DMassFluxZoneI.H
     poly1DMassFluxZone.C
@@ -76,25 +76,25 @@ private:
         autoPtr<binModel> binModel_;
 
         label nBins_;
-        
+
         word regionName_;
         label regionId_;
         word fieldName_;
 
         scalar length_;
-        
+
         vector unitVector_;
-        
+
         List<label> molIds_;
 
 
         List<DynamicList<scalar> > massFlowRate_;
-        
-        
-        
+
+
+
     // Private Member Functions
-        
-        
+
+
 //             void writeToStorage();
 
 //             bool readFromStorage();
@@ -147,7 +147,7 @@ public:
 
         //- write field
         void writeField();
-}; 		
+};
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

@@ -167,7 +167,7 @@ public:
 //             inline const labelList& connectedFaces() const;
 
 //             inline const labelList& faces() const;
-// 
+//
 //             inline const labelList& points() const;
 
             inline const bool& isPrefZoneCell() const;

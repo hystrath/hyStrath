@@ -18,7 +18,7 @@ License
     You should have received a copy of the GNU General Public License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
-    
+
 Description
 
 \*---------------------------------------------------------------------------*/
@@ -79,7 +79,7 @@ void dsmcAbsorbingWallPatch::setProperties()
 
         typeIds_[i] = typeId;
     }
-    
+
     absorptionProbs_.clear();
 
     absorptionProbs_.setSize(typeIds_.size(), 0.0);
@@ -92,15 +92,15 @@ void dsmcAbsorbingWallPatch::setProperties()
                 .lookup(moleculesReduced[i])
         );
     }
-    
+
     const scalar saturationLimitPerSquareMeters = propsDict_
         .lookupOrDefault<scalar>("saturationLimit", VGREAT);
-        
+
     const scalarList& facesArea = mesh_.magSf().boundaryField()[patchId()];
-    
+
     forAll(saturationLimit_, facei)
     {
-        saturationLimit_[facei] = 
+        saturationLimit_[facei] =
             saturationLimitPerSquareMeters*facesArea[facei]
            /cloud_.nParticles(patchId(), facei);
     }
@@ -125,9 +125,9 @@ void dsmcAbsorbingWallPatch::readPatchField()
             dimensionedScalar("nAbsorbedParcels", dimless, 0.0)
         )
     );
-    
+
     volScalarField& nAbsorbedParcels = tnAbsorbedParcels.ref();
-    
+
     cloud_.boundaryFluxMeasurements().setBoundarynAbsorbedParcels
     (
         patchId(),
@@ -150,7 +150,7 @@ bool dsmcAbsorbingWallPatch::isNotSaturated
     {
         return true;
     }
-    
+
     return false;
 }
 
@@ -164,7 +164,7 @@ void dsmcAbsorbingWallPatch::absorbParticle
 {
     //- Delete particle
     td.keepParticle = false;
-    
+
     //- Update the boundaryMeasurement relative to this absorbing patch
     cloud_.boundaryFluxMeasurements().updatenAbsorbedParcelOnPatch
     (
@@ -176,22 +176,22 @@ void dsmcAbsorbingWallPatch::absorbParticle
 
 void dsmcAbsorbingWallPatch::testParticleForAbsorption
 (
-    dsmcParcel& p, 
+    dsmcParcel& p,
     dsmcParcel::trackingData& td
 )
 {
     const label iD = findIndex(dsmcAbsorbingWallPatch::typeIds_, p.typeId());
-    
-    if(iD != -1) 
+
+    if(iD != -1)
     {
         const label wppIndex = patchId();
-        
-        const label wppLocalFace = 
+
+        const label wppLocalFace =
             mesh_.boundaryMesh()[wppIndex].whichFace(p.face());
-                
+
         //- absorption probability
         const scalar absorptionProbability = absorptionProbs_[iD];
-            
+
         if
         (
             absorptionProbability > cloud_.rndGen().sample01<scalar>()
@@ -203,7 +203,7 @@ void dsmcAbsorbingWallPatch::testParticleForAbsorption
         }
     }
 }
-    
+
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
@@ -225,9 +225,9 @@ dsmcAbsorbingWallPatch::dsmcAbsorbingWallPatch
     writeInTimeDir_ = false;
     writeInCase_ = false;
     measurePropertiesAtWall_ = true;
-    
+
     setProperties();
-    
+
     readPatchField();
 }
 

@@ -58,11 +58,11 @@ void boundaryMeasurements::writenStuckParcels()
             dimensionedScalar("nStuckParcels", dimless, 0.0)
         )
     );
-    
+
     volScalarField& nStuckParcels = tnStuckParcels.ref();
-    
+
     nStuckParcels.boundaryFieldRef() = nParcelsOnStickingBoundaries_;
-    
+
     nStuckParcels.write();
 }
 
@@ -85,11 +85,11 @@ void boundaryMeasurements::writenAbsorbedParcels()
             dimensionedScalar("nAbsorbedParcels", dimless, 0.0)
         )
     );
-    
+
     volScalarField& nAbsorbedParcels = tnAbsorbedParcels.ref();
-    
+
     nAbsorbedParcels.boundaryFieldRef() = nAbsorbedParcels_;
-    
+
     nAbsorbedParcels.write();
 }
 
@@ -113,13 +113,13 @@ void boundaryMeasurements::writePatchFields()
             dimensionedScalar("boundaryT", dimTemperature, 0.0)
         )
     );
-    
+
     volScalarField& boundaryT = tboundaryT.ref();
-    
+
     boundaryT.boundaryFieldRef() = boundaryT_;
-    
+
     boundaryT.write();
-    
+
     //- Velocity field
     tmp<volVectorField> tboundaryU
     (
@@ -137,18 +137,18 @@ void boundaryMeasurements::writePatchFields()
             dimensionedVector("boundaryU", dimVelocity, vector::zero)
         )
     );
-    
+
     volVectorField& boundaryU = tboundaryU.ref();
-    
+
     boundaryU.boundaryFieldRef() = boundaryU_;
-    
+
     boundaryU.write();
 }
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-// Construct from mesh and cloud 
+// Construct from mesh and cloud
 boundaryMeasurements::boundaryMeasurements
 (
     const polyMesh& mesh,
@@ -253,9 +253,9 @@ void boundaryMeasurements::updatenStuckParcelOnPatch
 {
     forAll(pnStuckParcels, facei)
     {
-        nParcelsOnStickingBoundaries_[patchi][facei] = 
+        nParcelsOnStickingBoundaries_[patchi][facei] =
             pnStuckParcels[facei];
-    }    
+    }
 }
 
 
@@ -278,7 +278,7 @@ void boundaryMeasurements::setBoundaryT
     forAll(pboundaryT, facei)
     {
         boundaryT_[patchi][facei] = pboundaryT[facei];
-    }    
+    }
 }
 
 
@@ -291,7 +291,7 @@ void boundaryMeasurements::setBoundaryU
     forAll(pboundaryU, facei)
     {
         boundaryU_[patchi][facei] = pboundaryU[facei];
-    }    
+    }
 }
 
 
@@ -304,7 +304,7 @@ void boundaryMeasurements::setBoundarynStuckParcels
     forAll(pnStuckParcels, facei)
     {
         nParcelsOnStickingBoundaries_[patchi][facei] = pnStuckParcels[facei];
-    }    
+    }
 }
 
 
@@ -317,7 +317,7 @@ void boundaryMeasurements::setBoundarynAbsorbedParcels
     forAll(pnAbsorbedParcels, facei)
     {
         nAbsorbedParcels_[patchi][facei] = pnAbsorbedParcels[facei];
-    }    
+    }
 }
 
 
@@ -329,12 +329,12 @@ void boundaryMeasurements::outputResults()
         {
             writenStuckParcels();
         }
-        
+
         if(cloud_.boundaries().isAAbsorbingPatch())
         {
             writenAbsorbedParcels();
         }
-        
+
         if(cloud_.boundaries().isAFieldPatch())
         {
             writePatchFields();
@@ -349,7 +349,7 @@ void boundaryMeasurements::setInitialConfig()
     {
         typeIds_[i] = i;
     }
-    
+
     reset();
 }
 
@@ -376,7 +376,7 @@ void boundaryMeasurements::clean()
             qBF_[i][j] = 0.0;
             fDBF_[i][j] = vector::zero;
         }
-        
+
         forAll(evmsBF_[i], m)
         {
             forAll(evmsBF_[i][m], j)
@@ -385,7 +385,7 @@ void boundaryMeasurements::clean()
             }
         }
     }
-    
+
     forAll(nParcelsOnStickingBoundaries_, patchi)
     {
         forAll(nParcelsOnStickingBoundaries_[patchi], facei)
@@ -401,7 +401,7 @@ void boundaryMeasurements::reset()
     //- reset sizes of the fields after mesh is changed
     const label nSpecies = typeIds_.size();
     const label nPatches = mesh_.boundaryMesh().size();
-    
+
     rhoNIntBF_.setSize(nSpecies);
     rhoNElecBF_.setSize(nSpecies);
     rhoNBF_.setSize(nSpecies);
@@ -417,9 +417,9 @@ void boundaryMeasurements::reset()
     qBF_.setSize(nSpecies);
     fDBF_.setSize(nSpecies);
     evmsBF_.setSize(nSpecies);
-    
+
     forAll(typeIds_, i)
-    {        
+    {
         rhoNIntBF_[i].setSize(nPatches);
         rhoNElecBF_[i].setSize(nPatches);
         rhoNBF_[i].setSize(nPatches);
@@ -434,17 +434,17 @@ void boundaryMeasurements::reset()
         electronicEBF_[i].setSize(nPatches);
         qBF_[i].setSize(nPatches);
         fDBF_[i].setSize(nPatches);
-        
+
         evmsBF_[i].setSize(cloud_.constProps(typeIds_[i]).thetaV().size());
         forAll(evmsBF_[i], m)
         {
             evmsBF_[i][m].setSize(nPatches);
         }
-        
+
         forAll(rhoNBF_[i], j)
         {
             const label nFaces = mesh_.boundaryMesh()[j].size();
-            
+
             rhoNIntBF_[i][j].setSize(nFaces, 0.0);
             rhoNElecBF_[i][j].setSize(nFaces, 0.0);
             rhoNBF_[i][j].setSize(nFaces, 0.0);
@@ -460,7 +460,7 @@ void boundaryMeasurements::reset()
             qBF_[i][j].setSize(nFaces, 0.0);
             fDBF_[i][j].setSize(nFaces, vector::zero);
         }
-        
+
         forAll(evmsBF_[i], m)
         {
             forAll(evmsBF_[i][m], j)
@@ -470,7 +470,7 @@ void boundaryMeasurements::reset()
             }
         }
     }
-    
+
     forAll(nParcelsOnStickingBoundaries_, patchi)
     {
         forAll(nParcelsOnStickingBoundaries_[patchi], facei)

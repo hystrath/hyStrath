@@ -27,22 +27,22 @@ Class
 
 Description
     GuptaO binary diffusivity model.
-    
+
     See:
     R. N. Gupta, J. M. Yos, R. A. Thompson, and A. Richard 1989
     A Review of Reaction Rates and Thermodynamic and Transport Properties
-    for the 11-Species Air Model for Chemical and Thermal Nonequilbrium 
-    Calculations to 30000 K. 
+    for the 11-Species Air Model for Chemical and Thermal Nonequilbrium
+    Calculations to 30000 K.
     NASA TM-101528
-    
+
     and
-    
+
     R. N. Gupta, J. M. Yos, R. A. Thompson, and K.-P. Lee. 1990
     A Review of Reaction Rates and Thermodynamic and Transport Properties for
     an 11-Species Air Model for Chemical and Thermal Nonequilbrium Calculations
     to 30000 K.
     NASA RP-1232
-    
+
 SourceFiles
     GuptaO.C
 
@@ -76,22 +76,22 @@ class GuptaO
 
         //- Model coefficients
         FixedList<scalar, 4> piOmega1_;
-        
+
         //- Molecular weights
         const scalar W1_, W2_;
-        
+
         //- Fundamental constants (more efficient)
         const scalar pi, kB, Runi;
-        
+
         //- Constant in the neutral collision term
         const scalar constantFactorInCollisionTerm_;
-        
+
         // Ratio of fundamental constants in the expression of Qc
         const scalar e4OverkB2_;
 
-        
+
     // Private member functions
-        
+
         //- Collision term 1
         inline scalar collisionTerm1(const scalar T, const scalar pe = 0) const
         {
@@ -101,20 +101,20 @@ class GuptaO
                 {
                     return constantFactorInCollisionTerm_/(3.0*sqrt(T))
                         *piOmega11Neutral(T);
-                    
+
                 }
                 else if(pe > SMALL)
                 {
                     return constantFactorInCollisionTerm_
-                        *piOmega11NonNeutral(T, pe);    
+                        *piOmega11NonNeutral(T, pe);
                 }
             }
-            
+
             return VSMALL;
         }
-        
+
         //- Collision term 2 (unused)
-        /*inline scalar collisionTerm2Neutral(const scalar T) const 
+        /*inline scalar collisionTerm2Neutral(const scalar T) const
         {
             if(T != 0.0)
             {
@@ -122,14 +122,14 @@ class GuptaO
                 {
                     return 2.0*constantFactorInCollisionTerms_/(5.0*sqrt(T))
                         *piOmega22Neutral(T); // to implement should it be needed, would require piOmega2_
-                    
+
                 }
                 else if(pe > SMALL)
                 {
                     if(this->collisionType_ != 4)
                     {
                         return constantFactorInCollisionTerm_
-                            *piOmega22NonNeutralI(T, pe);    
+                            *piOmega22NonNeutralI(T, pe);
                     }
                     else
                     {
@@ -141,65 +141,65 @@ class GuptaO
 
             return VSMALL;
         }*/
-        
+
         //- Collision cross-section (1,1) for neutral interactions
         //  in Angstrom^2
-        inline scalar piOmega11Neutral(const scalar T) const 
+        inline scalar piOmega11Neutral(const scalar T) const
         {
             return piOmega1_[3]
                 *pow
                 (
-                    T, 
-                    piOmega1_[0]*sqr(log(T)) 
+                    T,
+                    piOmega1_[0]*sqr(log(T))
                   + piOmega1_[1]*log(T) + piOmega1_[2]
                 );
-        } 
-        
+        }
+
         //- Collision cross-section (2,2) for neutral interactions
         //  in Angstrom^2 (unused)
-        /*inline scalar piOmega22Neutral(const scalar T) const 
+        /*inline scalar piOmega22Neutral(const scalar T) const
         {
             return piOmega2_[3]
                 *pow
                 (
-                    T, 
-                    piOmega2_[0]*sqr(log(T)) 
+                    T,
+                    piOmega2_[0]*sqr(log(T))
                   + piOmega2_[1]*log(T) + piOmega2_[2]
                 );
         }*/
-        
+
         //- Collision cross-section (1,1) for non-neutral interactions
         //  in Angstrom^2
-        inline scalar piOmega11NonNeutral(const scalar T, const scalar pe) const 
+        inline scalar piOmega11NonNeutral(const scalar T, const scalar pe) const
         {
-            // It is assuned that Z = 1, name that the species is 
+            // It is assuned that Z = 1, name that the species is
             // singly-ionised (see Eq. 23.c in Ref Gupta 1989)
             return 0.795*e4OverkB2_*log(shieldingParameter(T, pe))/sqr(T);
         }
-        
+
         //- Collision cross-section (2,2) for e- / e- interactions
         //  in Angstrom^2 (unused)
-        inline scalar piOmega22NonNeutralE(const scalar T, const scalar pe) const 
+        inline scalar piOmega22NonNeutralE(const scalar T, const scalar pe) const
         {
             return 1.29*e4OverkB2_*log(shieldingParameter(T, pe))/sqr(T);
         }
-        
+
         //- Collision cross-section (2,2) for ion / ion interactions
         //  in Angstrom^2 (unused)
-        inline scalar piOmega22NonNeutralI(const scalar T, const scalar pe) const 
+        inline scalar piOmega22NonNeutralI(const scalar T, const scalar pe) const
         {
-            // It is assuned that Z = 1, name that the species is 
+            // It is assuned that Z = 1, name that the species is
             // singly-ionised (see Eq. 23.c in Ref Gupta 1989)
             return 1.36*e4OverkB2_*log(shieldingParameter(T, pe))/sqr(T);
         }
-        
-        //- Shielding parameter function of the temperature and electron 
+
+        //- Shielding parameter function of the temperature and electron
         //  pressure.
         inline scalar shieldingParameter(const scalar T, const scalar pe) const
         {
-            return sqrt(2.09e-14*pow(T, 4.0)/pe 
+            return sqrt(2.09e-14*pow(T, 4.0)/pe
                 + 1.52*pow(pow(T, 4.0)/pe, 2.0/3.0));
-        }   
+        }
 
 
 public:
@@ -233,7 +233,7 @@ public:
 
         //- Binary diffusion coefficient [m^2/s]
         virtual tmp<volScalarField> D() const;
-         
+
         //- Binary diffusion coefficient for patch [m^2/s]
         virtual tmp<scalarField> D
         (
@@ -241,7 +241,7 @@ public:
             const scalarField& T,
             const label patchi
         ) const;
-        
+
         //- Binary diffusion coefficient for patch [m^2/s]
         virtual tmp<scalarField> D
         (
@@ -250,7 +250,7 @@ public:
             const scalarField& T,
             const label patchi
         ) const;
-         
+
 };
 
 

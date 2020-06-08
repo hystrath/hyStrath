@@ -136,7 +136,7 @@ void layerRegions::setRegionsCells
     regionsCells_ = regionsCells.shrink();
 }
 
-// cells remaining within the zone 
+// cells remaining within the zone
 // i.e. cells that are in the zone but not part of the regions
 void layerRegions::setRemainingCells
 (

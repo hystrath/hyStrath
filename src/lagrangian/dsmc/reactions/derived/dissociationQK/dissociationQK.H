@@ -63,16 +63,16 @@ protected:
 
         //- Sub-dictionary containing the reaction properties
         dictionary propsDict_;
-        
+
         //- Ids of the products
         List<labelList> productIdsDissociation_;
-        
+
         //- String to print for the dissociation reaction
         wordList dissociationStr_;
-        
+
         labelList nTotDissociationReactions_;
         labelList nDissociationReactionsPerTimeStep_;
-       
+
         scalarList heatOfReactionDissociationJoules_;
 
         //- Total volume of the numerical domain (NB: should not be there)
@@ -82,7 +82,7 @@ protected:
     // Protected Member Functions
 
         virtual void setProperties();
-        
+
         void testDissociation
         (
             const dsmcParcel& p,
@@ -92,7 +92,7 @@ protected:
             scalar& totalReactionProbability,
             scalar& reactionProbability
         );
-        
+
         void dissociateParticleByPartner
         (
             dsmcParcel& p,
@@ -117,13 +117,13 @@ public:
             dsmcCloud& cloud,
             const dictionary& dict
         );
-    
-    
+
+
     // Destructor
-    
+
         ~dissociationQK();
-    
-    
+
+
     // Member Functions
 
         //- Initial configuration - read in properties from chemReactDict
@@ -148,7 +148,7 @@ public:
             const label& typeIdP,
             const label& typeIdQ
         );
-        
+
 
       // Access
 

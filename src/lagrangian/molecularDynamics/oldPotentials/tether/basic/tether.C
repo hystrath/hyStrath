@@ -53,7 +53,7 @@ defineRunTimeSelectionTable(tether, dictionary);
 tether::tether
 (
     Time& time,
-    const reducedUnits& rU, 
+    const reducedUnits& rU,
     const dictionary& dict
 )
 :
@@ -65,7 +65,7 @@ tether::tether
 autoPtr<tether> tether::New
 (
     Time& time,
-    const reducedUnits& rU, 
+    const reducedUnits& rU,
     const dictionary& dict
 )
 {

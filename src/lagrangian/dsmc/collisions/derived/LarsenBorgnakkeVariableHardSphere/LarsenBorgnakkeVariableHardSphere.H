@@ -48,27 +48,27 @@ class LarsenBorgnakkeVariableHardSphere
     public VariableHardSphere
 {
     // Private data
-    
+
         //- The coefficients dictionary
         const dictionary coeffDictLB_;
 
         //- Rotational relaxation collision number
         const scalar rotationalRelaxationCollisionNumber_;
-        
+
         //- Vibrational relaxation collision number
         //  Default: 0, i.e., non constant (see equation 2, Bird 2010)
         //  If a value is given in the dsmcProperties dict, then it is affected
         //  to vibrationalRelaxationCollisionNumber_
         const scalar vibrationalRelaxationCollisionNumber_;
-        
+
         //- Formulation for the inverse vibrational collision number
-        //  that is: 
+        //  that is:
         //  pre-2008: 1/Zv using the collision temperature -> 0
         //  2008: 1/Zv using the overall temperature -> 1
         //  (Bird 2008 RGD "A Comparison of Collision-Based and Temp-Based...")
         //  post-2008: 1/(5*Zv) using the collision temperature -> 2
         label invZvFormulation_;
-        
+
         //- Electronic relaxation collision number
         const scalar electronicRelaxationCollisionNumber_;
 
@@ -97,13 +97,13 @@ public:
 
 
     // Member Functions
-    
+
         //- Return the vibrational relaxation number
         inline const scalar& vibrationalRelaxationNumber() const
         {
             return vibrationalRelaxationCollisionNumber_;
         }
-        
+
         //- Apply collision
         virtual void collide
         (
@@ -112,7 +112,7 @@ public:
             const label cellI,
             scalar cR = -1
         );
-        
+
         //- Apply LB energy redistribution
         virtual void redistribute
         (
@@ -121,7 +121,7 @@ public:
             const scalar omegaPQ,
             const bool postReaction = false
         );
-        
+
         //- Return the coefficients dictionary
         virtual const dictionary& coeffDict() const;
 };

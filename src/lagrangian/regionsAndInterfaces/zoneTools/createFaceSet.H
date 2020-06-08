@@ -46,13 +46,13 @@ void createFaceSet
 }
 
 
-// try to read in sets by the following code 
+// try to read in sets by the following code
 
 //         autoPtr<topoSet> currentSetPtr(NULL);
 //         IOobject::readOption r;
-// 
+//
 //         r = IOobject::MUST_READ;
-// 
+//
 //         currentSetPtr.reset
 //         (
 //             new faceSet

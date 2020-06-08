@@ -49,13 +49,13 @@ Foam::relaxationTimeModel::New
                 fileName(thermo.lookup("twoTemperatureDictFile")).expand()
             )()
         );
-        
+
         const word partialVTName = word(thermo2TModel.subDict("thermalRelaxationModels").subDict("VT")
             .lookup("relaxationType"));
-            
-        VTModelName = partialVTName +'<' + thermo.partialThermoName() + '>'; 
-            
-        Info<< "Loading the V-T relaxation time model:" << tab << partialVTName << "\n" << endl;    
+
+        VTModelName = partialVTName +'<' + thermo.partialThermoName() + '>';
+
+        Info<< "Loading the V-T relaxation time model:" << tab << partialVTName << "\n" << endl;
     }
 
     fvMeshConstructorTable::iterator cstrIter =

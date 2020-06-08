@@ -55,7 +55,7 @@ inline const label& polyFadeII::nDeleted() const
 inline const DynamicList<label>& polyFadeII::insertingList() const
 {
     return trackingNumbersIns_;
-}            
+}
 
 inline const DynamicList<label>& polyFadeII::deletingList() const
 {

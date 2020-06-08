@@ -40,7 +40,7 @@ Foam::molarMR<ThermoType>::molarMR
 )
 :
     mixingRule(thermo, turbulence),
-    
+
     speciesThermo_
     (
         dynamic_cast<const multi2ComponentMixture<ThermoType>&>
@@ -55,26 +55,26 @@ Foam::molarMR<ThermoType>::molarMR
 
 template<class ThermoType>
 void Foam::molarMR<ThermoType>::correct()
-{    
+{
     const volScalarField& Tt = thermo_.Tt();
     const volScalarField& p = thermo_.p();
-    
+
     const scalarField& TtCells = Tt.internalField();
     const scalarField& pCells = p.internalField();
-    
+
     volScalarField& muMix = thermo_.mu();
     volScalarField tempoMu = muMix;
-    
+
     volScalarField& kappaMix = thermo_.kappatr();
     volScalarField& kappaveMix = thermo_.kappave();
     volScalarField tempoKappatr = kappaMix;
     volScalarField tempoKappave = kappaveMix;
-    
+
     volScalarField& alphaMix = thermo_.alphatr();
     volScalarField& alphaveMix = thermo_.alphave();
     volScalarField tempoAlphatr = alphaMix;
     volScalarField tempoAlphave = alphaveMix;
-    
+
     scalarField& muCells = tempoMu.primitiveFieldRef();
     scalarField& kappatrCells = tempoKappatr.primitiveFieldRef();
     scalarField& kappaveCells = tempoKappave.primitiveFieldRef();
@@ -87,7 +87,7 @@ void Foam::molarMR<ThermoType>::correct()
     kappaveCells = 0.0;
     alphatrCells = 0.0;
     alphaveCells = 0.0;
-    
+
     forAll(tempoMu.boundaryField(), patchi)
     {
         fvPatchScalarField& pmu = tempoMu.boundaryFieldRef()[patchi];
@@ -95,23 +95,23 @@ void Foam::molarMR<ThermoType>::correct()
         fvPatchScalarField& pkappave = tempoKappave.boundaryFieldRef()[patchi];
         fvPatchScalarField& palphatr = tempoAlphatr.boundaryFieldRef()[patchi];
         fvPatchScalarField& palphave = tempoAlphave.boundaryFieldRef()[patchi];
-        
+
         pmu = 0.0;
         pkappatr = 0.0;
         pkappave = 0.0;
         palphatr = 0.0;
         palphave = 0.0;
-        
+
     }
 
     //- Cell values
     forAll(species(), speciei)
-    { 
+    {
         const volScalarField& Tve = thermo_.composition().Tv(speciei);
         const volScalarField& X = thermo_.composition().X(speciei);
         const scalarField& TveCells = Tve.internalField();
         const scalarField& XCells = X.internalField();
-        
+
         scalarField& spmuCells = spmu_[speciei].primitiveFieldRef();
         scalarField& spkappatrCells = spkappatr_[speciei].primitiveFieldRef();
         scalarField& spkappaveCells = spkappave_[speciei].primitiveFieldRef();
@@ -123,24 +123,24 @@ void Foam::molarMR<ThermoType>::correct()
             spmuCells[celli] = mu(speciei, pCells[celli], TtCells[celli]);
             muCells[celli] += XCells[celli]*spmuCells[celli];
             spkappatrCells[celli] = kappatr(speciei, pCells[celli], TtCells[celli]);
-            kappatrCells[celli] += XCells[celli]*spkappatrCells[celli];  
-            
+            kappatrCells[celli] += XCells[celli]*spkappatrCells[celli];
+
             spkappaveCells[celli] = kappave(speciei, pCells[celli], TtCells[celli], TveCells[celli]);
             kappaveCells[celli] += XCells[celli]*spkappaveCells[celli];
             spalphatrCells[celli] = alphatr(speciei, pCells[celli], TtCells[celli]);
-            alphatrCells[celli] += XCells[celli]*spalphatrCells[celli]; 
+            alphatrCells[celli] += XCells[celli]*spalphatrCells[celli];
             spalphaveCells[celli] = alphave(speciei, pCells[celli], TtCells[celli], TveCells[celli]);
             alphaveCells[celli] += XCells[celli]*spalphaveCells[celli];
-        }      
-          
+        }
+
         //- Patch values
         forAll(X.boundaryField(), patchi)
-        {        
+        {
             const fvPatchScalarField& pX = X.boundaryField()[patchi];
             const fvPatchScalarField& pp = p.boundaryField()[patchi];
             const fvPatchScalarField& pTt = Tt.boundaryField()[patchi];
             const fvPatchScalarField& pTve = Tve.boundaryField()[patchi];
-            
+
             fvPatchScalarField& pspmu = spmu_[speciei].boundaryFieldRef()[patchi];
             fvPatchScalarField& pmu = tempoMu.boundaryFieldRef()[patchi];
             fvPatchScalarField& pspkappatr = spkappatr_[speciei].boundaryFieldRef()[patchi];
@@ -151,17 +151,17 @@ void Foam::molarMR<ThermoType>::correct()
             fvPatchScalarField& palphatr = tempoAlphatr.boundaryFieldRef()[patchi];
             fvPatchScalarField& pspalphave = spalphave_[speciei].boundaryFieldRef()[patchi];
             fvPatchScalarField& palphave = tempoAlphave.boundaryFieldRef()[patchi];
-            
+
             forAll(pX, facei)
-            { 
+            {
                 pspmu[facei] = mu(speciei, pp[facei], pTt[facei]);
-                pmu[facei] += pX[facei]*pspmu[facei];       
+                pmu[facei] += pX[facei]*pspmu[facei];
                 pspkappatr[facei] = kappatr(speciei, pp[facei], pTt[facei]);
-                pkappatr[facei] += pX[facei]*pspkappatr[facei];  
+                pkappatr[facei] += pX[facei]*pspkappatr[facei];
                 pspkappave[facei] = kappave(speciei, pp[facei], pTt[facei], pTve[facei]);
                 pkappave[facei] += pX[facei]*pspkappave[facei];
                 pspalphatr[facei] = alphatr(speciei, pp[facei], pTt[facei]);
-                palphatr[facei] += pX[facei]*pspalphatr[facei];  
+                palphatr[facei] += pX[facei]*pspalphatr[facei];
                 pspalphave[facei] = alphave(speciei, pp[facei], pTt[facei], pTve[facei]);
                 palphave[facei] += pX[facei]*pspalphave[facei];
             }
@@ -172,7 +172,7 @@ void Foam::molarMR<ThermoType>::correct()
     kappaveMix = tempoKappave;
     alphaMix = tempoAlphatr;
     alphaveMix = tempoAlphave;
-} 
+}
 
 
 template<class ThermoType>
@@ -181,35 +181,35 @@ void Foam::molarMR<ThermoType>::write()
     if (writeMuSpecies_)
     {
         forAll(species(), speciei)
-        {  
-            spmu_[speciei].write();  
-        }      
-    } 
-    
+        {
+            spmu_[speciei].write();
+        }
+    }
+
     if (writeMuMixture_)
     {
-        thermo_.mu().write();     
+        thermo_.mu().write();
     }
-    
+
     if (writeKappaSpecies_)
     {
         forAll(species(), speciei)
-        {  
-            spkappatr_[speciei].write(); 
-            spkappave_[speciei].write(); 
-            //spalphatr_[speciei].write(); 
-            //spalphave_[speciei].write();  
-        }      
-    } 
-    
+        {
+            spkappatr_[speciei].write();
+            spkappave_[speciei].write();
+            //spalphatr_[speciei].write();
+            //spalphave_[speciei].write();
+        }
+    }
+
     if (writeKappaMixture_)
     {
-        thermo_.kappatr().write(); 
+        thermo_.kappatr().write();
         thermo_.kappave().write();
-        //thermo_.alphatr().write(); 
-        //thermo_.alphave().write();     
-    }   
-} 
+        //thermo_.alphatr().write();
+        //thermo_.alphave().write();
+    }
+}
 
 
 template<class ThermoType>
@@ -224,6 +224,6 @@ bool Foam::molarMR<ThermoType>::read()
         return false;
     }
 }
-   
+
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

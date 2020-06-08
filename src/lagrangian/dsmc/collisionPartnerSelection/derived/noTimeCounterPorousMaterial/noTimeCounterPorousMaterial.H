@@ -23,7 +23,7 @@ License
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 Class
- 
+
 
 Description
 
@@ -70,9 +70,9 @@ public:
 
     //- Runtime type information
     TypeName("noTimeCounterPorousMaterial");
-    
+
     dictionary propsDict_;
-    
+
     scalar porosity_;
     scalar temperature_;
 

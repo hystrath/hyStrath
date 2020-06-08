@@ -57,7 +57,7 @@ class rdf
         radialDistribution rdfDistr_;
 
         autoPtr<rdfModel> rdfModel_;
-        
+
         Time& time_;
 
     // Private Member Functions

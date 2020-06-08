@@ -105,7 +105,7 @@ public:
             const bool doReduce = true
         );
 
-        
+
         //- Construct bounding box as subset of the pointField.
         //  The indices could be from edge/triFace etc.
         //  Does parallel communication (doReduce = true)
@@ -167,28 +167,28 @@ public:
             //- Inflate box by factor*mag(span) in all dimensions
             void inflate(const scalar s);
 
-            // reset bounded box from two points 
+            // reset bounded box from two points
             // (no need for them to be ordered)
             void resetBoundedBox  //***
             (
                 const vector& startPoint,
                 const vector& endPoint
-            );  
-            
+            );
+
             //- expands box only in direction of min and max by offset s
             void expand(const scalar s);
-            
+
             void expandII(const scalar s);
             void contractII(const scalar s);
-            
+
         // Query
 
             //- Overlaps/touches boundingBox?
             inline bool overlaps(const boundedBox&) const;
-            
-            //- Just overlaps boundingBox? (does not include cells with just edges) 
+
+            //- Just overlaps boundingBox? (does not include cells with just edges)
             inline bool justOverlaps(const boundedBox&) const; //***
-            
+
             //- Contains point? (inside or on edge)
             inline bool contains(const point&) const;
 

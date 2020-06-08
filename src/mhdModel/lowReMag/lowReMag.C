@@ -137,7 +137,7 @@ void lowReMag::calculateSigma()
 //- Calculating current density
 tmp<volVectorField> lowReMag::j(const volVectorField& U) const
 {
-    
+
     if(mesh_.time().outputTime())
     {
         conductivity_->sigma().write();
@@ -353,7 +353,7 @@ tmp<volTensorField> lowReMag::hallCorrection() const
    }
    Info<< "Returning Hall tensor\n" << endl;
    return hallParameter;
-   
+
 }
 
 //- Calculate MHD term for momentum equation

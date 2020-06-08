@@ -61,7 +61,7 @@ void Foam::constantTransport<Thermo>::constantTransport::write(Ostream& os) cons
     dictionary dictTransport("transport");
     dictTransport.subDict("constant").add("mu", mu_);
     os  << indent << dictTransport.dictName() << dictTransport;
-    
+
     dictionary dictSpecies("specie");
     dictSpecies.add("eta_s", eta_s_);
     os  << indent << dictSpecies.dictName() << dictSpecies;

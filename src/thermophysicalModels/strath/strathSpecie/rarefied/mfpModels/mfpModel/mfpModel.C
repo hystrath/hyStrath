@@ -55,7 +55,7 @@ Foam::mfpModel::mfpModel
             IOobject::NO_WRITE
         )
     ),
-    
+
     dictThermoPhy_
     (
         IOobject
@@ -68,14 +68,14 @@ Foam::mfpModel::mfpModel
         )
     ),
 
-    species_(species), 
-    p_(p),    
+    species_(species),
+    p_(p),
     Tt_(Tt)
-   
+
 {
     mfpModels_.setSize(species.size());
     mfp_.setSize(mfpModels_.size());
-    
+
     forAll(species, i)
     {
         mfpModels_.set
@@ -100,14 +100,14 @@ Foam::mfpModel::mfpModel
                mfpModels_[i].mfp()
             )
         );
-    } 
+    }
 }
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 void Foam::mfpModel::update()
-{    
+{
     for(label i=0; i<species_.size(); i++)
     {
         mfp_[i] = mfpModels_[i].mfp();

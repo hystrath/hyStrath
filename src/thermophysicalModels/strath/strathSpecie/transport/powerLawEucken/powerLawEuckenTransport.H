@@ -34,13 +34,13 @@ Description
     \f[
         \mu_k = mu_ref_k*(Tt/T_ref)^omega_k
     \f]
-    
+
     Thermal conductivity [W/m.K] - Eucken
     \f[
         \kappa_tr_k = 5/2*mu_k*Cv_tr_k
         \kappa_ve_k = mu_k*Cv_ve_k
     \f]
-    
+
     \kappa_ve_k amended to be eta_s_k*mu_k*Cv_ve_k
 
 SourceFiles
@@ -110,7 +110,7 @@ class powerLawEuckenTransport
 
         // Blottner's coefficients
         scalar dref_, omega_;
-        
+
         //- Factor in vibrational thermal conductivity kappave
         // Hard-sphere: (7-2*omega_m)/5 with omega_m = 0.5
         // Default value: 1.2
@@ -162,19 +162,19 @@ public:
 
         //- Thermal conductivity, translational mode [W/mK]
         inline scalar kappatrans(const scalar p, const scalar Tt) const;
-        
+
         //- Thermal conductivity, rotational mode [W/mK]
         inline scalar kappar(const scalar p, const scalar Tr) const;
-        
+
         //- Thermal conductivity, trans-rotational mode [W/mK]
         inline scalar kappatr(const scalar p, const scalar Tt) const;
-        
+
         //- Thermal conductivity, vib-electronic mode [W/mK]
         inline scalar kappave(const scalar p, const scalar Tt, const scalar Tve) const;
-        
+
         //- Thermal diffusivity, trans-rotational mode [kg/ms]
         inline scalar alphatr(const scalar p, const scalar Tt) const;
-        
+
         //- Thermal diffusivity, vib-electronic mode [kg/ms]
         inline scalar alphave(const scalar p, const scalar Tt, const scalar Tve) const;
 

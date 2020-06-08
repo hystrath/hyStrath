@@ -67,12 +67,12 @@ private:
 
     // Private data
         dictionary propsDict_;
-        
+
     labelList typeIds_;  // I Added.
     scalarField moleFractions_; // I Added.
     label infoCounter_;
     scalar inletPressure_;
-    scalar inletTemperature_;               
+    scalar inletTemperature_;
     scalar n_; // inlet number density
     scalarField cellVolume_;
     List <scalarField> accumulatedParcelsToInsert_;   // I Added.
@@ -150,7 +150,7 @@ public:
 
     //- update properties from a modified dictionary
     void updateProperties(const dictionary&);
-    
+
     //reset fields if mesh has changed
     void setNewBoundaryFields();
 

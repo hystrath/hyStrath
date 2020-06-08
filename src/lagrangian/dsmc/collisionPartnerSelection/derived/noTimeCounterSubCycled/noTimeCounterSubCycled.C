@@ -97,15 +97,15 @@ void noTimeCounterSubCycled::collide()
     const List<DynamicList<dsmcParcel*> > cellOccupancy = cloud_.cellOccupancy();
 
     const polyMesh& mesh = cloud_.mesh();
-    
+
     for(label ii = 0; ii < nSubCycles_; ii++)
     {
         forAll(cellOccupancy, cellI)
         {
             const scalar deltaT = cloud_.deltaTValue(cellI);
-            
+
             const DynamicList<dsmcParcel*>& cellParcels(cellOccupancy[cellI]);
-            
+
             const scalar& cellVolume = mesh.cellVolumes()[cellI];
 
             const label nC(cellParcels.size());
@@ -148,7 +148,7 @@ void noTimeCounterSubCycled::collide()
                     cloud_.collisionSelectionRemainder()[cellI]
                     + 0.5*nC*(nC - 1)*cloud_.nParticles(cellI, true)*sigmaTcRMax*(deltaT/nSubCycles_)
                     /cellVolume;
-                
+
                 label nCandidates(selectedPairs);
 
                 cloud_.collisionSelectionRemainder()[cellI] = selectedPairs - nCandidates;
@@ -177,7 +177,7 @@ void noTimeCounterSubCycled::collide()
                         // another from the same cell.  If the same candidate is
                         // chosen, choose again. If two electrons are chosen,
                         // choose again.
-                        
+
                         do
                         {
                             //candidateQ = subCellPs[rndGen_.position<label>(0, nSC - 1)]; OLD
@@ -224,9 +224,9 @@ void noTimeCounterSubCycled::collide()
 
                     chargeP = cloud_.constProps(parcelP.typeId()).charge();
                     chargeQ = cloud_.constProps(parcelQ.typeId()).charge();
-                    
+
                     //do not allow electron-electron collisions
-                    
+
                     if(!(chargeP == -1 && chargeQ == -1))
                     {
                         scalar sigmaTcR = cloud_.binaryCollision().sigmaTcR
@@ -234,7 +234,7 @@ void noTimeCounterSubCycled::collide()
                             parcelP,
                             parcelQ
                         );
-                        
+
 //                         Pout << "sigmaTcR = " << sigmaTcR << endl;
 
                         // Update the maximum value of sigmaTcR stored, but use the
@@ -276,7 +276,7 @@ void noTimeCounterSubCycled::collide()
                                     (
                                         parcelP,
                                         parcelQ
-                                    );                                    
+                                    );
                                 }
                                 // if reaction unsuccessful use conventional collision model
                                 if(cloud_.reactions().reactions()[rMId]->relax())
@@ -305,7 +305,7 @@ void noTimeCounterSubCycled::collide()
                 }
             }
         }
-        
+
         cloud_.reBuildCellOccupancy();
     }
 
@@ -314,9 +314,9 @@ void noTimeCounterSubCycled::collide()
     reduce(collisionCandidates, sumOp<label>());
 
     cloud_.sigmaTcRMax().correctBoundaryConditions();
-    
+
     infoCounter_++;
-    
+
     if(infoCounter_ >= cloud_.nTerminalOutputs())
     {
         if (collisionCandidates)
@@ -326,13 +326,13 @@ void noTimeCounterSubCycled::collide()
 //                 << "    Acceptance rate                 = "
 //                 << scalar(collisions)/scalar(collisionCandidates) << nl
                 << endl;
-                
+
             infoCounter_ = 0;
         }
         else
         {
             Info<< "    No collisions" << endl;
-            
+
             infoCounter_ = 0;
         }
     }

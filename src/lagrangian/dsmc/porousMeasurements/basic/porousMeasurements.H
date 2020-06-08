@@ -53,15 +53,15 @@ class porousMeasurements
 {
 
 protected:
-    
+
     // Protected data
-    
-        
-        
+
+
+
 private:
 
     // Private Member Functions
-    
+
         //- Disallow default bitwise copy construct
         porousMeasurements(const porousMeasurements&);
 
@@ -76,8 +76,8 @@ public:
 
     //- Runtime type information
     TypeName("porousMeasurements");
-    
-    
+
+
     // Declare run-time constructor selection table
     #ifndef SWIG
     declareRunTimeSelectionTable
@@ -93,8 +93,8 @@ public:
         (t, mesh, cloud)
     );
     #endif
-    
-    
+
+
     // Constructors
 
         //- Constructor
@@ -104,10 +104,10 @@ public:
             const polyMesh& mesh,
             dsmcCloud& cloud
         );
-        
 
-    // Selectors	  
-  
+
+    // Selectors
+
         //- Return a reference to the selected porous measurements model
         static autoPtr<porousMeasurements> New
         (
@@ -115,8 +115,8 @@ public:
             const polyMesh& mesh,
             dsmcCloud& cloud
         );
-        
-        
+
+
     // Destructor
 
         virtual ~porousMeasurements();
@@ -125,45 +125,45 @@ public:
     // Member Functions
 
       // Access
-      
-        
-        
+
+
+
       // Check
-      
+
         //- Check the validity of the porous measurement inputs present in
         //  constant/dsmcProperties and assign inputs to data members if
         //  correct.
         virtual void checkPorousMeasurementsInputs() = 0;
-      
-      
+
+
       // Edit
-      
+
         //- Update function
         virtual void update() = 0;
-        
+
         //- Effect of a specular interaction on porous medium measurements
         virtual void specularInteraction(dsmcParcel& p, const vector& nw) = 0;
-        
+
         //- Effect of a diffuse interaction on porous medium measurements
         virtual void diffuseInteraction(dsmcParcel& p) = 0;
-        
-        //- Effect of a cyclic membrane interaction on porous medium 
+
+        //- Effect of a cyclic membrane interaction on porous medium
         //  measurements
         virtual void cyclicMembraneInteraction
         (
             dsmcParcel& p,
             const vector& orgPos
         ) {}
-        
+
         //- Effect of a deletion patch on porous medium measurements
         virtual void deletionInteraction(dsmcParcel& p, const label patchId) {}
-        
+
         //- Tracer selection for porous medium measurements
         virtual void additionInteraction(dsmcParcel& p, const label patchId) {}
 
 
       // Write
-      
+
         //- Write porous measurements info
         virtual void writePorousMeasurementsInfo() const = 0;
 

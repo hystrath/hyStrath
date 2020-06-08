@@ -27,7 +27,7 @@ Class
 
 Description
     BourdonVervisch e-V Relaxation model.
-    
+
 SourceFiles
     BourdonVervisch.C
 
@@ -64,19 +64,19 @@ class BourdonVervisch
 
         // Labels of the species
         label species1_;
-        
+
         // Name of the species
         word name1_;
-        
+
         // Temperatures for the linear interpolation
         scalar Tlow_, Tmed_, Thigh_;
-        
+
         // Coefficients
         FixedList<scalar,2> BV1_, BV2_, BV3_;
-        
-        
+
+
     // Private member functions
-    
+
         FixedList<scalar,2> findTemperatureRange
         (
             const scalar T
@@ -92,14 +92,14 @@ class BourdonVervisch
                 tRange[1] = Thigh_;
             }
             return tRange;
-        } 
-        
+        }
+
         scalar boundedLinearInterpolation
         (
             const scalar xpt,
-            const scalar x1, 
+            const scalar x1,
             const scalar x2,
-            const scalar y1, 
+            const scalar y1,
             const scalar y2
         ) const
         {
@@ -115,8 +115,8 @@ class BourdonVervisch
             {
                 return y1 + (xpt-x1)*(y2-y1)/(x2-x1);
             }
-        }     
-        
+        }
+
 
 public:
 
@@ -148,7 +148,7 @@ public:
 
         //- V-T relaxation time [s]
         virtual tmp<volScalarField> taueV() const;
-         
+
         //- V-T relaxation time for patch [s]
         virtual tmp<scalarField> taueV
         (
@@ -156,7 +156,7 @@ public:
             const scalarField& p,
             const scalarField& Tv
         ) const;
-        
+
 };
 
 

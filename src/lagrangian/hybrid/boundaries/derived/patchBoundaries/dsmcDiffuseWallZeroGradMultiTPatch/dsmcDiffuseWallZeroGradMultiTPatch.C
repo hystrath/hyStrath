@@ -73,7 +73,7 @@ dsmcDiffuseWallZeroGradMultiTPatch::~dsmcDiffuseWallZeroGradMultiTPatch()
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 void dsmcDiffuseWallZeroGradMultiTPatch::initialConfiguration()
 {
-    
+
 }
 
 void dsmcDiffuseWallZeroGradMultiTPatch::calculateProperties()
@@ -84,17 +84,17 @@ void dsmcDiffuseWallZeroGradMultiTPatch::calculateProperties()
 void dsmcDiffuseWallZeroGradMultiTPatch::controlParticle(dsmcParcel& p, dsmcParcel::trackingData& td)
 {
     measurePropertiesBeforeControl(p);
-    
+
 //    scalar currentTime = cloud_.mesh().time().value();
-    
+
 //     Info << "currentTime = " << currentTime << endl;
 
     vector& U = p.U();
 
     scalar& ERot = p.ERot();
-    
+
     labelList& vibLevel = p.vibLevel();
-    
+
     label& ELevel = p.ELevel();
 
     const label& typeId = p.typeId();
@@ -118,7 +118,7 @@ void dsmcDiffuseWallZeroGradMultiTPatch::controlParticle(dsmcParcel& p, dsmcParc
     scalar mass = cloud_.constProps(typeId).mass();
 
     scalar rotationalDof = cloud_.constProps(typeId).rotationalDegreesOfFreedom();
-    
+
     scalar vibrationalDof = cloud_.constProps(typeId).nVibrationalModes();
 
     if (zeroGradTt_)
@@ -173,12 +173,12 @@ void dsmcDiffuseWallZeroGradMultiTPatch::controlParticle(dsmcParcel& p, dsmcParc
     {
         vibLevel = cloud_.equipartitionVibrationalEnergyLevel
             (
-                Tvib, 
-                vibrationalDof, 
+                Tvib,
+                vibrationalDof,
                 typeId
             );
     }
-    
+
     if(not zeroGradTe_)
     {
         ELevel = cloud_.equipartitionElectronicLevel

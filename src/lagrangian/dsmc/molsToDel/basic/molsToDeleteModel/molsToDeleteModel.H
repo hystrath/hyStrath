@@ -79,7 +79,7 @@ public:
     TypeName("molsToDeleteModel");
 
     // Declare runtime constructor selection table
-    
+
         declareRunTimeSelectionTable
         (
             autoPtr,
@@ -91,7 +91,7 @@ public:
             ),
             (cloud, dict)
         );
-   
+
     // Constructors
 
         //- Construct from components
@@ -117,7 +117,7 @@ public:
 
 
     // Member Functions
-    
+
       virtual void update();
 
 

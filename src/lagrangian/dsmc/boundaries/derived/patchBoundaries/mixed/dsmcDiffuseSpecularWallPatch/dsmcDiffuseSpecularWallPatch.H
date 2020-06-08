@@ -59,20 +59,20 @@ class dsmcDiffuseSpecularWallPatch
 private:
 
     // Private data
-        
+
         dictionary propsDict_;
-        
+
 
 protected:
 
     // Protected data
-    
+
         //- Fraction of wall interactions that are diffuse
         scalar diffuseFraction_;
-    
-    
+
+
     // Protected member functions
-    
+
         void setProperties();
 
 public:

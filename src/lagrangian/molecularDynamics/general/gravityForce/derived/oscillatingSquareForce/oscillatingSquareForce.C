@@ -107,18 +107,18 @@ void oscillatingSquareForce::updateForce()
 
     scalar time = (currentTime_-initialTime/*+offsetTime_*/);
 
-//     Info << "(floor) label(0.99): " << label(0.99) 
+//     Info << "(floor) label(0.99): " << label(0.99)
 //          << ", (ceil) label(0.99+0.5)" << label(0.99+0.5)
 //          << endl;
-// 
+//
 //     Info << "(floor) label(-0.99): " << label(-0.99)
 //          << ", (ceil) label(-0.99-0.5)" << label(-0.99-0.5)
 //          << endl;
 
    // general
-    
+
 //     Info << "(floor) label(0.99): " << label(0.99) << ", (ceil) pos: "
-//          << label(0.99+(sign(0.99)*0.5)) << ", (ceil) neg: " 
+//          << label(0.99+(sign(0.99)*0.5)) << ", (ceil) neg: "
 //          << label(-0.99+(sign(-0.99)*0.5))
 //          << endl;
 
@@ -167,14 +167,14 @@ void oscillatingSquareForce::updateProperties
 // {
 //     os  << d.binWidth_
 //         << static_cast<const Map<label>&>(d);
-// 
+//
 //     // Check state of Ostream
 //     os.check
 //     (
 //         "Ostream& operator<<(Ostream&, "
 //         "const oscillatingSquareForce&)"
 //     );
-// 
+//
 //     return os;
 // }
 

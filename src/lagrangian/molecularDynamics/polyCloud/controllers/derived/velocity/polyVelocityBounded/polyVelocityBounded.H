@@ -26,11 +26,11 @@ Class
     polyVelocityBounded
 
 Description
-    simple velocity controller in a zone 
+    simple velocity controller in a zone
 
     parallelised
 
-    recommendation: control and measure properties every time step, ensure  
+    recommendation: control and measure properties every time step, ensure
                     size of zone.
 
 SourceFiles
@@ -73,9 +73,9 @@ private:
 
         //- ids of mols
         List<label> molIds_;
-        
+
         boundedBox bb_;
-        
+
 //         scalar avMass_;
 
         // - relaxation parameter
@@ -84,9 +84,9 @@ private:
         scalar accumulatedTime_;
         scalar startTime_;
         scalar endTime_;
-        
+
         vector velocity_;
-        
+
         bool componentControl_;
         bool X_;
         bool Y_;
@@ -124,7 +124,7 @@ public:
 
     // Member Functions
 
-        
+
         //- create an initial configuration
         void initialConfiguration();
 
@@ -136,20 +136,20 @@ public:
         (
             polyMolecule* molI,
             polyMolecule* molJ
-        );        
+        );
         void controlAfterForces();
         void controlAfterVelocityII();
-        
+
         //- calculate any required properties (end of time-step)
-        void calculateProperties(); 
-        
+        void calculateProperties();
+
         //- output data (optional)
         void output
         (
-            const fileName& fixedPathName, 
+            const fileName& fixedPathName,
             const fileName& timePath
         );
-        
+
         //- update properties from a modified dictionary (optional)
         void updateProperties(const dictionary&);
 

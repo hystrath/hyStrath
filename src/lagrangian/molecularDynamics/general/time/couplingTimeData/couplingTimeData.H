@@ -82,7 +82,7 @@ class couplingTimeData
 
         bool decoupledScheme_;
         bool molecularSwitch_;
-        
+
 
         bool runSequential_;
 
@@ -165,29 +165,29 @@ public:
 //         const bool& samplingTime() const;
 //         const bool& averagingTime() const;
 // //         const bool& calcPropTime() const;
-// 
+//
 //         //- return the number of ...
 //         const label& nSamples() const;
 //         const label& nAverages() const;
 // //         const label& nCalcProp() const;
-// 
+//
 //         const dimensionedScalar& nAvTimeSteps() const;
-// 
+//
 //         const label& totalNSampSteps() const;
 //         const label& totalNAvSteps() const;
 // //         const label& totalNCalcSteps() const;
-// 
+//
 //         const label& averagingTimeIndex() const;
 //         const label& samplingTimeIndex() const;
 // //         const label& calcTimeIndex() const;
-// 
+//
 //         const timeInterval& mdTimeInterval() const;
 //         const timeInterval& sampleTimeInterval() const;
 //         const timeInterval& averageTimeInterval() const;
 // //         const timeInterval& calcPropTimeInterval() const;
-//        
+//
 // //         timeInterval& calcPropTimeInterval();
-// 
+//
 //         const scalarField& averagingTimes() const;
 //         const scalarField& samplingTimes() const;
 

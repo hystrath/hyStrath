@@ -62,7 +62,7 @@ label sphericalBins::findBin(const scalar& r)
 
         scalar rLimit1 = magRadii_[n] - 0.5*binWidths_[n];
         scalar rLimit2 = magRadii_[n] + 0.5*binWidths_[n];
-    
+
         if((r >= rLimit1) && (r < rLimit2))
         {}
         else
@@ -199,7 +199,7 @@ label sphericalBins::isPointWithinBin
     if(rSIMag <= radius_)
     {
         label n = findBin(rSIMag);
-    
+
         if
         (
             n != -1
@@ -216,7 +216,7 @@ label sphericalBins::isPointWithinBin
 scalarField sphericalBins::binPositions()
 {
 //     scalarField positions(nBins_, 0.0);
-// 
+//
 //     forAll(positions, i)
 //     {
 //         positions[i] = 0.5*binWidth_ + scalar(i)*binWidth_;

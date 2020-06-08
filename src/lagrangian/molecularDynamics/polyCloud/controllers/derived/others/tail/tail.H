@@ -66,37 +66,37 @@ private:
         dictionary propsDict_;
 
         List<label> molIds_;
-        
+
 //         List <label> trackingNumbers_;
-        
+
         label trackingNumber_;
-        
+
         vector centre_;
         scalar a_;
         scalar b_;
-        
-        // time 
+
+        // time
         scalar t_;
         scalar deltaTMD_;
-        
+
         scalar tI_;
         scalar deltaT_; // a smaller deltaT
-        
+
         scalar relaxationTime_;
-        
+
         vector startPoint_;
-        
+
         vector rI_;
         vector deltaR_;
 //         List< List <scalar> > xs_;
-        
+
 //         List< List <scalar> > ys_;
 
-        
+
     // Private Member Functions
-        
+
          void getPosition();
-        
+
 public:
 
     //- Runtime type information
@@ -118,7 +118,7 @@ public:
 
 
     // Member Functions
-        
+
         //- create an initial configuration
         void initialConfiguration();
 
@@ -130,20 +130,20 @@ public:
         (
             polyMolecule* molI,
             polyMolecule* molJ
-        );        
+        );
         void controlAfterForces();
         void controlAfterVelocityII();
-        
+
         //- calculate any required properties (end of time-step)
-        void calculateProperties(); 
-        
+        void calculateProperties();
+
         //- output data (optional)
         void output
         (
-            const fileName& fixedPathName, 
+            const fileName& fixedPathName,
             const fileName& timePath
         );
-        
+
         //- update properties from a modified dictionary (optional)
         void updateProperties(const dictionary&);
 };

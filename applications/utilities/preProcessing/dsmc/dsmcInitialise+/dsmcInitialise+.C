@@ -60,12 +60,12 @@ int main(int argc, char *argv[])
     dsmcCloud dsmc(runTime, "dsmc", mesh, dsmcInitialiseDict, true);
 
 //     label totalMolecules = dsmc.size();
-// 
+//
 //     if (Pstream::parRun())
 //     {
 //         reduce(totalMolecules, sumOp<label>());
 //     }
-// 
+//
 //     Info<< nl << "Total number of molecules added: " << totalMolecules
 //         << nl << endl;
 

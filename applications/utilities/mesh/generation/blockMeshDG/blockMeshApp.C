@@ -34,7 +34,7 @@ Description
     Extension of the standard block mesh tool to allow for double grading / geometric refinement by using negative refinement coefficients in the blockMeshDict description, e.g. :
     simpleGrading (-4 1 1)
 
-    Credits to 
+    Credits to
     * Shui Pei for the original patch
     * User dancfd (http://www.cfd-online.com/Forums/members/dancfd.html) on the CFD-Online forums for the upgrade to version 2.0.x
 

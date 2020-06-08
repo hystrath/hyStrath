@@ -73,7 +73,7 @@ void simplifiedBernoulliTrialsTAS::measureLocalDensity()
 {
     const List< DynamicList<dsmcParcel*> >& cellOccupancy
         = cloud_.cellOccupancy();
-    
+
     forAll(cellOccupancy, cell)
     {
         const List<dsmcParcel*>& parcelsInCell = cellOccupancy[cell];
@@ -159,15 +159,15 @@ void simplifiedBernoulliTrialsTAS::initialConfiguration()
         {
             scalar deltaLCubic = Foam::pow(bbVol, (1.0/3.0) );
             scalar spacingCubic = deltaLCubic/Foam::pow(nTot, (1.0/3.0) );
-    
+
             scalar nX = bb.span().x()/spacingCubic;
             scalar nY = bb.span().y()/spacingCubic;
             scalar nZ = bb.span().z()/spacingCubic;
-    
+
             nSlices_[c][0] = label(nX+0.5);
             nSlices_[c][1] = label(nY+0.5);
             nSlices_[c][2] = label(nZ+0.5);
-    
+
             // test for zero slices (1 is the bare minimum) and modfiy
             if(nSlices_[c][0] == 0)
             {
@@ -194,7 +194,7 @@ void simplifiedBernoulliTrialsTAS::initialConfiguration()
 
 void simplifiedBernoulliTrialsTAS::collide()
 {
-	
+
 	// Measure instantaneous density and reset sub-cells
     if(counter_ >= nSteps_)
     {
@@ -204,7 +204,7 @@ void simplifiedBernoulliTrialsTAS::collide()
 
     counter_++;
 
-	
+
 	if (!cloud_.binaryCollision().active())
     {
         return;
@@ -213,7 +213,7 @@ void simplifiedBernoulliTrialsTAS::collide()
     label collisionCandidates = 0;
 
     label collisions = 0;
-	
+
 	  const List<DynamicList<dsmcParcel*> > cellOccupancy = cloud_.cellOccupancy();
 
     const polyMesh& mesh = cloud_.mesh();
@@ -226,7 +226,7 @@ void simplifiedBernoulliTrialsTAS::collide()
     forAll(cellOccupancy, cellI)
     {
         const scalar deltaT = cloud_.deltaTValue(cellI);
-        
+
         const DynamicList<dsmcParcel*>& cellParcels(cellOccupancy[cellI]);
 
         label nC(cellParcels.size());
@@ -244,33 +244,33 @@ void simplifiedBernoulliTrialsTAS::collide()
                 nX = label((pS & vector(1, 0, 0))/binWidths_[cellI].x());
                 nY = label((pS & vector(0, 1, 0))/binWidths_[cellI].y());
                 nZ = label((pS & vector(0, 0, 1))/binWidths_[cellI].z());
-        
+
                 subCell = nX + nY*nSlices_[cellI][0] + nZ*nSlices_[cellI][0]*nSlices_[cellI][1];
-        
+
                 subCells[subCell].append(i);
-        
+
             }
 
             scalar prob1 = (cloud_.nParticles(cellI, true)*deltaT)/(mesh.cellVolumes()[cellI]/nSubCells_[cellI]);
             label k = -1;
             label candidateP = -1;
             label candidateQ = -1;
-        
+
             // loop over sub cells
             forAll(subCells, i)
             {
                 subCells[i].shrink();
                 label nCS = subCells[i].size();
-                
+
                 for(label p = 0 ; p < nCS-1 ; p++)
-                {                
+                {
                     // Select the first collision candidate
                     candidateP = p;
-                
+
                     k = nCS - p - 1;
                     //candidateQ = p + rndGen_.position<label>(1, k); OLD
                     candidateQ = p + cloud_.randomLabel(1, k);
-                    
+
                     dsmcParcel& parcelP = *cellParcels[subCells[i][candidateP]];
                     dsmcParcel& parcelQ = *cellParcels[subCells[i][candidateQ]];
 
@@ -279,7 +279,7 @@ void simplifiedBernoulliTrialsTAS::collide()
                         parcelP,
                         parcelQ
                     );
-                
+
                     scalar Probability = k*prob1*sigmaTcR*0.5;
 
     // 					if (Probability > rndGen_.sample01<scalar>())
@@ -289,7 +289,7 @@ void simplifiedBernoulliTrialsTAS::collide()
     // 							parcelP,
     // 							parcelQ
     // 						);
-    // 
+    //
     // 						collisions++;
     // 					}
                     if (Probability > rndGen_.sample01<scalar>())
@@ -299,7 +299,7 @@ void simplifiedBernoulliTrialsTAS::collide()
                         // find which reaction model parcel p and q should use
                         label rMId = cloud_.reactions().returnModelId(parcelP, parcelQ);
 
-    //                             Info << " parcelP id: " <<  parcelP.typeId() 
+    //                             Info << " parcelP id: " <<  parcelP.typeId()
     //                                 << " parcelQ id: " << parcelQ.typeId()
     //                                 << " reaction model: " << rMId
     //                                 << endl;
@@ -326,7 +326,7 @@ void simplifiedBernoulliTrialsTAS::collide()
                                 (
                                     parcelP,
                                     parcelQ
-                                );                                    
+                                );
                             }
                             // if reaction unsuccessful use conventional collision model
                             if(cloud_.reactions().reactions()[rMId]->relax())
@@ -350,7 +350,7 @@ void simplifiedBernoulliTrialsTAS::collide()
                                 cellI
                             );
                         }
-                        
+
                         collisions++;
                     }
                 }

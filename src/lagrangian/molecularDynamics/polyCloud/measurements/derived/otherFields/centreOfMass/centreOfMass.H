@@ -26,13 +26,13 @@ Class
     centreOfMass
 
 Description
-    Instantaneous measurements of mass flow rate (here instantaneous is defined 
+    Instantaneous measurements of mass flow rate (here instantaneous is defined
     at every MD timestep)
-    
-    Apply to an existing surface 
-    
-    
-    
+
+    Apply to an existing surface
+
+
+
 SourceFiles
     centreOfMass.C
 
@@ -69,7 +69,7 @@ private:
 
         //- subDictionary containing the properties
         dictionary propsDict_;
-    
+
         word fieldName_;
 
         fileName pathName_;

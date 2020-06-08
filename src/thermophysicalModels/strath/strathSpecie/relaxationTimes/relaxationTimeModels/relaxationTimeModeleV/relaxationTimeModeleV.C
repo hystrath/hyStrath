@@ -34,17 +34,17 @@ License
 
 namespace Foam
 {
-  
-// * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //  
-  
+
+// * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
+
     defineTypeNameAndDebug(relaxationTimeModeleV, 0);
     defineRunTimeSelectionTable(relaxationTimeModeleV, fvMesh);
 }
 
 
-// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //  
+// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
-  
+
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 Foam::relaxationTimeModeleV::relaxationTimeModeleV
@@ -57,17 +57,17 @@ Foam::relaxationTimeModeleV::relaxationTimeModeleV
     (
         thermo.twoTemperatureDictionary()
     ),
-    
-    mesh_(thermo.Tt().mesh()), 
+
+    mesh_(thermo.Tt().mesh()),
     thermo_(thermo),
     turbulence_(turbulence)
-    
-{  
+
+{
     const word dictThermoPhy
     (
         fileName(thermo.lookup("foamChemistryThermoFile")).name()
     );
-    
+
     // Construct the relaxation time model
     taueViModel_.set
     (
@@ -75,19 +75,19 @@ Foam::relaxationTimeModeleV::relaxationTimeModeleV
         (
             IOdictionary::name(),
             dictThermoPhy,
-            species(), 
-            thermo.composition().pP("e-"), 
+            species(),
+            thermo.composition().pP("e-"),
             thermo.composition().Tv("e-")
         )
-    ); 
-    
+    );
+
     QeV_.setSize(solvedVibEqSpecies().size());
-        
+
     forAll(solvedVibEqSpecies(), speciei)
     {
         QeV_.set
         (
-            speciei, 
+            speciei,
             new volScalarField
             (
                 IOobject
@@ -127,7 +127,7 @@ Foam::relaxationTimeModeleV::eVRelaxationSource()
             dimensionedScalar("QeV", dimensionSet(1, -1, -3, 0, 0), 0.0)
         )
     );
-    
+
     return tQeV;
 }*/
 

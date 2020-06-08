@@ -74,17 +74,17 @@ void dsmcMeshFill::setInitialConfiguration()
     (
         readScalar(dsmcInitialiseDict_.lookup("translationalTemperature"))
     );
-    
+
     const scalar rotationalTemperature
     (
         readScalar(dsmcInitialiseDict_.lookup("rotationalTemperature"))
     );
-    
+
     const scalar vibrationalTemperature
     (
         readScalar(dsmcInitialiseDict_.lookup("vibrationalTemperature"))
     );
-    
+
     const scalar electronicTemperature
     (
         readScalar(dsmcInitialiseDict_.lookup("electronicTemperature"))
@@ -175,14 +175,14 @@ void dsmcMeshFill::setInitialConfiguration()
                         rotationalTemperature,
                         cP.rotationalDegreesOfFreedom()
                     );
-            
+
                     labelList vibLevel = cloud_.equipartitionVibrationalEnergyLevel
                     (
                         vibrationalTemperature,
                         cP.nVibrationalModes(),
                         typeId
                     );
-                    
+
                     label ELevel = cloud_.equipartitionElectronicLevel
                     (
                         electronicTemperature,
@@ -191,12 +191,12 @@ void dsmcMeshFill::setInitialConfiguration()
                     );
 
                     U += velocity;
-                    
+
                     label newParcel = -1;
-                    
+
                     label classification = 0;
-                    
-                    const scalar& RWF = 
+
+                    const scalar& RWF =
                         cloud_.coordSystem().recalculateRWF(cellI);
 
                     cloud_.addNewParcel

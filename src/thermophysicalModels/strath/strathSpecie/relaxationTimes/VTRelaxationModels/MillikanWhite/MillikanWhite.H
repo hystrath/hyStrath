@@ -27,7 +27,7 @@ Class
 
 Description
     MillikanWhite V-T Relaxation model.
-    
+
 SourceFiles
     MillikanWhite.C
 
@@ -58,10 +58,10 @@ class MillikanWhite
     // Private data
 
         // Coefficients
-        scalar A12_, B12_; 
-        
+        scalar A12_, B12_;
+
         // Offset term in the exponential
-        scalar offset_;     
+        scalar offset_;
 
 
 public:
@@ -98,7 +98,7 @@ public:
 
         //- V-T relaxation time [s]
         virtual tmp<volScalarField> tauVT() const;
-         
+
         //- V-T relaxation time for patch [s]
         virtual tmp<scalarField> tauVT
         (
@@ -106,9 +106,9 @@ public:
             const scalarField& p,
             const scalarField& Tt,
             const PtrList<scalarField>& Tv,
-            const PtrList<scalarField>& nD            
+            const PtrList<scalarField>& nD
         ) const;
-        
+
 };
 
 

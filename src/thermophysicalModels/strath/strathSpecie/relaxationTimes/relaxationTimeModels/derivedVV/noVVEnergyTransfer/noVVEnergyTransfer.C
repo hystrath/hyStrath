@@ -31,12 +31,12 @@ License
 
 template<class ThermoType>
 void Foam::noVVEnergyTransfer<ThermoType>::updateCoefficients()
-{     
+{
     forAll(species(), i)
     {
         tauVV_[i] = dimensionedScalar("GREAT", dimTime, Foam::GREAT);
     }
-} 
+}
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
@@ -49,20 +49,20 @@ Foam::noVVEnergyTransfer<ThermoType>::noVVEnergyTransfer
 )
 :
     relaxationTimeModelVV(thermo, turbulence),
-    
+
     speciesThermo_
     (
         dynamic_cast<const multi2ComponentMixture<ThermoType>&>
             (this->thermo_).speciesData()
     )
-{    
+{
     tauVV_.setSize(solvedVibEqSpecies().size()); // NEW VINCENT 06/08/2016
-    
+
     forAll(tauVV_, speciei)
     {
         tauVV_.set
         (
-            speciei, 
+            speciei,
             new volScalarField
             (
                 IOobject
@@ -77,7 +77,7 @@ Foam::noVVEnergyTransfer<ThermoType>::noVVEnergyTransfer
                 dimensionedScalar("tauVV", dimTime, 0.0)
             )
         );
-    } 
+    }
 }
 
 
@@ -85,8 +85,8 @@ Foam::noVVEnergyTransfer<ThermoType>::noVVEnergyTransfer
 
 template<class ThermoType>
 void Foam::noVVEnergyTransfer<ThermoType>::correct()
-{}  
-    
+{}
+
 
 template<class ThermoType>
 bool Foam::noVVEnergyTransfer<ThermoType>::read()
@@ -100,6 +100,6 @@ bool Foam::noVVEnergyTransfer<ThermoType>::read()
         return false;
     }
 }
-   
+
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

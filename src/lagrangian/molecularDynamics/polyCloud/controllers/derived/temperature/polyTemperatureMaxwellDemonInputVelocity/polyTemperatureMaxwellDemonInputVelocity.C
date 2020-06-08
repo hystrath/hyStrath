@@ -63,7 +63,7 @@ polyTemperatureMaxwellDemonInputVelocity::polyTemperatureMaxwellDemonInputVeloci
 
     vector direction = propsDict_.lookup("velocityDirection");
     direction /= mag(direction);
-    
+
     const word distributionName = propsDict_.lookup("velocityDistributionName");
 
     fileName timePath(time_.time().system()/distributionName);
@@ -85,23 +85,23 @@ polyTemperatureMaxwellDemonInputVelocity::polyTemperatureMaxwellDemonInputVeloci
             << "Cannot open file " << file.name()
             << abort(FatalError);
     }
-    
+
     label nBins = velocity.size();
     nBins_ = nBins;
-    
+
     velocities_.setSize(nBins, vector::zero);
-    
+
     forAll(velocity, i)
     {
         velocities_[i]=velocity[i].second()*direction;
     }
-    
+
     binWidth_ = velocity[1].first()-velocity[0].first();
-    
+
     Info << "Binwidth = " << binWidth_ << endl;
-    
+
     zeroPoint_ = readScalar(propsDict_.lookup("zeroPoint"));
-    
+
     p_ = 1.0 - exp(-(time_.deltaT().value()/tauT_));
 
     Info << "probability of collisions:  " << p_ << endl;
@@ -115,7 +115,7 @@ polyTemperatureMaxwellDemonInputVelocity::polyTemperatureMaxwellDemonInputVeloci
     );
 
     molIds_ = ids.molIds();
-    
+
     Info << "mol ids = " << molIds_ << endl;
 }
 
@@ -158,13 +158,13 @@ void polyTemperatureMaxwellDemonInputVelocity::controlAfterVelocityII()
         if(findIndex(molIds_, mol().id()) != -1)
         {
             vector velocity = vector::zero;
-            
+
             scalar y = abs(zeroPoint_ - mol().position().y());
-            
+
             label index = label(y/binWidth_);
-            
+
 //             Info << "index = " << index << endl;
-            
+
             if( (index < nBins_) && (index >= 0) )
             {
                 velocity = velocities_[index];
@@ -173,8 +173,8 @@ void polyTemperatureMaxwellDemonInputVelocity::controlAfterVelocityII()
             {
                 Info << "WARNING out of bounds, y = " << y << endl;
             }
-            
-            
+
+
             if(molCloud_.rndGen().sample01<scalar>() <= p_)
             {
                 const scalar& massI = molCloud_.cP().mass(mol().id());
@@ -191,7 +191,7 @@ void polyTemperatureMaxwellDemonInputVelocity::controlAfterVelocityII()
                 mol().v() = velocity + molVel;
             }
         }
-    }  
+    }
 }
 
 
@@ -200,7 +200,7 @@ void polyTemperatureMaxwellDemonInputVelocity::calculateProperties()
 
 void polyTemperatureMaxwellDemonInputVelocity::output
 (
-    const fileName& fixedPathName, 
+    const fileName& fixedPathName,
     const fileName& timePath
 )
 {}

@@ -56,7 +56,7 @@ delFromMesh::delFromMesh
     typeIds_()
 {
 
-    // standard to reading typeIds ------------ 
+    // standard to reading typeIds ------------
     const List<word> molecules (propsDict_.lookup("typeIds"));
 
     DynamicList<word> moleculesReduced(0);
@@ -129,9 +129,9 @@ void delFromMesh::findMolsToDel()
 
     label molsKept = initialSize - molsToDel.size();
 
-    Info<< tab << " initial molecules: " <<  initialSize 
+    Info<< tab << " initial molecules: " <<  initialSize
         << ", molecules kept: " <<  molsKept
-        << ", molecules removed: " << molsToDel.size() 
+        << ", molecules removed: " << molsToDel.size()
         << endl;
 
 

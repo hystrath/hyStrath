@@ -68,7 +68,7 @@ protected:
 
         polyMoleculeCloud& molCloud_;
 
-        Time& time_; 
+        Time& time_;
 
     // Private Member Functions
 
@@ -90,7 +90,7 @@ public:
             ),
             (t, molCloud, dict)
         );
-   
+
     // Constructors
 
         //- Construct from components
@@ -121,12 +121,12 @@ public:
 
 
         //- create an initial configuration
-        virtual void init() = 0;                
-        
+        virtual void init() = 0;
+
         //- evolve MD simulation
         virtual void evolve() = 0;
 
-        
+
 };
 
 

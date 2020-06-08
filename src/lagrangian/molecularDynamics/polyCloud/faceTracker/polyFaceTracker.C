@@ -92,8 +92,8 @@ void polyFaceTracker::clean()
 
 
 
-// called during the move function 
-// 
+// called during the move function
+//
 void polyFaceTracker::updateFields
 (
     polyMolecule& mol
@@ -102,7 +102,7 @@ void polyFaceTracker::updateFields
     const label& crossedFace = mol.face();
     const label& molId = mol.id();
 //     const polyMolecule::constantProperties& constProp = molCloud_.constProps(molId);
-    
+
     const scalar& mass = molCloud_.cP().mass(molId);
     const vector& U = mol.v();
     const vector mom = mol.v()*mass;
@@ -118,12 +118,12 @@ void polyFaceTracker::updateFields
     vector nF = mesh_.faceAreas()[crossedFace];
     nF /= mag(nF);
 
-//     Pout << "Mol at pos = " << mol.position() 
+//     Pout << "Mol at pos = " << mol.position()
 //          << ", velocity = " << mol.v()
 //          << ", face normal = " << nF
 //          << ", face centre = " <<  mesh_.faceCentres()[crossedFace]
 //          << endl;
-         
+
     //- direction of polyMolecule trajectory with respect to the face normal
     scalar sgn = sign( U & mesh_.faceAreas()[crossedFace] ) * 1.0;
 
@@ -133,19 +133,19 @@ void polyFaceTracker::updateFields
     {
 /*        Pout<< "patchId = " << patchId
             << ", patchName = " << mesh_.boundaryMesh().names()[patchId]
-            << endl;  */      
-        
+            << endl;  */
+
         const polyPatch& patch = mesh_.boundaryMesh()[patchId];
 
         const label faceIndex = crossedFace - patch.start();
 
         //- cyclic patches
-        // NOTE: in a purely cyclic condition, a molecule is passed to the coupled *receiving* face 
+        // NOTE: in a purely cyclic condition, a molecule is passed to the coupled *receiving* face
         //       before calling this function.
         if (isA<cyclicPolyPatch>(patch))
         {
 //             Pout << "Cyclic" << endl;
-            
+
             label coupledFace = refCast<const cyclicPolyPatch>
             (
                 patch
@@ -154,9 +154,9 @@ void polyFaceTracker::updateFields
             molIdFlux_[molId][coupledFace] += 1.0;
             massIdFlux_[molId][coupledFace] += mass;
             absMomIdFlux_[molId][crossedFace] += mag(mom & nF);
-            momIdFlux_[molId][crossedFace] += mom;            
+            momIdFlux_[molId][crossedFace] += mom;
         }
-        
+
         //- processor patches
         // NOTE: properties are appended to the face of the *leaving* processor only.
         // normal vector points out from the domain.
@@ -165,7 +165,7 @@ void polyFaceTracker::updateFields
         if (isA<processorPolyPatch>(patch))
         {
 //             Pout << "Processor" << endl;
-            
+
             molIdFlux_[molId][crossedFace] += sgn*1.0;
             massIdFlux_[molId][crossedFace] += sgn*mass;
             absMomIdFlux_[molId][crossedFace] += mag(mom & nF);
@@ -175,7 +175,7 @@ void polyFaceTracker::updateFields
     else //- internal face
     {
 //         Info << "internal" << endl;
-        
+
         molIdFlux_[molId][crossedFace] += sgn*1.0;
         massIdFlux_[molId][crossedFace] += sgn*mass;
         absMomIdFlux_[molId][crossedFace] += mag(mom & nF);

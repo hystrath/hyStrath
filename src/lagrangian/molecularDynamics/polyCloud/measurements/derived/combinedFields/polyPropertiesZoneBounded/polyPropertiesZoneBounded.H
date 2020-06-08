@@ -69,7 +69,7 @@ SourceFiles
 #include "volFields.H"
 #include "polyMoleculeCloud.H"
 #include "distribution.H"
-#include "boundedBox.H" 
+#include "boundedBox.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -91,7 +91,7 @@ private:
 
         //- subDictionary containing the properties
         dictionary propsDict_;
-        
+
         fileName pathName_;
         fileName nameFile_;
 
@@ -102,7 +102,7 @@ private:
         List<boundedBox> boxes_;
 
         scalar totalVolume_;
-        
+
         scalar mols_;
         scalar mass_;
         vector mom_;
@@ -142,8 +142,8 @@ private:
         List<bool> outputField_;
 
         scalar nAvTimeSteps_;
-        bool resetAtOutput_;        
-        
+        bool resetAtOutput_;
+
     // Private Member Functions
 
         void setBoundBoxes();
@@ -184,8 +184,8 @@ public:
         (
             polyMolecule* molI,
             polyMolecule* molJ
-        ); 
-        
+        );
+
         void measureDuringForceComputationSite
         (
             polyMolecule* molI,
@@ -193,12 +193,12 @@ public:
             label sI,
             label sJ
         );
-        
+
         const propertyField& fields() const;
 
         //- write field
         void writeField();
-}; 		
+};
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

@@ -72,8 +72,8 @@ defineNamedTemplateTypeNameAndDebug
 Foam::AveragingMethod<Foam::vector>::
 adddictionaryConstructorToTable<Foam::AveragingMethods::Basic<Foam::vector>>
     addBasicvectorConstructorToTable_;
-    
-    
+
+
 // Linear interpolation
 defineNamedTemplateTypeNameAndDebug
 (
@@ -91,8 +91,8 @@ defineNamedTemplateTypeNameAndDebug
 );
 Foam::AveragingMethod<Foam::vector>::
 adddictionaryConstructorToTable<Foam::AveragingMethods::Linear<Foam::vector>>
-    addLinearvectorConstructorToTable_;    
-    
+    addLinearvectorConstructorToTable_;
+
 
 /*namespace Foam
 {
@@ -109,7 +109,7 @@ adddictionaryConstructorToTable<Foam::AveragingMethods::Linear<Foam::vector>>
             adddictionaryConstructorToTable<Basic<vector> >
             addBasicvectorConstructorToTable_;
 
-        // Dual interpolation // Chris note: not working 
+        // Dual interpolation // Chris note: not working
         //defineNamedTemplateTypeNameAndDebug(Dual<scalar>, 0);
         //AveragingMethod<scalar>::
         //    adddictionaryConstructorToTable<Dual<scalar> >
@@ -119,7 +119,7 @@ adddictionaryConstructorToTable<Foam::AveragingMethods::Linear<Foam::vector>>
         //AveragingMethod<vector>::
         //    adddictionaryConstructorToTable<Dual<vector> >
         //    addDualvectorConstructorToTable_;
-        
+
         // Linear interpolation
         defineNamedTemplateTypeNameAndDebug(Linear<scalar>, 0);
         AveragingMethod<scalar>::
@@ -130,7 +130,7 @@ adddictionaryConstructorToTable<Foam::AveragingMethods::Linear<Foam::vector>>
         AveragingMethod<vector>::
             adddictionaryConstructorToTable<Linear<vector> >
             addLinearvectorConstructorToTable_;
-    
+
 }*/
 
 

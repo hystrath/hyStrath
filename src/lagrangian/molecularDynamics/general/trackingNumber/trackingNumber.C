@@ -60,7 +60,7 @@ void Foam::trackingNumber::resetTrackingNumbers()
                 }
             }
         }
-    
+
         //- receiving
         for (int p = 0; p < Pstream::nProcs(); p++)
         {
@@ -104,7 +104,7 @@ Foam::label Foam::trackingNumber::getTrackingNumber()
 
     if (Pstream::parRun())
     {
-        //note: for parallel processing the available set of tracking numbers gets 
+        //note: for parallel processing the available set of tracking numbers gets
         // divided according to the number of processors being used.
 
         trackingNumber = trackingIndex_ + Pstream::myProcNo() + (Pstream::nProcs()-1)*trackingIndex_;
@@ -135,20 +135,20 @@ Foam::label Foam::trackingNumber::getMaxTrackingNumber()
                 }
             }
         }
-    
+
         //- receiving
         for (int p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
                 label trackingNumberProc;
-    
+
                 const int proc = p;
                 {
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> trackingNumberProc;
                 }
-    
+
                 if(trackingNumberProc > trackingNumber)
                 {
                     trackingNumber = trackingNumberProc;

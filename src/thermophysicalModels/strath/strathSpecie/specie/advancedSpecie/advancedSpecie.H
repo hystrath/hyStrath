@@ -57,7 +57,7 @@ class Ostream;
 class advancedSpecie
 {
     // Private data
-      
+
         //- Name of specie
         word name_;
 
@@ -66,31 +66,31 @@ class advancedSpecie
 
         //- Molecular weight of specie [kg/kmol]
         scalar molWeight_;
-        
+
         //- Type of particle
         label particleType_;
-        
+
         //- Charge of the particle
         label particleCharge_;
-        
+
         //- Diameter of the particle
         scalar diameter_;
-        
+
         //- Temperature-viscosity coefficient
         scalar omega_;
-        
+
         //- Vibrational list with degeneracy and characteristic vibrational temperature [K] for each vib. mode
         DynamicList<scalar> vibrationalList_;
-        
+
         //- Dissociation potential of the particle [J/kg]
         scalar dissociationPotential_;
-        
+
         //- Number of characteristic vibrational temperatures
         label noVibrationalTemp_;
-        
+
         //- Number of electronic levels
         label noElectronicLevels_;
-        
+
         //- Fraction of the first ionisation energy of a given species [J/kg]
         scalar iHat_;
 
@@ -121,7 +121,7 @@ public:
         //- Construct from components without name
         inline advancedSpecie
         (
-            const scalar nMoles, 
+            const scalar nMoles,
             const scalar molWeight,
             const label particleType,
             const label particleCharge,
@@ -167,7 +167,7 @@ public:
     // Member Functions
 
         // Access
-          
+
             //- Name
             inline const word& nameSpecies() const;
 
@@ -179,31 +179,31 @@ public:
 
             //- Gas constant [J/(kg K)]
             inline scalar R() const;
-            
+
             //- Return const access to the type of particle
             inline label particleType() const;
-            
+
             //- Return const access to the charge of the particle
             inline label particleCharge() const;
-            
+
             //- Return const access to the diameter of the particle
             inline scalar diameter() const;
-            
+
             //- Return const access to the temperature-viscosity coefficient
             inline scalar omega() const;
-            
+
             //- Return const access to the vibrational list
             inline DynamicList<scalar> vibrationalList() const;
-            
+
             //- Return const access to the dissociation potential of the particle [K]
             inline scalar dissociationPotential() const;
-            
+
             //- Return const access to the number of characteristic vibrational temperatures
             inline label noVibrationalTemp() const;
-            
+
             //- Return const access to the number of electronic energy levels
             inline label noElectronicLevels() const;
-            
+
             //- Return const access to the fraction of the first ionisation energy
             inline scalar iHat() const;
 

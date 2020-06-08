@@ -68,7 +68,7 @@ molsToDelete::molsToDelete
             const entry& molsToDeleteI = modelList_[dM];
             const dictionary& molsToDeleteIDict = molsToDeleteI.dict();
 
-            Info<< nl << "Deleting particles from model " << deleteType 
+            Info<< nl << "Deleting particles from model " << deleteType
                 << ": #" << dM << endl;
 
             delModels_[dM] = autoPtr<molsToDeleteModel>

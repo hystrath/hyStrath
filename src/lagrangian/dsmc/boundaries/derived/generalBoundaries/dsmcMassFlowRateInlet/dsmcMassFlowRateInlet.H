@@ -79,7 +79,7 @@ private:
     scalar massFlowRate_;
     scalar inletTemperature_;
 //     scalar theta_;
-    vector initialVelocity_;    
+    vector initialVelocity_;
 
     void setProperties();
 
@@ -125,7 +125,7 @@ public:
 
     //- update properties from a modified dictionary
     void updateProperties(const dictionary&);
-    
+
     //reset fields if mesh has changed
     void setNewBoundaryFields();
 

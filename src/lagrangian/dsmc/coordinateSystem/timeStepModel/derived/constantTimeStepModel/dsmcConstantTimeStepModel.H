@@ -53,10 +53,10 @@ class dsmcConstantTimeStepModel
 :
     public dsmcTimeStepModel
 {
-    
+
     // Private data
-    
-    
+
+
 
     // Private Member Functions
 
@@ -66,7 +66,7 @@ public:
 
     //- Runtime type information
     TypeName("dsmcConstantTimeStepModel");
-    
+
     // Constructors
 
         //- Constructor
@@ -86,27 +86,27 @@ public:
     // Member Functions
 
       // Access
-      
+
         //- Return const access to the time-step for a given cell
         virtual inline scalar deltaTValue(const label celli = 0) const;
-        
-        
+
+
       // Check
-      
+
         //- Check the validity of the time-step model inputs present in
         //  constant/dsmcProperties and assign inputs to data members if
         //  correct.
         virtual void checkTimeStepModelInputs();
-      
-      
+
+
       // Edit
-      
+
         //- Update function
         virtual void update();
-        
+
 
       // Write
-      
+
         //- Write time-step model info
         virtual void writeTimeStepModelInfo() const;
 

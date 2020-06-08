@@ -53,8 +53,8 @@ namespace Foam
 class selectIdPairs
 {
     // Private data
-        
-        
+
+
         // lennard jones
         List<List<scalar> > epsilon_;
         List<List<scalar> > sigma_;
@@ -63,12 +63,12 @@ class selectIdPairs
         List<List<scalar> > alpha_;
         List<List<scalar> > rho_;
         List<List<scalar> > C_;
-        
-        
+
+
         bool lennardJones_;
-        bool buckinghamPotential_;        
-        
-        
+        bool buckinghamPotential_;
+
+
         label nIds_;
 
 
@@ -114,8 +114,8 @@ public:
 
             inline const List<List<scalar> >& alpha() const;
             inline const List<List<scalar> >& rho() const;
-            inline const List<List<scalar> >& C() const;            
-            
+            inline const List<List<scalar> >& C() const;
+
             inline const label& nIds() const;
 
             inline const bool& lennardJones() const;

@@ -103,50 +103,50 @@ void Foam::gradient2EnergyFvPatchScalarField::updateCoeffs()
     }
 
     //Info << "gradient2Energy is used for patch called " << patch().name() << endl;
-    
+
     const multi2Thermo& multiThermo = multi2Thermo::lookup2Thermo(*this);
     const label patchi = patch().index();
 
     const scalarField& pw = multiThermo.p().boundaryField()[patchi];
-    
+
     fvPatchScalarField& Ttw =
         const_cast<fvPatchScalarField&>(multiThermo.Tt().boundaryField()[patchi]);
-    Ttw.evaluate();    
-        
+    Ttw.evaluate();
+
     tmp<Field<scalar> > thevel(new Field<scalar>(pw.size()));
     Field<scalar>& hevel = thevel.ref();
     hevel = 0.0;
-    
+
     tmp<Field<scalar> > thevelfC(new Field<scalar>(pw.size()));
     Field<scalar>& hevelfC = thevelfC.ref();
     hevelfC = 0.0;
-    
+
     tmp<Field<scalar> > tCvvelTvw(new Field<scalar>(pw.size()));
     Field<scalar>& cvvelTvw = tCvvelTvw.ref();
     cvvelTvw = 0.0;
-    
+
     for(label speciei=0 ; speciei<thermo_.composition().Y().size() ; speciei++)
     {
         fvPatchScalarField& spYw =
             const_cast<fvPatchScalarField&>(thermo_.composition().Y(speciei).boundaryField()[patchi]);
         spYw.evaluate();
-        
+
         fvPatchScalarField& spTvw =
             const_cast<fvPatchScalarField&>(thermo_.composition().Tv(speciei).boundaryField()[patchi]);
         spTvw.evaluate();
-        
+
         hevel += spYw*thermo_.composition().hevel(speciei, pw, spTvw, patchi);
         hevelfC += spYw*thermo_.composition().hevel(speciei, pw, spTvw, patch().faceCells());
         cvvelTvw += spYw*thermo_.composition().Cv_vel(speciei, pw, spTvw, patchi)*spTvw.snGrad();
     }
-    
+
     gradient() = multiThermo.Cv_t(pw, Ttw, patchi)*Ttw.snGrad() + tCvvelTvw
       + patch().deltaCoeffs()*
         (
             multiThermo.het(pw, Ttw, patchi) + thevel
           - multiThermo.het(pw, Ttw, patch().faceCells()) - thevelfC
         );
-        
+
     fixedGradientFvPatchScalarField::updateCoeffs();
 }
 

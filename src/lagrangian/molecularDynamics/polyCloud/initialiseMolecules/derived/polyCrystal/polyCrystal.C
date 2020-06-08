@@ -78,7 +78,7 @@ void polyCrystal::setInitialConfiguration()
 
     const vector bulkVelocity(mdInitialiseDict_.lookup("bulkVelocity"));
 
-    const word molIdName(mdInitialiseDict_.lookup("molId")); 
+    const word molIdName(mdInitialiseDict_.lookup("molId"));
     const List<word>& idList(molCloud_.cP().molIds());
 
     label molId = findIndex(idList, molIdName);
@@ -107,9 +107,9 @@ void polyCrystal::setInitialConfiguration()
     {
         tethered = Switch(mdInitialiseDict_.lookup("tethered"));
     }
-    
+
     bool multispecies = false;
-    
+
     if(mdInitialiseDict_.found("multispecies"))
     {
         multispecies = Switch(mdInitialiseDict_.lookup("multispecies"));
@@ -146,14 +146,14 @@ void polyCrystal::setInitialConfiguration()
     else
     {
         FatalErrorIn("polyCrystal::setInitialConfiguration()")
-            << "does not support the lattice type " << latticeType 
+            << "does not support the lattice type " << latticeType
             << exit(FatalError);
     }
-    
-    // Bounding box 
+
+    // Bounding box
 
     boundedBox bb;
-    
+
     setBoundBox(mdInitialiseDict_, bb, "boundBox");
 
     scalar s(readScalar(mdInitialiseDict_.lookup("unitCellSize")));
@@ -164,7 +164,7 @@ void polyCrystal::setInitialConfiguration()
 
     label nAtoms= 0;
     DynamicList<vector> positions;
-    
+
     for (label k = 0; k < nX; k++)
     {
         for (label j = 0; j < nY; j++)
@@ -175,7 +175,7 @@ void polyCrystal::setInitialConfiguration()
                 {
                     vector sP = sitePositions[iS];
                     vector pos = vector(1, 0, 0)*(k+sP.x())*s + vector(0, 1, 0)*(j+sP.y())*s + vector(0, 0, 1)*(i+sP.z())*s + bb.min();
-                    
+
                     if(bb.contains(pos))
                     {
                         positions.append(pos);
@@ -185,54 +185,54 @@ void polyCrystal::setInitialConfiguration()
             }
         }
     }
-    
+
     positions.shrink();
 
      // remove any atoms that overlap eachother (to prevent the MD code from blowing up)
-    
+
     DynamicList<vector> positionsNew;
-    
+
     scalar tolerance = 0.1;
-    
+
     forAll (positions, i)
     {
         const vector& rI = positions[i];
-        
+
         bool overlapping = false;
-        
+
         forAll (positionsNew, j)
         {
             const vector& rJ = positionsNew[j];
             scalar rMag = mag(rI - rJ);
-        
+
             if (rMag < tolerance)
             {
                 overlapping = true;
             }
         }
-    
+
         if (!overlapping)
         {
             positionsNew.append(rI);
         }
     }
-		
+
     Info << nl << " No of sites found = " << positions.size() << endl;
 
     // set exact number molecules?
-    
+
     label N = 0;
-    
+
     if (mdInitialiseDict_.found("N"))
     {
         N = readLabel(mdInitialiseDict_.lookup("N"));
-        
+
         if(positions.size() < N)
         {
             FatalErrorIn("polyCrystal::setInitialConfiguration()")
                 << "Number of molecules in lattice  = " << positions.size()
                 << ", number of molecules to allow are lower, N = " << N
-                << exit(FatalError);            
+                << exit(FatalError);
 
         }
     }
@@ -240,9 +240,9 @@ void polyCrystal::setInitialConfiguration()
     {
         N = positions.size();
     }
-    
+
     label nMolsInserted = 0;
-    
+
     // insert molecules
     forAll(positions, i)
     {
@@ -272,46 +272,46 @@ void polyCrystal::setInitialConfiguration()
                 temperature,
                 bulkVelocity
             );
-            
+
             nMolsInserted++;
         }
     }
-    
+
     label nToDel = nMolsInserted - N;
-    
+
     distributePoints randomBox
     (
         bb,
         molCloud_.rndGen()
-    );    
-    
-    // Delete excess molecules 
-    
+    );
+
+    // Delete excess molecules
+
     if(nToDel > 0)
     {
         List<vector> molPositions(nToDel, vector::zero);
-        
+
         forAll(molPositions, i)
         {
             molPositions[i] = randomBox.randomPoint();
         }
-        
+
         DynamicList<polyMolecule*> molsToDel;
         DynamicList<label> chosenIds(0);
-        
+
         forAll(molPositions, j)
-        {   
+        {
             DynamicList<polyMolecule*> molsToDelTemp;
-            
+
             const vector& rJ = molPositions[j];
-            
-            scalar deltaR = GREAT;        
-            
+
+            scalar deltaR = GREAT;
+
             label tNI = 0;
             label chosenI = -1;
-            
+
             IDLList<polyMolecule>::iterator mol(molCloud_.begin());
-            
+
             for
             (
                 mol = molCloud_.begin();
@@ -323,48 +323,48 @@ void polyCrystal::setInitialConfiguration()
                 {
                     scalar magRIJ = mag(rJ - mol().position());
                     polyMolecule* molI = &mol();
-                    
+
                     if(magRIJ < deltaR)
                     {
                         if(findIndex(chosenIds, tNI) == -1)
                         {
                             deltaR = magRIJ;
-                            
+
                             molsToDelTemp.clear();
-                            
-                            molsToDelTemp.append(molI);   
+
+                            molsToDelTemp.append(molI);
                             chosenI = tNI;
                         }
                     }
                 }
-                
+
                 tNI++;
             }
-            
+
             molsToDelTemp.shrink();
-            
+
             if(chosenI != -1)
             {
                 molsToDel.append(molsToDelTemp[0]);
                 chosenIds.append(chosenI);
             }
-        }  
-        
+        }
+
         molsToDel.shrink();
-        
+
         forAll(molsToDel, m)
         {
             molCloud_.deleteParticle(*molsToDel[m]);
-        }   
+        }
     }
-    
+
     scalar V = bb.volume()*pow(s,3);
 
     scalar M = nMolsInserted*massI;
-    
+
     scalar rhoM = M/V;
-    
-    Info << "Estimate of mass density, rhoM (RU) = " << rhoM 
+
+    Info << "Estimate of mass density, rhoM (RU) = " << rhoM
         << ", SI = " << rhoM*molCloud_.redUnits().refMassDensity()
         << " V = " << V << " N " << nMolsInserted << " M " << massI
         << " nX " << nX << " nY " << nY << " nZ " << nZ
@@ -381,8 +381,8 @@ void polyCrystal::setInitialConfiguration()
     }
 
     Info << tab << " molecules added: " << nMolsAdded_ << endl;
-    
-    
+
+
     //- new - delete existing molecules and replace with other species
     if(multispecies)
     {
@@ -391,35 +391,35 @@ void polyCrystal::setInitialConfiguration()
            molCloud_.cP(),
            mdInitialiseDict_
         );
-        
+
         List<label> molIds = ids.molIds();
-        List<label> soluteN = List<label>(mdInitialiseDict_.lookup("soluteN"));   
-        
+        List<label> soluteN = List<label>(mdInitialiseDict_.lookup("soluteN"));
+
         forAll(molIds, i)
         {
             List<vector> molPositions(soluteN[i], vector::zero);
-            
+
             forAll(molPositions, j)
             {
                 molPositions[j] = randomBox.randomPoint();
             }
-            
+
             DynamicList<polyMolecule*> molsToDel;
             DynamicList<label> chosenIds(0);
-            
+
             forAll(molPositions, j)
-            {   
+            {
                 DynamicList<polyMolecule*> molsToDelTemp;
-                
+
                 const vector& rJ = molPositions[j];
-                
-                scalar deltaR = GREAT;        
-                
+
+                scalar deltaR = GREAT;
+
                 label tNI = 0;
                 label chosenI = -1;
-                
+
                 IDLList<polyMolecule>::iterator mol(molCloud_.begin());
-                
+
                 for
                 (
                      mol = molCloud_.begin();
@@ -431,47 +431,47 @@ void polyCrystal::setInitialConfiguration()
                     {
                         scalar magRIJ = mag(rJ - mol().position());
                         polyMolecule* molI = &mol();
-                        
+
                         if(magRIJ < deltaR)
                         {
                             if(findIndex(chosenIds, tNI) == -1)
                             {
                                 deltaR = magRIJ;
-                                
+
                                 molsToDelTemp.clear();
-                                
-                                molsToDelTemp.append(molI);   
+
+                                molsToDelTemp.append(molI);
                                 chosenI = tNI;
                             }
                         }
                     }
-                    
+
                     tNI++;
                 }
-                
+
                 molsToDelTemp.shrink();
-                
+
                 if(chosenI != -1)
                 {
                     molsToDel.append(molsToDelTemp[0]);
                     chosenIds.append(chosenI);
                 }
-            }  
-            
+            }
+
             molsToDel.shrink();
-            
+
             DynamicList<vector> newPositions;
-            
+
             forAll(molsToDel, m)
             {
                 //Info << tab << "exchanging molecule at position = " << molsToDel[m]->position() << endl;
                 newPositions.append(molsToDel[m]->position());
                 molCloud_.deleteParticle(*molsToDel[m]);
-            }            
-            
+            }
+
             newPositions.shrink();
             label nExchanged = 0;
-            
+
             forAll(newPositions, j)
             {
                 label cell = -1;
@@ -485,7 +485,7 @@ void polyCrystal::setInitialConfiguration()
                     tetFace,
                     tetPt
                 );
-                
+
                 if(cell != -1)
                 {
                     insertMolecule
@@ -500,12 +500,12 @@ void polyCrystal::setInitialConfiguration()
                         temperature,
                         bulkVelocity
                     );
-                    
+
                     nExchanged++;
                 }
             }
-            
-            Info<< "Mol id = " << molIds[i] 
+
+            Info<< "Mol id = " << molIds[i]
                 << " Number of molecules exchanged = " << nExchanged
                 << endl;
         }
@@ -516,11 +516,11 @@ void polyCrystal::setBoundBox
 (
     const dictionary& propsDict,
     boundedBox& bb,
-    const word& name 
+    const word& name
 )
 {
     const dictionary& dict(propsDict.subDict(name));
-    
+
     vector startPoint = dict.lookup("startPoint");
     vector endPoint = dict.lookup("endPoint");
 

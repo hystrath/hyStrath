@@ -111,7 +111,7 @@ inline scalarField& forceDistribution::energies()
 inline const scalarField& forceDistribution::magForces() const
 {
 //     vector rES = endPoint_ - startPoint_;
-// 
+//
 //     scalarField magForces = forces_ & (rES/mag(rES));
 
     return magForces_;
@@ -128,8 +128,8 @@ inline const scalarField& forceDistribution::magForces() const
 // {
 //     return radialDistribution_;
 // }
-// 
-// 
+//
+//
 // inline List< scalar > radialDistribution::radialPosition() const
 // {
 //     return radialPosition_;

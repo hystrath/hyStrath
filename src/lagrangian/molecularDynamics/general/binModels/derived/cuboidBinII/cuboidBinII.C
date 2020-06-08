@@ -113,15 +113,15 @@ cuboidBinII::cuboidBinII
     n2_ /= mag(n2_);
 
     area_ = d1_*4.0*d2_;
-    
+
     rSEMag_ = mag(endPoint_ - startPoint_);
-    
+
     midpoint_ = startPoint_ + unitVector_*rSEMag_*0.5;
-    
-    
+
+
     vector minV = startPoint_+ d1_*n1_+d2_*n2_;
     vector maxV = endPoint_ - d1_*n1_ -d2_*n2_;
-    
+
     checkBoundBox(box_, minV, maxV);
 }
 
@@ -148,18 +148,18 @@ label cuboidBinII::isPointWithinBin
 
     if(box_.contains(rI))
     {
-        vector rSI = rI - startPoint_;    
+        vector rSI = rI - startPoint_;
         scalar rD = rSI & unitVector_;
         label n = label(rD/binWidth_);
-        
+
         if(n >= 0)
         {
-            if(n == nBins_) 
+            if(n == nBins_)
             {
                 n--;
             }
-            
-            binNumber = n;            
+
+            binNumber = n;
         }
     }
 

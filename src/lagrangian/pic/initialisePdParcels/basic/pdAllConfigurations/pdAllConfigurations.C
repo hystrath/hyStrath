@@ -32,7 +32,7 @@ Description
 
 namespace Foam
 {
-//- Null Constructor 
+//- Null Constructor
 
 //- Constructor for mdInitialise
 pdAllConfigurations::pdAllConfigurations
@@ -56,7 +56,7 @@ pdAllConfigurations::pdAllConfigurations
         {
             const entry& configurationI = configurationList_[c];
             const dictionary& configurationIDict = configurationI.dict();
-    
+
             configurations_[c] = autoPtr<pdConfiguration>
             (
                 pdConfiguration::New(cloud, configurationIDict)

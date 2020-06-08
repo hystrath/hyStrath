@@ -63,31 +63,31 @@ class cilium
 private:
 
     // Private data
-        
-    
+
+
         DynamicList<label> trackingNumbers_;
-//         DynamicList<vector> positions_;        
+//         DynamicList<vector> positions_;
 
         DynamicList<label> trackingNumbersA_;
         DynamicList<label> trackingNumbersB_;
 
     // Private Member Functions
 
-        
+
         void insertMoleculeLocal
         (
             const point& position,
             const label cell,
             const label tetFace,
-            const label tetPt, 
-            const label& id, 
+            const label tetPt,
+            const label& id,
             const bool& tethered,
             const bool& frozen,
             const scalar& temperature,
             const vector& bulkVelocity
         );
 
-        
+
 public:
 
     //- Runtime type information

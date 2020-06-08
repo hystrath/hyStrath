@@ -45,7 +45,7 @@ bool Foam::pdParcel::move
     if(newParcel() == 1)
     {
         Random& rndGen(td.cloud().rndGen());
-        stepFraction() = td.cloud().rndGen().sample01<scalar>(); 
+        stepFraction() = td.cloud().rndGen().sample01<scalar>();
 
         //roll back velocity
         U_ -= 0.5*A_*trackTime;

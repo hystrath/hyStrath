@@ -71,19 +71,19 @@ private:
 
         scalar F_at_Rmin_;
         scalar E_at_Rmin_;
-        
+
         // exclusion lists may go here
 
-        
-        
+
+
     // Private Member Functions
 
         scalar rawEnergy(const scalar r) const;
-        
+
         scalar rawForce(const scalar r) const;
 
-        
-        
+
+
 public:
 
     //- Runtime type information
@@ -97,7 +97,7 @@ public:
             const polyMesh& mesh,
             polyMoleculeCloud& molCloud,
             const reducedUnits& redUnits,
-            const word& name,         
+            const word& name,
             const dictionary& dict
         );
 
@@ -111,17 +111,17 @@ public:
 
 
         scalar force(const scalar r) const;
-        
-        scalar energy(const scalar r) const;   
-        
-        
-        
+
+        scalar energy(const scalar r) const;
+
+
+
         //- Read dictionary
 //         bool read
 //         (
 //             const dictionary& pairPotentialProperties,
 //         );
-        
+
 
         void write(const fileName& pathName);
 

@@ -38,7 +38,7 @@ SourceFiles
 #define cuboidBinII_H
 
 #include "binModel.H"
-#include "boundBox.H" 
+#include "boundBox.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -76,19 +76,19 @@ private:
 
         scalar rSEMag_;
         vector midpoint_;
-        
+
         boundBox box_;
-        
-        
+
+
         // Private Member Functions
-            
+
         void checkBoundBox
         (
             boundBox& b,
             const vector& startPoint,
             const vector& endPoint
-        );     
-        
+        );
+
 public:
 
     //- Runtime type information

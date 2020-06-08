@@ -250,7 +250,7 @@ public:
 
 
     // this is probably needed in order for the algorithm not to oscillate continously
-    // between one processor and the next. I think we can do without it, but we must be 
+    // between one processor and the next. I think we can do without it, but we must be
     // careful of the implementation.
 
 

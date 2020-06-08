@@ -122,7 +122,7 @@ polyForceTwoMolecules::polyForceTwoMolecules
 
     if(Pstream::master())
     {
-    	label writeIntervalSteps = label((writeInterval_/t.deltaT().value()) + 0.5); 
+    	label writeIntervalSteps = label((writeInterval_/t.deltaT().value()) + 0.5);
     	separation_.setSize(writeIntervalSteps, 0.0);
 		virA_.setSize(writeIntervalSteps, tensor::zero);
 		virB_.setSize(writeIntervalSteps, tensor::zero);
@@ -165,8 +165,8 @@ void polyForceTwoMolecules::createField()
             }
         }
 
-        Pout << "A: tracking number: " << molTrackingNoA_ 
-             << ", mol at position = " << molPositionA_ 
+        Pout << "A: tracking number: " << molTrackingNoA_
+             << ", mol at position = " << molPositionA_
             << " ( reference starting point = " << molPointA_ << " ) "
             << endl;
     }
@@ -203,8 +203,8 @@ void polyForceTwoMolecules::createField()
             }
         }
 
-        Pout << "B: tracking number: " << molTrackingNoB_ 
-             << ", mol at position = " << molPositionB_ 
+        Pout << "B: tracking number: " << molTrackingNoB_
+             << ", mol at position = " << molPositionB_
             << " ( reference starting point = " << molPointB_ << " ) "
             << endl;
     }
@@ -225,11 +225,11 @@ void polyForceTwoMolecules::calculateField()
 
     {
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
-    
+
         for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
         {
 //             const polyMolecule::constantProperties& cP = molCloud_.constProps(mol().id());
-            
+
             if(mol().trackingNumber() == molTrackingNoA_)
             {
                 cellA_ = mol().cell();
@@ -237,7 +237,7 @@ void polyForceTwoMolecules::calculateField()
                 forceSiteA = mol().a()*molCloud_.cP().mass(mol().id());
                 virialSiteA = mol().rf();
 
-                Pout<< "A: track poly mol position: " << molPositionA_ 
+                Pout<< "A: track poly mol position: " << molPositionA_
                     << ", current processor: " << Pstream::myProcNo()
                     << endl;
             }
@@ -257,7 +257,7 @@ void polyForceTwoMolecules::calculateField()
     tensor virialSiteB = tensor::zero;
     {
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
-    
+
         for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
         {
             if(mol().trackingNumber() == molTrackingNoB_)
@@ -267,7 +267,7 @@ void polyForceTwoMolecules::calculateField()
                 forceSiteB = mol().a()*molCloud_.cP().mass(mol().id());
                 virialSiteB = mol().rf();
 
-                Pout<< "A: track poly mol position: " << molPositionB_ 
+                Pout<< "A: track poly mol position: " << molPositionB_
                     << ", current processor: " << Pstream::myProcNo()
                     << endl;
             }
@@ -290,7 +290,7 @@ void polyForceTwoMolecules::calculateField()
     if(Pstream::master())
     {
         label n = label(rIJMag/binWidth_);
-    
+
         if
         (
             (n >= 0) && (rIJMag <= rMax_)
@@ -300,7 +300,7 @@ void polyForceTwoMolecules::calculateField()
             {
                 n--;
             }
-    
+
             if(n < nBins_)
             {
                 mols_[n] += 1.0;
@@ -344,14 +344,14 @@ void polyForceTwoMolecules::writeField()
             const label writeIntervalSteps = ((writeInterval_/time_.deltaT().value()) + 0.5);
 
             scalarField timeField(writeIntervalSteps, 0.0);
-    
+
             forAll(timeField, tT)
             {
             	timeField[tT] = time_.time().timeOutputValue()
 								- writeInterval_
 								+ (tT+1)*time_.deltaT().value();
             }
-    
+
             writeTimeData
             (
                 casePath_,

@@ -78,9 +78,9 @@ namespace Foam
     void crbsController::controlParcelsBeforeMove()
     {
         nTimeSteps_++;
-        
+
         currentTime_ = mesh_.time().deltaTValue()*nTimeSteps_;
-        
+
         forAll(controlZone(), c)
         {
             const List<DynamicList<dsmcParcel*> >& cellOccupancy = cloud_.cellOccupancy();
@@ -88,22 +88,22 @@ namespace Foam
             const List<dsmcParcel*>& molsInCell = cellOccupancy[cellI];
 
             forAll(molsInCell, mIC)
-            {    
+            {
                 dsmcParcel* p = molsInCell[mIC];
-                
+
                 label origID = p->origId();
-                
+
                 initialXPositions_[origID] = p->position().x();
-                
+
                 scalar mass = cloud_.constProps(p->typeId()).mass();
-                
-                scalar accelerationMagnitude = 
+
+                scalar accelerationMagnitude =
                         0.1*(sqrt(2.0*1.3806e-23*referenceTemperature_/mass))
                         *cos((waveNumber_*initialXPositions_[origID]))
                         *sin(frequency_*currentTime_)/(currentTime_);
-                        
+
                 vector acceleration = accelerationDirection_*accelerationMagnitude;
-                
+
                 p->U() += 0.5*acceleration*mesh_.time().deltaTValue();
             }
         }
@@ -131,18 +131,18 @@ namespace Foam
             forAll(molsInCell, mIC)
             {
                 dsmcParcel* p = molsInCell[mIC];
-                
+
                 label origID = p->origId();
-                
+
                 scalar mass = cloud_.constProps(p->typeId()).mass();
-                
-                scalar accelerationMagnitude = 
+
+                scalar accelerationMagnitude =
                         0.1*(sqrt(2.0*1.3806e-23*referenceTemperature_/mass))
                         *cos((waveNumber_*initialXPositions_[origID]))
                         *sin(frequency_*currentTime_)/(currentTime_);
-                        
+
                 vector acceleration = accelerationDirection_*accelerationMagnitude;
-                
+
                 p->U() -= 0.5*acceleration*mesh_.time().deltaTValue();
             }
         }
@@ -158,18 +158,18 @@ namespace Foam
             forAll(molsInCell, mIC)
             {
                 dsmcParcel* p = molsInCell[mIC];
-                
+
                 label origID = p->origId();
-                
+
                 scalar mass = cloud_.constProps(p->typeId()).mass();
-                
-                scalar accelerationMagnitude = 
+
+                scalar accelerationMagnitude =
                         0.1*(sqrt(2.0*1.3806e-23*referenceTemperature_/mass))
                         *cos((waveNumber_*initialXPositions_[origID]))
                         *sin(frequency_*currentTime_)/(currentTime_);
-                        
+
                 vector acceleration = accelerationDirection_*accelerationMagnitude;
-                
+
                 p->U() += acceleration*mesh_.time().deltaTValue();
             }
         }
@@ -183,7 +183,7 @@ namespace Foam
     }
 
     void crbsController::setProperties()
-    {       
+    {
         accelerationDirection_ = propsDict_.lookup("accelerationDirection");
         waveNumber_ = readScalar(propsDict_.lookup("waveNumber"));
         frequency_ = readScalar(propsDict_.lookup("frequency"));

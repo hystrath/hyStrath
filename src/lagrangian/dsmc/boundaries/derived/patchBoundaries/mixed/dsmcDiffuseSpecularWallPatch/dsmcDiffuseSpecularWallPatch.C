@@ -38,8 +38,8 @@ defineTypeNameAndDebug(dsmcDiffuseSpecularWallPatch, 0);
 
 addToRunTimeSelectionTable
 (
-    dsmcPatchBoundary, 
-    dsmcDiffuseSpecularWallPatch, 
+    dsmcPatchBoundary,
+    dsmcDiffuseSpecularWallPatch,
     dictionary
 );
 
@@ -95,7 +95,7 @@ void dsmcDiffuseSpecularWallPatch::calculateProperties()
 
 void dsmcDiffuseSpecularWallPatch::controlParticle
 (
-    dsmcParcel& p, 
+    dsmcParcel& p,
     dsmcParcel::trackingData& td
 )
 {

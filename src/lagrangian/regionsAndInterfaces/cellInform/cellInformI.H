@@ -139,16 +139,16 @@ inline void cellInform::setCellInfo
 //     if(!isAcceptedCell())
 //     {
 //         label noOfAcceptedFaces = 0;
-// 
+//
 //         forAll(connectedFaces_, cF)
 //         {
-// 
+//
 //             if(faceData[connectedFaces_[cF]].isAcceptedFace())
 //             {
 //                 noOfAcceptedFaces++;
 //             }
 //         }
-// 
+//
 //         if( noOfAcceptedFaces ==  connectedFaces_.size())
 //         {
 // //             cellOnBoundary();
@@ -187,7 +187,7 @@ inline void cellInform::checkCellBoundary
 //             if(faceData[connectedFaces_[cF]].isBoundaryFace())
 //             {
 //                 cellOnBoundary();
-// 
+//
 //                 break;
 //             }
 //         }
@@ -237,22 +237,22 @@ inline void cellInform::cellOnBoundary()
 // {
 //     boundaryPoint_ = true;
 // }
-// 
+//
 // inline void cellInform::pointOnProcBoundary()
 // {
 //     procBoundaryPoint_ = true;
 // }
-// 
+//
 // inline void cellInform::pointOnCyclicBoundary()
 // {
 //     cyclicBoundaryPoint_ = true;
 // }
-// 
+//
 // inline void cellInform::pointOnInterface()
 // {
 //     interfacePoint_ = true;
 // }
-// 
+//
 // inline void cellInform::resetInterfacePoint()
 // {
 //     interfacePoint_ = false;
@@ -267,9 +267,9 @@ inline void cellInform::cellOnBoundary()
 // )
 // {
 //     setCurrentPoint(p);
-// 
+//
 //     switchedDomain_ = true;
-// 
+//
 //     noOfSwitchedDomains_++;
 // }
 

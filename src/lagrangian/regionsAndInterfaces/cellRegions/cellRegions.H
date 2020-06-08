@@ -78,7 +78,7 @@ class cellRegions
 
 
 //         labelList remainingCells_;
-// 
+//
 //         const labelList& zoneCells_;
 
 
@@ -88,7 +88,7 @@ class cellRegions
 //         (
 //             const labelList&
 //         );
-// 
+//
 //         void setRemainingCells
 //         (
 //             const labelList&

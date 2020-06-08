@@ -55,19 +55,19 @@ nonLinMaxwellSlipUFvPatchVectorField::nonLinMaxwellSlipUFvPatchVectorField
     rho1_(1.0),
     rho0_(1.0),
 //    gammaC5_(1.0),
-//    gammaC4_(1.0), 
+//    gammaC4_(1.0),
 //    gammaC3_(1.0),
     gammaC2_(1.0),
-    gammaC1_(1.0) 
-//    gammaC0_(1.0) 
+    gammaC1_(1.0)
+//    gammaC0_(1.0)
 //    p00_(1.0),
 //    p10_(1.0),
 //    p01_(1.0),
 //    p20_(1.0),
-//    p11_(1.0), 
+//    p11_(1.0),
 //    p30_(1.0),
 //    p21_(1.0)
-    // frictionCoeff_(1.0)    
+    // frictionCoeff_(1.0)
 {}
 
 
@@ -86,18 +86,18 @@ nonLinMaxwellSlipUFvPatchVectorField::nonLinMaxwellSlipUFvPatchVectorField
     rho1_(tdpvf.rho1_),
     rho0_(tdpvf.rho0_),
 //    gammaC5_(tdpvf.gammaC5_),
-//    gammaC4_(tdpvf.gammaC4_), 
+//    gammaC4_(tdpvf.gammaC4_),
 //    gammaC3_(tdpvf.gammaC3_),
-    gammaC2_(tdpvf.gammaC2_), 
+    gammaC2_(tdpvf.gammaC2_),
     gammaC1_(tdpvf.gammaC1_)
-//    gammaC0_(tdpvf.gammaC0_) 
+//    gammaC0_(tdpvf.gammaC0_)
 //    p00_(tdpvf.p00_),
 //    p10_(tdpvf.p10_),
-//    p01_(tdpvf.p01_), 
+//    p01_(tdpvf.p01_),
 //    p20_(tdpvf.p20_),
-//    p11_(tdpvf.p11_), 
+//    p11_(tdpvf.p11_),
 //    p30_(tdpvf.p30_),
-//    p21_(tdpvf.p21_) 
+//    p21_(tdpvf.p21_)
     // frictionCoeff_(tdpvf.frictionCoeff_)
 {}
 
@@ -220,15 +220,15 @@ void nonLinMaxwellSlipUFvPatchVectorField::updateCoeffs()
     for(scalar faceI = 0; faceI < maxFaceI ; faceI++)
     {
         if (mag(shear[faceI]) < (gammaC2_*rho[faceI]+gammaC1_))
-        {     
-            valueFraction()[faceI] = 
+        {
+            valueFraction()[faceI] =
 		(1.0/(1.0 + patch().deltaCoeffs()[faceI]
 		*(rho2_* pow(rho[faceI],2) + rho1_*rho[faceI]+rho0_)*
 	(1.0/sqrt(1.0 - (mag(shear[faceI])/gammaC1_)))));
         }
         else
         {
-          valueFraction()[faceI] = 0.0; 
+          valueFraction()[faceI] = 0.0;
         }
 
     }
@@ -240,7 +240,7 @@ void nonLinMaxwellSlipUFvPatchVectorField::updateCoeffs()
 //    for(scalar faceI = 0; faceI < maxFaceI ; faceI++)
 //    {
 //        valueFraction()[faceI] = (1.0/(1.0 + patch().deltaCoeffs() / (rho1_*rho[faceI] + rho0_)));
-//    }	
+//    }
 
 
 

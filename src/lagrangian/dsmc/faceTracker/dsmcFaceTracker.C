@@ -45,7 +45,7 @@ namespace Foam
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 
-// Construct from mesh and cloud 
+// Construct from mesh and cloud
 dsmcFaceTracker::dsmcFaceTracker
 (
     const polyMesh& mesh,
@@ -103,7 +103,7 @@ void dsmcFaceTracker::reset()
     {
         parcelIdFlux_[i].setSize(mesh_.nFaces(), 0.0);
         massIdFlux_[i].setSize(mesh_.nFaces(), 0.0);
-    }   
+    }
 }
 
 

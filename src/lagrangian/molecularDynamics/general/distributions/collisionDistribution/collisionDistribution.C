@@ -71,7 +71,7 @@ collisionDistribution::collisionDistribution(const word& name)
 {}
 
 
-// Construct from binWidth, rMax and name 
+// Construct from binWidth, rMax and name
 collisionDistribution::collisionDistribution
 (
     const scalar& binWidth,
@@ -147,9 +147,9 @@ void collisionDistribution::setDistribution()
         if(k < p_.size())
         {
             label key = keys[k];
-    
+
             scalar nMols = scalar((*this)[key]);
-    
+
             if( nMols > maxValue)
             {
                 maxValue = nMols;
@@ -189,7 +189,7 @@ void collisionDistribution::setDistribution()
 // scalar collisionDistribution::gBin(const scalar& r) const
 // {
 //     label key = label(r/binWidth());
-// 
+//
 //     if(r < 0.0)
 //     {
 //         return 0.0;
@@ -212,7 +212,7 @@ void collisionDistribution::setDistribution()
 // scalar collisionDistribution::gLinear(const scalar& r) const
 // {
 //     label key = label(r/binWidth());
-// 
+//
 //     if(r < 0.0)
 //     {
 //         return 0.0;
@@ -224,9 +224,9 @@ void collisionDistribution::setDistribution()
 //     )
 //     {
 //         scalar deltaR = radius_[key] - r;
-// 
+//
 //         label key2 = key;
-// 
+//
 //         if(deltaR < 0.0)
 //         {
 //             key2++;
@@ -235,12 +235,12 @@ void collisionDistribution::setDistribution()
 //         {
 //             key2--;
 //         }
-// 
+//
 //         const scalar& g1 = g_[key];
 //         const scalar& g2 = g_[key2];
-// 
+//
 //         scalar gNew = ( ((g2 - g2)/binWidth()) * (mag(deltaR)) ) + g1;
-// 
+//
 //         return gNew;
 //     }
 //     else
@@ -319,9 +319,9 @@ void collisionDistribution::writeDistribution
 // )
 // {
 //     fileName writeFile(pathName/nameFile);
-// 
+//
 //     graph outputGraph("title", "x", "y", xData, yData);
-// 
+//
 //     outputGraph.write(writeFile, "raw");
 // }
 
@@ -337,9 +337,9 @@ void collisionDistribution::writeDistribution
 //             << "Attempted assignment to self"
 //             << abort(FatalError);
 //     }
-// 
+//
 //     Map<label>::operator=(rhs);
-// 
+//
 //     binWidth_ = rhs.binWidth();
 // }
 
@@ -353,14 +353,14 @@ void collisionDistribution::writeDistribution
 // {
 //     os  << d.binWidth_
 //         << static_cast<const Map<label>&>(d);
-// 
+//
 //     // Check state of Ostream
 //     os.check
 //     (
 //         "Ostream& operator<<(Ostream&, "
 //         "const collisionDistribution&)"
 //     );
-// 
+//
 //     return os;
 // }
 

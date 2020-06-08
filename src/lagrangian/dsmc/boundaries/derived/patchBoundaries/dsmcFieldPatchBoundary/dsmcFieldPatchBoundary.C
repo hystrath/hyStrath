@@ -57,13 +57,13 @@ void dsmcFieldPatchBoundary::readPatchFields()
             mesh_
         )
     );
-    
+
     volScalarField& boundaryT = tboundaryT.ref();
-    
+
     boundaryT_ = boundaryT.boundaryField()[patchId()];
 
     cloud_.boundaryFluxMeasurements().setBoundaryT(patchId(), boundaryT_);
-    
+
     //- Velocity field
     tmp<volVectorField> tboundaryU
     (
@@ -80,11 +80,11 @@ void dsmcFieldPatchBoundary::readPatchFields()
             mesh_
         )
     );
-    
+
     volVectorField& boundaryU = tboundaryU.ref();
-    
+
     boundaryU_ = boundaryU.boundaryField()[patchId()];
-    
+
     cloud_.boundaryFluxMeasurements().setBoundaryU(patchId(), boundaryU_);
 }
 
@@ -95,7 +95,7 @@ void dsmcFieldPatchBoundary::readPatchFields()
     const polyPatch& patch = mesh_.boundaryMesh()[wppIndex];
 
     const label wppLocalFace = patch.whichFace(p.face());
-    
+
     return boundaryT_.boundaryField()[wppIndex][wppLocalFace];
 }
 
@@ -107,7 +107,7 @@ vector dsmcFieldPatchBoundary::patchLocalVelocity(const dsmcParcel& p)
     const polyPatch& patch = mesh_.boundaryMesh()[wppIndex];
 
     const label wppLocalFace = patch.whichFace(p.face());
-    
+
     return boundaryU_.boundaryField()[wppIndex][wppLocalFace];
 }*/
 
@@ -160,7 +160,7 @@ dsmcFieldPatchBoundary::dsmcFieldPatchBoundary
     writeInTimeDir_ = false;
     writeInCase_ = false;
     measurePropertiesAtWall_ = true;
-    
+
     readPatchFields();
 }
 
@@ -194,7 +194,7 @@ void dsmcFieldPatchBoundary::updateProperties(const dictionary& newDict)
 {
     //- the main properties should be updated first
     updateBoundaryProperties(newDict);
-    
+
     readPatchFields();
 }
 
@@ -203,9 +203,9 @@ void dsmcFieldPatchBoundary::updateProperties(const dictionary& newDict)
 
 scalar dsmcFieldPatchBoundary::patchLocalTemperature(const dsmcParcel& p) const
 {
-    const label wppLocalFace = 
+    const label wppLocalFace =
         mesh_.boundaryMesh()[patchId()].whichFace(p.face());
-    
+
     return boundaryT_[wppLocalFace];
 }
 
@@ -213,9 +213,9 @@ scalar dsmcFieldPatchBoundary::patchLocalTemperature(const dsmcParcel& p) const
 const vector&
 dsmcFieldPatchBoundary::patchLocalVelocity(const dsmcParcel& p) const
 {
-    const label wppLocalFace = 
+    const label wppLocalFace =
         mesh_.boundaryMesh()[patchId()].whichFace(p.face());
-    
+
     return boundaryU_[wppLocalFace];
 }
 

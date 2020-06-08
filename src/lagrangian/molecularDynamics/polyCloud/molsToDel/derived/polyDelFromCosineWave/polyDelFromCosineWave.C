@@ -62,17 +62,17 @@ polyDelFromCosineWave::polyDelFromCosineWave
 {
 
     // check if start point is in the mesh
-   
+
     if(mesh_.findCell(startPoint_) == -1)
     {
-        Info<< "WARNING: starting point " << startPoint_ 
+        Info<< "WARNING: starting point " << startPoint_
             << " is selected outside the mesh."
             << endl;
     }
 
     if(mesh_.findCell(endPoint_) == -1)
     {
-        Info<< "WARNING: end point " << endPoint_ 
+        Info<< "WARNING: end point " << endPoint_
             << " is selected outside the mesh."
             << endl;
     }
@@ -81,7 +81,7 @@ polyDelFromCosineWave::polyDelFromCosineWave
         molCloud_.cP(),
         propsDict_
     );
-    
+
     molIds_ = ids.molIds();
 
 
@@ -117,9 +117,9 @@ void polyDelFromCosineWave::findMolsToDel()
         scalar X = rSI & unitVector_;
 
         scalar R = rOut_ + rIn_*cos(2*constant::mathematical::pi*X/L_);
-        
+
         scalar Y = mag(rI - (startPoint_ + X*unitVector_));
-        
+
         if(Y > R)
         {
             label molId = mol().id();
@@ -141,9 +141,9 @@ void polyDelFromCosineWave::findMolsToDel()
 
     label molsKept = initialSize - molsToDel.size();
 
-    Info<< tab << " initial polyMolecules: " <<  initialSize 
+    Info<< tab << " initial polyMolecules: " <<  initialSize
         << ", polyMolecules kept: " <<  molsKept
-        << ", polyMolecules removed: " << molsToDel.size() 
+        << ", polyMolecules removed: " << molsToDel.size()
         << endl;
 
 

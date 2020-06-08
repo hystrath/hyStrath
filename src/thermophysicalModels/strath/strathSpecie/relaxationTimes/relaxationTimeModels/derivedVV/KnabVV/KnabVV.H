@@ -27,7 +27,7 @@ Class
 
 Description
     KnabVV relaxation time model.
-  
+
 SourceFiles
     KnabVV.C
 
@@ -45,7 +45,7 @@ SourceFiles
 
 namespace Foam
 {
-  
+
 /*---------------------------------------------------------------------------*\
                              Class KnabVV Declaration
 \*---------------------------------------------------------------------------*/
@@ -54,28 +54,28 @@ template<class ThermoType>
 class KnabVV
 :
     public relaxationTimeModelVV
-{  
+{
 
 protected:
-  
+
     // Protected data
-    
+
         //- Thermodynamic data of the species
         const PtrList<ThermoType>& speciesThermo_;
 
 
     // Protected member functions
-    
+
         //- Update the coefficients of the species equations
         virtual void updateCoefficients();
-    
+
 
 public:
 
     //- Runtime type information
     TypeName("KnabVV");
 
-    
+
     // Constructors
 
         //- Construct from components
@@ -99,15 +99,15 @@ public:
         {
             return speciesThermo_[i].W()*1.0e-3;
         }
-        
+
         // Correct the V-V relaxation times and V-V energy transfer
         virtual void correct();
-                
+
         //- Read transportProperties dictionary
         virtual bool read();
   };
 
-  
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 }	// End namespace Foam

@@ -20,7 +20,7 @@ surfaceScalarField phiEp
     "phiEp",
     max(phi, vvv_zero)*((e_pos + 0.5*magSqr(U_pos)) + p_pos/rho_pos)
   + min(phi, vvv_zero)*((e_neg + 0.5*magSqr(U_neg)) + p_neg/rho_neg)
-    
+
     /*
     aphiv_pos*(rho_pos*(e_pos + 0.5*magSqr(U_pos)) + p_pos)
   + aphiv_neg*(rho_neg*(e_neg + 0.5*magSqr(U_neg)) + p_neg)
@@ -39,7 +39,7 @@ if(downgradeSingleT) // NEW VINCENT 05-16/08/2016
 else if(downgradeSingleTv)
 {
     phiEvk.resize(1);
-    
+
     phiEvk.set
     (
         0,
@@ -54,7 +54,7 @@ else if(downgradeSingleTv)
 else
 {
     forAll(phiEvk, speciei)
-    { 
+    {
         phiEvk.set
         (
             speciei,
@@ -77,10 +77,10 @@ if(hyDev)
 {
     Zrot = ZrotInf/(1.0 + sqr(pi)/2.0*sqrt(TZ/thermo.Tt()) + (sqr(pi)/4.0 + pi)*TZ/thermo.Tt());
     Z = 3.0*pi/(4.0*(thermo.zetar()+3.0))*Zrot;
-    
+
     mub = mu*(2.0*thermo.zetar()*Z)/(3.0*(thermo.zetar()+3.0));
     bulkToShearRatio = mub/mu;
-    
+
     tauMC = tauMC + mub*tr(fvc::grad(U))*I;
 }
 

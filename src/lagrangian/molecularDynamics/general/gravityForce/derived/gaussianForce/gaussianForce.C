@@ -93,36 +93,36 @@ gaussianForce::gaussianForce
             const word fieldName = propsDict_.lookup("fieldName");
             scalar nBins = readLabel(propsDict_.lookup("nBins"));
             scalar binWidth = mag(endPoint_ - startPoint_)/(nBins);
-        
+
             scalarField forces(nBins, 0.0);
             scalarField ys(nBins, 0.0);
-        
+
             forAll(forces, n)
             {
                 scalar y = binWidth*n;
                 ys[n] = y;
                 forces[n] = ((constantA_*stress_)/density_)*exp(-y*y/constantB_);
             }
-        
+
             // compute integral
             scalar forceIntegral = 0.0;
-        
+
             for (label n = 0; n < forces.size()-1; n++)
             {
-                const scalar& r1 = ys[n]; 
+                const scalar& r1 = ys[n];
                 const scalar& r2 = ys[n+1];
-        
-                const scalar& f1 = forces[n]; 
+
+                const scalar& f1 = forces[n];
                 const scalar& f2 = forces[n+1];
-        
+
                 forceIntegral += 0.5*(r2-r1)*(f1+f2);
             }
-        
+
             Info << "forceIntegral: " << forceIntegral << endl;
 
             // write out force
             fileName casePath(time.path());
-            
+
             writeTimeData
             (
                 casePath,
@@ -176,7 +176,7 @@ vector gaussianForce::force(const vector& position)
 //     scalar y = (position - startPoint_) & normalVector_;
 
 //     return ((constantA_*stress_)/density_)*exp(-y*y/constantB_)*forceDirection_;
-    
+
 
     return force;
 }
@@ -184,7 +184,7 @@ vector gaussianForce::force(const vector& position)
 vector gaussianForce::force(const scalar& time)
 {
     vector force = vector::zero;
-    
+
     return force;
 }
 

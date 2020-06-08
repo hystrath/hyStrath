@@ -26,7 +26,7 @@ Class
 
 Description
 
-    
+
 
 \*---------------------------------------------------------------------------*/
 
@@ -68,12 +68,12 @@ class dsmcAllConfigurations
         List< autoPtr<dsmcConfiguration> > configurations_;
 
 
-        
+
 public:
 
     // Constructors
 
-        //- Null Constructor 
+        //- Null Constructor
         dsmcAllConfigurations
         (
 //             const polyMesh& mesh,
@@ -94,8 +94,8 @@ public:
         inline const List< autoPtr<dsmcConfiguration> >& configurations() const;
 
 
-//             inline const List<word>& stateControllersNames() const; 
-    
+//             inline const List<word>& stateControllersNames() const;
+
 
 
 };

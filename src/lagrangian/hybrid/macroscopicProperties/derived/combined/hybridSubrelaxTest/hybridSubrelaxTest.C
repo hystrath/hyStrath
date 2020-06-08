@@ -24,7 +24,7 @@ License
 
 Description
 
-Measures overall temperature, including vibrational temperature, for a single species gas 
+Measures overall temperature, including vibrational temperature, for a single species gas
 or a gas mixture and writes the results to a volume scalar field that can be viewed in Paraview.
 
 Translational, rotatational and vibrational temperature field will also be written automatically.
@@ -243,7 +243,7 @@ hybridSubrelaxTest::hybridSubrelaxTest
             << exit(FatalError);
     }
 
-    // standard to reading typeIds ------------ 
+    // standard to reading typeIds ------------
     const List<word> molecules (propsDict_.lookup("typeIds"));
 
     DynamicList<word> moleculesReduced(0);
@@ -277,13 +277,13 @@ hybridSubrelaxTest::hybridSubrelaxTest
     }
 
     boundaryCells_.setSize(mesh_.boundaryMesh().size());
-    
+
     forAll(boundaryCells_, p)
     {
         const polyPatch& patch = mesh_.boundaryMesh()[p];
-        
+
         boundaryCells_[p].setSize(patch.size());
-        
+
         forAll(boundaryCells_[p], c)
         {
             boundaryCells_[p][c] = patch.faceCells()[c];
@@ -441,7 +441,7 @@ void hybridSubrelaxTest::calculateField()
             linearKEMean_[cell] += mass * (p.U() & p.U());
             momentumMean_[cell] += mass * p.U();
             rotationalEMean_[cell] += p.ERot();
-            rotationalDofMean_[cell] += rotationalDof; 
+            rotationalDofMean_[cell] += rotationalDof;
             vibrationalETotal_[iD][cell] += p.EVib();
             nParcels_[iD][cell] += 1.0;
 
@@ -510,9 +510,9 @@ void hybridSubrelaxTest::calculateField()
         label iD = findIndex(typeIds_, i);
 
         if(iD != -1)
-        {            
+        {
             forAll(cloud_.boundaryFluxMeasurements().rhoNBF()[i], j)
-            {                
+            {
                 forAll(cloud_.boundaryFluxMeasurements().rhoNBF()[i][j], k)
                 {
                     rhoNBF_[j][k]
@@ -541,9 +541,9 @@ void hybridSubrelaxTest::calculateField()
         label iD = findIndex(typeIds_, i);
 
         if(iD != -1)
-        { 
+        {
             forAll(speciesRhoNBF_[i], j)
-            {                
+            {
                 forAll(speciesRhoNBF_[i][j], k)
                 {
                     speciesRhoNBF_[i][j][k]
@@ -614,7 +614,7 @@ void hybridSubrelaxTest::calculateField()
     forAll(boundaryCells_, j)
     {
         const polyPatch& patch = mesh_.boundaryMesh()[j];
-        
+
         if(isA<polyPatch>(patch))
         {
             if(!isA<emptyPolyPatch>(patch))
@@ -624,7 +624,7 @@ void hybridSubrelaxTest::calculateField()
                     if(!isA<wallPolyPatch>(patch))
                     {
                         forAll(boundaryCells_[j], k)
-                        {       
+                        {
                             translationalT_.boundaryFieldRef()[j][k] = translationalT_[boundaryCells_[j][k]];
                             rotationalT_.boundaryFieldRef()[j][k] = rotationalT_[boundaryCells_[j][k]];
                             forAll(typeIds_, iD)

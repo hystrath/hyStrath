@@ -67,8 +67,8 @@ private:
         scalar epsilon_;
 
 
-        
-        
+
+
     // Private Member Functions
 
 
@@ -84,9 +84,9 @@ public:
         lennardJones
         (
             const polyMesh& mesh,
-            polyMoleculeCloud& molCloud,         
+            polyMoleculeCloud& molCloud,
             const reducedUnits& redUnits,
-            const word& name,         
+            const word& name,
             const dictionary& dict
         );
 
@@ -99,15 +99,15 @@ public:
         scalar unscaledEnergy(const scalar r) const;
 
         scalar force(const scalar r) const;
-        
+
         scalar energy(const scalar r) const;
-        
+
         //- Read dictionary
 //         bool read
 //         (
 //             const dictionary& pairPotentialProperties,
 //         );
-        
+
         void write(const fileName& pathName);
 
         const dictionary& dict() const;

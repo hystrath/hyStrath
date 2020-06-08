@@ -60,11 +60,11 @@ simpleBins::simpleBins
     binModel(mesh, dict),
     propsDict_(dict.subDict(typeName + "Properties")),
     bb_(mesh.bounds().min(), mesh.bounds().max()),
-    nBins_(readLabel(propsDict_.lookup("nBins")))  
+    nBins_(readLabel(propsDict_.lookup("nBins")))
 {
-    
+
     const word option = propsDict_.lookup("direction");
-    
+
     if(option == "x")
     {
         unitVector_ = vector(1,0,0);
@@ -73,32 +73,32 @@ simpleBins::simpleBins
     else if(option == "y")
     {
         unitVector_ = vector(0,1,0);
-      
+
         area_ = (bb_.span() & vector(1,0,0)) * (bb_.span() & vector(0,0,1));
-        
+
     }
     else if(option == "z")
     {
         unitVector_ = vector(0,0,1);
-       
+
         area_ = (bb_.span() & vector(0,1,0)) * (bb_.span() & vector(1,0,0));
-        
+
     }
     else
     {
         // Error
-        
+
     }
-    
+
     startPoint_ = bb_.min();
     endPoint_ = (bb_.span() & unitVector_)*unitVector_ + bb_.min();
     rSEMag_ = mag(endPoint_ - startPoint_);
     binWidth_ = rSEMag_/scalar(nBins_);
-    
+
     Info << "start point = " << startPoint_ << endl;
     Info << "end point = " << endPoint_ << endl;
-    Info << "rSEMag = " << rSEMag_ << endl;    
-    
+    Info << "rSEMag = " << rSEMag_ << endl;
+
 }
 
 

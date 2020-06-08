@@ -86,7 +86,7 @@ volScalarField constSigma::sigma() const
             )*/
         );
     Info << "Maximum sigma: " << max(sigma);
-    
+
 
 
     return sigma;

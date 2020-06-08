@@ -149,38 +149,38 @@ void Foam::VariableHardSphere::scatter
         pQ.U(),
         cR
     );
-    
+
     //- Collision separation and measurements
-    cloud_.cellPropMeasurements().collisionSeparation()[cellI] += 
+    cloud_.cellPropMeasurements().collisionSeparation()[cellI] +=
         sqrt
         (
             sqr(pP.position().x() - pQ.position().x())
           + sqr(pP.position().y() - pQ.position().y())
           + sqr(pP.position().z() - pQ.position().z())
         );
-        
+
     cloud_.cellPropMeasurements().nColls()[cellI]++;
-    
+
     const label classificationP = pP.classification();
     const label classificationQ = pQ.classification();
-    
-    //- Class I molecule changes to class III molecule when it collides with 
+
+    //- Class I molecule changes to class III molecule when it collides with
     //  either class II or class III molecules.
     if (classificationP == 0 && classificationQ == 1)
     {
         pP.classification() = 2;
     }
-    
+
     if (classificationQ == 0 && classificationP == 1)
     {
         pQ.classification() = 2;
     }
-    
+
     if (classificationP == 0 && classificationQ == 2)
     {
         pP.classification() = 2;
     }
-    
+
     if (classificationQ == 0 && classificationP == 2)
     {
         pQ.classification() = 2;
@@ -201,7 +201,7 @@ void Foam::VariableHardSphere::postCollisionVelocities
     {
         cR = mag(UP - UQ);
     }
-    
+
     const scalar mP = cloud_.constProps(typeIdP).mass();
     const scalar mQ = cloud_.constProps(typeIdQ).mass();
 
@@ -255,7 +255,7 @@ void Foam::VariableHardSphere::postReactionVelocities
 
     //- Post-collision velocities
     UQ = UP - postCollisionRelativeU*mP/(mP + mQ);
-    
+
     UP += postCollisionRelativeU*mQ/(mP + mQ);
 }
 
@@ -265,7 +265,7 @@ void Foam::VariableHardSphere::redistribute
     dsmcParcel& p,
     scalar& translationalEnergy,
     const scalar omegaPQ,
-    const bool postReaction 
+    const bool postReaction
 )
 {}
 

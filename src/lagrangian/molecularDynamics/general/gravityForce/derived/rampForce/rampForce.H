@@ -62,19 +62,19 @@ private:
         dictionary propsDict_;
 
         vector force_;
-        
+
         vector direction_;
-        
+
         scalar initialForce_;
-        
+
         scalar finalForce_;
-        
+
         scalar relaxationTime_;
-        
+
         scalar forceGradient_;
 
         scalar initialTime_;
-        
+
         scalar currentTime_;
 
         scalar deltaTMD_;
@@ -115,9 +115,9 @@ public:
             void updateForce();
 
             vector force(const vector& position);
-            
+
             vector force(const scalar& time);
-            
+
         // Write
 
 

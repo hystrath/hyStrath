@@ -91,7 +91,7 @@ public:
             const label cellI,
             scalar cR = -1
         );
-        
+
         //- Scatter parcels P and Q
         virtual void scatter
         (
@@ -100,7 +100,7 @@ public:
             const label cellI,
             scalar cR = -1
         );
-        
+
         //- Calculate post-collision velocities
         virtual void postCollisionVelocities
         (
@@ -111,7 +111,7 @@ public:
             scalar cR = -1
         )
         {}
-        
+
         //- Calculate post-reaction velocities for both products
         virtual void postReactionVelocities
         (
@@ -122,7 +122,7 @@ public:
             scalar cR
         )
         {}
-        
+
         //- Apply energy redistribution
         virtual void redistribute
         (

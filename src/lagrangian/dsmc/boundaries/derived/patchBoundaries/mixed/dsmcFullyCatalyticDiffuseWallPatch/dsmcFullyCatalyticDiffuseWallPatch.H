@@ -63,18 +63,18 @@ class dsmcFullyCatalyticDiffuseWallPatch
 private:
 
     // Private data
-    
+
         dictionary propsDict_;
-        
+
 
 protected:
 
     // Protected data
-    
 
-        
+
+
     // Protected member functions
-      
+
         void setProperties();
 
 
@@ -83,7 +83,7 @@ public:
     //- Runtime type information
     TypeName("dsmcFullyCatalyticDiffuseWallPatch");
 
-    
+
     // Constructors
 
         //- Construct from components
@@ -116,7 +116,7 @@ public:
             const fileName& fixedPathName,
             const fileName& timePath
         );
-        
+
         void writeField();
 
         //- update properties from a modified dictionary

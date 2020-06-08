@@ -197,7 +197,7 @@ inline Foam::scalar Foam::SutherlandEuckenTransport<Thermo>::alphatr
     else
     {
         return 0.0;
-    }    
+    }
 }
 
 
@@ -214,7 +214,7 @@ inline Foam::scalar Foam::SutherlandEuckenTransport<Thermo>::alphave
     else
     {
         return 0.0;
-    }    
+    }
 }
 
 // * * * * * * * * * * * * * * * Member Operators  * * * * * * * * * * * * * //

@@ -54,7 +54,7 @@ polyPressureForce::polyPressureForce
 :
     polyStateController(t, molCloud, dict),
     propsDict_(dict.subDict(typeName + "Properties")),
-    fileName_(propsDict_.lookup("fileName")),    
+    fileName_(propsDict_.lookup("fileName")),
     molIds_()
 {
 
@@ -73,46 +73,46 @@ polyPressureForce::polyPressureForce
 
     molIds_ = ids.molIds();
 
-    
+
     d_ = propsDict_.lookup("forceDirection");
     d_ /= mag(d_);
-    
+
     area_ = readScalar(propsDict_.lookup("area"));
 
-    targetPressure_ = readScalar(propsDict_.lookup("pressureMPa"));    
-    
+    targetPressure_ = readScalar(propsDict_.lookup("pressureMPa"));
+
     targetPressure_ *= 1e6;
-    
+
     targetPressure_ /= molCloud_.redUnits().refPressure();
-    
+
     Info << "target Pressure RU " <<  targetPressure_ << endl;
-    
+
     readProperties();
-    
+
     endTime_ = 0;
-    
+
     if(propsDict_.found("endTime"))
     {
         endTime_ = readScalar(propsDict_.lookup("endTime"));
     }
-    
+
     Info<< "polyPressureForce: max force = " << targetPressure_*area_*d_ << endl;
- 
+
     if(endTime_ > 0)
     {
         force_ = vector::zero;
         dt_ = (targetPressure_*area_)/endTime_;
     }
-    else 
+    else
     {
         endTime_ = 0.0;
-        force_ = targetPressure_*area_*d_;  
+        force_ = targetPressure_*area_*d_;
     }
 
     currentTime_ = 0.0;
-    
+
     deltaT_ = t.deltaT().value();
-    
+
 }
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
@@ -127,7 +127,7 @@ polyPressureForce::~polyPressureForce()
 void polyPressureForce::initialConfiguration()
 {
     DynamicList<label> trackingNumbers;
-    
+
     IDLList<polyMolecule>::iterator mol(molCloud_.begin());
 
     for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
@@ -136,27 +136,27 @@ void polyPressureForce::initialConfiguration()
             if(findIndex(molIds_, mol().id()) != -1)
             {
                 trackingNumbers.append(mol().trackingNumber());
-                
-                // change from non-frozen to frozen 
-                
+
+                // change from non-frozen to frozen
+
                 mol().special() = 0;
             }
         }
-    } 
-    
+    }
+
     trackingNumbers.shrink();
-    
+
     // parallel communication
 
     if(Pstream::parRun())
-    { 
+    {
          List<label> tNs (trackingNumbers.size(), 0);
-        
+
         forAll(trackingNumbers, i)
         {
             tNs[i] = trackingNumbers[i];
         }
-        
+
         //- sending
         for (int p = 0; p < Pstream::nProcs(); p++)
         {
@@ -169,39 +169,39 @@ void polyPressureForce::initialConfiguration()
                 }
             }
         }
-    
+
         //- receiving
         for (int p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
                 List<label> tNsProc;
-                
+
                 const int proc = p;
                 {
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> tNsProc;
                 }
-                
+
                 forAll(tNsProc, i)
                 {
                     trackingNumbers.append(tNsProc[i]);
                 }
             }
-        }    
+        }
     }
-    
+
     trackingNumbers.shrink();
-    
+
     trackingNumbers_.setSize(trackingNumbers.size());
-    
+
     trackingNumbers_.transfer(trackingNumbers);
-    
+
     centreOfMass();
-    
+
     // set initial velocities on all carbon atoms the same
     setVelocities();
-    
+
     controlAfterForces();
 }
 
@@ -209,7 +209,7 @@ void polyPressureForce::setVelocities()
 {
     vector velocity(vector::zero);
     scalar nMols = 0.0;
-    
+
     {
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
 
@@ -222,15 +222,15 @@ void polyPressureForce::setVelocities()
             }
         }
     }
-    
+
     // parallel communication
 
     if(Pstream::parRun())
-    { 
+    {
         reduce(nMols, sumOp<scalar>());
-        reduce(velocity, sumOp<vector>());        
+        reduce(velocity, sumOp<vector>());
     }
-    
+
     if(nMols > 0)
     {
         velocity /= nMols;
@@ -239,7 +239,7 @@ void polyPressureForce::setVelocities()
     {
         Info << "WARNING: polyPressureForce: no mols - something is wrong " << endl;
     }
-    
+
     {
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
 
@@ -249,9 +249,9 @@ void polyPressureForce::setVelocities()
             {
                 mol().v() = (velocity & d_)*d_;
             }
-        }   
+        }
     }
-    
+
     velocity_ = velocity;
 }
 
@@ -259,7 +259,7 @@ void polyPressureForce::centreOfMass()
 {
     vector centreOfMass(vector::zero);
     scalar mass = 0.0;
-    
+
     IDLList<polyMolecule>::iterator mol(molCloud_.begin());
 
     for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
@@ -267,24 +267,24 @@ void polyPressureForce::centreOfMass()
         {
             if(findIndex(molIds_, mol().id()) != -1)
             {
-                const scalar& massI = molCloud_.cP().mass(mol().id());                
-                
+                const scalar& massI = molCloud_.cP().mass(mol().id());
+
                 centreOfMass += mol().position()*massI;
                 mass += massI;
             }
         }
-    } 
- 
+    }
+
     // parallel communication
 
     if(Pstream::parRun())
-    { 
+    {
         reduce(mass, sumOp<scalar>());
-        reduce(centreOfMass, sumOp<vector>());        
+        reduce(centreOfMass, sumOp<vector>());
     }
-    
+
     position_ = centreOfMass/mass;
-    
+
     mass_ = mass;
 }
 
@@ -308,9 +308,9 @@ void polyPressureForce::controlDuringForces
 void polyPressureForce::controlAfterForces()
 {
     centreOfMass();
-    
+
     setVelocities();
-    
+
     currentTime_ += deltaT_;
 
     if(currentTime_ < endTime_)
@@ -321,18 +321,18 @@ void polyPressureForce::controlAfterForces()
     {
         force_ = targetPressure_*area_*d_;
     }
-    
-    Info<< "polyPressureForce: force = " << force_ 
+
+    Info<< "polyPressureForce: force = " << force_
         << ", velocity = " << velocity_
         << ", acc = " << netAcc_
         << ", position = " << position_
         << endl;
 
     // Get the total force on the object after intermolecular force computation
-    
+
     {
         netForce_ = vector::zero;
-        
+
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
 
         for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
@@ -345,19 +345,19 @@ void polyPressureForce::controlAfterForces()
                 }
             }
         }
-        
-        // parallel communication        
+
+        // parallel communication
         if(Pstream::parRun())
-        { 
-            reduce(netForce_, sumOp<vector>());        
-        }        
-        
+        {
+            reduce(netForce_, sumOp<vector>());
+        }
+
         // plus external pressure force
         netForce_ += force_;
-        
+
         netAcc_ = netForce_/mass_;
-    }       
-    
+    }
+
     {
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
 
@@ -374,8 +374,8 @@ void polyPressureForce::controlAfterForces()
                 mol().pi() = vector::zero;
                 mol().tau() = vector::zero;
             }
-        }      
-    }    
+        }
+    }
 }
 
 void polyPressureForce::controlAfterVelocityII()
@@ -400,9 +400,9 @@ void polyPressureForce::output
         {
             scalarField timeField(1, time_.time().timeOutputValue());
             vectorField positions(1, position_);
-            vectorField netForce(1, netForce_);            
-            vectorField velocity(1, velocity_);     
-            
+            vectorField netForce(1, netForce_);
+            vectorField velocity(1, velocity_);
+
             writeTimeData
             (
                 fixedPathName,
@@ -410,8 +410,8 @@ void polyPressureForce::output
                 timeField,
                 positions,
                 true
-            );            
-            
+            );
+
             writeTimeData
             (
                 fixedPathName,
@@ -420,7 +420,7 @@ void polyPressureForce::output
                 netForce,
                 true
             );
-            
+
             writeTimeData
             (
                 fixedPathName,
@@ -428,7 +428,7 @@ void polyPressureForce::output
                 timeField,
                 velocity,
                 true
-            );            
+            );
         }
     }
 }

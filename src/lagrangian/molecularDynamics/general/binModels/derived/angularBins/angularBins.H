@@ -64,18 +64,18 @@ private:
 
         // midpoint between rotational start and end points
         vector m_;
-        
+
         // define two reference vectors orthogonal to each other and the rotational axis
         vector rVx_;
         vector rVy_;
-        
-        // radius 
+
+        // radius
         scalar Rin_;
         scalar Rout_;
 
         // angle with respect to the reference vectors (important to define clockwise)
         scalar thetaStart_;
-        scalar thetaEnd_;      
+        scalar thetaEnd_;
 
 //         vector startPoint_;
 //         vector endPoint_;
@@ -137,7 +137,7 @@ public:
 
             scalar binVolume(const label& n);
 
-            
+
 
         // Write
 

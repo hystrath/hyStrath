@@ -35,8 +35,8 @@ Description
 namespace Foam
 {
 
-// * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //  
-  
+// * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
+
     defineTypeNameAndDebug(dsmcTimeStepModel, 0);
     defineRunTimeSelectionTable(dsmcTimeStepModel, fvMesh);
 }
@@ -49,7 +49,7 @@ void Foam::dsmcTimeStepModel::initialisenParticles(const scalar value)
     {
         nParticles_[celli] = value;
     }
-    
+
     forAll(nParticles_.boundaryField(), patchi)
     {
         forAll(nParticles_.boundaryField()[patchi], facei)
@@ -103,11 +103,11 @@ Foam::dsmcTimeStepModel::New
             "timeStepModel",
             "constant"
         );
-      
+
     timeStepModel = "dsmc" + static_cast<word>(std::toupper(timeStepModel[0]))
         + timeStepModel.substr(1) + "TimeStepModel";
 
-    Info<< "Selecting the time-step model:" << tab << timeStepModel 
+    Info<< "Selecting the time-step model:" << tab << timeStepModel
         << "\n" << endl;
 
     fvMeshConstructorTable::iterator cstrIter =

@@ -62,9 +62,9 @@ private:
         dictionary propsDict_;
 
         vector unitVector_;
-        
+
         boundedBox bb_;
-        
+
         vector startPoint_;
         vector endPoint_;
 
@@ -123,7 +123,7 @@ public:
 
             scalar binVolume(const label& n);
 
-            
+
 
         // Write
 

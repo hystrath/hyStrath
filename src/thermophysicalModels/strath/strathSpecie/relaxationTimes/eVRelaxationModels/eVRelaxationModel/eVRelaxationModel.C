@@ -49,10 +49,10 @@ Foam::eVRelaxationModel::eVRelaxationModel
 )
 :
     dict1_(dict1),
-    dict2_(dict2),     
-    name1_(name1),    
-    lname1_(lname1),    
-    p_(p),   
+    dict2_(dict2),
+    name1_(name1),
+    lname1_(lname1),
+    p_(p),
     Tv_(Tv),
     eVOverwriteDefault_(readBool(dict1_.subDict("thermalRelaxationModels").subDict("eV").lookup("overwriteDefault"))),
     eVSpeciesDependent_(readBool(dict1_.subDict("thermalRelaxationModels").subDict("eV").lookup("speciesDependent")))

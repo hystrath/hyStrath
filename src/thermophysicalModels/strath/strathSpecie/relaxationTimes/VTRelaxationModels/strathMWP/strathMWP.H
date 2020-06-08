@@ -27,7 +27,7 @@ Class
 
 Description
     strathMWP V-T Relaxation model.
-    
+
 SourceFiles
     strathMWP.C
 
@@ -62,18 +62,18 @@ class strathMWP
 
         // Coefficient
         scalar species1_, species2_;;
-        
+
         // Coefficients
-        scalar A12_, B12_; 
-        
+        scalar A12_, B12_;
+
         // Molecular weight, species i [g/mol]
-        scalar W1_;   
-        
+        scalar W1_;
+
         // Offset term in the exponential
-        scalar offset_;   
-        
+        scalar offset_;
+
         // Coefficients related to Park's correction
-        scalar sigma1_, sigma2_, sigma1v_, sigma2v_;  
+        scalar sigma1_, sigma2_, sigma1v_, sigma2v_;
 
 
 public:
@@ -110,7 +110,7 @@ public:
 
         //- V-T relaxation time [s]
         virtual tmp<volScalarField> tauVT() const;
-         
+
         //- V-T relaxation time for patch [s]
         virtual tmp<scalarField> tauVT
         (
@@ -118,9 +118,9 @@ public:
             const scalarField& p,
             const scalarField& Tt,
             const PtrList<scalarField>& Tv,
-            const PtrList<scalarField>& nD 
+            const PtrList<scalarField>& nD
         ) const;
-        
+
 };
 
 

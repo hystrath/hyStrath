@@ -11,12 +11,12 @@ for(int speciei = 1; speciei < noSolvedVibEq; speciei++)
     {
         QVT += thermalRelaxModelVT().QVT(speciei);
     }
-    
+
     if(composition.particleType(speciei) == 2)
     {
         QCV += reaction->Scv(speciei) + reaction->Seiir(speciei);
     }
-} 
+}
 
 if(containsElectrons)
 {
@@ -26,14 +26,14 @@ if(containsElectrons)
 
 fvScalarMatrix rhoEvInviscid
 (
-    fvm::ddt(rhoEv) 
-  + fvc::div(phiEvk[0]) 
+    fvm::ddt(rhoEv)
+  + fvc::div(phiEvk[0])
   - QVT
   - QCV
 );
 
 if(containsElectrons)
-{ 
+{
     rhoEvInviscid += (fvc::grad(composition.pP("e-")) & U);
 }
 
@@ -44,7 +44,7 @@ rhoEvInviscid.solve
 
 ev.correctBoundaryConditions();
 rhoEv.boundaryFieldRef() = rho.boundaryField()*ev.boundaryField();
-     
+
 thermo.correctHEVK();
 
 ev = rhoEv/rho;

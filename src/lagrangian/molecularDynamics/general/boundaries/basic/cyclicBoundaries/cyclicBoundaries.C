@@ -33,13 +33,13 @@ Description
 namespace Foam
 {
 
-//- Null Constructor 
+//- Null Constructor
 cyclicBoundaries::cyclicBoundaries
 (
     Time& t,
     const polyMesh& mesh
 )
-:    
+:
     time_(t),
     boundariesDict_
     (
@@ -80,7 +80,7 @@ cyclicBoundaries::cyclicBoundaries
             IOobject::MUST_READ,
             IOobject::NO_WRITE
         )
-    ),    
+    ),
     cyclicBoundaryList_(boundariesDict_.lookup("cyclicBoundaries")),
     cyclicBoundaryNames_(cyclicBoundaryList_.size()),
     cyclicBoundaryIds_(cyclicBoundaryList_.size()),
@@ -96,7 +96,7 @@ cyclicBoundaries::cyclicBoundaries
     label nCyclicBoundaries = 0;
 
     DynamicList<word> cyclicNames(0);
-    
+
     forAll(bM, patchI)
     {
         const polyPatch& patch = bM[patchI];
@@ -125,20 +125,20 @@ cyclicBoundaries::cyclicBoundaries
         {
             const entry& boundaryI = cyclicBoundaryList_[c];
             const dictionary& boundaryIDict = boundaryI.dict();
-    
+
             cyclicBoundaryModels_[c] = autoPtr<cyclicBoundary>
             (
                 cyclicBoundary::New(t, mesh, boundaryIDict)
             );
-    
+
             cyclicBoundaryNames_[c] = cyclicBoundaryModels_[c]->type();
             cyclicBoundaryIds_[c] = c;
         }
     }
-    
+
     forAll(cyclicBoundaryModels_, i)
     {
-        
+
         forAll(cyclicBoundaryModels_, j)
         {
             if(i != j)
@@ -148,7 +148,7 @@ cyclicBoundaries::cyclicBoundaries
                     (
                         cyclicBoundaryModels_[j]->patchName()
                     );
-                                
+
                 if(neighbour)
                 {
                     cyclicBoundaryModels_[i]->setCoupledPatchInfo

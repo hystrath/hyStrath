@@ -23,18 +23,18 @@ License
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 Class
-   
+
 
 Description
 
     FALSE = interact
-    TRUE = do not interact 
-    
+    TRUE = do not interact
+
     OR
-    
+
     FALSE = do not exclude interactions
     TRUE = exclude interactions
-    
+
 SourceFiles
     exclusionModelI.H
     exclusionModel.C
@@ -71,7 +71,7 @@ protected:
         const polyMesh& mesh_;
 
         polyMoleculeCloud& molCloud_;
-        
+
 //         bool excludeMolecules_;
 //         bool excludeSites_;
 
@@ -130,13 +130,13 @@ public:
         virtual void initialiseExclusions
         (
         ) = 0;
-        
+
         virtual bool excludeMolecules
         (
             polyMolecule* molI,
             polyMolecule* molJ
         ) = 0;
-        
+
         virtual bool excludeSites
         (
             polyMolecule* molI,
@@ -144,8 +144,8 @@ public:
             const label& siteI,
             const label& siteJ
         ) = 0;
-        
-        
+
+
         // Access
 
         // Check

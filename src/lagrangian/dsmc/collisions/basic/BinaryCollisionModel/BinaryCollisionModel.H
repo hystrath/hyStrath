@@ -56,7 +56,7 @@ class BinaryCollisionModel
 protected:
 
     // Protected data
-        
+
         //- The cloud dictionary
         const dictionary& dict_;
 
@@ -137,7 +137,7 @@ public:
             const label cellI,
             scalar cR = -1
         ) = 0;
-        
+
         //- Scatter parcels P and Q
         virtual void scatter
         (
@@ -146,7 +146,7 @@ public:
             const label cellI,
             scalar cR = -1
         ) = 0;
-        
+
         //- Calculate post-collision velocities
         virtual void postCollisionVelocities
         (
@@ -156,7 +156,7 @@ public:
             vector& UQ,
             scalar cR = -1
         ) = 0;
-        
+
         //- Calculate post-reaction velocities for both products
         virtual void postReactionVelocities
         (
@@ -166,7 +166,7 @@ public:
             vector& UQ,
             scalar cR
         ) = 0;
-        
+
         //- Apply energy redistribution
         virtual void redistribute
         (

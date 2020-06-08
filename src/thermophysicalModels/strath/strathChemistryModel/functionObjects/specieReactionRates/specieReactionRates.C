@@ -153,7 +153,7 @@ bool Foam::functionObjects::specieReactionRates<ChemistryModelType>::write()
     }
 
     file() << nl << endl;
-  
+
     return true;
 }
 

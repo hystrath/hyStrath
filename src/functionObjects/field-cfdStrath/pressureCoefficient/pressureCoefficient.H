@@ -94,8 +94,8 @@ class pressureCoefficient
 
         //- Name of inflow patch
         word inflowPatchName_;
-        
-    
+
+
     // Private Member Functions
 
         //- File header information

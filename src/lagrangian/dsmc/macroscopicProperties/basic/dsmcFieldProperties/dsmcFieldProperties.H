@@ -61,7 +61,7 @@ class dsmcFieldProperties
 
     // Private data
 
-        //- The entire field-properties dictionary 
+        //- The entire field-properties dictionary
         //  (it contains multiple subDictionaries)
 
         Time& time_;
@@ -102,7 +102,7 @@ public:
         void createFields();
 
         void calculateFields();
-        
+
         //reset the measurement set up when the mesh has changed
         void resetFields();
 
@@ -113,9 +113,9 @@ public:
         inline const List< autoPtr<dsmcField> >& fields() const;
         inline const List<word>& fieldNames() const;
         inline const List<label>& fieldIds() const;
-        
+
         scalar translationalT(const label cellI);
-        
+
         scalar overallT(const label cellI);
 
     // Ostream Operator

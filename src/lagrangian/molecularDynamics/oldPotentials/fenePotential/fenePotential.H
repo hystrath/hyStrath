@@ -56,7 +56,7 @@ class fenePotential
     // Private data
 
         const polyMesh& mesh_;
-    
+
         const reducedUnits& rU_;
 //         const dictionary& potentialProperties_;
 
@@ -69,10 +69,10 @@ class fenePotential
         label nBins_;
         scalarField U_;
         scalarField f_;
-    
-       
+
+
     // Private Member Functions
-    
+
         void setLookUpTables();
 
 public:
@@ -108,11 +108,11 @@ public:
 
         inline scalar fFene(const scalar& r);
         inline scalar Ufene(const scalar& r);
- 
+
         inline scalar force (const scalar& r);
         inline scalar potentialEnergy (const scalar& r);
-    
-    
+
+
 //         inline scalar numericalDifferentiation
 //         (
 //             const scalar& ra,
@@ -122,7 +122,7 @@ public:
 //             const scalar& U,
 //             const scalar& Ub
 //         );
-    
+
         inline const scalar& k() const;
         inline const scalar& rCut() const;
         inline const scalar& rCutSqr() const;

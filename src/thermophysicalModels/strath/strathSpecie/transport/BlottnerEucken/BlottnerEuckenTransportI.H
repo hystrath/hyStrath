@@ -165,7 +165,7 @@ inline Foam::scalar Foam::BlottnerEuckenTransport<Thermo>::alphatr
     else
     {
         return 0.0;
-    } 
+    }
 }
 
 
@@ -182,7 +182,7 @@ inline Foam::scalar Foam::BlottnerEuckenTransport<Thermo>::alphave
     else
     {
         return 0.0;
-    } 
+    }
 }
 
 // * * * * * * * * * * * * * * * Member Operators  * * * * * * * * * * * * * //

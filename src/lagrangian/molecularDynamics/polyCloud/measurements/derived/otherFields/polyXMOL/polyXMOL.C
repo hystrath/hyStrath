@@ -287,9 +287,9 @@ void polyXMOL::write()
         const reducedUnits& rU = molCloud_.redUnits();
 
         fileName fName(timePath_/"polyMoleculeCloud_"+fieldName_+".xmol");
-    
+
         OFstream str(fName);
-    
+
         str << totalSites << nl << "polyMoleculeCloud site positions in angstroms" << nl;
 
         // for all processors
@@ -304,7 +304,7 @@ void polyXMOL::write()
 //                 const polyMolecule::constantProperties cP(molCloud_.constProps(molId));
 
                 label n = molCloud_.cP().nSites(molId);
-            
+
                 for (int i = 0; i < n; i++)
                 {
                     if(findIndex(excludeSites_, molCloud_.cP().siteNames(molId)[i]) == -1)

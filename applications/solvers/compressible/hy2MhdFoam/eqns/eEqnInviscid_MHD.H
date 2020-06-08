@@ -18,9 +18,9 @@ solve
   - fvc::div(sigmaDotU)
  ==
     reaction->Sh()
-  + mhd->Q(U)  
+  + mhd->Q(U)
   // + radiation->Sh(thermo)
-); 
+);
 
 Info<< "max(Q_mag) = " << max(mhd->Q(U)) << endl;
 

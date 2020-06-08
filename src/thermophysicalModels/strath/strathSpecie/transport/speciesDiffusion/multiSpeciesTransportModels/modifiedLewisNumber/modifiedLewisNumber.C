@@ -47,13 +47,13 @@ void Foam::modifiedLewisNumber<ThermoType>::updateCoefficients()
             // In this case, rho*Ds = cste independent from the temperature as opposed to the LewisNumber class
             dimensionedScalar("constantrhoD", dimMass/dimLength/dimTime, Le_)
         );
-        
+
         constantrhoD.primitiveFieldRef() *= this->thermo_.rho().internalField();
         constantrhoD.boundaryFieldRef() *= this->thermo_.rho().boundaryField();
-        
+
         this->D_[speciei] = constantrhoD;
     }
-} 
+}
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
@@ -66,9 +66,9 @@ Foam::modifiedLewisNumber<ThermoType>::modifiedLewisNumber
 )
 :
     Fick<ThermoType>(thermo, turbulence),
-    
+
     Le_(readScalar(IOdictionary::subDict("transportModels")
-        .subDict("diffusiveFluxesParameters").lookup("modifiedLewisNumber"))) 
+        .subDict("diffusiveFluxesParameters").lookup("modifiedLewisNumber")))
 {}
- 
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

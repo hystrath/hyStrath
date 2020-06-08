@@ -69,9 +69,9 @@ polyOutputProperties::polyOutputProperties
     nAvTimeSteps_(0.0)
 {
     const scalarField& cellVols = mesh_.cellVolumes();
-    
+
     meshVolume_ = sum(cellVols);
-    
+
     if (Pstream::parRun())
     {
         reduce(meshVolume_, sumOp<scalar>());
@@ -93,7 +93,7 @@ void polyOutputProperties::createField()
 void polyOutputProperties::calculateField()
 {
     nAvTimeSteps_ += 1.0;
-    
+
     vector singleStepTotalLinearMomentum(vector::zero);
     vector singleStepTotalAngularMomentum(vector::zero);
     scalar singleStepMaxVelocityMag = 0.0;
@@ -108,7 +108,7 @@ void polyOutputProperties::calculateField()
 
     {
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
-    
+
         for
         (
             mol = molCloud_.begin();
@@ -120,7 +120,7 @@ void polyOutputProperties::calculateField()
             scalar molMass(molCloud_.cP().mass(molId));
             singleStepTotalMass += molMass;
         }
-    
+
         for
         (
             mol = molCloud_.begin();
@@ -129,7 +129,7 @@ void polyOutputProperties::calculateField()
         )
         {
             label molId = mol().id();
-    
+
             scalar molMass(molCloud_.cP().mass(molId));
 
             const vector& molV(mol().v());
@@ -151,7 +151,7 @@ void polyOutputProperties::calculateField()
             {
                 singleStepMaxVelocityMag = mag(molV);
             }
-    
+
             singleStepTotalLinearKE += 0.5*molMass*magSqr(molV);
             singleStepTotalAngularKE += 0.5*(molOmega & molMoI & molOmega);
             singleStepTotalPE += mol().potentialEnergy();
@@ -228,12 +228,12 @@ void polyOutputProperties::writeField()
 
     if (runTime.outputTime())
     {
-    	const scalar& nAvTimeSteps = nAvTimeSteps_; 
+    	const scalar& nAvTimeSteps = nAvTimeSteps_;
 
         if (accumulatedNMols_)
         {
             Info << "calculating averages" << endl;
-    
+
             averageTemperature_ =
             (
                 2.0/(molCloud_.redUnits().kB() * accumulatedDOFs_)
@@ -244,7 +244,7 @@ void polyOutputProperties::writeField()
                     0.5*magSqr(accumulatedTotalLinearMomentum_)/accumulatedTotalMass_
                 )
             );
-    
+
             averagePressure_ =
             (
                 (
@@ -257,7 +257,7 @@ void polyOutputProperties::writeField()
                 /
                 meshVolume_
             );
-    
+
             Info << "----------------------------------------" << nl
                 << "Averaged properties" << nl
                 << "Average |velocity| = "

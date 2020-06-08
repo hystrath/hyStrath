@@ -96,11 +96,11 @@ public:
 
 //         //- create initial field
 //         void createField();
-// 
+//
 //         //- calculate field
 //         void calculateField();
 
-}; 		
+};
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

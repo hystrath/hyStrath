@@ -67,36 +67,36 @@ class dsmcDiffuseWallPatch
 private:
 
     // Private data
-    
-        dictionary propsDict_;
-        
-        
-protected: 
 
-    // Protected data       
-        
+        dictionary propsDict_;
+
+
+protected:
+
+    // Protected data
+
         //- depthAxis indicates the direction of depth for the medium
         //  default: y-axis (label = 1)
         label depthAxis_;
-        
+
         //- Maximum coordinate (that of the ground level) along the depthAxis
         //  direction
         scalar maxDepth_;
-        
+
         //- Length of the patch along the depthAxis taken as the difference
         //  between the max and min of the patch bounding box
         scalar lengthPatch_;
-        
-        //- formationLevelTemperature_ is the temperature to be set on the 
+
+        //- formationLevelTemperature_ is the temperature to be set on the
         //  formation surface of the porous medium. Linear temperature gradient
-        //  between temperature_ that is the ground level temperature and 
+        //  between temperature_ that is the ground level temperature and
         //  formationLevelTemperature_
         //  default: temperature_, i.e., no temperature gradient
         scalar formationLevelTemperature_;
-        
+
 
     // Protected member functions
-    
+
         virtual void setProperties();
 
         //- Perform a diffuse particle-wall reflection
@@ -111,7 +111,7 @@ protected:
 
         //- Return the temperature as a function of depth
         scalar getLocalTemperature(const scalar& depthPosition) const;
-        
+
 
 public:
 
@@ -143,14 +143,14 @@ public:
 
         //- control the mols
         virtual void controlParticle(dsmcParcel& p, dsmcParcel::trackingData& td);
-        
+
         //- output data
         virtual void output
         (
             const fileName& fixedPathName,
             const fileName& timePath
         );
-        
+
         void writeField();
 
         //- update properties from a modified dictionary
@@ -164,7 +164,7 @@ public:
         {
             return depthAxis_;
         }
-        
+
         //- return const access to the formation level temperature
         const scalar& formationLevelTemperature() const
         {

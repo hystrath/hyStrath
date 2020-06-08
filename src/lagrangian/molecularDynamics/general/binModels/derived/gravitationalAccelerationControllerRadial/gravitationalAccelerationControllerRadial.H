@@ -50,32 +50,32 @@ class gravitationalAccelerationControllerRadial
         //- subDictionary containing the properties
         dictionary propsDict_;
 
-        
+
         // use right hand grip rule to define rotational direction of acceleration
         // important to define well otherwise flow can be reversed
         vector rotationalAxis_;
 
         // midpoint between rotational start and end points
         vector m_;
-        
+
         // define two reference vectors orthogonal to each other and the rotational axis
         vector rVx_;
         vector rVy_;
-        
-        // radius 
+
+        // radius
 //         scalar radius_;
-        
+
         // angle with respect to the reference vectors (important to define clockwise)
         scalar thetaStart_;
-        scalar thetaEnd_;        
-        
+        scalar thetaEnd_;
+
         scalar acc_;
 
         // Private Member Functions
         void setProperties();
-        
-        
-        
+
+
+
     public:
 
         //- Runtime type information

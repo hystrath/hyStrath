@@ -50,12 +50,12 @@ void polyDensity::setBoundBox
 )
 {
     const dictionary& dict(propsDict.subDict(name));
-    
+
     vector startPoint = dict.lookup("startPoint");
     vector endPoint = dict.lookup("endPoint");
 
     bb.resetBoundedBox(startPoint, endPoint);
-    
+
 }
 
 
@@ -77,7 +77,7 @@ polyDensity::polyDensity
     molIds_()
 {
 
-    
+
    // choose molecule ids to sample
 
     molIds_.clear();
@@ -89,18 +89,18 @@ polyDensity::polyDensity
     );
 
     molIds_ = ids.molIds();
-    
-    setBoundBox(propsDict_, bb_, "samplingRegion");  
-    
-    volume_ = bb_.span().x() * bb_.span().y() * bb_.span().z();    
-    
+
+    setBoundBox(propsDict_, bb_, "samplingRegion");
+
+    volume_ = bb_.span().x() * bb_.span().y() * bb_.span().z();
+
     Info << "Volume = " << volume_ << endl;
-    
-    
+
+
     if (propsDict_.found("volume"))
     {
         scalar volume  = readScalar(propsDict_.lookup("volume"));
-        
+
         volume_ = volume;
     }
 }
@@ -124,9 +124,9 @@ void polyDensity::createField()
 void polyDensity::calculateField()
 {
     IDLList<polyMolecule>::iterator mol(molCloud_.begin());
-    
+
     scalar mass = 0.0;
-    
+
     for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
     {
         if(bb_.contains(mol().position()))
@@ -134,7 +134,7 @@ void polyDensity::calculateField()
             if(findIndex(molIds_, mol().id()) != -1)
             {
                 const scalar& massI = molCloud_.cP().mass(mol().id());
-                mass += massI;            
+                mass += massI;
             }
         }
     }
@@ -143,9 +143,9 @@ void polyDensity::calculateField()
     {
         reduce(mass, sumOp<scalar>());
     }
-    
+
     scalar density = mass/volume_;
-    
+
     densities_.append(density);
 
 }
@@ -162,17 +162,17 @@ void polyDensity::writeField()
 
             scalarField timeField (densities_.size(), 0.0);
             scalarField densities (densities_.size(), 0.0);
-            
+
             densities.transfer(densities_);
             densities_.clear();
 
             const scalar& deltaT = time_.deltaT().value();
-            
+
             forAll(timeField, i)
             {
                 timeField[timeField.size()-i-1]=runTime.timeOutputValue()-(deltaT*i);
             }
-            
+
             writeTimeData
             (
                 casePath_,
@@ -183,7 +183,7 @@ void polyDensity::writeField()
             );
 
             const reducedUnits& rU = molCloud_.redUnits();
-    
+
             if(rU.outputSIUnits())
             {
                 writeTimeData
@@ -206,7 +206,7 @@ void polyDensity::measureDuringForceComputation
 ){}
 
 void polyDensity::measureDuringForceComputationSite
-(   
+(
     polyMolecule* molI,
     polyMolecule* molJ,
     label sI,

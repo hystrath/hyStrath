@@ -67,20 +67,20 @@ class dsmcCatalyticWallPatch
 private:
 
     // Private data
-    
+
         dictionary propsDict_;
-        
+
 
 protected:
 
     // Protected data
-    
+
         List<label> catalysisTypeIds_;
         List<label> catalysedTypeIds_;
         List<scalar> heatOfReaction_;
-        
+
     // Protected member functions
-      
+
         void setProperties();
 
 
@@ -89,7 +89,7 @@ public:
     //- Runtime type information
     TypeName("dsmcCatalyticWallPatch");
 
-    
+
     // Constructors
 
         //- Construct from components
@@ -122,7 +122,7 @@ public:
             const fileName& fixedPathName,
             const fileName& timePath
         );
-        
+
         void writeField();
 
         //- update properties from a modified dictionary

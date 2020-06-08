@@ -244,13 +244,13 @@ void region::setInterface
 //     {
 //
 //         processorTraverse_.setSize(interfacePoints_);
-// 
+//
 //        const label& procNo = Pstream::myProcNo();
-// 
+//
 //         forAll(processorTraverse_, p)
 //         {
 //             processorTraverse_[p].setSize(Pstream::nProcs());
-// 
+//
 //             forAll(processorTraverse_[p], procI)
 //             {
 //                 if(procI == procNo)
@@ -270,7 +270,7 @@ void region::setInterface
 
 
 // The most imp function of the region class:
-// Traverse from each point on the interface in order to 
+// Traverse from each point on the interface in order to
 // accept all neighbouring points that lie within R.
 void region::setRegionPoints
 (
@@ -461,7 +461,7 @@ void region::setAcceptedPoints(pointInfoList& pointData)
 
 
 
-// sets a list of corresponding points across processor boundaries 
+// sets a list of corresponding points across processor boundaries
 // (this is done once before building the region)
 void region::setCorrPatchPoints
 (

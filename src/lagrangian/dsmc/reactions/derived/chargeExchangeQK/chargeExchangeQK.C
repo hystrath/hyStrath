@@ -45,20 +45,20 @@ addToRunTimeSelectionTable(dsmcReaction, chargeExchangeQK, dictionary);
 void chargeExchangeQK::setProperties()
 {
     dsmcReaction::setProperties();
-    
+
     if (reactantIds_.size() != 2)
     {
         //- There must be exactly 2 reactants
         FatalErrorIn("chargeExchangeQK::setProperties()")
             << "For reaction named " << reactionName_ << nl
-            << "There should be two reactants, instead of " 
-            << reactantIds_.size() << nl 
+            << "There should be two reactants, instead of "
+            << reactantIds_.size() << nl
             << exit(FatalError);
     }
 
     bool neutralFound = false;
     bool ionisedFound = false;
-    
+
     forAll(reactantIds_, r)
     {
         switch (cloud_.constProps(reactantIds_[r]).charge())
@@ -68,10 +68,10 @@ void chargeExchangeQK::setProperties()
                 FatalErrorIn("chargeExchangeQK::setProperties()")
                     << "For reaction named " << reactionName_ << nl
                     << "Reactant " << cloud_.typeIdList()[reactantIds_[r]]
-                    << " is an electron and only a combination of " << nl 
+                    << " is an electron and only a combination of " << nl
                     << "one neutral and one ionised particle is accepted" << nl
                     << exit(FatalError);
-                break;    
+                break;
             case 0:
                 neutralFound = true;
                 posNeutralReactant_ = r;
@@ -81,22 +81,22 @@ void chargeExchangeQK::setProperties()
                 break;
         }
     }
-        
+
     if (!neutralFound)
     {
         FatalErrorIn("chargeExchangeQK::setProperties()")
             << "For reaction named " << reactionName_ << nl
-            << "None of the reactants is a neutral particle." << nl 
+            << "None of the reactants is a neutral particle." << nl
             << exit(FatalError);
     }
     else if (!ionisedFound)
     {
         FatalErrorIn("chargeExchangeQK::setProperties()")
             << "For reaction named " << reactionName_ << nl
-            << "None of the reactants is an ionised particle." << nl 
+            << "None of the reactants is an ionised particle." << nl
             << exit(FatalError);
     }
-    
+
     //- Reading in charge exchange products
     const wordList productsChargeExchange
     (
@@ -107,32 +107,32 @@ void chargeExchangeQK::setProperties()
     {
         FatalErrorIn("chargeExchangeQK::setProperties()")
             << "For reaction named " << reactionName_ << nl
-            << "There should be two products, instead of " 
-            << productsChargeExchange.size() << nl 
+            << "There should be two products, instead of "
+            << productsChargeExchange.size() << nl
             << exit(FatalError);
     }
-    
+
     productIdsChargeExchange_.setSize(productsChargeExchange.size());
-    
+
     neutralFound = false;
     ionisedFound = false;
 
     forAll(productIdsChargeExchange_, r)
     {
-        const label productIndex = 
+        const label productIndex =
             findIndex
             (
-                cloud_.typeIdList(), 
+                cloud_.typeIdList(),
                 productsChargeExchange[r]
             );
-            
-        //- Check that products belong to the typeIdList as defined in 
+
+        //- Check that products belong to the typeIdList as defined in
         //  constant/dsmcProperties
         if (productIndex == -1)
         {
             FatalErrorIn("chargeExchangeQK::setProperties()")
                 << "For reaction named " << reactionName_ << nl
-                << "Cannot find type id: " << productsChargeExchange[r] << nl 
+                << "Cannot find type id: " << productsChargeExchange[r] << nl
                 << exit(FatalError);
         }
 
@@ -143,10 +143,10 @@ void chargeExchangeQK::setProperties()
                 FatalErrorIn("chargeExchangeQK::setProperties()")
                     << "For reaction named " << reactionName_ << nl
                     << "Product " << cloud_.typeIdList()[reactantIds_[r]]
-                    << " is an electron and only a combination of " << nl 
+                    << " is an electron and only a combination of " << nl
                     << "one neutral and one ionised particle is accepted" << nl
                     << exit(FatalError);
-                break;    
+                break;
             case 0:
                 neutralFound = true;
                 //- The neutral particle is set to be the first product
@@ -159,19 +159,19 @@ void chargeExchangeQK::setProperties()
                 break;
         }
     }
-    
+
     if (!neutralFound)
     {
         FatalErrorIn("chargeExchangeQK::setProperties()")
             << "For reaction named " << reactionName_ << nl
-            << "None of the products is a neutral particle." << nl 
+            << "None of the products is a neutral particle." << nl
             << exit(FatalError);
     }
     else if (!ionisedFound)
     {
         FatalErrorIn("chargeExchangeQK::setProperties()")
             << "For reaction named " << reactionName_ << nl
-            << "None of the products is an ionised particle." << nl 
+            << "None of the products is an ionised particle." << nl
             << exit(FatalError);
     }
 }
@@ -188,12 +188,12 @@ void chargeExchangeQK::testChargeExchange
 )
 {
     const label typeIdP = p.typeId();
-    
+
     //- Collision temperature: Eq.(10) of Bird's QK paper.
     const scalar TColl = translationalEnergy/physicoChemical::k.value()
-        /(2.5 - omegaPQ); 
-    
-    const scalar aDash = 
+        /(2.5 - omegaPQ);
+
+    const scalar aDash =
         aCoeffChEx_
        *(
             pow(2.5 - omegaPQ, bCoeffChEx_)
@@ -201,13 +201,13 @@ void chargeExchangeQK::testChargeExchange
            /exp(lgamma(2.5 - omegaPQ + bCoeffChEx_))
         );
 
-    scalar activationEnergy = 
+    scalar activationEnergy =
         (
             aDash*pow(TColl/273.0, bCoeffChEx_)
            *fabs(heatOfReactionChargeExchangeJoules_)
         );
-    
-    if (heatOfReactionChargeExchangeJoules_ < 0.0) 
+
+    if (heatOfReactionChargeExchangeJoules_ < 0.0)
     {
         //- forward (endothermic) charge exchange reaction
         activationEnergy -= heatOfReactionChargeExchangeJoules_;
@@ -217,27 +217,27 @@ void chargeExchangeQK::testChargeExchange
         cloud_.constProps(typeIdP).nElectronicLevels();
     const labelList& gListP = cloud_.constProps(typeIdP).electronicDegeneracyList();
     const scalarList& EElistP = cloud_.constProps(typeIdP).electronicEnergyList();
-    
+
     const scalar EEleP = EElistP[p.ELevel()];
-    
+
     //- Total collision energy
     collisionEnergy = translationalEnergy + EEleP;
-    
+
     //- Condition for the charge exchange reaction to possibly occur
     if (collisionEnergy > activationEnergy)
     {
         label keyElectronicLevel = -1;
-        
+
         for(label i=0; i<maxElectronicLevelP; i++)
-        {           
+        {
             if (EElistP[i] > activationEnergy)
             {
                 break;
-            } 
-            
+            }
+
             keyElectronicLevel++;
         }
-        
+
         const label trialELevel = cloud_.postCollisionElectronicEnergyLevel
             (
                 collisionEnergy,
@@ -246,12 +246,12 @@ void chargeExchangeQK::testChargeExchange
                 EElistP,
                 gListP
             );
-                        
+
         if (trialELevel == keyElectronicLevel)
         {
             scalar probChEx = 0.0;
             label nPossStates = 0;
-                
+
             if (maxElectronicLevelP == 1)
             {
                 nPossStates = gListP[0];
@@ -266,37 +266,37 @@ void chargeExchangeQK::testChargeExchange
                     }
                 }
             }
-            
+
             label nState = cloud_.randomLabel(1, nPossStates);
 
             label nAvailableStates = 0;
             label nLevel = -1;
-            
+
             forAll(EElistP, n)
             {
                 nAvailableStates += gListP[n];
-                
+
                 if (nState <= nAvailableStates && nLevel < 0)
                 {
                     nLevel = n;
                 }
             }
-            
+
             //- Calculate the probability of it occuring
             scalar summation = 0.0;
-            
+
             for(label i=0; i<=nLevel; i++)
-            { 
+            {
                 summation += gListP[i]*pow(collisionEnergy - EElistP[i], 1.5-omegaPQ);
             }
-            
+
             probChEx =
                 (
                     gListP[trialELevel]
                    *pow(collisionEnergy - EElistP[trialELevel], 1.5-omegaPQ)
                 )
                /summation;
-            
+
             if (probChEx > cloud_.rndGen().sample01<scalar>())
             {
                 //- Charge exchange can occur
@@ -317,24 +317,24 @@ void chargeExchangeQK::chargeExchange
 {
     const label typeIdP = p.typeId();
     const label typeIdQ = q.typeId();
-    
+
     nTotChargeExchangeReactions_++;
     nChargeExchangeReactionsPerTimeStep_++;
-    
+
     if (allowSplitting_)
     {
         relax_ = false;
-        
+
         vector UP = p.U();
         vector UQ = q.U();
-        
+
         const scalar mP = cloud_.constProps(typeIdP).mass();
         const scalar mQ = cloud_.constProps(typeIdQ).mass();
         const scalar mR = mP*mQ/(mP + mQ);
         const scalar cRsqr = magSqr(UP - UQ);
-        
+
         scalar translationalEnergy = 0.5*mR*cRsqr;
-        
+
         //- Center of mass velocity (pre-charge exchange)
         const vector Ucm = (mP*UP + mQ*UQ)/(mP + mQ);
 
@@ -345,24 +345,24 @@ void chargeExchangeQK::chargeExchange
         const scalar mPChEx = cloud_.constProps(typeIdIonised).mass();
         const scalar mQChEx = cloud_.constProps(typeIdNeutral).mass();
         const scalar mRChEx = mPChEx*mQChEx/(mPChEx + mQChEx);
-        
+
         const scalar EVibP = cloud_.constProps(typeIdP).eVib_tot(p.vibLevel());
         const scalar EEleP = cloud_.constProps(typeIdP).electronicEnergyList()[p.ELevel()];
         const scalar EVibQ = cloud_.constProps(typeIdQ).eVib_tot(q.vibLevel());
         const scalar EEleQ = cloud_.constProps(typeIdQ).electronicEnergyList()[q.ELevel()];
-        
+
         //- Assumption: no energy redistribution for both particles
         //  All the energy is stored in the translational mode
         translationalEnergy += p.ERot() + EVibP + EEleP + q.ERot() + EVibQ
              + EEleQ + heatOfReactionChargeExchangeJoules_;
-            
+
         const scalar relVelChExMol = sqrt(2.0*translationalEnergy/mRChEx);
-        
+
         //- Variable Hard Sphere collision part for collision of molecules
         const scalar cosTheta = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
         const scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
         const scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
-    
+
         const vector postCollisionRelU =
             relVelChExMol
            *vector
@@ -371,14 +371,14 @@ void chargeExchangeQK::chargeExchange
                 sinTheta*cos(phi),
                 sinTheta*sin(phi)
             );
-        
+
         UP = Ucm + postCollisionRelU*mQChEx/(mPChEx + mQChEx);
         UQ = Ucm - postCollisionRelU*mPChEx/(mPChEx + mQChEx);
-        
+
         //- p is originally the neutral particle and becomes the ionised particle
         p.typeId() = typeIdIonised;
         p.U() = UP;
-        p.ERot() = 0.0; 
+        p.ERot() = 0.0;
         p.vibLevel().setSize
         (
             cloud_.constProps
@@ -388,7 +388,7 @@ void chargeExchangeQK::chargeExchange
             0
         );
         p.ELevel() = 0;
-        
+
         //- q is originally the ionised particle and becomes the neutral particle
         q.typeId() = typeIdNeutral;
         q.U() = UQ;
@@ -445,14 +445,14 @@ chargeExchangeQK::~chargeExchangeQK()
 void chargeExchangeQK::initialConfiguration()
 {
     setProperties();
-    
+
     const word& reactantA = cloud_.typeIdList()[reactantIds_[0]];
     const word& reactantB = cloud_.typeIdList()[reactantIds_[1]];
-    
+
     const word& productA = cloud_.typeIdList()[productIdsChargeExchange_[0]];
     const word& productB = cloud_.typeIdList()[productIdsChargeExchange_[1]];
-    
-    chargeExchangeStr_ = "Charge exchange reaction " + reactantA + " + " 
+
+    chargeExchangeStr_ = "Charge exchange reaction " + reactantA + " + "
         + reactantB + " --> " + productA + " + " + productB;
 }
 
@@ -477,7 +477,7 @@ bool chargeExchangeQK::tryReactMolecules
             return true;
         }
     }
-        
+
     return false;
 }
 
@@ -498,37 +498,37 @@ void chargeExchangeQK::reaction(dsmcParcel& p, dsmcParcel& q)
 {
     //- Reset the relax switch
     relax_ = true;
-    
+
     const label typeIdP = p.typeId();
     const label typeIdQ = q.typeId();
-    
+
     //- Charge exchange reaction P + Q+ --> P+ + Q
     //  If P is the first (neutral) reactant
     //  NB: Q is necessarily second otherwise this class would not have been
     //  selected
-    if (cloud_.constProps(typeIdP).charge() == 0) 
-    { 
+    if (cloud_.constProps(typeIdP).charge() == 0)
+    {
         const scalar mP = cloud_.constProps(typeIdP).mass();
         const scalar mQ = cloud_.constProps(typeIdQ).mass();
         const scalar mR = mP*mQ/(mP + mQ);
-        
+
         const scalar omegaPQ =
             0.5
             *(
                   cloud_.constProps(typeIdP).omega()
                 + cloud_.constProps(typeIdQ).omega()
             );
-        
+
         const scalar cRsqr = magSqr(p.U() - q.U());
         const scalar translationalEnergy = 0.5*mR*cRsqr;
-        
+
         //- Possible reactions:
         // 1. Charge exchange reaction
-        
+
         scalar totalReactionProbability = 0.0;
         scalarList reactionProbabilities(1, 0.0);
         scalarList collisionEnergies(1, 0.0);
-        
+
         testChargeExchange
         (
             p,
@@ -538,7 +538,7 @@ void chargeExchangeQK::reaction(dsmcParcel& p, dsmcParcel& q)
             totalReactionProbability,
             reactionProbabilities[0]
         );
-        
+
         //- Decide if a charge exchange reaction is to occur
         if (totalReactionProbability > cloud_.rndGen().sample01<scalar>())
         {
@@ -557,9 +557,9 @@ void chargeExchangeQK::outputResults(const label& counterIndex)
 {
     if (writeRatesToTerminal_)
     {
-        //- measure density 
+        //- measure density
         const List<DynamicList<dsmcParcel*>>& cellOccupancy = cloud_.cellOccupancy();
-            
+
         volume_ = 0.0;
 
         labelList molsReactants(2, 0);
@@ -571,7 +571,7 @@ void chargeExchangeQK::outputResults(const label& counterIndex)
             forAll(parcelsInCell, pIC)
             {
                 dsmcParcel* p = parcelsInCell[pIC];
-                
+
                 const label pos = findIndex(reactantIds_, p->typeId());
 
                 if (pos != -1)
@@ -582,23 +582,23 @@ void chargeExchangeQK::outputResults(const label& counterIndex)
 
             volume_ += mesh_.cellVolumes()[c];
         }
-        
+
         scalar volume = volume_;
         if (Pstream::parRun())
         {
             reduce(volume, sumOp<scalar>());
         }
-        
+
         scalarList numberDensities(2, cloud_.nParticle()/volume);
         numberDensities[0] *= molsReactants[0];
         numberDensities[1] *= molsReactants[1];
-        
+
         label nTotChargeExchangeReactions = nTotChargeExchangeReactions_;
         label nChargeExchangeReactionsPerTimeStep = nChargeExchangeReactionsPerTimeStep_;
 
         const scalar deltaT = mesh_.time().deltaT().value();
         scalar factor = 0.0;
-        
+
         if (reactantIds_[0] == reactantIds_[1] && numberDensities[0] > 0.0)
         {
             factor = cloud_.nParticle()/
@@ -617,7 +617,7 @@ void chargeExchangeQK::outputResults(const label& counterIndex)
                    *volume
                 );
         }
-        
+
         if (Pstream::parRun())
         {
             //- Parallel communication
@@ -626,9 +626,9 @@ void chargeExchangeQK::outputResults(const label& counterIndex)
             reduce(nTotChargeExchangeReactions, sumOp<label>());
             reduce(nChargeExchangeReactionsPerTimeStep, sumOp<label>());
         }
-        
+
         const scalar reactionRateChargeExchange = factor*nTotChargeExchangeReactions;
-        
+
         Info<< chargeExchangeStr_
             << ", reaction rate = " << reactionRateChargeExchange
             << ", nReactions = " << nChargeExchangeReactionsPerTimeStep
@@ -636,20 +636,20 @@ void chargeExchangeQK::outputResults(const label& counterIndex)
     }
     else
     {
-        label nTotChargeExchangeReactions = nTotChargeExchangeReactions_;   
+        label nTotChargeExchangeReactions = nTotChargeExchangeReactions_;
         label nChargeExchangeReactionsPerTimeStep = nChargeExchangeReactionsPerTimeStep_;
-        
+
         if (Pstream::parRun())
         {
             //- Parallel communication
             reduce(nTotChargeExchangeReactions, sumOp<label>());
             reduce(nChargeExchangeReactionsPerTimeStep, sumOp<label>());
         }
-        
+
         if (nTotChargeExchangeReactions > 0)
         {
             Info<< chargeExchangeStr_
-                << " is active, nReactions this time step = " 
+                << " is active, nReactions this time step = "
                 << nChargeExchangeReactionsPerTimeStep
                 << endl;
          }

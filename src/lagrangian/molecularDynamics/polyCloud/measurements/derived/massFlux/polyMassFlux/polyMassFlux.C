@@ -120,11 +120,11 @@ polyMassFlux::polyMassFlux
                 }
             }
         }
-        
+
         processorFaces.shrink();
 
         label nInternalFaces = faces.size() - processorFaces.size();
-           
+
         List<label> internalFaces(nInternalFaces, 0);
 
         label counter = 0;
@@ -150,11 +150,11 @@ polyMassFlux::polyMassFlux
         }
 
 
-    
+
         forAll(processorFaces, f)
         {
             const label& faceI = processorFaces[f];
-            zoneSurfaceArea_ += 0.5*mag(mesh_.faceAreas()[faceI]);           
+            zoneSurfaceArea_ += 0.5*mag(mesh_.faceAreas()[faceI]);
         }
 
         if(Pstream::parRun())
@@ -170,20 +170,20 @@ polyMassFlux::polyMassFlux
                     }
                 }
             }
-        
+
             //- receiving
             for (int p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
                     scalar zoneSurfaceAreaProc;
-    
+
                     const int proc = p;
                     {
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> zoneSurfaceAreaProc;
                     }
-        
+
                     zoneSurfaceArea_ += zoneSurfaceAreaProc;
                 }
             }
@@ -247,15 +247,15 @@ void polyMassFlux::calculateField()
     {
         reduce(massFlux, sumOp<scalar>());
     }
-    
+
     const scalar& deltaT = time_.time().deltaT().value();
-    massFlux /= deltaT;  
+    massFlux /= deltaT;
     cumulativeFlux_ += massFlux;
     massFlux_.append(massFlux);
 
     Info << fieldName_ << " - mass flow rate = " << cumulativeFlux_ << endl;
 }
-    
+
 void polyMassFlux::writeField()
 {
     const Time& runTime = time_.time();
@@ -267,17 +267,17 @@ void polyMassFlux::writeField()
             massFlux_.shrink();
             scalarField timeField (massFlux_.size(), 0.0);
             scalarField massFlux (massFlux_.size(), 0.0);
-            
+
             massFlux.transfer(massFlux_);
             massFlux_.clear();
 
             const scalar& deltaT = time_.time().deltaT().value();
-            
+
             forAll(timeField, i)
             {
                 timeField[timeField.size()-i-1]=runTime.timeOutputValue()-(deltaT*i);
             }
-            
+
             writeTimeData
             (
                 casePath_,
@@ -286,9 +286,9 @@ void polyMassFlux::writeField()
                 massFlux,
                 true
             );
-                 
+
             const reducedUnits& rU = molCloud_.redUnits();
-    
+
             if(rU.outputSIUnits())
             {
                 writeTimeData
@@ -311,7 +311,7 @@ void polyMassFlux::measureDuringForceComputation
 ){}
 
 void polyMassFlux::measureDuringForceComputationSite
-(   
+(
     polyMolecule* molI,
     polyMolecule* molJ,
     label sI,

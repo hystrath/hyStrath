@@ -102,7 +102,7 @@ void selectIdPairs::setConfiguration
     //====================================================================
     const dictionary& pairDict = potentialDict.subDict("pair");
 
-    
+
     //==================================================
     // Display the site IDs found in the potentialDict:
     //==================================================
@@ -201,7 +201,7 @@ void selectIdPairs::setConfiguration
                 const dictionary& pairPotentialDict = pairDict.subDict(pairPotentialName);
 
                  word pairPotentialTypeName(pairPotentialDict.lookup("pairPotential"));
- 
+
                 if(pairPotentialTypeName == "noInteraction")
                 {
                     Info << idA << "-" << idB <<  ": Interaction type - No interaction." << endl;
@@ -224,8 +224,8 @@ void selectIdPairs::setConfiguration
                     sigma_[b][a] = sigma;
                 }
             }
-//             pairMatrix_[a][b] = 
-//             pairMatrix_[b][a] = 
+//             pairMatrix_[a][b] =
+//             pairMatrix_[b][a] =
         }
     }
 
@@ -266,14 +266,14 @@ void selectIdPairs::setConfiguration
     epsilon_.setSize(nIds_);
     sigma_.setSize(nIds_);
 
-    
+
     // buckingham potential parameters
     alpha_.setSize(nIds_);
     rho_.setSize(nIds_);
-    C_.setSize(nIds_);    
+    C_.setSize(nIds_);
 
-    
-    
+
+
     for (label i = 0; i < nIds_; ++i)
     {
         epsilon_[i].setSize(nIds_, 0.0);
@@ -344,13 +344,13 @@ void selectIdPairs::setConfiguration
             }
 
             const dictionary& pairPotentialDict = pairDict.subDict(pairPotentialName);
-            
+
             const word potentialName = pairPotentialDict.lookup("pairPotential");
-            
+
             if(potentialName == "lennardJones")
             {
                 lennardJones_ = true;
-                
+
                 const dictionary& lJDict = pairPotentialDict.subDict("lennardJonesCoeffs");
 
                 scalar sigma = readScalar(lJDict.lookup("sigma"));
@@ -364,12 +364,12 @@ void selectIdPairs::setConfiguration
             else if (potentialName == "buckinghamPotential")
             {
                 buckinghamPotential_ = true;
-                
+
                 const dictionary& lJDict = pairPotentialDict.subDict("buckinghamPotentialCoeffs");
 
                 scalar alpha = readScalar(lJDict.lookup("alpha"));
                 scalar rho = readScalar(lJDict.lookup("rho"));
-                scalar C = readScalar(lJDict.lookup("C"));                
+                scalar C = readScalar(lJDict.lookup("C"));
 
                 alpha_[a][b] = alpha;
                 alpha_[b][a] = alpha;
@@ -385,19 +385,19 @@ void selectIdPairs::setConfiguration
 
     if(lennardJones_)
     {
-        Info<< "Lennard Jones parameters : " 
+        Info<< "Lennard Jones parameters : "
             << nl << "epsilon: " << epsilon_
             << nl << "sigma: " << sigma_
             << endl;
     }
- 
+
     if(buckinghamPotential_)
     {
-        Info<< "Buckingham potential parameters : " 
+        Info<< "Buckingham potential parameters : "
             << nl << "alpha: " << alpha_
             << nl << "rho: " << rho_
             << nl << "C: " << C_
-            << endl; 
+            << endl;
     }
 }
 */

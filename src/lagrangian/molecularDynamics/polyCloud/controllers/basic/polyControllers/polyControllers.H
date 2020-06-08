@@ -27,10 +27,10 @@ Class
 
 Description
 
-	Stores all the information for the polyControllers models defined within 
+	Stores all the information for the polyControllers models defined within
     the polyControllersDict, and selects & builds the models automatically.
 
-    
+
 
 \*---------------------------------------------------------------------------*/
 
@@ -84,12 +84,12 @@ class polyControllers
         List< autoPtr<polyFluxController> > fluxControllers_;
 
         labelList controllersDuringForceComp_;
-        
+
 public:
 
     // Constructors
 
-        //- Null Constructor 
+        //- Null Constructor
         polyControllers
         (
             Time& t,
@@ -122,14 +122,14 @@ public:
         );
         void controlAfterForces();
         void controlVelocitiesII();
-        
-        
+
+
         //- calculate controller properties
         void calculateStateProps();
 
         //- output controller properties
         void outputStateResults();
-        
+
         // Access
 
             const label& nStateControllers() const;
@@ -140,8 +140,8 @@ public:
             inline List< autoPtr<polyFluxController> >& fluxControllers();
             inline const List< autoPtr<polyFluxController> >& fluxControllers() const;
 
-            inline const List<word>& stateControllersNames() const; 
-    
+            inline const List<word>& stateControllersNames() const;
+
 };
 
 

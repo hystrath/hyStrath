@@ -35,12 +35,12 @@ Foam::rarefactionParameter::New
     const compressibleTurbulenceModel& turbulence
 )
 {
-    word mfpModelName = word("rarefied") +'<' + thermo.partialThermoName() + '>'; 
+    word mfpModelName = word("rarefied") +'<' + thermo.partialThermoName() + '>';
 
     fvMeshConstructorTable::iterator cstrIter =
         fvMeshConstructorTablePtr_->find(mfpModelName);
-        
-    Info<< "Loading the rarefaction parameters library\n" << endl;    
+
+    Info<< "Loading the rarefaction parameters library\n" << endl;
 
     if (cstrIter == fvMeshConstructorTablePtr_->end())
     {

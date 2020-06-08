@@ -26,7 +26,7 @@ Class
     polySphere
 
 Description
-    not parallelised 
+    not parallelised
 
 SourceFiles
     polySphereI.H

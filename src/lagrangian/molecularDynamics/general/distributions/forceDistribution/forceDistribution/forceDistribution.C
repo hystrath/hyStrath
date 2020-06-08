@@ -238,7 +238,7 @@ void forceDistribution::setMagForceDistr()
 
 void forceDistribution::addToDistribution
 (
-    const vector& r, 
+    const vector& r,
     const vector& force,
     const scalar& energy
 )
@@ -250,7 +250,7 @@ void forceDistribution::addToDistribution
     if(binWidth_ > 0.0)
     {
         label n = label(rNormal/binWidth_);
-    
+
         if((n < magRadii_.size()) && (n >= 0))
         {
             forces_[n] += force;
@@ -262,7 +262,7 @@ void forceDistribution::addToDistribution
 
 void forceDistribution::addToDistribution
 (
-    const vector& r, 
+    const vector& r,
     const vector& force,
     const scalar& energy,
     const scalar& virial
@@ -275,7 +275,7 @@ void forceDistribution::addToDistribution
     if(binWidth_ > 0.0)
     {
         label n = label(rNormal/binWidth_);
-    
+
         if((n < magRadii_.size()) && (n >= 0))
         {
             forces_[n] += force;
@@ -297,7 +297,7 @@ bool forceDistribution::isWithinDistributionRange(const vector& r)
     if(binWidth_ > 0.0)
     {
         label n = label(rNormal/binWidth_);
-    
+
         if((n < magRadii_.size()) && (n >= 0))
         {
             inRange = true;
@@ -326,7 +326,7 @@ void forceDistribution::scaleForceDistribution
     const scalarField& values
 )
 {
-    //check 
+    //check
     if(forces_.size() == values.size())
     {
         forAll(forces_, f)
@@ -549,10 +549,10 @@ void forceDistribution::writeTimeData
     {
         forAll(yData, n)
         {
-            file 
-                << xData[n] << "\t" 
-                << yData[n].x() << "\t" << yData[n].y() 
-                << "\t" << yData[n].z() 
+            file
+                << xData[n] << "\t"
+                << yData[n].x() << "\t" << yData[n].y()
+                << "\t" << yData[n].z()
                 << endl;
         }
     }
@@ -577,7 +577,7 @@ void forceDistribution::read
         mkDir(timePath);
 
         FatalErrorIn("void forceDistribution::read()")
-            << "Cannot open file " << timePath 
+            << "Cannot open file " << timePath
             << abort(FatalError);
     }
 
@@ -623,7 +623,7 @@ void forceDistribution::read
 
     setPEDistribution(energies);
 
-    //-read virial 
+    //-read virial
 
     IFstream virialDistrFile(timePath/name_+"_virial.raw");
 
@@ -670,8 +670,8 @@ void forceDistribution::setPEDistribution
     if(energies.size() != energies_.size())
     {
         FatalErrorIn("void forceDistribution::setPEDistribution()")
-            << "Energy distribution size : "<< energies.size() 
-            << " not equal to the force distribution list: " 
+            << "Energy distribution size : "<< energies.size()
+            << " not equal to the force distribution list: "
             << energies_.size()
             << abort(FatalError);
     }
@@ -690,8 +690,8 @@ void forceDistribution::setVirialDistribution
     if(virials.size() != virials_.size())
     {
         FatalErrorIn("void forceDistribution::setPEDistribution()")
-            << "Virial distribution size : "<< virials.size() 
-            << " not equal to the force distribution list: " 
+            << "Virial distribution size : "<< virials.size()
+            << " not equal to the force distribution list: "
             << virials_.size()
             << abort(FatalError);
     }
@@ -717,7 +717,7 @@ scalar forceDistribution::binValue(const scalar& rD) const
     {
         return magForces_[key];
     }
-    else 
+    else
     {
         return 0.0;
     }
@@ -736,7 +736,7 @@ scalar forceDistribution::binValuePE(const scalar& rD) const
     {
         return energies_[key];
     }
-    else 
+    else
     {
         return 0.0;
     }
@@ -754,7 +754,7 @@ scalar forceDistribution::binValueVirial(const scalar& rD) const
     {
         return virials_[key];
     }
-    else 
+    else
     {
         return 0.0;
     }
@@ -892,7 +892,7 @@ scalar forceDistribution::readBinWidth()
     {
         FatalErrorIn("forceDistribution")
             << "Size of forceDistribution:  " << name_
-            << " is zero" 
+            << " is zero"
             << abort(FatalError);
     }
 
@@ -945,9 +945,9 @@ scalar forceDistribution::readBinWidth()
 //             << "Attempted assignment to self"
 //             << abort(FatalError);
 //     }
-// 
+//
 //     Map<label>::operator=(rhs);
-// 
+//
 //     binWidth_ = rhs.binWidth();
 // }
 
@@ -961,14 +961,14 @@ scalar forceDistribution::readBinWidth()
 // {
 //     os  << d.binWidth_
 //         << static_cast<const Map<label>&>(d);
-// 
+//
 //     // Check state of Ostream
 //     os.check
 //     (
 //         "Ostream& operator<<(Ostream&, "
 //         "const forceDistribution&)"
 //     );
-// 
+//
 //     return os;
 // }
 

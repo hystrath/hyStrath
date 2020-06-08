@@ -45,9 +45,9 @@ addToRunTimeSelectionTable(pairPotentialModel, harmonicPotential, dictionary);
 harmonicPotential::harmonicPotential
 (
     const polyMesh& mesh,
-    polyMoleculeCloud& molCloud, 
+    polyMoleculeCloud& molCloud,
     const reducedUnits& redUnits,
-    const word& name, 
+    const word& name,
     const dictionary& dict
 )
 :
@@ -60,12 +60,12 @@ harmonicPotential::harmonicPotential
     {
         k_ /= (redUnits.refMass()/ (redUnits.refTime()*redUnits.refTime()));
         r0_ /= redUnits.refLength();
-       
+
         Info << "k = " << k_ << endl;
     }
-    
+
 //     useTables_ = false;
-    setLookupTables();    
+    setLookupTables();
 }
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
@@ -82,7 +82,7 @@ scalar harmonicPotential::unscaledEnergy(const scalar r) const
 
 scalar harmonicPotential::energy(const scalar r) const
 {
-    return energyLookUpFromTable(r);  
+    return energyLookUpFromTable(r);
 }
 
 scalar harmonicPotential::force(const scalar r) const
@@ -99,27 +99,27 @@ void harmonicPotential::write(const fileName& pathName)
 {
 //     Info<< "Writing energy and force to file for potential "
 //             << name_ << endl;
-//             
+//
 //     label nBins = 10000;
 //     scalar dr = r0_/nBins;
 //     scalarField U(nBins, 0.0);
 //     scalarField f(nBins, 0.0);
-//     
+//
 //     for (label i=0; i<nBins; ++i)
 //     {
 //         scalar r = dr*i;
-//         
+//
 //         U[i] = energy(r);
 //         f[i] = force(r);
 //     }
 //     {
 //         OFstream file(pathName/name_+"-harmonicPotential-RU.xy");
-// 
+//
 //         if(file.good())
 //         {
 //             forAll(U, i)
 //             {
-//                 file 
+//                 file
 //                     << dr*i << "\t"
 //                     << U[i] << "\t"
 //                     << f[i]
@@ -133,15 +133,15 @@ void harmonicPotential::write(const fileName& pathName)
 //                 << abort(FatalError);
 //         }
 //     }
-//     
+//
 //     {
 //         OFstream file(pathName/name_+"-harmonicPotential-SI.xy");
-// 
+//
 //         if(file.good())
 //         {
 //             forAll(U, i)
 //             {
-//                 file 
+//                 file
 //                     << dr*i*rU_.refLength() << "\t"
 //                     << U[i]*rU_.refEnergy() << "\t"
 //                     << f[i]*rU_.refForce()
@@ -153,7 +153,7 @@ void harmonicPotential::write(const fileName& pathName)
 //             FatalErrorIn("void harmonicPotential::write()")
 //                 << "Cannot open file " << file.name()
 //                 << abort(FatalError);
-//         }  
+//         }
 //     }
 }
 

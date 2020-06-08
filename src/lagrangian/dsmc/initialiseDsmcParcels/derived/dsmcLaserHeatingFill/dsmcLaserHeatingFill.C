@@ -80,28 +80,28 @@ void dsmcLaserHeatingFill::setInitialConfiguration()
 //     (
 //         readScalar(dsmcInitialiseDict_.lookup("translationalTemperature"))
 //     );
-//     
+//
 //     const scalar rotationalTemperature
 //     (
 //         readScalar(dsmcInitialiseDict_.lookup("rotationalTemperature"))
 //     );
-//     
+//
 //     const scalar vibrationalTemperature
 //     (
 //         readScalar(dsmcInitialiseDict_.lookup("vibrationalTemperature"))
 //     );
-//     
+//
 //     const scalar electronicTemperature
 //     (
 //         readScalar(dsmcInitialiseDict_.lookup("electronicTemperature"))
 //     );
 
     const vector velocity(dsmcInitialiseDict_.lookup("velocity"));
-    
+
     r0_ = readScalar((dsmcInitialiseDict_.lookup("r0")));
-    
+
     centrePoint_ = (dsmcInitialiseDict_.lookup("centrePoint"));
-    
+
     deltaT_ = readScalar((dsmcInitialiseDict_.lookup("axialTemperature")));
 
     const dictionary& numberDensitiesDict
@@ -144,57 +144,57 @@ void dsmcLaserHeatingFill::setInitialConfiguration()
         forAll(zone, c)
         {
             const label& cellI = zone[c];
-    
+
             List<tetIndices> cellTets = polyMeshTetDecomposition::cellTetIndices
             (
                 mesh_,
                 cellI
             );
-            
+
             const scalar& cellCentreI = mag(mesh_.cellCentres()[cellI] - centrePoint_);
-            
+
             const scalar& cellCentreY = mesh_.cellCentres()[cellI].y();
-            
+
             scalar cellTemperature = deltaT_*exp(-1.0*pow(cellCentreY/r0_,2.0));
-            
+
             const scalar& cellCentreX = mesh_.cellCentres()[cellI].x();
-            
+
             cellTemperature *= (0.0218 - cellCentreX)/0.0036;
-    
+
             forAll(cellTets, tetI)
             {
                 const tetIndices& cellTetIs = cellTets[tetI];
-    
+
                 tetPointRef tet = cellTetIs.tet(mesh_);
-    
+
                 scalar tetVolume = tet.mag();
-    
+
                 forAll(molecules, i)
                 {
                     const word& moleculeName(molecules[i]);
-    
+
                     label typeId(findIndex(cloud_.typeIdList(), moleculeName));
-    
+
                     if (typeId == -1)
                     {
                         FatalErrorIn("Foam::dsmcCloud<dsmcParcel>::initialise")
                             << "typeId " << moleculeName << "not defined." << nl
                             << abort(FatalError);
                     }
-    
+
                     const dsmcParcel::constantProperties& cP = cloud_.constProps(typeId);
-    
+
                     scalar numberDensity = numberDensities[i];
-    
+
                     // Calculate the number of particles required
                     scalar particlesRequired = numberDensity*tetVolume;
-                    
+
                     //const scalar& RWF = cloud_.coordSystem().recalculateRWF(cellI);
                     particlesRequired /= cloud_.nParticles(cellI);
-    
+
                     // Only integer numbers of particles can be inserted
                     label nParticlesToInsert = label(particlesRequired);
-    
+
                     // Add another particle with a probability proportional to the
                     // remainder of taking the integer part of particlesRequired
                     if
@@ -205,30 +205,30 @@ void dsmcLaserHeatingFill::setInitialConfiguration()
                     {
                         nParticlesToInsert++;
                     }
-    
+
                     for (label pI = 0; pI < nParticlesToInsert; pI++)
                     {
                         point p = tet.randomPoint(rndGen_);
-    
+
                         vector U = cloud_.equipartitionLinearVelocity
                         (
                             cellTemperature,
                             cP.mass()
                         );
-    
+
                         scalar ERot = cloud_.equipartitionRotationalEnergy
                         (
                             cellTemperature,
                             cP.rotationalDegreesOfFreedom()
                         );
-            
+
                         labelList vibLevel = cloud_.equipartitionVibrationalEnergyLevel
                         (
                             cellTemperature,
                             cP.nVibrationalModes(),
                             typeId
                         );
-                        
+
                         label ELevel = cloud_.equipartitionElectronicLevel
                         (
                             cellTemperature,
@@ -237,13 +237,13 @@ void dsmcLaserHeatingFill::setInitialConfiguration()
                         );
 
                         U += velocity;
-                        
+
                         label newParcel = -1;
-                        
+
                         label classification = 0;
-                        
+
                         const scalar& RWF = cloud_.coordSystem().recalculateRWF(cellI);
-                        
+
                         cloud_.addNewParcel
                         (
                             p,
@@ -280,9 +280,9 @@ void dsmcLaserHeatingFill::setInitialConfiguration()
     forAll(zone, c)
     {
         const label& cellI = zone[c];
-        
+
         const scalar& cellCentreI = mag(mesh_.cellCentres()[cellI] - centrePoint_);
-            
+
         scalar cellTemperature = deltaT_*exp(-1.0*sqr(cellCentreI/r0_));
 
         cloud_.sigmaTcRMax().primitiveFieldRef()[cellI] = cP.sigmaT()*cloud_.maxwellianMostProbableSpeed

@@ -281,7 +281,7 @@ void dsmcMeshFillHybridMax::setInitialConfiguration()
                         rotationalTemperature,
                         cP.rotationalDegreesOfFreedom()
                     );
-        
+
                     scalar EVib = cloud_.equipartitionVibrationalEnergy
                     (
                         vibrationalTemperature,
@@ -290,9 +290,9 @@ void dsmcMeshFillHybridMax::setInitialConfiguration()
                     );
 
                     U += velocity;
-                    
+
                     label newParcel = -1;
-                    
+
                     label classification = 0;
 
                     const scalar& RWF = cloud_.coordSystem().recalculateRWF(cellI);

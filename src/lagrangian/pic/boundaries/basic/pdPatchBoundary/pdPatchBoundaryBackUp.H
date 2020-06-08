@@ -85,7 +85,7 @@ protected:
 
         //- cells corresponding to the boundary faces
         labelList cells_;
-	
+
         scalar patchSurfaceArea_;
 
         //- set all the properties below from model if required
@@ -94,7 +94,7 @@ protected:
         vector velocity_;
         scalar temperature_;
 
-        //- targeted fields 
+        //- targeted fields
         scalarField densities_;
         vectorField velocities_;
         scalarField temperatures_;
@@ -135,7 +135,7 @@ public:
             ),
             (t, mesh, molCloud, dict)
         );
-   
+
     // Constructors
 
         //- Construct from components
@@ -232,7 +232,7 @@ public:
 	const label& patchId() const;
 
 
-	//- return the targeted fields 
+	//- return the targeted fields
 	const scalar& density() const;
 	scalar& density();
 
@@ -242,7 +242,7 @@ public:
 	const scalar& temperature() const;
 	scalar& temperature();
 
-	//- return the targeted fields 
+	//- return the targeted fields
 	const scalarField& densityField() const;
 	scalarField& densityField();
 

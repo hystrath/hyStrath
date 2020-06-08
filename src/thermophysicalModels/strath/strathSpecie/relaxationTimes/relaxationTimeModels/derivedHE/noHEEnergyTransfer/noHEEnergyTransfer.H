@@ -27,7 +27,7 @@ Class
 
 Description
     noHEEnergyTransfer disables heavy-particles-electron energy transfer.
-  
+
 SourceFiles
     noHEEnergyTransfer.C
 
@@ -42,7 +42,7 @@ SourceFiles
 
 namespace Foam
 {
-  
+
 /*---------------------------------------------------------------------------*\
                              Class noHEEnergyTransfer Declaration
 \*---------------------------------------------------------------------------*/
@@ -51,25 +51,25 @@ template<class ThermoType>
 class noHEEnergyTransfer
 :
     public relaxationTimeModelHE
-{  
+{
 
 protected:
-  
+
     // Protected data
-    
+
         //- Thermodynamic data of the species
         const PtrList<ThermoType>& speciesThermo_;
 
 
     // Protected member functions
-    
+
 
 public:
 
     //- Runtime type information
     TypeName("noHEEnergyTransfer");
 
-    
+
     // Constructors
 
         //- Construct from components
@@ -93,15 +93,15 @@ public:
         {
             return speciesThermo_[i].W();
         }
-        
+
         // Correct the V-V relaxation times and V-V energy transfers
         virtual void correct();
-                
+
         //- Read transportProperties dictionary
         virtual bool read();
   };
 
-  
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 }	// End namespace Foam

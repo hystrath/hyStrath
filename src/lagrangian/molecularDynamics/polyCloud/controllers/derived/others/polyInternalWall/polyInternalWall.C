@@ -58,8 +58,8 @@ polyInternalWall::polyInternalWall
 :
     polyStateController(t, /*mesh,*/ molCloud, dict),
     propsDict_(dict.subDict(typeName + "Properties")),
-    
-    molIds_()    
+
+    molIds_()
 {
 
     writeInTimeDir_ = true;
@@ -82,9 +82,9 @@ polyInternalWall::polyInternalWall
 
     startPoint_ = propsDict_.lookup("planeMidPoint");
     normal_ = propsDict_.lookup("planeNormal");
-    
+
     normal_ /= mag(normal_);
-    
+
 }
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
@@ -130,11 +130,11 @@ void polyInternalWall::controlAfterForces()
             if(findIndex(molIds_, mol().id()) != -1)
             {
                 vector rSI = mol().position() - startPoint_;
-                
+
                 if((rSI & normal_) > 0)
                 {
                     scalar vn = mol().v() & normal_;
-                    
+
                     if(vn > 0)
                     {
                         mol().v() -= 2*vn*normal_;

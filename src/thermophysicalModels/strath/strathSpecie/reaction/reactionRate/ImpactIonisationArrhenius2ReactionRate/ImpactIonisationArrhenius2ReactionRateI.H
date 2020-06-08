@@ -56,27 +56,27 @@ inline Foam::ImpactIonisationArrhenius2ReactionRate::ImpactIonisationArrhenius2R
     {
         is >> Tbound_[i];
     }
-    
+
     forAll(A_, i)
     {
         is >> A_[i];
     }
-    
+
     forAll(beta_, i)
     {
         is >> beta_[i];
     }
-    
+
     forAll(Ta_, i)
     {
         is >> Ta_[i];
     }
-    
+
     forAll(C_, i)
     {
         is >> C_[i];
     }
-    
+
     is.readEnd("ImpactIonisationArrhenius2ReactionRate(Istream&)");
 }
 
@@ -107,12 +107,12 @@ inline Foam::scalar Foam::ImpactIonisationArrhenius2ReactionRate::operator()
 {
     // NEW VINCENT 03/06/2016 *************************************************
     const label temperatureRange(findBounds(T));
-    
+
     scalar A_range = A_[temperatureRange];
     scalar beta_range = beta_[temperatureRange];
     scalar Ta_range = Ta_[temperatureRange];
     scalar C_range = C_[temperatureRange];
-    
+
     scalar ak = A_range;
 
     if (mag(beta_range) > VSMALL)
@@ -124,7 +124,7 @@ inline Foam::scalar Foam::ImpactIonisationArrhenius2ReactionRate::operator()
     {
         ak *= exp(-Ta_range/T);
     }
-    
+
     ak *= Ta_range/T + C_range;
 
     if(Tbound_.size() != 0)
@@ -135,7 +135,7 @@ inline Foam::scalar Foam::ImpactIonisationArrhenius2ReactionRate::operator()
             beta_range = beta_[temperatureRange-1];
             Ta_range = Ta_[temperatureRange-1];
             C_range = C_[temperatureRange-1];
-            
+
             scalar ak2 = A_range;
 
             if (mag(beta_range) > VSMALL)
@@ -147,9 +147,9 @@ inline Foam::scalar Foam::ImpactIonisationArrhenius2ReactionRate::operator()
             {
                 ak2 *= exp(-Ta_range/T);
             }
-            
+
             ak2 *= Ta_range/T + C_range;
-            
+
             const scalar alpha = (Tbound_[temperatureRange-1]+smoothingTemperatureRange_ - T)/(2.0*smoothingTemperatureRange_);
             return ak*(1.0-alpha) + ak2*alpha;
         }
@@ -159,7 +159,7 @@ inline Foam::scalar Foam::ImpactIonisationArrhenius2ReactionRate::operator()
             beta_range = beta_[temperatureRange+1];
             Ta_range = Ta_[temperatureRange+1];
             C_range = C_[temperatureRange+1];
-            
+
             scalar ak2 = A_range;
 
             if (mag(beta_range) > VSMALL)
@@ -171,9 +171,9 @@ inline Foam::scalar Foam::ImpactIonisationArrhenius2ReactionRate::operator()
             {
                 ak2 *= exp(-Ta_range/T);
             }
-            
+
             ak2 *= Ta_range/T + C_range;
-            
+
             const scalar alpha = (Tbound_[temperatureRange]+smoothingTemperatureRange_ - T)/(2.0*smoothingTemperatureRange_);
             return ak*alpha + ak2*(1.0-alpha);
         }

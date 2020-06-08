@@ -103,7 +103,7 @@ private:
         label regionId_;
 
         scalar totalVolume_;
-        
+
         scalar mols_;
         scalar mass_;
         vector mom_;
@@ -138,10 +138,10 @@ private:
         scalarField tEField_;
 
         List<bool> outputField_;
-        
+
         scalar nAvTimeSteps_;
         bool resetAtOutput_;
-        
+
     // Private Member Functions
 	      void writeToStorage();
 
@@ -193,7 +193,7 @@ public:
 
         //- write field
         void writeField();
-}; 		
+};
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

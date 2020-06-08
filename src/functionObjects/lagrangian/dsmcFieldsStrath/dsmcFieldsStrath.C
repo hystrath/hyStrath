@@ -231,7 +231,7 @@ void Foam::dsmcFieldsStrath::write()
             forAll(mesh.boundaryMesh(), i)
             {
                 const polyPatch& patch = mesh.boundaryMesh()[i];
-                
+
                 if (isA<wallPolyPatch>(patch))
                 {
                     p.boundaryFieldRef()[i] =

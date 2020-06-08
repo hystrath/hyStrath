@@ -63,7 +63,7 @@ private:
 
         vector force_;
 
-        vector unitVector_; 
+        vector unitVector_;
 
         scalar period_;
 
@@ -109,13 +109,13 @@ public:
         // Edit
 
             void updateForce();
-            
+
 //             void updateForce(const scalar& time);
-            
+
             vector force(const vector& position);
 
             vector force(const scalar& time);
-            
+
         // Write
 
 

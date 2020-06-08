@@ -98,7 +98,7 @@ public:
             ),
             (cloud, dict)
         );
-   
+
     // Constructors
 
         //- Construct from components

@@ -22,10 +22,10 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Applications
-    hyFoam: Single-Temperature Open-Source CFD Solver for Supersonic 
+    hyFoam: Single-Temperature Open-Source CFD Solver for Supersonic
             Combusting Flows
-             
-    hy2Foam: Two-Temperature Open-Source CFD Solver for Hypersonic 
+
+    hy2Foam: Two-Temperature Open-Source CFD Solver for Hypersonic
              Weakly-Ionised Reacting Flows
 
 Description
@@ -56,43 +56,43 @@ int main(int argc, char *argv[])
 {
     #define NO_CONTROL
     #include "postProcess.H"
-    
+
     #include "setRootCase.H"
     #include "createTime.H"
     #include "createMesh.H"
-    
+
     scalar currentIterationTime = 0.0;
     scalar previousIterationTime = 1.0;
     label noRestart = 0;
     label noIteration = 1;
     label totNoIteration = 0;
     bool restart = false;
-    
+
     do
     {
         noRestart += 1;
-        
+
         restart = run
         (
             args,
             runTime,
             mesh,
-            currentIterationTime, 
+            currentIterationTime,
             previousIterationTime,
-            noRestart, 
+            noRestart,
             noIteration
         );
-        
+
         totNoIteration += noIteration - 1;
         noIteration = 1;
-        
+
     } while(restart);
-    
+
     Foam::rho2ReactionThermo::hasCrashedButRecoveredReport();
-    
+
     Info<< "Total no of Iterations " << totNoIteration << "\n"
         << "End\n" << endl;
-    
+
     return 0;
 }
 
@@ -110,9 +110,9 @@ bool run
     #include "hy2Foam_createFields.H"
 
     Info<< "\nStarting time loop\n" << endl;
-    
+
     label noSubRestart = 0;
-    
+
     while(runTime.run())
     {
         #include "hy2Foam_solver.H"

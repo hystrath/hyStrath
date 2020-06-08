@@ -69,7 +69,7 @@ private:
         dictionary propsDict_;
 
         labelList typeIds_;
-        
+
         // Boundary temperatures
         scalar boundaryXPosition_;
         scalar boundaryXVelocity_;

@@ -27,7 +27,7 @@ Class
 
 Description
 
-    Used for applying instantaneous actions on molecules colliding with a cyclic 
+    Used for applying instantaneous actions on molecules colliding with a cyclic
     boundary.
 
 SourceFiles
@@ -81,7 +81,7 @@ protected:
         word patchName_;
         label patchId_;
 
-        //- corresponding/neighbouring coupled patch 
+        //- corresponding/neighbouring coupled patch
         word neighbPatchName_;
         label neighbPatchId_;
 
@@ -103,7 +103,7 @@ protected:
         vectorField velocities_;
         scalarField temperatures_;
         tensor strainRate_;
-        
+
         //- writing out properties
         bool writeInTimeDir_;
         bool writeInCase_;
@@ -132,7 +132,7 @@ public:
             ),
             (t, mesh, cloud, dict)
         );
-   
+
     // Constructors
 
         //- Construct from components
@@ -198,7 +198,7 @@ public:
             const scalarField& xData,
             const scalarField& yData
         );
-        
+
         void setNewBoundaryFields();
 
         //- vector field
@@ -220,27 +220,27 @@ public:
             const labelList& controlZone() const;
 
             const labelList& allFaces() const;
-                
+
             //- return the name of the control patch
             const word& patchName() const;
             const label& patchId() const;
 
-            //- return the targeted fields 
+            //- return the targeted fields
             const scalarField& densityField() const;
             scalarField& densityField();
-    
+
             const vectorField& velocityField() const;
             vectorField& velocityField();
-    
+
             const scalarField& temperatureField() const;
             scalarField& temperatureField();
-            
+
             const tensor& strainRate() const;
             tensor& strainRate();
 
             const bool& writeInTimeDir() const;
             const bool& writeInCase() const;
-    
+
 };
 
 

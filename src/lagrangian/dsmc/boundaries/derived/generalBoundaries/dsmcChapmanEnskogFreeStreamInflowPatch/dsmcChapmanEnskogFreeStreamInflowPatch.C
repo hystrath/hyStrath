@@ -40,8 +40,8 @@ defineTypeNameAndDebug(dsmcChapmanEnskogFreeStreamInflowPatch, 0);
 
 addToRunTimeSelectionTable
 (
-    dsmcGeneralBoundary, 
-    dsmcChapmanEnskogFreeStreamInflowPatch, 
+    dsmcGeneralBoundary,
+    dsmcChapmanEnskogFreeStreamInflowPatch,
     dictionary
 );
 
@@ -114,13 +114,13 @@ void dsmcChapmanEnskogFreeStreamInflowPatch::controlParcelsBeforeMove()
             const label& faceI = faces_[f];
             const vector& sF = mesh_.faceAreas()[faceI];
             const scalar fA = mag(sF);
-            
-           const scalar deltaT = 
+
+           const scalar deltaT =
                 cloud_.deltaTValue
                 (
                     mesh_.boundaryMesh()[patchId_].faceCells()[f]
                 );
-            
+
             scalar mostProbableSpeed
             (
                 cloud_.maxwellianMostProbableSpeed
@@ -155,9 +155,9 @@ void dsmcChapmanEnskogFreeStreamInflowPatch::controlParcelsBeforeMove()
     const scalar& faceRotationalTemperature = rotationalTemperature_;
     const scalar& faceVibrationalTemperature = vibrationalTemperature_;
     const scalar& faceElectronicTemperature = electronicTemperature_;
-    
+
     scalar pressure = 0.0;
-                
+
     forAll(typeIds_, m)
     {
         pressure += numberDensities_[m]*translationalTemperature_*physicoChemical::k.value();
@@ -206,20 +206,20 @@ void dsmcChapmanEnskogFreeStreamInflowPatch::controlParcelsBeforeMove()
 
         //         Wall tangential unit vector. Use the direction between the
         //         face centre and the first vertex in the list
-        vector t1 = fC - mesh_.points()[mesh_.faces()[faceI][0]]; 
+        vector t1 = fC - mesh_.points()[mesh_.faces()[faceI][0]];
         t1 /= mag(t1);
 
         //         Other tangential unit vector.  Rescaling in case face is not
         //         flat and n and t1 aren't perfectly orthogonal
         vector t2 = n^t1;
         t2 /= mag(t2);
-        
+
         forAll(typeIds_, m)
         {
             const label& typeId = typeIds_[m];
 
             scalar& faceAccumulator = accumulatedParcelsToInsert_[m][f];
-            
+
             // Number of whole particles to insert
             label nI = max(label(faceAccumulator), 0);
 
@@ -229,10 +229,10 @@ void dsmcChapmanEnskogFreeStreamInflowPatch::controlParcelsBeforeMove()
             {
                 nI++;
             }
-            
+
             faceAccumulator -= nI;
             parcelsToAdd[m] += nI;
-            
+
             scalar mass = cloud_.constProps(typeId).mass();
 
             for (label i = 0; i < nI; i++)
@@ -292,29 +292,29 @@ void dsmcChapmanEnskogFreeStreamInflowPatch::controlParcelsBeforeMove()
                 }
 
                 scalar P = -1;
-                
+
                 vector U = vector::zero;
 
                 // Normalised candidates for the normal direction velocity
                 // component
                 scalar uNormal;
                 scalar uNormalThermal;
-                
+
                 scalar amplitudeParameter;
                 scalar gammaS;
-                
+
                 scalar beta = sqrt(mass/(2.0*translationalTemperature_*physicoChemical::k.value()));
-                
+
                 tensor nShearStress = shearStress_/pressure;
                 vector nHeatFlux = heatFlux_*2.0*beta/pressure;
-                
+
                 scalar breakdownParameter = max(
                                         mag(shearStressMax_/pressure),
                                         mag(heatFluxMax_*2.0*beta/pressure)
                                     );
-                
+
                 scalar nTries = 0;
-                
+
                 do
                 {
                     if(abs(faceVelocity & n) > VSMALL)
@@ -353,28 +353,28 @@ void dsmcChapmanEnskogFreeStreamInflowPatch::controlParcelsBeforeMove()
 //                         + (t1 & faceVelocity)*t1
 //                         + (t2 & faceVelocity)*t2
                         + mostProbableSpeed*uNormal*n;
-                        
+
                     amplitudeParameter = 1.0 + 30.0*breakdownParameter;
-                    
+
                     vector Unorm = U*beta;
-                    
+
                     gammaS = 1.0 + (nHeatFlux.x()*Unorm.x() + nHeatFlux.y()*Unorm.y() + nHeatFlux.z()*Unorm.z())*(0.4*magSqr(Unorm) - 1.0)
                             - 2.0*(nShearStress.xy()*Unorm.x()*Unorm.y() + nShearStress.xz()*Unorm.x()*Unorm.z() + nShearStress.yz()*Unorm.y()*Unorm.z())
                             - (nShearStress.xx()*Unorm.x()*Unorm.x() + nShearStress.yy()*Unorm.y()*Unorm.y() + nShearStress.zz()*Unorm.z()*Unorm.z());
-                            
+
 //                     Info << "nHeatFlux.x() = " << nHeatFlux.x() << endl;
 //                     Info << "Unorm.x() = " << Unorm.x() << endl;
 //                     Info << "beta = " << beta << endl;
 //                     Info << "magSqr(Unorm) = " << magSqr(Unorm) << endl;
 //                     Info << "amplitudeParameter = " << amplitudeParameter << endl;
 //                     Info << "gammaS = " << gammaS << endl;
-                                
+
 //                     nTries += 1;
 //                     Info << "nTries = " << nTries << endl;
-                    
+
                 }
                 while(amplitudeParameter*cloud_.rndGen().sample01<scalar>() >= gammaS);
-                
+
                 U += ((t1 & faceVelocity)*t1 + (t2 & faceVelocity)*t2);
 
                 scalar ERot = cloud_.equipartitionRotationalEnergy
@@ -382,25 +382,25 @@ void dsmcChapmanEnskogFreeStreamInflowPatch::controlParcelsBeforeMove()
                     faceRotationalTemperature,
                     cloud_.constProps(typeId).rotationalDegreesOfFreedom()
                 );
-                
+
                 labelList vibLevel = cloud_.equipartitionVibrationalEnergyLevel
                 (
                     faceVibrationalTemperature,
                     cloud_.constProps(typeId).nVibrationalModes(),
                     typeId
                 );
-                
+
                 label ELevel = cloud_.equipartitionElectronicLevel
                 (
                     faceElectronicTemperature,
                     cloud_.constProps(typeId).electronicDegeneracyList(),
                     cloud_.constProps(typeId).electronicEnergyList()
                 );
-                
+
                 label newParcel = patchId();
-                
+
                 const scalar& RWF = cloud_.coordSystem().RWF(cellI);
-              
+
                 cloud_.addNewParcel
                 (
                     p,
@@ -430,7 +430,7 @@ void dsmcChapmanEnskogFreeStreamInflowPatch::controlParcelsBeforeMove()
             reduce(parcelsToAdd[m], sumOp<scalar>());
             reduce(parcelsInserted[m], sumOp<scalar>());
 
-            Info<< "Specie: " << typeIds_[m] 
+            Info<< "Specie: " << typeIds_[m]
                 << ", target parcels to insert: " << parcelsToAdd[m]
                 <<", inserted parcels: " << parcelsInserted[m]
                 << endl;
@@ -471,24 +471,24 @@ void dsmcChapmanEnskogFreeStreamInflowPatch::setProperties()
     translationalTemperature_ = readScalar(propsDict_.lookup("translationalTemperature"));
     rotationalTemperature_ = readScalar(propsDict_.lookup("rotationalTemperature"));
     vibrationalTemperature_ = readScalar(propsDict_.lookup("vibrationalTemperature"));
-    
+
     shearStressXComponents_ = propsDict_.lookup("shearStressXComponents");
     shearStressYComponents_ = propsDict_.lookup("shearStressYComponents");
     shearStressZComponents_ = propsDict_.lookup("shearStressZComponents");
     heatFlux_ = propsDict_.lookup("heatFlux");
-    
+
     shearStress_.xx() = shearStressXComponents_.x();
     shearStress_.xy() = shearStressXComponents_.y();
     shearStress_.xz() = shearStressXComponents_.z();
-    
+
     shearStress_.yx() = shearStressYComponents_.x();
     shearStress_.yy() = shearStressYComponents_.y();
     shearStress_.yz() = shearStressYComponents_.z();
-    
+
     shearStress_.zx() = shearStressZComponents_.x();
     shearStress_.zy() = shearStressZComponents_.y();
     shearStress_.zz() = shearStressZComponents_.z();
-    
+
     heatFluxMax_ = abs(heatFlux_.x());
     if(abs(heatFlux_.y()) > heatFluxMax_)
     {
@@ -498,7 +498,7 @@ void dsmcChapmanEnskogFreeStreamInflowPatch::setProperties()
     {
         heatFluxMax_ = abs(heatFlux_.z());
     }
-    
+
     shearStressMax_ = abs(shearStress_.xx());
     if(abs(shearStress_.xy()) > shearStressMax_)
     {
@@ -581,12 +581,12 @@ void dsmcChapmanEnskogFreeStreamInflowPatch::setProperties()
     }
 
     // read in the mass density per specie
-    
+
     const dictionary& numberDensitiesDict
     (
         propsDict_.subDict("numberDensities")
     );
-    
+
     numberDensities_.clear();
 
     numberDensities_.setSize(typeIds_.size(), 0.0);
@@ -613,11 +613,11 @@ void dsmcChapmanEnskogFreeStreamInflowPatch::setProperties()
 void dsmcChapmanEnskogFreeStreamInflowPatch::setNewBoundaryFields()
 {
     Info << "dsmcFreeStreamInflowPatch::setNewBoundaryFields()" << endl;
-    
+
    forAll(accumulatedParcelsToInsert_, m)
     {
         accumulatedParcelsToInsert_[m].setSize(nFaces_, 0.0);
-    } 
+    }
 }
 
 

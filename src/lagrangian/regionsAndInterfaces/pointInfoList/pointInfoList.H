@@ -145,7 +145,7 @@ public:
 
     // IOstream Operators
 //         friend Ostream& operator<< (Ostream&, const pointInfoList&);
-// 
+//
 //         friend Istream& operator>> (Istream&, pointInfoList&);
 
 

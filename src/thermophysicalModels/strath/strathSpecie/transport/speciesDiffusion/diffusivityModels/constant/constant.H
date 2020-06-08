@@ -56,11 +56,11 @@ class constant
     public binaryDiffusivityModel
 {
     // Private data
-    
+
         //- Binary diffusion coefficient value
         scalar Dvalue_;
-  
-  
+
+
 public:
 
     //- Runtime type information
@@ -92,7 +92,7 @@ public:
 
         //- Binary diffusion coefficient [m^2/s]
         virtual tmp<volScalarField> D() const;
-         
+
         //- Binary diffusion coefficient for patch [m^2/s]
         virtual tmp<scalarField> D
         (
@@ -100,7 +100,7 @@ public:
             const scalarField& T,
             const label patchi
         ) const;
-        
+
         //- Binary diffusion coefficient for patch [m^2/s]
         virtual tmp<scalarField> D
         (
@@ -109,7 +109,7 @@ public:
             const scalarField& T,
             const label patchi
         ) const;
-        
+
 };
 
 

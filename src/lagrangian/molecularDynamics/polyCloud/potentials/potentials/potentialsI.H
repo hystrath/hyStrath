@@ -27,7 +27,7 @@ License
 
 namespace Foam
 {
-    
+
 
 inline const scalar& potentials::potentialEnergyLimit() const
 {

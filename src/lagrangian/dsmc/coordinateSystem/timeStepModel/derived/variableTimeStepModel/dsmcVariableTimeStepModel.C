@@ -41,7 +41,7 @@ namespace Foam
 
     addToRunTimeSelectionTable
     (
-        dsmcTimeStepModel, 
+        dsmcTimeStepModel,
         dsmcVariableTimeStepModel,
         fvMesh
     );
@@ -51,12 +51,12 @@ namespace Foam
 void dsmcVariableTimeStepModel::findRefCell()
 {
     // Find the cell with minimum volume
-    // This cell will serve as a reference cell to set the 
+    // This cell will serve as a reference cell to set the
     // nParticle/timeStep ratio
-    
+
     const scalarField& volumeCells = mesh_.V();
     scalar minVolume = gMin(volumeCells);
-    
+
     if (Pstream::parRun())
     {
         reduce(minVolume, minOp<scalar>());
@@ -76,25 +76,25 @@ void dsmcVariableTimeStepModel::findRefCell()
 void dsmcVariableTimeStepModel::updatenParticles()
 {
     findRefCell();
-    
+
     const scalarField& volumeCells = mesh_.V();
     const scalar minVolume = volumeCells[refCell_];
-    
+
     const scalar nParticleRef = nParticles_[refCell_];
-        
+
     forAll(nParticles_, celli)
     {
         nParticles_[celli] = nParticleRef*volumeCells[celli]/minVolume;
     }
-    
+
     forAll(nParticles_.boundaryField(), patchi)
     {
-        fvPatchScalarField& pnParticles = 
+        fvPatchScalarField& pnParticles =
             nParticles_.boundaryFieldRef()[patchi];
-        
+
         forAll(pnParticles, facei)
         {
-            pnParticles[facei] = 
+            pnParticles[facei] =
                 nParticles_[mesh_.boundaryMesh()[patchi].faceCells()[facei]];
         }
     }
@@ -103,9 +103,9 @@ void dsmcVariableTimeStepModel::updatenParticles()
 
 void dsmcVariableTimeStepModel::updateTimeStep()
 {
-    const scalar nParticleTimeStepRatio = 
+    const scalar nParticleTimeStepRatio =
         nParticles_[refCell_]/deltaT_[refCell_];
-    
+
     forAll(deltaT_, celli)
     {
         deltaT_[celli] = nParticles_[celli]/nParticleTimeStepRatio;
@@ -116,7 +116,7 @@ void dsmcVariableTimeStepModel::updateTimeStep()
 void dsmcVariableTimeStepModel::updateVariableTimeStepMethod()
 {
     updatenParticles();
-    
+
     updateTimeStep();
 }
 
@@ -162,26 +162,26 @@ dsmcVariableTimeStepModel::~dsmcVariableTimeStepModel()
 
 void dsmcVariableTimeStepModel::checkTimeStepModelInputs()
 {
-    const bool nParticlesFromFile = 
+    const bool nParticlesFromFile =
         cloud_.particleProperties().lookupOrDefault<bool>
         (
             "nEquivalentParticlesFromFile",
             false
         );
-    
+
     if(nParticlesFromFile)
     {
         nParticles_.regIOobject::read();
-        
+
         findRefCell();
     }
     else
     {
         updatenParticles();
     }
-    
+
     updateTimeStep();
-    
+
     writeTimeStepModelInfo();
 }
 

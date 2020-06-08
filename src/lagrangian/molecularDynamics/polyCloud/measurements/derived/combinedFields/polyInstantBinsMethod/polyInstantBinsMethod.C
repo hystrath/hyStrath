@@ -69,14 +69,14 @@ polyInstantBinsMethod::polyInstantBinsMethod
 //     dof_(),
 //     kineticTensor_(),
 //     virialTensor_(),
-// 
+//
 //     molsV_(),
 //     massV_(),
 //     momV_(),
 //     velocity_(),
 //     angularSpeed_(),
 //     angularVelocity_(),
-// 
+//
 //     N_(),
 //     rhoN_(),
 //     rhoM_(),
@@ -89,10 +89,10 @@ polyInstantBinsMethod::polyInstantBinsMethod
 //     nAvTimeSteps_(0.0),
 //     resetAtOutput_(true)
 {
- 
-    
+
+
     const cellZoneMesh& cellZones = mesh_.cellZones();
-    
+
     regionId_ = cellZones.findZoneID(regionName_);
 
     if(regionId_ == -1)
@@ -102,7 +102,7 @@ polyInstantBinsMethod::polyInstantBinsMethod
             << time_.time().system()/"fieldPropertiesDict"
             << exit(FatalError);
     }
-    
+
     // choose molecule ids to sample
 
     molIds_.clear();
@@ -115,7 +115,7 @@ polyInstantBinsMethod::polyInstantBinsMethod
 
     molIds_ = ids.molIds();
 
-    
+
     // create bin model
     binModel_ = autoPtr<binModel>
     (
@@ -151,14 +151,14 @@ polyInstantBinsMethod::polyInstantBinsMethod
     p_.setSize(nBins);
 
     nBins_ = nBins;
-    
+
     overideVolume_ = false;
-    
+
     if (propsDict_.found("overideVolume"))
     {
-        overideVolume_ = Switch(propsDict_.lookup("overideVolume"));  
+        overideVolume_ = Switch(propsDict_.lookup("overideVolume"));
     }
-    
+
     if(overideVolume_)
     {
         const word name = propsDict_.lookup("volumesFileName");
@@ -191,16 +191,16 @@ polyInstantBinsMethod::polyInstantBinsMethod
             )
                 << "Size of volumes " << volumes.size()
                 << " not equal to nBins = " << nBins
-                << abort(FatalError);                
+                << abort(FatalError);
         }
-        
+
         volumes_.setSize(nBins_, 0.0);
 
         forAll(volumes, i)
         {
             volumes_[i] = volumes[i];
         }
-        
+
 //         Info << "volumes = " << volumes_ << endl;
     }
 }
@@ -224,7 +224,7 @@ void polyInstantBinsMethod::calculateField()
     vectorField mom(nBins_, vector::zero);
     vectorField angularSpeed(nBins_, vector::zero);
 
-    
+
     forAll(mesh_.cellZones()[regionId_], c)
     {
         const label& cellI = mesh_.cellZones()[regionId_][c];
@@ -243,16 +243,16 @@ void polyInstantBinsMethod::calculateField()
                 if(findIndex(molIds_, molI->id()) != -1)
                 {
                     mols[n] += 1.0;
-                    
+
                     const scalar& massI = molCloud_.cP().mass(molI->id());
-                    
+
                     mass[n] += massI;
 
                     mom[n] += massI*molI->v();
 
                     const diagTensor& molMoI(molCloud_.cP().momentOfInertia(molI->id()));
 
-                    // angular speed 
+                    // angular speed
                     const vector& molOmega(inv(molMoI) & molI->pi());
 
                     angularSpeed[n] += molOmega;
@@ -270,12 +270,12 @@ void polyInstantBinsMethod::calculateField()
             reduce(mass[i], sumOp<scalar>());
             reduce(mom[i], sumOp<vector>());
             reduce(angularSpeed[i], sumOp<vector>());
-        }        
+        }
     }
-    
+
     vectorField velocity(nBins_, vector::zero);
     vectorField angularVelocity(nBins_, vector::zero);
-    
+
     forAll(velocity, n)
     {
         if(mass[n] > 0.0)
@@ -284,14 +284,14 @@ void polyInstantBinsMethod::calculateField()
             angularVelocity[n] = angularSpeed[n]/mols[n];
         }
     }
-    
+
     scalarField dof(nBins_, 0.0);
     scalarField kE(nBins_, 0.0);
     scalarField angularKeSum(nBins_, 0.0);
     tensorField kineticTensor(nBins_, tensor::zero);
     tensorField virialTensor(nBins_, tensor::zero);
-   
-    forAll(mesh_.cellZones()[regionId_], c) 
+
+    forAll(mesh_.cellZones()[regionId_], c)
     {
         const label& cellI = mesh_.cellZones()[regionId_][c];
         const List<polyMolecule*>& molsInCell = molCloud_.cellOccupancy()[cellI];
@@ -316,14 +316,14 @@ void polyInstantBinsMethod::calculateField()
 
                     const diagTensor& molMoI(molCloud_.cP().momentOfInertia(molI->id()));
 
-                    // angular speed 
+                    // angular speed
                     const vector& molOmega(inv(molMoI) & molI->pi());
 
                     angularKeSum[n] += 0.5*(molOmega & molMoI & molOmega);
 
-                    kineticTensor[n] += ( massI*(molI->v() - velocity[n])*(molI->v() - velocity[n]) ) 
+                    kineticTensor[n] += ( massI*(molI->v() - velocity[n])*(molI->v() - velocity[n]) )
                                             + ( ((molOmega - angularVelocity[n]) & molMoI)
-                                            *(molOmega-angularVelocity[n]) 
+                                            *(molOmega-angularVelocity[n])
                                             );
 
                     virialTensor[n] += 0.5*molI->rf();
@@ -342,17 +342,17 @@ void polyInstantBinsMethod::calculateField()
             reduce(angularKeSum[i], sumOp<scalar>());
             reduce(kineticTensor[i], sumOp<tensor>());
             reduce(virialTensor[i], sumOp<tensor>());
-        }        
+        }
     }
 
 
     // collect and compute properties
-    
+
 
     const scalar& kB = molCloud_.redUnits().kB();
 
     const scalar& nAvTimeSteps = 1;
-    
+
     forAll(mols, n)
     {
         mols_[n].append(mols[n]);
@@ -363,14 +363,14 @@ void polyInstantBinsMethod::calculateField()
 //         dof_[n].append(dof[n]);
 //         kineticTensor_[n].append(kineticTensor[n]);
 //         virialTensor_[n].append(virialTensor[n]);
-        
+
         scalar volume = binModel_->binVolume(n);
 
         if(overideVolume_)
         {
             volume = volumes_[n];
         }
-        
+
 //         N_[n].append(mols[n]/nAvTimeSteps);
         rhoN_[n].append(mols[n]/(nAvTimeSteps*volume));
         rhoM_[n].append(mass[n]/(nAvTimeSteps*volume));
@@ -381,7 +381,7 @@ void polyInstantBinsMethod::calculateField()
         }
         else
         {
-            UCAM_[n].append(vector::zero); 
+            UCAM_[n].append(vector::zero);
         }
 
         if(dof[n] > 0.0)
@@ -392,7 +392,7 @@ void polyInstantBinsMethod::calculateField()
         {
             T_[n].append(0.0);
         }
-            
+
 
         if(dof[n] > 0.0)
         {
@@ -408,7 +408,7 @@ void polyInstantBinsMethod::calculateField()
 //             stress_[n].append(tensor::zero);
         }
     }
-    
+
 }
 
 
@@ -420,13 +420,13 @@ void polyInstantBinsMethod::writeField()
     {
         if(Pstream::master())
         {
-            const reducedUnits& rU = molCloud_.redUnits();            
+            const reducedUnits& rU = molCloud_.redUnits();
             scalarField bins = binModel_->binPositions();
             vectorField vectorBins = binModel_->bins();
 
             label nBins = nBins_;
             label nTimeSteps = mols_[0].size();
-            
+
             for (int j = 0; j < nTimeSteps; j++)
             {
                 scalarField mols(nBins, 0.0);
@@ -434,7 +434,7 @@ void polyInstantBinsMethod::writeField()
                 scalarField mom_X(nBins, 0.0);
                 scalarField mom_Y(nBins, 0.0);
                 scalarField mom_Z(nBins, 0.0);
-                
+
 //                 scalarField N(nBins, 0.0);
                 scalarField rhoN(nBins, 0.0);
                 scalarField rhoM(nBins, 0.0);
@@ -442,8 +442,8 @@ void polyInstantBinsMethod::writeField()
                 scalarField UCAM_Y(nBins, 0.0);
                 scalarField UCAM_Z(nBins, 0.0);
                 scalarField T(nBins, 0.0);
-                scalarField p(nBins, 0.0);  
-                
+                scalarField p(nBins, 0.0);
+
                 forAll(mols_, i)
                 {
                     mols[i] = mols_[i][j];
@@ -451,7 +451,7 @@ void polyInstantBinsMethod::writeField()
                     mom_X[i] = mom_[i][j].x();
                     mom_Y[i] = mom_[i][j].y();
                     mom_Z[i] = mom_[i][j].z();
-                    
+
 //                     N[i] = N_[i][j];
                     rhoN[i] = rhoN_[i][j];
                     rhoM[i] = rhoM_[i][j];
@@ -461,9 +461,9 @@ void polyInstantBinsMethod::writeField()
                     T[i] = T_[i][j];
                     p[i] = p_[i][j];
                 }
-                
+
 //                 Info << "mols = " << mols << endl;
-                
+
                 writeTimeData
                 (
                     casePath_,
@@ -481,7 +481,7 @@ void polyInstantBinsMethod::writeField()
                     "sidewaysAppend",
                     true
                 );
-                
+
                 writeTimeData
                 (
                     casePath_,
@@ -490,7 +490,7 @@ void polyInstantBinsMethod::writeField()
                     "sidewaysAppend",
                     true
                 );
-                
+
                 writeTimeData
                 (
                     casePath_,
@@ -499,7 +499,7 @@ void polyInstantBinsMethod::writeField()
                     "sidewaysAppend",
                     true
                 );
-                
+
                 writeTimeData
                 (
                     casePath_,
@@ -507,8 +507,8 @@ void polyInstantBinsMethod::writeField()
                     mom_Z*rU.refMass()*rU.refVelocity(),
                     "sidewaysAppend",
                     true
-                );                
-                
+                );
+
                 writeTimeData
                 (
                     casePath_,
@@ -517,7 +517,7 @@ void polyInstantBinsMethod::writeField()
                     "sidewaysAppend",
                     true
                 );
-                
+
                 writeTimeData
                 (
                     casePath_,
@@ -526,7 +526,7 @@ void polyInstantBinsMethod::writeField()
                     "sidewaysAppend",
                     true
                 );
-                
+
                 writeTimeData
                 (
                     casePath_,
@@ -534,7 +534,7 @@ void polyInstantBinsMethod::writeField()
                     UCAM_X*rU.refVelocity(),
                     "sidewaysAppend",
                     true
-                );                    
+                );
                 writeTimeData
                 (
                     casePath_,
@@ -542,7 +542,7 @@ void polyInstantBinsMethod::writeField()
                     UCAM_Y*rU.refVelocity(),
                     "sidewaysAppend",
                     true
-                ); 
+                );
                 writeTimeData
                 (
                     casePath_,
@@ -551,7 +551,7 @@ void polyInstantBinsMethod::writeField()
                     "sidewaysAppend",
                     true
                 );
-                
+
                 writeTimeData
                 (
                     casePath_,
@@ -560,7 +560,7 @@ void polyInstantBinsMethod::writeField()
                     "sidewaysAppend",
                     true
                 );
-                
+
                 writeTimeData
                 (
                     casePath_,
@@ -568,18 +568,18 @@ void polyInstantBinsMethod::writeField()
                     p*rU.refPressure(),
                     "sidewaysAppend",
                     true
-                );                
+                );
             }
         }
-        
-            
-        // clear fields 
+
+
+        // clear fields
         forAll(mols_, i)
         {
             mols_[i].clear();
             mass_[i].clear();
             mom_[i].clear();
-            
+
             rhoN_[i].clear();
             rhoM_[i].clear();
             UCAM_[i].clear();

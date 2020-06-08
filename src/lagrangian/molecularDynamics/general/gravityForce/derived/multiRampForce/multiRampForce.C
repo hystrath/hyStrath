@@ -73,13 +73,13 @@ multiRampForce::multiRampForce
 
 {
     partialLoadingTime_ = loadingTime_/noOfStops_;
-    
+
     direction_ /= mag(direction_);
 
     forceGradient_ = (finalForce_ - initialForce_)/loadingTime_;
 
     force_ = direction_*initialForce_;
-    
+
     Info << nl << "breathing time per stop = " << breathingTime_
          << ", total breathing time = " << breathingTime_*noOfStops_
          << nl << "loading time per stop = " << partialLoadingTime_
@@ -114,24 +114,24 @@ void multiRampForce::updateForce()
 
     currentTime_ += deltaTMD_;
     timeLoading_ += deltaTMD_;
-    
+
     if(currentTime_ <= loadingTime_)
     {
         if(timeLoading_ <= partialLoadingTime_)
         {
             Info << "loading" << endl;
-            
+
             force_ = (forceGradient_*currentTime_ + initialForce_)*direction_;
             timeBreathing_ = 0.0;
         }
         else
         {
             Info << "breathing" << endl;
-            
+
             timeBreathing_ += deltaTMD_;
-            
+
             initialForce_ -= forceGradient_*deltaTMD_;
-            
+
             if(timeBreathing_ >= breathingTime_)
             {
                 timeLoading_ = 0.0;
@@ -142,7 +142,7 @@ void multiRampForce::updateForce()
     {
         force_ = finalForce_*direction_;
     }
-    
+
     Info << "force mag = " << mag(force_) << endl;
 }
 

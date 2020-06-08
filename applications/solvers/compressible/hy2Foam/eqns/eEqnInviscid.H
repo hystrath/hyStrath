@@ -18,7 +18,7 @@ solve
   - fvc::div(sigmaDotU)
  ==
     reaction->Sh()
-); 
+);
 
 e = rhoE/rho - 0.5*magSqr(U);
 

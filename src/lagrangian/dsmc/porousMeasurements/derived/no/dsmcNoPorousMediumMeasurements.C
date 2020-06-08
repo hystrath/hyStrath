@@ -41,7 +41,7 @@ namespace Foam
 
     addToRunTimeSelectionTable
     (
-        porousMeasurements, 
+        porousMeasurements,
         dsmcNoPorousMediumMeasurements,
         fvMesh
     );

@@ -27,11 +27,11 @@ Class
 
 Description
 
-    Class that handles tracking of molecules across faces and patches of the 
-    domain 
-    
+    Class that handles tracking of molecules across faces and patches of the
+    domain
+
     Refreshes data every time-step, from the cloud
-    
+
 SourceFiles
     polyFaceTrackerI.H
     polyFaceTracker.C
@@ -131,21 +131,21 @@ public:
             inline const List<vectorField>& momIdFlux() const;
 
 //             inline const surfaceScalarField& totMolFlux() const;
-// 
+//
 //             inline const surfaceScalarField& molFlux() const;
-// 
+//
 //             inline const surfaceScalarField& massFlux() const;
-// 
+//
 //             inline const surfaceVectorField& momFlux() const;
-// 
+//
 //             inline const surfaceScalarField& pEFlux() const;
-// 
+//
 //             inline const surfaceScalarField& kEFlux() const;
-// 
+//
 //             inline const surfaceScalarField& energyFlux() const;
-// 
+//
 //             inline const surfaceScalarField& volumeFlux() const;
-// 
+//
 //             inline const surfaceVectorField& forceFlux() const;
 
 //             inline const List<scalarField>& idFlux() const;
@@ -167,7 +167,7 @@ public:
 //             const polyFaceTracker& a,
 //             const polyFaceTracker& b
 //         );
-// 
+//
 //         inline friend bool operator!=
 //         (
 //             const polyFaceTracker& a,

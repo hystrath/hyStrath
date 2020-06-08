@@ -46,7 +46,7 @@ namespace Foam
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-inline List<label> selectIds::molIds() 
+inline List<label> selectIds::molIds()
 {
     return molIds_;
 }

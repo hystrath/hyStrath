@@ -900,7 +900,7 @@ inline bool Foam::particle::initCellFacePtOrDeleteLostParticle()
                     // due to the change in geometry of the body after
                     // the refinement step
                     return true;
-                    
+
                     /*FatalErrorIn("void Foam::particle::initCellFacePtOrDeleteLostParticle()")
                         << "    cell, tetFace and tetPt search failure at "
                         << "position " << position_ << nl
@@ -991,7 +991,7 @@ inline bool Foam::particle::initCellFacePtOrDeleteLostParticle()
             }
         }
     }
-    
+
     return false;
 }
 

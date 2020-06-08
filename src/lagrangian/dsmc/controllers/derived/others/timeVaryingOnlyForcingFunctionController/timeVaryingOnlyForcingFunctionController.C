@@ -78,7 +78,7 @@ namespace Foam
     void timeVaryingOnlyForcingFunctionController::controlParcelsBeforeMove()
     {
         nTimeSteps_++;
-        
+
         currentTime_ = mesh_.time().deltaTValue()*nTimeSteps_;
 
         forAll(controlZone(), c)
@@ -88,18 +88,18 @@ namespace Foam
             const List<dsmcParcel*>& molsInCell = cellOccupancy[cellI];
 
             forAll(molsInCell, mIC)
-            {    
+            {
                 dsmcParcel* p = molsInCell[mIC];
-                
+
                 label origID = p->origId();
-                
+
                 scalar accelerationMagnitude = amplitude_
                         *cos((waveNumber_) - (frequency_*currentTime_));
-                        
+
                 vector acceleration = accelerationDirection_*accelerationMagnitude;
-                
+
                 writeAcceleration_[c] = acceleration;
-                
+
                 p->U() += 0.5*acceleration*mesh_.time().deltaTValue();
             }
         }
@@ -127,14 +127,14 @@ namespace Foam
             forAll(molsInCell, mIC)
             {
                 dsmcParcel* p = molsInCell[mIC];
-                
+
                 label origID = p->origId();
-                
+
                 scalar accelerationMagnitude = amplitude_
                         *cos((waveNumber_) - (frequency_*currentTime_));
-                        
+
                 vector acceleration = accelerationDirection_*accelerationMagnitude;
-                
+
                 p->U() -= 0.5*acceleration*mesh_.time().deltaTValue();
             }
         }
@@ -150,14 +150,14 @@ namespace Foam
             forAll(molsInCell, mIC)
             {
                 dsmcParcel* p = molsInCell[mIC];
-                
+
                 label origID = p->origId();
-                
+
                 scalar accelerationMagnitude = amplitude_
                         *cos((waveNumber_) - (frequency_*currentTime_));
-                        
+
                 vector acceleration = accelerationDirection_*accelerationMagnitude;
-                
+
                 p->U() += acceleration*mesh_.time().deltaTValue();
             }
         }
@@ -171,7 +171,7 @@ namespace Foam
     }
 
     void timeVaryingOnlyForcingFunctionController::setProperties()
-    {        
+    {
         accelerationDirection_ = propsDict_.lookup("accelerationDirection");
         amplitude_ = readScalar(propsDict_.lookup("amplitude"));
         waveNumber_ = readScalar(propsDict_.lookup("waveNumber"));

@@ -27,7 +27,7 @@ Class
 
 Description
 
-    
+
 
 \*---------------------------------------------------------------------------*/
 
@@ -68,26 +68,26 @@ public:
 
     // Constructors
 
-        //- Constructor 
+        //- Constructor
         molsToDelete
         (
             const polyMesh& mesh,
             dsmcCloud& cloud,
             const word& deleteType = word::null
         );
-        
-        
+
+
     // Destructor
 
         virtual ~molsToDelete();
 
 
     // Member Functions
-    
+
       virtual void update();
 
 
-        
+
     // Access
 
 };

@@ -64,49 +64,49 @@ private:
         //- subDictionary containing the properties
         dictionary propsDict_;
 
-        
+
         // bond radius
         scalar b_;
-        
+
         label SiId_;
         label OId_;
-        label HId_;       
-        
+        label HId_;
+
         boundBox box_;
-        
+
         vector hDirection_;
-        
+
         scalar temperature_;
         vector bulkVelocity_;
-        
+
         scalar radius_;
         vector startPoint_;
-        vector endPoint_; 
+        vector endPoint_;
         scalar deltaR_;
-        vector unitVector_;        
-        
+        vector unitVector_;
+
         DynamicList<label> siliconAtoms_;
-        DynamicList<label> oxygenAtoms_; 
-        
+        DynamicList<label> oxygenAtoms_;
+
         List<label> siliconToOxygenBonds_;
         List<label> oxygenToSiliconBonds_;
-        
+
     // Private Member Functions
         void readInCylinder();
-        
+
         void readInBoundBox();
-        
+
         void punchOutMolecules();
-        
+
         void checkBoundBox
         (
             boundBox& b,
             const vector& startPoint,
             const vector& endPoint
         );
-        
+
         void check();
-      
+
         bool testForPair
         (
             const label& idI,
@@ -114,17 +114,17 @@ private:
             label& tnI,
             label& tnJ
         );
-        
+
         void checkForMoleculesInBox();
         void checkForMoleculesInCylinder();
-        
+
         void deleteMoleculesInBox();
         void deleteMoleculesInCylinder();
-        
+
 //         void addMoleculesInBox();
-        
+
         void addMoleculesInBoxAndCylinder();
-        
+
 //         void insertMolecule
 //         (
 //             const point& position,
@@ -135,7 +135,7 @@ private:
 //             const scalar& temperature,
 //             const vector& bulkVelocity
 //         );
-        
+
         vector equipartitionLinearVelocity
         (
             scalar temperature,
@@ -169,7 +169,7 @@ public:
 
     // Member Functions
 
- 
+
 };
 
 

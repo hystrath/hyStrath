@@ -60,14 +60,14 @@ void polyMoleculeCloud::updateNeighbouringRadii
             polyMolecule* molJ = cellOccupancy_[dICL[dCell]][m];
 
             vector rIJ = molI->position() - molJ->position();
-    
+
             scalar rIJMag = mag(rIJ);
-    
+
             if(molI->R() > rIJMag)
             {
                 molI->R() = rIJMag;
             }
-    
+
             if(molJ->R() > rIJMag)
             {
                 molJ->R() = rIJMag;
@@ -84,14 +84,14 @@ void polyMoleculeCloud::updateNeighbouringRadii
         if(molJ != molI)
         {
             vector rIJ = molI->position() - molJ->position();
-    
+
             scalar rIJMag = mag(rIJ);
-    
+
             if(molI->R() > rIJMag)
             {
                 molI->R() = rIJMag;
             }
-    
+
             if(molJ->R() > rIJMag)
             {
                 molJ->R() = rIJMag;
@@ -99,8 +99,8 @@ void polyMoleculeCloud::updateNeighbouringRadii
         }
     }
 
-    //- referred cells 
-    
+    //- referred cells
+
     const labelList& rs = iL_.sourceCellToRefs()[cell];
 
     forAll(rs, r)
@@ -108,14 +108,14 @@ void polyMoleculeCloud::updateNeighbouringRadii
         const label& rId = rs[r];
 
         referredCell& refCellI = iL_.refCells()[rId];
-        
+
         // OLDER const polyMolecule& particle = *molI;
         //OLDER iL_.referredCloud().append(particle.clone().ptr());
 
 // OLD        iL_.referredCloud().append(molI);
 
 
-        const polyMolecule& molIN = *molI;            
+        const polyMolecule& molIN = *molI;
         iL_.referredCloud().append(molIN.clone().ptr());
 
 
@@ -123,24 +123,24 @@ void polyMoleculeCloud::updateNeighbouringRadii
 
         refCellI.transformPoint(molN->position());
         molN->transformProperties(refCellI.translation());
-        
+
         forAll(refCellI.neighbouringCells(), c)
         {
             const label& realCellI = refCellI.neighbouringCells()[c];
-        
+
             forAll(cellOccupancy_[realCellI], mols)
             {
                 polyMolecule* molJ = cellOccupancy_[realCellI][mols];
-        
+
                 vector rIJ = molN->position() - molJ->position();
-        
+
                 scalar rIJMag = mag(rIJ);
-        
+
                 if(molN->R() > rIJMag)
                 {
                     molN->R() = rIJMag;
                 }
-        
+
                 if(molJ->R() > rIJMag)
                 {
                     molJ->R() = rIJMag;
@@ -159,7 +159,7 @@ void polyMoleculeCloud::updateRadii()
         forAll(refCellI.neighbouringCells(), c)
         {
             const label& realCellI = refCellI.neighbouringCells()[c];
-    
+
             forAll(cellOccupancy_[realCellI], mols)
             {
                 polyMolecule* molI = cellOccupancy_[realCellI][mols];
@@ -167,9 +167,9 @@ void polyMoleculeCloud::updateRadii()
                 forAll(iL_.refCellsParticles()[r], molsJ)
                 {
                     polyMolecule* molJ = iL_.refCellsParticles()[r][molsJ];
-        
+
                     vector rIJ = molI->position() - molJ->position();
-                
+
                     scalar rIJMag = mag(rIJ);
 
                     if(molI->R() > rIJMag)

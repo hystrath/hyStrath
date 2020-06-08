@@ -26,10 +26,10 @@ Class
     polyStandardFields
 
 Description
-     These are 3D fields for measurements in MD simulations. 
+     These are 3D fields for measurements in MD simulations.
 
-    Cumulative averaging 
-    
+    Cumulative averaging
+
 SourceFiles
     polyStandardFieldsI.H
     polyStandardFields.C
@@ -69,9 +69,9 @@ class polyStandardFields
 
         // ****
         List<label> molIds_;
-        
+
         // geometric fields
-        
+
         //- number density field
         volScalarField rhoN_;
 
@@ -80,21 +80,21 @@ class polyStandardFields
 
         //- velocity field
         volVectorField USAM_;
-        
 
-        // collectors 
+
+        // collectors
         scalarField mass_;
         vectorField momentum_;
         scalar nTimeSteps_;
-        
-//         volVectorField UCAM_;        
+
+//         volVectorField UCAM_;
 
 //         //- temperature
 //         volScalarField T_;
-// 
+//
 //         //- scalar pressure
 //         volScalarField p_;
-        
+
 
 
 public:
@@ -108,7 +108,7 @@ public:
         (
             const fvMesh& mesh,
             polyMoleculeCloud& cloud,
-            const word& fieldName,         
+            const word& fieldName,
             bool write
         );
 
@@ -213,7 +213,7 @@ public:
 
     //- Return the momentum density field
     inline const volVectorField& momentum() const;
-	
+
 	//- Return the boundary density field
 // 	inline const volScalarField& boundaryRadiationT() const;
 

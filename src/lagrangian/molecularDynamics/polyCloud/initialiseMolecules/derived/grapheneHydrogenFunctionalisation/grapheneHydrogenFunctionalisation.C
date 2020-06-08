@@ -57,14 +57,14 @@ grapheneHydrogenFunctionalisation::grapheneHydrogenFunctionalisation
 //     propsDict_(dict.subDict(typeName + "Properties"))
 {
 
-    
-    
+
+
 
     option_ = "fixedPropertiesFromDict";
-    
+
     if (mdInitialiseDict_.found("option"))
-    {    
-        const word option(mdInitialiseDict_.lookup("option"));    
+    {
+        const word option(mdInitialiseDict_.lookup("option"));
         option_ = option;
     }
 }
@@ -84,12 +84,12 @@ grapheneHydrogenFunctionalisation::~grapheneHydrogenFunctionalisation()
 void grapheneHydrogenFunctionalisation::setInitialConfiguration()
 {
     label initialSize = molCloud_.size();
-    
+
     if(option_ == "fixedPropertiesFromDict")
-    {    
+    {
         fixedPropertiesFromDict();
     }
-    
+
     label finalSize = molCloud_.size();
 
     nMolsAdded_ = finalSize - initialSize;
@@ -99,18 +99,18 @@ void grapheneHydrogenFunctionalisation::setInitialConfiguration()
         reduce(nMolsAdded_, sumOp<label>());
     }
 
-    Info << tab << " molecules added: " << nMolsAdded_ << endl; 
+    Info << tab << " molecules added: " << nMolsAdded_ << endl;
 }
 
 void grapheneHydrogenFunctionalisation::fixedPropertiesFromDict()
 {
 
-    // points on graphene 
+    // points on graphene
     List<vector> molPoints = List<vector>(mdInitialiseDict_.lookup("molPoints"));
-    
+
     // check for overlaps
     scalar threshold = 0.01;
-    
+
     forAll(molPoints, i)
     {
         forAll(molPoints, j)
@@ -118,11 +118,11 @@ void grapheneHydrogenFunctionalisation::fixedPropertiesFromDict()
             if(i != j)
             {
                 scalar magRIJ = mag(molPoints[i]-molPoints[j]);
-                
+
                 if(magRIJ < threshold)
                 {
                     FatalErrorIn("grapheneHydrogenFunctionalisation::setInitialConfiguration()")
-                        << "You've specified similar atoms in the mdInitialiseDict: " 
+                        << "You've specified similar atoms in the mdInitialiseDict: "
                         << molPoints[i]
                         << ", " << molPoints[j]
                         << ", magRIJ = " << magRIJ
@@ -131,10 +131,10 @@ void grapheneHydrogenFunctionalisation::fixedPropertiesFromDict()
             }
         }
     }
-    
-    
+
+
 //     Info << "molPoints" << molPoints << endl;
-    
+
     label nMols = molPoints.size();
 
     List<label> molIds(nMols, 0);
@@ -157,11 +157,11 @@ void grapheneHydrogenFunctionalisation::fixedPropertiesFromDict()
         if(molId == -1)
         {
             FatalErrorIn("grapheneHydrogenFunctionalisation::setInitialConfiguration()")
-                << "Cannot find molecule id: " << molIdName 
+                << "Cannot find molecule id: " << molIdName
                 << nl << "in moleculeProperties/idList."
                 << exit(FatalError);
         }
-        
+
         molIdC_ = molId;
     }
     {
@@ -174,13 +174,13 @@ void grapheneHydrogenFunctionalisation::fixedPropertiesFromDict()
         if(molId == -1)
         {
             FatalErrorIn("grapheneHydrogenFunctionalisation::setInitialConfiguration()")
-                << "Cannot find molecule id: " << molIdName 
+                << "Cannot find molecule id: " << molIdName
                 << nl << "in moleculeProperties/idList."
                 << exit(FatalError);
         }
-        
+
         molIdCN_ = molId;
-    }    
+    }
     {
         word molIdName(mdInitialiseDict_.lookup("molIdHydrogen"));
 
@@ -191,31 +191,31 @@ void grapheneHydrogenFunctionalisation::fixedPropertiesFromDict()
         if(molId == -1)
         {
             FatalErrorIn("grapheneHydrogenFunctionalisation::setInitialConfiguration()")
-                << "Cannot find molecule id: " << molIdName 
+                << "Cannot find molecule id: " << molIdName
                 << nl << "in moleculeProperties/idList."
                 << exit(FatalError);
         }
-        
-        molIdH_ = molId;
-    }    
 
-    dr_ = readScalar(mdInitialiseDict_.lookup("dr_SI"));    
-    
+        molIdH_ = molId;
+    }
+
+    dr_ = readScalar(mdInitialiseDict_.lookup("dr_SI"));
+
     const reducedUnits& rU = molCloud_.redUnits();
-    
+
     dr_ /= rU.refLength();
-    
+
 //         const scalar T(readScalar(mdInitialiseDict_.lookup("temperature")));
 //     const vector U(mdInitialiseDict_.lookup("velocity"));
-    
+
     vector U = vector::zero;
 
     if (mdInitialiseDict_.found("velocity"))
     {
         vector vel(mdInitialiseDict_.lookup("velocity"));
         U = vel;
-    }    
-    
+    }
+
     bool frozen = true;
 
     if (mdInitialiseDict_.found("frozen"))
@@ -251,23 +251,23 @@ void grapheneHydrogenFunctionalisation::fixedPropertiesFromDict()
         psi = readScalar(mdInitialiseDict_.lookup("psi"));
     }
 
-    
-    label nHydrogenInserted = 0;    
-    
-    // For each carbon find it, and also find it's two neighbours 
-    // and then insert a hydrogen ion dr away 
-    
+
+    label nHydrogenInserted = 0;
+
+    // For each carbon find it, and also find it's two neighbours
+    // and then insert a hydrogen ion dr away
+
     DynamicList<polyMolecule*> changeC;
-    
-    
+
+
     forAll(molPoints, i)
-    {    
+    {
         DynamicList<polyMolecule*> molsA;
 
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
-       
+
         scalar rMin = GREAT;
-        
+
         for
         (
             mol = molCloud_.begin();
@@ -279,7 +279,7 @@ void grapheneHydrogenFunctionalisation::fixedPropertiesFromDict()
             {
                 vector rT = molPoints[i];
                 scalar magRIJ = mag(rT-mol().position());
-                
+
                 if(magRIJ < rMin)
                 {
                     molsA.clear();
@@ -289,10 +289,10 @@ void grapheneHydrogenFunctionalisation::fixedPropertiesFromDict()
                 }
             }
         }
-        
-        rMin = GREAT;        
+
+        rMin = GREAT;
         DynamicList<polyMolecule*> molsB;
-        
+
         for
         (
             mol = molCloud_.begin();
@@ -304,7 +304,7 @@ void grapheneHydrogenFunctionalisation::fixedPropertiesFromDict()
             {
                 vector rT = molPoints[i];
                 scalar magRIJ = mag(rT-mol().position());
-                
+
                 if(magRIJ < rMin)
                 {
                     if(mol().trackingNumber() != molsA[0]->trackingNumber())
@@ -327,11 +327,11 @@ void grapheneHydrogenFunctionalisation::fixedPropertiesFromDict()
                     }
                 }
             }
-        }        
+        }
 
-        rMin = GREAT;        
+        rMin = GREAT;
         DynamicList<polyMolecule*> molsC;
-        
+
         for
         (
             mol = molCloud_.begin();
@@ -343,7 +343,7 @@ void grapheneHydrogenFunctionalisation::fixedPropertiesFromDict()
             {
                 vector rT = molPoints[i];
                 scalar magRIJ = mag(rT-mol().position());
-                
+
                 if(magRIJ < rMin)
                 {
                     if
@@ -369,12 +369,12 @@ void grapheneHydrogenFunctionalisation::fixedPropertiesFromDict()
                     }
                 }
             }
-        }        
+        }
 
         vector rA = molsA[0]->position();
         vector rB = molsB[0]->position();
         vector rC = molsC[0]->position();
-        
+
 //         Info << "target position = " << molPoints[i]
 //             << ", molsA = " << molsA[0]->position()
 //             << ", molsB = " << molsB[0]->position()
@@ -385,16 +385,16 @@ void grapheneHydrogenFunctionalisation::fixedPropertiesFromDict()
 
         // average of all positions
         vector rM = (rA + rB + rC) / 3;
-        
+
         vector unit = rA - rM;
         unit /= mag(unit);
-        
+
         // switch mol A to molIdCNew_
 //         molsA[0]->id() = molIdCN_;
         changeC.append(molsA[0]);
-                
+
         // insert hydrogen atom
-        
+
         vector globalPosition = rA + unit*dr_;
         label cell = -1;
         label tetFace = -1;
@@ -407,7 +407,7 @@ void grapheneHydrogenFunctionalisation::fixedPropertiesFromDict()
             tetFace,
             tetPt
         );
-        
+
         if(cell != -1)
         {
             insertMolecule
@@ -425,24 +425,24 @@ void grapheneHydrogenFunctionalisation::fixedPropertiesFromDict()
 //                 temperatureMols[i],
                 U
             );
-            
+
             nHydrogenInserted++;
         }
         else
         {
             FatalErrorIn("Foam::grapheneHydrogenFunctionalisation::setInitialConfiguration()")
-                << "Molecule position: " << globalPosition 
+                << "Molecule position: " << globalPosition
                 << " is not located in the mesh." << nl
                 << abort(FatalError);
-        }        
+        }
     }
-    
+
     forAll(changeC, i)
     {
         changeC[i]->id() = molIdCN_;
     }
-    
-    
+
+
 }
 
 
@@ -483,7 +483,7 @@ void grapheneHydrogenFunctionalisation::insertMolecule
 //     const polyMolecule::constantProperties& cP = molCloud_.constProps(id);
 
 //     vector v = equipartitionLinearVelocity(temperature, cP.mass());
-// 
+//
 //     v += bulkVelocity;
 
     vector pi = vector::zero;

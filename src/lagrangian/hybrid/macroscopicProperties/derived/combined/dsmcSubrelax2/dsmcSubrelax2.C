@@ -24,7 +24,7 @@ License
 
 Description
 
-Measures overall temperature, including vibrational temperature, for a single species gas 
+Measures overall temperature, including vibrational temperature, for a single species gas
 or a gas mixture and writes the results to a volume scalar field that can be viewed in Paraview.
 
 Translational, rotatational and vibrational temperature field will also be written automatically.
@@ -246,7 +246,7 @@ dsmcSubrelax2::dsmcSubrelax2
     stopSamplingReset_(false)
 {
 
-    // standard to reading typeIds ------------ 
+    // standard to reading typeIds ------------
     const List<word> molecules (propsDict_.lookup("typeIds"));
 
     DynamicList<word> moleculesReduced(0);
@@ -372,7 +372,7 @@ void dsmcSubrelax2::createField()
 
 
 void dsmcSubrelax2::calculateField()
-{  
+{
     nTimeSteps_++;
 
 /*    if(nTimeSteps_ < 1000)
@@ -451,22 +451,22 @@ void dsmcSubrelax2::calculateField()
             linearKEMean_[cell] += mass * (p.U() & p.U());
             momentumMean_[cell] += mass * p.U();
             rotationalEMean_[cell] += p.ERot();
-            rotationalDofMean_[cell] += rotationalDof; 
+            rotationalDofMean_[cell] += rotationalDof;
             vibrationalETotal_[iD][cell] += p.EVib();
             nParcels_[iD][cell] += 1.0;
-            
+
             muu_[cell] += mass * sqr(p.U().x());
             muv_[cell] += mass * ( (p.U().x()) * (p.U().y()) );
             muw_[cell] += mass * ( (p.U().x()) * (p.U().z()) );
             mvv_[cell] += mass * sqr(p.U().y());
             mvw_[cell] += mass * ( (p.U().y()) * (p.U().z()) );
             mww_[cell] += mass * sqr(p.U().z());
-            
+
             mcc_[cell] += mass * mag(p.U()) * mag(p.U());
             mccu_[cell] += mass * mag(p.U()) * mag(p.U()) * (p.U().x());
             mccv_[cell] += mass * mag(p.U()) * mag(p.U()) * (p.U().y());
             mccw_[cell] += mass * mag(p.U()) * mag(p.U()) * (p.U().z());
-            
+
             eu_[cell] += ( p.ERot() + p.EVib() ) * (p.U().x());
             ev_[cell] += ( p.ERot() + p.EVib() ) * (p.U().y());
             ew_[cell] += ( p.ERot() + p.EVib() ) * (p.U().z());
@@ -520,9 +520,9 @@ void dsmcSubrelax2::calculateField()
         label iD = findIndex(typeIds_, i);
 
         if(iD != -1)
-        {            
+        {
             forAll(cloud_.boundaryFluxMeasurements().rhoNBF()[i], j)
-            {                
+            {
                 forAll(cloud_.boundaryFluxMeasurements().rhoNBF()[i][j], k)
                 {
                     rhoNBF_[j][k]
@@ -551,9 +551,9 @@ void dsmcSubrelax2::calculateField()
         label iD = findIndex(typeIds_, i);
 
         if(iD != -1)
-        { 
+        {
             forAll(speciesRhoNBF_[i], j)
-            {                
+            {
                 forAll(speciesRhoNBF_[i][j], k)
                 {
                     speciesRhoNBF_[i][j][k]
@@ -740,7 +740,7 @@ void dsmcSubrelax2::calculateField()
     Info << "valueAv " << dummyScalar2 << endl;
 
     if(time_.time().outputTime())
-    {        
+    {
         if(time_.resetFieldsAtOutput() and not stopSamplingReset_)
         {
             nTimeSteps_ = 0;

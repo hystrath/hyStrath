@@ -48,12 +48,12 @@ Foam::binaryDiffusivityModel::binaryDiffusivityModel
     const volScalarField& T
 )
 :
-    name1_(name1),    
+    name1_(name1),
     name2_(name2),
     dictThermo_(dictThermo),
-    dictTransport_(dictTransport),    
+    dictTransport_(dictTransport),
     p_(p),
-    pe_(p*0.0),  
+    pe_(p*0.0),
     T_(T)
 {}
 
@@ -69,12 +69,12 @@ Foam::binaryDiffusivityModel::binaryDiffusivityModel
     const volScalarField& T
 )
 :
-    name1_(name1),    
+    name1_(name1),
     name2_(name2),
     dictThermo_(dictThermo),
-    dictTransport_(dictTransport),    
-    p_(p),  
-    pe_(pe),  
+    dictTransport_(dictTransport),
+    p_(p),
+    pe_(pe),
     T_(T)
 {
     if(name1_.back() == '-')
@@ -92,7 +92,7 @@ Foam::binaryDiffusivityModel::binaryDiffusivityModel
     else
     {
         if(name2_.back() == '-' or name2_.back() == '+') collisionType_ = 1;
-        else collisionType_ = 0;    
+        else collisionType_ = 0;
     }
 }
 

@@ -39,8 +39,8 @@ defineTypeNameAndDebug(dsmcDiffuseWallPatch, 0);
 
 addToRunTimeSelectionTable
 (
-    dsmcPatchBoundary, 
-    dsmcDiffuseWallPatch, 
+    dsmcPatchBoundary,
+    dsmcDiffuseWallPatch,
     dictionary
 );
 
@@ -50,7 +50,7 @@ addToRunTimeSelectionTable
 void dsmcDiffuseWallPatch::setProperties()
 {
     velocity_ = propsDict_.lookup("velocity");
-    
+
     if(propsDict_.found("groundLevelTemperature"))
     {
         temperature_ = readScalar(propsDict_.lookup("groundLevelTemperature"));
@@ -59,8 +59,8 @@ void dsmcDiffuseWallPatch::setProperties()
     {
         temperature_ = readScalar(propsDict_.lookup("temperature"));
     }
-    
-    formationLevelTemperature_ = 
+
+    formationLevelTemperature_ =
         propsDict_.lookupOrDefault<scalar>("formationLevelTemperature", temperature_);
 }
 
@@ -73,22 +73,22 @@ void dsmcDiffuseWallPatch::performDiffuseReflection
 )
 {
     scalar T = getLocalTemperature(p.position()[depthAxis_]);
-    
+
     if(localTemperature != 0)
     {
         T = localTemperature;
     }
-    
+
     vector& U = p.U();
 
     scalar& ERot = p.ERot();
-    
+
     labelList& vibLevel = p.vibLevel();
-    
+
     label& ELevel = p.ELevel();
 
     const label& typeId = p.typeId();
-    
+
     //- Wall unit normal vector and wall unit tangential vectors
     vector nw, tw1, tw2 = vector::zero;
 
@@ -96,10 +96,10 @@ void dsmcDiffuseWallPatch::performDiffuseReflection
 
     const scalar mass = cloud_.constProps(typeId).mass();
 
-    scalar rotationalDof = 
+    scalar rotationalDof =
         cloud_.constProps(typeId).rotationalDegreesOfFreedom();
-    
-    scalar vibrationalDof = 
+
+    scalar vibrationalDof =
         cloud_.constProps(typeId).nVibrationalModes();
 
     Random& rndGen = cloud_.rndGen();
@@ -111,21 +111,21 @@ void dsmcDiffuseWallPatch::performDiffuseReflection
           - sqrt(-2.0*log(max(1 - rndGen.sample01<scalar>(), VSMALL)))*nw
         );
 
-       
+
     ERot = cloud_.equipartitionRotationalEnergy(T, rotationalDof);
 
-    
-    vibLevel = 
+
+    vibLevel =
         cloud_.equipartitionVibrationalEnergyLevel(T, vibrationalDof, typeId);
-   
-    
+
+
     ELevel = cloud_.equipartitionElectronicLevel
         (
             T,
             cloud_.constProps(typeId).electronicDegeneracyList(),
             cloud_.constProps(typeId).electronicEnergyList()
-        );   
-    
+        );
+
     if (localVelocity != vector::zero)
     {
         U += localVelocity;
@@ -134,7 +134,7 @@ void dsmcDiffuseWallPatch::performDiffuseReflection
     {
         U += velocity_;
     }
-    
+
     cloud_.porousMeas().diffuseInteraction(p);
 }
 
@@ -166,11 +166,11 @@ dsmcDiffuseWallPatch::dsmcDiffuseWallPatch
     writeInTimeDir_ = false;
     writeInCase_ = false;
     measurePropertiesAtWall_ = true;
-    
+
     depthAxis_ = 1;
-    
+
     word depthAxisChar = propsDict_.lookupOrDefault<word>("depthAxis", "y");
-    
+
     if (depthAxisChar == "x")
     {
         depthAxis_ = 0;
@@ -179,7 +179,7 @@ dsmcDiffuseWallPatch::dsmcDiffuseWallPatch
     {
         depthAxis_ = 2;
     }
-    
+
     // Here "mesh" refers to the polyMesh (patch) so the min and max positions
     // should be that of the patch bounding box
     maxDepth_ = mesh.bounds().max().component(depthAxis_);
@@ -208,14 +208,14 @@ void dsmcDiffuseWallPatch::calculateProperties()
 
 void dsmcDiffuseWallPatch::controlParticle
 (
-    dsmcParcel& p, 
+    dsmcParcel& p,
     dsmcParcel::trackingData& td
 )
 {
     measurePropertiesBeforeControl(p);
-    
+
     performDiffuseReflection(p);
-    
+
     measurePropertiesAfterControl(p);
 }
 
