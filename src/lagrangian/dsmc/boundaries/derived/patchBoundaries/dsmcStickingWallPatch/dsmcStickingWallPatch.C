@@ -190,9 +190,6 @@ void dsmcStickingWallPatch::adsorbParticle
 
     dsmcPatchBoundary::calculateWallUnitVectors(p, nw, tw1, tw2);
 
-    scalar preIE = 0.0;
-    vector preIMom = vector::zero;
-
     const label& typeId = p.typeId();
 
     const scalar mass = cloud_.constProps(typeId).mass();
@@ -202,11 +199,15 @@ void dsmcStickingWallPatch::adsorbParticle
         localTemperature = temperature_;
     }
 
-    preIE = 0.5*mass*(U & U) + ERot
+    // Since the parcel might be stuck to this wall over several time steps, we
+    // have to calculate the pre-interaction values with the current RWF as
+    // it might be updated in one or several intermediate coordinate system
+    // evolve step(s).
+    const scalar preIE = p.RWF()*(0.5*mass*(U & U) + ERot
         + cloud_.constProps(typeId).eVib_tot(p.vibLevel())
-        + cloud_.constProps(typeId).electronicEnergyList()[p.ELevel()];
+        + cloud_.constProps(typeId).electronicEnergyList()[p.ELevel()]);
 
-    preIMom = mass*U;
+    const vector preIMom = p.RWF()*mass*U;
 
     wallTemperature[3] = preIE;
     wallVectors[3] = preIMom;
@@ -302,72 +303,95 @@ void dsmcStickingWallPatch::measurePropertiesAfterDesorption
 
         const vector Ut = p.U() - U_dot_nw*nw;
 
-        const scalar invMagUnfA = 1/max(mag(U_dot_nw)*fA, SMALL);
+        const scalar rwfDivMagUnfADt =
+            p.RWF()/max(mag(U_dot_nw)*fA*deltaT, SMALL);
 
         cloud_.boundaryFluxMeasurements()
-            .rhoNBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfA;
+            .rhoNBF()[p.typeId()][wppIndex][wppLocalFace] += rwfDivMagUnfADt;
 
         if(constProps.rotationalDegreesOfFreedom() > 0)
         {
-           cloud_.boundaryFluxMeasurements()
-              .rhoNIntBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfA;
+            cloud_.boundaryFluxMeasurements()
+                .rhoNIntBF()[p.typeId()][wppIndex][wppLocalFace] +=
+                    rwfDivMagUnfADt;
         }
 
         if(constProps.nElectronicLevels() > 1)
         {
-           cloud_.boundaryFluxMeasurements()
-              .rhoNElecBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfA;
+            cloud_.boundaryFluxMeasurements()
+                .rhoNElecBF()[p.typeId()][wppIndex][wppLocalFace] +=
+                    rwfDivMagUnfADt;
         }
 
         cloud_.boundaryFluxMeasurements()
-            .rhoMBF()[p.typeId()][wppIndex][wppLocalFace] += m*invMagUnfA;
+            .rhoMBF()[p.typeId()][wppIndex][wppLocalFace] += m*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
             .linearKEBF()[p.typeId()][wppIndex][wppLocalFace] +=
-                0.5*m*(p.U() & p.U())*invMagUnfA;
+                0.5*m*(p.U() & p.U())*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
             .mccSpeciesBF()[p.typeId()][wppIndex][wppLocalFace] +=
-                m*(p.U() & p.U())*invMagUnfA;
+                m*(p.U() & p.U())*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
             .momentumBF()[p.typeId()][wppIndex][wppLocalFace] +=
-                m*Ut*invMagUnfA;
+                m*Ut*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
             .rotationalEBF()[p.typeId()][wppIndex][wppLocalFace] +=
-                p.ERot()*invMagUnfA;
+                p.ERot()*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
             .rotationalDofBF()[p.typeId()][wppIndex][wppLocalFace] +=
-                constProps.rotationalDegreesOfFreedom()*invMagUnfA;
+                constProps.rotationalDegreesOfFreedom()*rwfDivMagUnfADt;
 
         const scalar EVibP_tot = constProps.eVib_tot(p.vibLevel());
 
         cloud_.boundaryFluxMeasurements()
             .vibrationalEBF()[p.typeId()][wppIndex][wppLocalFace] +=
-                EVibP_tot*invMagUnfA;
+                EVibP_tot*rwfDivMagUnfADt;
+
+        forAll(p.vibLevel(), mode)
+        {
+            cloud_.boundaryFluxMeasurements()
+                .evmsBF()[p.typeId()][mode][wppIndex][wppLocalFace] +=
+                    constProps.eVib_m(mode, p.vibLevel()[mode])
+                    * rwfDivMagUnfADt;
+        }
 
         cloud_.boundaryFluxMeasurements()
             .electronicEBF()[p.typeId()][wppIndex][wppLocalFace] +=
-                constProps.electronicEnergyList()[p.ELevel()]*invMagUnfA;
+                constProps.electronicEnergyList()[p.ELevel()]*rwfDivMagUnfADt;
 
         // post-interaction energy
-        scalar postIE = 0.5*m*(p.U() & p.U()) + p.ERot() + EVibP_tot
-            + constProps.electronicEnergyList()[p.ELevel()];
+        scalar postIE = p.RWF()*(0.5*m*(p.U() & p.U()) + p.ERot() + EVibP_tot
+            + constProps.electronicEnergyList()[p.ELevel()]);
 
         // post-interaction momentum
-        const vector postIMom = m*p.U();
+        const vector postIMom = p.RWF()*m*p.U();
 
+        // Note: these do include the p.RWF() of the parcel at the time it was
+        // adsorbed on the wall!
         const scalar preIE = p.stuck().wallTemperature()[3];
         const vector preIMom = p.stuck().wallVectors()[3];
 
-        scalar nParticle = cloud_.nParticles(wppIndex, wppLocalFace);
-
-        //nParticle *= cloud_.coordSystem().pRWF(wppIndex, wppLocalFace);
+        // Note: Do _not_ use the cloud._nParticles() command here because it
+        // assumes the wrong RWF. Because this calculation can happen at
+        // completely different time steps the parcel RWF might have been up-
+        // dated in the mean time. As the parcel might have been cloned in the
+        // mean time (note: the new parcel would then _not_ be adsorbed), we
+        // have to use the RWF of the impinging parcel in the pre-interaction
+        // calculations and the RWF of the leaving parcel in the post-
+        // interaction parcels. The heat of reaction is calculated with the
+        // post-interaction RWFs.
+        const scalar nParticle = cloud_.coordSystem().dtModel()
+            .nParticles(wppIndex, wppLocalFace);
 
         const scalar deltaQ = nParticle
-            *(preIE - postIE  + (heatOfReaction*physicoChemical::k.value()))
+            *(preIE - postIE
+                + (p.RWF()*heatOfReaction*physicoChemical::k.value())
+            )
             /(deltaT*fA);
 
         const vector deltaFD = nParticle*(preIMom - postIMom)/(deltaT*fA);
