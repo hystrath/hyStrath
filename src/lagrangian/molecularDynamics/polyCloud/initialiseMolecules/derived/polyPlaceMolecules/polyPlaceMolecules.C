@@ -98,15 +98,15 @@ void polyPlaceMolecules::setInitialConfiguration()
     if(fixedProperties)
     {
         word molIdName(mdInitialiseDict_.lookup("molId"));
-    
+
         const List<word>& idList(molCloud_.cP().molIds());
-    
+
         label molId = findIndex(idList, molIdName);
-    
+
         if(molId == -1)
         {
             FatalErrorIn("polyPlaceMolecules::setInitialConfiguration()")
-                << "Cannot find molecule id: " << molIdName 
+                << "Cannot find molecule id: " << molIdName
                 << nl << "in moleculeProperties/idList."
                 << exit(FatalError);
         }
@@ -115,14 +115,14 @@ void polyPlaceMolecules::setInitialConfiguration()
         const vector U(mdInitialiseDict_.lookup("velocity"));
 
         bool frozen = false;
-    
+
         if (mdInitialiseDict_.found("frozen"))
         {
             frozen = Switch(mdInitialiseDict_.lookup("frozen"));
         }
-    
+
         bool tethered = false;
-    
+
         if (mdInitialiseDict_.found("tethered"))
         {
             tethered = Switch(mdInitialiseDict_.lookup("tethered"));
@@ -165,8 +165,8 @@ void polyPlaceMolecules::setInitialConfiguration()
     else // individual properties
     {
         FatalErrorIn("polyPlaceMolecules::setInitialConfiguration()")
-                << "Separate properties per molecule is not handled as yet." 
-                << nl 
+                << "Separate properties per molecule is not handled as yet."
+                << nl
                 << exit(FatalError);
     }
 
@@ -186,7 +186,7 @@ void polyPlaceMolecules::setInitialConfiguration()
             tetFace,
             tetPt
         );
-        
+
         if(cell != -1)
         {
             insertMolecule
@@ -207,7 +207,7 @@ void polyPlaceMolecules::setInitialConfiguration()
         else
         {
             FatalErrorIn("Foam::polyPlaceMolecules::setInitialConfiguration()")
-                << "Molecule position: " << globalPosition 
+                << "Molecule position: " << globalPosition
                 << " is not located in the mesh." << nl
                 << abort(FatalError);
         }
@@ -231,7 +231,7 @@ void polyPlaceMolecules::insertMolecule
     const point& position,
     const label& cell,
     const label& tetFace,
-    const label& tetPt, 
+    const label& tetPt,
     const label& id,
     const bool& tethered,
     const bool& frozen,
@@ -263,7 +263,7 @@ void polyPlaceMolecules::insertMolecule
 //     const polyMolecule::constantProperties& cP = molCloud_.constProps(id);
 
 //     vector v = equipartitionLinearVelocity(temperature, cP.mass());
-// 
+//
 //     v += bulkVelocity;
 
     vector pi = vector::zero;

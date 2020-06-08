@@ -47,7 +47,7 @@ faceInfoList::faceInfoList()
 // constructor from list
 faceInfoList::faceInfoList
 (
-    const List<faceInfo>& faceInfos 
+    const List<faceInfo>& faceInfos
 )
 :
     List<faceInfo> (faceInfos)
@@ -85,7 +85,7 @@ faceInfoList::faceInfoList
 //             <<  p.currentPointLabel() << p.originPoint() <<  p.Rsqr();
 //     }
 // }
-// 
+//
 // Istream& operator>>(Istream& is, faceInfoList& p)
 // {
 //     return is >> p.currentPointLabel_ >> p.originPoint_ >>  p.Rsqr_;

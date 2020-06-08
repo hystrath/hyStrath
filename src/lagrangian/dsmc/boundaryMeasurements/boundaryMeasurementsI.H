@@ -154,7 +154,7 @@ inline const fvPatchScalarField& boundaryMeasurements::boundaryT
 }
 
 
-inline const fvPatchVectorField& boundaryMeasurements::boundaryU 
+inline const fvPatchVectorField& boundaryMeasurements::boundaryU
 (
     const label& patchi
 ) const

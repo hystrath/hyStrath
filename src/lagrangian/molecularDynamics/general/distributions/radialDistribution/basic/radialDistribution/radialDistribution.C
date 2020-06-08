@@ -81,7 +81,7 @@ radialDistribution::radialDistribution(const word& name)
 {}
 
 
-//- Construct from name, rMax and noOfBins 
+//- Construct from name, rMax and noOfBins
 //- (used for sampling radial distribution)
 radialDistribution::radialDistribution
 (
@@ -222,7 +222,7 @@ scalar radialDistribution::readBinWidth()
     {
         FatalErrorIn("radialDistribution")
             << "Size of RDF:  " << name_
-            << " is zero" 
+            << " is zero"
             << abort(FatalError);
     }
 
@@ -245,7 +245,7 @@ scalar radialDistribution::readBinWidth()
 
 //             Info << " width: " << newBinWid << endl;
 
-            if(mag(newBinWid - binWidth) > SMALL) 
+            if(mag(newBinWid - binWidth) > SMALL)
             {
                 constantBinWidth = false;
                 break;
@@ -257,7 +257,7 @@ scalar radialDistribution::readBinWidth()
     {
         FatalErrorIn("radialDistribution")
             << "Check binWidth in RDF: " << name_
-            << " for constant binWidth" 
+            << " for constant binWidth"
             << abort(FatalError);
     }
 
@@ -469,7 +469,7 @@ void radialDistribution::readRDF
     setRDF(rdf);
 
     // set bin width of distribution class (this)
-//     setBinWidth(readBinWidth()); 
+//     setBinWidth(readBinWidth());
 }
 
 // * * * * * * * * * * * * * * * Member Operators  * * * * * * * * * * * * * //
@@ -483,9 +483,9 @@ void radialDistribution::readRDF
 //             << "Attempted assignment to self"
 //             << abort(FatalError);
 //     }
-// 
+//
 //     Map<label>::operator=(rhs);
-// 
+//
 //     binWidth_ = rhs.binWidth();
 // }
 
@@ -499,14 +499,14 @@ void radialDistribution::readRDF
 // {
 //     os  << d.binWidth_
 //         << static_cast<const Map<label>&>(d);
-// 
+//
 //     // Check state of Ostream
 //     os.check
 //     (
 //         "Ostream& operator<<(Ostream&, "
 //         "const radialDistribution&)"
 //     );
-// 
+//
 //     return os;
 // }
 

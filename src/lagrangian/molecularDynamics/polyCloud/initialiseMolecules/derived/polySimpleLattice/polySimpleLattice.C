@@ -94,7 +94,7 @@ void polySimpleLattice::setInitialConfiguration()
         spacing = readScalar(mdInitialiseDict_.lookup("spacing"));
     }
 
-    const word molIdName(mdInitialiseDict_.lookup("molId")); 
+    const word molIdName(mdInitialiseDict_.lookup("molId"));
     const List<word>& idList(molCloud_.cP().molIds());
 
     label molId = findIndex(idList, molIdName);
@@ -167,7 +167,7 @@ void polySimpleLattice::setInitialConfiguration()
     }
 
     bool deleteOverlaps = false;
-    
+
     scalar rOv = spacing;
 
     if (mdInitialiseDict_.found("deleteOverlaps"))
@@ -192,13 +192,13 @@ void polySimpleLattice::setInitialConfiguration()
 
     {
         scalar dotProd = breadthVector & lengthVector;
-    
+
         if(dotProd > SMALL)
         {
             FatalErrorIn("polySimpleLattice::setInitialConfiguration()")
-                << "breadthVector: " << breadthVector 
+                << "breadthVector: " << breadthVector
                 << " and lengthVector: " << lengthVector
-                << " have to be perpendicular to each other. Value of dot product: " 
+                << " have to be perpendicular to each other. Value of dot product: "
                 << dotProd
                 << nl << "in mdInitialiseDict."
                 << exit(FatalError);
@@ -208,13 +208,13 @@ void polySimpleLattice::setInitialConfiguration()
 
     {
         scalar dotProd = normalVector & lengthVector;
-    
+
         if(dotProd > SMALL)
         {
             FatalErrorIn("polySimpleLattice::setInitialConfiguration()")
-                << "thicknessVector: " << normalVector 
+                << "thicknessVector: " << normalVector
                 << " and lengthVector: " << lengthVector
-                << " have to be perpendicular to each other. Value of dot product: " 
+                << " have to be perpendicular to each other. Value of dot product: "
                 << dotProd
                 << nl << "in mdInitialiseDict."
                 << exit(FatalError);
@@ -231,9 +231,9 @@ void polySimpleLattice::setInitialConfiguration()
             (
                 mdInitialiseDict_.lookup("numberDensity")
             );
-    
+
             numberDensity = rho;
-    
+
             if (numberDensity < VSMALL)
             {
                 FatalErrorIn("Foam::polyMoleculeCloud::initialiseMolecules")
@@ -244,18 +244,18 @@ void polySimpleLattice::setInitialConfiguration()
         else if (mdInitialiseDict_.found("massDensity"))
         {
 //             const polyMolecule::constantProperties& cP(molCloud_.constProps(molId));
-    
+
             scalar mass = molCloud_.cP().mass(molId);
-    
+
             Info << "mass: " << mass << endl;
-    
+
             scalar massDensity = readScalar
             (
                 mdInitialiseDict_.lookup("massDensity")
             );
-    
+
             numberDensity = massDensity / mass;
-    
+
             if (massDensity < VSMALL)
             {
                 FatalErrorIn("Foam::polyMoleculeCloud::initialiseMolecules")
@@ -266,24 +266,24 @@ void polySimpleLattice::setInitialConfiguration()
         else if (mdInitialiseDict_.found("massDensitySI"))
         {
 //             const polyMolecule::constantProperties& cP(molCloud_.constProps(molId));
-    
+
             scalar mass = molCloud_.cP().mass(molId);
-    
+
             Info << "mass: " << mass << endl;
-    
+
             scalar massDensity = readScalar
             (
                 mdInitialiseDict_.lookup("massDensitySI")
             );
-            
+
             const reducedUnits& rU =molCloud_.redUnits();
 
             massDensity /= rU.refMassDensity();
-            
+
             numberDensity = massDensity / mass;
-            
+
             Info << " number density in reduced units = " << numberDensity << endl;
-            
+
             if (massDensity < VSMALL)
             {
                 FatalErrorIn("Foam::polyMoleculeCloud::initialiseMolecules")
@@ -297,7 +297,7 @@ void polySimpleLattice::setInitialConfiguration()
                 << "massDensity or numberDensity not specified " << nl
                 << abort(FatalError);
         }
-   
+
         spacing = pow(  (1.0/numberDensity), (1.0/3.0) );
     }
 
@@ -311,7 +311,7 @@ void polySimpleLattice::setInitialConfiguration()
 
     scalar spacingX = spacing;
     scalar spacingY = spacing;
-    scalar spacingZ = spacing; 
+    scalar spacingZ = spacing;
 /*
     if(nMolsX > 1)
     {
@@ -340,7 +340,7 @@ void polySimpleLattice::setInitialConfiguration()
         spacingY = breadth/scalar(nMolsY - 1);
         spacingZ = thickness/scalar(nMolsZ - 1);
 
-        Info<< "adjust spacing ---> spacingX: " << spacingX 
+        Info<< "adjust spacing ---> spacingX: " << spacingX
             << ", spacingY: " << spacingY
             << ", spacingZ: " << spacingZ
             << endl;
@@ -368,11 +368,11 @@ void polySimpleLattice::setInitialConfiguration()
             {
                 z = k*spacingZ;
 
-                globalPosition = startPoint 
-                                + lengthVector*x 
-                                + breadthVector*y 
+                globalPosition = startPoint
+                                + lengthVector*x
+                                + breadthVector*y
                                 + normalVector*z;
-            
+
                 label cell = -1;
                 label tetFace = -1;
                 label tetPt = -1;
@@ -412,7 +412,7 @@ void polySimpleLattice::setInitialConfiguration()
                             globalPosition,
                             cell,
                             tetFace,
-                            tetPt,                         
+                            tetPt,
                             molId,
                             tethered,
                             frozen,
@@ -428,7 +428,7 @@ void polySimpleLattice::setInitialConfiguration()
                         globalPosition,
                         cell,
                         tetFace,
-                        tetPt,                       
+                        tetPt,
                         molId,
                         tethered,
                         frozen,
@@ -473,7 +473,7 @@ void polySimpleLattice::setInitialConfiguration()
         IDLList<polyMolecule>::iterator molI(molCloud_.begin());
         label i = 0;
         label j = 0;
-   
+
         for
         (
             molI = molCloud_.begin();
@@ -516,7 +516,7 @@ void polySimpleLattice::setInitialConfiguration()
 
             i++;
         }
-    
+
         //molsToDel.shrink();
 
         label deletedMols = molsToDel.size();
@@ -525,7 +525,7 @@ void polySimpleLattice::setInitialConfiguration()
         {
             deleteMolecule(*molsToDel[m]);
         }
-   
+
         Info<< tab << " overlapping molecules: " <<  deletedMols
             << endl;
     }

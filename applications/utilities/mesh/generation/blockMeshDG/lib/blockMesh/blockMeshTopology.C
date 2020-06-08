@@ -576,7 +576,7 @@ Foam::polyMesh* Foam::blockMesh::createTopology
         cellShapeList tmpBlockCells(blocks.size());
         createCellShapes(tmpBlockCells);
 
-        // Extract 
+        // Extract
 
         blockMeshPtr = new polyMesh
         (

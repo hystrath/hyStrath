@@ -70,11 +70,11 @@ selectSiteIds::selectSiteIds
     if(molecules.size() > 0)
     {
         DynamicList<word> moleculesReduced(0);
-    
+
         forAll(molecules, i)
         {
             const word& moleculeName(molecules[i]);
-    
+
             if(findIndex(moleculesReduced, moleculeName) == -1)
             {
                 moleculesReduced.append(moleculeName);
@@ -83,15 +83,15 @@ selectSiteIds::selectSiteIds
 
         //!!SL!!
         //moleculesReduced.shrink();
-    
+
         molSiteIds_.setSize(moleculesReduced.size(), -1);
-    
+
         forAll(moleculesReduced, i)
         {
             const word& moleculeName(moleculesReduced[i]);
-    
+
             label siteId(findIndex(pot.siteIdList(), moleculeName));
-    
+
             if(siteId == -1)
             {
                 FatalErrorIn
@@ -101,7 +101,7 @@ selectSiteIds::selectSiteIds
                     << "Cannot find id: " << moleculeName << nl << "in dictionary."
                     << exit(FatalError);
             }
-  
+
             molSiteIds_[i] = siteId;
         }
     }
@@ -144,9 +144,9 @@ selectSiteIds::~selectSiteIds()
 //             << "Attempted assignment to self"
 //             << abort(FatalError);
 //     }
-// 
+//
 //     Map<label>::operator=(rhs);
-// 
+//
 //     binWidth_ = rhs.binWidth();
 // }
 
@@ -160,14 +160,14 @@ selectSiteIds::~selectSiteIds()
 // {
 //     os  << d.binWidth_
 //         << static_cast<const Map<label>&>(d);
-// 
+//
 //     // Check state of Ostream
 //     os.check
 //     (
 //         "Ostream& operator<<(Ostream&, "
 //         "const selectSiteIds&)"
 //     );
-// 
+//
 //     return os;
 // }
 

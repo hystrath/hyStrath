@@ -98,7 +98,7 @@ dsmcNewPressureOutletCalculatedMolarFraction::dsmcNewPressureOutletCalculatedMol
     writeInCase_ = true;
 
     setProperties();
-        
+
     forAll(cellVolume_, c)
     {
         cellVolume_[c] = mesh_.cellVolumes()[cells_[c]];  //get volume of each boundary cell
@@ -179,7 +179,7 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsBeforeMove()
 
             //Wall tangential unit vector. Use the direction between the
             //face centre and the first vertex in the list
-            vector t1 = fC - mesh_.points()[mesh_.faces()[faceI][0]]; 
+            vector t1 = fC - mesh_.points()[mesh_.faces()[faceI][0]];
             t1 /= mag(t1);
 
             //Other tangential unit vector.  Rescaling in case face is not
@@ -188,12 +188,12 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsBeforeMove()
             t2 /= mag(t2);
 
             label nParcelsToInsert = label(accumulatedParcelsToInsert_[iD][f]);
-            
+
             if ((nParcelsToInsert - accumulatedParcelsToInsert_[iD][f]) > rndGen.sample01<scalar>())
             {
                 nParcelsToInsert++;
             }
-            
+
             accumulatedParcelsToInsert_[iD][f] -= nParcelsToInsert; //remainder has been set
 
             nTotalParcelsToBeAdded += nParcelsToInsert;
@@ -226,7 +226,7 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsBeforeMove()
                 const tetIndices& faceTetIs = faceTets[selectedTriI];
 
                 point p = faceTetIs.faceTri(mesh_).randomPoint(rndGen);
-                
+
                 // Velocity generation
                 scalar mostProbableSpeed
                 (
@@ -236,7 +236,7 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsBeforeMove()
                         mass
                     )
                 );
-                    
+
                 scalar sCosTheta = (faceVelocity & n)/mostProbableSpeed;
 
                 // Coefficients required for Bird eqn 12.5
@@ -290,7 +290,7 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsBeforeMove()
                 {
                     uNormal = sqrt(-log(rndGen.sample01<scalar>()));
                 }
-                
+
                 vector U =
                     sqrt(physicoChemical::k.value()*faceTranslationalTemperature/mass)
                     *(
@@ -306,20 +306,20 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsBeforeMove()
                     faceRotationalTemperature,
                     cloud_.constProps(typeId).rotationalDegreesOfFreedom()
                 );
-                
+
                 labelList vibLevel = cloud_.equipartitionVibrationalEnergyLevel
                 (
                     faceVibrationalTemperature,
                     cloud_.constProps(typeId).nVibrationalModes(),
                     typeId
                 );
-                
+
                 label ELevel = 0.0;
-                
+
                 label newParcel = patchId();
-                
+
                 const scalar& RWF = cloud_.coordSystem().RWF(cellI);
-              
+
                 cloud_.addNewParcel
                 (
                     p,
@@ -337,12 +337,12 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsBeforeMove()
                 );
 
                 nTotalParcelsAdded++;
-            
+
             }
         }
     }
 
-    Info<< "dsmcNewPressureOutletCalculatedMolarFraction target parcels to insert: " << nTotalParcelsToBeAdded 
+    Info<< "dsmcNewPressureOutletCalculatedMolarFraction target parcels to insert: " << nTotalParcelsToBeAdded
         <<", number of inserted parcels: " << nTotalParcelsAdded
         << endl;
 }
@@ -353,11 +353,11 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsBeforeCollision
 }
 
 void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsAfterCollisions()
-{    
+{
     nTimeSteps_ += 1.0;
 
     const scalar sqrtPi = sqrt(pi);
-            
+
     scalarField molecularMass(cells_.size(), 0.0);
     scalarField molarcontantPressureSpecificHeat(cells_.size(), 0.0);
     scalarField molarcontantVolumeSpecificHeat(cells_.size(), 0.0);
@@ -365,21 +365,21 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsAfterCollisions
     scalarField gamma(cells_.size(), 0.0);
 
     forAll(cells_, c)
-    {     
-        forAll(moleFractions_, j)  
+    {
+        forAll(moleFractions_, j)
         {
             const label& typeId = typeIds_[j];
 
             molecularMass[c] += cloud_.constProps(typeId).mass()*moleFractions_[j][c];
             molarcontantPressureSpecificHeat[c] += (5.0 + cloud_.constProps(typeId).rotationalDegreesOfFreedom())*moleFractions_[j][c];
             molarcontantVolumeSpecificHeat[c] += (3.0 + cloud_.constProps(typeId).rotationalDegreesOfFreedom())*moleFractions_[j][c];
-        } 
-        
+        }
+
         // R = k/m
-        gasConstant[c] = physicoChemical::k.value()/molecularMass[c]; 
+        gasConstant[c] = physicoChemical::k.value()/molecularMass[c];
 
         gamma[c] = molarcontantPressureSpecificHeat[c]/molarcontantVolumeSpecificHeat[c];
-    } 
+    }
 
     // calculate properties in cells attached to each boundary face
 
@@ -412,13 +412,13 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsAfterCollisions
     forAll(cells_, c)
     {
         const label celli = cells_[c];
-        
+
         const List<dsmcParcel*>& parcelsInCell = cellOccupancy[celli];
-                    
+
         forAll(parcelsInCell, pIC)
         {
             dsmcParcel* p = parcelsInCell[pIC];
-                        
+
             momentum[c] += cloud_.nParticles(celli)*cloud_.constProps(p->typeId()).mass()*p->U();
             mass[c] += cloud_.nParticles(celli)*cloud_.constProps(p->typeId()).mass();
             nParcels[c] += 1.0;
@@ -430,29 +430,29 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsAfterCollisions
             velMeanSqrX[c] += p->U().x();
             velMeanSqrY[c] += p->U().y();
             velMeanSqrZ[c] += p->U().z();
-            
+
             if(cloud_.constProps(p->typeId()).rotationalDegreesOfFreedom() > VSMALL)
             {
                 nParcelsInt[c] += 1.0;
             }
-        } 
-        
+        }
+
         nTotalParcels_[c] += nParcels[c];
-        
+
         nTotalParcelsInt_[c] += nParcelsInt[c];
-        
+
         totalMomentum_[c] += momentum[c];
-        
-        totalMass_[c] += mass[c]; 
-        
+
+        totalMass_[c] += mass[c];
+
         totalRotationalEnergy_[c] += rotationalEnergy[c];
-        
+
         totalRotationalDof_[c] += rotationalDof[c];
-                
+
         massDensity[c] = totalMass_[c] / (cellVolume_[c]*nTimeSteps_);
-        
+
         numberDensity[c] = massDensity[c]/molecularMass[c];
-                
+
         if(nTotalParcels_[c] > 1)
         {
             velSqrMeanX_[c] += velSqrMeanX[c];
@@ -461,20 +461,20 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsAfterCollisions
             velMeanSqrX_[c] += velMeanSqrX[c];
             velMeanSqrY_[c] += velMeanSqrY[c];
             velMeanSqrZ_[c] += velMeanSqrZ[c];
-            
+
             totalVelSqrMeanX_[c] = velSqrMeanX_[c]/nTotalParcels_[c];
             totalVelSqrMeanY_[c] = velSqrMeanY_[c]/nTotalParcels_[c];
             totalVelSqrMeanZ_[c] = velSqrMeanZ_[c]/nTotalParcels_[c];
             totalVelMeanSqrX_[c] = sqr(velMeanSqrX_[c]/nTotalParcels_[c]);
             totalVelMeanSqrY_[c] = sqr(velMeanSqrY_[c]/nTotalParcels_[c]);
             totalVelMeanSqrZ_[c] = sqr(velMeanSqrZ_[c]/nTotalParcels_[c]);
-                    
+
             translationalTemperature[c] = (0.5*molecularMass[c])*(2.0/(3.0*physicoChemical::k.value()))
                             *(
                                 totalVelSqrMeanX_[c]+totalVelSqrMeanY_[c]+totalVelSqrMeanZ_[c]
                                 -totalVelMeanSqrX_[c]-totalVelMeanSqrY_[c]-totalVelMeanSqrZ_[c]
                             );
-                            
+
             if(totalRotationalDof_[c] > VSMALL)
             {
                 rotationalTemperature[c] = (2.0/physicoChemical::k.value())*(totalRotationalEnergy_[c]/totalRotationalDof_[c]);
@@ -487,11 +487,11 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsAfterCollisions
 //             forAll(totalVibrationalEnergy_, iD)
 //             {
 //                 const List<dsmcParcel*>& parcelsInCell = cellOccupancy[cells_[c]];
-// 
+//
 //                 forAll(parcelsInCell, pIC)
 //                 {
 //                     dsmcParcel* p = parcelsInCell[pIC];
-// 
+//
 //                     if(p->typeId() == typeIds_[iD])
 //                     {
 //                         totalVibrationalEnergy_[iD][c] += p->vibLevel()*physicoChemical::k.value()*cloud_.constProps(p->typeId()).thetaV();
@@ -499,36 +499,36 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsAfterCollisions
 //                     }
 //                 }
 //             }
-//             
-//             
+//
+//
 //             forAll(totalVibrationalEnergy_, iD)
 //             {
 //                 if(totalVibrationalEnergy_[iD][c] > VSMALL)
 //                 {
 //                     const scalar& thetaV = cloud_.constProps(typeIds_[iD]).thetaV();
-//                     
+//
 //                     scalar vibrationalEMean = (totalVibrationalEnergy_[iD][c]/nTotalParcelsSpecies_[iD][c]);
 //                     scalar iMean = vibrationalEMean/(physicoChemical::k.value()*thetaV);
-//                     
+//
 //                     vibT_[iD][c] = thetaV / log(1.0 + (1.0/iMean));
 //                     vDof_[iD][c] = (2.0*thetaV/vibT_[iD][c]) / (exp(thetaV/vibT_[iD][c]) - 1.0);
-//                     
+//
 //                     scalar fraction = nTotalParcelsSpecies_[iD][c]/nTotalParcelsInt_[c];
-//                     
+//
 //                     vDoF[c] += fraction*vDof_[iD][c];
-//                     
+//
 //                     vibrationalTemperature[c] += fraction*vibT_[iD][c];
-//                 }      
+//                 }
 //             }
-            
+
             pressure[c] = numberDensity[c]*physicoChemical::k.value()*translationalTemperature[c];
-                            
+
             speedOfSound[c] = sqrt(gamma[c]*gasConstant[c]*translationalTemperature[c]);
-            
+
             label faceI = faces_[c];
-            vector n = mesh_.faceAreas()[faceI];        
+            vector n = mesh_.faceAreas()[faceI];
             n /= mag(n);
-            
+
             scalar faceNormalVelocity = (n & outletVelocity_[c]);
 
             if(faceNormalVelocity < VSMALL)
@@ -541,17 +541,17 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsAfterCollisions
                 massDensityCorrection[c] = (pressure[c] - outletPressure_) / (speedOfSound[c]*speedOfSound[c]);
                 outletMassDensity_[c] = massDensity[c] - massDensityCorrection[c];
             }
-            
+
             outletNumberDensity_[c] = outletMassDensity_[c] / molecularMass[c]; // Liou and Fang, 2000, equation 26 STEP 1
-            
+
             outletTranslationalTemperature_[c] = outletPressure_ / (gasConstant[c]*outletMassDensity_[c]);
-            
+
             outletRotationalTemperature_[c] = rotationalTemperature[c];
-            
+
             outletVibrationalTemperature_[c] = vibrationalTemperature[c];
-            
+
             outletVelocity_[c] = totalMomentum_[c]/totalMass_[c];
-            
+
             //velocity correction for each boundary cellI
             if(faceNormalVelocity < VSMALL)
             {
@@ -563,7 +563,7 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsAfterCollisions
                 velocityCorrection[c] = (outletPressure_ - pressure[c]) / (massDensity[c]*speedOfSound[c]);
                 outletVelocity_[c] -= velocityCorrection[c]*n;
             }
-            
+
 //             if(faceNormalVelocity < VSMALL)
 //             {
 //                 outletVelocity_[c] += velocityCorrection[c]*n;
@@ -582,7 +582,7 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsAfterCollisions
             moleFractions_[iD][c] = (nTotalParcelsSpecies_[iD][c]*1.0)/nTotalParcels_[c];
         }
     }
-        
+
     if(faces_.size() > VSMALL)
     {
         Pout << "dsmcNewPressureOutletCalculatedMolarFraction outlet velocity correction = " << velocityCorrection[(faces_.size()/2)] << endl;
@@ -590,19 +590,19 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsAfterCollisions
 
     if(faces_.size() > VSMALL)
     {
-        Pout << "dsmcNewPressureOutletCalculatedMolarFraction outlet velocity = " << outletVelocity_[(faces_.size()/2)].x() << endl; // just for output purposes, not used in any calculations here    
+        Pout << "dsmcNewPressureOutletCalculatedMolarFraction outlet velocity = " << outletVelocity_[(faces_.size()/2)].x() << endl; // just for output purposes, not used in any calculations here
     }
 
     forAll(accumulatedParcelsToInsert_, iD)
     {
         const label& typeId = typeIds_[iD];
-        
+
         forAll(accumulatedParcelsToInsert_[iD], f)
         {
             const label& faceI = faces_[f];
             const vector& sF = mesh_.faceAreas()[faces_[f]];
             const scalar fA = mag(sF);
-            
+
             const scalar deltaT = cloud_.deltaTValue(mesh_.boundaryMesh()[patchId_].faceCells()[faceI]);
 
             scalar mass = cloud_.constProps(typeId).mass();
@@ -620,12 +620,12 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsAfterCollisions
             // (which points out of the domain, so it must be
             // negated), dividing by the most probable speed to form
             // molecularSpeedRatio * cosTheta
-            
+
             scalar sCosTheta = (outletVelocity_[f] & -sF/fA )/mostProbableSpeed;
-            
+
             // From Bird eqn 4.22
-/*            
-            accumulatedParcelsToInsert_[iD][f] += 
+/*
+            accumulatedParcelsToInsert_[iD][f] +=
             moleFractions_[iD][f]*
             (
                 fA*outletNumberDensity_[f]*deltaT*mostProbableSpeed
@@ -634,11 +634,11 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsAfterCollisions
                     exp(-sqr(sCosTheta)) + sqrtPi*sCosTheta*(1 + erf(sCosTheta))
                 )
             )
-            /(2.0*sqrtPi*cloud_.nParticles(patchId_, f));   */ 
+            /(2.0*sqrtPi*cloud_.nParticles(patchId_, f));   */
 
             //const scalar& RWF = cloud_.coordSystem().pRWF(patchId_, f);
-                
-            accumulatedParcelsToInsert_[iD][f] += 
+
+            accumulatedParcelsToInsert_[iD][f] +=
             moleFractions_[iD][f]*
             (
                 fA*outletNumberDensity_[f]*deltaT*mostProbableSpeed
@@ -648,7 +648,7 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsAfterCollisions
                 )
             )
             /(2.0*sqrtPi*cloud_.nParticles(patchId_, f));
-        } 
+        }
     }
 }
 
@@ -671,7 +671,7 @@ void dsmcNewPressureOutletCalculatedMolarFraction::updateProperties(const dictio
     void dsmcNewPressureOutletCalculatedMolarFraction::setProperties()
     {
     outletPressure_ = readScalar(propsDict_.lookup("outletPressure"));
-        
+
     const List<word> molecules (propsDict_.lookup("typeIds"));
 
     if(molecules.size() == 0)
@@ -717,7 +717,7 @@ void dsmcNewPressureOutletCalculatedMolarFraction::updateProperties(const dictio
         typeIds_[i] = typeId;
     }
 
-    // set the accumulator  
+    // set the accumulator
 
     accumulatedParcelsToInsert_.setSize(typeIds_.size());
 

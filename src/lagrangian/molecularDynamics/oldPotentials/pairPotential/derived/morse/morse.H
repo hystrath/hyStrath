@@ -58,7 +58,7 @@ class morse
 
         scalar Kcr_;
         scalar gamma_;
-        scalar rC_;        
+        scalar rC_;
 
 
 public:

@@ -55,7 +55,7 @@ Foam::eVModel::eVModel
             IOobject::NO_WRITE
         )
     ),
-    
+
     dictThermoPhy_
     (
         IOobject
@@ -68,13 +68,13 @@ Foam::eVModel::eVModel
         )
     ),
 
-    species_(species), 
-    p_(p),    
+    species_(species),
+    p_(p),
     Tv_(Tv)
 {
     taueViModels_.setSize(species.size());
     taueVi_.setSize(taueViModels_.size());
-    
+
     forAll(species, speciei)
     {
         taueViModels_.set
@@ -99,14 +99,14 @@ Foam::eVModel::eVModel
                taueViModels_[speciei].taueV()
             )
         );
-    } 
+    }
 }
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 void Foam::eVModel::update()
-{    
+{
     forAll(species_, speciei)
     {
         taueVi_[speciei] = taueViModels_[speciei].taueV();

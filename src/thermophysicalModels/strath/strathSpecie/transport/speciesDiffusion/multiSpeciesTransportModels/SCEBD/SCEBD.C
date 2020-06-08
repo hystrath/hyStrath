@@ -31,7 +31,7 @@ License
 
 template<class ThermoType>
 void Foam::SCEBD<ThermoType>::updateCoefficients()
-{     
+{
     DijModel_().update();
 
     forAll(species(), speciei)
@@ -44,18 +44,18 @@ void Foam::SCEBD<ThermoType>::updateCoefficients()
         forAll(species(), speciej)
         {
             if (speciej != speciei and thermo_.composition().particleType(speciej) != 0)
-            {     
+            {
                 tmpSum += thermo_.composition().X(speciej) / Dij(speciei, speciej);
-                
+
                 omega += thermo_.composition().pD(speciej)/sqrt(W(speciej));
             }
         }
-        
-        D_[speciei] = thermo_.rho()*(1.0 - omegai/omega) 
-            / (tmpSum + dimensionedScalar("VSMALL", dimTime/dimArea, Foam::VSMALL));   
+
+        D_[speciei] = thermo_.rho()*(1.0 - omegai/omega)
+            / (tmpSum + dimensionedScalar("VSMALL", dimTime/dimArea, Foam::VSMALL));
 
         const volScalarField& Xi = thermo_.composition().X(speciei);
-        
+
         forAll(D_[speciei], celli)
         {
             if (1.0 - Xi[celli] < miniXs_)
@@ -63,7 +63,7 @@ void Foam::SCEBD<ThermoType>::updateCoefficients()
                 D_[speciei][celli] = 0;
             }
         }
-        
+
         forAll(D_[speciei].boundaryField(), patchi)
         {
             forAll(D_[speciei].boundaryField()[patchi], facei)
@@ -71,11 +71,11 @@ void Foam::SCEBD<ThermoType>::updateCoefficients()
                 if (1.0 - Xi.boundaryField()[patchi][facei] < miniXs_)
                 {
                     D_[speciei].boundaryFieldRef()[patchi][facei] = 0;
-                }  
+                }
             }
         }
     }
-} 
+}
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
@@ -88,22 +88,22 @@ Foam::SCEBD<ThermoType>::SCEBD
 )
 :
     multiSpeciesTransportModel(thermo, turbulence),
-    
+
     speciesThermo_
     (
         dynamic_cast<const multi2ComponentMixture<ThermoType>&>
             (this->thermo_).speciesData()
     ),
-    
+
     miniXs_(1.0e-12)
-{    
+{
     D_.setSize(species().size());
-    
+
     forAll(species(), speciei)
     {
         D_.set
         (
-            speciei, 
+            speciei,
             new volScalarField
             (
                 IOobject
@@ -118,7 +118,7 @@ Foam::SCEBD<ThermoType>::SCEBD
                 dimensionedScalar("D", dimMass/dimLength/dimTime, 0.0)
             )
         );
-    } 
+    }
 }
 
 
@@ -133,21 +133,21 @@ void Foam::SCEBD<ThermoType>::correct()
     {
         pressureGradientContributionToSpeciesMassFlux();
     }
-    
+
     if(addTemperatureGradientTerm_)
     {
         temperatureGradientContributionToSpeciesMassFlux();
     }
-    
+
     forAll(species(), speciei)
     {
         calculateJ(speciei);
     }
-    
+
     calculateSumDiffusiveFluxes();
 }
 
-    
+
 template<class ThermoType>
 bool Foam::SCEBD<ThermoType>::read()
 {
@@ -160,6 +160,6 @@ bool Foam::SCEBD<ThermoType>::read()
         return false;
     }
 }
-   
+
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

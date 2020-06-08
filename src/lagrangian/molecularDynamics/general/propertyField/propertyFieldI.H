@@ -40,7 +40,7 @@ inline const volScalarField& propertyField::sField() const
     return  sField_;
 }
 
-inline  volScalarField& propertyField::sField() 
+inline  volScalarField& propertyField::sField()
 {
     return  sField_;
 }
@@ -49,7 +49,7 @@ inline const volVectorField& propertyField::vField() const
 {
     return  vField_;
 }
-inline  volVectorField& propertyField::vField() 
+inline  volVectorField& propertyField::vField()
 {
     return  vField_;
 }
@@ -57,7 +57,7 @@ inline const volTensorField& propertyField::tField() const
 {
     return  tField_;
 }
-inline  volTensorField& propertyField::tField() 
+inline  volTensorField& propertyField::tField()
 {
     return  tField_;
 }
@@ -67,7 +67,7 @@ inline const scalar& propertyField::s() const
     return  s_;
 }
 
-inline  scalar& propertyField::s() 
+inline  scalar& propertyField::s()
 {
     return  s_;
 }
@@ -76,7 +76,7 @@ inline const vector& propertyField::v() const
 {
     return  v_;
 }
-inline vector& propertyField::v() 
+inline vector& propertyField::v()
 {
     return  v_;
 }
@@ -86,7 +86,7 @@ inline const tensor& propertyField::t() const
     return  t_;
 }
 
-inline tensor& propertyField::t() 
+inline tensor& propertyField::t()
 {
     return  t_;
 }

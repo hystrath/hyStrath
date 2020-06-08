@@ -116,13 +116,13 @@ void dsmcDiffuseWallHeatFluxPatch::controlParticle(dsmcParcel& p, dsmcParcel::tr
     {
         preIE_ += p.vibLevel()[i]*constProps.thetaV()[i]*physicoChemical::k.value();
     }
-    
+
     measurePropertiesBeforeControl(p);
 
     vector& U = p.U();
 
     scalar& ERot = p.ERot();
-    
+
     labelList& vibLevel = p.vibLevel();
 
     label typeId = p.typeId();
@@ -167,7 +167,7 @@ void dsmcDiffuseWallHeatFluxPatch::controlParticle(dsmcParcel& p, dsmcParcel::tr
     scalar mass = cloud_.constProps(typeId).mass();
 
     scalar rotationalDof = cloud_.constProps(typeId).rotationalDegreesOfFreedom();
-    
+
     scalar vibrationalDof = cloud_.constProps(typeId).nVibrationalModes();
 
     U =
@@ -181,7 +181,7 @@ void dsmcDiffuseWallHeatFluxPatch::controlParticle(dsmcParcel& p, dsmcParcel::tr
     U += velocity_;
 
     ERot = cloud_.equipartitionRotationalEnergy(T, rotationalDof);
-    
+
     vibLevel = cloud_.equipartitionVibrationalEnergyLevel(T, vibrationalDof, typeId);
 
     measurePropertiesAfterControl(p,0.0);
@@ -192,14 +192,14 @@ void dsmcDiffuseWallHeatFluxPatch::controlParticle(dsmcParcel& p, dsmcParcel::tr
     {
         postIE_ += p.vibLevel()[i]*constProps.thetaV()[i]*physicoChemical::k.value();
     }
-    
+
     deltaQ_[wppLocalFace] += cloud_.nParticles(patchId(), wppLocalFace)
         *(preIE_ - postIE_)/(deltaT*faceAreas_[wppLocalFace]);
-    
+
     mUnUp_[wppLocalFace] += ((cloud_.constProps(typeId).mass()/U_dot_nw)*Ut.x());
-    
+
     mUn_[wppLocalFace] += (cloud_.constProps(typeId).mass()/U_dot_nw);
-    
+
     uSlip_[wppLocalFace] = mUnUp_[wppLocalFace]/mUn_[wppLocalFace];
 
 }
@@ -212,7 +212,7 @@ void dsmcDiffuseWallHeatFluxPatch::output
 {
     const scalar deltaT = mesh_.time().deltaTValue(); //TODO cloud_.deltaTValue(p.cell());
     scalar currentTime = mesh_.time().timeOutputValue();
-    
+
     resetCounter_++;
 
     if(firstWrite_)
@@ -229,7 +229,7 @@ void dsmcDiffuseWallHeatFluxPatch::output
             patchName()+"_qMean",
             deltaQ_/(writeInterval_*resetCounter_)
         );
-        
+
         writeTimeData
         (
             timePath,
@@ -244,14 +244,14 @@ void dsmcDiffuseWallHeatFluxPatch::output
             timePath,
             patchName()+"_qMean",
             deltaQ_/(writeInterval_*resetCounter_)
-        );	
-        
+        );
+
         writeTimeData
         (
             timePath,
             patchName()+"_uSlip",
             uSlip_
-        );  
+        );
     }
 
 if(resetAtOutputForQ_)

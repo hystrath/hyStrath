@@ -93,17 +93,17 @@ void polyMovingWallRitos::controlBeforeVelocityI()
     velocity_ = wallMotionModel_->velocity();
 
     Info << "polyMovingWallRitos: control velocity = " << velocity_ << endl;
-        
+
     forAll(controlZone(), c)
     {
         const label& cellI = controlZone()[c];
-        
+
         const List<polyMolecule*>& molsInCell = molCloud_.cellOccupancy()[cellI];
-        
+
         forAll(molsInCell, m)
         {
             polyMolecule* molI = molsInCell[m];
-            
+
             if(findIndex(molIds_, molI->id()) != -1)
             {
                 molI->a() = vector::zero;

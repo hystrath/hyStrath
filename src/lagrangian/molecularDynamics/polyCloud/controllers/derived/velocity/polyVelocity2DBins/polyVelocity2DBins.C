@@ -77,12 +77,12 @@ polyVelocity2DBins::polyVelocity2DBins
             {
                 X_ = Switch(propsDict_.lookup("X"));
             }
-    
+
             if (propsDict_.found("Y"))
             {
                 Y_ = Switch(propsDict_.lookup("Y"));
             }
-    
+
             if (propsDict_.found("Z"))
             {
                 Z_ = Switch(propsDict_.lookup("Z"));
@@ -97,7 +97,7 @@ polyVelocity2DBins::polyVelocity2DBins
             }
         }
     }
-    
+
 
     molIds_.clear();
 
@@ -136,15 +136,15 @@ void polyVelocity2DBins::controlBeforeVelocityI()
         = molCloud_.cellOccupancy();
 
     const labelList& cells = mesh_.cellZones()[regionId_];
-    
+
     const List<label>& noOfBins = binModel_->nBins();
-    
+
     label nBinsX = noOfBins[0];
     label nBinsY = noOfBins[1];
-    
+
     List<scalarField> mass(nBinsX);
     List<vectorField> momentum(nBinsX);
-    
+
     forAll(mass, i)
     {
         mass[i].setSize(nBinsY, 0.0);
@@ -163,15 +163,15 @@ void polyVelocity2DBins::controlBeforeVelocityI()
             const vector& rI = molI->position();
 
             List<label> n = binModel_->isPointWithinBin(rI, cell);
-            
+
             label nX = n[0];
             label nY = n[1];
-            
+
             if( (nX + nY) >= 0)
             {
                 if(findIndex(molIds_, molI->id()) != -1)
                 {
-                    const polyMolecule::constantProperties& constProp 
+                    const polyMolecule::constantProperties& constProp
                                         = molCloud_.constProps(molI->id());
 
                     mass[nX][nY] += constProp.mass();
@@ -195,25 +195,25 @@ void polyVelocity2DBins::controlBeforeVelocityI()
 
     List<vectorField> velMeasured(nBinsX);
     List<vectorField> deltaU(nBinsX);
-    
+
     forAll(velMeasured, i)
     {
         velMeasured[i].setSize(nBinsY, vector::zero);
         deltaU[i].setSize(nBinsY, vector::zero);
-        
+
         forAll(velMeasured[i], j)
         {
             if(mass[i][j] > 0.0)
             {
                 velMeasured[i][j] = momentum[i][j]/mass[i][j];
-                deltaU[i][j] = (velocity_ - velMeasured[i][j])*lambda_;    
+                deltaU[i][j] = (velocity_ - velMeasured[i][j])*lambda_;
                 Info << "vel = " << velMeasured[i][j] << ", deltaU = " << deltaU[i][j] << endl;
             }
         }
     }
-    
-    // control 
-    
+
+    // control
+
     forAll(cells, c)
     {
         const label& cell = cells[c];
@@ -226,10 +226,10 @@ void polyVelocity2DBins::controlBeforeVelocityI()
             const vector& rI = molI->position();
 
             List<label> n = binModel_->isPointWithinBin(rI, cell);
-            
+
             label nX = n[0];
             label nY = n[1];
-            
+
             if( (nX + nY) >= 0)
             {
                 if(findIndex(molIds_, molI->id()) != -1)
@@ -252,12 +252,12 @@ void polyVelocity2DBins::controlBeforeVelocityI()
                     else
                     {
                         molI->v() += deltaU[nX][nY];
-                    } 
+                    }
                 }
             }
         }
-    }*/    
-   
+    }*/
+
 }
 
 void polyVelocity2DBins::controlBeforeMove()
@@ -279,16 +279,16 @@ void polyVelocity2DBins::controlAfterForces()
         = molCloud_.cellOccupancy();
 
     const labelList& cells = mesh_.cellZones()[regionId_];
-    
+
     const List<label>& noOfBins = binModel_->nBins();
-    
+
     label nBinsX = noOfBins[0];
     label nBinsY = noOfBins[1];
 
-    List<scalarField> mols(nBinsX);    
+    List<scalarField> mols(nBinsX);
     List<scalarField> mass(nBinsX);
     List<vectorField> momentum(nBinsX);
-    
+
     forAll(mass, i)
     {
         mols[i].setSize(nBinsY, 0.0);
@@ -308,16 +308,16 @@ void polyVelocity2DBins::controlAfterForces()
             const vector& rI = molI->position();
 
             List<label> n = binModel_->isPointWithinBin(rI, cell);
-            
+
             label nX = n[0];
             label nY = n[1];
-            
+
             if( (nX + nY) >= 0)
             {
                 if(findIndex(molIds_, molI->id()) != -1)
                 {
                     const scalar& massI = molCloud_.cP().mass(molI->id());
-                                        
+
                     mols[nX][nY] += 1.0;
                     mass[nX][nY] += massI;
                     momentum[nX][nY] += massI*molI->v();
@@ -341,19 +341,19 @@ void polyVelocity2DBins::controlAfterForces()
 
     List<vectorField> velMeasured(nBinsX);
     List<vectorField> deltaU(nBinsX);
-    
+
     forAll(velMeasured, i)
     {
         velMeasured[i].setSize(nBinsY, vector::zero);
         deltaU[i].setSize(nBinsY, vector::zero);
-        
+
         forAll(velMeasured[i], j)
         {
             if(mass[i][j] > 0.0)
             {
                 velMeasured[i][j] = momentum[i][j]/mass[i][j];
-                deltaU[i][j] = (velocity_ - velMeasured[i][j])*lambda_;    
-                
+                deltaU[i][j] = (velocity_ - velMeasured[i][j])*lambda_;
+
                 // temp output
                 if( (i == 0) && (j == 0) )
                 {
@@ -364,9 +364,9 @@ void polyVelocity2DBins::controlAfterForces()
             }
         }
     }
-    
-    // control 
-    
+
+    // control
+
     forAll(cells, c)
     {
         const label& cell = cells[c];
@@ -379,19 +379,19 @@ void polyVelocity2DBins::controlAfterForces()
             const vector& rI = molI->position();
 
             List<label> n = binModel_->isPointWithinBin(rI, cell);
-            
+
             label nX = n[0];
             label nY = n[1];
-            
+
             if( (nX + nY) >= 0)
             {
                 if(findIndex(molIds_, molI->id()) != -1)
                 {
-//                     const polyMolecule::constantProperties& constProp 
+//                     const polyMolecule::constantProperties& constProp
 //                                         = molCloud_.constProps(molI->id());
 
 //                     const scalar& massI = constProp.mass();
-                    
+
                     if(componentControl_)
                     {
                         if(X_)
@@ -410,12 +410,12 @@ void polyVelocity2DBins::controlAfterForces()
                     else
                     {
                         molI->a() += deltaU[nX][nY]/deltaT_;
-                    } 
+                    }
                 }
             }
         }
-    }    
-    
+    }
+
 }
 
 void polyVelocity2DBins::controlAfterVelocityII()
@@ -427,7 +427,7 @@ void polyVelocity2DBins::calculateProperties()
 
 void polyVelocity2DBins::output
 (
-    const fileName& fixedPathName, 
+    const fileName& fixedPathName,
     const fileName& timePath
 )
 {}

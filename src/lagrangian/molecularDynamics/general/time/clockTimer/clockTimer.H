@@ -61,16 +61,16 @@ class clockTimer
 
 //         timespec lastTime_;
         timeval lastTime_;
-    
+
         scalar instTimeIndex_;
         scalar timeIndex_;
-    
+
         // total duration time
         scalar totalDuration_;
 
         // duration in one MD time-step
         scalar duration_;
-    
+
         // time over one write interval
         scalar instantDuration_;
 
@@ -97,7 +97,7 @@ public:
         scalar averageTimeWriteInterval();
         scalar averageTime();
         void write();
-        
+
         const scalar& instantDuration() const;
         const scalar& totalDuration() const;
 

@@ -49,22 +49,22 @@ class gravitationalController
 {
 
 private:
-        
-        
+
+
         //- subDictionary containing the properties
         dictionary propsDict_;
 
         autoPtr<gravityForce> model_;
-        
-        
+
+
         // Private Member Functions
         void setProperties();
-        
-        
+
+
         scalar nParcels_;
         vector acc_;
-        
-        scalar nTimeSteps_;        
+
+        scalar nTimeSteps_;
         vector accCum_;
         scalar nParcelsCum_;
 public:

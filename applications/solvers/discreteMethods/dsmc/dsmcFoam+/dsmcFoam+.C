@@ -53,86 +53,86 @@ int main(int argc, char *argv[])
         "AMR",
         "activate Adaptive Mesh Refinement"
     );
-    
+
     #include "setRootCase.H"
 
     scalar currentIterationTime = 0.0;
     scalar previousIterationTime = 1.0;
-    
+
     label noRestart = 0;
     label noIteration = 1;
     label totNoIteration = 0;
     bool restart = false;
-    
+
     do
     {
         noRestart += 1;
-        
+
         restart = run
         (
             args,
-            currentIterationTime, 
+            currentIterationTime,
             previousIterationTime,
-            noRestart, 
+            noRestart,
             noIteration
         );
-        
+
         totNoIteration += noIteration - 1;
         noIteration = 1;
-        
+
     } while(restart);
-    
+
     Info<< "Total Iterations = " << totNoIteration << "\n"
         << "End main\n" << endl;
-    
+
     return 0;
-}    
+}
 
 
 bool run
 (
     argList& args,
-    scalar& currentIterationTime, 
+    scalar& currentIterationTime,
     scalar& previousIterationTime,
     label& noRestart,
     label& noIteration
 )
 {
     #include "createTime.H"
-    
+
     const bool activateAMR = args.optionFound("AMR");
-    
+
     #include "createDynamicFvMesh.H"
-    
+
     Info<< nl << "Constructing dsmcCloud " << endl;
 
-    dsmcCloud dsmc(runTime, "dsmc", mesh); 
-    
+    dsmcCloud dsmc(runTime, "dsmc", mesh);
+
     Info<< "\nStarting time loop\n" << endl;
-    
+
     label infoCounter = 0;
     label noRefinement = 0;
 
     while (runTime.loop())
-    {          
+    {
         if (activateAMR)
         {
             scalar timeBeforeMeshUpdate = runTime.elapsedCpuTime();
-     
+
             mesh.update();
-     
+
             if (mesh.changing())
             {
                  ++noRefinement;
-                 
+
                  Info<< "Execution time for mesh.update() = "
                      << runTime.elapsedCpuTime() - timeBeforeMeshUpdate
                      << " s" << endl;
             }
         }
-        
+
         infoCounter++;
-        
+
         if (infoCounter >= dsmc.nTerminalOutputs())
         {
             Info<< "Time = " << runTime.timeName() << nl << endl;
@@ -142,34 +142,34 @@ bool run
 
         if (infoCounter >= dsmc.nTerminalOutputs())
         {
-            dsmc.info();   
+            dsmc.info();
         }
 
         runTime.write();
 
-        previousIterationTime = 
+        previousIterationTime =
             max(runTime.elapsedCpuTime() - currentIterationTime, 1e-3);
-            
+
         if (infoCounter >= dsmc.nTerminalOutputs())
         {
             Info<< nl << "Stage " << noRestart << "." << noRefinement
                 << "  ExecutionTime = " << runTime.elapsedCpuTime() << " s"
                 << "  ClockTime = " << runTime.elapsedClockTime() << " s"
-                << "  Iteration " << noIteration << " (" 
+                << "  Iteration " << noIteration << " ("
                 << previousIterationTime << " s)"
                 << nl << endl;
-                
+
             infoCounter = 0;
         }
-        
+
         currentIterationTime = runTime.elapsedCpuTime();
         noIteration += 1;
-        
+
         dsmc.loadBalanceCheck();
     }
 
     Info<< "End stage " << noRestart << "\n" << endl;
-    
+
     if (dsmc.dynamicLoadBalancing().performBalance())
     {
         dsmc.loadBalance(noRefinement);

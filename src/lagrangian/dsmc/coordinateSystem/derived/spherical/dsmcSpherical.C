@@ -41,7 +41,7 @@ namespace Foam
 
     addToRunTimeSelectionTable
     (
-        dsmcCoordinateSystem, 
+        dsmcCoordinateSystem,
         dsmcSpherical,
         fvMesh
     );
@@ -57,23 +57,23 @@ void Foam::dsmcSpherical::sphericalWeighting()
         forAll(molsInCell, mIC)
         {
             dsmcParcel* p = molsInCell[mIC];
-            
+
             const scalar oldRadialWeight = p->RWF();
-                        
+
             const scalar newRadialWeight = RWF(c);
 
             p->RWF() = newRadialWeight;
-            
-            if (oldRadialWeight > newRadialWeight) 
+
+            if (oldRadialWeight > newRadialWeight)
             {
                 //- particle might be cloned
                 scalar prob = (oldRadialWeight/newRadialWeight) - 1.0;
-                
+
                 while(prob > 1.0)
                 {
                     //- add a particle and reduce prob by 1.0
                     vector U = p->U();
-                    
+
                     cloud_.addNewParcel
                     (
                         p->position(),
@@ -89,14 +89,14 @@ void Foam::dsmcSpherical::sphericalWeighting()
                         p->classification(),
                         p->vibLevel()
                     );
-                    
+
                     prob -= 1.0;
                 }
-                
+
                 if (prob > cloud_.rndGen().sample01<scalar>())
                 {
                     vector U = p->U();
-                    
+
                     cloud_.addNewParcel
                     (
                         p->position(),
@@ -115,13 +115,13 @@ void Foam::dsmcSpherical::sphericalWeighting()
                 }
             }
             else if (newRadialWeight > oldRadialWeight)
-            {           
+            {
                 //- particle might be deleted
                 if ((oldRadialWeight/newRadialWeight) < cloud_.rndGen().sample01<scalar>())
                 {
                     cloud_.deleteParticle(*p);
-                } 
-            } 
+                }
+            }
         }
     }
 }
@@ -133,11 +133,11 @@ void dsmcSpherical::updateRWF()
     {
         RWF_[celli] = recalculateRWF(celli);
     }
-    
+
     forAll(RWF_.boundaryField(), patchi)
     {
         fvPatchScalarField& pRWF = RWF_.boundaryFieldRef()[patchi];
-        
+
         forAll(pRWF, facei)
         {
             pRWF[facei] = recalculatepRWF(patchi, facei);
@@ -201,7 +201,7 @@ void dsmcSpherical::checkCoordinateSystemInputs(const bool init)
 {
     rWMethod_ = cloud_.particleProperties().subDict("sphericalProperties")
         .lookupOrDefault<word>("radialWeightingMethod", "cell");
-    
+
     if
     (
         rWMethod_ != "cell" and rWMethod_ != "particle"
@@ -217,18 +217,18 @@ void dsmcSpherical::checkCoordinateSystemInputs(const bool init)
            "mixed. Please edit the entry: radialWeightingMethod"
         << exit(FatalError);
     }
-    
+
     maxRWF_ = readScalar
         (
             cloud_.particleProperties().subDict("sphericalProperties")
                 .lookup("maxRadialWeightingFactor")
         );
-        
+
     origin_ = cloud_.particleProperties().subDict("sphericalProperties")
         .lookupOrDefault<vector>("origin", vector::zero);
-        
+
     scalarField radii(mesh_.faceCentres().size(), 0.0);
-    
+
     forAll(mesh_.faceCentres(), i)
     {
         radii[i] = sqrt
@@ -238,15 +238,15 @@ void dsmcSpherical::checkCoordinateSystemInputs(const bool init)
               + sqr(mesh_.faceCentres()[i].z() - origin_.z())
             );
     }
-        
+
     radialExtent_ = gMax(radii);
-        
+
     writeCoordinateSystemInfo();
-         
+
     if (init)
     {
         // "particle" cannot be used in dsmcInitialise, "cell" is thus employed
-        rWMethod_ = "cell"; 
+        rWMethod_ = "cell";
     }
     else
     {
@@ -264,7 +264,7 @@ void dsmcSpherical::evolve()
     {
         updateRWF();
     }
-    
+
     sphericalWeighting();
     cloud_.reBuildCellOccupancy();
 }
@@ -277,38 +277,38 @@ scalar dsmcSpherical::recalculatepRWF
 ) const
 {
     const point& fC = mesh_.boundaryMesh()[patchI].faceCentres()[faceI];
-    const scalar radius = 
+    const scalar radius =
         sqrt
         (
             sqr(fC.x() - origin_.x())
           + sqr(fC.y() - origin_.y())
           + sqr(fC.z() - origin_.z())
         );
-    
-    return 1.0 + (maxRWF() - 1.0)*sqr(radius/radialExtent()); 
+
+    return 1.0 + (maxRWF() - 1.0)*sqr(radius/radialExtent());
 }
 
 
 scalar dsmcSpherical::recalculateRWF
 (
-    const label cellI, 
+    const label cellI,
     const bool mixedRWMethod
 ) const
 {
     scalar RWF = 1.0;
-    
+
     if (rWMethod_ == "particle" or (mixedRWMethod and rWMethod_ == "mixed"))
     {
         const DynamicList<dsmcParcel*>& cellParcels(cloud_.cellOccupancy()[cellI]);
-        
+
         RWF = 0.0;
         label nMols = 0;
-        
+
         forAll(cellParcels, i)
         {
             const dsmcParcel& p = *cellParcels[i];
-            
-            const scalar radius = 
+
+            const scalar radius =
                 sqrt
                 (
                     sqr(p.position().x() - origin_.x())
@@ -317,27 +317,27 @@ scalar dsmcSpherical::recalculateRWF
                 );
 
             RWF += 1.0 + (maxRWF() - 1.0)*sqr(radius/radialExtent());
-            
+
             nMols++;
         }
-        
+
         RWF /= max(nMols, 1);
     }
     else
     {
         const point& cC = mesh_.cellCentres()[cellI];
-        const scalar radius = 
+        const scalar radius =
             sqrt
             (
                 sqr(cC.x() - origin_.x())
               + sqr(cC.y() - origin_.y())
               + sqr(cC.z() - origin_.z())
             );
-    
+
         RWF += (maxRWF() - 1.0)*sqr(radius/radialExtent());
     }
-    
-    return RWF;    
+
+    return RWF;
 }
 
 

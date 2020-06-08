@@ -86,9 +86,9 @@ void dsmcSpecularTWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::tracking
     vector& U = p.U();
 
     scalar& ERot = p.ERot();
-    
+
     labelList& vibLevel = p.vibLevel();
-    
+
     label& ELevel = p.ELevel();
 
     const label& typeId = p.typeId();
@@ -106,22 +106,22 @@ void dsmcSpecularTWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::tracking
     const scalar& T = temperature_;
 
     scalar rotationalDof = cloud_.constProps(typeId).rotationalDegreesOfFreedom();
-    
+
     scalar vibrationalDof = cloud_.constProps(typeId).nVibrationalModes();
 
     ERot = cloud_.equipartitionRotationalEnergy(T, rotationalDof);
-    
-    vibLevel = 
+
+    vibLevel =
         cloud_.equipartitionVibrationalEnergyLevel(T, vibrationalDof, typeId);
-   
-    
+
+
     ELevel = cloud_.equipartitionElectronicLevel
         (
             T,
             cloud_.constProps(typeId).electronicDegeneracyList(),
             cloud_.constProps(typeId).electronicEnergyList()
-        ); 
-    
+        );
+
     measurePropertiesAfterControl(p, 0.0);
 }
 

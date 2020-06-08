@@ -168,7 +168,7 @@ Foam::Reaction2<Reaction2Thermo>::Reaction2
     )
         << "NB VINCENT: This constructor should not be used"
         << exit(FatalError);
-    
+
     setThermo(thermoDatabase);
 }
 
@@ -351,7 +351,7 @@ Foam::Reaction2<Reaction2Thermo>::Reaction2
     )
         << "NB VINCENT: This constructor should not be used"
         << exit(FatalError);
-    
+
     setLRhs(is, species, lhs_, rhs_);
     setThermo(thermoDatabase);
 }
@@ -370,13 +370,13 @@ Foam::Reaction2<Reaction2Thermo>::Reaction2
     species_(species)
 {
     // NB VINCENT: this constructor is used in the beginning of a simulation
-    word controllingTemperature = 
+    word controllingTemperature =
         dict.lookupOrDefault<word>
         (
             "controlT",
             "transrotational"
         );
-        
+
     if (controllingTemperature == "chargeExchange")
     {
         controlT_ = chargeExchange;
@@ -422,12 +422,12 @@ Foam::Reaction2<Reaction2Thermo>::Reaction2
         )   << "Controlling temperature type "
             << controllingTemperature << "is invalid." << nl << nl
             << "Valid controlling temperature types are: " << nl
-            << "  chargeExchange, dissociation, exchange, impactDissociation," 
+            << "  chargeExchange, dissociation, exchange, impactDissociation,"
             << nl << "  impactIonisation, associativeIonisation, "
             << "transrotational, vibrational."
             << exit(FatalIOError);
     }
-    
+
     setLRhs
     (
         IStringStream(dict.lookup("reaction"))(),
@@ -435,7 +435,7 @@ Foam::Reaction2<Reaction2Thermo>::Reaction2
         lhs_,
         rhs_
     );
-    
+
     setThermo(thermoDatabase);
 }
 

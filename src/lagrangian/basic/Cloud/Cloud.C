@@ -393,7 +393,7 @@ void Foam::Cloud<ParticleType>::move(TrackData& td, const scalar trackTime)
                 }
             }
         }*/ // DELETED VINCENT
-        
+
         // NEW VINCENT
         // Start sending. Sets number of bytes transferred
         labelList allNTrans(Pstream::nProcs());
@@ -494,7 +494,7 @@ void Foam::Cloud<ParticleType>::autoMap
 
     scalar lostParticles = 0; // NEW VINCENT
     scalar totParticles = 0; // NEW VINCENT
-    
+
     forAllIter(typename Cloud<ParticleType>, *this, pIter)
     {
         ParticleType& p = pIter();
@@ -552,14 +552,14 @@ void Foam::Cloud<ParticleType>::autoMap
                 deleteParticle(p);
                 break;
             }
-            
+
             p.track(pos, td);
         }
     }
-    
+
     if (lostParticles > 0) // NEW VINCENT
     {
-        Info<< "Lost particles deleted due to change in topology:" << tab 
+        Info<< "Lost particles deleted due to change in topology:" << tab
             << lostParticles << "/" << totParticles << endl;
     }
 }

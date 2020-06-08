@@ -40,7 +40,7 @@ namespace Foam
         addToRunTimeSelectionTable
         (
             VTRelaxationModel,
-            SchwartzSlawskyHerzfeld, 
+            SchwartzSlawskyHerzfeld,
             dictionary
         );
     }
@@ -63,32 +63,32 @@ Foam::VTRelaxationModels::SchwartzSlawskyHerzfeld::SchwartzSlawskyHerzfeld
 )
 :
     VTRelaxationModel(name1, name2, lname1, lname2, dict2T, dictThermoPhy, p, Tt, Tv, nD),
-    
+
     pi(constant::mathematical::pi),
     kB(constant::physicoChemical::k.value()),
     hPlanck(constant::universal::h.value())
-{   
+{
     m1_ = readScalar(dictThermoPhy.subDict(name1).subDict("specie").lookup("molWeight"))*1.0e-3/constant::physicoChemical::NA.value();
     const scalar m2 = readScalar(dictThermoPhy.subDict(name2).subDict("specie").lookup("molWeight"))*1.0e-3/constant::physicoChemical::NA.value();
     DynamicList<scalar> vibData(dictThermoPhy.subDict(name1).subDict("thermodynamics").lookup("vibrationalList"));
     TH1_ = vibData[1];
     mu12_ = reducedMass(m1_,m2);
-    
+
     species1_ = lname1; species2_ = lname2;
     SHHon_ = false;
-    
+
     if(dict2T.subDict("SchwartzSlawskyHerzfeldCoefficients").subDict("LennardJonesParameters").isDict(name1+"_"+name2) or dict2T.subDict("SchwartzSlawskyHerzfeldCoefficients").subDict("LennardJonesParameters").isDict(name1+"_"+name2))
     {
         SHHon_ = true;
-    } 
-    
+    }
+
     if(SHHon_)
-    {    
+    {
         Tlow_ = readScalar(dict2T.subDict("SchwartzSlawskyHerzfeldCoefficients").lookup("Tlow"));
         Thigh_ = readScalar(dict2T.subDict("SchwartzSlawskyHerzfeldCoefficients").lookup("Thigh"));
-        
+
         word subDictName = word::null;
-        
+
         if (dict2T.subDict("SchwartzSlawskyHerzfeldCoefficients").subDict("LennardJonesParameters").isDict(name1+"_"+name2))
         {
             subDictName = name1+"_"+name2;
@@ -97,19 +97,19 @@ Foam::VTRelaxationModels::SchwartzSlawskyHerzfeld::SchwartzSlawskyHerzfeld
         {
             subDictName = name2+"_"+name1;
         }
-        
+
         FixedList<scalar, 2> defaultList;
         defaultList[0] = 1.0e-20;
         defaultList[1] = 1.0e-20;
         sigma12_ = dict2T.subDict("SchwartzSlawskyHerzfeldCoefficients").subDict("LennardJonesParameters").subDict(subDictName).lookupOrDefault<FixedList<scalar,2> >("sigma", defaultList);
         epsilon12_ = dict2T.subDict("SchwartzSlawskyHerzfeldCoefficients").subDict("LennardJonesParameters").subDict(subDictName).lookupOrDefault<FixedList<scalar,2> >("epsilonBykB", defaultList);
-        
+
         forAll(sigma12_, i)
         {
             sigma12_[i] *= 1.0e-10;
             epsilon12_[i] *= kB;
         }
-            
+
         /*scalar polarizability2(0.0);
         if (dict2T.subDict("SchwartzSlawskyHerzfeldCoefficients").subDict("speciesData").isDict(name2))
         {
@@ -117,49 +117,49 @@ Foam::VTRelaxationModels::SchwartzSlawskyHerzfeld::SchwartzSlawskyHerzfeld
         }
         else
         {
-            FatalErrorIn("Foam::VTRelaxationModels::SchwartzSlawskyHerzfeld::SchwartzSlawskyHerzfeld") 
+            FatalErrorIn("Foam::VTRelaxationModels::SchwartzSlawskyHerzfeld::SchwartzSlawskyHerzfeld")
                         << "Some coefficients are missing." << nl;
             FatalError<< exit(FatalError);
         }*/ // DEACTIVATED VINCENT 10/03/2016
-        
+
         if (dict2T.subDict("SchwartzSlawskyHerzfeldCoefficients").subDict("speciesData").isDict(name1))
         {
             rp1_ = 1.0e-10*readScalar(dict2T.subDict("SchwartzSlawskyHerzfeldCoefficients").subDict("speciesData").subDict(name1).lookup("LVLInteratomicDistance"));
         }
         else
         {
-            FatalErrorIn("Foam::VTRelaxationModels::SchwartzSlawskyHerzfeld::SchwartzSlawskyHerzfeld") 
+            FatalErrorIn("Foam::VTRelaxationModels::SchwartzSlawskyHerzfeld::SchwartzSlawskyHerzfeld")
                         << "Some SSH coefficients are missing." << nl;
             FatalError<< exit(FatalError);
         }
-        
+
         /*forAll(sigma12_, i)
         {
             sigma12_[i] = sigmaLJmixture(name1, m1_, sigma1[i], epsilon1[i], name2, sigma2[i], epsilon2[i], polarizability2);
             epsilon12_[i] = epsilonLJmixture(m1_, sigma1[i], epsilon1[i], sigma2[i], epsilon2[i], polarizability2);
         }*/ // DEACTIVATED VINCENT 10/03/2016
-            
+
         matchingSpeciesIndices_ = similarSpecies(lname1, lname2);
         fms_ = fms(name1);
     }
     else
     {
         W1_ = readScalar(dictThermoPhy.subDict(name1).subDict("specie").lookup("molWeight"));
-    
+
         word subDictName = word::null;
-        
+
         if (not VTFullCoeffsForm_)
         {
             const scalar W2 = readScalar(dictThermoPhy.subDict(name2).subDict("specie").lookup("molWeight"));
             DynamicList<scalar> vibData(dictThermoPhy.subDict(name1).subDict("thermodynamics").lookup("vibrationalList"));
             const scalar TH1 = vibData[1];
-              
+
             scalar W12 = (W1_ * W2) / (W1_ + W2);
             A12_ = sqrt(W12) * pow(TH1, 4.0/3.0);
             B12_ = pow025(W12);
             scalar preAij = 0.0;
             scalar preMij = 0.0;
-            
+
             if (not VTOverwriteDefault_)
             {
                 preAij  = 1.16e-3;
@@ -168,10 +168,10 @@ Foam::VTRelaxationModels::SchwartzSlawskyHerzfeld::SchwartzSlawskyHerzfeld
                 sigma1_ = 1.0e-21;
                 sigma2_ = 5.0e4;
             }
-            else 
+            else
             {
                 if (VTSpeciesDependent_ and VTCollidingPartner_)
-                {        
+                {
                     if (dict2T.subDict("ParkCoefficients").isDict(name1+"_"+name2))
                     {
                         subDictName = name1+"_"+name2;
@@ -182,28 +182,28 @@ Foam::VTRelaxationModels::SchwartzSlawskyHerzfeld::SchwartzSlawskyHerzfeld
                     }
                     else if (dict2T.subDict("ParkCoefficients").isDict(name1))
                     {
-                        subDictName = name1; 
+                        subDictName = name1;
                     }
                     else
                     {
                         subDictName = "allSpecies";
-                    }    
+                    }
                 }
                 else if (VTSpeciesDependent_ and dict2T.subDict("ParkCoefficients").isDict(name1))
-                {        
+                {
                     subDictName = name1;
-                } 
+                }
                 else
                 {
-                    subDictName = "allSpecies";    
+                    subDictName = "allSpecies";
                 }
-                
+
                 preAij = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("preAij"));
                 preMij = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("preMij"));
-                A12_ *= preAij;  
+                A12_ *= preAij;
                 B12_ *= preMij;
-                offset_ = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("offset"));  
-                sigma1_ = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("sigma1")); 
+                offset_ = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("offset"));
+                sigma1_ = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("sigma1"));
                 sigma2_ = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("sigma2"));
             }
         }
@@ -217,10 +217,10 @@ Foam::VTRelaxationModels::SchwartzSlawskyHerzfeld::SchwartzSlawskyHerzfeld
                 sigma1_ = 1.0e-21;
                 sigma2_ = 5.0e4;
             }
-            else 
+            else
             {
                 if (VTSpeciesDependent_ and VTCollidingPartner_)
-                {        
+                {
                     if (dict2T.subDict("ParkCoefficients").isDict(name1+"_"+name2))
                     {
                         subDictName = name1+"_"+name2;
@@ -231,26 +231,26 @@ Foam::VTRelaxationModels::SchwartzSlawskyHerzfeld::SchwartzSlawskyHerzfeld
                     }
                     else if (dict2T.subDict("ParkCoefficients").isDict(name1))
                     {
-                        subDictName = name1;  
+                        subDictName = name1;
                     }
                     else
                     {
-                        subDictName = "allSpecies";    
-                    }    
+                        subDictName = "allSpecies";
+                    }
                 }
                 else if (VTSpeciesDependent_ and dict2T.subDict("ParkCoefficients").isDict(name1))
-                {        
-                    subDictName = name1; 
-                } 
+                {
+                    subDictName = name1;
+                }
                 else
                 {
-                    subDictName = "allSpecies";             
+                    subDictName = "allSpecies";
                 }
-                
+
                 A12_ = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("Aij"));
                 B12_ = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("Bij"));
-                offset_ = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("offset"));  
-                sigma1_ = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("sigma1")); 
+                offset_ = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("offset"));
+                sigma1_ = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("sigma1"));
                 sigma2_ = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("sigma2"));
             }
         }
@@ -285,7 +285,7 @@ Foam::VTRelaxationModels::SchwartzSlawskyHerzfeld::tauVT() const
     volScalarField& tauVT = ttauVT.ref();
 
     if(SHHon_)
-    {    
+    {
         forAll(this->Tt_, celli)
         {
             tauVT[celli] = 1.0 /
@@ -295,7 +295,7 @@ Foam::VTRelaxationModels::SchwartzSlawskyHerzfeld::tauVT() const
                   * Zcollsr(this->Tt_[celli], this->nD_[species1_][celli], this->nD_[species2_][celli])
                 );
         }
-        
+
 
         forAll(this->Tt_.boundaryField(), patchi)
         {
@@ -322,7 +322,7 @@ Foam::VTRelaxationModels::SchwartzSlawskyHerzfeld::tauVT() const
         {
             nDcol += this->nD_[species2_];
         }
-        
+
         forAll(this->Tt_, celli)
         {
             tauVT[celli] =
@@ -330,7 +330,7 @@ Foam::VTRelaxationModels::SchwartzSlawskyHerzfeld::tauVT() const
               + 1.0/(sqrt(8.0*constant::physicoChemical::R.value()*1000.0*this->Tt_[celli]/
                   (pi*W1_)) * sigma1_*sqr(sigma2_/this->Tt_[celli]) *max(nDcol[celli], Foam::SMALL));
         }
-        
+
 
         forAll(this->Tt_.boundaryField(), patchi)
         {
@@ -374,7 +374,7 @@ Foam::tmp<Foam::scalarField> Foam::VTRelaxationModels::SchwartzSlawskyHerzfeld::
                     (1.0-exp(-TH1_/Tt[facei]))
                   * P10sr(Tt[facei])
                   * Zcollsr(Tt[facei], nD[species1_][facei], nD[species2_][facei])
-                );     
+                );
         }
     }
     else

@@ -73,31 +73,31 @@ polyGrapheneSheet::~polyGrapheneSheet()
 void polyGrapheneSheet::setInitialConfiguration()
 {
     // INPUTS
-    
+
     label L = readLabel(mdInitialiseDict_.lookup("length"));
     vector nL = mdInitialiseDict_.lookup("lengthNormal");
     label B = readLabel(mdInitialiseDict_.lookup("breadth"));
     vector nB = mdInitialiseDict_.lookup("breadthNormal");
     scalar b = readScalar(mdInitialiseDict_.lookup("bondLength"));
     vector startPt = mdInitialiseDict_.lookup("startPoint");
-    
+
     const reducedUnits& rU = molCloud_.redUnits();
-    
+
     b /= rU.refLength();
-    
+
     scalar theta = 120*constant::mathematical::pi/180.0;
     scalar c = 2.0*b*sin(0.5*theta);
-    
+
     Info << nl << "Information on properties of graphene sheet" << nl << endl;
-    
+
     Info << "c = " << c
          << nl << "b = " << b
-         << endl;    
-    
+         << endl;
+
     // first layer of hexagon rings
-    
+
     DynamicList<vector> Glayer;
-    
+
     for (label i=1; i<L+1; i++)
     {
         vector r1 = (3*b*i)*nL;
@@ -106,7 +106,7 @@ void polyGrapheneSheet::setInitialConfiguration()
         vector r4 = (b+(3*b*i))*nL + c*nB;
         vector r5 = (3*b*i)*nL + c*nB;
         vector r6 = ((3*b*i)-(0.5*b))*nL + 0.5*c*nB;
-        
+
         Glayer.append(r1);
         Glayer.append(r2);
         Glayer.append(r3);
@@ -114,27 +114,27 @@ void polyGrapheneSheet::setInitialConfiguration()
         Glayer.append(r5);
         Glayer.append(r6);
     }
-    
+
     Glayer.shrink();
-    
-    // shift entire sheet so that the first atom which was created 
+
+    // shift entire sheet so that the first atom which was created
     // becomes centred at (0.0, 0.0)
-    
+
     forAll (Glayer, a)
     {
        Glayer[a] -= nL*3*b;
-    }    
-   
+    }
+
     // make a template for the first layer of hexagons
     DynamicList<vector> Gsheet;
-    
+
     forAll (Glayer, a)
     {
         Gsheet.append(Glayer[a]);
     }
-    
+
     // make a copy of the layer in the other direction to create the sheet
-    
+
     for (label j=1; j<B; j++)
     {
         forAll (Glayer, a)
@@ -142,48 +142,48 @@ void polyGrapheneSheet::setInitialConfiguration()
             Gsheet.append(Glayer[a] + c*j*nB);
         }
     }
-    
+
     Gsheet.shrink();
-    
+
     // remove any atoms that overlap eachother (to prevent the MD code from blowing up)
-    
+
     DynamicList<vector> Gnew;
-    
+
     scalar tolerance = 0.1;
-    
+
     forAll (Gsheet, i)
     {
         const vector& rI = Gsheet[i];
-        
+
         bool overlapping = false;
-        
+
         forAll (Gnew, j)
         {
             const vector& rJ = Gnew[j];
             scalar rMag = mag(rI - rJ);
-        
+
             if (rMag < tolerance)
             {
                 overlapping = true;
             }
         }
-    
+
         if (!overlapping)
         {
             Gnew.append(rI);
         }
     }
-    
+
     Gnew.shrink();
-    
-    // orient the sheet so that 
-    
+
+    // orient the sheet so that
+
     forAll (Gnew, i)
     {
         Gnew[i] += startPt;
     }
-    
-    
+
+
     // READ IN MORE PROPERTIES FROM DICTIONARY
 
     word molIdName(mdInitialiseDict_.lookup("molId"));
@@ -195,7 +195,7 @@ void polyGrapheneSheet::setInitialConfiguration()
     if(molId == -1)
     {
         FatalErrorIn("grapheneSheetNewId::setInitialConfiguration()")
-            << "Cannot find molecule id: " << molIdName 
+            << "Cannot find molecule id: " << molIdName
             << nl << "in moleculeProperties/idList."
             << exit(FatalError);
     }
@@ -212,9 +212,9 @@ void polyGrapheneSheet::setInitialConfiguration()
     {
         bulkVelocity = mdInitialiseDict_.lookup("bulkVelocity");
     }
-    
+
     initialiseVelocities_ = false;
-    
+
     if(mdInitialiseDict_.found("initialiseVelocities"))
     {
         initialiseVelocities_ = Switch(mdInitialiseDict_.lookup("initialiseVelocities"));
@@ -229,14 +229,14 @@ void polyGrapheneSheet::setInitialConfiguration()
     {
         frozen = Switch(mdInitialiseDict_.lookup("frozen"));
     }
-    
+
     label noCatomsCreated = 0;
-    
-    
+
+
     forAll(Gnew, i)
-    {  
+    {
         vector p = Gnew[i];
-        
+
         label cell = -1;
         label tetFace = -1;
         label tetPt = -1;
@@ -273,7 +273,7 @@ void polyGrapheneSheet::setInitialConfiguration()
     }
 
     Info << tab << "Graphene atoms created: " << noCatomsCreated << endl;
-      
+
 }
 
 

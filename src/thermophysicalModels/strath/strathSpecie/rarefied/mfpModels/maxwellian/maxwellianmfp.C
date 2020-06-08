@@ -37,7 +37,7 @@ namespace Foam
         addToRunTimeSelectionTable
         (
             basicMfpModel,
-            maxwellianmfp, 
+            maxwellianmfp,
             dictionary
         );
     }
@@ -57,7 +57,7 @@ Foam::basicMfpModels::maxwellianmfp::maxwellianmfp
 )
 :
     basicMfpModel(name, speciesIndex, dict, dictThermoPhy, p, Tt)
-{   
+{
     molW_ = 1.0e-3*readScalar(dictThermoPhy.subDict(name).subDict("specie").lookup("molWeight"));
 }
 
@@ -92,7 +92,7 @@ Foam::basicMfpModels::maxwellianmfp::mfp() const
     {
         mfp[celli] = sqrt(constant::mathematical::pi*molW_/(2.0*constant::physicoChemical::R.value()*this->Tt_[celli]));
     }
-    
+
 
     forAll(this->Tt_.boundaryField(), patchi)
     {

@@ -37,7 +37,7 @@ namespace Foam
         addToRunTimeSelectionTable
         (
             binaryDiffusivityModel,
-            GuptaD, 
+            GuptaD,
             dictionary
         );
     }
@@ -60,7 +60,7 @@ Foam::binaryDiffusivityModels::GuptaD::GuptaD
     binaryDiffusivityModel(name1, name2, dictThermo, dictTransport, p, pe, T)
 {
     word year = word::null;
-    
+
     if(dictTransport.subDict("transportModels")
         .subDict("diffusiveFluxesParameters").found("yearGuptaModel"))
     {
@@ -73,24 +73,24 @@ Foam::binaryDiffusivityModels::GuptaD::GuptaD
             << "Entry 'yearGuptaModel' is missing in transportModels/diffusiveFluxesParameters."
             << exit(FatalError);
     }
-    
+
     FixedList<scalar,4> defaultList;
     forAll(defaultList, i)
     {
         defaultList[i] = 0.0;
     }
-    
+
     if(dictTransport.subDict("collisionData").subDict("neutralNeutralInteractions")
            .subDict("Gupta"+year+"D").subDict("Dbar").found(name1+"_"+name2))
     {
         Dbar_ = dictTransport.subDict("collisionData").subDict("neutralNeutralInteractions")
-           .subDict("Gupta"+year+"D").subDict("Dbar").lookupOrDefault<FixedList<scalar,4>>(name1+"_"+name2, defaultList);    
+           .subDict("Gupta"+year+"D").subDict("Dbar").lookupOrDefault<FixedList<scalar,4>>(name1+"_"+name2, defaultList);
     }
     else if(dictTransport.subDict("collisionData").subDict("neutralNeutralInteractions")
            .subDict("Gupta"+year+"D").subDict("Dbar").found(name2+"_"+name1))
     {
         Dbar_ = dictTransport.subDict("collisionData").subDict("neutralNeutralInteractions")
-           .subDict("Gupta"+year+"D").subDict("Dbar").lookupOrDefault<FixedList<scalar,4>>(name2+"_"+name1, defaultList);    
+           .subDict("Gupta"+year+"D").subDict("Dbar").lookupOrDefault<FixedList<scalar,4>>(name2+"_"+name1, defaultList);
     }
     else
     {
@@ -98,7 +98,7 @@ Foam::binaryDiffusivityModels::GuptaD::GuptaD
             << "Collision integral data missing for species couple (" << name1 << ", " << name2 << ")."
             << exit(FatalError);
     }
-    
+
     Dbar_[3] = 1.01325e5*exp(Dbar_[3])/1.0e4;
 }
 
@@ -150,7 +150,7 @@ Foam::binaryDiffusivityModels::GuptaD::D() const
 }
 
 
-Foam::tmp<Foam::scalarField> 
+Foam::tmp<Foam::scalarField>
 Foam::binaryDiffusivityModels::GuptaD::D
 (
     const scalarField& p,
@@ -170,7 +170,7 @@ Foam::binaryDiffusivityModels::GuptaD::D
 }
 
 
-Foam::tmp<Foam::scalarField> 
+Foam::tmp<Foam::scalarField>
 Foam::binaryDiffusivityModels::GuptaD::D
 (
     const scalarField& p,

@@ -62,11 +62,11 @@ private:
         dictionary propsDict_;
 
         vector velocity_;
-        
+
         vector unitVector_;
-        
+
         scalar initialVelocity_;
-        
+
         scalar amplitude_;
 
         scalar period_;
@@ -76,9 +76,9 @@ private:
         scalar currentTime_;
 
 //         scalar deltaTMD_;
-        
+
         scalar deltaT_;
-        
+
 public:
 
     //- Runtime type information

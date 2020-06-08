@@ -52,7 +52,7 @@ SourceFiles
 
 namespace Foam
 {
-  
+
 /*---------------------------------------------------------------------------*\
                     Class rarefactionParameter Declaration
 \*---------------------------------------------------------------------------*/
@@ -61,9 +61,9 @@ class rarefactionParameter
 :
     public IOdictionary
 {
-    
-protected:  
-  
+
+protected:
+
     // Protected data
 
         //- Mesh
@@ -74,56 +74,56 @@ protected:
 
         //- Reference to the turbulence model
         const compressibleTurbulenceModel& turbulence_;
-        
+
         //- Compute the rarefaction parameters
         bool computeRarefaction_;
-        
+
         //- Compute the overall mean free path at the boundaries
         bool computeMfpBoundaries_;
-        
+
         //- Temporary stuff for the definition of the overall mean free path
         const bool oldMfpDefinition_;
-        
+
         //- Mean free path model, species i [m]
         autoPtr<mfpModel> mfpModel_;
-        
+
         //- Store the name of the mean free path model
         const word mfpModelName_;
 
         //- Mean free path [m]
         PtrList<volScalarField> mfp_;
-        
+
         //- Mean free path, gas mixture [m]
         volScalarField mfpMix_;
-        
+
         //- Overall Knudsen number
         volScalarField Knov_;
-        
+
         //- Characteristic length [m]
         scalar characteristicLength_;
-        
+
         //- Gradient-length local Knudsen number
         volScalarField KnGLL_;
-        
+
         //- Gradient-length local Knudsen number, components
         PtrList<volScalarField> KnsGLL_;
-        
+
         //- Write the mean free path species/mixture?
         bool writeMfpSpecies_ ;
         bool writeMfpMixture_;
-        
+
         //- Write the gradient length Knudsen number max/components?
         bool writeKnGLL_;
         bool writeKnGLLComponents_;
-        
+
         //- Write the overall Knudsen number?
         bool writeKnOv_;
 
 
 private:
-  
+
     // Private member functions
-      
+
         //- Disallow copy construct
         rarefactionParameter(const rarefactionParameter&);
 
@@ -132,13 +132,13 @@ private:
 
 
 public:
- 
+
     //- Runtime type information
     TypeName("rarefactionParameter");
 
-      
+
     // Declare run-time constructor selection table
-       
+
 #ifndef SWIG
     declareRunTimeSelectionTable
     (
@@ -152,9 +152,9 @@ public:
         (thermo, turbulence)
     );
 #endif
- 
 
-    // Constructors	  
+
+    // Constructors
 
         //- Construct from components
         rarefactionParameter
@@ -164,8 +164,8 @@ public:
         );
 
 
-    // Selectors	  
-  
+    // Selectors
+
         //- Return a reference to the selected multispecies transport model
 
         static autoPtr<rarefactionParameter> New
@@ -183,33 +183,33 @@ public:
 
     // Member Functions
 
-        // Access   
-           
+        // Access
+
             //- Return the const computeRarefaction boolean
             inline const bool& computeRarefaction() const;
-            
+
             //- Return the const mean free path field for species i
-            inline const volScalarField& mfp(label i) const;  
-            
+            inline const volScalarField& mfp(label i) const;
+
             //- Return the const mixture mean free path
             inline const volScalarField& mfpMix() const;
-            
+
             //- Return the const gradient-length local Knudsen number
             inline const volScalarField& KnGLL() const;
-            
+
             //- Return the overall Knudsen number
             inline const volScalarField& Knov() const;
-            
+
             //- Return the table of species
             inline const speciesTable& species() const;
-            
-       
+
+
         //- Shear viscosity for a specie given by index.
         inline virtual scalar mu(label i, scalar p, scalar Tt) const = 0;
-        
+
         //- Calculations and updates the different fields
         virtual void correct(const volVectorField& U) = 0;
-        
+
         //- Write the user-defined rarefied quantities
         virtual void write() = 0;
 

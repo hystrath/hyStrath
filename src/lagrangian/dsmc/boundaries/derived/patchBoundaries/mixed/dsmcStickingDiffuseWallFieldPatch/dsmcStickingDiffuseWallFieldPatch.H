@@ -60,23 +60,23 @@ class dsmcStickingDiffuseWallFieldPatch
 :
 	  public dsmcFieldPatchBoundary,
 	  public dsmcStickingDiffuseWallPatch
-	  
+
 {
 
 private:
 
     // Private data
-    
-        
+
+
 
 protected:
 
-    // Protected data        
+    // Protected data
 
-        
-        
+
+
     // Protected member functions
-    
+
 
 public:
 

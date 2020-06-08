@@ -69,7 +69,7 @@ private:
 
     // Private data
         dictionary propsDict_;
-        
+
         volScalarField radiativeT_;
 
         scalarField EcTot_;
@@ -77,7 +77,7 @@ private:
         scalarField EcTotSum_;
 
         scalarField TwallRad_;
-        
+
         // emissivity * stefan boltzmann constant
         scalar epsilonSigma_;
 
@@ -88,13 +88,13 @@ private:
         scalar alpha_;
 
         scalar stepCounter_;
-        
+
         bool resetFieldsAtOutput_;
 
 
         void setProperties();
 
-        
+
         void initialTemperatureEstimate();
 
 public:

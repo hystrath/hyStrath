@@ -47,14 +47,14 @@ coulombShifted::coulombShifted
     const polyMesh& mesh,
     polyMoleculeCloud& molCloud,
     const reducedUnits& redUnits,
-    const word& name, 
+    const word& name,
     const dictionary& dict
 )
 :
     pairPotentialModel(mesh, molCloud, redUnits, name, dict),
-    constant_(1.0/(4.0 * constant::mathematical::pi * 8.854187817e-12))   
+    constant_(1.0/(4.0 * constant::mathematical::pi * 8.854187817e-12))
 {
- 
+
     if(redUnits.runReducedUnits())
     {
         constant_ = (1.0/(4.0 * constant::mathematical::pi * redUnits.epsilonPermittivity()));
@@ -63,16 +63,16 @@ coulombShifted::coulombShifted
     {
         constant_ = 1.0/(4.0*constant::mathematical::pi*8.854187817e-12);
     }
-    
-    useTables_ = false; 
-    
+
+    useTables_ = false;
+
     EB_ =  2/rCut_;
     EC_ = 1/(rCut_*rCut_);
 
 
     F_at_Rmin_ = rawForce(rMin_);
-    E_at_Rmin_ = rawEnergy(rMin_);  
-    
+    E_at_Rmin_ = rawEnergy(rMin_);
+
 }
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
@@ -100,24 +100,24 @@ scalar coulombShifted::rawForce(const scalar r) const
 scalar coulombShifted::energy(const scalar r) const
 {
     scalar energy = E_at_Rmin_;
-    
+
     if(r > rMin_)
     {
         energy = rawEnergy(r);
-    }    
-    
+    }
+
     return energy;
 }
 
 scalar coulombShifted::force(const scalar r) const
 {
     scalar force = F_at_Rmin_;
-    
+
     if(r > rMin_)
     {
         force = rawForce(r);
-    }    
-    
+    }
+
     return force;
 }
 

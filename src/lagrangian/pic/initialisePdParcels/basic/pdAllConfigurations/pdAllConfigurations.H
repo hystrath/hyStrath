@@ -26,7 +26,7 @@ Class
 
 Description
 
-    
+
 
 \*---------------------------------------------------------------------------*/
 
@@ -68,12 +68,12 @@ class pdAllConfigurations
         List< autoPtr<pdConfiguration> > configurations_;
 
 
-        
+
 public:
 
     // Constructors
 
-        //- Null Constructor 
+        //- Null Constructor
         pdAllConfigurations
         (
 //             const polyMesh& mesh,
@@ -94,8 +94,8 @@ public:
             inline const List< autoPtr<pdConfiguration> >& configurations() const;
 
 
-//             inline const List<word>& stateControllersNames() const; 
-    
+//             inline const List<word>& stateControllersNames() const;
+
 
 
 };

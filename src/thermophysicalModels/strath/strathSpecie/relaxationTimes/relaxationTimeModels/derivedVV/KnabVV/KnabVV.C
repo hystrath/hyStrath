@@ -31,9 +31,9 @@ License
 
 template<class ThermoType>
 void Foam::KnabVV<ThermoType>::updateCoefficients()
-{     
+{
     tauVVijModel_().update();
-} 
+}
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
@@ -46,20 +46,20 @@ Foam::KnabVV<ThermoType>::KnabVV
 )
 :
     relaxationTimeModelVV(thermo, turbulence),
-    
+
     speciesThermo_
     (
         dynamic_cast<const multi2ComponentMixture<ThermoType>&>
             (this->thermo_).speciesData()
     )
-{    
+{
     tauVV_.setSize(solvedVibEqSpecies().size());
-    
+
     forAll(tauVV_, speciei)
     {
         tauVV_.set
         (
-            speciei, 
+            speciei,
             new volScalarField
             (
                 IOobject
@@ -74,7 +74,7 @@ Foam::KnabVV<ThermoType>::KnabVV
                 dimensionedScalar("tauVV", dimTime, 0.0)
             )
         );
-    } 
+    }
 }
 
 
@@ -83,76 +83,76 @@ Foam::KnabVV<ThermoType>::KnabVV
 template<class ThermoType>
 void Foam::KnabVV<ThermoType>::correct()
 {
-    updateCoefficients(); 
-    
+    updateCoefficients();
+
     forAll(solvedVibEqSpecies(), speciei)
-    {  
+    {
         const volScalarField& Tt = thermo_.Tt();
         const volScalarField& p = thermo_.p();
         const volScalarField& pD = thermo_.composition().pD(speciei);
         const volScalarField& ev = thermo_.composition().hevel(speciei);
         volScalarField& QVV = this->QVV_[speciei];
-        
+
         const scalarField& pCells = p.internalField();
         const scalarField& TtCells = Tt.internalField();
         const scalarField& evCells = ev.internalField();
         scalarField& QVVCells = QVV.primitiveFieldRef();
-        
+
         QVVCells = 0.0;
-        
+
         forAll(solvedVibEqSpecies(), speciej)
         {
             if(speciei != speciej)
-            { 
+            {
                 const volScalarField& pDj = thermo_.composition().pD(speciej);
                 const volScalarField& evj = thermo_.composition().hevel(speciej);
-                const volScalarField& factorVVij = tauVVij(speciei, speciej); 
-                
+                const volScalarField& factorVVij = tauVVij(speciei, speciej);
+
                 const scalarField& pDjCells = pDj.internalField();
                 const scalarField& evjCells = evj.internalField();
                 const scalarField& factorVVijCells = factorVVij.internalField();
-                          
+
                 forAll(QVVCells, celli)
-                {        
+                {
                     const scalar evZiCelli = thermo_.composition().HEvel(speciei, pCells[celli], TtCells[celli]);
                     const scalar evZjCelli = thermo_.composition().HEvel(speciej, pCells[celli], TtCells[celli]);
-                    
+
                     QVVCells[celli] += factorVVijCells[celli]*pDjCells[celli]/W(speciej)
                         *(evZiCelli/evZjCelli*evjCells[celli] - evCells[celli]);
                 }
-                
+
                 forAll(QVV.boundaryField(), patchi)
-                {        
+                {
                     const fvPatchScalarField& pp = p.boundaryField()[patchi];
                     const fvPatchScalarField& pTt = Tt.boundaryField()[patchi];
                     const fvPatchScalarField& ppDj = pDj.boundaryField()[patchi];
                     const fvPatchScalarField& pev = ev.boundaryField()[patchi];
                     const fvPatchScalarField& pevj = evj.boundaryField()[patchi];
                     const fvPatchScalarField& pfactorVVij = factorVVij.boundaryField()[patchi];
-                    
+
                     fvPatchScalarField& pQVV = QVV.boundaryFieldRef()[patchi];
                     pQVV = 0;
-                    
+
                     forAll(pQVV, facei)
                     {
                         const scalar pevZiFacei = thermo_.composition().HEvel(speciei, pp[facei], pTt[facei]);
                         const scalar pevZjFacei = thermo_.composition().HEvel(speciej, pp[facei], pTt[facei]);
-                        
+
                         pQVV[facei] += pfactorVVij[facei]*ppDj[facei]/W(speciej)
                             *(pevZiFacei/pevZjFacei*pevj[facei] - pev[facei]);
                     }
                 }
-            }   
+            }
         }
-        
+
         QVV.primitiveFieldRef() *= constant::physicoChemical::NA.value()*pD.internalField()
             *sqrt(8.0*constant::physicoChemical::R.value()*Tt.internalField()/constant::mathematical::pi);
-            
+
         QVV.boundaryFieldRef() *= constant::physicoChemical::NA.value()*pD.boundaryField()
-            *sqrt(8.0*constant::physicoChemical::R.value()*Tt.boundaryField()/constant::mathematical::pi);    
-    }    
-}  
-    
+            *sqrt(8.0*constant::physicoChemical::R.value()*Tt.boundaryField()/constant::mathematical::pi);
+    }
+}
+
 
 template<class ThermoType>
 bool Foam::KnabVV<ThermoType>::read()
@@ -166,6 +166,6 @@ bool Foam::KnabVV<ThermoType>::read()
         return false;
     }
 }
-   
+
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

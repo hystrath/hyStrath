@@ -37,7 +37,7 @@ Foam::CEATransport<Thermo>::CEATransport(Istream& is)
     {
         is >> temp_[i];
     }
-    
+
     forAll(mu_, i)
     {
         forAll(mu_[i], j)
@@ -45,7 +45,7 @@ Foam::CEATransport<Thermo>::CEATransport(Istream& is)
             is >> mu_[i][j];
         }
     }
-    
+
     forAll(kappa_, i)
     {
         forAll(kappa_[i], j)
@@ -53,9 +53,9 @@ Foam::CEATransport<Thermo>::CEATransport(Istream& is)
             is >> kappa_[i][j];
         }
     }
-    
+
     is >> eta_s_;
-    
+
     is.check("CEATransport<Thermo>::CEATransport(Istream&)");
 }
 
@@ -86,7 +86,7 @@ void Foam::CEATransport<Thermo>::write(Ostream& os) const
     dictTransport.subDict("CEA").add("visco", mu_);
     dictTransport.subDict("CEA").add("kappa", kappa_);
     os  << indent << dictTransport.dictName() << dictTransport;
-    
+
     dictionary dictSpecies("specie");
     dictSpecies.add("eta_s", eta_s_);
     os  << indent << dictSpecies.dictName() << dictSpecies;
@@ -103,15 +103,15 @@ Foam::Ostream& Foam::operator<<
     const CEATransport<Thermo>& ceat
 )
 {
-    os << static_cast<const Thermo&>(ceat) << tab; 
-    
+    os << static_cast<const Thermo&>(ceat) << tab;
+
     forAll(ceat.temp_, i)
     {
         os << ceat.temp_[i] << tab;
     }
-    
+
     os << nl << "    ";
-    
+
     forAll(ceat.mu_, i)
     {
         forAll(ceat.mu_[i], j)
@@ -119,9 +119,9 @@ Foam::Ostream& Foam::operator<<
             os << ceat.mu_[i][j] << tab;
         }
     }
-    
+
     os << nl << "    ";
-    
+
     forAll(ceat.kappa_, i)
     {
         forAll(ceat.kappa_[i], j)
@@ -129,9 +129,9 @@ Foam::Ostream& Foam::operator<<
             os << ceat.kappa_[i][j] << tab;
         }
     }
-    
+
     os << ceat.eta_s_ << endl;
-    
+
     os.check
     (
         "Ostream& operator<<(Ostream&, const CEATransport<Thermo>&)"

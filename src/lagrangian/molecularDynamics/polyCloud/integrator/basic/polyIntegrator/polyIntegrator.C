@@ -69,14 +69,14 @@ autoPtr<polyIntegrator> polyIntegrator::New
 )
 {
     word polyIntegratorName = "velocityVerlet";
-    
+
     if(dict.found("integrator"))
     {
         const word polyIntegratorNameTemp
         (
             dict.lookup("integrator")
         );
-        
+
         polyIntegratorName = polyIntegratorNameTemp;
     }
 

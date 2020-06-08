@@ -67,7 +67,7 @@ dsmcPlumeInflowPatch::dsmcPlumeInflowPatch
     rotationalT_(readScalar(propsDict_.lookup("rotationalTemperature"))),
     vibrationalTemperatures_(),
     electronicT_(readScalar(propsDict_.lookup("electronicTemperature")))
-    
+
 {
     writeInTimeDir_ = false;
     writeInCase_ = true;
@@ -110,8 +110,8 @@ void dsmcPlumeInflowPatch::controlParcelsBeforeMove()
             const label& faceI = faces_[f];
             const vector& sF = mesh_.faceAreas()[faceI];
             const scalar fA = mag(sF);
-            
-            const scalar deltaT = 
+
+            const scalar deltaT =
                 cloud_.deltaTValue
                 (
                     mesh_.boundaryMesh()[patchId_].faceCells()[f]
@@ -134,14 +134,14 @@ void dsmcPlumeInflowPatch::controlParcelsBeforeMove()
             scalar sCosTheta = (inletVelocities_[f] & -sF/fA )/mostProbableSpeed;
 
             // From Bird eqn 4.22
-            
+
 //             Info << "1" << endl;
-            
+
 //             Info << "numberDensities_[i][f] = " << numberDensities_[i][f] << endl;
-            
+
 //             Info << "2" << endl;
 
-            accumulatedParcelsToInsert_[i][f] += 
+            accumulatedParcelsToInsert_[i][f] +=
             (
                 fA*numberDensities_[i]*deltaT*mostProbableSpeed
                 *
@@ -205,7 +205,7 @@ void dsmcPlumeInflowPatch::controlParcelsBeforeMove()
 
         //         Wall tangential unit vector. Use the direction between the
         //         face centre and the first vertex in the list
-        vector t1 = fC - mesh_.points()[mesh_.faces()[faceI][0]]; 
+        vector t1 = fC - mesh_.points()[mesh_.faces()[faceI][0]];
         t1 /= mag(t1);
 
         //         Other tangential unit vector.  Rescaling in case face is not
@@ -333,14 +333,14 @@ void dsmcPlumeInflowPatch::controlParcelsBeforeMove()
                     faceRotationalTemperature,
                     cloud_.constProps(typeId).rotationalDegreesOfFreedom()
                 );
-                
+
                 labelList vibLevel = cloud_.equipartitionVibrationalEnergyLevel
                 (
                     vibrationalTemperatures_[i],
                     cloud_.constProps(typeId).nVibrationalModes(),
                     typeId
                 );
-                
+
                 label ELevel = cloud_.equipartitionElectronicLevel
                 (
                     faceElectronicTemperature,
@@ -348,8 +348,8 @@ void dsmcPlumeInflowPatch::controlParcelsBeforeMove()
                     cloud_.constProps(typeId).electronicEnergyList()
                 );
 
-            
-                label newParcel = patchId();    
+
+                label newParcel = patchId();
 
                 cloud_.addNewParcel
                 (
@@ -380,7 +380,7 @@ void dsmcPlumeInflowPatch::controlParcelsBeforeMove()
             reduce(parcelsToAdd[m], sumOp<scalar>());
             reduce(parcelsInserted[m], sumOp<scalar>());
 
-            Info<< "Specie: " << typeIds_[m] 
+            Info<< "Specie: " << typeIds_[m]
                 << ", target parcels to insert: " << parcelsToAdd[m]
                 <<", inserted parcels: " << parcelsInserted[m]
                 << endl;
@@ -468,42 +468,42 @@ void dsmcPlumeInflowPatch::setProperties()
     forAll(inletVelocities_, f)
     {
         inletVelocities_[f].x() = axialVelocity_;
-        
+
         const label& faceI = faces_[f];
         const vector& fC = mesh_.faceCentres()[faceI];
-        
+
         scalar radius = sqrt(sqr((fC.y() - origin_)) + sqr((fC.z() - origin_)));
-        
+
         scalar theta = acos((fC.y() - origin_)/radius);
-        
+
 //         Info << "theta = " << theta*(180/3.14) << endl;
-        
+
         if(fC.y() > VSMALL && fC.z() > VSMALL) // 1st quadrant
         {
             inletVelocities_[f].y() = cos(theta)*radialVelocity_;
-            
+
             inletVelocities_[f].z() = sin(theta)*radialVelocity_;
         }
         if(fC.y() < VSMALL && fC.z() > VSMALL) //2nd quadrant
         {
             inletVelocities_[f].y() = cos(theta)*radialVelocity_;
-        
+
             inletVelocities_[f].z() = sin(theta)*radialVelocity_;
         }
         if(fC.y() < VSMALL && fC.z() < VSMALL) // 3rd quadrant
         {
             inletVelocities_[f].y() = cos(theta)*radialVelocity_;
-            
+
             inletVelocities_[f].z() = -sin(theta)*radialVelocity_;
         }
         if(fC.y() > VSMALL && fC.z() < VSMALL) //4th quadrant
         {
             inletVelocities_[f].y() = cos(theta)*radialVelocity_;
-        
+
             inletVelocities_[f].z() = -sin(theta)*radialVelocity_;
         }
-        
-        
+
+
 //         Info << "velocity = " << inletVelocities_[f] << endl;
     }
 
@@ -511,7 +511,7 @@ void dsmcPlumeInflowPatch::setProperties()
     (
         propsDict_.subDict("numberDensities")
     );
-    
+
     numberDensities_.clear();
 
     numberDensities_.setSize(typeIds_.size(), 0.0);
@@ -523,12 +523,12 @@ void dsmcPlumeInflowPatch::setProperties()
             numberDensitiesDict.lookup(moleculesReduced[i])
         );
     }
-    
+
     const dictionary& vibrationalTemperaturesDict
     (
         propsDict_.subDict("vibrationalTemperatures")
     );
-    
+
     vibrationalTemperatures_.clear();
 
     vibrationalTemperatures_.setSize(typeIds_.size(), 0.0);

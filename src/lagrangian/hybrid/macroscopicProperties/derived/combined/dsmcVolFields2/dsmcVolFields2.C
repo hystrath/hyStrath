@@ -24,7 +24,7 @@ License
 
 Description
 
-Measures overall temperature, including vibrational temperature, for a single species gas 
+Measures overall temperature, including vibrational temperature, for a single species gas
 or a gas mixture and writes the results to a volume scalar field that can be viewed in Paraview.
 
 Translational, rotatational and vibrational temperature field will also be written automatically.
@@ -501,7 +501,7 @@ dsmcVolFields2::dsmcVolFields2
     measureErrors_(false)
 {
 
-    // standard to reading typeIds ------------ 
+    // standard to reading typeIds ------------
     const List<word> molecules (propsDict_.lookup("typeIds"));
 
     DynamicList<word> moleculesReduced(0);
@@ -537,65 +537,65 @@ dsmcVolFields2::dsmcVolFields2
         typeIds_[i] = typeId;
     }
     // ---------------------------------------------------
-    
+
         // Note; outer list is typeIds, inner list is number of cells on the mesh
-    
+
     vibT_.setSize(typeIds_.size());
-        
+
     forAll(vibT_, i)
     {
         vibT_[i].setSize(mesh_.nCells(), 0.0);
     }
 
     vDof_.setSize(typeIds_.size());
-    
+
     forAll(vDof_, i)
     {
         vDof_[i].setSize(mesh_.nCells(), 0.0);
     }
-    
+
     vibrationalETotal_.setSize(typeIds_.size());
-    
+
     forAll(vibrationalETotal_, i)
     {
         vibrationalETotal_[i].setSize(mesh_.nCells(), 0.0);
     }
-    
+
     nParcels_.setSize(typeIds_.size());
-    
+
     forAll(nParcels_, i)
     {
         nParcels_[i].setSize(mesh_.nCells(), 0.0);
     }
-    
+
     mfp_.setSize(typeIds_.size());
-    
+
     forAll(mfp_, i)
     {
         mfp_[i].setSize(mesh_.nCells(), 0.0);
     }
-    
+
     mcr_.setSize(typeIds_.size());
-    
+
     forAll(mcr_, i)
     {
         mcr_[i].setSize(mesh_.nCells(), 0.0);
     }
-    
+
     boundaryCells_.setSize(mesh.boundaryMesh().size());
-    
+
     forAll(boundaryCells_, p)
     {
         const polyPatch& patch = mesh.boundaryMesh()[p];
-        
+
         boundaryCells_[p].setSize(patch.size(), 0);
-        
+
         forAll(boundaryCells_[p], c)
         {
             boundaryCells_[p][c] = patch.faceCells()[c];
         }
     }
-        
+
     // initialisation
     rhoNBF_.setSize(mesh_.boundaryMesh().size());
     rhoMBF_.setSize(mesh_.boundaryMesh().size());
@@ -608,11 +608,11 @@ dsmcVolFields2::dsmcVolFields2
     vibTxvDofBF_.setSize(mesh_.boundaryMesh().size());
     totalvDofBF_.setSize(mesh_.boundaryMesh().size());
     speciesRhoNIntBF_.setSize(mesh_.boundaryMesh().size());
-        
+
     forAll(rhoNBF_, j)
     {
         const polyPatch& patch = mesh_.boundaryMesh()[j];
-        
+
         rhoNBF_[j].setSize(patch.size(), 0.0);
         rhoMBF_[j].setSize(patch.size(), 0.0);
         linearKEBF_[j].setSize(patch.size(), 0.0);
@@ -625,62 +625,62 @@ dsmcVolFields2::dsmcVolFields2
         totalvDofBF_[j].setSize(patch.size(), 0.0);
         speciesRhoNIntBF_[j].setSize(patch.size(), 0.0);
     }
-    
+
     vibrationalEBF_.setSize(typeIds_.size());
     speciesRhoNBF_.setSize(typeIds_.size());
     vibTBF_.setSize(typeIds_.size());
     vDofBF_.setSize(typeIds_.size());
-    
+
     forAll(vibrationalEBF_, i)
     {
         vibrationalEBF_[i].setSize(mesh_.boundaryMesh().size());
         speciesRhoNBF_[i].setSize(mesh_.boundaryMesh().size());
         vibTBF_[i].setSize(mesh_.boundaryMesh().size());
         vDofBF_[i].setSize(mesh_.boundaryMesh().size());
-        
+
         forAll(vibrationalEBF_[i], j)
         {
             const polyPatch& patch = mesh_.boundaryMesh()[j];
-            
+
             vibrationalEBF_[i][j].setSize(patch.size(), 0.0);
             speciesRhoNBF_[i][j].setSize(patch.size(), 0.0);
             vibTBF_[i][j].setSize(patch.size(), 0.0);
             vDofBF_[i][j].setSize(patch.size(), 0.0);
         }
     }
-    
+
     if (propsDict_.found("measureClassifications"))
     {
         measureClassifications_ = Switch(propsDict_.lookup("measureClassifications"));
     }
-    
+
     if (propsDict_.found("measureErrors"))
     {
         measureErrors_ = Switch(propsDict_.lookup("measureErrors"));
     }
-    
+
     if(propsDict_.found("measureMeanFreePath"))
     {
         measureMeanFreePath_ = Switch(propsDict_.lookup("measureMeanFreePath"));
     }
-    
+
     if(measureMeanFreePath_)
     {
         mfpReferenceTemperature_ = readScalar(propsDict_.lookup("mfpReferenceTemperature"));
     }
-    
-    
+
+
     if (propsDict_.found("averagingAcrossManyRuns"))
     {
         averagingAcrossManyRuns_ = Switch(propsDict_.lookup("averagingAcrossManyRuns"));
-        
+
         // read in stored data from dictionary
         if(averagingAcrossManyRuns_)
         {
             Info << nl << "Averaging across many runs initiated." << nl << endl;
 
             readIn();
-        }         
+        }
     }
 }
 
@@ -715,13 +715,13 @@ void dsmcVolFields2::readIn()
     dict.readIfPresent("rotationalEMean", rotationalEMean_);
     dict.readIfPresent("rotationalDofMean", rotationalDofMean_);
     dict.readIfPresent("vibrationalETotal", vibrationalETotal_);
-    dict.readIfPresent("nParcels", nParcels_);     
-    dict.readIfPresent("rhoNMeanInt", rhoNMeanInt_);     
-    
+    dict.readIfPresent("nParcels", nParcels_);
+    dict.readIfPresent("rhoNMeanInt", rhoNMeanInt_);
+
     dict.readIfPresent("nTimeSteps", nTimeSteps_);
-    
+
 //     Info << "Some properties read in: "
-//          << "mols = " << mols_[0] 
+//          << "mols = " << mols_[0]
 //          << ", mass = " << mass_[0]
 //          << ", averagingCounter = " << averagingCounter_
 //          << endl;
@@ -752,18 +752,18 @@ void dsmcVolFields2::writeOut()
         dict.add("rotationalEMean", rotationalEMean_);
         dict.add("rotationalDofMean", rotationalDofMean_);
         dict.add("vibrationalETotal", vibrationalETotal_);
-        dict.add("nParcels", nParcels_);     
-        dict.add("rhoNMeanInt", rhoNMeanInt_);     
-        
-        dict.add("nTimeSteps", nTimeSteps_); 
-        
+        dict.add("nParcels", nParcels_);
+        dict.add("rhoNMeanInt", rhoNMeanInt_);
+
+        dict.add("nTimeSteps", nTimeSteps_);
+
         IOstream::streamFormat fmt = time_.time().writeFormat();
 //         Pout << "fmt = " << fmt << endl;
         IOstream::versionNumber ver = time_.time().writeVersion();
         IOstream::compressionType cmp = time_.time().writeCompression();
-    
+
         dict.regIOobject::writeObject(fmt, ver, cmp);
-        
+
 //         Info<< "Some properties written out: "
 //             << "mols = " << mols_[0]
 //             << ", mass = " << mass_[0]
@@ -780,7 +780,7 @@ void dsmcVolFields2::createField()
 
 
 void dsmcVolFields2::calculateField()
-{  
+{
     nTimeSteps_ += 1.0;
 /*    volScalarField dummyVal
     (
@@ -812,46 +812,46 @@ void dsmcVolFields2::calculateField()
             linearKEMean_[cell] += mass*(p.U() & p.U());
             momentumMean_[cell] += mass*p.U();
             rotationalEMean_[cell] += p.ERot();
-            rotationalDofMean_[cell] += rotationalDof; 
+            rotationalDofMean_[cell] += rotationalDof;
             vibrationalETotal_[iD][cell] += p.EVib();
             nParcels_[iD][cell] += 1.0;
-            
+
             muu_[cell] += mass*sqr(p.U().x());
             muv_[cell] += mass*( (p.U().x()) * (p.U().y()) );
             muw_[cell] += mass*( (p.U().x()) * (p.U().z()) );
             mvv_[cell] += mass*sqr(p.U().y());
             mvw_[cell] += mass*( (p.U().y()) * (p.U().z()) );
             mww_[cell] += mass*sqr(p.U().z());
-            
+
             mcc_[cell] += mass*mag(p.U())*mag(p.U());
             mccu_[cell] += mass*mag(p.U())*mag(p.U())*(p.U().x());
             mccv_[cell] += mass*mag(p.U())*mag(p.U())*(p.U().y());
             mccw_[cell] += mass*mag(p.U())*mag(p.U())*(p.U().z());
-            
+
             eu_[cell] += ( p.ERot() + p.EVib() )*(p.U().x());
             ev_[cell] += ( p.ERot() + p.EVib() )*(p.U().y());
             ew_[cell] += ( p.ERot() + p.EVib() )*(p.U().z());
             e_[cell] += ( p.ERot() + p.EVib() );
-            
+
             if(rotationalDof > VSMALL)
             {
                 rhoNMeanInt_[cell] += 1.0;
             }
-            
+
             if(measureClassifications_)
             {
                 label classification = p.classification();
-                
+
                 if(classification == 0)
                 {
                     nClassI_[cell] += 1.0;
                 }
-                
+
                 if(classification == 1)
                 {
                     nClassII_[cell] += 1.0;
                 }
-                
+
                 if(classification == 2)
                 {
                     nClassIII_[cell] += 1.0;
@@ -861,15 +861,15 @@ void dsmcVolFields2::calculateField()
     }
 
     // obtain boundary measurements
-    
+
     forAll(cloud_.boundaryFluxMeasurements().rhoNBF(), i)
     {
         label iD = findIndex(typeIds_, i);
 
         if(iD != -1)
-        {            
+        {
             forAll(cloud_.boundaryFluxMeasurements().rhoNBF()[i], j)
-            {                
+            {
                 forAll(cloud_.boundaryFluxMeasurements().rhoNBF()[i][j], k)
                 {
                     rhoNBF_[j][k] += cloud_.boundaryFluxMeasurements().rhoNBF()[i][j][k];
@@ -884,12 +884,12 @@ void dsmcVolFields2::calculateField()
             }
         }
     }
-    
+
     forAll(cloud_.typeIdList(), i)
     {
         label iD = findIndex(typeIds_, i);
         if(iD != -1)
-        { 
+        {
             forAll(speciesRhoNBF_[iD], j)
             {
                 forAll(speciesRhoNBF_[iD][j], k)
@@ -897,38 +897,38 @@ void dsmcVolFields2::calculateField()
                     speciesRhoNBF_[iD][j][k] += cloud_.boundaryFluxMeasurements().rhoNBF()[i][j][k];
                     speciesRhoNIntBF_[j][k] += cloud_.boundaryFluxMeasurements().rhoNBF()[i][j][k];
                     vibrationalEBF_[iD][j][k] += cloud_.boundaryFluxMeasurements().vibrationalEBF()[i][j][k];
-                    
+
                 }
             }
         }
     }
 
-    
+
     if(time_.time().outputTime())
     {
         scalar nAvTimeSteps = nTimeSteps_;
-        
+
         forAll(rhoNMean_, cell)
         {
             if(rhoNMean_[cell] > VSMALL)
             {
                 scalar V = mesh_.cellVolumes()[cell];
-                
+
                 dsmcRhoN_[cell] = rhoNMean_[cell]/(nAvTimeSteps);
-        
+
                 rhoN_[cell] = (rhoNMean_[cell]*cloud_.nParticle())/(nAvTimeSteps*V);
-        
+
                 rhoM_[cell] = (rhoMMean_[cell]*cloud_.nParticle())/(nAvTimeSteps*V);
-                
+
                 scalar rhoMMean = rhoMMean_[cell]*cloud_.nParticle()/(V*nAvTimeSteps);
                 UMean_[cell] = momentumMean_[cell]*cloud_.nParticle() / (rhoMMean*V*nAvTimeSteps);
-                scalar linearKEMean = 0.5*linearKEMean_[cell]*cloud_.nParticle() 
+                scalar linearKEMean = 0.5*linearKEMean_[cell]*cloud_.nParticle()
                                         / (V*nAvTimeSteps);
                 scalar rhoNMean = rhoNMean_[cell]*cloud_.nParticle()/(V*nAvTimeSteps);
 
                 translationalT_[cell] = 2.0/(3.0*physicoChemical::k.value()*rhoNMean)
                                 *(linearKEMean - 0.5*rhoMMean*(UMean_[cell] & UMean_[cell]));
-                                
+
                 p_[cell] = rhoN_[cell]*physicoChemical::k.value()*translationalT_[cell];
             }
             else
@@ -937,7 +937,7 @@ void dsmcVolFields2::calculateField()
                 rhoN_[cell] = 0.0;
                 rhoM_[cell] = 0.0;
                 UMean_[cell] = vector::zero;
-                translationalT_[cell] = 0.0;           
+                translationalT_[cell] = 0.0;
                 p_[cell] = 0.0;
             }
 
@@ -952,28 +952,28 @@ void dsmcVolFields2::calculateField()
             {
                 rotationalT_[cell] = 0.0;
             }
-        
+
             scalarField vibT(mesh_.nCells(), scalar(0.0));
             scalarField vibTForOverallT(mesh_.nCells(), scalar(0.0));
-            
+
             forAll(vibrationalETotal_, iD)
             {
                 if(vibrationalETotal_[iD][cell] > VSMALL && nParcels_[iD][cell] > VSMALL)
-                {        
+                {
                     scalar thetaV = cloud_.constProps(typeIds_[iD]).thetaV();
-                    
+
                     scalar vibrationalEMean = (vibrationalETotal_[iD][cell]/nParcels_[iD][cell]);
-                    
+
                     scalar iMean = vibrationalEMean/(physicoChemical::k.value()*thetaV);
-                    
+
                     vibT_[iD][cell] = thetaV / log(1.0 + (1.0/iMean));
-                    
+
                     scalar fraction = nParcels_[iD][cell]/rhoNMeanInt_[cell];
-                    
+
                     vibT[cell] += vibT_[iD][cell]*fraction;
-                    
+
                     vDof_[iD][cell] = fraction*(2.0*thetaV/vibT_[iD][cell]) / (exp(thetaV/vibT_[iD][cell]) - 1.0);
-                    
+
                     totalvDof_[cell] += vDof_[iD][cell];
                 }
             }
@@ -981,19 +981,19 @@ void dsmcVolFields2::calculateField()
             vibrationalT_[cell] = vibT[cell];
 
             scalar nRotDof = 0.0;
-            
+
             if(rhoNMean_[cell] > VSMALL)
             {
                 nRotDof = rotationalDofMean_[cell] / rhoNMean_[cell];
             }
-            
-            overallT_[cell] = ( 
-                                    (3.0*translationalT_[cell]) 
-                                    + (nRotDof*rotationalT_[cell]) 
+
+            overallT_[cell] = (
+                                    (3.0*translationalT_[cell])
+                                    + (nRotDof*rotationalT_[cell])
                                     + (totalvDof_[cell]*vibrationalT_[cell])
                                 ) /
                                 (3.0 + nRotDof + totalvDof_[cell]);
-                                
+
             if(rhoNMean_[cell] > VSMALL)
             {
                 pressureTensor_[cell].xx() = rhoN_[cell]*( muu_[cell]/(rhoNMean_[cell]) - ((rhoMMean_[cell]/(rhoNMean_[cell]))*UMean_[cell].x()*UMean_[cell].x()) );
@@ -1005,14 +1005,14 @@ void dsmcVolFields2::calculateField()
                 pressureTensor_[cell].zx() = pressureTensor_[cell].xz();
                 pressureTensor_[cell].zy() = pressureTensor_[cell].yz();
                 pressureTensor_[cell].zz() = rhoN_[cell]*(mww_[cell]/(rhoNMean_[cell]) - ((rhoMMean_[cell]/(rhoNMean_[cell]))*UMean_[cell].z()*UMean_[cell].z()));
-                
+
                 scalar scalarPressure = (1.0/3.0)*(pressureTensor_[cell].xx() + pressureTensor_[cell].yy() + pressureTensor_[cell].zz());
-                
+
                 shearStressTensor_[cell] = -pressureTensor_[cell];
                 shearStressTensor_[cell].xx() += scalarPressure;
                 shearStressTensor_[cell].yy() += scalarPressure;
                 shearStressTensor_[cell].zz() += scalarPressure;
-                
+
                 heatFluxVector_[cell].x() = rhoN_[cell]*(
                                         0.5*(mccu_[cell]/(rhoNMean_[cell]))
                                         - 0.5*(mcc_[cell]/(rhoNMean_[cell]))*UMean_[cell].x()
@@ -1022,9 +1022,9 @@ void dsmcVolFields2::calculateField()
                                         - pressureTensor_[cell].xx()*UMean_[cell].x()
                                         - pressureTensor_[cell].xy()*UMean_[cell].y()
                                         - pressureTensor_[cell].xz()*UMean_[cell].z();
-                                        
+
                 //terms involving pressure tensor should not be multiplied by the number density (see Bird corrigendum)
-                                        
+
                 heatFluxVector_[cell].y() = rhoN_[cell]*(
                                         0.5*(mccv_[cell]/(rhoNMean_[cell]))
                                         - 0.5*(mcc_[cell]/(rhoNMean_[cell]))*UMean_[cell].y()
@@ -1034,7 +1034,7 @@ void dsmcVolFields2::calculateField()
                                         - pressureTensor_[cell].yx()*UMean_[cell].x()
                                         - pressureTensor_[cell].yy()*UMean_[cell].y()
                                         - pressureTensor_[cell].yz()*UMean_[cell].z();
-                                        
+
                 heatFluxVector_[cell].z() = rhoN_[cell]*(
                                         0.5*(mccw_[cell]/(rhoNMean_[cell]))
                                         - 0.5*(mcc_[cell]/(rhoNMean_[cell]))*UMean_[cell].z()
@@ -1053,13 +1053,13 @@ void dsmcVolFields2::calculateField()
             }
 
             totalvDof_ = scalar(0.0);
-            
+
             scalarField molarconstantPressureSpecificHeat(mesh_.nCells(), scalar(0.0));
             scalarField molarconstantVolumeSpecificHeat(mesh_.nCells(), scalar(0.0));
             scalarField molecularMass(mesh_.nCells(), scalar(0.0));
             scalarField particleConstantVolumeSpecificHeat(mesh_.nCells(), scalar(0.0));
-            
-            forAll(nParcels_, iD)  
+
+            forAll(nParcels_, iD)
             {
                 const label& typeId = typeIds_[iD];
 
@@ -1070,28 +1070,28 @@ void dsmcVolFields2::calculateField()
                     molarconstantVolumeSpecificHeat[cell] += (3.0 + cloud_.constProps(typeId).rotationalDegreesOfFreedom())*(nParcels_[iD][cell]/rhoNMean_[cell]);
                 }
             }
-            
+
             particleConstantVolumeSpecificHeat[cell] = molarconstantVolumeSpecificHeat[cell]/6.02214129e23;
 
             scalar gasConstant = 0.0;
             scalar gamma = 0.0;
             scalar speedOfSound = 0.0;
-            
+
             if(molecularMass[cell] > VSMALL)
             {
                 gasConstant = physicoChemical::k.value()/molecularMass[cell]; // R = k/m
             }
-            
+
             if(molarconstantVolumeSpecificHeat[cell] > VSMALL)
             {
                 gamma = molarconstantPressureSpecificHeat[cell]/molarconstantVolumeSpecificHeat[cell]; // gamma = cP/cV
             }
-            
+
             if(gamma > VSMALL && gasConstant > VSMALL && translationalT_[cell] > VSMALL)
             {
                 speedOfSound = sqrt(gamma*gasConstant*translationalT_[cell]);
             }
-            
+
             if(speedOfSound > VSMALL)
             {
                 Ma_[cell] = mag(UMean_[cell])/speedOfSound;
@@ -1100,32 +1100,32 @@ void dsmcVolFields2::calculateField()
             {
                 Ma_[cell] = 0.0;
             }
-            
+
             if(measureMeanFreePath_)
             {
                 forAll(mfp_, iD)
                 {
                     label qspec = 0;
-                    
+
                     for (qspec=0; qspec<typeIds_.size(); qspec++)
                     {
                         scalar dPQ = 0.5*(cloud_.constProps(typeIds_[iD]).d() + cloud_.constProps(typeIds_[qspec]).d());
                         scalar omegaPQ = 0.5*(cloud_.constProps(typeIds_[iD]).omega() + cloud_.constProps(typeIds_[qspec]).omega());
                         scalar massRatio = cloud_.constProps(typeIds_[iD]).mass()/cloud_.constProps(typeIds_[qspec]).mass();
-                        
+
                         if(nParcels_[qspec][cell] > VSMALL && translationalT_[cell] > VSMALL)
                         {
                             scalar nDensQ = (cloud_.nParticle()*nParcels_[qspec][cell])/(mesh_.cellVolumes()[cell]*nTimeSteps_);
                             scalar reducedMass = (cloud_.constProps(typeIds_[iD]).mass()*cloud_.constProps(typeIds_[qspec]).mass())
                                                 / (cloud_.constProps(typeIds_[iD]).mass()+cloud_.constProps(typeIds_[qspec]).mass());
-                            
+
                             mfp_[iD][cell] += (pi*dPQ*dPQ*nDensQ*pow(mfpReferenceTemperature_/translationalT_[cell],omegaPQ-0.5)*sqrt(1.0+massRatio)); //Bird, eq (4.76)
-                            
+
                             mcr_[iD][cell] += (2.0*sqrt(pi)*dPQ*dPQ*nDensQ*pow(translationalT_[cell]/mfpReferenceTemperature_,1.0-omegaPQ)
                                                 *sqrt(2.0*physicoChemical::k.value()*mfpReferenceTemperature_/reducedMass)); // Bird, eq (4.74)
                         }
                     }
-                    
+
                     if(mfp_[iD][cell] > VSMALL)
                     {
                         mfp_[iD][cell] = 1.0/mfp_[iD][cell];
@@ -1137,15 +1137,15 @@ void dsmcVolFields2::calculateField()
                 meanCollisionRate_[cell] = 0.0;
                 meanCollisionTime_[cell] = 0.0;
                 meanCollisionTimeTimeStepRatio_[cell] = 0.0;
-                
+
                 forAll(mfp_, iD)
                 {
                     if(rhoN_[cell] > VSMALL)
-                    {                    
+                    {
                         scalar nDensP = (cloud_.nParticle()*nParcels_[iD][cell])/(mesh_.cellVolumes()[cell]*nTimeSteps_);
-                        
+
                         meanFreePath_[cell] += mfp_[iD][cell]*nDensP/rhoN_[cell]; //Bird, eq (4.77)
-                        
+
                         meanCollisionRate_[cell] += mcr_[iD][cell]*nDensP/rhoN_[cell]; //Bird, eq (1.38)
                     }
                 }
@@ -1154,7 +1154,7 @@ void dsmcVolFields2::calculateField()
                 {
                     meanFreePath_[cell] = GREAT;
                 }
- 
+
                 const scalar deltaT = mesh_.time().deltaTValue();
 
                 if(meanCollisionRate_[cell] > VSMALL)
@@ -1167,7 +1167,7 @@ void dsmcVolFields2::calculateField()
                     meanCollisionTime_[cell] = GREAT;
                     meanCollisionTimeTimeStepRatio_[cell] = GREAT;
                 }
-            
+
                 forAll(mfp_, iD)
                 {
                     mfp_[iD] = scalar(0.0);
@@ -1183,19 +1183,19 @@ void dsmcVolFields2::calculateField()
                 {
                     pLocal[pointi] = mesh_.points()[pLabels[pointi]];
                 }
-                
+
                 scalarField dimension;
-                
+
                 dimension.setSize(3, 0.0);
 
                 dimension[0] = Foam::max(pLocal & vector(1,0,0)) - Foam::min(pLocal & vector(1,0,0));
                 dimension[1] = Foam::max(pLocal & vector(0,1,0)) - Foam::min(pLocal & vector(0,1,0));
                 dimension[2] = Foam::max(pLocal & vector(0,0,1)) - Foam::min(pLocal & vector(0,0,1));
-                
+
                 largestCellDimension = dimension[0];
-                
+
                 label dim = 0;
-                
+
                 for (dim=0; dim<dimension.size(); dim++)
                 {
                     if(dimension[dim] > largestCellDimension)
@@ -1203,12 +1203,12 @@ void dsmcVolFields2::calculateField()
                         largestCellDimension = dimension[dim];
                     }
                 }
-                
+
                 mfpCellRatio_[cell] = meanFreePath_[cell]/largestCellDimension;
             }
-            
+
             if(measureClassifications_)
-            {            
+            {
                 if(rhoNMean_[cell] > VSMALL)
                 {
                     classIDistribution_[cell] = nClassI_[cell]/rhoNMean_[cell];
@@ -1216,7 +1216,7 @@ void dsmcVolFields2::calculateField()
                     classIIIDistribution_[cell] = nClassIII_[cell]/rhoNMean_[cell];
                 }
             }
-            
+
             if(measureErrors_)
             {
                 if(dsmcRhoN_[cell] > VSMALL && gamma > VSMALL && Ma_[cell] > VSMALL && particleConstantVolumeSpecificHeat[cell] > VSMALL)
@@ -1227,14 +1227,14 @@ void dsmcVolFields2::calculateField()
                         *sqrt(physicoChemical::k.value()/particleConstantVolumeSpecificHeat[cell]);
                     pressureError_[cell] = sqrt(gamma)/sqrt(dsmcRhoN_[cell]*nTimeSteps_);
                 }
-                
+
             }
         }
-        
+
         forAll(boundaryCells_, j)
         {
             const polyPatch& patch = mesh_.boundaryMesh()[j];
-            
+
             if(isA<polyPatch>(patch))
             {
                 if(!isA<emptyPolyPatch>(patch))
@@ -1242,7 +1242,7 @@ void dsmcVolFields2::calculateField()
                     if(!isA<cyclicPolyPatch>(patch))
                     {
                         forAll(boundaryCells_[j], k)
-                        {       
+                        {
                             translationalT_.boundaryFieldRef()[j][k] = translationalT_[boundaryCells_[j][k]];
                             rotationalT_.boundaryFieldRef()[j][k] = rotationalT_[boundaryCells_[j][k]];
                             vibrationalT_.boundaryFieldRef()[j][k] = vibrationalT_[boundaryCells_[j][k]];
@@ -1309,7 +1309,7 @@ void dsmcVolFields2::calculateField()
 //                 }
 //             }
         }
-        
+
         if(measureMeanFreePath_)
         {
             meanFreePath_.write();
@@ -1318,14 +1318,14 @@ void dsmcVolFields2::calculateField()
             meanCollisionTime_.write();
             meanCollisionTimeTimeStepRatio_.write();
         }
-        
+
         if(measureClassifications_)
         {
             classIDistribution_.write();
             classIIDistribution_.write();
             classIIIDistribution_.write();
         }
-        
+
         if(measureErrors_)
         {
             densityError_.write();
@@ -1333,14 +1333,14 @@ void dsmcVolFields2::calculateField()
             temperatureError_.write();
             pressureError_.write();
         }
-        
+
         dsmcRhoN_.boundaryFieldRef() = dsmcRhoN_.boundaryField().boundaryInternalField();
-        
+
         // computing boundary measurements
         forAll(rhoNBF_, j)
         {
             const polyPatch& patch = mesh_.boundaryMesh()[j];
-            
+
             if(isA<wallPolyPatch>(patch))
             {
                 forAll(rhoN_.boundaryField()[j], k)
@@ -1350,33 +1350,33 @@ void dsmcVolFields2::calculateField()
                 }
             }
         }
-        
+
 //        rhoN_.correctBoundaryConditions();
 //        rhoM_.correctBoundaryConditions();
-        
+
         List<scalarField> vibTBF(mesh_.boundaryMesh().size());
         List<scalarField> molecularMass(mesh_.boundaryMesh().size());
         List<scalarField> molarconstantPressureSpecificHeat(mesh_.boundaryMesh().size());
         List<scalarField> molarconstantVolumeSpecificHeat(mesh_.boundaryMesh().size());
         List<scalarField> particleConstantVolumeSpecificHeat(mesh_.boundaryMesh().size());
 
-        
+
         forAll(vibTBF, j)
         {
             const polyPatch& patch = mesh_.boundaryMesh()[j];
-            
+
             vibTBF[j].setSize(patch.size(), 0.0);
             molecularMass[j].setSize(patch.size(), 0.0);
             molarconstantPressureSpecificHeat[j].setSize(patch.size(), 0.0);
             molarconstantVolumeSpecificHeat[j].setSize(patch.size(), 0.0);
             particleConstantVolumeSpecificHeat[j].setSize(patch.size(), 0.0);
         }
-        
+
         // computing boundary measurements
         forAll(rhoNBF_, j)
         {
             const polyPatch& patch = mesh_.boundaryMesh()[j];
-            
+
             if(isA<wallPolyPatch>(patch))
             {
                 forAll(rhoN_.boundaryField()[j], k)
@@ -1395,7 +1395,7 @@ void dsmcVolFields2::calculateField()
                     scalar rhoMMean = rhoMBF_[j][k]*cloud_.nParticle()/nAvTimeSteps;
                     scalar linearKEMean = linearKEBF_[j][k]*cloud_.nParticle()/nAvTimeSteps;
                     scalar rhoNMean = rhoNBF_[j][k]*cloud_.nParticle()/nAvTimeSteps;
-                    
+
                     if(rhoNMean > VSMALL)
                     {
                         translationalT_.boundaryFieldRef()[j][k] = 2.0/(3.0*physicoChemical::k.value()*rhoNMean)
@@ -1405,7 +1405,7 @@ void dsmcVolFields2::calculateField()
                     {
                         translationalT_.boundaryFieldRef()[j][k] = 0.0;
                     }
-                    
+
                     if(rotationalDofBF_[j][k] > VSMALL)
                     {
                         rotationalT_.boundaryFieldRef()[j][k] = (2.0/physicoChemical::k.value())*(rotationalEBF_[j][k]/rotationalDofBF_[j][k]);
@@ -1414,19 +1414,19 @@ void dsmcVolFields2::calculateField()
                     {
                         rotationalT_.boundaryFieldRef()[j][k] = 0.0;
                     }
-                    
+
                     /**************************************************************************************************************/
-                    
+
                     forAll(vibrationalEBF_, i)
                     {
                         if(rhoNBF_[j][k] > VSMALL)
                         {
                             molecularMass[j][k] +=  cloud_.constProps(typeIds_[i]).mass()
                                         *(speciesRhoNBF_[i][j][k]/rhoNBF_[j][k]);
-                                        
+
                             molarconstantPressureSpecificHeat[j][k] += (5.0 + cloud_.constProps(typeIds_[i]).rotationalDegreesOfFreedom())
                                         *(speciesRhoNBF_[i][j][k]/rhoNBF_[j][k]);
-                                        
+
                             molarconstantVolumeSpecificHeat[j][k] += (3.0 + cloud_.constProps(typeIds_[i]).rotationalDegreesOfFreedom())
                                         *(speciesRhoNBF_[i][j][k]/rhoNBF_[j][k]);
                         }
@@ -1438,9 +1438,9 @@ void dsmcVolFields2::calculateField()
                             scalar vibrationalEMean = (vibrationalEBF_[i][j][k]/speciesRhoNBF_[i][j][k]);
 
                             scalar iMean = vibrationalEMean/(physicoChemical::k.value()*thetaV);
-                            
+
                             vibTBF_[i][j][k] = thetaV / log(1.0 + (1.0/iMean));
-                            
+
                             scalar fraction = speciesRhoNBF_[i][j][k]/speciesRhoNIntBF_[j][k];
 
                             vDofBF_[i][j][k] = fraction*(2.0*thetaV/vibTBF_[i][j][k]) / (exp(thetaV/vibTBF_[i][j][k]) - 1.0);
@@ -1450,7 +1450,7 @@ void dsmcVolFields2::calculateField()
                         }
 
                     }
-                    
+
                     if(totalvDofBF_[j][k] > VSMALL)
                     {
                         vibrationalT_.boundaryFieldRef()[j][k] = vibTBF[j][k];
@@ -1459,46 +1459,46 @@ void dsmcVolFields2::calculateField()
                     {
                         vibrationalT_.boundaryFieldRef()[j][k] = 0.0;
                     }
-                    
+
                     scalar nRotDof = 0.0;
-                    
+
                     if(rhoNBF_[j][k] > VSMALL)
                     {
                         nRotDof = rotationalDofBF_[j][k] / rhoNBF_[j][k];
                     }
-                    
-                    overallT_.boundaryFieldRef()[j][k] = ( 
-                                            (3.0*translationalT_.boundaryField()[j][k]) 
-                                            + (nRotDof*rotationalT_.boundaryField()[j][k]) 
+
+                    overallT_.boundaryFieldRef()[j][k] = (
+                                            (3.0*translationalT_.boundaryField()[j][k])
+                                            + (nRotDof*rotationalT_.boundaryField()[j][k])
                                             + (totalvDofBF_[j][k]*vibrationalT_.boundaryField()[j][k])
                                         ) /
                                         (3.0 + nRotDof + totalvDofBF_[j][k]);
-                                        
+
                     totalvDofBF_[j] = scalar(0.0);
-                    
+
                     /**************************************************************************************************************/
-                    
+
                     particleConstantVolumeSpecificHeat[j][k] = molarconstantVolumeSpecificHeat[j][k]/6.02214129e23;
-                    
+
                     scalar gasConstant = 0.0;
                     scalar gamma = 0.0;
                     scalar speedOfSound = 0.0;
-                    
+
                     if(molecularMass[j][k] > VSMALL)
                     {
                         gasConstant = physicoChemical::k.value()/molecularMass[j][k]; // R = k/m
                     }
-                    
+
                     if(molarconstantVolumeSpecificHeat[j][k] > VSMALL)
                     {
                         gamma = molarconstantPressureSpecificHeat[j][k]/molarconstantVolumeSpecificHeat[j][k]; // gamma = cP/cV
                     }
-                    
+
                     if(gamma > VSMALL && gasConstant > VSMALL && translationalT_.boundaryField()[j][k] > VSMALL)
                     {
                         speedOfSound = sqrt(gamma*gasConstant*translationalT_.boundaryField()[j][k]);
                     }
-                    
+
                     if(speedOfSound > VSMALL)
                     {
                         Ma_.boundaryFieldRef()[j][k] = mag(UMean_.boundaryField()[j][k])/speedOfSound;
@@ -1507,11 +1507,11 @@ void dsmcVolFields2::calculateField()
                     {
                         Ma_.boundaryFieldRef()[j][k] = 0.0;
                     }
-                    
+
                     q_.boundaryFieldRef()[j][k] = qBF_[j][k]/nAvTimeSteps;
-                    
+
                     fD_.boundaryFieldRef()[j][k] = fDBF_[j][k]/nAvTimeSteps;
-                    
+
                     const fvMesh& mesh = fD_.mesh();
 
                     forAll(mesh.boundaryMesh(), i)
@@ -1547,7 +1547,7 @@ void dsmcVolFields2::calculateField()
                             vectorField t2 = (patch.faceAreas()/mag(patch.faceAreas()))^t1;
                             t2 /= mag(t2);
 
-                            
+
                             tau_.boundaryFieldRef()[i] = sqrt(
                                 sqr(fD_.boundaryField()[i] & t1)
                                 + sqr(fD_.boundaryField()[i] & t2));
@@ -1556,7 +1556,7 @@ void dsmcVolFields2::calculateField()
                 }
             }
         }
-        
+
 //         UMean_.correctBoundaryConditions();
 //         translationalT_.correctBoundaryConditions();
 //         rotationalT_.correctBoundaryConditions();
@@ -1567,12 +1567,12 @@ void dsmcVolFields2::calculateField()
 //         q_.correctBoundaryConditions();
 //         fD_.correctBoundaryConditions();
 //         tau_.correctBoundaryConditions();
-        
+
         //- reset
         if(time_.resetFieldsAtOutput())
         {
             nTimeSteps_ = 0.0;
-            
+
             forAll(rhoNMean_, c)
             {
                 rhoNMean_[c] = scalar(0.0);
@@ -1600,7 +1600,7 @@ void dsmcVolFields2::calculateField()
                 ew_[c] = scalar(0.0);
                 e_[c] = scalar(0.0);
             }
-            
+
             forAll(vibrationalETotal_, iD)
             {
                 forAll(vibrationalETotal_[iD], cell)
@@ -1609,9 +1609,9 @@ void dsmcVolFields2::calculateField()
                     nParcels_[iD][cell] = 0.0;
                 }
             }
-            
+
             // reset boundary information
-            
+
             forAll(rhoNBF_, j)
             {
                 rhoNBF_[j] = 0.0;
@@ -1624,17 +1624,17 @@ void dsmcVolFields2::calculateField()
                 fDBF_[j] = vector::zero;
                 momentumBF_[j] = vector::zero;
             }
-            
+
             forAll(speciesRhoNBF_, i)
             {
                 forAll(speciesRhoNBF_[i], j)
-                { 
+                {
                     speciesRhoNBF_[i][j] = 0.0;
                     vibrationalEBF_[i][j] = 0.0;
                 }
-            }           
+            }
         }
-        
+
         if(averagingAcrossManyRuns_)
         {
             writeOut();

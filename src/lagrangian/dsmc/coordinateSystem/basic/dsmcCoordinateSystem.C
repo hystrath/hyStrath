@@ -35,8 +35,8 @@ Description
 namespace Foam
 {
 
-// * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //  
-  
+// * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
+
     defineTypeNameAndDebug(dsmcCoordinateSystem, 0);
     defineRunTimeSelectionTable(dsmcCoordinateSystem, fvMesh);
 }
@@ -61,7 +61,7 @@ Foam::dsmcCoordinateSystem::dsmcCoordinateSystem
     timeStepModel_(dsmcTimeStepModel::New(t, mesh, cloud))
 {
     dtModel().initialisenParticles(nParticlesOrg_);
-    
+
     dtModel().checkTimeStepModelInputs();
 }
 
@@ -82,8 +82,8 @@ Foam::dsmcCoordinateSystem::New
           "coordinateSystem",
           "dsmcCartesian"
       );
-    
-    Info<< "Selecting the coordinate system model:" << tab << coordSystem 
+
+    Info<< "Selecting the coordinate system model:" << tab << coordSystem
         << "\n" << endl;
 
     fvMeshConstructorTable::iterator cstrIter =
@@ -120,17 +120,17 @@ Foam::scalar Foam::dsmcCoordinateSystem::recalculatepRWF
     const label faceI
 ) const
 {
-    return 1.0;    
+    return 1.0;
 }
 
 
 Foam::scalar Foam::dsmcCoordinateSystem::recalculateRWF
 (
-    const label cellI, 
+    const label cellI,
     const bool mixedRWMethod
 ) const
 {
-    return 1.0;    
+    return 1.0;
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

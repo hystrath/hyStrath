@@ -27,10 +27,10 @@ Class
 
 Description
 
-	Stores all the information for the pdControllers models defined within 
+	Stores all the information for the pdControllers models defined within
     the pdControllersDict, and selects & builds the models automatically.
 
-    
+
 
 \*---------------------------------------------------------------------------*/
 
@@ -88,12 +88,12 @@ class pdControllers
         List<fileName> fCFixedPathNames_;
 		List< autoPtr<pdFluxController> > fluxControllers_;
 
-        
+
 public:
 
     // Constructors
 
-        //- Null Constructor 
+        //- Null Constructor
         pdControllers
         (
             Time& t,
@@ -119,7 +119,7 @@ public:
         //- update time information
         void updateTimeInfo();
 
-        //- different control stages 
+        //- different control stages
         void controlBeforeMove();
         void controlBeforeCollisions();
         void controlAfterCollisions();
@@ -129,7 +129,7 @@ public:
 
         //- output controller properties
         void outputResults();
-        
+
         // Access
 
             const label& nStateControllers() const;
@@ -140,8 +140,8 @@ public:
             inline List< autoPtr<pdFluxController> >& fluxControllers();
             inline const List< autoPtr<pdFluxController> >& fluxControllers() const;
 
-            inline const List<word>& stateControllersNames() const; 
-    
+            inline const List<word>& stateControllersNames() const;
+
 };
 
 

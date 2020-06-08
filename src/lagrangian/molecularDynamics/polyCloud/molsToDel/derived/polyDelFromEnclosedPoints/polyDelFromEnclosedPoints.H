@@ -26,7 +26,7 @@ Class
     polyDelFromEnclosedPoints
 
 Description
-    Apply 2D points 
+    Apply 2D points
 
 SourceFiles
     polyDelFromEnclosedPointsI.H
@@ -65,48 +65,48 @@ private:
 
         //- subDictionary containing the properties
         dictionary propsDict_;
-        
+
         boundBox box_;
-        
+
         List<label> molIds_;
 
         bool deleteExternalMols_;
-        
+
         List<vector> points_;
-        
+
         vector normal_;
-        
+
         vector centre_;
-        
+
         bool rotate_;
-        
+
         // radians
         scalar theta_;
-        
-        
+
+
         word option_;
-        
-        
+
+
         List<vector> centreLine_;
-        
+
         // outer list = size of points_;
         // inner list = 3 neighbours
         // inner list = centreLine_;
         List<List<vector> > c_;
-        
-        
-        
+
+
+
         // local search
 //         bool local_;
 //         scalar radius_;
-        
-        
+
+
     // Private Member Functions
 
         void findMolsToDel();
-        
+
         bool isPointWithinRegion(const vector& rI);
-        
+
         bool isPointWithinTriangle
         (
             const vector& centre,
@@ -114,8 +114,8 @@ private:
             const vector& r2,
             const vector& rI
         );
-        
-        
+
+
 public:
 
     //- Runtime type information
@@ -137,7 +137,7 @@ public:
 
     // Member Functions
 
- 
+
 };
 
 

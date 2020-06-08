@@ -67,7 +67,7 @@ decoupledTimeData::decoupledTimeData
 {}
 
 
-//- Construct from Time and timeDict 
+//- Construct from Time and timeDict
 decoupledTimeData::decoupledTimeData
 (
     Time& continuumTime,
@@ -121,11 +121,11 @@ decoupledTimeData::decoupledTimeData
         continuumSolution_ = false;
         molecularSolution_ = true;
     }
-    else 
+    else
     {
         FatalErrorIn("decoupledTimeData::decoupledTimeData()")
-            << "Coupling options available: sequential" 
-            << nl << " in : " 
+            << "Coupling options available: sequential"
+            << nl << " in : "
             << continuumTime_.systemPath()/"couplingDict"
             << exit(FatalError);
     }
@@ -137,59 +137,59 @@ decoupledTimeData::decoupledTimeData
 //         molecularSwitch_ = false;
 //         continuumSolution_ = true;
 //         molecularSolution_ = false;
-// 
+//
 //         scalar molecularOnInterval = readScalar(couplingTimeDict_.lookup("molecularOnInterval"));
-// 
+//
 //         if(molecularOnInterval > couplingTimeInterval_)
 //         {
 //             FatalErrorIn("decoupledTimeData::decoupledTimeData()")
-//                 << "molecularOnInterval: " <<  molecularOnInterval 
+//                 << "molecularOnInterval: " <<  molecularOnInterval
 //                 << "should be less than couplingTimeInterval: " << couplingTimeInterval_
 //                 << nl << continuumTime_.systemPath()/"couplingDict"
 //                 << exit(FatalError);
 //         }
-// 
+//
 //         if(molecularOnInterval <= 0.0)
 //         {
 //             FatalErrorIn("decoupledTimeData::decoupledTimeData()")
-//                 << "molecularOnInterval: " <<  molecularOnInterval 
+//                 << "molecularOnInterval: " <<  molecularOnInterval
 //                 << "should be greater than 0. "
 //                 << nl << continuumTime_.systemPath()/"couplingDict"
 //                 << exit(FatalError);
 //         }
-// 
+//
 //         scalar molecularOffInterval = couplingTimeInterval_ - molecularOnInterval;
-// 
+//
 //         if(molecularOffInterval == 0.0)
 //         {
 //             molecularSwitch_ = true;
 //             decoupledScheme_ = false;
 //             couplingOption_ = "sequential";
-// 
+//
 //             Info << " changing coupling option from: decoupled to: sequential" << endl;
 //         }
-// 
+//
 //         label nStepsOn = label(molecularOnInterval/deltaTMD);
-// 
+//
 //         molecularTimeOn_.deltaT() = scalar(nStepsOn)*deltaTMD;
 //         molecularTimeOn_.nSteps() = nStepsOn;
-// 
+//
 //         label nStepsOff = label(molecularOffInterval/deltaTMD);
-// 
+//
 //         molecularTimeOff_.deltaT() = scalar(nStepsOff)*deltaTMD;
 //         molecularTimeOff_.nSteps() = nStepsOff;
 //     }
-//     else 
+//     else
 //     {
 //         FatalErrorIn("decoupledTimeData::decoupledTimeData()")
-//             << "Coupling options available: sequential or sequential in " 
+//             << "Coupling options available: sequential or sequential in "
 //             << nl << continuumTime_.systemPath()/"couplingDict"
 //             << exit(FatalError);
 //     }
 
     //- write interval
 //     scalar molecularWriteInterval = readScalar(molecularTime_.controlDict().lookup("writeInterval"));
-// 
+//
 //     if(molecularWriteInterval != writeInterval_)
 //     {
 //         FatalErrorIn("decoupledTimeData::decoupledTimeData()")
@@ -211,7 +211,7 @@ decoupledTimeData::decoupledTimeData
 
 
 
-    //- Checking for consistency -- ensuring that both molecular and continuum time-lines 
+    //- Checking for consistency -- ensuring that both molecular and continuum time-lines
     // end at the same time.
 
 
@@ -231,11 +231,11 @@ decoupledTimeData::decoupledTimeData
 
         FatalErrorIn("decoupledTimeData::decoupledTimeData()")
             << "Inconsistency in time-scheme. "
-            << "The total number of coupling steps between the continuum: " 
-            << nCouplingStepsCont << ", and the molecular: " 
+            << "The total number of coupling steps between the continuum: "
+            << nCouplingStepsCont << ", and the molecular: "
             << nCouplingStepsMol << ", should be equal."
             << " Check start/end times, and coupling time-intervals. "
-            << " Example: change molecular end-time from " 
+            << " Example: change molecular end-time from "
             << endTimeMol << " to " << endTimeMolMod
             << exit(FatalError);
     }
@@ -246,24 +246,24 @@ decoupledTimeData::decoupledTimeData
 //     {
 //         Info << " molecular-time interval on = " << molecularTimeOn_.deltaT() << endl;
 //         Info << " molecular-time interval off = " << molecularTimeOff_.deltaT() << endl;
-// 
-//         Info << " decoupled ratio = " 
-//              << couplingTimeInterval_/molecularTimeOn_.deltaT() 
+//
+//         Info << " decoupled ratio = "
+//              << couplingTimeInterval_/molecularTimeOn_.deltaT()
 //              << nl << endl;
 //     }
 
-//     scalar continuumError = 
+//     scalar continuumError =
 //     mag
 //     (
 //         scalar(continuumTimeInt_.nSteps()) - (couplingTimeInterval_/deltaTC)
 //     );
-// 
-//     scalar molecularError = 
+//
+//     scalar molecularError =
 //     mag
 //     (
 //         scalar(molecularTimeInt_.nSteps()) - (couplingTimeInterval_/deltaTMD)
 //     );
-// 
+//
 //     if(continuumError > SMALL)
 //     {
 //         FatalErrorIn("decoupledTimeData::decoupledTimeData()")
@@ -272,7 +272,7 @@ decoupledTimeData::decoupledTimeData
 //             << couplingTimeInterval_/deltaTC << nl
 //             << exit(FatalError);
 //     }
-// 
+//
 //     if(molecularError > SMALL)
 //     {
 //         FatalErrorIn("decoupledTimeData::decoupledTimeData()")
@@ -285,9 +285,9 @@ decoupledTimeData::decoupledTimeData
     if(contCouplingTimeInterval_ < deltaTC)
     {
         FatalErrorIn("decoupledTimeData::decoupledTimeData()")
-            << "Choose the continuum coupling time interval: " 
+            << "Choose the continuum coupling time interval: "
             << contCouplingTimeInterval_
-            << " greater or equal to the continuum time-step: " 
+            << " greater or equal to the continuum time-step: "
             << deltaTC
             << nl
             << exit(FatalError);
@@ -296,7 +296,7 @@ decoupledTimeData::decoupledTimeData
     if(molCouplingTimeInterval_ < deltaTMD)
     {
         FatalErrorIn("decoupledTimeData::decoupledTimeData()")
-            << "Choose the molecular coupling time interval" 
+            << "Choose the molecular coupling time interval"
             << " greater or equal to the molecular time-interval."
             << nl
             << exit(FatalError);
@@ -310,11 +310,11 @@ decoupledTimeData::decoupledTimeData
 //             << nl
 //             << exit(FatalError);
 //     }
-// 
+//
 //     if(molCouplingTimeInterval_ > molWriteInterval_)
 //     {
 //         FatalErrorIn("decoupledTimeData::decoupledTimeData()")
-//             << "Choose the molecular coupling time interval" 
+//             << "Choose the molecular coupling time interval"
 //             << " less or equal to the molecular write interval"
 //             << nl
 //             << exit(FatalError);
@@ -411,12 +411,12 @@ const bool& decoupledTimeData::continuumToMolecularBCs() const
 
 const bool& decoupledTimeData::molecularToContinuumBCs() const
 {
-    return molecularToContinuumBCs_;    
+    return molecularToContinuumBCs_;
 }
 
 // const bool& decoupledTimeData::molecularSwitch() const
 // {
-//     return molecularSwitch_;    
+//     return molecularSwitch_;
 // }
 
 
@@ -425,7 +425,7 @@ void decoupledTimeData::solversToRun()
 {
     if(couplingOption_ == "sequential")
     {
-        //-switch solvers 
+        //-switch solvers
 
         if(molecularTimeInt_.endTime())
         {
@@ -435,7 +435,7 @@ void decoupledTimeData::solversToRun()
             //- temporary
             molecularTimeInt_.endTime() = false;
         }
-    
+
         if(continuumTimeInt_.endTime())
         {
             continuumSolution_ = false;
@@ -449,28 +449,28 @@ void decoupledTimeData::solversToRun()
 //     {
 //         if
 //         (
-//             (!molecularTimeInt_.endTime()) && 
+//             (!molecularTimeInt_.endTime()) &&
 //             (continuumTimeInt_.endTime())
 //         )
 //         {
 //             continuumSolution_ = false;
 //             molecularSolution_ = true;
 //         }
-// 
-//         // - just in case 
+//
+//         // - just in case
 //         if
 //         (
-//             (molecularTimeInt_.endTime()) && 
+//             (molecularTimeInt_.endTime()) &&
 //             (!continuumTimeInt_.endTime())
 //         )
 //         {
 //             continuumSolution_ = true;
 //             molecularSolution_ = false;
 //         }
-// 
+//
 //         if
 //         (
-//             (molecularTimeInt_.endTime()) && 
+//             (molecularTimeInt_.endTime()) &&
 //             (continuumTimeInt_.endTime())
 //         )
 //         {
@@ -484,7 +484,7 @@ void decoupledTimeData::solversToRun()
 //                 continuumSolution_ = true;
 //                 molecularSolution_ = true;
 //             }
-// 
+//
 //             continuumTimeInt_.endTime() = false;
 //             molecularTimeInt_.endTime() = false;
 //         }
@@ -505,7 +505,7 @@ void decoupledTimeData::boundaryConditions()
         {
             molecularToContinuumBCs_ = false;
         }
-    
+
         if(continuumTimeInt_.endTime())
         {
             continuumToMolecularBCs_ = true;
@@ -522,7 +522,7 @@ void decoupledTimeData::boundaryConditions()
 //         if
 //         (
 //             (molecularTimeInt_.endTime()) &&
-//             (continuumTimeInt_.endTime()) 
+//             (continuumTimeInt_.endTime())
 //         )
 //         {
 //             molecularToContinuumBCs_ = true;
@@ -534,7 +534,7 @@ void decoupledTimeData::boundaryConditions()
 //             continuumToMolecularBCs_ = false;
 //         }
 //     }
-// 
+//
 //     if(couplingOption_ == "decoupled") // same as a sequential scheme
 //     {
 //         //- boundary conditions tested here
@@ -546,7 +546,7 @@ void decoupledTimeData::boundaryConditions()
 //         {
 //             molecularToContinuumBCs_ = false;
 //         }
-//     
+//
 //         if(continuumTimeInt_.endTime())
 //         {
 //             continuumToMolecularBCs_ = true;

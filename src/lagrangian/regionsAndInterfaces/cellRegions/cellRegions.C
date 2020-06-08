@@ -174,16 +174,16 @@ cellRegions::cellRegions
 // )
 // {
 //     DynamicList<label> regionsCells(regionsCells_);
-// 
+//
 //     forAll(cellsInRegion, c)
 //     {
 //         regionsCells.append(cellsInRegion[c]);
 //     }
-// 
+//
 //     regionsCells_ = regionsCells.shrink();
 // }
 
-// cells remaining within the zone 
+// cells remaining within the zone
 // i.e. cells that are in the zone but not part of the regions
 // void cellRegions::setRemainingCells
 // (
@@ -191,7 +191,7 @@ cellRegions::cellRegions
 // )
 // {
 //     DynamicList<label> newZone(0);
-// 
+//
 //     forAll(remainingCells_, c)
 //     {
 //         if(findIndex(regionCells, remainingCells_[c]) == -1)
@@ -199,7 +199,7 @@ cellRegions::cellRegions
 //             newZone.append(remainingCells_[c]);
 //         }
 //     }
-// 
+//
 //     remainingCells_ = newZone.shrink();
 // }
 

@@ -67,7 +67,7 @@ dsmcRayleighBrillouinBinsMethod::dsmcRayleighBrillouinBinsMethod
     rhoN_(),
     outputField_(4, true),
     averagingAcrossManyRuns_(false)
-    
+
 {
     const cellZoneMesh& cellZones = mesh_.cellZones();
 
@@ -81,7 +81,7 @@ dsmcRayleighBrillouinBinsMethod::dsmcRayleighBrillouinBinsMethod
             << exit(FatalError);
     }
 
-    // standard to reading typeIds ------------ 
+    // standard to reading typeIds ------------
     const List<word> molecules (propsDict_.lookup("typeIds"));
 
     DynamicList<word> moleculesReduced(0);
@@ -116,7 +116,7 @@ dsmcRayleighBrillouinBinsMethod::dsmcRayleighBrillouinBinsMethod
 
         typeIds_[i] = typeId;
     }
-    
+
     // ---------------------------------------------------
 
     // create bin model
@@ -124,25 +124,25 @@ dsmcRayleighBrillouinBinsMethod::dsmcRayleighBrillouinBinsMethod
     (
         binModel::New(mesh, propsDict_)
     );
-    
+
     const label& nBins = binModel_->nBins();
 
     mols_.setSize(nBins, 0.0);
-    
+
     rhoN_.setSize(nBins, 0.0);
-    
+
     if (propsDict_.found("averagingAcrossManyRuns"))
     {
         averagingAcrossManyRuns_ = Switch(propsDict_.lookup("averagingAcrossManyRuns"));
-        
+
         // read in stored data from dictionary
         if(averagingAcrossManyRuns_)
         {
             Info << nl << "Averaging across many runs initiated." << nl << endl;
 
             readIn();
-        }         
-    } 
+        }
+    }
 }
 
 
@@ -167,7 +167,7 @@ void dsmcRayleighBrillouinBinsMethod::readIn()
             IOobject::NO_WRITE,
             false
         )
-    );    
+    );
 
     dict.readIfPresent("mols", mols_);
     dict.readIfPresent("averagingCounter", averagingCounter_);
@@ -190,22 +190,22 @@ void dsmcRayleighBrillouinBinsMethod::writeOut()
                 false
             )
         );
-        
+
         dict.add("mols", mols_);
         dict.add("averagingCounter", averagingCounter_);
-        
+
         IOstream::streamFormat fmt = time_.time().writeFormat();
 
         IOstream::versionNumber ver = time_.time().writeVersion();
 
         IOstream::compressionType cmp = time_.time().writeCompression();
-    
+
         dict.regIOobject::writeObject(fmt, ver, cmp);
     }
 }
 
 void dsmcRayleighBrillouinBinsMethod::createField()
-{  
+{
 }
 
 
@@ -214,22 +214,22 @@ void dsmcRayleighBrillouinBinsMethod::calculateField()
     if(time_.averagingTime())
     {
         averagingCounter_ += 1.0;
-        
+
         const List< DynamicList<dsmcParcel*> >& cellOccupancy
                 = cloud_.cellOccupancy();
-                
+
         const labelList& cells = mesh_.cellZones()[regionId_];
 
         forAll(cells, c)
         {
             const label& cellI = cells[c];
-            
+
             const List<dsmcParcel*>& molsInCell = cellOccupancy[cellI];
 
             forAll(molsInCell, mIC)
             {
                 dsmcParcel* p = molsInCell[mIC];
-                
+
                 label iD = findIndex(typeIds_, p->typeId());
 
                 const vector& rI = p->position();
@@ -244,9 +244,9 @@ void dsmcRayleighBrillouinBinsMethod::calculateField()
                         {
                             const point& cC = cloud_.mesh().cellCentres()[cellI];
                             scalar radius = cC.y();
-                            
+
                             scalar RWF = 1.0 + cloud_.maxRWF()*(radius/cloud_.radialExtent());
-                            
+
                             mols_[n] += cloud_.nParticle()*RWF;
                         }
                         else
@@ -259,7 +259,7 @@ void dsmcRayleighBrillouinBinsMethod::calculateField()
         }
 
         scalarField mols = mols_;
-        
+
         //- parallel communication
 
         if(Pstream::parRun())
@@ -281,10 +281,10 @@ void dsmcRayleighBrillouinBinsMethod::calculateField()
         {
             //- reset fields
             averagingCounter_ = 0.0;
-            
-            mols_ = 0.0;    
+
+            mols_ = 0.0;
         }
-        
+
         if(averagingAcrossManyRuns_)
         {
             writeOut();
@@ -305,7 +305,7 @@ void dsmcRayleighBrillouinBinsMethod::writeField()
 
             // output densities
             if(outputField_[0])
-            {   
+            {
                 writeTimeData
                 (
                     timePath_,
@@ -313,7 +313,7 @@ void dsmcRayleighBrillouinBinsMethod::writeField()
                     bins,
                     rhoN_
                 );
-    
+
                 writeTimeData
                 (
                     timePath_,

@@ -387,7 +387,7 @@ void polyLatticeZone::setInitialConfiguration()
                             globalPosition,
                             cell,
                             tetFace,
-                            tetPt,                         
+                            tetPt,
                             id,
                             tethered,
                             frozen,

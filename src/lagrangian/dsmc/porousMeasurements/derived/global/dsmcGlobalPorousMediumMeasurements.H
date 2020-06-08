@@ -54,49 +54,49 @@ class dsmcGlobalPorousMediumMeasurements
 :
     public porousMeasurements
 {
-    
+
     // Private data
 
         //- Const reference to the mesh
         const fvMesh& mesh_;
-        
+
         //- Reference to the DSMC cloud
         dsmcCloud& cloud_;
-        
+
         //- Indicate the fraction of the dsmcCloud that should be used
         scalar trackingProbability_;
-        
+
         //- Map associating inflow patches with relevant outflow patches
         wordHashSet tracerPatchNamesMap_;
-        
+
         //- Dimensionality of the problem (i.e., 1: 1D, 2: 2D or 3: 3D)
         label dimensionality_;
-        
-        //- Average flow transit time for all tracked parcels recorded 
+
+        //- Average flow transit time for all tracked parcels recorded
         scalar mediumTransitTime_;
-        
+
         //- Average total distance travelled by all tracked parcels recorded
         scalar mediumTotalDistanceTravelled_;
-        
+
         //- Average tortuosity measured from all tracked parcels recorded
         scalar mediumTortuosity_;
-        
+
         //- Number of tracked parcels exiting through wrong patches
         label nLooping_;
-        
+
         //- Time spent by the tracked parcels referred to as 'looping'
         scalar timeLooping_;
-        
+
 
     // Private Member Functions
-    
+
         //- Update the medium properties on a deletion patch
         void updateMediumPropertiesMeasurement
         (
             dsmcParcel& p,
             const label& delPatchId
         );
-        
+
         //- Update the medium properties on a cyclic patch
         void updateMediumPropertiesMeasurement_cyclic
         (
@@ -105,7 +105,7 @@ class dsmcGlobalPorousMediumMeasurements
             const label& orgPatchId,
             const vector& orgPosition
         );
-        
+
         //- Write instantaneous porous measurements info
         void writeGlobalPorousMeasurementsInfo() const;
 
@@ -115,7 +115,7 @@ public:
 
     //- Runtime type information
     TypeName("dsmcGlobalPorousMediumMeasurements");
-    
+
     // Constructors
 
         //- Constructor
@@ -135,37 +135,37 @@ public:
     // Member Functions
 
       // Access
-      
-        
-        
+
+
+
       // Check
-      
+
         //- Check the validity of the porous measurement inputs present in
         //  constant/dsmcProperties and assign inputs to data members if
         //  correct.
         virtual void checkPorousMeasurementsInputs();
-      
-      
+
+
       // Edit
-      
+
         //- Update function
         virtual void update();
-        
+
         //- Effect of a specular interaction on porous medium measurements
         virtual void specularInteraction(dsmcParcel& p, const vector& nw);
-        
+
         //- Effect of a diffuse interaction on porous medium measurements
         virtual void diffuseInteraction(dsmcParcel& p);
-        
+
         //- Effect of a deletion patch on porous medium measurements
         virtual void deletionInteraction(dsmcParcel& p, const label patchId);
-        
+
         //- Tracer selection for porous medium measurements
         virtual void additionInteraction(dsmcParcel& p, const label patchId);
-        
+
 
       // Write
-      
+
         //- Write porous measurements info
         virtual void writePorousMeasurementsInfo() const;
 

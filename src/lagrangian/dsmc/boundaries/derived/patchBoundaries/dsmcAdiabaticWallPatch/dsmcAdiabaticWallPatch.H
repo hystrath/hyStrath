@@ -67,14 +67,14 @@ class dsmcAdiabaticWallPatch
 private:
 
     // Private data
-    
+
         dictionary propsDict_;
-        
-        
+
+
 protected:
 
-    // Protected data     
-    
+    // Protected data
+
         vector incidentMomentum_;
         vector gasVelocity_;
         scalar totalVolume_;
@@ -85,11 +85,11 @@ protected:
         scalar totalMols_;
         scalar cv_;
         scalar mcc_;
-        
-    // Protected member functions    
+
+    // Protected member functions
 
         void setProperties();
-        
+
 
 public:
 
@@ -128,7 +128,7 @@ public:
             const fileName& fixedPathName,
             const fileName& timePath
         );
-        
+
         void writeField();
 
         //- update properties from a modified dictionary

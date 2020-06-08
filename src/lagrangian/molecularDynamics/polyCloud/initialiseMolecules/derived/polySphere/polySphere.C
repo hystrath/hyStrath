@@ -79,9 +79,9 @@ void polySphere::setInitialConfiguration()
     const scalar temperature(readScalar(mdInitialiseDict_.lookup("temperature")));
 
     const vector bulkVelocity(mdInitialiseDict_.lookup("bulkVelocity"));
-    
+
     const vector midPoint(mdInitialiseDict_.lookup("midPoint"));
-    
+
     const scalar radius(readScalar(mdInitialiseDict_.lookup("radius")));
 
     bool frozen = false;
@@ -96,9 +96,9 @@ void polySphere::setInitialConfiguration()
     if (mdInitialiseDict_.found("tethered"))
     {
         tethered = Switch(mdInitialiseDict_.lookup("tethered"));
-    }    
-    
-    const word molIdName(mdInitialiseDict_.lookup("molId")); 
+    }
+
+    const word molIdName(mdInitialiseDict_.lookup("molId"));
     const List<word>& idList(molCloud_.cP().molIds());
 
     label molId = findIndex(idList, molIdName);
@@ -109,22 +109,22 @@ void polySphere::setInitialConfiguration()
             << "Cannot find molecule id: " << molIdName << nl << "in idList."
             << exit(FatalError);
     }
-    
+
     bool hemisphere = false;
     vector hemisphereVector = vector::zero;
-    
-    if (mdInitialiseDict_.found("hemisphereVector"))    
+
+    if (mdInitialiseDict_.found("hemisphereVector"))
     {
         hemisphere = true;
-        hemisphereVector = mdInitialiseDict_.lookup("hemisphereVector");        
-        hemisphereVector /= mag(hemisphereVector);        
+        hemisphereVector = mdInitialiseDict_.lookup("hemisphereVector");
+        hemisphereVector /= mag(hemisphereVector);
     }
-    
 
-    
-    
+
+
+
     scalar numberDensity = 0.0;
-        
+
     if (mdInitialiseDict_.found("massDensity"))
     {
 //         const polyMolecule::constantProperties& cP(molCloud_.constProps(molId));
@@ -159,42 +159,42 @@ void polySphere::setInitialConfiguration()
         (
             mdInitialiseDict_.lookup("massDensitySI")
         );
-        
+
         const reducedUnits& rU =molCloud_.redUnits();
 
         massDensity /= rU.refMassDensity();
-        
+
         numberDensity = massDensity / mass;
-        
+
         Info << " number density in reduced units = " << numberDensity << endl;
-        
+
         if (massDensity < VSMALL)
         {
             FatalErrorIn("Foam::polyMoleculeCloud::initialiseMolecules")
                 << "massDensity too small, not filling zone "
                 << abort(FatalError);
         }
-    }    
-    
+    }
 
-    
+
+
     scalar spacing = pow(  (1.0/numberDensity), (1.0/3.0) );
-    
+
     vector xVector = vector(1, 0, 0);
     vector yVector = vector(0, 1, 0);
-    vector zVector = vector(0, 0, 1);    
+    vector zVector = vector(0, 0, 1);
 
     label nMols = label(2*radius/spacing) + 1;
-    
+
     vector startPoint = midPoint - xVector*radius - yVector*radius - zVector*radius;
-        
+
     vector globalPosition = vector::zero;
-    
-    
+
+
     scalar x;
     scalar y;
     scalar z;
-    
+
     for (label i = 0; i < nMols; i++)
     {
         x = i*spacing;
@@ -207,13 +207,13 @@ void polySphere::setInitialConfiguration()
             {
                 z = k*spacing;
 
-                globalPosition = startPoint 
-                                + xVector*x 
-                                + yVector*y 
+                globalPosition = startPoint
+                                + xVector*x
+                                + yVector*y
                                 + zVector*z;
-                                
+
                 scalar rIM = mag(globalPosition - midPoint);
-                
+
                 if(rIM <= radius)
                 {
                     if(!hemisphere)
@@ -228,7 +228,7 @@ void polySphere::setInitialConfiguration()
                             cell,
                             tetFace,
                             tetPt
-                        );   
+                        );
 
                         if(cell != -1)
                         {
@@ -237,14 +237,14 @@ void polySphere::setInitialConfiguration()
                                 globalPosition,
                                 cell,
                                 tetFace,
-                                tetPt,                             
+                                tetPt,
                                 molId,
                                 tethered,
                                 frozen,
                                 temperature,
                                 bulkVelocity
                             );
-                            
+
     //                         nMolsAdded++
                         }
                     }
@@ -269,16 +269,16 @@ void polySphere::setInitialConfiguration()
                                 globalPosition,
                                 cell,
                                 tetFace,
-                                tetPt,                             
+                                tetPt,
                                 molId,
                                 tethered,
                                 frozen,
                                 temperature,
                                 bulkVelocity
                             );
-                            
+
     //                         nMolsAdded++
-                        }                    
+                        }
                     }
                 }
             }
@@ -296,7 +296,7 @@ void polySphere::setInitialConfiguration()
 
     Info << tab << " molecules added: " << nMolsAdded << endl;
 
- 
+
 }
 
 

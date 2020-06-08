@@ -80,8 +80,8 @@ inline const scalar& collisionDistribution::rMax() const
 // {
 //     return radialDistribution_;
 // }
-// 
-// 
+//
+//
 // inline List< scalar > radialDistribution::radialPosition() const
 // {
 //     return radialPosition_;

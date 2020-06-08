@@ -26,7 +26,7 @@ Class
     Foam::diffusivityModel
 
 Description
-    Diffusivity model for species binary diffusion coefficients 
+    Diffusivity model for species binary diffusion coefficients
 
 SourceFiles
     diffusivityModel.C
@@ -54,16 +54,16 @@ class diffusivityModel
 protected:
 
     // Protected data
-    
+
         //- Transport properties dictionary
         const IOdictionary dictTransport_;
-        
+
         //- Thermo properties dictionary
         const IOdictionary dictThermo_;
 
         //- Pressure [Pa]
         const volScalarField& p_;
-        
+
         //- Electron pressure [Pa]
         const volScalarField& pe_;
 
@@ -73,11 +73,11 @@ protected:
         //- List of species
         wordList species_;
 
-        //- Binary diffusivity models 
-        PtrList<binaryDiffusivityModel> DijModels_;   
+        //- Binary diffusivity models
+        PtrList<binaryDiffusivityModel> DijModels_;
 
         //- Binary diffusion coefficients
-        PtrList<volScalarField> Dij_;  
+        PtrList<volScalarField> Dij_;
 
 
     // Private Member Functions
@@ -105,7 +105,7 @@ public:
             const volScalarField& T,
             const wordList& species
         );
-        
+
         //- Construct from components
         diffusivityModel
         (

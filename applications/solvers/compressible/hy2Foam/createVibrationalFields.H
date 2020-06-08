@@ -89,7 +89,7 @@ volScalarField rhoEv
 );
 
 PtrList<volScalarField> rhoEvk(noSolvedVibEq);
-    
+
 if(downgradeSingleT) // NEW VINCENT 05-16/08/2016
 {
    rhoEvk.clear();
@@ -102,7 +102,7 @@ else if(downgradeSingleTv)
 else
 {
     forAll(rhoEvk, speciei)
-    { 
+    {
         rhoEvk.set
         (
             speciei,
@@ -127,28 +127,28 @@ else
     {
         rhoEv += pD[speciei]*hevk[speciei];
     }
-    
+
     ev = rhoEv/rho;
 }
 
 
 // NEW VINCENT 22/03/2016 *****************************************************
-// TODO ongoing coding concerning multiple vibrational temperatures for 
+// TODO ongoing coding concerning multiple vibrational temperatures for
 // triatomic molecules
-/*PtrList<PtrList<volScalarField> >& hevk_mode = composition.hevel_mode(); 
+/*PtrList<PtrList<volScalarField> >& hevk_mode = composition.hevel_mode();
 
 PtrList<PtrList<volScalarField> > rhoEvk_mode(Y.size());
 forAll (rhoEvk_mode, speciei)
-{ 
+{
   rhoEvk_mode.set
   (
-      speciei, 
+      speciei,
       new PtrList<volScalarField>(composition.noVibrationalTemp(speciei))
   );
-}  
+}
 
 forAll (rhoEvk_mode, speciei)
-{  
+{
   forAll (rhoEvk_mode[speciei], vibMode)
   {
     rhoEvk_mode[speciei].set

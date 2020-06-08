@@ -62,7 +62,7 @@ polyPDB::polyPDB
 //     zone_(false),
     regionName_(),
     regionId_(-1),
-    timeIndex_(0),    
+    timeIndex_(0),
     nSteps_(readLabel(propsDict_.lookup("numberOfOutputSteps"))),
     variableMols_(false),
     nSiteEstimate_(-1),
@@ -82,13 +82,13 @@ polyPDB::polyPDB
     molIds_ = ids.molIds();
 
     option_ = "mesh";
-    
+
     if(propsDict_.found("option"))
     {
         const word option = propsDict_.lookup("option");
         option_ = option;
     }
-    
+
     if(option_ == "zone")
     {
         const word regionName = propsDict_.lookup("zoneName");
@@ -106,7 +106,7 @@ polyPDB::polyPDB
                 << exit(FatalError);
         }
     }
-    
+
     if(option_ == "boundBox")
     {
         PtrList<entry> boxList(propsDict_.lookup("boxes"));
@@ -122,40 +122,40 @@ polyPDB::polyPDB
             vector endPoint = dict.lookup("endPoint");
             boxes_[b].resetBoundedBox(startPoint, endPoint);
         }
-    }   
-    
+    }
+
     if (propsDict_.found("molOption"))
     {
         const word molOption = propsDict_.lookup("molOption");
-        
+
         molOption_ = molOption;
     }
-    
+
     if (propsDict_.found("variableMols"))
     {
         variableMols_ = Switch(propsDict_.lookup("variableMols"));
-        
+
         nSiteEstimate_ = readLabel(propsDict_.lookup("nSiteEstimate"));
         rDummy_ = propsDict_.lookup("outsidePosition");
     }
 
 
     if (propsDict_.found("startAtTime"))
-    {    
+    {
         startTime_ = readScalar(propsDict_.lookup("startAtTime"));
     }
-    
+
     if (propsDict_.found("endAtTime"))
     {
         endTime_ = readScalar(propsDict_.lookup("endAtTime"));
     }
-    
+
     writeFirstTimeStep_ = true;
-    
+
     if (propsDict_.found("writeFirstTimeStep"))
-    {    
+    {
         writeFirstTimeStep_ = readScalar(propsDict_.lookup("writeFirstTimeStep"));
-    }    
+    }
 }
 
 
@@ -180,12 +180,12 @@ void polyPDB::createField()
     excludeSites_.transfer(siteNames);
 
     Info   << "sites to exclude: " << excludeSites_ << endl;
-    
+
     // set many files
 //     label nMols = 0;
     label nSites = 0;
-    
-    {    
+
+    {
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
 
         for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
@@ -193,7 +193,7 @@ void polyPDB::createField()
             if(findIndex(molIds_, mol().id()) != -1)
             {
 //                 nMols++;
-                
+
                 forAll(mol().sitePositions(), i)
                 {
                     if(findIndex(excludeSites_, molCloud_.cP().siteNames(mol().id())[i]) == -1)
@@ -202,17 +202,17 @@ void polyPDB::createField()
                     }
                 }
             }
-        }    
+        }
     }
-    
+
     if (Pstream::parRun())
     {
         reduce(nSites, sumOp<label>());
     }
-    
+
     n_ = label(nSites/100000) + 1;
 
-    if(n_ == 0) 
+    if(n_ == 0)
     {
         FatalErrorIn("polyPDB::polyPDB()")
             << " number of files should be at least 1." << nl << "in: "
@@ -222,16 +222,16 @@ void polyPDB::createField()
     else if (n_ == 1)
     {
         Info << "polyPDB" << nl
-             << "-> number of files set to = " << n_ 
-             << nl << endl;        
+             << "-> number of files set to = " << n_
+             << nl << endl;
     }
     else
     {
         Info << "WARNING in polyPDB" << nl
-             << "-> number of files set to = " << n_ 
+             << "-> number of files set to = " << n_
              << nl << endl;
     }
-    
+
     minLimit_.setSize(n_, -1);
     maxLimit_.setSize(n_, -1);
     minLimit_[0] = 0;
@@ -242,51 +242,51 @@ void polyPDB::createField()
         minLimit_[i] = 100000*(i);
         maxLimit_[i] = (100000*(i+1)) - 1;
     }
-    
+
     //adjust nSiteEstimate_
     if(variableMols_)
     {
         label molId = molIds_[0];
-                        
-        if(!molCloud_.cP().pointMolecule(molId))     
+
+        if(!molCloud_.cP().pointMolecule(molId))
         {
             label n = molCloud_.cP().nSites(molId);
 
             label nSitesMol = 0;
-            
+
             for (int i = 0; i < n; i++)
             {
                 if(findIndex(excludeSites_,  molCloud_.cP().siteNames(molId)[i]) == -1)
-                {        
+                {
                     nSitesMol++;
                 }
             }
-            
+
             nSiteEstimate_ = (label(nSiteEstimate_/nSitesMol))*nSitesMol;
-            
+
             nSitesMol_ = nSitesMol;
-            
+
             Info << "Modifying nSiteEstimate to = " << nSiteEstimate_ << endl;
         }
     }
-    
-    
+
+
     if(writeFirstTimeStep_)
     {
-        iteration_++;        
+        iteration_++;
         write();
     }
 }
 
 void polyPDB::calculateField()
 {
-    
+
     accumulatedTime_ += deltaT_;
-    
+
     if((accumulatedTime_ >= startTime_) && (accumulatedTime_ <= endTime_))
-    {     
+    {
         timeIndex_++;
-     
+
         if(timeIndex_ >= nSteps_)
         {
             iteration_++;
@@ -349,7 +349,7 @@ void polyPDB::writeInBoundBox(List<labelField>& molIds, List<vectorField>& sites
         forAll(boxes_, b)
         {
             if(boxes_[b].contains(mol().position()))
-            {        
+            {
                 if(findIndex(molIds_, mol().id()) != -1)
                 {
                     moleculeIds.append(mol().id());
@@ -436,7 +436,7 @@ void polyPDB::write()
     {
         Info << "polyPDB: write in mesh" << endl;
 
-        writeInBoundBox(molIds, sites);       
+        writeInBoundBox(molIds, sites);
     }
     if(option_ == "mesh")
     {
@@ -523,29 +523,29 @@ void polyPDB::write()
             s = out.str();
 
             fileName fName(casePath_/"polyMoleculeCloud_"+fieldName_+"_"+s+".pdb");
-    
+
             std::ofstream file(fName.c_str(),ios_base::app);
-        
+
             if(file.is_open())
             {
                 file << "MODEL " << iteration_ << nl;
-    
+
                 label nSites = 0;
                 label nMols = 1;
-    
+
                 const List<word>& idList(molCloud_.cP().molIds());
-    
+
                 // for all processors
                 forAll(molIds, p)
                 {
                     label posCounter = -1;
-    
+
                     forAll(molIds[p], i)
                     {
                         label molId = molIds[p][i];
-    
+
 //                         const polyMolecule::constantProperties cP(molCloud_.constProps(molId));
-    
+
                         label n = molCloud_.cP().nSites(molId);
 
                         for (int i = 0; i < n; i++)
@@ -554,7 +554,7 @@ void polyPDB::write()
                             {
                                 nSites++;
                                 posCounter++;
-    
+
                                 if((nSites >= minLimit_[j] ) && (nSites <= maxLimit_[j]))
                                 {
                                     vector rS = sites[p][posCounter]*rU.refLength()*1.0e10;
@@ -578,15 +578,15 @@ void polyPDB::write()
                                         file << "    ";
                                         file.width(8);
                                         file.precision(3);
-                                        file.setf(std::ios::fixed,std::ios::floatfield);  
+                                        file.setf(std::ios::fixed,std::ios::floatfield);
                                         file << rS.x();
                                         file.width(8);
                                         file.precision(3);
-                                        file.setf(std::ios::fixed,std::ios::floatfield);  
+                                        file.setf(std::ios::fixed,std::ios::floatfield);
                                         file << rS.y();
                                         file.width(8);
                                         file.precision(3);
-                                        file.setf(std::ios::fixed,std::ios::floatfield);  
+                                        file.setf(std::ios::fixed,std::ios::floatfield);
                                         file << rS.z();
                                         file << "  1.00  0.00 ";
                                         file << nl;
@@ -610,20 +610,20 @@ void polyPDB::write()
                                             file << "    ";
                                             file.width(8);
                                             file.precision(3);
-                                            file.setf(std::ios::fixed,std::ios::floatfield);  
+                                            file.setf(std::ios::fixed,std::ios::floatfield);
                                             file << rS.x();
                                             file.width(8);
                                             file.precision(3);
-                                            file.setf(std::ios::fixed,std::ios::floatfield);  
+                                            file.setf(std::ios::fixed,std::ios::floatfield);
                                             file << rS.y();
                                             file.width(8);
                                             file.precision(3);
-                                            file.setf(std::ios::fixed,std::ios::floatfield);  
+                                            file.setf(std::ios::fixed,std::ios::floatfield);
                                             file << rS.z();
                                             file << "  1.00  0.00 ";
                                             file << nl;
                                         }
-            
+
                                         else
                                         {
                                             file << "HETATM";
@@ -641,15 +641,15 @@ void polyPDB::write()
                                             file << "    ";
                                             file.width(8);
                                             file.precision(3);
-                                            file.setf(std::ios::fixed,std::ios::floatfield);  
+                                            file.setf(std::ios::fixed,std::ios::floatfield);
                                             file << rS.x();
                                             file.width(8);
                                             file.precision(3);
-                                            file.setf(std::ios::fixed,std::ios::floatfield);  
+                                            file.setf(std::ios::fixed,std::ios::floatfield);
                                             file << rS.y();
                                             file.width(8);
                                             file.precision(3);
-                                            file.setf(std::ios::fixed,std::ios::floatfield);  
+                                            file.setf(std::ios::fixed,std::ios::floatfield);
                                             file << rS.z();
                                             file << "  1.00  0.00 ";
                                             file << nl;
@@ -665,29 +665,29 @@ void polyPDB::write()
                         }
                     }
                 }
-                
+
                 if(variableMols_)
                 {
                     label nBufferSites = nSiteEstimate_ - nSites;
-                    
+
                     if(nBufferSites < 0)
                     {
                         FatalErrorIn("void combinedPDB::writeField()")
                             << "Exceeded limits of estimated nMol. Increase -> " << nSiteEstimate_
-                            << ", to at least -> " << nSites 
+                            << ", to at least -> " << nSites
                             << abort(FatalError);
-                    }               
-                    
+                    }
+
                     label molId = molIds_[0];
-                    
+
                     vector rS = rDummy_*rU.refLength()*1.0e10;
-                    
+
                     label nBufferMols = nBufferSites/nSitesMol_;
-                    
+
                     for (int i = 0; i < nBufferMols; i++)
                     {
                         if(molCloud_.cP().pointMolecule(molId))
-                        {                    
+                        {
                             nSites++;
 
                             if((nSites >= minLimit_[j] ) && (nSites <= maxLimit_[j]))
@@ -709,15 +709,15 @@ void polyPDB::write()
                                 file << "    ";
                                 file.width(8);
                                 file.precision(3);
-                                file.setf(std::ios::fixed,std::ios::floatfield);  
+                                file.setf(std::ios::fixed,std::ios::floatfield);
                                 file << rS.x();
                                 file.width(8);
                                 file.precision(3);
-                                file.setf(std::ios::fixed,std::ios::floatfield);  
+                                file.setf(std::ios::fixed,std::ios::floatfield);
                                 file << rS.y();
                                 file.width(8);
                                 file.precision(3);
-                                file.setf(std::ios::fixed,std::ios::floatfield);  
+                                file.setf(std::ios::fixed,std::ios::floatfield);
                                 file << rS.z();
                                 file << "  1.00  0.00 ";
                                 file << nl;
@@ -733,7 +733,7 @@ void polyPDB::write()
                                 if(findIndex(excludeSites_,  molCloud_.cP().siteNames(molId)[i]) == -1)
                                 {
                                     nSites++;
-                                    
+
                                     if(molOption_ == "water")
                                     {
                                         file << "HETATM";
@@ -751,20 +751,20 @@ void polyPDB::write()
                                         file << "    ";
                                         file.width(8);
                                         file.precision(3);
-                                        file.setf(std::ios::fixed,std::ios::floatfield);  
+                                        file.setf(std::ios::fixed,std::ios::floatfield);
                                         file << rS.x();
                                         file.width(8);
                                         file.precision(3);
-                                        file.setf(std::ios::fixed,std::ios::floatfield);  
+                                        file.setf(std::ios::fixed,std::ios::floatfield);
                                         file << rS.y();
                                         file.width(8);
                                         file.precision(3);
-                                        file.setf(std::ios::fixed,std::ios::floatfield);  
+                                        file.setf(std::ios::fixed,std::ios::floatfield);
                                         file << rS.z();
                                         file << "  1.00  0.00 ";
                                         file << nl;
 
-                                    }                                
+                                    }
                                     else
                                     {
                                         file << "HETATM";
@@ -782,15 +782,15 @@ void polyPDB::write()
                                         file << "    ";
                                         file.width(8);
                                         file.precision(3);
-                                        file.setf(std::ios::fixed,std::ios::floatfield);  
+                                        file.setf(std::ios::fixed,std::ios::floatfield);
                                         file << rS.x();
                                         file.width(8);
                                         file.precision(3);
-                                        file.setf(std::ios::fixed,std::ios::floatfield);  
+                                        file.setf(std::ios::fixed,std::ios::floatfield);
                                         file << rS.y();
                                         file.width(8);
                                         file.precision(3);
-                                        file.setf(std::ios::fixed,std::ios::floatfield);  
+                                        file.setf(std::ios::fixed,std::ios::floatfield);
                                         file << rS.z();
                                         file << "  1.00  0.00 ";
                                         file << nl;
@@ -798,11 +798,11 @@ void polyPDB::write()
                                 }
                             }
                         }
-                        
+
                         nMols++;
                     }
                 }
-                
+
                 file << "ENDMDL" <<  nl;
             }
             else
@@ -811,7 +811,7 @@ void polyPDB::write()
                     << "Cannot open file " << fName
                     << abort(FatalError);
             }
-    
+
             file.close();
         }
     }

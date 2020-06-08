@@ -26,7 +26,7 @@ Class
 
 Description
 
-    
+
 
 \*---------------------------------------------------------------------------*/
 
@@ -59,12 +59,12 @@ class polyAllConfigurations
 		PtrList<entry>configurationList_;
         List<label> ids_;
         List< autoPtr<polyConfiguration> > configurations_;
-        
+
 public:
 
     // Constructors
 
-        //- Null Constructor 
+        //- Null Constructor
         polyAllConfigurations
         (
             const polyMesh& mesh

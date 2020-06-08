@@ -40,36 +40,36 @@ void polyFadeII::readProperties()
     maxMolTries_ = 50;
 
     tauT_ = readScalar(propsDict_.lookup("tauT"));
-    n_ = readLabel(propsDict_.lookup("polynomialDegree"));    
-    
+    n_ = readLabel(propsDict_.lookup("polynomialDegree"));
+
     if (propsDict_.found("empty"))
     {
         empty_ = Switch(propsDict_.lookup("empty"));
-    }       
-    
+    }
+
     velocity_ = vector::zero;
     temperature_ = 0.0;
-    
+
     if (propsDict_.found("velocityOption"))
     {
         const word velocityOption = propsDict_.lookup("velocityOption");
         velocityOption_ = velocityOption;
-        
+
         if(velocityOption_ == "maxwellian")
         {
-            
+
         }
         else
         {
             FatalErrorIn("atomisticFadeII::atomisticFadeII()")
                 << "Cannot find velocity option: " << velocityOption_
-                << exit(FatalError);          
+                << exit(FatalError);
         }
-    }   
+    }
     else
     {
         velocityOption_ = "maxwellian";
-    }    
+    }
 }
 
 
@@ -91,7 +91,7 @@ vector polyFadeII::getMaxwellianVelocity
 )
 {
     const scalar& mass = molCloud.cP().mass(molId_);
-    
+
     return sqrt(molCloud.redUnits().kB()*temperature_/mass)*vector
     (
         rndGen_.GaussNormalMD<scalar>(),
@@ -111,13 +111,13 @@ polyFadeII::polyFadeII()
     rndGen_(clock::getTime(), 1),
     molId_(-1),
     nInserted_(0),
-    nDeleted_(0),    
+    nDeleted_(0),
     boundedBox_(false),
     biggestRadius_(false),
     closestPositionBoundBox_(false),
     closestPositionCell_(false),
-    exactPosition_(false),   
-    empty_(false), 
+    exactPosition_(false),
+    empty_(false),
     trackingNumbersIns_(0),
     trackingNumbersDel_(0)
 {}
@@ -161,8 +161,8 @@ polyFadeII::polyFadeII
     biggestRadius_(false),
     closestPositionBoundBox_(false),
     closestPositionCell_(false),
-    exactPosition_(false),   
-    empty_(false), 
+    exactPosition_(false),
+    empty_(false),
     trackingNumbersIns_(0),
     trackingNumbersDel_(0)
 {
@@ -196,7 +196,7 @@ polyMolecule* polyFadeII::insertMoleculeInCloud
         tetFaceI,
         tetPtI
     );
-                
+
     molCloud.createMolecule
     (
         position,
@@ -219,8 +219,8 @@ polyMolecule* polyFadeII::insertMoleculeInCloud
 
     molCloud.updateNeighbouringRadii(newMol);
 
-    molCloud.insertMolInCellOccupancy(newMol);          
-            
+    molCloud.insertMolInCellOccupancy(newMol);
+
     return newMol;
 }
 
@@ -246,20 +246,20 @@ void polyFadeII::createInitialConfiguration
 {
     propsDict_ = dict.subDict("fadeProperties");
     molId_ = molId;
-    
+
     deltaT_ = deltaT;
-    
+
     readProperties();
 
     tauT_ -= deltaT_*5;
-    
+
     trackingNumbersIns_.clear();
     trackingNumbersDel_.clear();
     timeIns_.clear();
-    timeDel_.clear();    
-    
+    timeDel_.clear();
+
     setInsertOption(insertOption);
-    setDeleteOption(deleteOption);    
+    setDeleteOption(deleteOption);
 }
 
 void polyFadeII::setInsertOption(const word& option)
@@ -267,13 +267,13 @@ void polyFadeII::setInsertOption(const word& option)
     if(option == "biggestRadius")
     {
         biggestRadius_ = true;
-        boundedBox_ = true;        
+        boundedBox_ = true;
     }
 /*    else if(option == "biggestRadiusII")
     {
         biggestRadiusII_ = true;
-        boundedBox_ = true;        
-    }   */ 
+        boundedBox_ = true;
+    }   */
     else if(option == "closestPositionCell")
     {
         closestPositionCell_ = true;
@@ -281,8 +281,8 @@ void polyFadeII::setInsertOption(const word& option)
     else if(option == "closestPositionBoundBox")
     {
         closestPositionBoundBox_ = true;
-        boundedBox_ = true;        
-    }    
+        boundedBox_ = true;
+    }
     else if(option == "exactPosition")
     {
         exactPosition_ = true;
@@ -291,7 +291,7 @@ void polyFadeII::setInsertOption(const word& option)
     {
         FatalErrorIn("polyFadeII::polyFadeII()")
             << "Cannot find insertion option: " << option
-            << exit(FatalError);    
+            << exit(FatalError);
     }
 }
 
@@ -299,7 +299,7 @@ void polyFadeII::setDeleteOption(const word& option)
 {
     deleteClosestPosition_ = false;
     deleteClosestPositionBoundBox_ = false;
-    
+
     if(option == "closestPosition")
     {
         deleteClosestPosition_ = true;
@@ -307,12 +307,12 @@ void polyFadeII::setDeleteOption(const word& option)
     else if(option == "closestPositionBoundBox")
     {
         deleteClosestPositionBoundBox_ = true;
-    }    
+    }
     else
     {
         FatalErrorIn("polyFadeII::polyFadeII()")
             << "Cannot find deletion option: " << option
-            << exit(FatalError);    
+            << exit(FatalError);
     }
 }
 
@@ -321,28 +321,28 @@ void polyFadeII::controlMolecules
     polyMoleculeCloud& molCloud,
     const label& insertOrDelete,
     const boundedBox& bb,
-    const List<vector>& positions 
+    const List<vector>& positions
 )
 {
 
     // reset properties
     nInserted_ = 0;
     nDeleted_ = 0;
-    
+
     DynamicList<label> tNsIns(0);
     DynamicList<label> tNsDel(0);
-    
+
     DynamicList<scalar> timeIns(0);
     DynamicList<scalar> timeDel(0);
-    
+
     // find those molecules in the bound box
-    
+
     DynamicList<polyMolecule*> molsInBB;
-    
+
     if(boundedBox_)
     {
         IDLList<polyMolecule>::iterator mol(molCloud.begin());
-        
+
         for
             (
              mol = molCloud.begin();
@@ -353,21 +353,21 @@ void polyFadeII::controlMolecules
             if(bb.contains(mol().position()))
             {
                 polyMolecule* molI = &mol();
-                
+
                 label tN = molI->trackingNumber();
-                
+
                 if(isNotFading(tN))
                 {
                     molsInBB.append(molI);
                 }
             }
         }
-    }    
-    
+    }
+
     //molsInBB.shrink();
 
-    DynamicList<label> failedTNs(0);    
-    
+    DynamicList<label> failedTNs(0);
+
     // - insert in parallel
 
     for (int p = 0; p < Pstream::nProcs(); p++)
@@ -379,7 +379,7 @@ void polyFadeII::controlMolecules
                 for(label i = 0; i < insertOrDelete; i++)
                 {
                     label tN = -1;
-                    
+
                     if(biggestRadius_)
                     {
                         tN = insertMoleculeInBoundBox
@@ -399,7 +399,7 @@ void polyFadeII::controlMolecules
                             molsInBB,
                             failedTNs,
                             positions[i]
-                        );                    
+                        );
                     }
                     else if(closestPositionCell_)
                     {
@@ -407,10 +407,10 @@ void polyFadeII::controlMolecules
                         (
                             molCloud,
                             bb,
-                            failedTNs,                         
+                            failedTNs,
                             positions[i]
-                        );                    
-                    }                    
+                        );
+                    }
                     else if(exactPosition_)
                     {
                         tN = insertMoleculeAtExactPosition
@@ -418,9 +418,9 @@ void polyFadeII::controlMolecules
                             molCloud,
                             bb,
                             positions[i]
-                        );                    
+                        );
                     }
-                    
+
                     if(tN != -1)
                     {
                         tNsIns.append(tN);
@@ -435,22 +435,22 @@ void polyFadeII::controlMolecules
 
         molCloud.updateRadii();
     }
-    
+
     if(Pstream::parRun())
     {
-        reduce(nInserted_, sumOp<label>()); 
-    }    
-    
-    Info << "Inserted molecules (total): " << nInserted_ << endl;  
+        reduce(nInserted_, sumOp<label>());
+    }
+
+    Info << "Inserted molecules (total): " << nInserted_ << endl;
 
     // - delete
-    
+
     if(insertOrDelete < 0)
     {
         for(label i = 0; i < mag(insertOrDelete); i++)
         {
             label tN = -1;
-            
+
             if(deleteClosestPositionBoundBox_)
             {
                 tN = deleteMoleculeFromClosestPositionBoundBox
@@ -460,7 +460,7 @@ void polyFadeII::controlMolecules
                     positions[i]
                 );
             }
-            else if(deleteClosestPosition_)  
+            else if(deleteClosestPosition_)
             {
                 tN = deleteMoleculeFromClosestPosition
                 (
@@ -468,25 +468,25 @@ void polyFadeII::controlMolecules
                     bb,
                     positions[i]
                 );
-            }            
+            }
 
-            
+
 //             Info << "Deleted tN = " << tN << endl;
-            
+
             if(tN != -1)
             {
                 nDeleted_++;
-                timeDel.append(0.0);                
-                tNsDel.append(tN);                
+                timeDel.append(0.0);
+                tNsDel.append(tN);
             }
         }
     }
 
     if(Pstream::parRun())
     {
-        reduce(nDeleted_, sumOp<label>()); 
+        reduce(nDeleted_, sumOp<label>());
     }
-    
+
     Info << "Deleted molecules (total): " << nDeleted_ << endl;
 
     insertInLists(tNsIns, tNsDel, timeIns, timeDel);
@@ -501,24 +501,24 @@ void polyFadeII::controlMolecules
 //     polyMolecule& mol
 // )
 // {
-// //     Info << "molecule potential energy (before) = " << mol.potentialEnergy() << endl; 
-//     
+// //     Info << "molecule potential energy (before) = " << mol.potentialEnergy() << endl;
+//
 //     molCloud.updateNeighbouringForces(&mol, true);
-// 
-//     DynamicList<polyMolecule*> refMols;    
+//
+//     DynamicList<polyMolecule*> refMols;
 //     DynamicList<label> refIds(0);
-//     
-//     molCloud.kernel().deleteParticle(&mol, refMols, refIds);    
-// 
-//     molCloud.updateNeighbouringForcesReferred(refMols, refIds, true); 
-//     
+//
+//     molCloud.kernel().deleteParticle(&mol, refMols, refIds);
+//
+//     molCloud.updateNeighbouringForcesReferred(refMols, refIds, true);
+//
 // //     Info << "molecule potential energy (after) = " << mol.potentialEnergy() << endl;
-// 
-//     
-//     
+//
+//
+//
 //     molCloud.removeMolFromCellOccupancy(&mol);
-// 
-//     
+//
+//
 //     //- remove polyMolecule from cloud
 //     molCloud.deleteParticle(mol);
 // }
@@ -531,13 +531,13 @@ void polyFadeII::controlMolecules
 //     const boundedBox& bb
 // )
 // {
-//    
+//
 //     label trackingNumber = -1;
 //     scalar R = 0.0;
-//     
+//
 //     {
 //         IDLList<polyMolecule>::iterator mol(molCloud.begin());
-// 
+//
 //         for
 //         (
 //             mol = molCloud.begin();
@@ -548,7 +548,7 @@ void polyFadeII::controlMolecules
 // //             if(bb.contains(mol().position()))
 //             {
 //                 polyMolecule* molI = &mol();
-//                 
+//
 //                 if(molI->id() == molId_)
 //                 {
 //                     if(molI->R() > R)
@@ -560,24 +560,24 @@ void polyFadeII::controlMolecules
 //             }
 //         }
 //     }
-//     
+//
 //     return trackingNumber;
 // }
 
 label polyFadeII::deleteMoleculeFromClosestPositionBoundBox
 (
     polyMoleculeCloud& molCloud,
-    const boundedBox& bb, 
+    const boundedBox& bb,
     const vector& r
 )
 {
-   
+
     label trackingNumber = -1;
     scalar deltaR = GREAT;
 //     vector position = vector::zero;
-    
+
     {
-        
+
         IDLList<polyMolecule>::iterator mol(molCloud.begin());
 
         for
@@ -590,11 +590,11 @@ label polyFadeII::deleteMoleculeFromClosestPositionBoundBox
             if(bb.contains(mol().position()))
             {
                 polyMolecule* molI = &mol();
-                
+
                 if(molI->id() == molId_)
                 {
                     scalar magRIJ = mag(molI->position() - r);
-                    
+
                     if(magRIJ < deltaR)
                     {
                         deltaR = magRIJ;
@@ -605,9 +605,9 @@ label polyFadeII::deleteMoleculeFromClosestPositionBoundBox
             }
         }
     }
-    
+
 //     Info << "Deleting at position = " << position << endl;
-    
+
     return trackingNumber;
 }
 
@@ -616,16 +616,16 @@ label polyFadeII::deleteMoleculeFromClosestPositionBoundBox
 label polyFadeII::deleteMoleculeFromClosestPosition
 (
     polyMoleculeCloud& molCloud,
-    const boundedBox& bb, 
+    const boundedBox& bb,
     const vector& r
 )
 {
-   
+
     label trackingNumber = -1;
     scalar deltaR = GREAT;
-    
+
     {
-        
+
         IDLList<polyMolecule>::iterator mol(molCloud.begin());
 
         for
@@ -637,11 +637,11 @@ label polyFadeII::deleteMoleculeFromClosestPosition
         {
             {
                 polyMolecule* molI = &mol();
-                
+
                 if(molI->id() == molId_)
                 {
                     scalar magRIJ = mag(molI->position() - r);
-                    
+
                     if(magRIJ < deltaR)
                     {
                         deltaR = magRIJ;
@@ -651,7 +651,7 @@ label polyFadeII::deleteMoleculeFromClosestPosition
             }
         }
     }
-    
+
     return trackingNumber;
 }
 
@@ -680,9 +680,9 @@ void polyFadeII::deleteMolecules
             }
         }
     }
-    
+
     //molToDel.shrink();
-    
+
     forAll(molToDel, i)
     {
         deleteMoleculeFromCloud(molCloud, *molToDel[i]);
@@ -709,9 +709,9 @@ void polyFadeII::checkFractions
 {
     DynamicList<label> tNsIns(0);
     DynamicList<label> tNsDel(0);
-    
-    label nInsDelMols = trackingNumbersIns_.size() + trackingNumbersDel_.size();    
-    
+
+    label nInsDelMols = trackingNumbersIns_.size() + trackingNumbersDel_.size();
+
     if(nInsDelMols > 0)
     {
         // update time first
@@ -722,10 +722,10 @@ void polyFadeII::checkFractions
         forAll(timeDel_, i)
         {
             timeDel_[i] += deltaT_;
-        }         
-        
+        }
+
         IDLList<polyMolecule>::iterator mol(molCloud.begin());
-    
+
         for
         (
             mol = molCloud.begin();
@@ -738,10 +738,10 @@ void polyFadeII::checkFractions
 //             if(frac < 1.0)
             {
                 label tN = mol().trackingNumber();
-                
+
                 // insertion
                 label idIns = findIndex(trackingNumbersIns_, tN);
-                
+
                 if(idIns != -1)
                 {
                     scalar t = timeIns_[idIns];
@@ -752,25 +752,25 @@ void polyFadeII::checkFractions
                     }
                     else
                     {
-                        mol().fraction() = 1.0 
+                        mol().fraction() = 1.0
                                 - 0.5*mag(Foam::pow((2.0*(t-tauT_)/tauT_), scalar(n_)));
                     }
-                    
-/*                    Info<< "time = " << t 
+
+/*                    Info<< "time = " << t
                         << ", insert fraction = " << mol().fraction()
                         << endl;*/
-                    
+
                     if(mol().fraction() >= 1.0)
                     {
                         mol().fraction() = 1.0;
-                        
+
                         tNsIns.append(tN);
                     }
                 }
-                
+
                 // deletion
                 label idDel = findIndex(trackingNumbersDel_, tN);
-                
+
                 if(idDel != -1)
                 {
                     scalar t = timeDel_[idDel];
@@ -781,11 +781,11 @@ void polyFadeII::checkFractions
                     }
                     else
                     {
-                        mol().fraction() = 
+                        mol().fraction() =
                                 0.5*mag(Foam::pow((2.0*(t-tauT_)/tauT_), scalar(n_)));
                     }
 
-//                     Info<< "time = " << t 
+//                     Info<< "time = " << t
 //                         << ", delete fraction = " << mol().fraction()
 //                         << endl;
 
@@ -793,8 +793,8 @@ void polyFadeII::checkFractions
                     {
                         mol().fraction() = 0;
                         tNsDel.append(tN);
-                    }   
-                }                  
+                    }
+                }
             }
         }
 
@@ -814,12 +814,12 @@ void polyFadeII::checkFractions
 
             updateLists(tNsIns, tNsDel);
         }
-        
+
         Info << "id: "<< molId_ << " no of mols inserting = " << trackingNumbersIns_.size()
             << ", no of mols deleting = " << trackingNumbersDel_.size()
             << endl;
     }
-         
+
 }
 
 
@@ -832,33 +832,33 @@ label polyFadeII::insertMoleculeInBoundBox
     DynamicList<polyMolecule*>& molsInBB,
     DynamicList<label>& failedTNs
 )
-{    
+{
     const polyMesh& mesh = molCloud.mesh();
-    
+
     label trackingNumber = -1;
-   
+
     //- choose an initial molecule - the one with the biggest radius R
-    
+
     bool insertedMolecule = false;
 
-    label nIter = 0;    
-    
+    label nIter = 0;
+
     while(!insertedMolecule && (nIter < maxMolTries_))
     {
         nIter++;
-        
+
         label tN = -1;
         scalar rMax = 0.0;
-        vector rI = vector::zero;     
-        
+        vector rI = vector::zero;
+
         pickExistingMoleculeBiggestRadius(molsInBB, failedTNs, tN, rI, rMax);
-        
+
         if(tN != -1)
         {
             vector rStart = vector::zero;
             label cellI = -1;
-            
-            if( chooseRandomPoint(mesh, bb, rI, rMax, cellI, rStart) )            
+
+            if( chooseRandomPoint(mesh, bb, rI, rMax, cellI, rStart) )
             {
                 vector molVel(vector::zero);
 
@@ -879,9 +879,9 @@ label polyFadeII::insertMoleculeInBoundBox
                     sin(theta)*sin(phi),
                     - sin(theta)*cos(phi),
                     cos(theta)
-                );   
-                
-                // insert molecule 
+                );
+
+                // insert molecule
                 polyMolecule* newMol = insertMoleculeInCloud
                 (
                     molCloud,
@@ -896,9 +896,9 @@ label polyFadeII::insertMoleculeInBoundBox
                     molId_,
                     0 // special
                  );
-                
+
                 // tracking number
-                trackingNumber = newMol->trackingNumber();  
+                trackingNumber = newMol->trackingNumber();
                 insertedMolecule = true;
             }
 
@@ -910,19 +910,19 @@ label polyFadeII::insertMoleculeInBoundBox
             if(molsInBB.size() == 0)
             {
                 Info << "Warning: empty bound box - trying to randomly insert" << endl;
-                
-                distributePoints box(bb, rndGen_); 
-                
+
+                distributePoints box(bb, rndGen_);
+
                 vector rStart = box.randomPoint();
 
                 label cellI = mesh.findCell(rStart);
 
                 if(cellI != -1)
-                {                    
+                {
                     vector molVel(vector::zero);
-                    
+
                     setVelocity(molCloud, molVel);
-                    
+
                     scalar phi(rndGen_.sample01<scalar>()*constant::mathematical::twoPi);
                     scalar theta(rndGen_.sample01<scalar>()*constant::mathematical::twoPi);
                     scalar psi(rndGen_.sample01<scalar>()*constant::mathematical::twoPi);
@@ -938,9 +938,9 @@ label polyFadeII::insertMoleculeInBoundBox
                         sin(theta)*sin(phi),
                         - sin(theta)*cos(phi),
                         cos(theta)
-                    );   
-                    
-                    // insert molecule 
+                    );
+
+                    // insert molecule
                     polyMolecule* newMol = insertMoleculeInCloud
                     (
                         molCloud,
@@ -955,28 +955,28 @@ label polyFadeII::insertMoleculeInBoundBox
                         molId_,
                         0 // special
                     );
-                    
+
                     // tracking number
-                    trackingNumber = newMol->trackingNumber();  
-                    insertedMolecule = true;   
+                    trackingNumber = newMol->trackingNumber();
+                    insertedMolecule = true;
                 }
             }
             else
             {
                 nIter = maxMolTries_;
-            }                
+            }
         }
         else
         {
             nIter = maxMolTries_;
         }
-    }        
+    }
 
-   
+
     return trackingNumber;
 }
 
-//- find a site and insert molecule close to a target reference point in a bound box 
+//- find a site and insert molecule close to a target reference point in a bound box
 // (optimal FADE, slightly costly)
 label polyFadeII::insertMoleculeAtClosestPositionBoundBox
 (
@@ -986,36 +986,36 @@ label polyFadeII::insertMoleculeAtClosestPositionBoundBox
     DynamicList<label>& failedTNs,
     const vector& r
 )
-{    
+{
     const polyMesh& mesh = molCloud.mesh();
-    
+
     label trackingNumber = -1;
-    
+
     bool insertedMolecule = false;
-    
-    label nIter = 0;    
-    
+
+    label nIter = 0;
+
     while(!insertedMolecule && (nIter < maxMolTries_))
     {
         nIter++;
-        
+
         label tN = -1;
         scalar R = 0.0;
         vector rI = vector::zero;
-        
+
         pickExistingMoleculeClosestPositionBoundBox(molsInBB, failedTNs, tN, rI, r, R);
-        
+
         if(tN != -1)
         {
             vector rStart = vector::zero;
             label cellI = -1;
-            
-            if( chooseRandomPoint(mesh, bb, rI, R, cellI, rStart) )            
+
+            if( chooseRandomPoint(mesh, bb, rI, R, cellI, rStart) )
             {
                 vector molVel(vector::zero);
 
                 setVelocity(molCloud, molVel);
-                
+
                 scalar phi(rndGen_.sample01<scalar>()*constant::mathematical::twoPi);
                 scalar theta(rndGen_.sample01<scalar>()*constant::mathematical::twoPi);
                 scalar psi(rndGen_.sample01<scalar>()*constant::mathematical::twoPi);
@@ -1031,9 +1031,9 @@ label polyFadeII::insertMoleculeAtClosestPositionBoundBox
                     sin(theta)*sin(phi),
                     - sin(theta)*cos(phi),
                     cos(theta)
-                ); 
-                
-                // insert molecule 
+                );
+
+                // insert molecule
                 polyMolecule* newMol = insertMoleculeInCloud
                 (
                     molCloud,
@@ -1048,9 +1048,9 @@ label polyFadeII::insertMoleculeAtClosestPositionBoundBox
                     molId_,
                     0 // special
                  );
-                
+
                 // tracking number
-                trackingNumber = newMol->trackingNumber();  
+                trackingNumber = newMol->trackingNumber();
                 insertedMolecule = true;
             }
 
@@ -1062,16 +1062,16 @@ label polyFadeII::insertMoleculeAtClosestPositionBoundBox
             if(molsInBB.size() == 0)
             {
                 Info << "Warning: empty bound box - inserting at defined position" << endl;
-                
+
                 vector rStart = r;
-                
+
                 label cellI = mesh.findCell(rStart);
 
                 if(cellI != -1)
-                {                    
+                {
                     vector molVel(vector::zero);
                     setVelocity(molCloud, molVel);
-                    
+
                     scalar phi(rndGen_.sample01<scalar>()*constant::mathematical::twoPi);
                     scalar theta(rndGen_.sample01<scalar>()*constant::mathematical::twoPi);
                     scalar psi(rndGen_.sample01<scalar>()*constant::mathematical::twoPi);
@@ -1087,9 +1087,9 @@ label polyFadeII::insertMoleculeAtClosestPositionBoundBox
                         sin(theta)*sin(phi),
                         - sin(theta)*cos(phi),
                         cos(theta)
-                    ); 
-                    
-                    // insert molecule 
+                    );
+
+                    // insert molecule
                     polyMolecule* newMol = insertMoleculeInCloud
                     (
                         molCloud,
@@ -1104,25 +1104,25 @@ label polyFadeII::insertMoleculeAtClosestPositionBoundBox
                         molId_,
                         0 // special
                     );
-                    
+
                     // tracking number
-                    trackingNumber = newMol->trackingNumber();  
-                    insertedMolecule = true;   
+                    trackingNumber = newMol->trackingNumber();
+                    insertedMolecule = true;
                 }
             }
             else
             {
                 nIter = maxMolTries_;
-            }                
-        }        
-        
+            }
+        }
+
         else
         {
             nIter = maxMolTries_;
         }
-    }        
+    }
 
-   
+
     return trackingNumber;
 }
 
@@ -1136,35 +1136,35 @@ label polyFadeII::insertMoleculeAtClosestPositionCell
     DynamicList<label>& failedTNs,
     const vector& r
 )
-{    
+{
     const polyMesh& mesh = molCloud.mesh();
-    
+
     label trackingNumber = -1;
-    
+
     bool insertedMolecule = false;
-    
-    label nIter = 0;    
-    
+
+    label nIter = 0;
+
     while(!insertedMolecule && (nIter < maxMolTries_))
     {
         nIter++;
-        
+
         label tN = -1;
         scalar R = 0.0;
-        vector rI = vector::zero;     
+        vector rI = vector::zero;
 
         pickExistingMoleculeClosestPositionCell(molCloud, failedTNs, tN, rI, r, R);
-        
+
         if(tN != -1)
         {
             vector rStart = vector::zero;
             label cellI = -1;
-            
-            if( chooseRandomPoint(mesh, bb, rI, R, cellI, rStart) )            
+
+            if( chooseRandomPoint(mesh, bb, rI, R, cellI, rStart) )
             {
                 vector molVel(vector::zero);
                 setVelocity(molCloud, molVel);
-                
+
                 scalar phi(rndGen_.sample01<scalar>()*constant::mathematical::twoPi);
                 scalar theta(rndGen_.sample01<scalar>()*constant::mathematical::twoPi);
                 scalar psi(rndGen_.sample01<scalar>()*constant::mathematical::twoPi);
@@ -1180,9 +1180,9 @@ label polyFadeII::insertMoleculeAtClosestPositionCell
                     sin(theta)*sin(phi),
                     - sin(theta)*cos(phi),
                     cos(theta)
-                ); 
-                
-                // insert molecule 
+                );
+
+                // insert molecule
                 polyMolecule* newMol = insertMoleculeInCloud
                 (
                     molCloud,
@@ -1197,9 +1197,9 @@ label polyFadeII::insertMoleculeAtClosestPositionCell
                     molId_,
                     0 // special
                 );
-                
+
                 // tracking number
-                trackingNumber = newMol->trackingNumber();  
+                trackingNumber = newMol->trackingNumber();
                 insertedMolecule = true;
             }
 
@@ -1212,17 +1212,17 @@ label polyFadeII::insertMoleculeAtClosestPositionCell
 
             if(cellI != -1)
             {
-                const List<polyMolecule*>& molsInCell = molCloud.cellOccupancy()[cellI];            
-                
+                const List<polyMolecule*>& molsInCell = molCloud.cellOccupancy()[cellI];
+
                 if(molsInCell.size() == 0)
                 {
                     Info << "Warning: empty cell - inserting at mid point" << endl;
-                    
+
                     vector rStart = r;
-                    
+
                     vector molVel(vector::zero);
                     setVelocity(molCloud, molVel);
-                    
+
                     scalar phi(rndGen_.sample01<scalar>()*constant::mathematical::twoPi);
                     scalar theta(rndGen_.sample01<scalar>()*constant::mathematical::twoPi);
                     scalar psi(rndGen_.sample01<scalar>()*constant::mathematical::twoPi);
@@ -1238,9 +1238,9 @@ label polyFadeII::insertMoleculeAtClosestPositionCell
                         sin(theta)*sin(phi),
                         - sin(theta)*cos(phi),
                         cos(theta)
-                    ); 
-                    
-                    // insert molecule 
+                    );
+
+                    // insert molecule
                     polyMolecule* newMol = insertMoleculeInCloud
                     (
                         molCloud,
@@ -1255,15 +1255,15 @@ label polyFadeII::insertMoleculeAtClosestPositionCell
                         molId_,
                         0 // special
                     );
-                    
+
                     // tracking number
-                    trackingNumber = newMol->trackingNumber();  
-                    insertedMolecule = true;   
+                    trackingNumber = newMol->trackingNumber();
+                    insertedMolecule = true;
                 }
                 else
                 {
                     nIter = maxMolTries_;
-                }                
+                }
             }
             else
             {
@@ -1275,7 +1275,7 @@ label polyFadeII::insertMoleculeAtClosestPositionCell
             nIter = maxMolTries_;
         }
     }
-   
+
     return trackingNumber;
 }
 
@@ -1287,18 +1287,18 @@ label polyFadeII::insertMoleculeAtExactPosition
     const boundedBox& bb,
     const vector& r
 )
-{    
+{
     const polyMesh& mesh = molCloud.mesh();
-    
+
     label trackingNumber = -1;
-    
+
     label cellI = mesh.findCell(r);
-    
+
     if(cellI != -1)
     {
         vector molVel(vector::zero);
         setVelocity(molCloud, molVel);
-        
+
         scalar phi(rndGen_.sample01<scalar>()*constant::mathematical::twoPi);
         scalar theta(rndGen_.sample01<scalar>()*constant::mathematical::twoPi);
         scalar psi(rndGen_.sample01<scalar>()*constant::mathematical::twoPi);
@@ -1314,9 +1314,9 @@ label polyFadeII::insertMoleculeAtExactPosition
             sin(theta)*sin(phi),
             - sin(theta)*cos(phi),
             cos(theta)
-        ); 
-        
-        // insert molecule 
+        );
+
+        // insert molecule
         polyMolecule* newMol = insertMoleculeInCloud
         (
             molCloud,
@@ -1331,15 +1331,15 @@ label polyFadeII::insertMoleculeAtExactPosition
             molId_,
             0 // special
         );
-        
+
         // tracking number
-        trackingNumber = newMol->trackingNumber();  
+        trackingNumber = newMol->trackingNumber();
     }
     else
     {
-        Info << "ERROR - > TRYING TO INSERT MOLECULE OUTSIDE MESH " << endl;   
+        Info << "ERROR - > TRYING TO INSERT MOLECULE OUTSIDE MESH " << endl;
     }
-    
+
     return trackingNumber;
 }
 
@@ -1370,7 +1370,7 @@ void polyFadeII::pickExistingMoleculeBiggestRadius
     }
 }
 
-// this function is more computational efficient, but not general 
+// this function is more computational efficient, but not general
 // (for e.g. the FENE case, requires another option)
 void polyFadeII::pickExistingMoleculeClosestPositionCell
 (
@@ -1379,15 +1379,15 @@ void polyFadeII::pickExistingMoleculeClosestPositionCell
     label& tN,
     vector& rI,
     const vector& r,
-    scalar& R     
-)  
+    scalar& R
+)
 {
    const polyMesh& mesh = molCloud.mesh();
-    
+
     scalar deltaR = GREAT;
-    
+
     label cellI = mesh.findCell(r);
-    
+
     if(cellI != -1)
     {
         const List<polyMolecule*>& molsInCell = molCloud.cellOccupancy()[cellI];
@@ -1408,8 +1408,8 @@ void polyFadeII::pickExistingMoleculeClosestPositionCell
 					R = molI->R();
 				}
 			}
-        } 
-    }    
+        }
+    }
 }
 
 void polyFadeII::pickExistingMoleculeClosestPositionBoundBox
@@ -1419,16 +1419,16 @@ void polyFadeII::pickExistingMoleculeClosestPositionBoundBox
     label& tN,
     vector& rI,
     const vector& r,
-    scalar& R     
-)  
+    scalar& R
+)
 {
-    
+
     scalar deltaR = GREAT;
 
     forAll(molsInBB, i)
     {
         polyMolecule* molI = molsInBB[i];
-        
+
 		if(findIndex(failedTNs, molI->trackingNumber()) == -1)
 		{
 			scalar magRIJ = mag(molI->position() - r);
@@ -1441,7 +1441,7 @@ void polyFadeII::pickExistingMoleculeClosestPositionBoundBox
 				R = molI->R();
 			}
 		}
-    }    
+    }
 }
 
 
@@ -1449,20 +1449,20 @@ bool polyFadeII::chooseRandomPoint
 (
     const polyMesh& mesh,
     const boundedBox& bb,
-    const vector& rI, 
+    const vector& rI,
     const scalar& R,
     label& cellI,
     vector& rStart
 )
 {
     bool chosenPoint = false;
-    
+
     label nIter = 0;
-    
+
     while ( !chosenPoint && (nIter < 40) )
-    {   
+    {
         nIter++;
-        
+
         //- select a random direction
         scalar magV = 0.0;
         vector randDirection(vector::zero);
@@ -1480,18 +1480,18 @@ bool polyFadeII::chooseRandomPoint
         //  likely to find a gap
 
         rStart = rI + (0.5*R*randDirection);
-        
+
         if(bb.contains(rStart))
         {
             cellI = mesh.findCell(rStart);
-            
+
             if(cellI != -1)
             {
                 chosenPoint = true;
             }
         }
     }
-    
+
     return chosenPoint;
 }
 
@@ -1505,7 +1505,7 @@ void polyFadeII::updateLists
     //tNsIns.shrink();
     //tNsDel.shrink();
 
-    // sync processors 
+    // sync processors
     if (Pstream::parRun())
     {
         List<label> tNsInsList(tNsIns.size(), 0);
@@ -1532,7 +1532,7 @@ void polyFadeII::updateLists
                 }
             }
         }
-    
+
         //- receiving
         for (int p = 0; p < Pstream::nProcs(); p++)
         {
@@ -1546,7 +1546,7 @@ void polyFadeII::updateLists
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> tNsInsListProc >> tNsDelListProc;
                 }
-                
+
                 forAll(tNsInsListProc, i)
                 {
                     tNsIns.append(tNsInsListProc[i]);
@@ -1555,17 +1555,17 @@ void polyFadeII::updateLists
                 forAll(tNsDelListProc, i)
                 {
                     tNsDel.append(tNsDelListProc[i]);
-                }             
+                }
             }
         }
     }
-    
+
     DynamicList<label> tNsInsNew(0);
-    DynamicList<label> tNsDelNew(0);    
-    
+    DynamicList<label> tNsDelNew(0);
+
     DynamicList<scalar> timeInsNew(0);
     DynamicList<scalar> timeDelNew(0);
-    
+
     forAll(trackingNumbersIns_, i)
     {
         if(findIndex(tNsIns, trackingNumbersIns_[i]) == -1)
@@ -1582,20 +1582,20 @@ void polyFadeII::updateLists
             tNsDelNew.append(trackingNumbersDel_[i]);
             timeDelNew.append(timeDel_[i]);
         }
-    }    
+    }
 
     trackingNumbersIns_.clear();
     trackingNumbersDel_.clear();
-    
+
     timeIns_.clear();
     timeDel_.clear();
-    
+
     //trackingNumbersIns_.transfer(tNsInsNew.shrink());
     //trackingNumbersDel_.transfer(tNsDelNew.shrink());
 
     trackingNumbersIns_.transfer(tNsInsNew);
     trackingNumbersDel_.transfer(tNsDelNew);
-    
+
     //timeIns_.transfer(timeInsNew.shrink());
     //timeDel_.transfer(timeDelNew.shrink());
 
@@ -1608,24 +1608,24 @@ void polyFadeII::insertInLists
     DynamicList<label>& tNsIns,
     DynamicList<label>& tNsDel,
     DynamicList<scalar>& timeIns,
-    DynamicList<scalar>& timeDel     
+    DynamicList<scalar>& timeDel
 )
 {
     //tNsIns.shrink();
     //tNsDel.shrink();
-    
+
     //timeIns.shrink();
     //timeDel.shrink();
-    
-    // sync processors 
+
+    // sync processors
     if (Pstream::parRun())
     {
         List<label> tNsInsList(tNsIns.size(), 0);
         List<label> tNsDelList(tNsDel.size(), 0);
 
         List<scalar> timeInsList(timeIns.size(), 0.0);
-        List<scalar> timeDelList(timeDel.size(), 0.0);        
-        
+        List<scalar> timeDelList(timeDel.size(), 0.0);
+
         forAll(tNsIns, i)
         {
             tNsInsList[i]=tNsIns[i];
@@ -1645,12 +1645,12 @@ void polyFadeII::insertInLists
                 const int proc = p;
                 {
                     OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
-                    toNeighbour << tNsInsList << tNsDelList 
+                    toNeighbour << tNsInsList << tNsDelList
                                 << timeInsList << timeDelList;
                 }
             }
         }
-    
+
         //- receiving
         for (int p = 0; p < Pstream::nProcs(); p++)
         {
@@ -1660,7 +1660,7 @@ void polyFadeII::insertInLists
                 List<label> tNsDelListProc;
                 List<scalar> timeInsListProc;
                 List<scalar> timeDelListProc;
-                
+
                 const int proc = p;
                 {
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
@@ -1673,18 +1673,18 @@ void polyFadeII::insertInLists
                     trackingNumbersIns_.append(tNsInsListProc[i]);
                     timeIns_.append(timeInsListProc[i]);
                 }
-                
+
 
                 forAll(tNsDelListProc, i)
                 {
                     trackingNumbersDel_.append(tNsDelListProc[i]);
                     timeDel_.append(timeDelListProc[i]);
-                }                
+                }
             }
         }
     }
-    
-    
+
+
     forAll(tNsIns, i)
     {
         trackingNumbersIns_.append(tNsIns[i]);
@@ -1695,15 +1695,15 @@ void polyFadeII::insertInLists
     {
         trackingNumbersDel_.append(tNsDel[i]);
         timeDel_.append(timeDel[i]);
-    }     
-    
+    }
+
     //timeIns_.shrink();
     //timeDel_.shrink();
     //trackingNumbersIns_.shrink();
     //trackingNumbersDel_.shrink();
 }
 
-// update properties 
+// update properties
 void polyFadeII::updateProperties
 (
     const dictionary& newDict
@@ -1721,11 +1721,11 @@ void polyFadeII::write
 void polyFadeII::output(Time& time)
 {
     label nBins = label((tauT_/deltaT_)+0.5);
-    
-    scalarField timeField(nBins, 0.0);    
+
+    scalarField timeField(nBins, 0.0);
     scalarField fractionIns(nBins, 0.0);
-    scalarField fractionDel(nBins, 0.0);    
-    
+    scalarField fractionDel(nBins, 0.0);
+
     forAll(timeField, i)
     {
         timeField[i] = i*deltaT_;
@@ -1737,7 +1737,7 @@ void polyFadeII::output(Time& time)
         }
         else
         {
-            fractionIns[i] = 1.0 
+            fractionIns[i] = 1.0
                     - 0.5*mag(Foam::pow((2.0*(t-tauT_)/tauT_), scalar(n_)));
         }
 
@@ -1747,33 +1747,33 @@ void polyFadeII::output(Time& time)
         }
         else
         {
-            fractionDel[i] = 
+            fractionDel[i] =
                     0.5*mag(Foam::pow((2.0*(t-tauT_)/tauT_), scalar(n_)));
         }
-                    
+
         if(t >= tauT_)
         {
             fractionDel[i] = 0;
-        }   
+        }
     }
-    
+
     fileName casePath(time.path());
-    
+
     writeTimeData
     (
         casePath,
         "fade_insert.xy",
         timeField,
         fractionIns
-    ); 
-    
+    );
+
     writeTimeData
     (
         casePath,
         "fade_delete.xy",
         timeField,
         fractionDel
-    );     
+    );
 }
 
 // * * * * * * * * * * * * * * * Member Operators  * * * * * * * * * * * * * //

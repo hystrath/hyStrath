@@ -58,13 +58,13 @@ morse::morse
     morseCoeffs_(pairPotentialProperties.subDict(typeName + "Coeffs")),
     Kcr_(readScalar(morseCoeffs_.lookup("Kcr"))),
     gamma_(readScalar(morseCoeffs_.lookup("gamma"))),
-    rC_(readScalar(morseCoeffs_.lookup("rC")))    
+    rC_(readScalar(morseCoeffs_.lookup("rC")))
 {
 
     if(rU.runReducedUnits())
     {
         Kcr_ /= rU.refEnergy();
-        gamma_ *= rU.refLength();        
+        gamma_ *= rU.refLength();
         rC_ /= rU.refLength();
     }
 
@@ -78,7 +78,7 @@ scalar morse::unscaledEnergy(const scalar r) const
 {
     scalar exponent = -gamma_*(r-rC_);
     scalar exp = Foam::exp(exponent);
-    
+
     return Kcr_*(exp-1.0)*(exp-1.0);
 }
 
@@ -95,12 +95,12 @@ bool morse::read
 
     morseCoeffs_.lookup("Kcr") >> Kcr_;
     morseCoeffs_.lookup("gamma") >> gamma_;
-    morseCoeffs_.lookup("rC") >> rC_;    
+    morseCoeffs_.lookup("rC") >> rC_;
 
     if(rU.runReducedUnits())
     {
         Kcr_ /= rU.refEnergy();
-        gamma_ *= rU.refLength();        
+        gamma_ *= rU.refLength();
         rC_ /= rU.refLength();
     }
 

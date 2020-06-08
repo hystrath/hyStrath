@@ -25,16 +25,16 @@ License
 Class
 
 Description
-        Tracks an individual molecule through the mesh. Specify the approximate 
-        start point of the molecule and its id. The code will loop and find the 
+        Tracks an individual molecule through the mesh. Specify the approximate
+        start point of the molecule and its id. The code will loop and find the
         closest molecule to the specified start point and store its "trackingNumber".
-        At every averaging time instance of the simulation run, the code will 
-        loop over all molecules of the domain until it finds that molecule with 
+        At every averaging time instance of the simulation run, the code will
+        loop over all molecules of the domain until it finds that molecule with
         the target trackingNumber and store its current position to a list.
-        
+
         The code is parallelised.
 
-        More work can be done to make this efficient. (avoid looping over all 
+        More work can be done to make this efficient. (avoid looping over all
         molecules in the domain)
 
 SourceFiles
@@ -86,8 +86,8 @@ private:
 
         vectorField trackingOrientation1_;
         vectorField trackingOrientation2_;
-        vectorField trackingOrientation3_;	
-        tensorField trackingQ_;	
+        vectorField trackingOrientation3_;
+        tensorField trackingQ_;
         vectorField trackingPi_;
 	    vectorField trackingLinMom_;
         vectorField trackingPositions_;
@@ -100,7 +100,7 @@ private:
         labelField cells_;
 
         bool outputParaFoamFile_;
-	
+
         bool outputVMDFile_;
 
     // Private Member Functions
@@ -152,7 +152,7 @@ public:
         );
 
         const propertyField& fields() const;
-}; 		
+};
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

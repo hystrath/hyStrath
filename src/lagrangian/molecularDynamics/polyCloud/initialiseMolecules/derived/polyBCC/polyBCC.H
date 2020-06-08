@@ -72,7 +72,7 @@ private:
         (
             const dictionary& propsDict,
             boundedBox& bb,
-            const word& name 
+            const word& name
         );
 
 public:

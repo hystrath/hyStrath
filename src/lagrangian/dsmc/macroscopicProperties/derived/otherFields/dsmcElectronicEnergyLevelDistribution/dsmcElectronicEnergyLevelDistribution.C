@@ -61,7 +61,7 @@ dsmcElectronicEnergyLevelDistribution::dsmcElectronicEnergyLevelDistribution
     typeId_(-1),
     regionName_(propsDict_.lookup("zoneName")),
     regionId_(-1),
-    binWidth_(1), 
+    binWidth_(1),
     distr_(binWidth_)
 {
     word typeIdName = propsDict_.lookup("typeId");
@@ -116,7 +116,7 @@ void dsmcElectronicEnergyLevelDistribution::calculateField()
         {
             const label& cellI = cells[c];
             const List<dsmcParcel*>& parcelsInCell = cellOccupancy[cellI];
-    
+
             forAll(parcelsInCell, pIC)
             {
                 dsmcParcel* p = parcelsInCell[pIC];
@@ -138,14 +138,14 @@ void dsmcElectronicEnergyLevelDistribution::writeField()
     if((runTime.outputTime()) && (time_.averagingTime()))
     {
         fileName timePath(runTime.path()/runTime.timeName()/"uniform");
-    
+
         if (!isDir(timePath))
         {
             mkDir(timePath);
         }
 
         List< Pair<scalar> > normalisedDistribution = distr_.normalised();
-    
+
         if(Pstream::master())
         {
             scalarField xAxis (normalisedDistribution.size(), 0.0);

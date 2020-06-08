@@ -67,7 +67,7 @@ dsmcDensityFluctuationsZone::dsmcDensityFluctuationsZone
     binVelocityField_()
 {
 
-    // standard to reading typeIds ------------ 
+    // standard to reading typeIds ------------
     const List<word> molecules (propsDict_.lookup("typeIds"));
 
     DynamicList<word> moleculesReduced(0);
@@ -116,13 +116,13 @@ dsmcDensityFluctuationsZone::dsmcDensityFluctuationsZone
             << time_.time().system()/"fieldPropertiesDict"
             << exit(FatalError);
     }
-    
+
    // create bin model
     binModel_ = autoPtr<binModel>
     (
         binModel::New(mesh, propsDict_)
     );
-    
+
     scalar writeInterval = readScalar(t.controlDict().lookup("writeInterval"));
     scalar deltaT = t.deltaT().value();
     nInstantSteps_ = label(writeInterval/deltaT);
@@ -139,9 +139,9 @@ dsmcDensityFluctuationsZone::dsmcDensityFluctuationsZone
         binDensityField_.setSize(nInstantSteps_);
         binVelocityField_.setSize(nInstantSteps_);
     }
-    
+
 //     timeIndex_ = 0;
-    
+
 //     scalar binWidth = binModel_->binPositions()[1]-binModel_->binPositions()[0];
 //     domainLength_ = binWidth*nBins;
 }
@@ -162,14 +162,14 @@ void dsmcDensityFluctuationsZone::createField()
 
 
 void dsmcDensityFluctuationsZone::calculateField()
-{  
+{
 //     resetCounter_++;
-   
+
     const List< DynamicList<dsmcParcel*> >& cellOccupancy
         = cloud_.cellOccupancy();
 
     const labelList& cells = mesh_.cellZones()[regionId_];
-    
+
     forAll(cells, c)
     {
         const label& cellI = cells[c];
@@ -178,7 +178,7 @@ void dsmcDensityFluctuationsZone::calculateField()
         forAll(parcelsInCell, pIC)
         {
             dsmcParcel* p = parcelsInCell[pIC];
-            
+
             const vector& rI = p->position();
 
             label n = binModel_->isPointWithinBin(rI, cellI);
@@ -191,9 +191,9 @@ void dsmcDensityFluctuationsZone::calculateField()
                     {
                         const point& cC = cloud_.mesh().cellCentres()[cellI];
                         scalar radius = cC.y();
-                        
+
                         scalar RWF = 1.0 + cloud_.maxRWF()*(radius/cloud_.radialExtent());
-                        
+
                         nParticles_[n] += cloud_.nParticle()*RWF;
                         USum_[n] += p->U();
                     }
@@ -206,11 +206,11 @@ void dsmcDensityFluctuationsZone::calculateField()
             }
         }
     }
-    
+
     forAll(mass_, n)
     {
         scalar volume = binModel_->binVolume(n);
-        
+
         binDensity_[n] = (nParticles_[n])/volume;
         binVelocity_[n] = USum_[n].x()/nParticles_[n];
     }
@@ -219,13 +219,13 @@ void dsmcDensityFluctuationsZone::calculateField()
     binVelocityField_[timeIndex_] = binVelocity_;
 
     timeIndex_++;
-    
+
     mass_ = 0.0;
     nParticles_ = 0;
     USum_ = vector::zero;
-    
+
 //     const Time& runTime = time_.time();
-    
+
 //     if(runTime.outputTime())
 //     {
 //         resetCounter_ = 0;
@@ -240,16 +240,16 @@ void dsmcDensityFluctuationsZone::writeField()
     if(runTime.outputTime())
     {
         timeIndex_ = 0;
-        
+
         if(Pstream::master())
         {
             fileName timePath(runTime.path()/runTime.timeName()/"uniform");
-        
+
             if (!isDir(timePath))
             {
                 mkDir(timePath);
             }
-            
+
             scalar dt = time_.time().deltaT().value();
             scalarField timeField (nInstantSteps_, 0.0);
 
@@ -266,7 +266,7 @@ void dsmcDensityFluctuationsZone::writeField()
                 binDensityField_,
                 true
             );
-            
+
             writeTimeData
             (
                 casePath_,

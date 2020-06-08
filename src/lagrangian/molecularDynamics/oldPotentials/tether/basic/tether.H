@@ -116,9 +116,9 @@ public:
         // Access
 
             virtual vector force(const vector& rIJ) = 0;
-            
+
             virtual scalar potentialEnergy(const scalar& rIJMag) = 0;
-            
+
 //             virtual void updateForce() = 0;
 
         // Check

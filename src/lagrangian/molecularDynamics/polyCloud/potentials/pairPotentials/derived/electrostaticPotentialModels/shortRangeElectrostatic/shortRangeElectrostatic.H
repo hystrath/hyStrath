@@ -27,12 +27,12 @@ Class
 
 
 Description
-    
+
     short range electrostatic potential implemented in equation format
     part 1 of the long range interactions
-    
+
     G = 1,2,3 should be fine
-    
+
 SourceFiles
     shortRangeElectrostaticI.H
     shortRangeElectrostatic.C
@@ -70,8 +70,8 @@ private:
         scalar constant_;
 
         scalar G_;
-        
-        
+
+
     // Private Member Functions
 
 
@@ -89,7 +89,7 @@ public:
             const polyMesh& mesh,
             polyMoleculeCloud& molCloud,
             const reducedUnits& redUnits,
-            const word& name,         
+            const word& name,
             const dictionary& dict
         );
 
@@ -103,15 +103,15 @@ public:
 
 
         scalar force(const scalar r) const;
-        
-        scalar energy(const scalar r) const;        
-        
+
+        scalar energy(const scalar r) const;
+
         //- Read dictionary
 //         bool read
 //         (
 //             const dictionary& pairPotentialProperties,
 //         );
-        
+
 
         void write(const fileName& pathName);
 

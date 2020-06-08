@@ -34,7 +34,7 @@ Description
     - an option that moves the real axis away (offset)
 
     If no options are specified on the command line, it looks for a dictionary
-    rotationDict. In this dictionary the rotational axis is specified. In addition the 
+    rotationDict. In this dictionary the rotational axis is specified. In addition the
     patch that is on that axis may be specified.
 
     Assumes the following about the grid:
@@ -44,7 +44,7 @@ Description
     - the "front" and "back" are one patch
 
     Afterwards: use the collapseEdges utility to remove the faces at the symmetry axis
- 
+
 \*---------------------------------------------------------------------------*/
 
 
@@ -119,7 +119,7 @@ linie getAxis(const polyPatch &axis,plane &pl) {
 
 scalar getDistance(const polyPatch &axisPatch,linie &axisLine) {
   const pointField &pts=axisPatch.localPoints();
-  vector axisDir = axisLine.vec()/axisLine.mag();      
+  vector axisDir = axisLine.vec()/axisLine.mag();
 
   scalar distance=0;
 
@@ -132,7 +132,7 @@ scalar getDistance(const polyPatch &axisPatch,linie &axisLine) {
         distance=radius;
     }
   }
-  
+
   return distance;
 }
 
@@ -151,8 +151,8 @@ const scalar defaultAngle=5;   //DPS the plane is rotated +2.5 degrees and -2.5 
         axisLine - FINITE line (getAxis)
             - defined by two points
             - axis of rotation
-        mesh - 
-    
+        mesh -
+
 
     Variables:
         "basePoint" is the projection of the cartesian point, "oldPoint"
@@ -162,7 +162,7 @@ const scalar defaultAngle=5;   //DPS the plane is rotated +2.5 degrees and -2.5 
             If "axisLine" was an INFINITE line then this would be equilivalent to the
             the neareast point from "axisLine" to "basePoint".  This is not the case,
             so the projection is done with a dot product ("&") with the unit vector in the
-            direction of "axisLine", "axisDir".    
+            direction of "axisLine", "axisDir".
         "radius" is the radial coordinate of the cartesian point, in the plane
             perpendicular to the rotation axis.
 	"radiusBasedPoint" is the basePoint coordinates relative to the axisPoint.
@@ -177,7 +177,7 @@ void changeCoordinates(
     linie &axisLine,
     scalar offset,
     const scalar wedgeAngle,
-    bool revolve) 
+    bool revolve)
 {
   if (revolve)    Info << "Revolving nodes" << endl;
   else 		  Info << "Projecting nodes" << endl;
@@ -190,7 +190,7 @@ void changeCoordinates(
 
   const scalar factor=std::sin(angle/180.*constant::mathematical::pi);
   const scalar factorRadius=std::cos(angle/180.*constant::mathematical::pi);
-  vector axisDir = axisLine.vec()/axisLine.mag();      
+  vector axisDir = axisLine.vec()/axisLine.mag();
 
   scalar minRadius=1e10,maxRadius=-1e10;
 
@@ -198,7 +198,7 @@ void changeCoordinates(
   scalar dist2=mag(axisLine.end()-cutPlane.nearestPoint(axisLine.end()));
 
   if(dist1>SMALL || dist2>SMALL) {
-      Warning << " End points of axis " << axisLine << " are " << dist1 
+      Warning << " End points of axis " << axisLine << " are " << dist1
           << " and " << dist2 << " away from plane "  << cutPlane << endl;
   }
 
@@ -234,13 +234,13 @@ void changeCoordinates(
 }
 
 // Split the wedge-patch into two patches
- 
+
 void splitWedge(polyMesh &mesh,word wname,plane pl) {
   repatchPolyTopoChanger topo(mesh);
 
   const polyBoundaryMesh& patches = mesh.boundaryMesh();
   const polyPatch &wedge=patches[patches.findPatchID(wname)];
-  
+
   const vectorField::subField 	& fcs=wedge.faceCentres ();
 
   faceSet facesPos(mesh,"set1_"+wname,fcs.size()/2,IOobject::NO_WRITE);
@@ -264,11 +264,11 @@ void splitWedge(polyMesh &mesh,word wname,plane pl) {
   // the rest is stolen from createPatch (others might say inspired by)
 
   List<polyPatch*> newPatches(patches.size() + 2);
-  
+
   forAll(patches, patchI)
     {
       const polyPatch& pp = patches[patchI];
-      
+
       newPatches[patchI] =
 	pp.clone
 	(
@@ -277,12 +277,12 @@ void splitWedge(polyMesh &mesh,word wname,plane pl) {
 	 pp.size(),
 	 pp.start()
 	 ).ptr();
-      
+
     }
-  
+
   label patchPos = newPatches.size() - 2;
   label patchNeg = newPatches.size() - 1;
-  
+
   Info << " Creating Patches" << endl;
 
   newPatches[patchPos] =
@@ -306,11 +306,11 @@ void splitWedge(polyMesh &mesh,word wname,plane pl) {
       patchNeg,
       patches
       ).ptr();
-  
+
 
   // Actually add new list of patches
   topo.changePatches(newPatches);
-  
+
   Info << " Creating Pos-patch " << endl;
 
   labelList faceLabelsPos(facesPos.toc());
@@ -353,7 +353,7 @@ void splitWedge(polyMesh &mesh,word wname,plane pl) {
 	    << " faces."
 	    << exit(FatalError);
 	}
-      
+
       topo.changePatchID(patchFacesNeg[i], patchNeg);
     }
 
@@ -367,7 +367,7 @@ void changeTypes(polyMesh &mesh,word wedge,word axis,bool hasOffset) {
   const polyBoundaryMesh& patches = mesh.boundaryMesh();
 
   List<polyPatch*> newPatches(patches.size());
-  
+
   forAll(patches, patchI)
     {
       const polyPatch& pp = patches[patchI];
@@ -382,7 +382,7 @@ void changeTypes(polyMesh &mesh,word wedge,word axis,bool hasOffset) {
                   pp.start(),
                   patchI,
                   patches
-              ).ptr();    
+              ).ptr();
       } else if(pp.name()==wedge+"_pos" || pp.name()==wedge+"_neg"){
           Info << " Changing " << pp.name() << " to wedge" << endl;
           newPatches[patchI] =
@@ -424,7 +424,7 @@ int main(int argc, char *argv[])
     argList::validOptions.insert("overwrite", "");
     argList::validOptions.insert("wedgeAngle","<degrees>");
     argList::validOptions.insert("revolve","");
-  
+
 #   include "setRootCase.H"
 #   include "createTime.H"
 
@@ -480,7 +480,7 @@ int main(int argc, char *argv[])
 	    IOobject::NO_WRITE
 	    )
 	   );
-        
+
 	revolve = readBool(rotationalDict.lookup("revolve"));
 
 	if(rotationalDict.found("makeAxialOldMode") &&
@@ -502,9 +502,9 @@ int main(int argc, char *argv[])
         if( axisName == wedgeName) {
             FatalErrorIn(args.executable())
                 << "Patch " << axisName << " can't be used as axis and wedge patch" << endl
-                    << exit(FatalError);	
+                    << exit(FatalError);
         }
-    
+
         if(rotationalDict.found("wedgeAngle")) {
 	    wedgeAngle=readScalar(rotationalDict["wedgeAngle"]);
         }
@@ -517,7 +517,7 @@ int main(int argc, char *argv[])
     if(offset<0) {
       FatalErrorIn(args.executable())
 	<< "Offset " << offset << " smaller than 0" << endl
-	<< exit(FatalError);	
+	<< exit(FatalError);
     }
     if(offset>0) {
 	Info << " Adding offset " << offset << endl;
@@ -539,7 +539,7 @@ int main(int argc, char *argv[])
 	  << "Patches are " << patches.names()
 	  << exit(FatalError);
       }
-    
+
     if(oldMode) {
       if (patches.findPatchID(axisName) == -1)
 	{
@@ -550,13 +550,13 @@ int main(int argc, char *argv[])
 	}
 
       const polyPatch &axisPatch=patches[patches.findPatchID(axisName)];
-      
+
       theAxis=getAxis(axisPatch,approx);
     } else {
       theAxis=linie(origin,origin+rotation);
       offset=0;
     }
-    
+
     Info << "The rotation-axis: " << theAxis << "\n" << endl;
 
     Info << "Creating wedge with an opening angle of " << wedgeAngle << " degrees\n" << endl;
@@ -581,7 +581,7 @@ int main(int argc, char *argv[])
     }
 
     if(distance>SMALL) {
-        Info << "Distance of axis to patch is " << distance 
+        Info << "Distance of axis to patch is " << distance
             << " -> not changing the patch type" << endl;
     }
 

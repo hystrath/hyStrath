@@ -37,11 +37,11 @@ Foam::mixingRule::New
 {
     const word partialMixingRuleName = word(thermo.transportDictionary()
             .subDict("transportModels").lookup("mixingRule"));
-        
-    word mixingRuleName = partialMixingRuleName + word("MR") 
-        +'<' + thermo.partialThermoName() + '>'; 
-        
-    Info<< "\nLoading the transport mixing rule:" << tab << partialMixingRuleName 
+
+    word mixingRuleName = partialMixingRuleName + word("MR")
+        +'<' + thermo.partialThermoName() + '>';
+
+    Info<< "\nLoading the transport mixing rule:" << tab << partialMixingRuleName
         << "\n" << endl;
 
     fvMeshConstructorTable::iterator cstrIter =

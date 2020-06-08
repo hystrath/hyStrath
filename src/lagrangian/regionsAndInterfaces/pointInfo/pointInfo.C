@@ -65,28 +65,28 @@ Istream& operator>>(Istream& is, pointInfo& p)
 
 
 //             inline const point& originPoint() const;
-// 
+//
 //             inline const point& currentPoint() const;
-// 
+//
 //             inline const label& currentPointLabel() const;
-// 
+//
 //             inline const scalar& Rsqr() const;
-// 
-// 
+//
+//
 //             inline const bool& isZonePoint() const;
-// 
+//
 //             inline const bool& isAcceptedPoint() const;
-// 
+//
 // //             inline const bool& isRejectedPoint() const;
-// 
+//
 //             inline const bool& isVisitedPoint() const;
-// 
+//
 //             inline const bool& isBoundaryPoint() const;
-// 
+//
 //             inline const bool& isProcBoundaryPoint() const;
-// 
+//
 //             inline const bool& isCyclicBoundaryPoint() const;
-// 
+//
 //             inline const bool& isInterfacePoint() const;
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //

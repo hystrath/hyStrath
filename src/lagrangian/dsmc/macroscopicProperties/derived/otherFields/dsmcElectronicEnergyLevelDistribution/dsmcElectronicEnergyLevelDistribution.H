@@ -71,7 +71,7 @@ private:
 
         word regionName_;
         label regionId_;
-	
+
         scalar binWidth_;
         distribution distr_;
 
@@ -119,7 +119,7 @@ public:
 
         void updateProperties(const dictionary& dict);
 
-}; 		
+};
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

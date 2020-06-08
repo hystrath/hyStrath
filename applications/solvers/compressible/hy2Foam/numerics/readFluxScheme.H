@@ -41,7 +41,7 @@ FixedList<word, 2> blendedSchemes;
 if (mesh.schemesDict().readIfPresent("fluxScheme", fluxScheme))
 {
     if (
-             (fluxScheme == "Tadmor") 
+             (fluxScheme == "Tadmor")
           or (fluxScheme == "Kurganov")
           or (fluxScheme == "AUSM+-up")
           or (fluxScheme == "KFVS")
@@ -142,7 +142,7 @@ if(downgradeSingleT)
 else if(downgradeSingleTv)
 {
     phiEvk.resize(1);
-    
+
     phiEvk.set
     (
         0,
@@ -162,7 +162,7 @@ else if(downgradeSingleTv)
 else
 {
     forAll(phiEvk, speciei)
-    { 
+    {
         phiEvk.set
         (
             speciei,
@@ -177,8 +177,8 @@ else
                 mesh,
                 dimensionedScalar
                 (
-                    "phiEvk" + Y[speciei].name(), 
-                    dimEnergy/dimTime, 
+                    "phiEvk" + Y[speciei].name(),
+                    dimEnergy/dimTime,
                     0.0
                 )
             )

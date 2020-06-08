@@ -188,8 +188,8 @@ void Foam::boundedBox::expandII(const scalar s)
 //     Info << "(before) max_ " << max_ << endl;
     min_ -= vector(1,0,0)*s;
     min_ -= vector(0,1,0)*s;
-    min_ -= vector(0,0,1)*s;    
-    
+    min_ -= vector(0,0,1)*s;
+
     max_ += vector(1,0,0)*s;
     max_ += vector(0,1,0)*s;
     max_ += vector(0,0,1)*s;
@@ -205,8 +205,8 @@ void Foam::boundedBox::contractII(const scalar s)
 //     Info << "(before) max_ " << max_ << endl;
     min_ += vector(1,0,0)*s;
     min_ += vector(0,1,0)*s;
-    min_ += vector(0,0,1)*s;    
-    
+    min_ += vector(0,0,1)*s;
+
     max_ -= vector(1,0,0)*s;
     max_ -= vector(0,1,0)*s;
     max_ -= vector(0,0,1)*s;

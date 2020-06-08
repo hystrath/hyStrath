@@ -61,47 +61,47 @@ class adaptiveLangevin
 {
 
 private:
-    
+
         //- subDictionary containing the properties
         dictionary propsDict_;
-    
+
         scalar deltaT_;
-        
+
         scalar KE1_;
-        
+
         scalar xi_;
-        
+
         scalar invMu_;
-        
+
         scalar gamma_;
-        
+
         scalar T_;
-        
+
         scalar Nd_;
-        
+
         scalar kB_;
-        
+
         scalar N_;
-        
+
         scalar sigma_;
-        
+
         DynamicList<scalar> kE1_;
         DynamicList<scalar> kE2_;
         DynamicList<scalar> angularKE1_;
         DynamicList<scalar> angularKE2_;
-        
-        
+
+
     // Private data
-        
+
         void calculateKE(scalar& kE, scalar& angularKeSum);
-        
+
         void calculateXi();
-       
+
         void updateHalfVelocity();
-        
-        void write();       
-        
-        
+
+        void write();
+
+
 public:
 
     //- Runtime type information
@@ -125,9 +125,9 @@ public:
     // Member Functions
 
         void init();
-        
+
         void evolve();
-        
+
 
 
 };

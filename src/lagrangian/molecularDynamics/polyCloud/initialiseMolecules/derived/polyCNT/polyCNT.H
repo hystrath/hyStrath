@@ -38,7 +38,7 @@ SourceFiles
 
 #ifndef polyCNT_H
 #define polyCNT_H
-// 
+//
 #include "polyConfiguration.H"
 #include "vector.H"
 #include "polyMesh.H"
@@ -70,7 +70,7 @@ private:
     // Private Member Functions
 
 
-        
+
 
 public:
 

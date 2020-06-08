@@ -67,7 +67,7 @@ timeData::timeData
 {}
 
 
-//- Construct from Time and timeDict 
+//- Construct from Time and timeDict
 timeData::timeData
 (
     Time& t,
@@ -178,7 +178,7 @@ void timeData::setInitialData()
     nControlSteps_ = averagingTime_.deltaT()/controlTime_.deltaT();
 
 
-   //-- offsetting the controlling time index so that the time-interval finishes 
+   //-- offsetting the controlling time index so that the time-interval finishes
     //   one time-step ahead of the calcProp time.
     controlTime_.timeIndex()--;
 }
@@ -186,13 +186,13 @@ void timeData::setInitialData()
 
 void timeData::checkAndModifyTimeProperties()
 {
-    //- checking 
+    //- checking
 
     bool changedProperties = false;
     const scalar& deltaTMD = mdTime_.deltaT();
 
     // - 1. averaging time
-    //   for now we ensure that the averaging interval is equal 
+    //   for now we ensure that the averaging interval is equal
     //   to the writing interval
 
     label& nAverages = averagingTime_.nSteps();
@@ -229,14 +229,14 @@ void timeData::checkAndModifyTimeProperties()
 
 
     // - 2. calcProp time
-    //   for now we ensure that the calculation property interval is either 
+    //   for now we ensure that the calculation property interval is either
     //   equal to the writing interval or else smaller than and a divisible factor
     //   of the writing interval
 
 //     label& nCalcProp = calcPropTime_.nSteps();
-// 
+//
 //     Info << "  nCalcProp steps (initial): " << nCalcProp;
-// 
+//
 //     if(nCalcProp < 1)
 //     {
 //         nCalcProp = 1;
@@ -258,13 +258,13 @@ void timeData::checkAndModifyTimeProperties()
 //             }
 //         }
 //     }
-// 
+//
 //     calcPropTime_.deltaT() = deltaTMD * scalar(nCalcProp);
-// 
+//
 //     Info << ", (final): " << nCalcProp
 //          << " time interval: " << calcPropTime_.deltaT()
 //          << endl;
-// 
+//
 
    // - 3. control time
 
@@ -345,8 +345,8 @@ void timeData::checkAndModifyTimeProperties()
     {
         FatalErrorIn("timeData::timeData()")
             << "Time data members have been changed."
-            << " Check and change them appropriately from the time dictionary" 
-            << nl 
+            << " Check and change them appropriately from the time dictionary"
+            << nl
             << exit(FatalError);
     }
 }
@@ -366,7 +366,7 @@ void timeData::setTimeData(const dictionary& timeDict)
     const label nAverages(readLabel(timeDict.lookup("nAverages")));
 //     const label nCalcProp(readLabel(timeDict.lookup("nCalcProp")));
     const label nControls(readLabel(timeDict.lookup("nControls")));
- 
+
     samplingTime_.nSteps() = nSamples;
     averagingTime_.nSteps() = nAverages;
 //     calcPropTime_.nSteps() = nCalcProp;
@@ -415,7 +415,7 @@ const bool& timeData::controlTime() const
 // {
 //     return calcPropTime_.endTime();
 // }
-// 
+//
 
 
 const label& timeData::nSamples() const

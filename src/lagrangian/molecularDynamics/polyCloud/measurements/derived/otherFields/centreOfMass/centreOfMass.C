@@ -96,10 +96,10 @@ void centreOfMass::calculateField()
 {
 
     IDLList<polyMolecule>::iterator mol(molCloud_.begin());
-    
+
     vector centre = vector::zero;
     scalar nMols = 0.0;
-    
+
     for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
     {
         if(findIndex(molIds_, mol().id()) != -1)
@@ -107,25 +107,25 @@ void centreOfMass::calculateField()
             centre += mol().position();
             nMols += 1.0;
         }
-    }    
-    
+    }
+
     if(Pstream::parRun())
     {
         reduce(centre, sumOp<vector>());
         reduce(nMols, sumOp<scalar>());
     }
-    
+
     if(nMols > 0)
     {
         centre /= nMols;
     }
 
     if(Pstream::master())
-    {    
+    {
         centreOfMass_.append(centre);
     }
 }
-    
+
 void centreOfMass::writeField()
 {
     const Time& runTime = time_.time();
@@ -136,17 +136,17 @@ void centreOfMass::writeField()
         {
             vectorField centreOfMass (centreOfMass_.size(), vector::zero);
             scalarField timeField (centreOfMass_.size(), 0.0);
-            
+
             centreOfMass.transfer(centreOfMass_);
             centreOfMass_.clear();
 
             const scalar& deltaT = time_.time().deltaT().value();
-            
+
             forAll(timeField, i)
             {
                 timeField[timeField.size()-i-1]=runTime.timeOutputValue()-(deltaT*i);
-            }            
-            
+            }
+
             writeTimeData
             (
                 casePath_,
@@ -156,8 +156,8 @@ void centreOfMass::writeField()
                 true
             );
         }
-        
-        centreOfMass_.clear();        
+
+        centreOfMass_.clear();
     }
 }
 
@@ -168,7 +168,7 @@ void centreOfMass::measureDuringForceComputation
 ){}
 
 void centreOfMass::measureDuringForceComputationSite
-(   
+(
     polyMolecule* molI,
     polyMolecule* molJ,
     label sI,

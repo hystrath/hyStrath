@@ -64,39 +64,39 @@ neighbourExclusions::neighbourExclusions
 
 void neighbourExclusions::initialiseExclusions()
 {
-    // read in tracking numbers 
+    // read in tracking numbers
     List<label> molPointsA = List<label>(propsDict_.lookup("trackingNumbersA"));
     List<label> molPointsB = List<label>(propsDict_.lookup("trackingNumbersB"));
-    
+
     if(molPointsA.size() != molPointsB.size())
     {
         FatalErrorIn("neighbourExclusions::neighbourExclusions()")
             << "size of trackingNumbersA = " << molPointsA
             << " is not the same as trackingNumbersB = : " << molPointsA
             << nl << "in system/potentialDict"
-            << exit(FatalError);        
+            << exit(FatalError);
     }
-    
+
     tNsA_.setSize(molPointsA.size());
     tNsB_.setSize(molPointsB.size());
-    
+
     forAll(tNsA_, i)
     {
         tNsA_[i]=molPointsA[i];
         tNsB_[i]=molPointsB[i];
     }
-    
+
     label N=molCloud_.moleculeTracking().getMaxTrackingNumber();
-    
+
     Info << "N = " << N << endl;
-    
+
     fullTNs_.setSize(N);
-    
+
     forAll(tNsA_, i)
     {
         label tNA = tNsA_[i];
-        label tNB = tNsB_[i];        
-        
+        label tNB = tNsB_[i];
+
         fullTNs_[tNA].append(tNB);
         fullTNs_[tNB].append(tNA);
     }
@@ -146,7 +146,7 @@ bool neighbourExclusions::excludeSites
                     return true;
                 }
             }
-            
+
             return false;
         }
     }

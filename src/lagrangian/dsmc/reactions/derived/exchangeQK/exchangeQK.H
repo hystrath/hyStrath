@@ -63,19 +63,19 @@ protected:
 
         //- Sub-dictionary containing the reaction properties
         dictionary propsDict_;
-        
+
         //- Position of the molecule in the list of reactants
         label posMolReactant_;
-        
+
         //- Ids of the products
         labelList productIdsExchange_;
-        
+
         //- String to print for the exchange reaction
         word exchangeStr_;
-        
+
         label nTotExchangeReactions_;
         label nExchangeReactionsPerTimeStep_;
-       
+
         scalar heatOfReactionExchangeJoules_;
         scalar aCoeff_, bCoeff_;
 
@@ -86,7 +86,7 @@ protected:
     // Protected Member Functions
 
         virtual void setProperties();
-        
+
         void testExchange
         (
             const dsmcParcel& p,
@@ -96,7 +96,7 @@ protected:
             scalar& totalReactionProbability,
             scalar& reactionProbability
         );
-        
+
         void exchange(dsmcParcel& p, dsmcParcel& q, scalar collisionEnergy);
 
 
@@ -114,13 +114,13 @@ public:
             dsmcCloud& cloud,
             const dictionary& dict
         );
-    
-    
+
+
     // Destructor
-    
+
         ~exchangeQK();
-    
-    
+
+
     // Member Functions
 
         //- Initial configuration - read in properties from chemReactDict
@@ -145,7 +145,7 @@ public:
             const label& typeIdP,
             const label& typeIdQ
         );
-        
+
 
       // Access
 

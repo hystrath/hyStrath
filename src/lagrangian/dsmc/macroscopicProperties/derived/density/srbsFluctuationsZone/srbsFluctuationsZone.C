@@ -62,7 +62,7 @@ srbsFluctuationsZone::srbsFluctuationsZone
     RtField_(time_.totalNAvSteps()+1, 0.0)
 {
 
-    // standard to reading typeIds ------------ 
+    // standard to reading typeIds ------------
     const List<word> molecules (propsDict_.lookup("typeIds"));
 
     DynamicList<word> moleculesReduced(0);
@@ -111,7 +111,7 @@ srbsFluctuationsZone::srbsFluctuationsZone
             << time_.time().system()/"fieldPropertiesDict"
             << exit(FatalError);
     }
-    
+
    // create bin model
     binModel_ = autoPtr<binModel>
     (
@@ -130,9 +130,9 @@ srbsFluctuationsZone::srbsFluctuationsZone
     {
         RtField_.setSize(nInstantSteps_, 0.0);
     }
-    
+
     timeIndex_ = 0;
-    
+
     scalar binWidth = binModel_->binPositions()[1]-binModel_->binPositions()[0];
     domainLength_ = binWidth*nBins;
 }
@@ -154,12 +154,12 @@ void srbsFluctuationsZone::createField()
 
 void srbsFluctuationsZone::calculateField()
 {
-       
+
     const List< DynamicList<dsmcParcel*> >& cellOccupancy
         = cloud_.cellOccupancy();
 
     const labelList& cells = mesh_.cellZones()[regionId_];
-    
+
     forAll(cells, c)
     {
         const label& cellI = cells[c];
@@ -168,7 +168,7 @@ void srbsFluctuationsZone::calculateField()
         forAll(parcelsInCell, pIC)
         {
             dsmcParcel* p = parcelsInCell[pIC];
-            
+
             const vector& rI = p->position();
 
             label n = binModel_->isPointWithinBin(rI, cellI);
@@ -181,9 +181,9 @@ void srbsFluctuationsZone::calculateField()
                     {
                         const point& cC = cloud_.mesh().cellCentres()[cellI];
                         scalar radius = cC.y();
-                        
+
                         scalar RWF = 1.0 + cloud_.maxRWF()*(radius/cloud_.radialExtent());
-                        
+
                         n_[n] += cloud_.nParticle()*RWF;
                     }
                     else
@@ -197,14 +197,14 @@ void srbsFluctuationsZone::calculateField()
 
     Rt_ = 0.0;
     const scalarField& binCentres = binModel_->binPositions();
-    
+
     forAll(binCentres, n)
     {
         scalar volume = binModel_->binVolume(n);
         rt_[n] = (n_[n]/volume)*sin(twoPi*binCentres[n]/domainLength_);
         Rt_ += rt_[n];
     }
-    
+
     Rt_ /= binModel_->nBins();
 
     RtField_[timeIndex_] = Rt_;
@@ -221,16 +221,16 @@ void srbsFluctuationsZone::writeField()
     if(runTime.outputTime())
     {
         timeIndex_ = 0;
-        
+
         if(Pstream::master())
         {
             fileName timePath(runTime.path()/runTime.timeName()/"uniform");
-        
+
             if (!isDir(timePath))
             {
                 mkDir(timePath);
             }
-            
+
             scalar dt = time_.time().deltaT().value();
             scalarField timeField (nInstantSteps_, 0.0);
 
@@ -238,7 +238,7 @@ void srbsFluctuationsZone::writeField()
             {
                 timeField[nInstantSteps_-t-1] = time_.time().timeOutputValue()-dt*t;
             }
-            
+
             writeTimeData
             (
                 casePath_,

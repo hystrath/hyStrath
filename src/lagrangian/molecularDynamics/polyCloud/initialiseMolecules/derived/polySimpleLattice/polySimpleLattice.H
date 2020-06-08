@@ -26,7 +26,7 @@ Class
     polySimpleLattice
 
 Description
-    not parallelised 
+    not parallelised
 
 SourceFiles
     polySimpleLatticeI.H

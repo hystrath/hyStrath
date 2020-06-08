@@ -27,7 +27,7 @@ Class
 
 Description
 
-   
+
 
 SourceFiles
     polyFadeIII.H
@@ -67,49 +67,49 @@ class polyFadeII
         label molId_;
 
         scalar deltaT_;
-        
+
         scalar tauT_;
 
         label n_;
-        
+
         label maxMolTries_;
 
         label nInserted_;
         label nDeleted_;
 
         bool boundedBox_;
-        
+
         bool biggestRadius_;
 
         // insert
         bool closestPositionBoundBox_;
-        bool closestPositionCell_;        
+        bool closestPositionCell_;
         bool exactPosition_;
-        
+
         //delete
         bool deleteClosestPositionBoundBox_;
         bool deleteClosestPosition_;
-        
+
         bool empty_;
-        
+
         // stores information on all processors
-        
+
         DynamicList<label> trackingNumbersIns_;
         DynamicList<label> trackingNumbersDel_;
 
         DynamicList<scalar> timeIns_;
         DynamicList<scalar> timeDel_;
-        
+
         // insertion velocity
         scalar temperature_;
         vector velocity_;
         word velocityOption_;
 
-        // outer list size of idList, inner list positions 
+        // outer list size of idList, inner list positions
         // of existing molecules that are overlapping
         List< DynamicList<vector> > overlappingMolsPositions_;
-        List< DynamicList<label> > overlappingMolsTNs_;        
-        
+        List< DynamicList<label> > overlappingMolsTNs_;
+
     // Private Member Functions
 
         // insert
@@ -128,18 +128,18 @@ class polyFadeII
             const label molId,
             const label special
         );
-        
+
         void setVelocity
         (
             polyMoleculeCloud& molCloud,
             vector& velocity
         );
-        
+
         vector getMaxwellianVelocity
         (
             polyMoleculeCloud& molCloud
-        );        
-        
+        );
+
         label insertMoleculeInBoundBox
         (
             polyMoleculeCloud& molCloud,
@@ -147,7 +147,7 @@ class polyFadeII
             DynamicList<polyMolecule*>& molsInBB,
             DynamicList<label>& failedTNs
         );
-        
+
         label insertMoleculeAtClosestPositionBoundBox
         (
             polyMoleculeCloud& molCloud,
@@ -156,80 +156,80 @@ class polyFadeII
             DynamicList<label>& failedTNs,
             const vector& r
         );
-        
+
         label insertMoleculeAtClosestPositionCell
         (
             polyMoleculeCloud& molCloud,
             const boundedBox& bb,
             DynamicList<label>& failedTNs,
             const vector& r
-        );        
-        
+        );
+
         label insertMoleculeAtExactPosition
         (
             polyMoleculeCloud& molCloud,
             const boundedBox& bb,
             const vector& r
-        );        
-        
+        );
+
         // delete
-        
+
         void deleteMoleculeFromCloud
         (
             polyMoleculeCloud& molCloud,
             polyMolecule& mol
         );
-        
+
         label deleteMoleculeFromClosestPositionBoundBox
         (
             polyMoleculeCloud& molCloud,
             const boundedBox& bb,
             const vector& r
         );
-        
+
         label deleteMoleculeFromClosestPosition
         (
             polyMoleculeCloud& molCloud,
             const boundedBox& bb,
             const vector& r
         );
-        
+
         // updating
-        
+
         void insertInLists
         (
             DynamicList<label>& tNsIns,
             DynamicList<label>& tNsDel,
             DynamicList<scalar>& timeIns,
-            DynamicList<scalar>& timeDel 
+            DynamicList<scalar>& timeDel
         );
 
-        
+
         void updateLists
         (
             DynamicList<label>& tNsIns,
             DynamicList<label>& tNsDel
         );
-        
+
         // overlapping
         void deleteMolecules
         (
             polyMoleculeCloud& molCloud,
             const DynamicList<label>& tNs
-        );       
-        
+        );
+
         void readProperties();
 
         bool chooseRandomPoint
         (
             const polyMesh& mesh,
             const boundedBox& bb,
-            const vector& rI, 
+            const vector& rI,
             const scalar& R,
             label& cellI,
             vector& rStart
         );
-    
+
         void pickExistingMoleculeBiggestRadius
         (
             const DynamicList<polyMolecule*>& molsInBB,
@@ -238,7 +238,7 @@ class polyFadeII
             vector& rI,
             scalar& R
         );
-        
+
         void pickExistingMoleculeClosestPositionCell
         (
             polyMoleculeCloud& molCloud,
@@ -248,7 +248,7 @@ class polyFadeII
             const vector& r,
             scalar& R
         );
-        
+
         void pickExistingMoleculeClosestPositionBoundBox
         (
             const DynamicList<polyMolecule*>& molsInBB,
@@ -256,8 +256,8 @@ class polyFadeII
             label& tN,
             vector& rI,
             const vector& r,
-            scalar& R     
-        );          
+            scalar& R
+        );
 
 
 public:
@@ -293,23 +293,23 @@ public:
 
         void createInitialConfiguration
         (
-            const dictionary& dict,        
+            const dictionary& dict,
             const label& molId,
             const scalar& deltaT,
             const word& insertOption,
             const word& deleteOption
         );
-        
+
         void setDeleteOption(const word& option);
-        
-        void setInsertOption(const word& option);        
+
+        void setInsertOption(const word& option);
 
         void controlMolecules
         (
             polyMoleculeCloud& molCloud,
             const label& insertOrDelete,
             const boundedBox& bb,
-            const List<vector>& positions 
+            const List<vector>& positions
         );
 
 
@@ -319,7 +319,7 @@ public:
         );
 
         void checkFractions(polyMoleculeCloud& molCloud);
-        
+
         // Access
 
             inline const label& nInserted() const;
@@ -332,11 +332,11 @@ public:
             inline scalar& temperature();
             inline const vector& velocity() const;
             inline vector& velocity();
-            
+
         // Check
 
         // Edit
-            
+
         // Write
 
             void write
@@ -345,7 +345,7 @@ public:
                 const fileName& fixedPathName,
                 const fileName& timePath
             );
-            
+
             void output(Time& time);
 
     // Member Operators

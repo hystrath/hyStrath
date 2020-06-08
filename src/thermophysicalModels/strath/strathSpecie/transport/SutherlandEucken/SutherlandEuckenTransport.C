@@ -64,7 +64,7 @@ void Foam::SutherlandEuckenTransport<Thermo>::write(Ostream& os) const
     dictTransport.subDict("SutherlandEucken").add("As", As_);
     dictTransport.subDict("SutherlandEucken").add("Ts", Ts_);
     os  << indent << dictTransport.dictName() << dictTransport;
-    
+
     dictionary dictSpecies("specie");
     dictSpecies.add("eta_s", eta_s_);
     os  << indent << dictSpecies.dictName() << dictSpecies;

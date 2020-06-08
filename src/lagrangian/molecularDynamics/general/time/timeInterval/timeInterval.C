@@ -134,7 +134,7 @@ timeInterval& timeInterval::operator++()
 		endTime_ = true;
 		timeIndex_ = 0;
 	}
-	
+
     return *this;
 }
 

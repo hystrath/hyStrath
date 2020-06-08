@@ -28,9 +28,9 @@ Class
 Description
 
     RPM method.
-    
-    Li J, Liao DY, Yip S (1998) Coupling continuum to molecular-dynamics 
-    simulation: reflecting particle method and the field estimator. 
+
+    Li J, Liao DY, Yip S (1998) Coupling continuum to molecular-dynamics
+    simulation: reflecting particle method and the field estimator.
     Phys Rev E 57(6):7259
 
 
@@ -67,23 +67,23 @@ class dsmcReflectiveParticleMembranePatch
 private:
 
     // Private data
-    
+
         dictionary propsDict_;
 
         //- typeIds to be adsorbed
         labelList typeIds_;
-        
-        //- Probability a particle has of being specularly reflected when 
+
+        //- Probability a particle has of being specularly reflected when
         //  stricking the membrane
         scalar specularReflectionProb_;
-        
+
         //- Probability a particle of a given species has of being specularly
         //  reflected when stricking the membrane
         scalarList specularReflectionProbs_;
 
         //- Cumulative number of specular reflections
         label nReflections_;
-        
+
         //- Cumulative number of particle passing through the interface
         label nRejections_;
 
@@ -91,9 +91,9 @@ private:
     // Private Member Functions
 
         void setProperties();
-        
+
         void readProperties();
-        
+
         //- Find the position on which the particle initially striked
         vector findOriginalPosition(const dsmcParcel& p, const label fI);
 

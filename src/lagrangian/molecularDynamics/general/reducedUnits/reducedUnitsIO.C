@@ -48,12 +48,12 @@ Foam::Ostream& Foam::operator<<(Ostream& os, const reducedUnits& rU)
         << tab << "refHeatFlux = " << rU.refHeatFlux() << " kg/s^-3" << nl
         << tab << "refAmpere = " << rU.refAmpere() << " C/s" << nl
         << nl << "Constants: " << nl
-        << tab << "Boltzmann constant, kb = " << reducedUnits::kb 
+        << tab << "Boltzmann constant, kb = " << reducedUnits::kb
                << " J/K, reduced: " << rU.kB() << nl
-        << tab << "Elementary charge = " << reducedUnits::elementaryCharge 
+        << tab << "Elementary charge = " << reducedUnits::elementaryCharge
                << " C, reduced: " << rU.epsilonCharge() << nl
-        << tab << "Vacuum permittivity = " << reducedUnits::vacuumPermittivity 
-               << " m^-3 kg^-1 C^2 s^2, reduced: " << rU.epsilonPermittivity() 
+        << tab << "Vacuum permittivity = " << reducedUnits::vacuumPermittivity
+               << " m^-3 kg^-1 C^2 s^2, reduced: " << rU.epsilonPermittivity()
         << endl;
 
     // Check state of Ostream

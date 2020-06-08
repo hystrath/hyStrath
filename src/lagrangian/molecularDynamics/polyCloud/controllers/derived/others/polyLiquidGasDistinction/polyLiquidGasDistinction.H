@@ -32,7 +32,7 @@ SourceFiles
    polyLiquidGasDistinction.H
     polyLiquidGasDistinction.C
     polyLiquidGasDistinctionIO.C
- 
+
 \*---------------------------------------------------------------------------*/
 
 #ifndef polyLiquidGasDistinction_H
@@ -49,7 +49,7 @@ SourceFiles
 
 namespace Foam
 {
-    
+
 /*---------------------------------------------------------------------------*\
 *                           Class polyLiquidGasDistinction Declaration
 *----------------------------------------------------------------------------*/
@@ -58,58 +58,58 @@ class polyLiquidGasDistinction
 :
     public polyStateController
 {
-    
+
 private:
-    
+
     // Private data
-        
+
         //- subDictionary containing the properties
         dictionary propsDict_;
-        
+
         // propertyField fields_;
-        
+
         word regionName_;
-        
+
         // 	word RregionName_;
-        
+
         label regionId_;
-        
+
         // 	label RregionId_;
         // word fieldName_;
-        
-        // 	
+
+        //
         scalar rMax_;
 
         label liquidLimit_;
         label molIdA_;
         label molIdB_;
-        
+
         labelList lg_;
-        
-        
+
+
         // Private Member Functions
-        
+
         void evaluatePair
         (
             polyMolecule* molI,
             polyMolecule* molJ
         );
-        
+
         void evaluatePairS
         (
             polyMolecule* molReal,
             polyMolecule* molRef
         );
-        
+
         void readProperties();
-    
+
 public:
-    
+
     //- Runtime type information
     TypeName("polyLiquidGasDistinction");
-    
+
     // Constructors
-    
+
         //- Construct from components
         polyLiquidGasDistinction
         (
@@ -117,12 +117,12 @@ public:
             polyMoleculeCloud& molCloud,
             const dictionary& dict
         );
-        
+
     // Destructor
-        
+
         ~polyLiquidGasDistinction();
-        
-        
+
+
     // Member Functions
         //- create an initial configuration
         void initialConfiguration();
@@ -135,20 +135,20 @@ public:
         (
             polyMolecule* molI,
             polyMolecule* molJ
-        );        
+        );
         void controlAfterForces();
         void controlAfterVelocityII();
-        
+
         //- calculate any required properties (end of time-step)
-        void calculateProperties(); 
-        
+        void calculateProperties();
+
         //- output data (optional)
         void output
         (
-            const fileName& fixedPathName, 
+            const fileName& fixedPathName,
             const fileName& timePath
         );
-        
+
         //- update properties from a modified dictionary (optional)
         void updateProperties(const dictionary&);
 };

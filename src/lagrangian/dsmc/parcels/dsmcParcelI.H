@@ -102,59 +102,59 @@ inline Foam::dsmcParcel::constantProperties::constantProperties
     {
         FatalErrorIn("dsmcParcel::constantProperties::constantProperties")
             << "Number of characteristic vibrational temperatures is "
-            << thetaV_.size() << ", instead of " << nVibrationalModes_ << nl 
+            << thetaV_.size() << ", instead of " << nVibrationalModes_ << nl
             << exit(FatalError);
     }
-    
+
     if (Zref_.size() != nVibrationalModes_)
     {
         FatalErrorIn("dsmcParcel::constantProperties::constantProperties")
             << "Number of reference vibrational relaxation numbers is"
-            << Zref_.size() << ", instead of " << nVibrationalModes_ << nl 
+            << Zref_.size() << ", instead of " << nVibrationalModes_ << nl
             << exit(FatalError);
     }
-    
+
     if (TrefZv_.size() != nVibrationalModes_)
     {
         FatalErrorIn("dsmcParcel::constantProperties::constantProperties")
             << "Number of reference temperature for vibrational relaxation is"
-            << TrefZv_.size() << ", instead of " << nVibrationalModes_ << nl 
+            << TrefZv_.size() << ", instead of " << nVibrationalModes_ << nl
             << exit(FatalError);
     }
-    
+
     if (electronicDegeneracyList_.size() != nElectronicLevels_)
     {
         FatalErrorIn("dsmcParcel::constantProperties::constantProperties")
             << "Number of degeneracy levels should be "
-            << nElectronicLevels_ << ", instead of " 
-            << electronicDegeneracyList_.size() << nl 
+            << nElectronicLevels_ << ", instead of "
+            << electronicDegeneracyList_.size() << nl
             << exit(FatalError);
     }
-    
+
     if (electronicEnergyList_.size() != nElectronicLevels_)
     {
         FatalErrorIn("dsmcParcel::constantProperties::constantProperties")
             << "Number of electronic energy levels should be "
-            << nElectronicLevels_ << ", instead of " 
-            << electronicEnergyList_.size() << nl 
+            << nElectronicLevels_ << ", instead of "
+            << electronicEnergyList_.size() << nl
             << exit(FatalError);
     }
-    
+
     if (charge_ < -1 || charge_ > 1)
     {
         FatalErrorIn("dsmcParcel::constantProperties::constantProperties")
             << "Charge value should be 0 for neutrals, "
-            << "1 for ions, or -1 for electrons" << ", instead of " 
-            << charge_ << nl 
+            << "1 for ions, or -1 for electrons" << ", instead of "
+            << charge_ << nl
             << exit(FatalError);
     }
-    
+
     charDissQuantumLevel_.setSize(nVibrationalModes_, 0);
     forAll(charDissQuantumLevel_, mode)
     {
         charDissQuantumLevel_[mode] = thetaD_/thetaV_[mode];
     }
-    
+
     //- Finding the type of the particle
     if (charge_ == -1)
     {
@@ -259,7 +259,7 @@ inline Foam::scalar Foam::dsmcParcel::constantProperties::sigmaT() const
 }
 
 
-inline Foam::scalar 
+inline Foam::scalar
 Foam::dsmcParcel::constantProperties::rotationalDegreesOfFreedom() const
 {
     return rotationalDegreesOfFreedom_;
@@ -385,16 +385,16 @@ Foam::dsmcParcel::constantProperties::eVib_m
 }
 
 
-inline Foam::scalar 
+inline Foam::scalar
 Foam::dsmcParcel::constantProperties::eVib_tot(const labelList& vibLevel) const
 {
     scalar vibEnergy = 0.0;
-    
+
     forAll(vibLevel, i)
     {
         vibEnergy += eVib_m(i, vibLevel[i]);
     }
-    
+
     return vibEnergy;
 }
 
@@ -403,12 +403,12 @@ inline Foam::scalarList
 Foam::dsmcParcel::constantProperties::eVib(const labelList& vibLevel) const
 {
     scalarList vibEnergy(nVibrationalModes_, 0.0);
-    
+
     forAll(vibEnergy, i)
     {
         vibEnergy[i] = eVib_m(i, vibLevel[i]);
     }
-    
+
     return vibEnergy;
 }
 
@@ -496,12 +496,12 @@ inline bool Foam::dsmcParcel::isTracked() const
     /*if (tracked_)
     {
         return true;
-    } 
-    
+    }
+
     return false;*/// TODO TO BE REINTRODUCED
-    
+
     return tracked_.tracked();
-    
+
 }
 
 
@@ -523,7 +523,7 @@ inline bool Foam::dsmcParcel::isStuck() const
     {
         return true;
     }
-    
+
     return false;
 }
 
@@ -534,7 +534,7 @@ inline bool Foam::dsmcParcel::isFree() const
     {
         return false;
     }
-    
+
     return true;
 }
 
@@ -610,14 +610,14 @@ inline void Foam::dsmcParcel::setTracked
             initialTime,
             initialPosition
         );*/ // TODO TO BE REINTRODUCED
-    
+
     tracked_ = dsmcParcel::TrackedParcel
         (
             tracked,
             inPatchId,
             initialTime,
             initialPosition
-        );    
+        );
 }
 
 
@@ -638,7 +638,7 @@ inline void Foam::dsmcParcel::setTracked
             initialTime,
             initialPosition
         );*/ // TODO TO BE REINTRODUCED
-        
+
     tracked_ = dsmcParcel::TrackedParcel
         (
             tracked,
@@ -667,7 +667,7 @@ inline void Foam::dsmcParcel::setTracked
             initialPosition,
             distanceTravelled
         );*/ // TODO TO BE REINTRODUCED
-        
+
     tracked_ = dsmcParcel::TrackedParcel
         (
             tracked,
@@ -675,7 +675,7 @@ inline void Foam::dsmcParcel::setTracked
             initialTime,
             initialPosition,
             distanceTravelled
-        );    
+        );
 }
 
 
@@ -700,7 +700,7 @@ inline void Foam::dsmcParcel::setTracked
             distanceTravelled//,
             //parcelTrajectory
         );*/  // TODO TO BE REINTRODUCED
-        
+
     tracked_ = dsmcParcel::TrackedParcel
         (
             tracked,
@@ -710,7 +710,7 @@ inline void Foam::dsmcParcel::setTracked
             initialPosition,
             distanceTravelled//,
             //parcelTrajectory
-        );    
+        );
 }
 
 

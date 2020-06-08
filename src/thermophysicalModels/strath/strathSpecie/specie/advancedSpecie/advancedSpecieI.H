@@ -247,7 +247,7 @@ inline void advancedSpecie::operator-=(const advancedSpecie& as)
 
     molWeight_ =
         nMoles_/diffnMoles*molWeight_
-      - as.nMoles_/diffnMoles*as.molWeight_; 
+      - as.nMoles_/diffnMoles*as.molWeight_;
 
     nMoles_ = diffnMoles;
 }

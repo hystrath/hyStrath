@@ -84,7 +84,7 @@ class dsmcStandardFields
 
         // Rotational degree of freedom density field
         volScalarField rotationalDof_;
-	
+
 	//- Vibrational energy density field
         volScalarField vibrationalE_;
 
@@ -93,10 +93,10 @@ class dsmcStandardFields
 
         //- Momentum density field
         volVectorField momentum_;
-	
+
 	//- boundaryT field
 //         volScalarField boundaryRadiationT_;
-        
+
 
 
 public:
@@ -213,7 +213,7 @@ public:
 
     //- Return the momentum density field
     inline const volVectorField& momentum() const;
-	
+
 	//- Return the boundary density field
 // 	inline const volScalarField& boundaryRadiationT() const;
 

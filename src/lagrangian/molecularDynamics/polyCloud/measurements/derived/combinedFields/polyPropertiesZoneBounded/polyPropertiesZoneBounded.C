@@ -109,15 +109,15 @@ polyPropertiesZoneBounded::polyPropertiesZoneBounded
 	tEField_(1, 0.0),
     outputField_(5, true),
     nAvTimeSteps_(0.0),
-    resetAtOutput_(true)    
+    resetAtOutput_(true)
 {
     bool readFromStore = true;
-    
+
     if (propsDict_.found("readFromStorage"))
     {
         readFromStore = Switch(propsDict_.lookup("readFromStorage"));
-    }        
-    
+    }
+
     resetAtOutput_ = Switch(propsDict_.lookup("resetAtOutput"));
 
     if (!resetAtOutput_ && readFromStore)
@@ -147,13 +147,13 @@ polyPropertiesZoneBounded::polyPropertiesZoneBounded
         }
         else
         {
-            Info << "Reading from storage, e.g. noAvTimeSteps = " << nAvTimeSteps_ << endl;              
+            Info << "Reading from storage, e.g. noAvTimeSteps = " << nAvTimeSteps_ << endl;
 //             Pout<< "Properties read-in are: mols = " << mols_ << ", mass = " << mass_
 //                 << ", averagingTime = " << nAvTimeSteps_
 //                 << endl;
         }
     }
-    
+
     // build bound boxes
 
     setBoundBoxes();
@@ -188,7 +188,7 @@ polyPropertiesZoneBounded::polyPropertiesZoneBounded
         forAll(measurements, i)
         {
             const word& propertyName(measurements[i]);
-    
+
             if(findIndex(propertyNames, propertyName) == -1)
             {
                 propertyNames.append(propertyName);
@@ -235,12 +235,12 @@ polyPropertiesZoneBounded::polyPropertiesZoneBounded
                 (propertyName != "pressure") &&
                 (propertyName != "energy")
             )
-            {    
+            {
                 FatalErrorIn("polyPropertiesZoneBounded::polyPropertiesZoneBounded()")
                     << "Cannot find measurement property: " << propertyName
                     << nl << "in: "
                     << time_.time().system()/"fieldPropertiesDict"
-                    << exit(FatalError);            
+                    << exit(FatalError);
             }
         }
     }
@@ -260,12 +260,12 @@ void polyPropertiesZoneBounded::createField()
 void polyPropertiesZoneBounded::calculateField()
 {
     nAvTimeSteps_ += 1.0;
-    
+
     scalar mols = 0.0;
     scalar mass = 0.0;
     vector mom = vector::zero;
     vector angularSpeed = vector::zero;
-    
+
     {
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
 
@@ -283,13 +283,13 @@ void polyPropertiesZoneBounded::calculateField()
                         const scalar& massI = molCloud_.cP().mass(mol().id());
                         mass += massI;
                         mom += massI*mol().v();
-                        
+
                         const diagTensor& molMoI(molCloud_.cP().momentOfInertia(mol().id()));
 
-                        // angular speed 
+                        // angular speed
                         const vector& molOmega(inv(molMoI) & mol().pi());
 
-                        angularSpeed += molOmega;                     
+                        angularSpeed += molOmega;
                     }
                 }
             }
@@ -299,31 +299,31 @@ void polyPropertiesZoneBounded::calculateField()
     // - parallel processing
     if(Pstream::parRun())
     {
-        reduce(mols, sumOp<scalar>());            
+        reduce(mols, sumOp<scalar>());
         reduce(mass, sumOp<scalar>());
         reduce(mom, sumOp<vector>());
         reduce(angularSpeed, sumOp<vector>());
     }
-    
+
     vector velocity = vector::zero;
-    
+
     if(mass > 0.0)
     {
         velocity = mom/mass;
     }
-    
-    velocityB_ += velocity;    
-    
-    vector angularVelocity = vector::zero;    
-    
+
+    velocityB_ += velocity;
+
+    vector angularVelocity = vector::zero;
+
     if(mols > 0.0)
     {
         angularVelocity = angularSpeed/mols;
     }
-    
-    mols = 0.0; 
-    mass = 0.0; 
-    mom = vector::zero; 
+
+    mols = 0.0;
+    mass = 0.0;
+    mom = vector::zero;
     scalar kE = 0.0;
     tensor virialTensor = tensor::zero;
     tensor kineticTensor = tensor::zero;
@@ -347,28 +347,28 @@ void polyPropertiesZoneBounded::calculateField()
                     if(boxes_[b].contains(mol().position()))
                     {
                         mols += 1.0;
-    
+
                         const scalar& massI = molCloud_.cP().mass(mol().id());
-    
+
                         mass += massI;
                         mom += massI*mol().v();
-    
+
                         dof += molCloud_.cP().degreesOfFreedom(mol().id());
-    
+
                         kE += 0.5*massI*magSqr(mol().v() - velocity);
-                        
+
                         const diagTensor& molMoI(molCloud_.cP().momentOfInertia(mol().id()));
-                        
+
                         const vector& molOmega(inv(molMoI) & mol().pi());
                         angularKeSum += 0.5*(molOmega & molMoI & molOmega);
-    
-                        kineticTensor += ( massI*(mol().v() - velocity)*(mol().v() - velocity) ) 
+
+                        kineticTensor += ( massI*(mol().v() - velocity)*(mol().v() - velocity) )
                                         + ( ((molOmega - angularVelocity) & molMoI) * (molOmega-angularVelocity));
-                                        
+
                         kineticTensor2 += ( massI*(mol().v() - velocity)*(mol().v() - velocity) );
-                        
+
                         virialTensor += 0.5*mol().rf();
-    
+
                         keSum += 0.5*massI*magSqr(mol().v());
                         peSum += mol().potentialEnergy();
                     }
@@ -376,7 +376,7 @@ void polyPropertiesZoneBounded::calculateField()
             }
         }
     }
-    
+
     mols_ += mols;
     mass_ += mass;
     mom_ += mom;
@@ -404,7 +404,7 @@ void polyPropertiesZoneBounded::calculateField()
         scalar keSum = keSum_;
         scalar peSum = peSum_;
         scalar angularKeSum = angularKeSum_;
-        
+
 
         if(Pstream::parRun())
         {
@@ -431,7 +431,7 @@ void polyPropertiesZoneBounded::calculateField()
         massDensityField_[timeIndex_] = mass/(totalVolume_*nAvTimeSteps);
 
 
-        // velocity 
+        // velocity
         vector velocityA = vector::zero;
 
         if(mass > 0.0)
@@ -471,7 +471,7 @@ void polyPropertiesZoneBounded::calculateField()
         scalar zonePKin = 0.0;
 
         tensor zoneStress = tensor::zero;
-        
+
         scalar zonePressure2 = 0.0;
         tensor zoneStress2 = tensor::zero;
 
@@ -485,7 +485,7 @@ void polyPropertiesZoneBounded::calculateField()
 
             zoneStress = ((3.0*mols*kineticTensor/dof) + virialTensor)
                                     /(totalVolume_*nAvTimeSteps);
-                                    
+
             zonePressure2 = tr( (3.0*mols*kineticTensor2/dof) + virialTensor)
                                     /( 3.0*totalVolume_*nAvTimeSteps );
 
@@ -496,7 +496,7 @@ void polyPropertiesZoneBounded::calculateField()
         stressField_[timeIndex_] = zoneStress;
 
         pressureField_[timeIndex_] = zonePressure;
-        
+
         stressField2_[timeIndex_] = zoneStress2;
 
         pressureField2_[timeIndex_] = zonePressure2;
@@ -541,7 +541,7 @@ void polyPropertiesZoneBounded::calculateField()
             peSum_ = 0.0;
             angularKeSum_ = 0.0;
         }
-        else 
+        else
         {
             writeToStorage();
         }
@@ -557,13 +557,13 @@ void polyPropertiesZoneBounded::writeToStorage()
         file << nAvTimeSteps_ << endl;
         file << mols_ << endl;
         file << mass_ << endl;
-        file << mom_ << endl; 
+        file << mom_ << endl;
         file << kE_ << endl;
         file << velocityB_ << endl;
         file << virialTensor_ << endl;
         file << kineticTensor_ << endl;
         file << kineticTensor2_ << endl;
-        file << dof_ << endl;        
+        file << dof_ << endl;
         file << keSum_ << endl;
         file << peSum_ << endl;
         file << angularKeSum_ << endl;
@@ -588,12 +588,12 @@ bool polyPropertiesZoneBounded::readFromStorage()
         scalar mols;
         scalar mass;
         vector mom;
-        scalar kE;        
+        scalar kE;
         vector velocityB;
         tensor virialTensor;
         tensor kineticTensor;
         tensor kineticTensor2;
-        scalar dof;        
+        scalar dof;
         scalar keSum;
         scalar peSum;
         scalar angularKeSum;
@@ -607,7 +607,7 @@ bool polyPropertiesZoneBounded::readFromStorage()
         file >> virialTensor;
         file >> kineticTensor;
         file >> kineticTensor2;
-        file >> dof;        
+        file >> dof;
         file >> keSum;
         file >> peSum;
         file >> angularKeSum;
@@ -626,7 +626,7 @@ bool polyPropertiesZoneBounded::readFromStorage()
         angularKeSum_ = angularKeSum;
     }
 
-    return goodFile;    
+    return goodFile;
 }
 
 void polyPropertiesZoneBounded::writeField()
@@ -639,7 +639,7 @@ void polyPropertiesZoneBounded::writeField()
         if(Pstream::master())
         {
             scalarField timeField(1, runTime.timeOutputValue());
-            
+
             // output densities
             if(outputField_[0])
             {
@@ -661,7 +661,7 @@ void polyPropertiesZoneBounded::writeField()
                     densityField_,
                     true
                 );
-    
+
                 writeTimeData
                 (
                     casePath_,
@@ -683,7 +683,7 @@ void polyPropertiesZoneBounded::writeField()
                     velocityFieldA_,
                     true
                 );
-    
+
                 writeTimeData
                 (
                     casePath_,
@@ -692,7 +692,7 @@ void polyPropertiesZoneBounded::writeField()
                     velocityFieldB_,
                     true
                 );
-    
+
                 writeTimeData
                 (
                     casePath_,
@@ -737,7 +737,7 @@ void polyPropertiesZoneBounded::writeField()
                     stressField_,
                     true
                 );
-    
+
                 writeTimeData
                 (
                     casePath_,
@@ -746,8 +746,8 @@ void polyPropertiesZoneBounded::writeField()
                     pressureField_,
                     true
                 );
-                
-                
+
+
                 writeTimeData
                 (
                     casePath_,
@@ -756,7 +756,7 @@ void polyPropertiesZoneBounded::writeField()
                     stressField2_,
                     true
                 );
-    
+
                 writeTimeData
                 (
                     casePath_,
@@ -797,7 +797,7 @@ void polyPropertiesZoneBounded::writeField()
                     kEField_,
                     true
                 );
-    
+
                 writeTimeData
                 (
                     casePath_,
@@ -806,7 +806,7 @@ void polyPropertiesZoneBounded::writeField()
                     pEField_,
                     true
                 );
-    
+
                 writeTimeData
                 (
                     casePath_,
@@ -818,7 +818,7 @@ void polyPropertiesZoneBounded::writeField()
             }
 
             const reducedUnits& rU = molCloud_.redUnits();
-    
+
             if(rU.outputSIUnits())
             {
                 // output densities
@@ -833,7 +833,7 @@ void polyPropertiesZoneBounded::writeField()
                         molField_,
                         true
                     );
-    
+
                     writeTimeData
                     (
                         casePath_,
@@ -842,7 +842,7 @@ void polyPropertiesZoneBounded::writeField()
                         densityField_*rU.refNumberDensity(),
                         true
                     );
-    
+
                     writeTimeData
                     (
                         casePath_,
@@ -865,7 +865,7 @@ void polyPropertiesZoneBounded::writeField()
                         velocityFieldA_*rU.refVelocity(),
                         true
                     );
-        
+
                     writeTimeData
                     (
                         casePath_,
@@ -874,7 +874,7 @@ void polyPropertiesZoneBounded::writeField()
                         velocityFieldB_*rU.refVelocity(),
                         true
                     );
-        
+
                     writeTimeData
                     (
                         casePath_,
@@ -909,7 +909,7 @@ void polyPropertiesZoneBounded::writeField()
                         stressField_*rU.refPressure(),
                         true
                     );
-        
+
                     writeTimeData
                     (
                         casePath_,
@@ -931,7 +931,7 @@ void polyPropertiesZoneBounded::writeField()
                         kEField_*rU.refEnergy(),
                         true
                     );
-        
+
                     writeTimeData
                     (
                         casePath_,
@@ -940,7 +940,7 @@ void polyPropertiesZoneBounded::writeField()
                         pEField_*rU.refEnergy(),
                         true
                     );
-        
+
                     writeTimeData
                     (
                         casePath_,

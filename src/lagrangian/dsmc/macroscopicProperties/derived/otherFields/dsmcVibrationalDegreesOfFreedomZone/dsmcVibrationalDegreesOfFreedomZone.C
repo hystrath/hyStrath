@@ -123,13 +123,13 @@ dsmcVibrationalDegreesOfFreedomZone::dsmcVibrationalDegreesOfFreedomZone
             << time_.time().system()/"fieldPropertiesDict"
             << exit(FatalError);
     }
-    
+
     vibrationalETotal_.setSize(typeIds_.size());
-    
+
     nParcels_.setSize(typeIds_.size());
-    
+
     vibT_.setSize(typeIds_.size());
-    
+
     vDof_.setSize(typeIds_.size());
 }
 
@@ -145,7 +145,7 @@ dsmcVibrationalDegreesOfFreedomZone::~dsmcVibrationalDegreesOfFreedomZone()
 void dsmcVibrationalDegreesOfFreedomZone::createField()
 {
     Info << "Initialising dsmcVibrationalDegreesOfFreedomZone field" << endl;
-    
+
     forAll(vibrationalETotal_, i)
     {
         vibrationalETotal_[i].setSize(cloud_.constProps(typeIds_[i]).nVibrationalModes(), 0.0);
@@ -166,13 +166,13 @@ void dsmcVibrationalDegreesOfFreedomZone::calculateField()
         {
             const label& cellI = cells[c];
             const List<dsmcParcel*>& parcelsInCell = cellOccupancy[cellI];
-            
+
             forAll(vibrationalETotal_, iD)
             {
                 forAll(parcelsInCell, pIC)
                 {
                     dsmcParcel* p = parcelsInCell[pIC];
-    
+
                     if(p->typeId() == typeIds_[iD])
                     {
 //                         vibrationalETotal_[iD] += p->vibLevel()*physicoChemical::k.value()*cloud_.constProps(p->typeId()).thetaV();
@@ -182,64 +182,64 @@ void dsmcVibrationalDegreesOfFreedomZone::calculateField()
                         }
                         nParcels_[iD] += 1.0;
                     }
-                } 
-            }  
-        }   
+                }
+            }
+        }
     }
 
     if(time_.averagingTime())
     {
 
         const scalar& timeIndex = time_.averagingTimeIndex();
-        
+
         List<scalarList> degreesOfFreedomMode;
         List<scalarList> vibTMode;
-        
-        
+
+
         degreesOfFreedomMode.setSize(typeIds_.size());
         vibTMode.setSize(typeIds_.size());
-                
+
         forAll(vibrationalETotal_, iD)
         {
 //             if(vibrationalETotal_[iD] > VSMALL && nParcels_[iD] > VSMALL)
 //             {
 //                 const scalar& thetaV = cloud_.constProps(typeIds_[iD]).thetaV();
-//                 
+//
 //                 scalar vibrationalEMean = (vibrationalETotal_[iD]/nParcels_[iD]);
 //                 scalar iMean = vibrationalEMean/(physicoChemical::k.value()*thetaV);
-//                 
+//
 //                 vibT_[iD] = thetaV / log(1.0 + (1.0/iMean));
 //                 vDof_[iD] = (2.0*thetaV/vibT_[iD]) / (exp(thetaV/vibT_[iD]) - 1.0);
-//                 
+//
 //                 vDoF_ += vDof_[iD];
-//             } 
-            
+//             }
+
             forAll(vibrationalETotal_[iD], v)
             {
                 if(vibrationalETotal_[iD][v] > VSMALL && nParcels_[iD] > VSMALL)
-                {        
+                {
                     scalar thetaV = cloud_.constProps(typeIds_[iD]).thetaV()[v];
-                    
+
                     scalar vibrationalEMean = (vibrationalETotal_[iD][v]/nParcels_[iD]);
-                    
+
                     scalar iMean = vibrationalEMean/(physicoChemical::k.value()*thetaV);
-                    
+
                     vibTMode[iD][v] = thetaV / log(1.0 + (1.0/iMean));
 
                     degreesOfFreedomMode[iD][v] = (2.0*thetaV/vibTMode[iD][v]) / (exp(thetaV/vibTMode[iD][v]) - 1.0);
                 }
             }
-            
+
             forAll(degreesOfFreedomMode[iD], v)
             {
                 vDoF_ += degreesOfFreedomMode[iD][v];
             }
         }
-        
+
         vDoFField_[timeIndex] = vDoF_;
-        
+
         vDoF_ = 0.0; //reset this so it doesn't keep accumulating, which would bias the overallT towards vibrationalT
-        
+
         if(Pstream::parRun())
         {
             reduce(vDoFField_[timeIndex], sumOp<scalar>());
@@ -255,17 +255,17 @@ void dsmcVibrationalDegreesOfFreedomZone::writeField()
     if(runTime.outputTime())
     {
         fileName timePath(runTime.path()/runTime.timeName()/"uniform");
-    
+
         if (!isDir(timePath))
         {
             mkDir(timePath);
         }
 
-        const scalarField& timeField = time_.averagingTimes();    
+        const scalarField& timeField = time_.averagingTimes();
 
         writeTimeData(timePath, fieldName_+"_"+regionName_+"_vibrationalDegreesOfFreedom", timeField, vDoFField_);
 
-        
+
         //- reset
         if(time_.resetFieldsAtOutput())
         {
@@ -273,7 +273,7 @@ void dsmcVibrationalDegreesOfFreedomZone::writeField()
             vibT_ = scalar(0.0);
             vDof_ = scalar(0.0);
             vibTxvDof_ = scalar(0.0);
-            
+
             forAll(vibrationalETotal_, m)
             {
                 vibrationalETotal_[m] = scalar(0.0);

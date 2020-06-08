@@ -115,15 +115,15 @@ polyControllers::polyControllers
         {
             const entry& polyControllersI = stateControllersList_[sC];
             const dictionary& polyControllersIDict = polyControllersI.dict();
-    
+
             stateControllers_[sC] = autoPtr<polyStateController>
             (
                 polyStateController::New(time_, molCloud, polyControllersIDict)
             );
-    
+
             sCNames_[sC] = stateControllers_[sC]->type();
             sCIds_[sC] = sC;
-    
+
             nStateControllers_++;
 
             if(stateControllers_[sC]->controlInterForces())
@@ -143,17 +143,17 @@ polyControllers::polyControllers
         forAll(fluxControllers_, fC)
         {
             const entry& polyControllersI = fluxControllersList_[fC];
-    
+
             const dictionary& polyControllersIDict = polyControllersI.dict();
-    
+
             fluxControllers_[fC] = autoPtr<polyFluxController>
             (
                 polyFluxController::New(time_, molCloud, polyControllersIDict)
             );
-    
+
             fCNames_[fC] = fluxControllers_[fC]->type();
             fCIds_[fC] = fC;
-    
+
             nFluxControllers_++;
         }
     }
@@ -181,10 +181,10 @@ polyControllers::polyControllers
 
         // directory: case/controllers/poly/stateControllers
         fileName stateControllersPath(polyControllersPath/"stateControllers");
-    
+
         if (!isDir(stateControllersPath))
         {
-            mkDir(stateControllersPath);    
+            mkDir(stateControllersPath);
         }
 
         forAll(stateControllers_, sC)
@@ -196,19 +196,19 @@ polyControllers::polyControllers
 
                 if (!isDir(stateControllerPath))
                 {
-                    mkDir(stateControllerPath);    
+                    mkDir(stateControllerPath);
                 }
-    
+
                 const word& regionName = stateControllers_[sC]->regionName();
 
-                // directory: case/controllers/poly/stateControllers/<stateControllerModel>/<cellZoneName>    
+                // directory: case/controllers/poly/stateControllers/<stateControllerModel>/<cellZoneName>
                 fileName zonePath(stateControllerPath/regionName);
-   
+
                 if (!isDir(zonePath))
                 {
-                    mkDir(zonePath);    
+                    mkDir(zonePath);
                 }
-    
+
                 sCFixedPathNames_[sC] = zonePath;
             }
         }
@@ -235,10 +235,10 @@ polyControllers::polyControllers
 
         // directory: case/controllers/poly/fluxControllers
         fileName fluxControllersPath(polyControllersPath/"fluxControllers");
-    
+
         if (!isDir(fluxControllersPath))
         {
-            mkDir(fluxControllersPath);    
+            mkDir(fluxControllersPath);
         }
 
         forAll(fluxControllers_, fC)
@@ -247,20 +247,20 @@ polyControllers::polyControllers
             {
                 // directory: case/controllers/poly/fluxControllers/<fluxControllerModel>
                 fileName fluxControllerPath(fluxControllersPath/fCNames_[fC]);
-    
+
                 if (!isDir(fluxControllerPath))
                 {
-                    mkDir(fluxControllerPath);    
+                    mkDir(fluxControllerPath);
                 }
 
                 const word& regionName = fluxControllers_[fC]->regionName();
-    
+
                 // directory: case/controllers/poly/fluxControllers/<fluxControllerModel>/<faceZoneName>
                 fileName zonePath(fluxControllerPath/regionName);
-    
+
                 if (!isDir(zonePath))
                 {
-                    mkDir(zonePath);    
+                    mkDir(zonePath);
                 }
 
                 fCFixedPathNames_[fC] = zonePath;
@@ -300,7 +300,7 @@ void polyControllers::controlBeforeMove()
     forAll(stateControllers_, sC)
     {
         stateControllers_[sC]->controlBeforeMove();
-    }    
+    }
 }
 
 
@@ -361,7 +361,7 @@ void polyControllers::calculateStateProps()
 
 
 //- output -- call this function at the end of the MD time-step
-void polyControllers::outputStateResults() 
+void polyControllers::outputStateResults()
 {
     const Time& runTime = time_;
 
@@ -369,70 +369,70 @@ void polyControllers::outputStateResults()
     {
         // -- creating a set of directories in the current time directory
         {
-            List<fileName> timePathNames(sCFixedPathNames_.size()); 
-    
+            List<fileName> timePathNames(sCFixedPathNames_.size());
+
             if(nStateControllers_ > 0)
             {
                 if(Pstream::master())
                 {
                     // directory: case/<timeDir>/uniform
                     fileName uniformTimePath(runTime.path()/runTime.timeName()/"uniform");
-                
+
                     if (!isDir(uniformTimePath))
                     {
                         mkDir(uniformTimePath);
                     }
-        
-        
+
+
                     if(stateControllers_.size() > 0)
                     {
                         // directory: case/<timeDir>/uniform/controllers
                         fileName controllersTimePath(uniformTimePath/"controllers");
-    
+
                         if (!isDir(controllersTimePath))
                         {
                             mkDir(controllersTimePath);
                         }
-    
+
                         // directory: case/<timeDir>/uniform/controllers/poly
                         fileName polyTimePath(controllersTimePath/"poly");
-                    
+
                         if (!isDir(polyTimePath))
                         {
-                            mkDir(polyTimePath);    
+                            mkDir(polyTimePath);
                         }
-    
+
                         // directory: case/<timeDir>/uniform/controllers/poly/
                         fileName polyStateControllersTimePath(polyTimePath/"stateControllers");
-                    
+
                         if (!isDir(polyStateControllersTimePath))
                         {
-                            mkDir(polyStateControllersTimePath);    
+                            mkDir(polyStateControllersTimePath);
                         }
-    
+
                         forAll(stateControllers_, sC)
                         {
                             if(stateControllers_[sC]->writeInTimeDir())
                             {
                                 // directory: case/<timeDir>/uniform/controllers/poly/<stateControllerModel>
                                 fileName sCTimePath(polyStateControllersTimePath/sCNames_[sC]);
-    
+
                                 if(!isDir(sCTimePath))
                                 {
                                     mkDir(sCTimePath);
                                 }
-    
+
                                 //- creating directory for different zones but of the same model
                                 const word& regionName = stateControllers_[sC]->regionName();
-    
+
                                 // directory: case/<timeDir>/uniform/controllers/poly/<stateControllerModel>/<cellZoneName>
                                 fileName zoneTimePath(sCTimePath/regionName);
-    
+
                                 if (!isDir(zoneTimePath))
                                 {
                                     mkDir(zoneTimePath);
                                 }
-    
+
                                 timePathNames[sC] = zoneTimePath;
                             }
                         }
@@ -449,75 +449,75 @@ void polyControllers::outputStateResults()
 
         {
             List<fileName> timePathNames(fCFixedPathNames_.size());
-    
+
             if(nFluxControllers_ > 0)
             {
                 if(Pstream::master())
                 {
-    
+
                     // directory: case/<timeDir>/uniform
                     fileName uniformTimePath(runTime.path()/runTime.timeName()/"uniform");
-                
+
                     if (!isDir(uniformTimePath))
                     {
                         mkDir(uniformTimePath);
                     }
-        
+
                     if(fluxControllers_.size() > 0)
                     {
                     // directory: case/<timeDir>/uniform/controllers
                         fileName controllersTimePath(uniformTimePath/"controllers");
-    
+
                         if (!isDir(controllersTimePath))
                         {
                             mkDir(controllersTimePath);
                         }
-    
+
                         // directory: case/<timeDir>/uniform/controllers/poly
                         fileName polyTimePath(controllersTimePath/"poly");
-                    
+
                         if (!isDir(polyTimePath))
                         {
-                            mkDir(polyTimePath);    
+                            mkDir(polyTimePath);
                         }
-    
+
                         // directory: case/<timeDir>/uniform/fluxControllers
                         fileName polyControllersTimePath(polyTimePath/"fluxControllers");
-                    
+
                         if (!isDir(polyControllersTimePath))
                         {
-                            mkDir(polyControllersTimePath);    
+                            mkDir(polyControllersTimePath);
                         }
-    
+
                         forAll(fluxControllers_, fC)
                         {
                             if(stateControllers_[fC]->writeInTimeDir())
                             {
                                 // directory: case/<timeDir>/uniform/controllers/poly/<fluxControllerModel>
                                 fileName fCTimePath(polyControllersTimePath/fCNames_[fC]);
-            
+
                                 if(!isDir(fCTimePath))
                                 {
                                     mkDir(fCTimePath);
                                 }
-            
+
                                 const word& regionName = fluxControllers_[fC]->regionName();
-    
-                                // directory: case/<timeDir>/uniform/controllers/poly/<fluxControllerModel>  <faceZoneName>      
+
+                                // directory: case/<timeDir>/uniform/controllers/poly/<fluxControllerModel>  <faceZoneName>
                                 fileName zoneTimePath(fCTimePath/regionName);
-                
+
                                 if (!isDir(zoneTimePath))
                                 {
-                                    mkDir(zoneTimePath);    
+                                    mkDir(zoneTimePath);
                                 }
-    
+
                                 timePathNames[fC] = zoneTimePath;
                             }
                         }
                     }
                 }
             }
-    
+
             // -- write out data (do not comment this out)
             forAll(fluxControllers_, fC)
             {
@@ -541,29 +541,29 @@ void polyControllers::outputStateResults()
 
         {
             stateControllersList_.clear();
-        
+
             stateControllersList_ = polyControllersDict.lookup("polyStateControllers");
 
-//             Info << "updating" << endl;        
+//             Info << "updating" << endl;
             forAll(stateControllers_, sC)
             {
                 const entry& polyControllersI = stateControllersList_[sC];
                 const dictionary& polyControllersIDict = polyControllersI.dict();
-//                 Info << 
+//                 Info <<
                 stateControllers_[sC]->updateProperties(polyControllersIDict);
             }
         }
 
         {
             fluxControllersList_.clear();
-        
+
             fluxControllersList_ = polyControllersDict.lookup("polyFluxControllers");
-        
+
             forAll(fluxControllers_, fC)
             {
                 const entry& polyControllersI = fluxControllersList_[fC];
                 const dictionary& polyControllersIDict = polyControllersI.dict();
-    
+
                 fluxControllers_[fC]->updateProperties(polyControllersIDict);
             }
         }

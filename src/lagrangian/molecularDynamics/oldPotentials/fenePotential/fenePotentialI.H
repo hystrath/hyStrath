@@ -50,7 +50,7 @@ inline scalar fenePotential::fFene(const scalar& r)
 {
 //     scalar ra = r - dr_;
 //     scalar rb = r + dr_;
-// 
+//
 //     scalar F = -numericalDifferentiation
 //     (
 //         ra,
@@ -62,59 +62,59 @@ inline scalar fenePotential::fFene(const scalar& r)
 //     );
 
     scalar F = 0;
-    
+
     if(r < r0in_)
     {
-        F = -k_*r/(1.0-((r/r0_)*(r/r0_))); 
+        F = -k_*r/(1.0-((r/r0_)*(r/r0_)));
     }
     else
     {
         F = -k_*r0in_/(1.0-((r0in_/r0_)*(r0in_/r0_)));
     }
-    
+
     return F;
 }
-    
+
 inline scalar fenePotential::force (const scalar& r)
-{    
+{
 //     label k1 = label(r/dr_);
-//     
+//
 //     label k2 = k1+1;
-//     
+//
 //     scalar f = 0.0;
-//     
+//
 //     if(k2 < U_.size())
 //     {
 //         f = ( (f_[k2]-f_[k1])*(r- (k1*dr_))/(k2*dr_ - k1*dr_) ) + f_[k1];
 //     }
-    scalar f = fFene(r); 
-    
+    scalar f = fFene(r);
+
     return f;
 }
-    
+
 inline scalar fenePotential::potentialEnergy (const scalar& r)
-{    
+{
 //     label k1 = label(r/dr_);
-//     
+//
 //     label k2 = k1+1;
-//     
+//
 //     scalar U = 0.0;
-//     
+//
 //     if(k2 < U_.size())
 //     {
 //         U = ( (U_[k2]-U_[k1])*(r- (k1*dr_))/(k2*dr_ - k1*dr_) ) + U_[k1];
 //     }
-    
+
     scalar U = Ufene(r);
-    
+
     return U;
 }
 
-    
+
 inline scalar fenePotential::Ufene(const scalar& r)
 {
     scalar U = 0;
-    
+
     if(r < r0in_)
     {
         U = -0.5*k_*r0_*r0_*Foam::log(1- ((r/r0_)*(r/r0_)));
@@ -122,8 +122,8 @@ inline scalar fenePotential::Ufene(const scalar& r)
     else
     {
        U = -0.5*k_*r0_*r0_*Foam::log(1- ((r0in_/r0_)*(r0in_/r0_)));
-    }    
-    
+    }
+
     return U;
 }
 
@@ -137,27 +137,27 @@ inline scalar fenePotential::Ufene(const scalar& r)
 //     const scalar& Ub
 // )
 // {
-// 
+//
 //     scalar denominator = (ra - r)*(ra - rb)*(r - rb);
-// 
+//
 //     scalar a1 =
 //     (
 //         rb*rb*(Ua - U) + ra*ra*(U - Ub) + r*r*(Ub - Ua)
 //     ) / denominator;
-// 
+//
 //     scalar a2 =
 //     (
 //         rb*(U - Ua) + r*(Ua - Ub) + ra*(Ub - U)
 //     ) / denominator;
-// 
+//
 //     return a1 + 2.0*a2*r;
 // }
-    
+
 inline const scalar& fenePotential::k() const
 {
     return k_;
 }
-    
+
 inline const scalar& fenePotential::rCut() const
 {
     return rCut_;

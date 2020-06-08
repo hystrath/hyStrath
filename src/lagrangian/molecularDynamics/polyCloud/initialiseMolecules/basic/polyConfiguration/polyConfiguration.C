@@ -148,8 +148,8 @@ void polyConfiguration::insertMolecule
     const point& position,
     const label cell,
     const label tetFace,
-    const label tetPt, 
-    const label& id, 
+    const label tetPt,
+    const label& id,
     const bool& tethered,
     const bool& frozen,
     const scalar& temperature,
@@ -210,7 +210,7 @@ void polyConfiguration::insertMolecule
         position,
         cell,
         tetFace,
-        tetPt,     
+        tetPt,
         Q,
         v,
         vector::zero,
@@ -244,8 +244,8 @@ void polyConfiguration::insertMolecule
         cell,
         tetFace,
         tetPt
-    );    
-    
+    );
+
     if(cell != -1)
     {
         point specialPosition(vector::zero);
@@ -302,7 +302,7 @@ void polyConfiguration::insertMolecule
             position,
             cell,
             tetFace,
-            tetPt,     
+            tetPt,
             Q,
             v,
             vector::zero,

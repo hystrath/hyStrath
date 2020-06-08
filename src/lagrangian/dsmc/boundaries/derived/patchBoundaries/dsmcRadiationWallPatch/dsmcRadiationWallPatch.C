@@ -44,8 +44,8 @@ defineTypeNameAndDebug(dsmcRadiationWallPatch, 0);
 
 addToRunTimeSelectionTable
 (
-    dsmcPatchBoundary, 
-    dsmcRadiationWallPatch, 
+    dsmcPatchBoundary,
+    dsmcRadiationWallPatch,
     dictionary
 );
 
@@ -99,14 +99,14 @@ void dsmcRadiationWallPatch::calculateProperties()
     stepCounter_++;
 
     const scalar deltaT = mesh_.time().deltaTValue(); // TODO cloud_.deltaTValue(p.cell());
-    
+
     scalar TwallRad = temperature_;
 
-    TwallRad = 
+    TwallRad =
         pow
         (
             alpha_*cloud_.nParticle()*EcTotPrev_/(deltaT*epsilonSigma_*totalPatchSurfaceArea_), 0.25
-        ); 
+        );
 
     scalar EcTot = EcTot_;
 
@@ -116,22 +116,22 @@ void dsmcRadiationWallPatch::calculateProperties()
         reduce(EcTot, sumOp<scalar>());
     }
 
-    TwallRadCumul_ += TwallRad 
-        + (1/thermalCapacity_)*deltaT*((cloud_.nParticle()*EcTot/deltaT) 
+    TwallRadCumul_ += TwallRad
+        + (1/thermalCapacity_)*deltaT*((cloud_.nParticle()*EcTot/deltaT)
         - (totalPatchSurfaceArea_*epsilonSigma_*(pow(TwallRad, 4.0))));
 
 
     TwallRad_ = TwallRadCumul_/stepCounter_;
 
-    EcTotPrev_ = EcTot; //stores the EcTot_ value to be used in the next time-step 
+    EcTotPrev_ = EcTot; //stores the EcTot_ value to be used in the next time-step
 
     EcTot_ = 0.0;
-    
+
     if(time_.time().outputTime())
     {
-        Info << "Temperature at radiation wall patch ( " << patchName_ 
+        Info << "Temperature at radiation wall patch ( " << patchName_
              << "): " << TwallRad_ << endl;
-             
+
         //- reset
         if(resetFieldsAtOutput_)
         {
@@ -149,7 +149,7 @@ void dsmcRadiationWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::tracking
     vector& U = p.U();
 
     scalar& ERot = p.ERot();
-    
+
     labelList& vibLevel = p.vibLevel();
 
     label typeId = p.typeId();
@@ -159,26 +159,26 @@ void dsmcRadiationWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::tracking
     scalar Etrans = 0.5*magSqr(U)*cloud_.constProps(typeId).mass();
 
     scalar EcTot = Etrans + ERot + cloud_.constProps(typeId).eVib_tot(vibLevel);
-    
+
     EcTot_ += EcTot;
-    
+
     const scalar& T = TwallRad_;
 
     // Wall unit normal vector and wall unit tangential vectors
     vector nw, tw1, tw2 = vector::zero;
-            
+
     dsmcPatchBoundary::calculateWallUnitVectors(p, nw, tw1, tw2);
 
-    
+
 
     scalar mass = cloud_.constProps(typeId).mass();
 
     scalar rotationalDof = cloud_.constProps(typeId).rotationalDegreesOfFreedom();
-    
+
     scalar vibrationalDof = cloud_.constProps(typeId).nVibrationalModes();
 
     Random& rndGen = cloud_.rndGen();
-    
+
     U = sqrt(physicoChemical::k.value()*T/mass)
         *(
             rndGen.GaussNormal<scalar>()*tw1
@@ -189,7 +189,7 @@ void dsmcRadiationWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::tracking
     U += velocity_;
 
     ERot = cloud_.equipartitionRotationalEnergy(T, rotationalDof);
-    
+
     vibLevel = cloud_.equipartitionVibrationalEnergyLevel(T, vibrationalDof, typeId);
 
     measurePropertiesAfterControl(p);
@@ -232,8 +232,8 @@ void dsmcRadiationWallPatch::setProperties()
     {
 
         FatalErrorIn("dsmcRadiationWallFieldPatch::setProperties()")
-            << "The value of energyAccommodationCoeff should be between 0 and 1: " 
-            << alpha_ << nl 
+            << "The value of energyAccommodationCoeff should be between 0 and 1: "
+            << alpha_ << nl
             << exit(FatalError);
     }
 }

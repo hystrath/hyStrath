@@ -34,14 +34,14 @@ Description
     \f[
         \mu_k = exp((A_k*ln(Tt)+B_k)*ln(Tt)+C_k)
     \f]
-    
+
     Thermal conductivity [W/mK]
     \f[
         \kappa_t_k = 3/2*mu_k*Cv_t_k
         \kappa_r_k = mu_k*Cv_r_k
         \kappa_ve_k = mu_k*Cv_ve_k
     \f]
-    
+
     \kappa_ve_k amended to be eta_s_k*mu_k*Cv_ve_k
 
 SourceFiles
@@ -53,7 +53,7 @@ SourceFiles
 #ifndef CEATransport_H
 #define CEATransport_H
 
-#include "DynamicList.H" 
+#include "DynamicList.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -111,20 +111,20 @@ class CEATransport
 {
 
 public:
-    
+
     static const int nCoeffs_ = 4;
     typedef FixedList<scalar, nCoeffs_> CEATransportArray;
 
 private:
-    
+
     // Private data
 
         //- Temperature bounds for the viscosity and thermal conductivity lists
         DynamicList<scalar> temp_;
-        
+
         //- CEA coefficients for viscosity and thermal conductivity
         DynamicList<CEATransportArray> mu_, kappa_;
-        
+
         //- Factor in vibrational thermal conductivity kappave
         // Hard-sphere: (7-2*omega_m)/5 with omega_m = 0.5
         // Default value: 1.2
@@ -174,22 +174,22 @@ public:
 
         //- Return the viscosity coefficients for a given temperature
         inline const CEATransportArray& viscosityCoeffs(const scalar T) const;
-        
+
         //- Return the thermal conductivity coefficients for a given temperature
         inline const CEATransportArray& thermalConductivityCoeffs(const scalar T) const;
-        
+
         //- Dynamic viscosity [kg/ms]
         inline scalar mu(const scalar p, const scalar Tt) const;
 
         //- Thermal conductivity, trans-rotational mode [W/mK]
         inline scalar kappatr(const scalar p, const scalar Tt) const;
-        
+
         //- Thermal conductivity, vib-electronic mode [W/mK]
         inline scalar kappave(const scalar p, const scalar Tt, const scalar Tve) const;
-        
+
         //- Thermal diffusivity, trans-rotational mode [kg/ms]
         inline scalar alphatr(const scalar p, const scalar Tt) const;
-        
+
         //- Thermal diffusivity, vib-electronic mode [kg/ms]
         inline scalar alphave(const scalar p, const scalar Tt, const scalar Tve) const;
 

@@ -63,15 +63,15 @@ class dsmcSpecularWallPatch
 private:
 
     // Private data
-    
+
         dictionary propsDict_;
 
 protected:
-        
+
     // Protected member functions
-    
+
         //- Perform a specular particle-wall reflection
-        void performSpecularReflection(dsmcParcel& p);      
+        void performSpecularReflection(dsmcParcel& p);
 
 
 public:

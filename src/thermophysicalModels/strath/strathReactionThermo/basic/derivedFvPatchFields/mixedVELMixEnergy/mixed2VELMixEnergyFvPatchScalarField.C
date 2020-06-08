@@ -117,14 +117,14 @@ void Foam::mixed2VELMixEnergyFvPatchScalarField::updateCoeffs()
     );
 
     Tvw.evaluate();
-    
+
     valueFraction() = Tvw.valueFraction();
-    
+
     // NEW VINCENT 15/02/2017 *************************************************
     tmp<Field<scalar>> thevel(new Field<scalar>(pw.size()));
     Field<scalar>& hevel = thevel.ref();
     hevel = 0.0;
-    
+
     tmp<Field<scalar>> thevelRef(new Field<scalar>(pw.size()));
     Field<scalar>& hevelRef = thevelRef.ref();
     hevelRef = 0.0;
@@ -132,7 +132,7 @@ void Foam::mixed2VELMixEnergyFvPatchScalarField::updateCoeffs()
     tmp<Field<scalar>> thevelfC(new Field<scalar>(pw.size()));
     Field<scalar>& hevelfC = thevelfC.ref();
     hevelfC = 0.0;
-    
+
     tmp<Field<scalar>> tCvvelTvw(new Field<scalar>(pw.size()));
     Field<scalar>& cvvelTvw = tCvvelTvw.ref();
     cvvelTvw = 0.0;
@@ -142,13 +142,13 @@ void Foam::mixed2VELMixEnergyFvPatchScalarField::updateCoeffs()
         fvPatchScalarField& spYw =
             const_cast<fvPatchScalarField&>(thermo_.composition().Y(speciei).boundaryField()[patchi]);
         spYw.evaluate();
-        
+
         hevel += spYw*thermo_.composition().hevel(speciei, pw, Tvw, patchi);
         hevelRef += spYw*thermo_.composition().hevel(speciei, pw, Tvw.refValue(), patchi);
         hevelfC += spYw*thermo_.composition().hevel(speciei, pw, Tvw, patch().faceCells());
         cvvelTvw += spYw*thermo_.composition().Cv_vel(speciei, pw, Tvw, patchi)*Tvw.refGrad();
     }
-    
+
     refValue() = thevelRef;
     refGrad() = tCvvelTvw
         + patch().deltaCoeffs()*
@@ -157,7 +157,7 @@ void Foam::mixed2VELMixEnergyFvPatchScalarField::updateCoeffs()
           );
     // END NEW VINCENT 15/02/2017 *********************************************
 
-    
+
     /*refValue() = multiThermo.hevel(pw, Tvw.refValue(), patchi);
     refGrad() =
         multiThermo.Cv_v(pw, Tvw, patchi)*Tvw.refGrad()

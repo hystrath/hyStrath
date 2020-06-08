@@ -23,7 +23,7 @@ License
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 Class
- 
+
 
 Description
 
@@ -64,7 +64,7 @@ private:
         dictionary propsDict_;
 
         label nSubCycles_;
-        
+
         label infoCounter_;
 
 

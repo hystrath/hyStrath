@@ -43,7 +43,7 @@ SourceFiles
 #include "polyMesh.H"
 #include "volFields.H"
 #include "polyMoleculeCloud.H"
-#include "gravityForce.H" 
+#include "gravityForce.H"
 #include "boundedBox.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -67,36 +67,36 @@ private:
         //- subDictionary containing the properties
         dictionary propsDict_;
 
-        word fileName_;  
-        
+        word fileName_;
+
         //- ids of mols
         List<label> molIds_;
 
         boundedBox box_;
-        
+
         vector d_;
         scalar area_;
         scalar targetPressure_;
         scalar min_;
-        
+
         scalar deltaY_;
 //         scalar nTimeSteps_;
 //         vector force_;
 //         scalar nMols_;
-        
-        DynamicList<scalar> mols_;        
+
+        DynamicList<scalar> mols_;
         DynamicList<vector> force_;
-        DynamicList<vector> totalForce_;        
+        DynamicList<vector> totalForce_;
         DynamicList<vector> centre_;
-        
+
     // Private Member Functions
 
-        
+
         void setBoundBox
         (
             const dictionary& propsDict,
             boundedBox& bb,
-            const word& name 
+            const word& name
         );
 
 public:
@@ -121,7 +121,7 @@ public:
 
     // Member Functions
     // Member Functions
-        
+
         //- create an initial configuration
         void initialConfiguration();
 
@@ -133,20 +133,20 @@ public:
         (
             polyMolecule* molI,
             polyMolecule* molJ
-        );        
+        );
         void controlAfterForces();
         void controlAfterVelocityII();
-        
+
         //- calculate any required properties (end of time-step)
-        void calculateProperties(); 
-        
+        void calculateProperties();
+
         //- output data (optional)
         void output
         (
-            const fileName& fixedPathName, 
+            const fileName& fixedPathName,
             const fileName& timePath
         );
-        
+
         //- update properties from a modified dictionary (optional)
         void updateProperties(const dictionary&);
 

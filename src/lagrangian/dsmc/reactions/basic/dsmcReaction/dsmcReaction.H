@@ -71,30 +71,30 @@ protected:
         dsmcCloud& cloud_;
 
         bool reactWithLists_;
-        
+
         //- Name of the reaction
         word reactionName_;
-        
+
         //- Ids of the reactants
         labelList reactantIds_;
-        
+
         //- Types of the reactants
         labelList reactantTypes_;
-        
+
         //- Switch to allow the chemical reaction to take place (default: true)
-        //  Set to False to measure reaction rates in heat bath simulations 
+        //  Set to False to measure reaction rates in heat bath simulations
         bool allowSplitting_;
-        
+
         //- Switch to write the reaction rate in the log file (default: false)
         bool writeRatesToTerminal_;
-        
-        //- Switch to decide whether the collision is performed within the 
+
+        //- Switch to decide whether the collision is performed within the
         //  reaction class or in the appropriate binary collision class
         bool relax_;
-        
+
 
     // Private Member Functions
-    
+
         //-
         virtual void setProperties();
 
@@ -118,7 +118,7 @@ public:
             ),
             (t, cloud, dict)
         );
-   
+
     // Constructors
 
         //- Construct from components
@@ -159,7 +159,7 @@ public:
             const label& candidateP,
             const List<label>& whichSubCell
         ) = 0;
-        
+
         const bool& relax() const;
 
         virtual bool tryReactMolecules
@@ -169,11 +169,11 @@ public:
         ) = 0;
 
         virtual void outputResults(const label& counterIndex) = 0;
-        
+
         labelList decreasing_sort_indices(const scalarList &v);
 
       // Access
-      
+
         const dsmcCloud& cloud() const;
 
         virtual label nReactionsPerTimeStep() const = 0;

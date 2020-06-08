@@ -41,7 +41,7 @@ const Foam::word Foam::fluid2Thermo::transportDictName("transportProperties");
 Foam::fluid2Thermo::fluid2Thermo(const fvMesh& mesh, const word& phaseName)
 :
     basic2Thermo(mesh, phaseName),
-    
+
     transportDictionary_
     (
         IOobject
@@ -64,7 +64,7 @@ Foam::fluid2Thermo::fluid2Thermo
 )
 :
     basic2Thermo(mesh, dict, phaseName),
-    
+
     transportDictionary_
     (
         IOobject

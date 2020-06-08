@@ -107,18 +107,18 @@ dsmcMassFluxSurface::dsmcMassFluxSurface
 
         typeIds_[i] = typeId;
     }
-    
+
     if (propsDict_.found("averagingAcrossManyRuns"))
     {
         averagingAcrossManyRuns_ = Switch(propsDict_.lookup("averagingAcrossManyRuns"));
-        
+
         // read in stored data from dictionary
         if(averagingAcrossManyRuns_)
         {
             Info << nl << "Averaging across many runs initiated." << nl << endl;
 
             readIn();
-        }         
+        }
     }
 
 
@@ -165,11 +165,11 @@ dsmcMassFluxSurface::dsmcMassFluxSurface
                 }
             }
         }
-        
+
         processorFaces.shrink();
 
         label nInternalFaces = faces.size() - processorFaces.size();
-           
+
         List<label> internalFaces(nInternalFaces, 0);
 
         label counter = 0;
@@ -195,13 +195,13 @@ dsmcMassFluxSurface::dsmcMassFluxSurface
         }
 
 
-    
+
         forAll(processorFaces, f)
         {
             const label& faceI = processorFaces[f];
-            zoneSurfaceArea_ += 0.5*mag(mesh_.faceAreas()[faceI]);           
+            zoneSurfaceArea_ += 0.5*mag(mesh_.faceAreas()[faceI]);
         }
-    
+
 
         if(Pstream::parRun())
         {
@@ -216,20 +216,20 @@ dsmcMassFluxSurface::dsmcMassFluxSurface
                     }
                 }
             }
-        
+
             //- receiving
             for (int p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
                     scalar zoneSurfaceAreaProc;
-    
+
                     const int proc = p;
                     {
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> zoneSurfaceAreaProc;
                     }
-        
+
                     zoneSurfaceArea_ += zoneSurfaceAreaProc;
                 }
             }
@@ -244,7 +244,7 @@ dsmcMassFluxSurface::dsmcMassFluxSurface
             zoneSurfaceArea_ += mag(mesh_.faceAreas()[faceI]);
         }
     }
-    
+
     Info << "zoneSurfaceArea_ = " << zoneSurfaceArea_ << endl;
 }
 
@@ -277,12 +277,12 @@ void dsmcMassFluxSurface::readIn()
     );
 
     dict.readIfPresent("molsZone", molsZone_);
-    dict.readIfPresent("massZone", massZone_);    
-    
+    dict.readIfPresent("massZone", massZone_);
+
     dict.readIfPresent("averagingCounter", averagingCounter_);
-    
+
 //     Info << "Some properties read in: "
-//          << "mols = " << mols_[0] 
+//          << "mols = " << mols_[0]
 //          << ", mass = " << mass_[0]
 //          << ", averagingCounter = " << averagingCounter_
 //          << endl;
@@ -307,16 +307,16 @@ void dsmcMassFluxSurface::writeOut()
         );
 
         dict.add("molsZone", molsZone_);
-        dict.add("massZone", massZone_);    
-    
-        dict.add("averagingCounter", averagingCounter_); 
-        
+        dict.add("massZone", massZone_);
+
+        dict.add("averagingCounter", averagingCounter_);
+
         IOstream::streamFormat fmt = time_.time().writeFormat();
         IOstream::versionNumber ver = time_.time().writeVersion();
         IOstream::compressionType cmp = time_.time().writeCompression();
-    
+
         dict.regIOobject::writeObject(fmt, ver, cmp);
-        
+
 //         Info<< "Some properties written out: "
 //             << "mols = " << mols_[0]
 //             << ", mass = " << mass_[0]
@@ -356,9 +356,9 @@ void dsmcMassFluxSurface::calculateField()
                 {
                     const point& fC = cloud_.mesh().faceCentres()[faceI];
                     scalar radius = fC.y();
-                    
+
                     scalar RWF = 1.0 + cloud_.maxRWF()*(radius/cloud_.radialExtent());
-                    
+
                     molFlux += (molIdFlux[id][faceI]*cloud_.nParticle()*RWF*nF) & fluxDirection_;
                     massFlux += (massIdFlux[id][faceI]*cloud_.nParticle()*RWF*nF) & fluxDirection_;
                 }
@@ -375,7 +375,7 @@ void dsmcMassFluxSurface::calculateField()
     massZone_ += massFlux;
 
     const Time& runTime = time_.time();
-    
+
     // -average measurement and calculate properties
     if(runTime.outputTime())
     {
@@ -400,7 +400,7 @@ void dsmcMassFluxSurface::calculateField()
             massZone_ = 0.0;
             averagingCounter_ = 0.0;
         }
-        
+
         if(averagingAcrossManyRuns_)
         {
             writeOut();
@@ -423,7 +423,7 @@ void dsmcMassFluxSurface::writeField()
         if(Pstream::master())
         {
             scalarField timeField(1);
-           
+
             timeField[0] = time_.time().timeOutputValue();
 
             writeTimeData
@@ -443,7 +443,7 @@ void dsmcMassFluxSurface::writeField()
                 massFluxZone_,
                 true
             );
-            
+
             writeTimeData
             (
                 casePath_,

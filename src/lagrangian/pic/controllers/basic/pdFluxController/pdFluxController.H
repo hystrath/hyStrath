@@ -100,12 +100,12 @@ protected:
 
             // target single valued controller
             bool singleValueController_;
-    
+
             scalar density_;
             vector velocity_;
             scalar temperature_;
             scalar pressure_;
-    
+
             tensor strainRate_;
             vector tempGradient_;
 
@@ -117,7 +117,7 @@ protected:
             scalarField temperatures_;
             scalarField pressures_;
 
-            //- writing out properties    
+            //- writing out properties
             bool writeInTimeDir_;
             bool writeInCase_;
 
@@ -146,7 +146,7 @@ public:
             ),
             (t, cloud, dict)
         );
-   
+
     // Constructors
 
         //- Construct from components
@@ -252,7 +252,7 @@ public:
             //- return the control zone name
             const word& regionName() const;
 
-           //- return the targeted values 
+           //- return the targeted values
             const scalar& density() const;
             scalar& density();
 
@@ -271,7 +271,7 @@ public:
             const vector& tempGradient() const;
             vector& tempGradient();
 
-            //- return the targeted fields 
+            //- return the targeted fields
             const scalarField& densityField() const;
             scalarField& densityField();
 

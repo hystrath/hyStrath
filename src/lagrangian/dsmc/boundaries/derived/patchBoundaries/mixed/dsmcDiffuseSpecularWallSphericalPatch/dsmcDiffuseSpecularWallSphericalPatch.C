@@ -38,8 +38,8 @@ defineTypeNameAndDebug(dsmcDiffuseSpecularWallSphericalPatch, 0);
 
 addToRunTimeSelectionTable
 (
-    dsmcPatchBoundary, 
-    dsmcDiffuseSpecularWallSphericalPatch, 
+    dsmcPatchBoundary,
+    dsmcDiffuseSpecularWallSphericalPatch,
     dictionary
 );
 
@@ -72,7 +72,7 @@ dsmcDiffuseSpecularWallSphericalPatch::dsmcDiffuseSpecularWallSphericalPatch
     writeInTimeDir_ = false;
     writeInCase_ = false;
     measurePropertiesAtWall_ = true;
-    
+
     setProperties();
 }
 
@@ -99,7 +99,7 @@ void dsmcDiffuseSpecularWallSphericalPatch::controlParticle(dsmcParcel& p, dsmcP
     measurePropertiesBeforeControl(p);
 
     //- Calculation of the wall velocity to be added to U
-    const vector& localPatchVelocity = 
+    const vector& localPatchVelocity =
         dsmcSphericalPatchBoundary::wallVelocity(p);
 
     if (diffuseFraction() > cloud_.rndGen().sample01<scalar>())

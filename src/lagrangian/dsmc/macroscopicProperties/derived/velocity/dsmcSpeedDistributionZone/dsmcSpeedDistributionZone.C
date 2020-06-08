@@ -62,10 +62,10 @@ dsmcSpeedDistributionZone::dsmcSpeedDistributionZone
     UMean_(vector::zero),
     Ucollected_(vector::zero),
     nParcels_(0),
-    binWidth_(readScalar(propsDict_.lookup("binWidth"))), 
+    binWidth_(readScalar(propsDict_.lookup("binWidth"))),
     distr_(binWidth_)
 {
-    // standard to reading typeIds ------------ 
+    // standard to reading typeIds ------------
     const List<word> molecules (propsDict_.lookup("typeIds"));
 
     DynamicList<word> moleculesReduced(0);
@@ -146,7 +146,7 @@ void dsmcSpeedDistributionZone::calculateField()
         {
             const label& cellI = cells[c];
             const List<dsmcParcel*>& parcelsInCell = cellOccupancy[cellI];
-    
+
             forAll(parcelsInCell, pIC)
             {
                 dsmcParcel* p = parcelsInCell[pIC];
@@ -197,7 +197,7 @@ void dsmcSpeedDistributionZone::calculateField()
         {
             const label& cellI = cells[c];
             const List<dsmcParcel*>& parcelsInCell = cellOccupancy[cellI];
-    
+
             forAll(parcelsInCell, pIC)
             {
                 dsmcParcel* p = parcelsInCell[pIC];
@@ -228,7 +228,7 @@ void dsmcSpeedDistributionZone::writeField()
     if((runTime.outputTime()) && (time_.averagingTime()))
     {
         fileName timePath(runTime.path()/runTime.timeName()/"uniform");
-    
+
         if (!isDir(timePath))
         {
             mkDir(timePath);
@@ -265,7 +265,7 @@ void dsmcSpeedDistributionZone::writeField()
                     }
                 }
             }
-        
+
             //- receiving
             for (int p = 0; p < Pstream::nProcs(); p++)
             {
@@ -273,13 +273,13 @@ void dsmcSpeedDistributionZone::writeField()
                 {
                     scalarField xAxisProc;
                     scalarField yAxisProc;
-    
+
                     const int proc = p;
                     {
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> xAxisProc >> yAxisProc;
                     }
-    
+
                     forAll(xAxisProc, i)
                     {
                         xAxis[i] += xAxisProc[i];
@@ -290,7 +290,7 @@ void dsmcSpeedDistributionZone::writeField()
         }
 
         writeTimeData(timePath, "speedDistribution_"+fieldName_+"_"+regionName_, xAxis, yAxis);
-        
+
         if(time_.resetFieldsAtOutput())
         {
             distr_.clear();

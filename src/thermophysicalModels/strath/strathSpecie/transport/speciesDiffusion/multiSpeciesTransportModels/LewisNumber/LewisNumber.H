@@ -27,7 +27,7 @@ Class
 
 Description
     Multispecies Lewis number transport model.
-  
+
 SourceFiles
     LewisNumber.C
 
@@ -42,7 +42,7 @@ SourceFiles
 
 namespace Foam
 {
-  
+
 /*---------------------------------------------------------------------------*\
                              Class LewisNumber Declaration
 \*---------------------------------------------------------------------------*/
@@ -51,27 +51,27 @@ template<class ThermoType>
 class LewisNumber
 :
     public Fick<ThermoType>
-{  
+{
 
 protected:
-  
+
     // Protected data
 
         //- Lewis number
         scalar Le_;
 
     // Protected member functions
-    
+
         //- Update the coefficients of the species equations
         void updateCoefficients();
-    
+
 
 public:
 
     //- Runtime type information
     TypeName("LewisNumber");
 
-    
+
     // Constructors
 
         //- Construct from components
@@ -86,8 +86,8 @@ public:
     virtual ~LewisNumber()
     {}
 
-};    
-    
+};
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 }	// End namespace Foam

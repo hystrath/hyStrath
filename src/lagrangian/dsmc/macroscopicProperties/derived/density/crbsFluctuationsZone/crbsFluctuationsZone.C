@@ -68,7 +68,7 @@ crbsFluctuationsZone::crbsFluctuationsZone
     //counter_(0)
 {
 
-    // standard to reading typeIds ------------ 
+    // standard to reading typeIds ------------
     const List<word> molecules (propsDict_.lookup("typeIds"));
 
     DynamicList<word> moleculesReduced(0);
@@ -117,7 +117,7 @@ crbsFluctuationsZone::crbsFluctuationsZone
             << time_.time().system()/"fieldPropertiesDict"
             << exit(FatalError);
     }
-    
+
    // create bin model
     binModel_ = autoPtr<binModel>
     (
@@ -145,14 +145,14 @@ crbsFluctuationsZone::crbsFluctuationsZone
     {
         RtField_.setSize(nInstantSteps_, 0.0);
     }
-    
+
     timeIndex_ = 0;
-    
+
     scalar binWidth = binModel_->binPositions()[1]-binModel_->binPositions()[0];
     domainLength_ = binWidth*nBins;
-    
+
 //     setProperties();
-    
+
 //     Info << "cellCentres_ = " << cellCentres_ << endl;
 //     Info << "domainLength_ = " << domainLength_ << endl;
 }
@@ -173,7 +173,7 @@ void crbsFluctuationsZone::createField()
 
 
 void crbsFluctuationsZone::calculateField()
-{        
+{
     const List< DynamicList<dsmcParcel*> >& cellOccupancy
         = cloud_.cellOccupancy();
 
@@ -187,7 +187,7 @@ void crbsFluctuationsZone::calculateField()
         forAll(parcelsInCell, pIC)
         {
             dsmcParcel* p = parcelsInCell[pIC];
-            
+
             const vector& rI = p->position();
 
             label n = binModel_->isPointWithinBin(rI, cellI);
@@ -200,9 +200,9 @@ void crbsFluctuationsZone::calculateField()
                     {
                         const point& cC = cloud_.mesh().cellCentres()[cellI];
                         scalar radius = cC.y();
-                        
+
                         scalar RWF = 1.0 + cloud_.maxRWF()*(radius/cloud_.radialExtent());
-                        
+
                         n_[n] += cloud_.nParticle()*RWF;
                     }
                     else
@@ -241,16 +241,16 @@ void crbsFluctuationsZone::writeField()
     if(runTime.outputTime())
     {
         timeIndex_ = 0;
-        
+
         if(Pstream::master())
         {
             fileName timePath(runTime.path()/runTime.timeName()/"uniform");
-        
+
             if (!isDir(timePath))
             {
                 mkDir(timePath);
             }
-            
+
             scalar dt = time_.time().deltaT().value();
             scalarField timeField (nInstantSteps_, 0.0);
 

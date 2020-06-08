@@ -84,7 +84,7 @@ public:
             ),
             (/*t, */dict)
         );
-   
+
     // Constructors
 
         //- Construct from components
@@ -117,9 +117,9 @@ public:
         virtual void setRDF(radialDistribution&, const Time&) = 0;
 
 //         virtual const scalarField& g() const = 0;
-// 
+//
 //         virtual const scalarField& r() const = 0;
-// 
+//
 //         virtual const label& nBins() const = 0;
 
 //         virtual const scalar& binWidth() const = 0;

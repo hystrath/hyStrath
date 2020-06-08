@@ -19,6 +19,6 @@ if (!inviscid)
       - fvc::div(tauMC)
       - mhd->F(U)
     );
-    
+
     rhoU = rho*U;
 }

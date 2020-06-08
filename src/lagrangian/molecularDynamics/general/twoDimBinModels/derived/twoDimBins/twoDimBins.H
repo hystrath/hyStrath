@@ -67,24 +67,24 @@ private:
 
         vector unitVectorX_;
         vector unitVectorY_;
-        
+
         label nBinsX_;
         label nBinsY_;
 
         scalar dX_;
         scalar dY_;
-        
+
         scalar binWidthX_;
         scalar binWidthY_;
-        
+
         vector startPointX_;
         vector startPointY_;
-        
+
         vector endPointX_;
         vector endPointY_;
-        
-        
-        
+
+
+
     // Private Member Functions
 
 

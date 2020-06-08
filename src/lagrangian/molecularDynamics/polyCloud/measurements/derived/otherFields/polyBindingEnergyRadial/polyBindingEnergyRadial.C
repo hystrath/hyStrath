@@ -47,11 +47,11 @@ addToRunTimeSelectionTable(polyField, polyBindingEnergyRadial, dictionary);
 // (
 //     const dictionary& propsDict,
 //     boundedBox& bb,
-//     const word& name 
+//     const word& name
 // )
 // {
 //     const dictionary& dict(propsDict.subDict(name));
-//     
+//
 //     vector startPoint = dict.lookup("startPoint");
 //     vector endPoint = dict.lookup("endPoint");
 //     bb.resetBoundedBox(startPoint, endPoint);
@@ -75,91 +75,91 @@ polyBindingEnergyRadial::polyBindingEnergyRadial
     propsDict_(dict.subDict(typeName + "Properties")),
     fields_(t, mesh, "dummy"),
     fieldName_(propsDict_.lookup("fieldName")),
-    
+
     startPoint_(propsDict_.lookup("startPoint")),
     unitVectorX_(propsDict_.lookup("unitVectorX")),
     unitVectorY_(propsDict_.lookup("unitVectorY")),
     unitVectorZ_(propsDict_.lookup("unitVectorZ")),
     nBinsX_(readLabel(propsDict_.lookup("nBinsX"))),
     nBinsY_(readLabel(propsDict_.lookup("nBinsY"))),
-    lengthX_(readLabel(propsDict_.lookup("lengthX"))),    
+    lengthX_(readLabel(propsDict_.lookup("lengthX"))),
     lengthY_(readLabel(propsDict_.lookup("lengthY"))),
     binWidthX_(lengthX_/scalar(nBinsX_)),
     binWidthY_(lengthY_/scalar(nBinsY_)),
-    resetAtOutput_(true)    
+    resetAtOutput_(true)
 {
 //     treshold_ = 1.0;
     measureInterForcesSites_ = true;
-    
+
     // choose molecule ids to sample
     {
         // choose molecule ids to sample
         molIdsWall_.clear();
-        
+
         selectIds ids
         (
             molCloud_.cP(),
             propsDict_,
             "molIdsWall"
-            
+
         );
 
         molIdsWall_ = ids.molIds();
     }
-    
+
     {
         // choose molecule ids to sample
         molIdsFluid_.clear();
-        
+
         selectIds ids
         (
             molCloud_.cP(),
             propsDict_,
             "molIdsFluid"
-            
+
         );
 
         molIdsFluid_ = ids.molIds();
     }
 
-    Info << "binWidthX = " << binWidthX_ 
+    Info << "binWidthX = " << binWidthX_
     << ", binWidthY_ = " << binWidthY_
     << endl;
-    
+
     volumes_.setSize(nBinsX_);
-    
+
     pairs_.setSize(nBinsX_);
     mols_.setSize(nBinsX_);
     energy_.setSize(nBinsX_);
-    
+
     bindingEnergy_.setSize(nBinsX_);
     avNoOfPairs_.setSize(nBinsX_);
-    
+
     forAll(mols_, i)
     {
         volumes_[i].setSize(nBinsY_, 0.0);
-        
+
         pairs_[i].setSize(nBinsY_, 0.0);
         mols_[i].setSize(nBinsY_, 0.0);
         energy_[i].setSize(nBinsY_, 0.0);
-        
+
         bindingEnergy_[i].setSize(nBinsY_, 0.0);
         avNoOfPairs_[i].setSize(nBinsY_, 0.0);
     }
-    
-    
+
+
     // set volumes and bins
-    
+
     binsX_.setSize(nBinsX_);
     binsY_.setSize(nBinsY_);
-    
+
     forAll(volumes_, i)
     {
         scalar rIn = binWidthX_*i;
         scalar rOut = binWidthX_*(i+1);
-        
+
         binsX_[i] = binWidthX_*0.5 + binWidthX_*i;
-        
+
         forAll(volumes_[i], j)
         {
             binsY_[j] = binWidthY_*0.5 + binWidthY_*j;
@@ -170,17 +170,17 @@ polyBindingEnergyRadial::polyBindingEnergyRadial
     // read in stored data from dictionary
 
     resetAtOutput_ = Switch(propsDict_.lookup("resetAtOutput"));
-    
+
     {
         Info << nl << "Storage..." << endl;
-        
+
         bool resetStorage = false;
-        
+
         if (propsDict_.found("resetStorage"))
         {
             resetStorage = Switch(propsDict_.lookup("resetStorage"));
-        }    
-        
+        }
+
         if(resetStorage)
         {
             Info<< "WARNING: storage will be reset."
@@ -194,13 +194,13 @@ polyBindingEnergyRadial::polyBindingEnergyRadial
                 << " This is NOT good if you have been testing your simulation a number of times "
                 << " Delete your storage directory before moving to important runs"
                 << " or type resetStorage = yes, for just the first simulation run."
-                << endl;            
+                << endl;
         }
-        
-        resetAtOutput_ = Switch(propsDict_.lookup("resetAtOutput"));    
-        
-        
-        // stored data activation in dictionary        
+
+        resetAtOutput_ = Switch(propsDict_.lookup("resetAtOutput"));
+
+
+        // stored data activation in dictionary
 
         pathName_ = time_.time().path()/"storage";
         nameFile_ = "binsData_"+fieldName_;
@@ -221,7 +221,7 @@ polyBindingEnergyRadial::polyBindingEnergyRadial
         IFstream file(pathName_/nameFile_);
 
         bool foundFile = file.good();
-        
+
         if(!foundFile)
         {
             Info << nl << "File not found: " << nameFile_ << nl << endl;
@@ -234,7 +234,7 @@ polyBindingEnergyRadial::polyBindingEnergyRadial
         {
 //             Info << "Reading from storage, e.g. noAvTimeSteps = " << nAvTimeSteps_ << endl;
         }
-    }    
+    }
 }
 
 
@@ -247,19 +247,19 @@ polyBindingEnergyRadial::~polyBindingEnergyRadial()
 
 void polyBindingEnergyRadial::createField()
 {
-    
+
     label N = molCloud_.moleculeTracking().getMaxTrackingNumber();
-    
+
     Pout << "N = " << N << endl;
-    
+
     molPositions_.setSize(N, vector::zero);
     fluidMols_.setSize(N, false);
     nPairs_.setSize(N, 0.0);
     DeltaE_.setSize(N, 0.0);
-    
-    
+
+
     IDLList<polyMolecule>::iterator mol(molCloud_.begin());
-    
+
     for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
     {
         if(findIndex(molIdsFluid_, mol().id()) != -1 )
@@ -267,8 +267,8 @@ void polyBindingEnergyRadial::createField()
             label tN = mol().trackingNumber();
             fluidMols_[tN] = true;
         }
-    }     
-    
+    }
+
     if(Pstream::parRun())
     {
         //-sending
@@ -297,7 +297,7 @@ void polyBindingEnergyRadial::createField()
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> fluidMolsProc;
                 }
-                
+
                 forAll(fluidMolsProc, i)
                 {
                     if(fluidMolsProc[i])
@@ -308,7 +308,7 @@ void polyBindingEnergyRadial::createField()
             }
         }
     }
-    
+
 }
 
 List<label> polyBindingEnergyRadial::isPointWithinBin
@@ -319,19 +319,19 @@ List<label> polyBindingEnergyRadial::isPointWithinBin
     List<label> binNumbers;
 binNumbers.append(-1);
 binNumbers.append(-1);
-    
+
     vector rSI = rI - startPoint_;
-    
+
     vector unitVectorR = (rSI & unitVectorX_)*unitVectorX_ + (rSI & unitVectorZ_)*unitVectorZ_;
 
     unitVectorR /= mag(unitVectorR);
-    
+
     scalar rDR = rSI & unitVectorR;
-    
+
     scalar rDy = rSI & unitVectorY_;
     label nX = label(rDR/binWidthX_);
     label nY = label(rDy/binWidthY_);
-    
+
     if
     (
         ( (nX >= 0) && (nY >= 0) ) &&
@@ -339,9 +339,9 @@ binNumbers.append(-1);
     )
     {
         binNumbers[0] = nX;
-        binNumbers[1] = nY;            
-    }    
-    
+        binNumbers[1] = nY;
+    }
+
     return binNumbers;
 }
 
@@ -350,11 +350,11 @@ void polyBindingEnergyRadial::centreOfMass()
 //     oldCentreOfMass_
 
     IDLList<polyMolecule>::iterator mol(molCloud_.begin());
-    
+
     // step 1 - find centre of mass
     vector centre = vector::zero;
     scalar nMols = 0.0;
-    
+
     for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
     {
         if(findIndex(molIdsFluid_, mol().id()) != -1)
@@ -362,8 +362,8 @@ void polyBindingEnergyRadial::centreOfMass()
             centre += mol().position();
             nMols += 1.0;
         }
-    }    
-    
+    }
+
     if(Pstream::parRun())
     {
         reduce(centre, sumOp<vector>());
@@ -374,85 +374,85 @@ void polyBindingEnergyRadial::centreOfMass()
     {
         centre /= nMols;
     }
-    
+
     centreOfMass_ = centre;
 
     centreOfMass_ = (centreOfMass_ & unitVectorX_) * unitVectorX_
     + (startPoint_ & unitVectorY_)* unitVectorY_
-    + (centreOfMass_ & unitVectorZ_)*unitVectorZ_;    
+    + (centreOfMass_ & unitVectorZ_)*unitVectorZ_;
 }
 
 void polyBindingEnergyRadial::calculateField()
 {
 //     nAvTimeSteps_ += 1.0;
-    
+
     centreOfMass();
-    
+
     {
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
-        
+
         for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
         {
             if(findIndex(molIdsFluid_, mol().id()) != -1 )
             {
                 label tN = mol().trackingNumber();
-                
+
                 if(tN >= molPositions_.size())
                 {
                     FatalErrorIn("polyBindingEnergyRadial::polyBindingEnergyRadial()")
                         << "Oops something went wrong."
-                        << exit(FatalError);                
+                        << exit(FatalError);
                 }
-                
+
                 molPositions_[tN] = mol().position();
             }
-        }    
+        }
     }
-    
+
     if(Pstream::parRun())
     {
         forAll(DeltaE_, i)
         {
-            reduce(molPositions_[i], sumOp<vector>());            
+            reduce(molPositions_[i], sumOp<vector>());
             reduce(DeltaE_[i], sumOp<scalar>());
             reduce(nPairs_[i], sumOp<scalar>());
         }
-    }    
-    
+    }
+
 //     Pout << "Fluid Mols = " << fluidMols_ << endl;
 
-    
+
     forAll(molPositions_, i)
     {
         if(fluidMols_[i])
         {
 //             Info << "molPositions_[i] = " << molPositions_[i] << endl;
-            
+
             List<label> n = isPointWithinBin(molPositions_[i]);
-            
+
             if((n[0]+n[1]) >= 0)
             {
                 energy_[n[0]][n[1]] += DeltaE_[i];
                 mols_[n[0]][n[1]] += 1.0;
                 pairs_[n[0]][n[1]] += nPairs_[i];
             }
-            
-         
+
+
         }
-        
-        // reset 
+
+        // reset
         DeltaE_[i] = 0.0;
-        nPairs_[i] = 0.0;         
-        molPositions_[i] = vector::zero;        
+        nPairs_[i] = 0.0;
+        molPositions_[i] = vector::zero;
     }
 
 
-    if(time_.outputTime()) 
+    if(time_.outputTime())
     {
         forAll(bindingEnergy_, i)
         {
             forAll(bindingEnergy_[i], j)
-            {       
+            {
                 if(mols_[i][j] > 0)
                 {
                     bindingEnergy_[i][j] = energy_[i][j]/mols_[i][j];
@@ -477,7 +477,7 @@ void polyBindingEnergyRadial::calculateField()
         {
             writeToStorage();
         }
-    }    
+    }
 
 }
 
@@ -491,7 +491,7 @@ void polyBindingEnergyRadial::writeToStorage()
 //         file << nAvTimeSteps_ << endl;
         file << pairs_ << endl;
         file << mols_ << endl;
-        file << energy_ << endl; 
+        file << energy_ << endl;
     }
     else
     {
@@ -527,57 +527,57 @@ void polyBindingEnergyRadial::writeField()
         {
             const scalarField& binsX = binsX_;
             const scalarField& binsY = binsY_;
-            
+
             writeTimeData
             (
                 timePath_,
                 "bins_twoDim_"+fieldName_+"_binsX.xy",
                 binsX
-            ); 
-            
+            );
+
             writeTimeData
             (
                 timePath_,
                 "bins_twoDim_"+fieldName_+"_binsY.xy",
                 binsY
-            );           
+            );
 
             writeTimeData
             (
                 timePath_,
                 "bins_twoDim_"+fieldName_+"_bindingEnergy.xy",
                 bindingEnergy_
-            );     
-            
+            );
+
             writeTimeData
             (
                 timePath_,
                 "bins_twoDim_"+fieldName_+"_noOfPairs.xy",
                 avNoOfPairs_
-            );             
-            
+            );
+
             const reducedUnits& rU = molCloud_.redUnits();
-            
+
             writeTimeData
             (
                 timePath_,
                 "bins_twoDim_"+fieldName_+"_binsX_SI.xy",
                 binsX*rU.refLength()
-            ); 
-            
+            );
+
             writeTimeData
             (
                 timePath_,
                 "bins_twoDim_"+fieldName_+"_binsY_SI.xy",
                 binsY*rU.refLength()
-            );           
+            );
 
             writeTimeData
             (
                 timePath_,
                 "bins_twoDim_"+fieldName_+"_bindingEnergy_SI.xy",
                 bindingEnergy_*rU.refEnergy()
-            );              
+            );
         }
     }
 }
@@ -588,7 +588,7 @@ void polyBindingEnergyRadial::measureDuringForceComputation
     polyMolecule* molJ
 ){}
 
-    
+
 void polyBindingEnergyRadial::measureDuringForceComputationSite
 (
     polyMolecule* molI,
@@ -599,7 +599,7 @@ void polyBindingEnergyRadial::measureDuringForceComputationSite
 {
     label idI = molI->id();
     label idJ = molJ->id();
-    
+
     label idIF = findIndex(molIdsFluid_, molI->id());
     label idJF = findIndex(molIdsFluid_, molJ->id());
 
@@ -607,39 +607,39 @@ void polyBindingEnergyRadial::measureDuringForceComputationSite
     label idJW = findIndex(molIdsWall_, molJ->id());
 
     label tN = -1;
-    
+
     if
     (
-        ((idIW != -1) && (idJF != -1)) 
+        ((idIW != -1) && (idJF != -1))
     )
     {
         tN = molJ->trackingNumber();
     }
     else if((idJW != -1) && (idIF != -1))
     {
-        tN = molI->trackingNumber();        
-    }    
-    
+        tN = molI->trackingNumber();
+    }
+
     if(tN != -1)
     {
-        label k = molCloud_.pot().pairPots().pairPotentialIndex(idI, idJ, sI, sJ);    
+        label k = molCloud_.pot().pairPots().pairPotentialIndex(idI, idJ, sI, sJ);
 
         vector rsIsJ = molI->sitePositions()[sI] - molJ->sitePositions()[sJ];
         scalar rsIsJMag = mag(rsIsJ);
         scalar pE = molCloud_.pot().pairPots().energy(k, rsIsJMag);
-        
+
         if(molI->referred() || molJ->referred())
         {
             nPairs_[tN] += 0.5;
-            DeltaE_[tN] += pE*0.5*0.5; 
+            DeltaE_[tN] += pE*0.5*0.5;
         }
         else
         {
             nPairs_[tN] += 1;
-            DeltaE_[tN] += pE*0.5; 
+            DeltaE_[tN] += pE*0.5;
         }
     }
-    
+
 }
 
 

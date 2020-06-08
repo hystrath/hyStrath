@@ -7,26 +7,26 @@
  * -------------------------------------------------------------------------------
  * License
  *    This file is part of OpenFOAM.
- * 
+ *
  *    OpenFOAM is free software; you can redistribute it and/or modify it
  *    under the terms of the GNU General Public License as published by the
  *    Free Software Foundation; either version 2 of the License, or (at your
  *    option) any later version.
- * 
+ *
  *    OpenFOAM is distributed in the hope that it will be useful, but WITHOUT
  *    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  *    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
  *    for more details.
- * 
+ *
  *    You should have received a copy of the GNU General Public License
  *    along with OpenFOAM; if not, write to the Free Software Foundation,
  *    Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
- * 
+ *
  * Class
  *    polyIdPairs
- * 
+ *
  * Description
- * 
+ *
  * \*----------------------------------------------------------------------------*/
 
 #include "polyIdPairs.H"
@@ -34,15 +34,15 @@
 
 namespace Foam
 {
-    
+
     // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
-    
-    
+
+
     // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
-    
-    
+
+
     // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
-    
+
     // Null constructor
     polyIdPairs::polyIdPairs()
     :
@@ -53,9 +53,9 @@ namespace Foam
     coeffSize_(0),
     coeffType_("")
     {}
-    
-    
-    
+
+
+
     polyIdPairs::polyIdPairs
     (
         const polyMesh& mesh,
@@ -69,7 +69,7 @@ namespace Foam
     coeffSize_(0),
     coeffType_("")
     {
-        
+
         IOdictionary potentialDict
         (
             IOobject
@@ -81,12 +81,12 @@ namespace Foam
              IOobject::NO_WRITE
             )
         );
-       
-	//obtain information about pairs from pair subdict inside potentialdict 
+
+	//obtain information about pairs from pair subdict inside potentialdict
         const dictionary& pairDict(potentialDict.subDict("pair"));
 	List<word> pairs(pairDict.toc());//generate list of pairs
 	nIds_ = pot.siteIdList().size();//obtain size of siteidlist
-	label coeffsize = 0; 
+	label coeffsize = 0;
         /**
          * traverse throught the list of pairs excluding electrostatic
          * further checking for interactions in pairs to take the total number
@@ -95,8 +95,8 @@ namespace Foam
          * loop until the first existing of coefficients are found after that
          * the loop is broken and no further traversal is done.
          */
-        
-        
+
+
 	for(int i = 0;i<pairs.size();i++){
 		if(pairs[i] != "electrostatic")
 		{
@@ -112,7 +112,7 @@ namespace Foam
                                 coeffNumIds_.setSize(coeffsize);
                                 coeffSize_ = coeffsize;
                                 coeffType_ = pp;
-                                
+
                                 for(int k=0; k<coeffsize;++k){
                                     coeffNames_[k] = coeff[k];
                                     coeffNumIds_[k] = k;
@@ -120,16 +120,16 @@ namespace Foam
 				break;//break if the first existence of coeff found
 			}
 		}
-			
+
 	}
-       
+
 	int c = 0;
 	for(;c < coeffsize; ++c)
-		coeffVals_[c].setSize(nIds_); 
+		coeffVals_[c].setSize(nIds_);
 	for(c = 0; c < coeffsize; ++c)
 		for(int b = 0; b < nIds_; b++)
 			coeffVals_[c][b].setSize(nIds_);
-        
+
         //make the coeffs zero
         for(c=0;c < coeffsize; ++c){
             for(int i=0; i<nIds_; ++i){
@@ -142,12 +142,12 @@ namespace Foam
 /*
  * loop over each potential site id list to form pairs of each site id with another
  * essentially two loops a and b will be running on each site id to form pairs.
- * 
+ *
  * for each pair created it will be checked with corresponding pairs inside potentialDict
  * if found pairPotential value for that pair will be obtained.
  *
  * if the obtained pair potential is not "noInteraction" then the resultant pairPotential value
- * will be used to form coeff string to determine "*Coeffs" value which could correspond to 
+ * will be used to form coeff string to determine "*Coeffs" value which could correspond to
  * 'lennardJonesCoeffs', 'morseCoeffs', '*Coeffs' anything related with pairPotential value for that
  * particular pair.
  *
@@ -178,37 +178,37 @@ namespace Foam
 		}//first if condition ends
             }//b loop ends
         }//a loop ends
-        
+
     }//end function
-    
-    
+
+
     // * * * * * * * * * * * * * * * * Selectors * * * * * * * * * * * * * * * * //
-    
-    
+
+
     // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
-    
+
     polyIdPairs::~polyIdPairs()
     {}
-    
-    
+
+
     // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
-    
-    
-    
-    
-    
+
+
+
+
+
     // * * * * * * * * * * * * * * * Member Operators  * * * * * * * * * * * * * //
-    
-    
-    
+
+
+
     // * * * * * * * * * * * * * * * Friend Functions  * * * * * * * * * * * * * //
-    
-    
+
+
     // * * * * * * * * * * * * * * * Friend Operators  * * * * * * * * * * * * * //
-    
-    
+
+
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-    
+
 } // End namespace Foam
 
 // ************************************************************************* //

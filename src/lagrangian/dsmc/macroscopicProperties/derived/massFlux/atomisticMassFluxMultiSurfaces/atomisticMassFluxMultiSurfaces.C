@@ -84,7 +84,7 @@ atomisticMassFluxMultiSurfaces::atomisticMassFluxMultiSurfaces
 
     fluxDirection_ /= mag(fluxDirection_);
 
-    // read in list of zone names - test for one or more defined zones and 
+    // read in list of zone names - test for one or more defined zones and
     //                              for multiple definitions
 
     const List<word> zoneNames (propsDict_.lookup("faceZoneNames"));
@@ -186,12 +186,12 @@ void atomisticMassFluxMultiSurfaces::calculateField()
             scalar massFlux = 0.0;
 
             const labelList& faces = faceZones[regionIds_[r]];
-   
+
             forAll(faces, f)
             {
                 const label& faceI = faces[f];
                 vector nF = mesh_.faceAreas()[faceI]/mag(mesh_.faceAreas()[faceI]);
-    
+
                 forAll(molIdFlux, id)
                 {
                     if(findIndex(molIds_, id) != -1)
@@ -264,7 +264,7 @@ void atomisticMassFluxMultiSurfaces::writeField()
                     molFluxZone_[r],
                     true
                 );
-    
+
                 writeTimeData
                 (
                     casePath_,
@@ -273,9 +273,9 @@ void atomisticMassFluxMultiSurfaces::writeField()
                     massFluxZone_[r],
                     true
                 );
-    
+
                 const reducedUnits& rU = molCloud_.redUnits();
-        
+
                 if(rU.outputSIUnits())
                 {
                     writeTimeData
@@ -286,7 +286,7 @@ void atomisticMassFluxMultiSurfaces::writeField()
                         molFluxZone_[r]*rU.refMolFlux(),
                         true
                     );
-        
+
                     writeTimeData
                     (
                         casePath_,

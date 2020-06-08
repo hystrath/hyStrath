@@ -26,7 +26,7 @@ Class
     polyDensity
 
 Description
-            instantaneous density 
+            instantaneous density
 
 SourceFiles
     polyDensity.C
@@ -42,7 +42,7 @@ SourceFiles
 #include "polyMesh.H"
 #include "volFields.H"
 #include "polyMoleculeCloud.H"
-#include "boundedBox.H" 
+#include "boundedBox.H"
 
 // #include "distribution.H"
 
@@ -66,7 +66,7 @@ private:
 
         //- subDictionary containing the properties
         dictionary propsDict_;
-    
+
         word fieldName_;
 
         propertyField fields_;
@@ -75,11 +75,11 @@ private:
 
         //- ids of molecules
         List<label> molIds_;
-    
+
         scalar volume_;
-        
+
         DynamicList<scalar> densities_;
-        
+
         void setBoundBox
         (
             const dictionary& propsDict,
@@ -123,7 +123,7 @@ private:
             polyMolecule* molI,
             polyMolecule* molJ
         );
-       
+
         void measureDuringForceComputationSite
         (
             polyMolecule* molI,

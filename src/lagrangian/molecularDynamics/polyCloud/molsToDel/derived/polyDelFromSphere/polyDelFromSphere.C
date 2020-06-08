@@ -58,23 +58,23 @@ polyDelFromSphere::polyDelFromSphere
 {
 
     // check if start point is in the mesh
-   
+
     if(mesh_.findCell(startPoint_) == -1)
     {
-        Info<< "WARNING: starting point " << startPoint_ 
+        Info<< "WARNING: starting point " << startPoint_
             << " is selected outside the mesh."
             << endl;
     }
 
-        
+
     selectIds ids
     (
         molCloud_.cP(),
         propsDict_
     );
-    
+
     molIds_ = ids.molIds();
-    
+
     findMolsToDel();
 }
 
@@ -127,9 +127,9 @@ void polyDelFromSphere::findMolsToDel()
 
     label molsKept = initialSize - molsToDel.size();
 
-    Info<< tab << " initial polyMolecules: " <<  initialSize 
+    Info<< tab << " initial polyMolecules: " <<  initialSize
         << ", polyMolecules kept: " <<  molsKept
-        << ", polyMolecules removed: " << molsToDel.size() 
+        << ", polyMolecules removed: " << molsToDel.size()
         << endl;
 
 

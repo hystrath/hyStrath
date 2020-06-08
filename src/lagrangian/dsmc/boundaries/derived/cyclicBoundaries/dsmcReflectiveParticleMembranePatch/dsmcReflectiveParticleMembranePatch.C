@@ -49,7 +49,7 @@ addToRunTimeSelectionTable
 
 void dsmcReflectiveParticleMembranePatch::readProperties()
 {
-    /*specularReflectionProb_ = 
+    /*specularReflectionProb_ =
         readScalar(propsDict_.lookup("reflectionProbability"));*/
 }
 
@@ -101,7 +101,7 @@ void dsmcReflectiveParticleMembranePatch::setProperties()
 
         typeIds_[i] = typeId;
     }
-    
+
     specularReflectionProbs_.clear();
 
     specularReflectionProbs_.setSize(typeIds_.size(), 0.0);
@@ -119,27 +119,27 @@ void dsmcReflectiveParticleMembranePatch::setProperties()
 
 vector dsmcReflectiveParticleMembranePatch::findOriginalPosition
 (
-    const dsmcParcel& p, 
+    const dsmcParcel& p,
     const label fI
 )
 {
     const polyPatch& patch = mesh_.boundaryMesh()[patchId_];
     const polyPatch& patchN = mesh_.boundaryMesh()[neighbPatchId_];
-    
+
     //Info << "patchId_ " << tab << patchId_ << tab << "neighbPatchId_ " << tab << neighbPatchId_ << endl;
     //Info << "fC " << tab << patch.faceCentres()[fB] << tab << "fCnei " << tab << patchN.faceCentres()[fB] << endl;
-    
+
     vector orgPosition = p.position();
-                
+
     // Limitation: the cyclic patches face centre locations must
     // only differ by one component
-                
+
     if
     (
-        patchN.faceCentres()[fI].x() != 
+        patchN.faceCentres()[fI].x() !=
             patch.faceCentres()[fI].x()
-     && 
-        patchN.faceCentres()[fI].x() !=  
+     &&
+        patchN.faceCentres()[fI].x() !=
             p.tracked().currentPosition().x()
     )
     {
@@ -147,22 +147,22 @@ vector dsmcReflectiveParticleMembranePatch::findOriginalPosition
     }
     else if
     (
-        patchN.faceCentres()[fI].y() != 
+        patchN.faceCentres()[fI].y() !=
             patch.faceCentres()[fI].y()
-      && 
-        patchN.faceCentres()[fI].y() !=  
-            p.tracked().currentPosition().y()      
+      &&
+        patchN.faceCentres()[fI].y() !=
+            p.tracked().currentPosition().y()
     )
     {
         orgPosition.y() = patch.faceCentres()[fI].y();
     }
     else if
     (
-        patchN.faceCentres()[fI].z() != 
+        patchN.faceCentres()[fI].z() !=
             patch.faceCentres()[fI].z()
-      && 
-        patchN.faceCentres()[fI].z() !=  
-            p.tracked().currentPosition().z() 
+      &&
+        patchN.faceCentres()[fI].z() !=
+            p.tracked().currentPosition().z()
     )
     {
         orgPosition.z() = patch.faceCentres()[fI].z();
@@ -197,7 +197,7 @@ dsmcReflectiveParticleMembranePatch::dsmcReflectiveParticleMembranePatch
 {
     writeInTimeDir_ = false;
     writeInCase_ = false;
-    
+
     setProperties();
 }
 
@@ -224,9 +224,9 @@ void dsmcReflectiveParticleMembranePatch::calculateProperties()
 
     if(nRejections > 0)
     {
-        Info<< "no Reflections: " << nReflections 
+        Info<< "no Reflections: " << nReflections
             << ", no Rejections: " << nRejections
-            << ", ratio reflections/(reflections+rejections): " 
+            << ", ratio reflections/(reflections+rejections): "
             << scalar(nReflections)/scalar(nReflections+nRejections)
             << endl;
     }
@@ -245,7 +245,7 @@ void dsmcReflectiveParticleMembranePatch::controlMol
 )
 {
     const label& iD = findIndex(typeIds_, p.typeId()); // NEW VINCENT
-    
+
     const label faceI = p.face();
 
     vector nF = mesh_.faceAreas()[faceI];
@@ -253,7 +253,7 @@ void dsmcReflectiveParticleMembranePatch::controlMol
 
     const label fA = findIndex(coupledFacesA_, faceI);
     const label fB = findIndex(coupledFacesB_, faceI);
-    
+
     //Info << "fA " << tab << fA << tab << "fB " << tab << fB << endl;
 
     Random& rndGen = cloud_.rndGen();
@@ -263,7 +263,7 @@ void dsmcReflectiveParticleMembranePatch::controlMol
     if(d > 0) // processor boundary
     {
         //Info << "processor boundary" << endl;
-        
+
         if(fA != -1)
         {
             const scalar pRandom = rndGen.sample01<scalar>();
@@ -272,13 +272,13 @@ void dsmcReflectiveParticleMembranePatch::controlMol
             {
                 //- particle specularly reflected
                 const scalar Un = p.U() & nF;
-    
+
                 p.U() -= 2.0*Un*nF;
 
                 td.switchProcessor = false;
 
                 nReflections_++;
-                
+
                 //const vector& orgPosition = findOriginalPosition(p, fA);
                 //cloud_.porousMeas().cyclicReflectionInteraction(p, orgPosition, nF);
                 /*if (cloud_.measureInstantaneousMSD()) // TODO
@@ -289,9 +289,9 @@ void dsmcReflectiveParticleMembranePatch::controlMol
                         if (p.tracked().inPatchId() == -1)
                         {
                             const vector& orgPosition = findOriginalPosition(p, fA);
-                            
+
                             p.tracked().updateDistanceTravelled(orgPosition);
-                            
+
                             p.tracked().performSpecularReflectionOnDistanceTravelled(nF);
                         }
                     }
@@ -301,7 +301,7 @@ void dsmcReflectiveParticleMembranePatch::controlMol
             {
                 //- particle passing through the membrane
                 nRejections_++;
-                
+
                 const vector& orgPosition = findOriginalPosition(p, fA);
                 cloud_.porousMeas().cyclicMembraneInteraction(p, orgPosition);
             }
@@ -310,18 +310,18 @@ void dsmcReflectiveParticleMembranePatch::controlMol
     else if(d < 0) // cyclic (non-processor boundary)
     {
         if(fB != -1)
-        {    
+        {
             const scalar pRandom = rndGen.sample01<scalar>();
 
             if(specularReflectionProbs_[iD] > pRandom)
             {
                 //- particle specularly reflected
                 const scalar Un = p.U() & nF;
-    
+
                 p.U() -= 2.0*Un*nF;
 
                 nReflections_++;
-                
+
                 /*if (cloud_.measureInstantaneousMSD()) // TODO
                 {
                     Info << "Incorrect calculation" << endl;
@@ -330,13 +330,13 @@ void dsmcReflectiveParticleMembranePatch::controlMol
                         if (p.tracked().inPatchId() == -1)
                         {
                             const vector& orgPosition = findOriginalPosition(p, fB);
-                            
-                            //Info << "cur " << tab << p.tracked().currentPosition() << tab 
+
+                            //Info << "cur " << tab << p.tracked().currentPosition() << tab
                             //     << "org " << tab << orgPosition << tab
                             //     << "pos " << tab << p.position() << endl;
-                            
+
                             p.tracked().updateDistanceTravelled(orgPosition);
-                            
+
                             //p.tracked().performSpecularReflectionOnDistanceTravelled(nF);
                         }
                     }
@@ -346,7 +346,7 @@ void dsmcReflectiveParticleMembranePatch::controlMol
             {
                 //- particle passing through the membrane
                 nRejections_++;
-                
+
                 const vector& orgPosition = findOriginalPosition(p, fB);
                 cloud_.porousMeas().cyclicMembraneInteraction(p, orgPosition);
             }

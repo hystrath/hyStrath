@@ -52,7 +52,7 @@ SourceFiles
 #include "cyclicBoundaries.H"
 #include "cellInteractions.H"
 #include "clockTimer.H"
-#include "potentials.H" 
+#include "potentials.H"
 #include "constantMoleculeProperties.H"
 #include "polyIntegrators.H"
 
@@ -76,41 +76,41 @@ private:
     // Private data
 
         const polyMesh& mesh_;
-        
+
         const reducedUnits& redUnits_;
 
         const constantMoleculeProperties& cP_;
-        
+
         cachedRandomMD& rndGen_;
 
         polyIntegrators int_;
-        
+
         potentials p_;
-        
+
         List<DynamicList<polyMolecule*> > cellOccupancy_;
-        
+
         //- measurement fields
-        polyFieldProperties fields_; 
-        
-        
+        polyFieldProperties fields_;
+
+
         //- boundaries
         polyBoundaries boundaries_;
-        
+
         //- controllers
         polyControllers controllers_;
-        
+
         //- polyMolecule tracking
         polyFaceTracker trackingInfo_;
-        
+
         trackingNumber moleculeTracking_;
-        
+
         cyclicBoundaries cyclics_;
-        
+
         cellInteractions<polyMolecule> iL_;
-        
+
         //- interaction particle list
         List<DynamicList<polyMolecule*> > ipl_;
-        
+
         clockTimer clock_;
 
 
@@ -158,7 +158,7 @@ public:
             const word& option,
             const bool& clearFields
         );
-        
+
     // Static constructors
 
         static autoPtr<polyMoleculeCloud> New
@@ -191,7 +191,7 @@ public:
             const vector& position,
             const label cell,
             const label tetFace,
-            const label tetPt,         
+            const label tetPt,
             const tensor& Q,
             const vector& v,
             const vector& a,
@@ -203,21 +203,21 @@ public:
             const scalar& fraction,
             const label trackingNumber
         );
-        
+
         void updateTrackingNumbersAfterRead();
-        
+
         //- Evolve the molecules (move, calculate forces, etc)
-        
+
         void evolve();
         void evolveBeforeForces();
         void evolveAfterForces();
-        
+
         void controlBeforeVelocity();
         void updateVelocity();
         void controlBeforeMove();
         void move();
-        void move(const scalar& trackTime);        
-        void updateAfterMove(const scalar& trackTime);        
+        void move(const scalar& trackTime);
+        void updateAfterMove(const scalar& trackTime);
         void controlAfterMove();
         void controlBeforeForces();
         void clearLagrangianFields();
@@ -227,7 +227,7 @@ public:
         void controlAfterVelocity();
         void postTimeStep();
 
-        
+
         void prepareInteractions();
         void buildCellOccupancy();
         void rebuildCellOccupancy();
@@ -272,13 +272,13 @@ public:
         label getTrackingNumber();
         void resetTrackingNumbers();
         void writeReferredCloud();
-        
+
         // Access
 
             label nSites() const;
             inline const polyMesh& mesh() const;
             inline const potentials& pot() const;
-            inline potentials& pot();            
+            inline potentials& pot();
             inline const constantMoleculeProperties& cP() const;
 //             inline const potential& pot() const;
             inline const List<DynamicList<polyMolecule*> >& cellOccupancy() const;
@@ -286,19 +286,19 @@ public:
 //             inline const polyMolecule::constantProperties& constProps(label id) const;
             inline cachedRandomMD& rndGen();
             inline const reducedUnits& redUnits() const;
-            inline const polyFieldProperties& fields() const;  
+            inline const polyFieldProperties& fields() const;
             inline polyFieldProperties& fields();
             inline const cyclicBoundaries& cyclics() const;
             inline const polyBoundaries& boundaries() const;
             inline polyBoundaries& boundaries();
-            inline const polyControllers& controllersInfo() const; 
+            inline const polyControllers& controllersInfo() const;
             inline polyControllers& controllersInfo();
             inline const polyFaceTracker& tracker() const;
             inline polyFaceTracker& tracker();
             inline trackingNumber& moleculeTracking();
             inline cellInteractions<polyMolecule>& il();
             inline clockTimer& clock();
-            
+
     // Member Operators
 
         //- Write polyMolecule sites in XYZ format

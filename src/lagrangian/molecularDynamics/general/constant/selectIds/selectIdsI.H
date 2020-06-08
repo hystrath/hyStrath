@@ -23,7 +23,7 @@ License
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 Class
-    
+
 
 Description
 
@@ -46,12 +46,12 @@ namespace Foam
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-inline List<label> selectIds::molIds() 
+inline List<label> selectIds::molIds()
 {
     return molIds_;
 }
 
-inline List<word> selectIds::molIdNames() 
+inline List<word> selectIds::molIdNames()
 {
     return molIdNames_;
 }

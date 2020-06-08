@@ -11,7 +11,7 @@
 // sign = +1 gives positive flux
 // sign = -1 gives negative flux
 // -----------------------------------------------------------------------------
-void KFVSSplitFlux 
+void KFVSSplitFlux
 (
     const scalar& sign,
     const vector& normal,
@@ -19,8 +19,8 @@ void KFVSSplitFlux
     const vector& U,
     const scalar& p,
     const scalar& e,
-    scalar& rhoFlux,  
-    vector& rhoUFlux, 
+    scalar& rhoFlux,
+    vector& rhoUFlux,
     scalar& rhoEFlux
 )
 {
@@ -28,7 +28,7 @@ void KFVSSplitFlux
    const scalar beta = 0.5*rho/p;
    const scalar s    = vn*Foam::sqrt(beta);
    const scalar A    = 0.5*(1.0 + sign*Foam::erf(s));
-   const scalar B    = 0.5*sign*Foam::exp(-s*s) / 
+   const scalar B    = 0.5*sign*Foam::exp(-s*s) /
                        Foam::sqrt(constant::mathematical::pi*beta);
    const scalar ufact= vn*A + B;
    const scalar rhoE = rho*(e + 0.5*magSqr(U));
@@ -71,11 +71,11 @@ void KFVSFlux
 )
 {
     // Maximum eigenvalue
-    amaxSf = 0.5 * mag((U_pos + U_neg) & Sf) + 
+    amaxSf = 0.5 * mag((U_pos + U_neg) & Sf) +
         0.5 * (cSf_pos + cSf_neg);
-        
+
     aByU = (U_pos + U_neg)/2.0;
-    
+
     scalar rhoFlux_pos, rhoFlux_neg;
     vector rhoUFlux_pos, rhoUFlux_neg;
     scalar rhoEFlux_pos, rhoEFlux_neg;
@@ -93,8 +93,8 @@ void KFVSFlux
         U_pos,
         p_pos,
         e_pos,
-        rhoFlux_pos,  
-        rhoUFlux_pos, 
+        rhoFlux_pos,
+        rhoUFlux_pos,
         rhoEFlux_pos
     );
 
@@ -107,8 +107,8 @@ void KFVSFlux
         U_neg,
         p_neg,
         e_neg,
-        rhoFlux_neg,  
-        rhoUFlux_neg, 
+        rhoFlux_neg,
+        rhoUFlux_neg,
         rhoEFlux_neg
     );
 

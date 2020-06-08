@@ -52,10 +52,10 @@ class cyclicBoundaries
     // Private data
 
         Time& time_;
-        
+
         //- The entire dictionary (containing multiple subDictionaries)
         IOdictionary boundariesDict_;
-        
+
         //- cyclic boundary models
         PtrList<entry> cyclicBoundaryList_;
         List<word> cyclicBoundaryNames_;
@@ -68,15 +68,15 @@ class cyclicBoundaries
 public:
 
     // Constructors
-    
-        //- Null Constructor 
+
+        //- Null Constructor
         cyclicBoundaries
         (
             Time& t,
             const polyMesh& mesh
         );
 
-        //- Constructor 
+        //- Constructor
         cyclicBoundaries
         (
             Time& t,

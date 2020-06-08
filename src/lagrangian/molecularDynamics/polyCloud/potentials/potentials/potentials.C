@@ -85,20 +85,20 @@ void potentials::readPotentialDict()
         }
 
         removalOrder_.transfer(removalOrder);
-        
+
         Info << "setup removalOrder = " << removalOrder_ << endl;
     }
     else
     {
         FatalErrorIn("potentials::readPotentialDict()")
             << "removalOrder list not found in system/potentialDict"
-            << abort(FatalError);        
-        
+            << abort(FatalError);
+
     }
-    
+
     if (potentialsDict.found("checkOverlaps"))
     {
-        checkPotentialOverlaps_ = Switch(potentialsDict.lookup("checkOverlaps"));  
+        checkPotentialOverlaps_ = Switch(potentialsDict.lookup("checkOverlaps"));
     }
 }
 
@@ -125,9 +125,9 @@ potentials::potentials
     checkPotentialOverlaps_(true)
 {
     readPotentialDict();
-    
+
     // set exclusions
-    
+
 }
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
@@ -143,7 +143,7 @@ potentials::~potentials()
 //     {
 //         return false;
 //     }
-//    
+//
 //     if()
 // }
 //     if(!molI->frozen() || !molJ->frozen())

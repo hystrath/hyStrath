@@ -50,7 +50,7 @@ energyScalingFunction::energyScalingFunction
     energyScalingFunctionProperties_(energyScalingFunctionProperties),
     pairPot_(pairPot),
     rU_(rU)
-    
+
 {}
 
 

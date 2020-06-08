@@ -102,7 +102,7 @@ void brennerPotential::setPotential()
 
 
     // modify to reduced units
-    
+
 
     cIJ_ /= rU_.refEnergy();
     betaIJ_ *= rU_.refLength();
@@ -123,7 +123,7 @@ void brennerPotential::setPotential()
 
     Info << nl << "brenner properties in reduced units: " << endl;
 
-    Info<< "rIJ0 = " << rIJ0_ 
+    Info<< "rIJ0 = " << rIJ0_
         << nl << "rIJ1 = " << rIJ1_
         << nl << "rIJ2 = " << rIJ2_
         << nl << "betaIJ = " << betaIJ_
@@ -154,7 +154,7 @@ void brennerPotential::outputProperties()
 
     scalarField rField(nBins, 0.0);
     scalarField fIJField(nBins, 0.0);
-    
+
     for (label i=0; i<nBins; ++i)
     {
         rField[i] = rMin_+(i*dr_);
@@ -167,8 +167,8 @@ void brennerPotential::outputProperties()
     {
         forAll(rField, n)
         {
-            fileFij 
-                << rField[n] << "\t" 
+            fileFij
+                << rField[n] << "\t"
                 << fIJField[n]
                 << endl;
         }
@@ -199,9 +199,9 @@ void brennerPotential::outputProperties()
     {
         forAll(rField, n)
         {
-            fileUrep 
-                << rField[n] << "\t" 
-                << URepField[n] << "\t" 
+            fileUrep
+                << rField[n] << "\t"
+                << URepField[n] << "\t"
                 << fRepField[n]
                 << endl;
         }
@@ -214,7 +214,7 @@ void brennerPotential::outputProperties()
     }
 
 
-    // output attractive part of potential 
+    // output attractive part of potential
 
     scalarField UAttField(nBins, 0.0);
     scalarField fAttField(nBins, 0.0);
@@ -232,9 +232,9 @@ void brennerPotential::outputProperties()
     {
         forAll(rField, n)
         {
-            fileUatt 
-                << rField[n] << "\t" 
-                << UAttField[n] << "\t" 
+            fileUatt
+                << rField[n] << "\t"
+                << UAttField[n] << "\t"
                 << fAttField[n]
                 << endl;
         }
@@ -266,9 +266,9 @@ void brennerPotential::outputProperties()
     {
         forAll(rField, n)
         {
-            fileU 
-                << rField[n] << "\t" 
-                << UField[n] << "\t" 
+            fileU
+                << rField[n] << "\t"
+                << UField[n] << "\t"
                 << fField[n]
                 << endl;
         }
@@ -293,9 +293,9 @@ void brennerPotential::outputProperties()
 //             << "Attempted assignment to self"
 //             << abort(FatalError);
 //     }
-// 
+//
 //     Map<label>::operator=(rhs);
-// 
+//
 //     binWidth_ = rhs.binWidth();
 // }
 
@@ -309,14 +309,14 @@ void brennerPotential::outputProperties()
 // {
 //     os  << d.binWidth_
 //         << static_cast<const Map<label>&>(d);
-// 
+//
 //     // Check state of Ostream
 //     os.check
 //     (
 //         "Ostream& operator<<(Ostream&, "
 //         "const brennerPotential&)"
 //     );
-// 
+//
 //     return os;
 // }
 

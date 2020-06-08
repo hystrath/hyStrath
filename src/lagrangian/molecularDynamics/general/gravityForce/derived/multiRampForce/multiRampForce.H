@@ -62,34 +62,34 @@ private:
         dictionary propsDict_;
 
         vector force_;
-        
+
         vector direction_;
-        
+
         scalar initialForce_;
-        
+
         scalar finalForce_;
-        
+
         scalar loadingTime_;
-        
+
         scalar partialLoadingTime_;
-        
+
         scalar breathingTime_;
-        
+
         label noOfStops_;
-        
+
         scalar forceGradient_;
-        
+
         scalar currentTime_;
         scalar timeLoading_;
-        scalar timeBreathing_;        
-        
-        scalar deltaTMD_;
-        
-        
-        
+        scalar timeBreathing_;
 
-        
-        
+        scalar deltaTMD_;
+
+
+
+
+
+
 
 public:
 
@@ -129,7 +129,7 @@ public:
             vector force(const vector& position);
 
             vector force(const scalar& time);
-            
+
         // Write
 
 

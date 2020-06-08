@@ -27,7 +27,7 @@ Class
 
 Description
     AppletonBray (1964) relaxation time model.
-  
+
 SourceFiles
     AppletonBray.C
 
@@ -45,7 +45,7 @@ SourceFiles
 
 namespace Foam
 {
-  
+
 /*---------------------------------------------------------------------------*\
                              Class AppletonBray Declaration
 \*---------------------------------------------------------------------------*/
@@ -54,31 +54,31 @@ template<class ThermoType>
 class AppletonBray
 :
     public relaxationTimeModelHE
-{  
+{
 
 protected:
-  
+
     // Protected data
-    
+
         //- Thermodynamic data of the species
         const PtrList<ThermoType>& speciesThermo_;
-        
+
         //- Position of the electrons in the species table
         label electronListPosition_;
-        
+
         //- Fundamental and physico-chemical constants
         const scalar RR, NA, kB, ec, pi;
 
 
     // Protected member functions
-    
+
 
 public:
 
     //- Runtime type information
     TypeName("AppletonBray");
 
-    
+
     // Constructors
 
         //- Construct from components
@@ -102,15 +102,15 @@ public:
         {
             return speciesThermo_[i].W();
         }
-        
+
         // Correct the h-e relaxation times and h-e energy transfer
         virtual void correct();
-                
+
         //- Read transportProperties dictionary
         virtual bool read();
   };
 
-  
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 }	// End namespace Foam

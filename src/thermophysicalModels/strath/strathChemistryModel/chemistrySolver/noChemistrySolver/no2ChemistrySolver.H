@@ -82,7 +82,7 @@ public:
             scalar& deltaT,
             scalar& subDeltaT
         ) const;
-        
+
         //- Update the concentrations (also forward apart) and return the chemical time
         virtual void solve
         (

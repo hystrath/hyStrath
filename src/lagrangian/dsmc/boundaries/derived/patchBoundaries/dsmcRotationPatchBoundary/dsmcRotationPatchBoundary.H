@@ -61,29 +61,29 @@ class dsmcRotationPatchBoundary
 private:
 
     // Private data
-    
+
         dictionary propsDict_;
-        
+
 
 protected:
 
-    // Protected data        
+    // Protected data
 
         //- Centre point, default: (0, 0, 0)
         const vector centrePoint_;
-        
+
         //- Axis of rotation, default: (1, 0, 0), i.e., x-axis
         vector rotationAxis_;
 
         //- Wall velocity value, default: 0 m/s
         const scalar wallVelocity_;
-        
-        
+
+
     // Protected member functions
-        
+
         //- Wall velocity induced by the rotation, to be added to U
         vector wallVelocity(const dsmcParcel& p);
-        
+
 
 public:
 

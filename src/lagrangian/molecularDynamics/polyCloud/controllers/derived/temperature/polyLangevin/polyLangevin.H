@@ -66,31 +66,31 @@ private:
         dictionary propsDict_;
 
         List<label> molIds_;
-        
-        List<label> trackingNumbers_;        
-       
+
+        List<label> trackingNumbers_;
+
         vectorField storedVelocities_;
-        
+
         //- strength-constant
         scalar gamma_;
         scalar sigma1_;
         scalar sigma2_;
         scalar deltaT_;
-        
+
         scalar temperature_;
-        
+
         bool controlOn_;
         bool switchOffAfterTime_;
         scalar currentTime_;
         scalar switchOffTime_;
-        
-        
+
+
         bool variableGamma_;
         scalar timeInterval_;
         scalar elapsedtime_;
         scalar deltaGamma_;
-        
-        
+
+
     // Private Member Functions
 
         void measureTemperature();
@@ -116,7 +116,7 @@ public:
 
 
     // Member Functions
-        
+
         //- create an initial configuration
         void initialConfiguration();
 
@@ -128,20 +128,20 @@ public:
         (
             polyMolecule* molI,
             polyMolecule* molJ
-        );        
+        );
         void controlAfterForces();
         void controlAfterVelocityII();
-        
+
         //- calculate any required properties (end of time-step)
-        void calculateProperties(); 
-        
+        void calculateProperties();
+
         //- output data (optional)
         void output
         (
-            const fileName& fixedPathName, 
+            const fileName& fixedPathName,
             const fileName& timePath
         );
-        
+
         //- update properties from a modified dictionary (optional)
         void updateProperties(const dictionary&);
 

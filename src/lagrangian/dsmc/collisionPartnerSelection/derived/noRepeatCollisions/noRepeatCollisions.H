@@ -23,7 +23,7 @@ License
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 Class
- 
+
 
 Description
 
@@ -66,7 +66,7 @@ private:
 	label pickFromCandidateList(DynamicList<label>& candidatesInCell);
 
 	void updateCandidateSubList(const label& candidate,DynamicList<label>& candidatesInSubCell);
-	
+
 	label pickFromCandidateSubList(DynamicList<label>& candidatesInCell,DynamicList<label>& candidatesInSubCell);
 
 

@@ -63,15 +63,15 @@ private:
 
         //- subDictionary containing the properties
         dictionary propsDict_;
-	
+
         labelList typeIds_;
 
         scalar volume_;
-        
+
         randomPointsInSquareZone randomSquare_;
-        
-        
-        
+
+
+
     // Private Member Functions
 
 //         void readProperties();
@@ -81,7 +81,7 @@ private:
 		void setProperties();
 
 //         scalar getTemperature(const vector& position);
-        
+
 public:
 
     //- Runtime type information
@@ -96,28 +96,28 @@ public:
             dsmcCloud& cloud,
             const dictionary& dict
         );
-    
+
         // Destructor
         ~densityControlZone();
-    
+
     // Member Functions
-    
+
         void initialConfiguration();
 
         void controlParcelsBeforeMove();
         void controlParcelsBeforeCollisions();
         void controlParcelsAfterCollisions();
-    
+
         //- calculate any required properties
         void calculateProperties();
 
         //- output data
         void output
         (
-	        const fileName& fixedPathName, 
+	        const fileName& fixedPathName,
 	        const fileName& timePath
         );
-    
+
         //- update properties from a modified dictionary
         void updateProperties(const dictionary&);
 

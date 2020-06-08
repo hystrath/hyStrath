@@ -82,7 +82,7 @@ Description
             Ain             0.01728;
             AinNbr          0.3456;
             Vcore           0.01244;  // Optional
-    
+
             // geometryMode    calculated;
             // inletPatch      inlet_HWK;
             // inletPatchNbr   inlet_air;

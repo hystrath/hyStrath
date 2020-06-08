@@ -18,7 +18,7 @@ License
     You should have received a copy of the GNU General Public License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
-    
+
 Description
 
 \*---------------------------------------------------------------------------*/
@@ -36,8 +36,8 @@ defineTypeNameAndDebug(dsmcAbsorbingDiffuseWallPatch, 0);
 
 addToRunTimeSelectionTable
 (
-    dsmcPatchBoundary, 
-    dsmcAbsorbingDiffuseWallPatch, 
+    dsmcPatchBoundary,
+    dsmcAbsorbingDiffuseWallPatch,
     dictionary
 );
 
@@ -69,7 +69,7 @@ dsmcAbsorbingDiffuseWallPatch::dsmcAbsorbingDiffuseWallPatch
     writeInTimeDir_ = false;
     writeInCase_ = false;
     measurePropertiesAtWall_ = true;
-    
+
     dsmcDiffuseWallPatch::setProperties();
     dsmcAbsorbingWallPatch::setProperties();
 }
@@ -94,24 +94,24 @@ void dsmcAbsorbingDiffuseWallPatch::calculateProperties()
 
 void dsmcAbsorbingDiffuseWallPatch::controlParticle
 (
-    dsmcParcel& p, 
+    dsmcParcel& p,
     dsmcParcel::trackingData& td
 )
 {
     measurePropertiesBeforeControl(p);
-    
+
     const label iD = findIndex(typeIds_, p.typeId());
-    
-    if(iD != -1) 
+
+    if(iD != -1)
     {
         //- particle considered for absorption
         const scalar absorptionProbability = absorptionProbs_[iD];
-        
+
         const label wppIndex = patchId();
-        
-        const label wppLocalFace = 
+
+        const label wppLocalFace =
             mesh_.boundaryMesh()[wppIndex].whichFace(p.face());
-        
+
         if
         (
             absorptionProbability > cloud_.rndGen().sample01<scalar>()
@@ -125,15 +125,15 @@ void dsmcAbsorbingDiffuseWallPatch::controlParticle
         {
             //- diffuse reflection
             dsmcDiffuseWallPatch::performDiffuseReflection(p);
-            
+
             measurePropertiesAfterControl(p);
-        }   
+        }
     }
     else
     {
         //- otherwise, it is treated as a diffuse reflection
         dsmcDiffuseWallPatch::performDiffuseReflection(p);
-        
+
         measurePropertiesAfterControl(p);
     }
 }

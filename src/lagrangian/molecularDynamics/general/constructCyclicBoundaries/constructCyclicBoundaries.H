@@ -27,13 +27,13 @@ Class
 
 Description
     // IMPORTANT RUNS IN SERIAL
-    
+
     This class is used by the createCyclicBoundaries utility to generate information
-    on the cyclic boundaries. This information is stored appropriately in 
+    on the cyclic boundaries. This information is stored appropriately in
     the case/system/ directory in a dictionary called "cyclicBoundaries" which is
     created in this class. This dictionary is then re-read when running the MD simulations
-    in serial or parallel, The information allows the proper initialisation 
-    of the "cyclicBoundaries" object. 
+    in serial or parallel, The information allows the proper initialisation
+    of the "cyclicBoundaries" object.
 
 SourceFiles
     constructCyclicBoundariesI.H
@@ -69,18 +69,18 @@ class constructCyclicBoundaries
         label nCyclicBoundaries_;
 
         List< List<vector> > boundaryPoints_;
-        
+
         List<word> names_;
-        
+
         List<label> nFaces_;
 
         List<vector> normal_;
 
         List<vector> centroid_;
 
-        List<word> neighbourNames_;        
-        
-        
+        List<word> neighbourNames_;
+
+
     // Private Member Functions
 
             void setPatchPoints
@@ -88,8 +88,8 @@ class constructCyclicBoundaries
                 const label& patchId,
                 const label& c
             );
-            
-            void setCyclicBoundaries();    
+
+            void setCyclicBoundaries();
 
 
 public:
@@ -98,12 +98,12 @@ public:
 
     // Constructors
 
-        //- Construct 
+        //- Construct
         constructCyclicBoundaries
         (
             const polyMesh& mesh
         );
-    
+
 
     // Selectors
 
@@ -114,7 +114,7 @@ public:
     // Member Functions
 
         // Access
-        
+
         // Check
 
         // Edit

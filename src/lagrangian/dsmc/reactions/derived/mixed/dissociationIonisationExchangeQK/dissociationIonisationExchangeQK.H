@@ -63,7 +63,7 @@ protected:
 
         //- Sub-dictionary containing the reaction properties
         //dictionary propsDict_;
-        
+
 
     // Protected Member Functions
 
@@ -84,13 +84,13 @@ public:
             dsmcCloud& cloud,
             const dictionary& dict
         );
-    
-    
+
+
     // Destructor
-    
+
         ~dissociationIonisationExchangeQK();
-    
-    
+
+
     // Member Functions
 
         //- Initial configuration
@@ -115,7 +115,7 @@ public:
             const label& typeIdP,
             const label& typeIdQ
         );
-        
+
 
       // Access
 

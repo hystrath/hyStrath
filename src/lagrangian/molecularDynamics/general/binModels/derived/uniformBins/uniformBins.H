@@ -118,7 +118,7 @@ public:
 
             scalar binVolume(const label& n);
 
-            
+
 
         // Write
 

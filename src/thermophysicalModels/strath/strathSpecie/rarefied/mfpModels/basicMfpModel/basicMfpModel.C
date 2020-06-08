@@ -48,11 +48,11 @@ Foam::basicMfpModel::basicMfpModel
     const volScalarField& Tt
 )
 :
-    dict_(dict),  
-    dictThermoPhy_(dictThermoPhy),   
+    dict_(dict),
+    dictThermoPhy_(dictThermoPhy),
     name_(name),
-    speciesIndex_(speciesIndex),      
-    p_(p),   
+    speciesIndex_(speciesIndex),
+    p_(p),
     Tt_(Tt)
 {}
 

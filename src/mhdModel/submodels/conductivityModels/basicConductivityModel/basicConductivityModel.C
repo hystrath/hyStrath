@@ -28,11 +28,11 @@ License
 
 // * * * * * * * * * * * * * * Friend Operators * * * * * * * * * * * * * * //
 
-namespace Foam 
+namespace Foam
 {
     Ostream& operator<<(Ostream& os, const basicConductivityModel& model) {
-        os << "Hello world."; 
-        return os; 
+        os << "Hello world.";
+        return os;
     }
 }
 

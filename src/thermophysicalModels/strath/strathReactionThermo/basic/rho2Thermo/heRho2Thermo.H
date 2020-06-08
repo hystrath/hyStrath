@@ -56,7 +56,7 @@ class heRho2Thermo
 
       //- Initialiase the thermo variables
       void init2();
-        
+
       //- Calculate the thermo variables (2T activated)
       void calculate2();
 

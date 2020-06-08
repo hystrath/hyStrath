@@ -47,11 +47,11 @@ noInteraction::noInteraction
     const polyMesh& mesh,
     polyMoleculeCloud& molCloud,
     const reducedUnits& redUnits,
-    const word& name, 
+    const word& name,
     const dictionary& dict
 )
 :
-    pairPotentialModel(mesh, molCloud, redUnits, name, dict) 
+    pairPotentialModel(mesh, molCloud, redUnits, name, dict)
 {
 //     exclusions_ = true;
     useTables_ = false;
@@ -75,7 +75,7 @@ scalar noInteraction::force(const scalar r) const
 //     return forceLookUpFromTable(r);
     return 0.0;
 }
-    
+
 scalar noInteraction::energy(const scalar r) const
 {
 //     return energyLookUpFromTable(r);
@@ -90,18 +90,18 @@ scalar noInteraction::energy(const scalar r) const
 // )
 // {
 //     pairPotentialModel::read(pairPotentialProperties, rU);
-// 
+//
 //     noInteractionCoeffs_ = pairPotentialProperties.subDict(typeName + "Coeffs");
-// 
+//
 //     noInteractionCoeffs_.lookup("sigma") >> sigma_;
 //     noInteractionCoeffs_.lookup("epsilon") >> epsilon_;
-// 
+//
 //     if(rU.runReducedUnits())
 //     {
 //         sigma_ /= rU.refLength();
 //         epsilon_ /= rU.refEnergy();
 //     }
-// 
+//
 //     return true;
 // }
 
@@ -111,7 +111,7 @@ const dictionary& noInteraction::dict() const
 }
 void noInteraction::write(const fileName& pathName)
 {
-    
+
 }
 
 } // End namespace Foam

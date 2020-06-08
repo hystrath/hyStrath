@@ -27,7 +27,7 @@ Class
 
 Description
     Fick multispecies transport model.
-  
+
 SourceFiles
     Fick.C
 
@@ -42,7 +42,7 @@ SourceFiles
 
 namespace Foam
 {
-  
+
 /*---------------------------------------------------------------------------*\
                              Class Fick Declaration
 \*---------------------------------------------------------------------------*/
@@ -51,31 +51,31 @@ template<class ThermoType>
 class Fick
 :
     public multiSpeciesTransportModel
-{  
+{
 
 protected:
-  
+
     // Protected data
-    
+
         //- Thermodynamic data of the species
         const PtrList<ThermoType>& speciesThermo_;
-        
+
         // Mole-fraction below which the contribution of the species is ignored
         const scalar miniXs_;
 
 
     // Protected member functions
-    
+
         //- Update the coefficients of the species equations
         virtual void updateCoefficients();
-    
+
 
 public:
 
     //- Runtime type information
     TypeName("Fick");
 
-    
+
     // Constructors
 
         //- Construct from components
@@ -98,7 +98,7 @@ public:
         {
             return speciesThermo_[i].W()*1.0e-3;
         }
-    
+
         //- Specific enthalpy [J/kg] for a specie given by index and temperature
         scalar hs(label i, scalar p, scalar Tt, scalar Tv) const
         {
@@ -107,12 +107,12 @@ public:
 
         //- Update the species diffusion coefficients
         virtual void correct();
-        
+
         //- Read transportProperties dictionary
         virtual bool read();
   };
 
-  
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 }	// End namespace Foam

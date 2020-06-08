@@ -63,7 +63,7 @@ class brennerPotential
         const reducedUnits& rU_;
 //         const dictionary& potentialProperties_;
 
-        // potential constants 
+        // potential constants
         scalar sIJ_;
         scalar cIJ_;
         scalar betaIJ_;
@@ -85,7 +85,7 @@ class brennerPotential
         scalar constantBrenner_;
 
     // Private Member Functions
-        
+
 
 public:
 

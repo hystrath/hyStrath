@@ -100,9 +100,9 @@ void pdDeletionPatch::controlParticle(pdParcel& p, pdParcel::trackingData& td)
 //         const label& faceI = p.face();
 //         vector nF = mesh_.faceAreas()[faceI];
 //         nF /= mag(nF);
-//         
+//
 //         scalar Un = p.U() & nF;
-// 
+//
 //         if (Un > 0.0)
 //         {
 //             p.U() -= 2.0*Un*nF;
@@ -120,24 +120,24 @@ void pdDeletionPatch::output
 //     {
 //         reduce(massFlux_, sumOp<scalar>());
 //     }
-// 
+//
 //     if(faces_.size() > 0)
 //     {
 //         deletedMassFlux_[timeIndex_] = massFlux_/writeInterval_;
 //     }
-// 
+//
 //     timeIndex_++;
 //     massFlux_ = 0.0;
-// 
+//
 //     scalarField writeTimes(writeIntSteps_+1, 0.0);
-// 
+//
 //     forAll(writeTimes, tT)
 //     {
 //         writeTimes[tT] = startTime_ + tT*writeInterval_;
 //     }
-// 
+//
 //     Info << "writing out " << endl;
-// 
+//
 //     writeTimeData(fixedPathName, "massFluxDeleted", writeTimes, deletedMassFlux_);
 }
 

@@ -48,7 +48,7 @@ SourceFiles
 
 namespace Foam
 {
-  
+
 /*---------------------------------------------------------------------------*\
                     Class relaxationTimeModelHE Declaration
 \*---------------------------------------------------------------------------*/
@@ -57,9 +57,9 @@ class relaxationTimeModelHE
 :
     public IOdictionary
 {
-    
-protected:  
-  
+
+protected:
+
     // Protected data
 
         //- Mesh
@@ -70,15 +70,15 @@ protected:
 
         //- Reference to the turbulence model
         const compressibleTurbulenceModel& turbulence_;
-        
+
         //- H-E source term in the vib. energy equations [kg/m^3/s]
         volScalarField QHE_;
 
 
 private:
-  
+
     // Private member functions
-      
+
         //- Disallow copy construct
         relaxationTimeModelHE(const relaxationTimeModelHE&);
 
@@ -87,13 +87,13 @@ private:
 
 
 public:
- 
+
     //- Runtime type information
     TypeName("relaxationTimeModelHE");
 
-      
+
     // Declare run-time constructor selection table
-       
+
 #ifndef SWIG
     declareRunTimeSelectionTable
     (
@@ -107,9 +107,9 @@ public:
         (thermo, turbulence)
     );
 #endif
-  
 
-    // Constructors	  
+
+    // Constructors
 
         //- Construct from components
         relaxationTimeModelHE
@@ -119,8 +119,8 @@ public:
         );
 
 
-    // Selectors	  
-  
+    // Selectors
+
         //- Return a reference to the selected multispecies transport model
 
         static autoPtr<relaxationTimeModelHE> New
@@ -138,22 +138,22 @@ public:
 
     // Member Functions
 
-        // Access   
-           
-            //- Return the const source term in vib. energy equations 
+        // Access
+
+            //- Return the const source term in vib. energy equations
             //  due to H-E energy transfer
             inline const volScalarField& QHE() const;
-            
+
             //- Return the table of species
             inline const speciesTable& species() const;
-            
+
             //- Molar weight for a specie given by index
             virtual scalar W(label i) const = 0;
 
 
         //- Source term in vib. energy equations due to H-E energy transfer
         //tmp<volScalarField> HERelaxationSource();
-        
+
         //- Correct the source term
         virtual void correct() = 0;
 

@@ -27,10 +27,10 @@ Class
 
 Description
 
-	Stores all the information for the polyIntegrators models defined within 
+	Stores all the information for the polyIntegrators models defined within
     the polyIntegratorsDict, and selects & builds the models automatically.
 
-    
+
 
 \*---------------------------------------------------------------------------*/
 
@@ -65,12 +65,12 @@ class polyIntegrators
         IOdictionary controlDict_;
 
         autoPtr<polyIntegrator> int_;
-        
+
 public:
 
     // Constructors
 
-        //- Null Constructor 
+        //- Null Constructor
         polyIntegrators
         (
             Time& t,
@@ -89,8 +89,8 @@ public:
         ~polyIntegrators();
 
     // Member Functions
-        
-        autoPtr<polyIntegrator>& integrator();    
+
+        autoPtr<polyIntegrator>& integrator();
 };
 
 

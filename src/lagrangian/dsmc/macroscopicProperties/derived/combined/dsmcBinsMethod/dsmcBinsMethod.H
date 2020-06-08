@@ -73,13 +73,13 @@ private:
         word regionName_;
         label regionId_;
         word fieldName_;
-        
+
         labelList typeIds_;
-        
+
 //         label nBins_;
 
-        scalar averagingCounter_;        
-        
+        scalar averagingCounter_;
+
         scalarField volumeOfCellsInBin_;
         scalarField mols_;
         scalarField dsmcMols_;
@@ -91,9 +91,9 @@ private:
         vectorField UCollected_;
         scalarField rotationalEMean_;
         scalarField rotationalDofMean_;
-        
+
         // pressure measurements
-        
+
         scalarField muu_;
         scalarField muv_;
         scalarField muw_;
@@ -109,7 +109,7 @@ private:
         scalarField ev_;
         scalarField ew_;
         scalarField e_;
-        
+
         List<scalarField> speciesMols_;
         List<scalarField> mccSpecies_;
         List<scalarField> electronicETotal_;
@@ -117,7 +117,7 @@ private:
         List<scalarField> nParticlesFirstElectronicState_;
         List<scalarField> vDof_;
         List<scalarField> mfp_;
-        
+
         scalarField binVolume_;
         scalarField N_;
         scalarField M_;
@@ -125,7 +125,7 @@ private:
         scalarField rhoM_;
         scalarField averageMass_;
         vectorField UMean_;
-        vectorField UCAM_;     
+        vectorField UCAM_;
         scalarField scalarUMean_;
         scalarField translationalTemperature_;
         scalarField rotationalTemperature_;
@@ -135,32 +135,32 @@ private:
         tensorField pField_;
         tensorField tauField_;
         vectorField qField_;
-        vectorField qInternalField_;  
-        vectorField qTranslationalField_;  
+        vectorField qInternalField_;
+        vectorField qTranslationalField_;
         scalarField meanFreePath_;
         scalarField Ma_;
-        
+
         List < List<scalarField> > vibrationalETotal_;
-       
+
         List<bool> outputField_;
-        
+
 //         scalar deltaT_;
 //         scalar measuringTime_;
 //         scalar runningTime_;
-        
+
         bool averagingAcrossManyRuns_;
         bool permeabilityMeasurements_;
         bool rotationalMeasurements_;
         scalar wallVelocity_;
         scalar wallRadius_;
-        
-        
+
+
     // Private Member Functions
 
         void readIn();
 
         void writeOut();
-        
+
 //         void averageProperties();
 
 public:

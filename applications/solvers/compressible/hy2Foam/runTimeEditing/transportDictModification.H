@@ -10,7 +10,7 @@ if(thermo.transportDictionary().subDict("transportModels").lookupOrDefault<bool>
         thermo,
         turbulence()
     );
-    
+
     //---------------------------------------------------------
     // Re-definition of the multi-species transport model
     //---------------------------------------------------------
@@ -20,14 +20,14 @@ if(thermo.transportDictionary().subDict("transportModels").lookupOrDefault<bool>
         thermo,
         turbulence()
     );
-    
+
     speciesDiffusionName = thermo.transportDictionary().subDict("transportModels")
         .lookupOrDefault<word>("multiSpeciesTransport", word::null);
-        
+
     writeWallHeatFlux = thermo.transportDictionary().subDict("transportModels").lookupOrDefault<bool>("writeWallHeatFlux", false);
 
     thermo.transportDictionary().subDict("transportModels").set<bool>("applyChanges", false);
-    
+
     noSubRestart += 1;
 }
 
@@ -43,11 +43,11 @@ if(thermo.transportDictionary().subDict("rarefiedParameters").lookupOrDefault<bo
         thermo,
         turbulence()
     );
-    
+
     rarefactionParameters->correct(U);
-    
+
     thermo.transportDictionary().subDict("rarefiedParameters").set<bool>("applyChanges", false);
-    
+
     noSubRestart += 1;
 }
 

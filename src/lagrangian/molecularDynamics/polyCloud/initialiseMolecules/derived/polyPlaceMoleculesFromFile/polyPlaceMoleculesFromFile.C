@@ -57,14 +57,14 @@ polyPlaceMoleculesFromFile::polyPlaceMoleculesFromFile
 //     propsDict_(dict.subDict(typeName + "Properties"))
 {
 
-    
-    
+
+
 
     option_ = "fixedPropertiesFromDict";
-    
+
     if (mdInitialiseDict_.found("option"))
-    {    
-        const word option(mdInitialiseDict_.lookup("option"));    
+    {
+        const word option(mdInitialiseDict_.lookup("option"));
         option_ = option;
     }
 }
@@ -84,22 +84,22 @@ polyPlaceMoleculesFromFile::~polyPlaceMoleculesFromFile()
 void polyPlaceMoleculesFromFile::setInitialConfiguration()
 {
     label initialSize = molCloud_.size();
-    
+
     if(option_ == "fixedPropertiesFromDict")
-    {    
+    {
         fixedPropertiesFromDict();
     }
-    
+
     if(option_ == "fixedPropertiesFromFile")
     {
         fixedPropertiesFromFile();
     }
-    
+
     if(option_ == "multiIdFixedProperties")
     {
         multiIdFixedProperties();
-    } 
-    
+    }
+
     label finalSize = molCloud_.size();
 
     nMolsAdded_ = finalSize - initialSize;
@@ -109,16 +109,16 @@ void polyPlaceMoleculesFromFile::setInitialConfiguration()
         reduce(nMolsAdded_, sumOp<label>());
     }
 
-    Info << tab << " molecules added: " << nMolsAdded_ << endl;    
+    Info << tab << " molecules added: " << nMolsAdded_ << endl;
 }
 
 void polyPlaceMoleculesFromFile::fixedPropertiesFromDict()
 {
 
     List<vector> molPoints = List<vector>(mdInitialiseDict_.lookup("molPoints"));
-    
+
 //     Info << "molPoints" << molPoints << endl;
-    
+
     label nMols = molPoints.size();
 
     List<label> molIds(nMols, 0);
@@ -140,7 +140,7 @@ void polyPlaceMoleculesFromFile::fixedPropertiesFromDict()
     if(molId == -1)
     {
         FatalErrorIn("polyPlaceMoleculesFromFile::setInitialConfiguration()")
-            << "Cannot find molecule id: " << molIdName 
+            << "Cannot find molecule id: " << molIdName
             << nl << "in moleculeProperties/idList."
             << exit(FatalError);
     }
@@ -211,7 +211,7 @@ void polyPlaceMoleculesFromFile::fixedPropertiesFromDict()
             tetFace,
             tetPt
         );
-        
+
         if(cell != -1)
         {
             insertMolecule
@@ -233,7 +233,7 @@ void polyPlaceMoleculesFromFile::fixedPropertiesFromDict()
         else
         {
             FatalErrorIn("Foam::polyPlaceMoleculesFromFile::setInitialConfiguration()")
-                << "Molecule position: " << globalPosition 
+                << "Molecule position: " << globalPosition
                 << " is not located in the mesh." << nl
                 << abort(FatalError);
         }
@@ -245,9 +245,9 @@ void polyPlaceMoleculesFromFile::fixedPropertiesFromDict()
 void polyPlaceMoleculesFromFile::fixedPropertiesFromFile()
 {
     word name(mdInitialiseDict_.lookup("positionsFileName"));
-    
+
     fileName timePath = molCloud_.mesh().time().system()/name;
-    
+
     IFstream file(timePath);
 
     List< vector > molPoints;
@@ -265,9 +265,9 @@ void polyPlaceMoleculesFromFile::fixedPropertiesFromFile()
             << "Cannot open file " << file.name()
             << abort(FatalError);
     }
-    
+
 //     Info << "molPoints" << molPoints << endl;
-    
+
     label nMols = molPoints.size();
 
     List<label> molIds(nMols, 0);
@@ -289,7 +289,7 @@ void polyPlaceMoleculesFromFile::fixedPropertiesFromFile()
     if(molId == -1)
     {
         FatalErrorIn("polyPlaceMoleculesFromFile::setInitialConfiguration()")
-            << "Cannot find molecule id: " << molIdName 
+            << "Cannot find molecule id: " << molIdName
             << nl << "in moleculeProperties/idList."
             << exit(FatalError);
     }
@@ -302,8 +302,8 @@ void polyPlaceMoleculesFromFile::fixedPropertiesFromFile()
     if (mdInitialiseDict_.found("fixedVelocity"))
     {
         fixedVelocity = Switch(mdInitialiseDict_.lookup("fixedVelocity"));
-    }    
-    
+    }
+
     bool frozen = false;
 
     if (mdInitialiseDict_.found("frozen"))
@@ -345,11 +345,11 @@ void polyPlaceMoleculesFromFile::fixedPropertiesFromFile()
         tetheredMols[i] = tethered;
         frozenMols[i] = frozen;
 //             temperatureMols[i] = T;
-        
+
         vector U = vector::zero;
-        
+
         if(fixedVelocity)
-        {    
+        {
             U = velocity;
         }
         else
@@ -357,7 +357,7 @@ void polyPlaceMoleculesFromFile::fixedPropertiesFromFile()
             U = equipartitionLinearVelocity(temperature, molCloud_.cP().mass(molId));
             U += velocity;
         }
-        
+
         velocityMols[i] = U;
 
         phiMols[i] = phi*constant::mathematical::pi/180.0;
@@ -380,9 +380,9 @@ void polyPlaceMoleculesFromFile::fixedPropertiesFromFile()
             tetFace,
             tetPt
         );
-        
-      
-        
+
+
+
         if(cell != -1)
         {
             insertMolecule
@@ -404,7 +404,7 @@ void polyPlaceMoleculesFromFile::fixedPropertiesFromFile()
         else
         {
             FatalErrorIn("Foam::polyPlaceMoleculesFromFile::setInitialConfiguration()")
-                << "Molecule position: " << globalPosition 
+                << "Molecule position: " << globalPosition
                 << " is not located in the mesh." << nl
                 << abort(FatalError);
         }
@@ -417,11 +417,11 @@ void polyPlaceMoleculesFromFile::multiIdFixedProperties()
     List< vector > molPoints;
     List< word > molIdWords;
 
-    { 
+    {
         word name(mdInitialiseDict_.lookup("positionsFileName"));
-        
+
         fileName timePath = molCloud_.mesh().time().system()/name;
-    
+
         IFstream file(timePath);
 
         if (file.good())
@@ -438,12 +438,12 @@ void polyPlaceMoleculesFromFile::multiIdFixedProperties()
                 << abort(FatalError);
         }
     }
-    
+
     {
         word name(mdInitialiseDict_.lookup("molIdsFileName"));
-        
+
         fileName timePath = molCloud_.mesh().time().system()/name;
-        
+
         IFstream file(timePath);
 
         if (file.good())
@@ -459,8 +459,8 @@ void polyPlaceMoleculesFromFile::multiIdFixedProperties()
                 << "Cannot open file " << file.name()
                 << abort(FatalError);
         }
-    }    
-    
+    }
+
     if(molPoints.size() != molIdWords.size())
     {
         FatalErrorIn
@@ -470,10 +470,10 @@ void polyPlaceMoleculesFromFile::multiIdFixedProperties()
             << "MolPoints not the same size as molIdWords in your submitted files"
             << molPoints.size()
             << " vs " << molIdWords.size()
-            << abort(FatalError);    
+            << abort(FatalError);
     }
-    
-    
+
+
     label nMols = molPoints.size();
 
     List<label> molIds(nMols, 0);
@@ -494,13 +494,13 @@ void polyPlaceMoleculesFromFile::multiIdFixedProperties()
     {
         frozen = Switch(mdInitialiseDict_.lookup("frozen"));
     }
-    
+
     vector shift = vector::zero;
-    
+
     if (mdInitialiseDict_.found("shift"))
     {
         shift = mdInitialiseDict_.lookup("shift");
-    }    
+    }
 
     bool tethered = false;
 
@@ -539,13 +539,13 @@ void polyPlaceMoleculesFromFile::multiIdFixedProperties()
         if(molId == -1)
         {
             FatalErrorIn("polyPlaceMoleculesFromFile::setInitialConfiguration()")
-                << "Cannot find molecule id: " << molIdWords[i] 
+                << "Cannot find molecule id: " << molIdWords[i]
                 << nl << "in moleculeProperties/idList."
                 << exit(FatalError);
         }
-        
+
         molIds[i]=molId;
-        
+
         tetheredMols[i] = tethered;
         frozenMols[i] = frozen;
 //             temperatureMols[i] = T;
@@ -556,7 +556,7 @@ void polyPlaceMoleculesFromFile::multiIdFixedProperties()
         psiMols[i] = psi*constant::mathematical::pi/180.0;
     }
 
-        
+
     forAll(molPoints, i)
     {
         const vector& globalPosition = molPoints[i];
@@ -573,7 +573,7 @@ void polyPlaceMoleculesFromFile::multiIdFixedProperties()
             tetPt
         );
 
-       
+
         if(cell != -1)
         {
             insertMolecule
@@ -595,7 +595,7 @@ void polyPlaceMoleculesFromFile::multiIdFixedProperties()
 //         else
 //         {
 //             FatalErrorIn("Foam::polyPlaceMoleculesFromFile::setInitialConfiguration()")
-//                 << "Molecule position: " << globalPosition 
+//                 << "Molecule position: " << globalPosition
 //                 << " is not located in the mesh." << nl
 //                 << abort(FatalError);
 //         }
@@ -640,7 +640,7 @@ void polyPlaceMoleculesFromFile::insertMolecule
 //     const polyMolecule::constantProperties& cP = molCloud_.constProps(id);
 
 //     vector v = equipartitionLinearVelocity(temperature, cP.mass());
-// 
+//
 //     v += bulkVelocity;
 
     vector pi = vector::zero;

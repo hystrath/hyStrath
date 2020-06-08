@@ -25,7 +25,7 @@ License
 Class
 
 Description
-    The model which outputs standard properties to the terminal screen 
+    The model which outputs standard properties to the terminal screen
     in an MD simulation run.
 
 SourceFiles
@@ -78,7 +78,7 @@ private:
 
         scalar meshVolume_;
         scalar nAvTimeSteps_;
- 
+
 
     // Private Member Functions
 
@@ -128,7 +128,7 @@ public:
         );
 
         const propertyField& fields() const;
-}; 		
+};
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

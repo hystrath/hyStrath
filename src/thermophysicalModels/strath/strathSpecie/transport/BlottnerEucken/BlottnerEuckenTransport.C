@@ -67,7 +67,7 @@ void Foam::BlottnerEuckenTransport<Thermo>::write(Ostream& os) const
     dictTransport.subDict("BlottnerEucken").add("B", Bk_);
     dictTransport.subDict("BlottnerEucken").add("C", Ck_);
     os  << indent << dictTransport.dictName() << dictTransport;
-    
+
     dictionary dictSpecies("specie");
     dictSpecies.add("eta_s", eta_s_);
     os  << indent << dictSpecies.dictName() << dictSpecies;
@@ -84,7 +84,7 @@ Foam::Ostream& Foam::operator<<
     const BlottnerEuckenTransport<Thermo>& bet
 )
 {
-    os << static_cast<const Thermo&>(bet) << tab << bet.Ak_ << tab << bet.Bk_ 
+    os << static_cast<const Thermo&>(bet) << tab << bet.Ak_ << tab << bet.Bk_
        << tab << bet.Ck_ << tab << bet.eta_s_;
 
     os.check

@@ -62,10 +62,10 @@ poly1DMassFluxZone::poly1DMassFluxZone
     molIds_()
 
 {
- 
-    
+
+
     const cellZoneMesh& cellZones = mesh_.cellZones();
-    
+
     regionId_ = cellZones.findZoneID(regionName_);
 
     if(regionId_ == -1)
@@ -75,7 +75,7 @@ poly1DMassFluxZone::poly1DMassFluxZone
             << time_.time().system()/"fieldPropertiesDict"
             << exit(FatalError);
     }
-    
+
     // choose molecule ids to sample
 
     molIds_.clear();
@@ -88,7 +88,7 @@ poly1DMassFluxZone::poly1DMassFluxZone
 
     molIds_ = ids.molIds();
 
-    
+
     // create bin model
     binModel_ = autoPtr<binModel>
     (
@@ -98,7 +98,7 @@ poly1DMassFluxZone::poly1DMassFluxZone
     const label& nBins = binModel_->nBins();
 
     nBins_ = nBins;
-    
+
     massFlowRate_.setSize(nBins);
 }
 
@@ -117,7 +117,7 @@ void poly1DMassFluxZone::createField()
 void poly1DMassFluxZone::calculateField()
 {
     vectorField mom(nBins_, vector::zero);
-    
+
     forAll(mesh_.cellZones()[regionId_], c)
     {
         const label& cellI = mesh_.cellZones()[regionId_][c];
@@ -148,19 +148,19 @@ void poly1DMassFluxZone::calculateField()
         forAll(mom, i)
         {
             reduce(mom[i], sumOp<vector>());
-        }        
+        }
     }
-    
+
 
 
     // collect and compute properties
-    
+
     forAll(mom, n)
     {
         scalar massFlux = (mom[n] & unitVector_)/(length_);
         massFlowRate_[n].append(massFlux);
     }
-    
+
 }
 
 
@@ -172,22 +172,22 @@ void poly1DMassFluxZone::writeField()
     {
         if(Pstream::master())
         {
-            const reducedUnits& rU = molCloud_.redUnits();            
+            const reducedUnits& rU = molCloud_.redUnits();
             scalarField bins = binModel_->binPositions();
             vectorField vectorBins = binModel_->bins();
 
             label nBins = nBins_;
             label nTimeSteps = massFlowRate_[0].size();
-            
+
             for (int j = 0; j < nTimeSteps; j++)
             {
                 scalarField massFlux(nBins, 0.0);
-                
+
                 forAll(massFlowRate_, i)
                 {
                     massFlux[i] = massFlowRate_[i][j];
                 }
-                
+
                 writeTimeData
                 (
                     casePath_,
@@ -198,9 +198,9 @@ void poly1DMassFluxZone::writeField()
                 );
             }
         }
-        
-            
-        // clear fields 
+
+
+        // clear fields
         forAll(massFlowRate_, i)
         {
             massFlowRate_[i].clear();

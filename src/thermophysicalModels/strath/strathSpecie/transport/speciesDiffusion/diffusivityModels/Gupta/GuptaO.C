@@ -37,7 +37,7 @@ namespace Foam
         addToRunTimeSelectionTable
         (
             binaryDiffusivityModel,
-            GuptaO, 
+            GuptaO,
             dictionary
         );
     }
@@ -67,7 +67,7 @@ Foam::binaryDiffusivityModels::GuptaO::GuptaO
     e4OverkB2_(pow(4.8032e-10, 4.0)/sqr(kB))
 {
     word year = word::null;
-    
+
     if(dictTransport.subDict("transportModels")
         .subDict("diffusiveFluxesParameters").found("yearGuptaModel"))
     {
@@ -80,24 +80,24 @@ Foam::binaryDiffusivityModels::GuptaO::GuptaO
             << "Entry 'yearGuptaModel' is missing in transportModels/diffusiveFluxesParameters."
             << exit(FatalError);
     }
-    
+
     FixedList<scalar,4> defaultList;
     forAll(defaultList, i)
     {
         defaultList[i] = 0.0;
     }
-    
+
     if(dictTransport.subDict("collisionData").subDict("neutralNeutralInteractions")
            .subDict("Gupta"+year+"O").subDict("Omega11").found(name1+"_"+name2))
     {
         piOmega1_ = dictTransport.subDict("collisionData").subDict("neutralNeutralInteractions")
-           .subDict("Gupta"+year+"O").subDict("Omega11").lookupOrDefault<FixedList<scalar,4>>(name1+"_"+name2, defaultList);    
+           .subDict("Gupta"+year+"O").subDict("Omega11").lookupOrDefault<FixedList<scalar,4>>(name1+"_"+name2, defaultList);
     }
     else if(dictTransport.subDict("collisionData").subDict("neutralNeutralInteractions")
            .subDict("Gupta"+year+"O").subDict("Omega11").found(name2+"_"+name1))
     {
         piOmega1_ = dictTransport.subDict("collisionData").subDict("neutralNeutralInteractions")
-           .subDict("Gupta"+year+"O").subDict("Omega11").lookupOrDefault<FixedList<scalar,4>>(name2+"_"+name1, defaultList);    
+           .subDict("Gupta"+year+"O").subDict("Omega11").lookupOrDefault<FixedList<scalar,4>>(name2+"_"+name1, defaultList);
     }
     else
     {

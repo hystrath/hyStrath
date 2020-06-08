@@ -27,7 +27,7 @@ Class
 
 Description
     LarsenBorgnakkeVT relaxation time model.
-  
+
 SourceFiles
     LarsenBorgnakkeVT.C
 
@@ -42,7 +42,7 @@ SourceFiles
 
 namespace Foam
 {
-  
+
 /*---------------------------------------------------------------------------*\
                              Class LarsenBorgnakkeVT Declaration
 \*---------------------------------------------------------------------------*/
@@ -51,28 +51,28 @@ template<class ThermoType>
 class LarsenBorgnakkeVT
 :
     public relaxationTimeModel
-{  
+{
 
 protected:
-  
+
     // Protected data
-    
+
         //- Thermodynamic data of the species
         const PtrList<ThermoType>& speciesThermo_;
 
 
     // Protected member functions
-    
+
         //- Update the coefficients of the species equations
         virtual void updateCoefficients();
-    
+
 
 public:
 
     //- Runtime type information
     TypeName("LarsenBorgnakkeVT");
 
-    
+
     // Constructors
 
         //- Construct from components
@@ -96,36 +96,36 @@ public:
         {
             return speciesThermo_[i].W();
         }
-        
+
         //- Temperature exponent of viscosity for a specie given by index.
         //  Defined here becouse depend on thermoType template
         scalar omega(label i) const
         {
             return speciesThermo_[i].omega();
         }
-        
+
         //- Reference diameter for a specie given by index.
         //  Defined here becouse depend on thermoType template
         scalar dref(label i) const
         {
             return speciesThermo_[i].diameter();
         }
-        
+
         //- Reduced molecular mass for 2 species given by index.
         //  Defined here becouse depend on thermoType template
         scalar reducedMolecularMass(label i, label j) const
         {
             return W(i)*W(j)/(W(i)+W(j))/(6.02214129e26);
         }
-        
+
         // Correct the V-T relaxation times and V-T energy transfer
         virtual void correct();
-                
+
         //- Read transportProperties dictionary
         virtual bool read();
   };
 
-  
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 }	// End namespace Foam

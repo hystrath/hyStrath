@@ -64,17 +64,17 @@ class dsmcStickingDiffuseWallPatch
 private:
 
     // Private data
-        
+
         dictionary propsDict_;
-        
+
 protected:
 
-    // Protected data        
-        
+    // Protected data
+
 
 
     // Protected member functions
-    
+
         virtual void setProperties();
 
 
@@ -110,7 +110,7 @@ public:
         //- control the mols
         virtual void controlParticle
         (
-            dsmcParcel& p, 
+            dsmcParcel& p,
             dsmcParcel::trackingData& td
         );
 
@@ -120,7 +120,7 @@ public:
             const fileName& fixedPathName,
             const fileName& timePath
         );
-        
+
         void writeField();
 
         //- update properties from a modified dictionary

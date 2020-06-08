@@ -63,16 +63,16 @@ protected:
 
         //- Sub-dictionary containing the reaction properties
         dictionary propsDict_;
-        
+
         //- Ids of the products
         List<labelList> productIdsIonisation_;
-        
+
         //- String to print for the ionisation reaction
         wordList ionisationStr_;
-        
+
         labelList nTotIonisationReactions_;
         labelList nIonisationReactionsPerTimeStep_;
-       
+
         scalarList heatOfReactionIonisationJoules_;
 
         //- Total volume of the numerical domain (NB: should not be there)
@@ -82,7 +82,7 @@ protected:
     // Protected Member Functions
 
         virtual void setProperties();
-        
+
         void testIonisation
         (
             const dsmcParcel& p,
@@ -92,7 +92,7 @@ protected:
             scalar& totalReactionProbability,
             scalar& reactionProbability
         );
-        
+
         void ioniseParticleByPartner
         (
             dsmcParcel& p,
@@ -116,13 +116,13 @@ public:
             dsmcCloud& cloud,
             const dictionary& dict
         );
-    
-    
+
+
     // Destructor
-    
+
         ~ionisationQK();
-    
-    
+
+
     // Member Functions
 
         //- initial configuration - read in properties from chemReactDict
@@ -144,10 +144,10 @@ public:
         //- Return true if both particles belong to this reaction model
         virtual bool tryReactMolecules
         (
-            const label &typeIdP, 
+            const label &typeIdP,
             const label& typeIdQ
         );
-        
+
 
       // Access
 

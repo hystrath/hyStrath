@@ -91,7 +91,7 @@ public:
         scalar approxTotalEntries() const;
 
         scalar mean() const;
-        
+
         scalar median();
 
         //- Add a value to the appropriate bin of the distribution.

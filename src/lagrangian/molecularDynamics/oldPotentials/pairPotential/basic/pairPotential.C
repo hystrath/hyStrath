@@ -104,7 +104,7 @@ void Foam::pairPotential::setLookupTables(const reducedUnits& rU)
         energyLookup_[k] = scaledEnergy(rU, k*dr_ + rMin_);
         forceLookup_[k] = -energyDerivative(rU, (k*dr_ + rMin_), true);
     }
-    
+
     fMin_ = forceLookup_[0];
     energyMin_ = energyLookup_[0];
 }
@@ -129,7 +129,7 @@ Foam::scalar Foam::pairPotential::force(const scalar r) const
                 (k_rIJ - k)*forceLookup_[k+1]
             + (k + 1 - k_rIJ)*forceLookup_[k];
         }
-    
+
         return f;
     }
 }

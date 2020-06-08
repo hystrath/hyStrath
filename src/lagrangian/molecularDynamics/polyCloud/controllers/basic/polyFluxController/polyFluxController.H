@@ -69,7 +69,7 @@ protected:
         //- subDictionary containing the properties
         dictionary controllerDict_;
 
-        Time& time_; 
+        Time& time_;
 
         //- name of face zone
         word regionName_;
@@ -86,24 +86,24 @@ protected:
         //- set all the properties below from model if required
 
             bool singleValueController_;
-    
+
             // target values
             scalar density_;
             vector velocity_;
             scalar temperature_;
             scalar pressure_;
-    
+
             tensor strainRate_;
             vector tempGradient_;
-    
+
             bool fieldController_;
-    
+
             //- targeted fields
             scalarField densities_;
             vectorField velocities_;
             scalarField temperatures_;
             scalarField pressures_;
-    
+
             bool writeInTimeDir_;
             bool writeInCase_;
 
@@ -130,7 +130,7 @@ public:
             ),
             (t, molCloud, dict)
         );
-   
+
     // Constructors
 
         //- Construct from components
@@ -199,7 +199,7 @@ public:
             //- return the control zone name
             const word& regionName() const;
 
-           //- return the targeted values 
+           //- return the targeted values
             const scalar& density() const;
             scalar& density();
 
@@ -218,7 +218,7 @@ public:
             const vector& tempGradient() const;
             vector& tempGradient();
 
-            //- return the targeted fields 
+            //- return the targeted fields
             const scalarField& densityField() const;
             scalarField& densityField();
 

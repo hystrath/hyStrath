@@ -45,16 +45,16 @@ addToRunTimeSelectionTable(polyField, forceInstantProperties, dictionary);
 
 // void forceInstantProperties::setBoundBoxes()
 // {
-//  
+//
 //     PtrList<entry> boxList(propsDict_.lookup("boxes"));
-// 
+//
 //     boxes_.setSize(boxList.size());
-// 
+//
 //     forAll(boxList, b)
 //     {
 //         const entry& boxI = boxList[b];
 //         const dictionary& dict = boxI.dict();
-// 
+//
 //         vector startPoint = dict.lookup("startPoint");
 //         vector endPoint = dict.lookup("endPoint");
 //         boxes_[b].resetBoundedBox(startPoint, endPoint);
@@ -83,39 +83,39 @@ forceInstantProperties::forceInstantProperties
 {
         // build bound boxes
 //     setBoundBoxes();
-    
+
     measureInterForcesSites_ = true;
-    
+
     {
         // choose molecule ids to sample
         molIdsWall_.clear();
-        
+
         selectIds ids
         (
             molCloud_.cP(),
             propsDict_,
             "molIdsWall"
-            
+
         );
 
         molIdsWall_ = ids.molIds();
     }
-    
+
     {
         // choose molecule ids to sample
         molIdsFluid_.clear();
-        
+
         selectIds ids
         (
             molCloud_.cP(),
             propsDict_,
             "molIdsFluid"
-            
+
         );
 
         molIdsFluid_ = ids.molIds();
     }
-    
+
     forceField_.clear();
     pairsField_.clear();
     force_ = vector::zero;
@@ -132,7 +132,7 @@ forceInstantProperties::~forceInstantProperties()
 
 void forceInstantProperties::createField()
 {
- 
+
 }
 
 void forceInstantProperties::calculateField()
@@ -143,10 +143,10 @@ void forceInstantProperties::calculateField()
         reduce(force_, sumOp<vector>());
         reduce(pairs_, sumOp<scalar>());
     }
-    
+
     forceField_.append(force_);
     pairsField_.append(pairs_);
-    
+
     force_ = vector::zero;
     pairs_ = 0.0;
 }
@@ -164,21 +164,21 @@ void forceInstantProperties::writeField()
 
             scalarField timeField (forceField_.size(), 0.0);
             vectorField force (forceField_.size(), vector::zero);
-            scalarField pairs (pairsField_.size(), 0.0);            
-            
+            scalarField pairs (pairsField_.size(), 0.0);
+
             force.transfer(forceField_);
             forceField_.clear();
 
             pairs.transfer(pairsField_);
             pairsField_.clear();
-            
+
             const scalar& deltaT = time_.time().deltaT().value();
-            
+
             forAll(timeField, i)
             {
                 timeField[timeField.size()-i-1]=runTime.timeOutputValue()-(deltaT*i);
             }
-            
+
             writeTimeData
             (
                 casePath_,
@@ -187,7 +187,7 @@ void forceInstantProperties::writeField()
                 force*molCloud_.redUnits().refForce(),
                 true
             );
-            
+
             writeTimeData
             (
                 casePath_,
@@ -195,7 +195,7 @@ void forceInstantProperties::writeField()
                 timeField,
                 pairs,
                 true
-            );            
+            );
         }
     }
 }
@@ -215,9 +215,9 @@ void forceInstantProperties::measureDuringForceComputationSite
 {
     label idI = molI->id();
     label idJ = molJ->id();
-    
+
     label idsI=molCloud_.cP().pairPotNamesToPairPotSitesList()[idI][i];
-    label idsJ=molCloud_.cP().pairPotNamesToPairPotSitesList()[idJ][j];  
+    label idsJ=molCloud_.cP().pairPotNamesToPairPotSitesList()[idJ][j];
 
 
     label idIW = findIndex(molIdsWall_, molI->id());
@@ -225,29 +225,29 @@ void forceInstantProperties::measureDuringForceComputationSite
 
     label idIF = findIndex(molIdsFluid_, molI->id());
     label idJF = findIndex(molIdsFluid_, molJ->id());
-    
+
 //     idIW & idJW = no
 //     idIW & idIF = no
-//     
+//
 //     idIW & idJF = yes
 //     idJW & idIF = yes
-//     
+//
 //     idIF & idJF = no
 //     idJF & idJW = no
-    
-    
+
+
     // Assume FLUID-to-WALL forces
-    
+
     if
     (
-        ((idIW != -1) && (idJF != -1)) 
+        ((idIW != -1) && (idJF != -1))
     )
     {
         vector rsIsJ = molI->sitePositions()[sI] - molJ->sitePositions()[sJ];
         scalar rsIsJMag = mag(rsIsJ);
         vector force = (rsIsJ/rsIsJMag) * molCloud_.pot().pairPots().force(idsI, idsJ, rsIsJMag);
 
-        
+
         if(molI->referred() || molJ->referred())
         {
             pairs_ += 0.5;
@@ -256,27 +256,27 @@ void forceInstantProperties::measureDuringForceComputationSite
         else
         {
             force_ += -force;// This is negative because the wall is particle J
-            pairs_ += 1.0;           
-        }        
+            pairs_ += 1.0;
+        }
     }
     else if((idJW != -1) && (idIF != -1))
     {
         vector rsIsJ = molI->sitePositions()[sI] - molJ->sitePositions()[sJ];
         scalar rsIsJMag = mag(rsIsJ);
         vector force = (rsIsJ/rsIsJMag) * molCloud_.pot().pairPots().force(idsI, idsJ, rsIsJMag);
-        
+
         if(molI->referred() || molJ->referred())
         {
             pairs_ += 0.5;
-            force_ += force*0.5; 
+            force_ += force*0.5;
         }
         else
         {
-            force_ += force; 
-            pairs_ += 1.0;           
+            force_ += force;
+            pairs_ += 1.0;
         }
-    }    
-    
+    }
+
 }
 
 const propertyField& forceInstantProperties::fields() const

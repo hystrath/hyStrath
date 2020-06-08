@@ -11,7 +11,7 @@
 // ROE flux function
 // There is no entropy fix
 //------------------------------------------------------------------------------
-void ROEFlux 
+void ROEFlux
 (
     const bool& downgradeSingleT,
     const bool& downgradeSingleTv,
@@ -43,15 +43,15 @@ void ROEFlux
     // Maximum eigenvalue
     amaxSf = 0.5*mag((U_pos + U_neg) & Sf)
         + 0.5*(cSf_pos + cSf_neg);
-        
-    aByU = (U_pos + U_neg)/2.0;    
-        
+
+    aByU = (U_pos + U_neg)/2.0;
+
     const scalar area = mag(Sf);
     const vector unit_normal = Sf/area;
-    
-    const scalar sum_evk_pos = 
+
+    const scalar sum_evk_pos =
         std::accumulate(evk_pos.begin(), evk_pos.end(), 0.0);
-        
+
     const scalar etr_pos = e_pos - sum_evk_pos;
 
     const scalar gammaMinusOne = p_pos/(rho_pos*etr_pos);
@@ -69,7 +69,7 @@ void ROEFlux
     const scalar density  = rho_pos_sqrt*rho_neg_sqrt;
     const vector velocity = U_pos*fact_pos + U_neg*fact_neg;
     const scalar h = h_pos*fact_pos + h_neg*fact_neg;
- 
+
     const scalar vel_normal = velocity & unit_normal;
     const scalar c = Foam::sqrt(gammaMinusOne*(h - 0.5*magSqr(velocity))); // TODO
 
@@ -77,7 +77,7 @@ void ROEFlux
     const scalar vel_pos_normal = U_pos & unit_normal;
     const scalar vel_neg_normal = U_neg & unit_normal;
     const scalar dV = vel_neg_normal - vel_pos_normal;
-    
+
     if(vel_normal > 0.0)
     {
         const scalar lambda = vel_normal - c;

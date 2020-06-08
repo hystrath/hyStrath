@@ -72,16 +72,16 @@ class basicMfpModel
 protected:
 
     // Protected data
-    
+
         //- Species properties dictionary
         const dictionary& dict_;
-        
+
         //- Thermophysical properties dictionary
         const dictionary& dictThermoPhy_;
 
         //- Species name
         const word& name_;
-        
+
         //- Label associated with the species' name
         const label& speciesIndex_;
 
@@ -108,7 +108,7 @@ public:
 
 
     // Declare run-time constructor selection table
-    
+
       declareRunTimeSelectionTable
       (
           autoPtr,
@@ -161,18 +161,18 @@ public:
 
 
     // Member Functions
-    
+
         //- Mean free path [m]
         virtual tmp<volScalarField> mfp() const = 0;
-         
+
         //- Mean free path for patch [m]
         virtual tmp<scalarField> mfp
         (
             const label patchi,
             const scalarField& p,
-            const scalarField& Tt            
+            const scalarField& Tt
         ) const = 0;
-       
+
 };
 
 

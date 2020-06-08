@@ -64,13 +64,13 @@ dsmcVelocityDistributionZone::dsmcVelocityDistributionZone
     UMean_(vector::zero),
     Ucollected_(vector::zero),
     nParcels_(0),
-    binWidth_(readScalar(propsDict_.lookup("binWidth"))), 
+    binWidth_(readScalar(propsDict_.lookup("binWidth"))),
     distrX_(binWidth_),
     distrY_(binWidth_),
     distrZ_(binWidth_)
-    
+
 {
-    // standard to reading typeIds ------------ 
+    // standard to reading typeIds ------------
     const List<word> molecules (propsDict_.lookup("typeIds"));
 
     DynamicList<word> moleculesReduced(0);
@@ -151,7 +151,7 @@ void dsmcVelocityDistributionZone::calculateField()
         {
             const label& cellI = cells[c];
             const List<dsmcParcel*>& parcelsInCell = cellOccupancy[cellI];
-    
+
             forAll(parcelsInCell, pIC)
             {
                 dsmcParcel* p = parcelsInCell[pIC];
@@ -162,9 +162,9 @@ void dsmcVelocityDistributionZone::calculateField()
 //                     {
 //                         const point& cC = cloud_.mesh().cellCentres()[cellI];
 //                         scalar radius = cC.y();
-//                         
+//
 //                         scalar RWF = 1.0 + cloud_.maxRWF()*(radius/cloud_.radialExtent());
-//                         
+//
 //                         nParcels_ += RWF;
 //                         Ucollected_ += p->U();
 //                     }
@@ -215,7 +215,7 @@ void dsmcVelocityDistributionZone::calculateField()
         {
             const label& cellI = cells[c];
             const List<dsmcParcel*>& parcelsInCell = cellOccupancy[cellI];
-    
+
             forAll(parcelsInCell, pIC)
             {
                 dsmcParcel* p = parcelsInCell[pIC];
@@ -247,7 +247,7 @@ void dsmcVelocityDistributionZone::writeField()
     if((runTime.outputTime()) && (time_.averagingTime()))
     {
         fileName timePath(runTime.path()/runTime.timeName()/"uniform");
-    
+
         if (!isDir(timePath))
         {
             mkDir(timePath);
@@ -274,20 +274,20 @@ void dsmcVelocityDistributionZone::writeField()
         scalarField yAxisY (nSizeY, 0.0);
         scalarField xAxisZ (nSizeZ, 0.0);
         scalarField yAxisZ (nSizeZ, 0.0);
-        
+
 
         forAll(rawDistriubtionX, i)
         {
             xAxisX[i] = rawDistriubtionX[i].first();
             yAxisX[i] = rawDistriubtionX[i].second();
         }
-        
+
         forAll(rawDistriubtionY, i)
         {
             xAxisY[i] = rawDistriubtionY[i].first();
             yAxisY[i] = rawDistriubtionY[i].second();
         }
-        
+
         forAll(rawDistriubtionZ, i)
         {
             xAxisZ[i] = rawDistriubtionZ[i].first();
@@ -303,12 +303,12 @@ void dsmcVelocityDistributionZone::writeField()
                     const int proc = p;
                     {
                         OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
-                        toNeighbour << xAxisX << yAxisX << xAxisY 
+                        toNeighbour << xAxisX << yAxisX << xAxisY
                                     << yAxisY << xAxisZ << yAxisZ;
                     }
                 }
             }
-        
+
             //- receiving
             for (int p = 0; p < Pstream::nProcs(); p++)
             {
@@ -320,26 +320,26 @@ void dsmcVelocityDistributionZone::writeField()
                     scalarField yAxisYProc;
                     scalarField xAxisZProc;
                     scalarField yAxisZProc;
-    
+
                     const int proc = p;
                     {
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
-                        fromNeighbour >> xAxisXProc >> yAxisXProc >> xAxisYProc 
+                        fromNeighbour >> xAxisXProc >> yAxisXProc >> xAxisYProc
                                     >> yAxisYProc >> xAxisZProc >> yAxisZProc;
                     }
-    
+
                     forAll(xAxisXProc, i)
                     {
                         xAxisX[i] += xAxisXProc[i];
                         yAxisX[i] += yAxisXProc[i];
                     }
-                    
+
                     forAll(xAxisYProc, i)
                     {
                         xAxisY[i] += xAxisYProc[i];
                         yAxisY[i] += yAxisYProc[i];
                     }
-                    
+
                     forAll(xAxisZProc, i)
                     {
                         xAxisZ[i] += xAxisZProc[i];
@@ -352,7 +352,7 @@ void dsmcVelocityDistributionZone::writeField()
         writeTimeData(timePath, "velocityDistributionX_"+fieldName_+"_"+regionName_, xAxisX, yAxisX);
         writeTimeData(timePath, "velocityDistributionY_"+fieldName_+"_"+regionName_, xAxisY, yAxisY);
         writeTimeData(timePath, "velocityDistributionZ_"+fieldName_+"_"+regionName_, xAxisZ, yAxisZ);
-        
+
         if(time_.resetFieldsAtOutput())
         {
             distrX_.clear();

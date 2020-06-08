@@ -32,7 +32,7 @@ Description
 
     Only applicable for cuboid or cubic domains or domains with a constant cross-sectional area.
 
-    Two methods for measuring velocity are used, 
+    Two methods for measuring velocity are used,
     see Tysanner and Garcia J. Comp. Phys. 2004.
 
 SourceFiles
@@ -79,8 +79,8 @@ private:
 
         word regionName_;
         label regionId_;
-	
-        // added by Jun Zhang for polymolecules	
+
+        // added by Jun Zhang for polymolecules
 	    List<label> molIds_;
 
         vector startPoint_;
@@ -99,22 +99,22 @@ private:
         scalar binWidthY_;
 
         Field<scalarField> mols_;
-        
+
         // for sampling the velocity
         Field<scalarField> mass_;
         Field<scalarField> momX_;
         Field<scalarField> momY_;
         Field<scalarField> sqrMomX_;
         Field<scalarField> sqrMomY_;
-        
+
         // for samling the temperature;
         Field<scalarField> kE_;
         Field<scalarField> dof_;
-        
+
         vector oldCenterOfMass_;
-        
+
         Field<scalarField> densityField_;
-        
+
         // for output the velocity and temperature
         Field<scalarField> velocityFieldX_;
         Field<scalarField> velocityFieldY_;

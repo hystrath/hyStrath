@@ -67,7 +67,7 @@ private:
 
     // Private data
     dictionary propsDict_;
-    
+
     scalar outletPressure_;
     scalar outletTemperature_;
     scalar outletNumberDensity_;
@@ -140,7 +140,7 @@ public:
 
     //- update properties from a modified dictionary
     void updateProperties(const dictionary&);
-    
+
     //reset fields if mesh has changed
     void setNewBoundaryFields();
 

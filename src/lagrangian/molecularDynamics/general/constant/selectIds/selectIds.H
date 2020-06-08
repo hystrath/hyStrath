@@ -81,7 +81,7 @@ public:
             const dictionary& dict,
             const word& molIdsHeader
         );
-        
+
     // Selectors
 
     // Destructor
@@ -93,7 +93,7 @@ public:
         // Access
 
             inline List<label> molIds();
-            inline List<word> molIdNames();            
+            inline List<word> molIdNames();
 //             inline labelList& molIds();
 
 

@@ -101,57 +101,57 @@ void Foam::gradient2VELMixEnergyFvPatchScalarField::updateCoeffs()
     {
         return;
     }
-    
+
     //Info << "gradient2VELMixEnergy is used for patch called " << patch().name() << endl;
 
     const multi2Thermo& multiThermo = multi2Thermo::lookup2Thermo(*this);
     const label patchi = patch().index();
 
     const scalarField& pw = multiThermo.p().boundaryField()[patchi];
-    
+
     fvPatchScalarField& Tvw =
         const_cast<fvPatchScalarField&>(multiThermo.Tv().boundaryField()[patchi]);
     Tvw.evaluate();
-    
+
     // NEW VINCENT 15/02/2017 *************************************************
     tmp<Field<scalar>> thevel(new Field<scalar>(pw.size()));
     Field<scalar>& hevel = thevel.ref();
     hevel = 0.0;
-    
+
     tmp<Field<scalar>> thevelfC(new Field<scalar>(pw.size()));
     Field<scalar>& hevelfC = thevelfC.ref();
     hevelfC = 0.0;
-    
+
     tmp<Field<scalar>> tCvvelTvw(new Field<scalar>(pw.size()));
     Field<scalar>& cvvelTvw = tCvvelTvw.ref();
     cvvelTvw = 0.0;
-    
+
     for(label speciei=0 ; speciei<thermo_.composition().Y().size() ; speciei++)
     {
         fvPatchScalarField& spYw =
             const_cast<fvPatchScalarField&>(thermo_.composition().Y(speciei).boundaryField()[patchi]);
         spYw.evaluate();
-        
+
         hevel += spYw*thermo_.composition().hevel(speciei, pw, Tvw, patchi);
         hevelfC += spYw*thermo_.composition().hevel(speciei, pw, Tvw, patch().faceCells());
         cvvelTvw += spYw*thermo_.composition().Cv_vel(speciei, pw, Tvw, patchi)*Tvw.snGrad();
     }
-    
+
     gradient() = tCvvelTvw
       + patch().deltaCoeffs()*
         (
             thevel - thevelfC
         );
     // END NEW VINCENT 15/02/2017 *********************************************
-        
+
     /*gradient() = thermo.Cv_v(pw, Tvw, patchi)*Tvw.snGrad()
       + patch().deltaCoeffs()*
         (
             thermo.hevel(pw, Tvw, patchi)
           - thermo.hevel(pw, Tvw, patch().faceCells())
         );*/ // DELETED VINCENT 15/02/2017 OLD FORMULATION
-        
-        
+
+
     fixedGradientFvPatchScalarField::updateCoeffs();
 }
 

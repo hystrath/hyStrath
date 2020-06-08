@@ -28,7 +28,7 @@ Class
 Description
 
     A class that outputs data to hard disc
-    
+
     Constructors overloaded
 
 
@@ -84,22 +84,22 @@ public:
             const List< Pair<scalar> >& data,
             const label& dummy
         );
-        
+
         //- scalar field
         writeTimeData
         (
             const fileName& pathName,
             const word& nameFile,
             const scalarField& xData
-        );    
-        
+        );
+
         //- vector field
         writeTimeData
         (
             const fileName& pathName,
             const word& nameFile,
             const vectorField& xData
-        );        
+        );
 
         //- scalar field, scalar field
         writeTimeData
@@ -110,7 +110,7 @@ public:
             const scalarField& yData
         );
 
-        //- vector field, scalar field, 
+        //- vector field, scalar field,
         writeTimeData
         (
             const fileName& pathName,
@@ -127,7 +127,7 @@ public:
             const scalarField& xData,
             const vectorField& yData
         );
-        
+
         //- scalar field, complex field
         writeTimeData
         (
@@ -163,10 +163,10 @@ public:
             const vectorField& xData,
             const tensorField& yData
         );
-        
-        
-        
-        
+
+
+
+
         // WITH APPEND POSSIBLE
 
         // two scalar fields (with append possible)
@@ -194,15 +194,15 @@ public:
         // sidewaysAppend
         // append
         // once
-        
+
         writeTimeData
         (
             const fileName& pathName,
             const word& nameFile,
             const scalarField& xData,
             const word& option,
-            const bool& dummy             
-        );        
+            const bool& dummy
+        );
 
 
         // one vector field - NEW (with append possible)
@@ -212,8 +212,8 @@ public:
             const word& nameFile,
             const vectorField& xData,
             const word& option
-        );  
-        
+        );
+
         // one scalar field one VECTOR field (with append possible)
         writeTimeData
         (
@@ -232,7 +232,7 @@ public:
             const vectorField& yData,
             const bool& dummy
         );
-        
+
         // one scalar field one TENSOR field (with append possible)
         writeTimeData
         (
@@ -252,7 +252,7 @@ public:
             const List<scalarField>& yData,
             const bool& dummy
         );
-        
+
         // one scalar field and one complex field (with append possible)
         writeTimeData
         (
@@ -271,9 +271,9 @@ public:
             const tensorField& xData,
             const bool& dummy
         );
-        
-        
-        
+
+
+
         // write out List<scalarField>
         writeTimeData
         (
@@ -281,15 +281,15 @@ public:
             const word& nameFile,
             const List<scalarField>& data
         );
-        
+
         // write out List<vectorField>  component only
         writeTimeData
         (
             const fileName& pathName,
             const word& nameFile,
             const List<vectorField>& data,
-            const word& option 
-        );        
+            const word& option
+        );
 
         // write out List<vectorField>  component only (with append possible)
         writeTimeData
@@ -299,21 +299,21 @@ public:
             const List<vectorField>& data,
             const word& option,
             const bool& dummy
-        );        
-        
-        
-        // write out List<tensorField>  component only      
+        );
+
+
+        // write out List<tensorField>  component only
         writeTimeData
         (
             const fileName& pathName,
             const word& nameFile,
             const List<tensorField>& data,
-            const word& option 
-        );        
-        
+            const word& option
+        );
 
-        
-        
+
+
+
         ~writeTimeData();
 
 

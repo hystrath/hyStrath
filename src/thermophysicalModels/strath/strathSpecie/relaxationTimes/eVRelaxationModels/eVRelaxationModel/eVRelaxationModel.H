@@ -68,16 +68,16 @@ class eVRelaxationModel
 protected:
 
     // Protected data
-    
+
         //- Two-temperature model dictionary
         const dictionary& dict1_;
-        
+
         //- Thermophysical properties dictionary
         const dictionary& dict2_;
 
         //- Species name
         const word& name1_;
-        
+
         //- Species label associated with the names
         const label& lname1_;
 
@@ -86,13 +86,13 @@ protected:
 
         // Vibrational temperature [K]
         const volScalarField& Tv_;
-        
+
         //- Overwrite the default coefficients for e-V energy transfers
         bool eVOverwriteDefault_;
-        
+
         //- If overwrite is on, are the coefficients species dependent
         bool eVSpeciesDependent_;
-        
+
 
     // Private Member Functions
 
@@ -110,7 +110,7 @@ public:
 
 
     // Declare run-time constructor selection table
-    
+
       declareRunTimeSelectionTable
       (
           autoPtr,
@@ -163,10 +163,10 @@ public:
 
 
     // Member Functions
-    
+
         //- e-V relaxation time [s]
          virtual tmp<volScalarField> taueV() const = 0;
-         
+
         //- e-V relaxation time for patch [s]
         virtual tmp<scalarField> taueV
         (
@@ -174,7 +174,7 @@ public:
             const scalarField& p,
             const scalarField& Tv
         ) const = 0;
-       
+
 };
 
 

@@ -27,7 +27,7 @@ Class
 
 Description
 
-    
+
 
 \*---------------------------------------------------------------------------*/
 
@@ -69,7 +69,7 @@ public:
 
     // Constructors
 
-        //- Constructor 
+        //- Constructor
         polyMappingModels
         (
             const polyMesh& mesh,
@@ -77,7 +77,7 @@ public:
         );
 
     // Member Functions
-        
+
         // Access
 };
 

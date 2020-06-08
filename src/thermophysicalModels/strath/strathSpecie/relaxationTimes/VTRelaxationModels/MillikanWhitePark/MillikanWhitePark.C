@@ -39,7 +39,7 @@ namespace Foam
         addToRunTimeSelectionTable
         (
             VTRelaxationModel,
-            MillikanWhitePark, 
+            MillikanWhitePark,
             dictionary
         );
     }
@@ -63,24 +63,24 @@ Foam::VTRelaxationModels::MillikanWhitePark::MillikanWhitePark
 )
 :
     VTRelaxationModel(name1, name2, lname1, lname2, dict2T, dictThermoPhy, p, Tt, Tv, nD)
-{   
+{
     species1_ = lname1; species2_ = lname2;
     W1_ = readScalar(dictThermoPhy.subDict(name1).subDict("specie").lookup("molWeight"));
-    
+
     word subDictName = word::null;
-    
+
     if (not VTFullCoeffsForm_)
     {
         const scalar W2 = readScalar(dictThermoPhy.subDict(name2).subDict("specie").lookup("molWeight"));
         DynamicList<scalar> vibData(dictThermoPhy.subDict(name1).subDict("thermodynamics").lookup("vibrationalList"));
         const scalar TH1 = vibData[1];
-          
+
         scalar W12 = (W1_ * W2) / (W1_ + W2);
         A12_ = sqrt(W12) * pow(TH1, 4.0/3.0);
         B12_ = pow(W12, 0.25);
         scalar preAij = 0.0;
         scalar preMij = 0.0;
-        
+
         if (not VTOverwriteDefault_)
         {
             preAij  = 1.16e-3;
@@ -89,10 +89,10 @@ Foam::VTRelaxationModels::MillikanWhitePark::MillikanWhitePark
             sigma1_ = 1.0e-21;
             sigma2_ = 5.0e4;
         }
-        else 
+        else
         {
             if (VTSpeciesDependent_ and VTCollidingPartner_)
-            {        
+            {
                 if (dict2T.subDict("ParkCoefficients").isDict(name1+"_"+name2))
                 {
                     subDictName = name1+"_"+name2;
@@ -103,29 +103,29 @@ Foam::VTRelaxationModels::MillikanWhitePark::MillikanWhitePark
                 }
                 else if (dict2T.subDict("ParkCoefficients").isDict(name1))
                 {
-                    subDictName = name1; 
+                    subDictName = name1;
                 }
                 else
                 {
                     subDictName = "allSpecies";
-                }    
+                }
             }
             else if (VTSpeciesDependent_ and dict2T.subDict("ParkCoefficients").isDict(name1))
-            {        
+            {
                 subDictName = name1;
-            } 
+            }
             else
             {
-                subDictName = "allSpecies";    
+                subDictName = "allSpecies";
             }
-            
+
             preAij = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("preAij"));
             preMij = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("preMij"));
-            A12_ *= preAij;  
+            A12_ *= preAij;
             B12_ *= preMij;
-            offset_ = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("offset"));  
-            sigma1_ = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("sigma1")); 
-            sigma2_ = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("sigma2")); 
+            offset_ = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("offset"));
+            sigma1_ = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("sigma1"));
+            sigma2_ = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("sigma2"));
         }
     }
     else
@@ -138,10 +138,10 @@ Foam::VTRelaxationModels::MillikanWhitePark::MillikanWhitePark
             sigma1_ = 1.0e-21;
             sigma2_ = 5.0e4;
         }
-        else 
+        else
         {
             if (VTSpeciesDependent_ and VTCollidingPartner_)
-            {        
+            {
                 if (dict2T.subDict("ParkCoefficients").isDict(name1+"_"+name2))
                 {
                     subDictName = name1+"_"+name2;
@@ -152,27 +152,27 @@ Foam::VTRelaxationModels::MillikanWhitePark::MillikanWhitePark
                 }
                 else if (dict2T.subDict("ParkCoefficients").isDict(name1))
                 {
-                    subDictName = name1;  
+                    subDictName = name1;
                 }
                 else
                 {
-                    subDictName = "allSpecies";    
-                }    
+                    subDictName = "allSpecies";
+                }
             }
             else if (VTSpeciesDependent_ and dict2T.subDict("ParkCoefficients").isDict(name1))
-            {        
-                subDictName = name1; 
-            } 
+            {
+                subDictName = name1;
+            }
             else
             {
-                subDictName = "allSpecies";             
+                subDictName = "allSpecies";
             }
-            
+
             A12_ = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("Aij"));
             B12_ = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("Bij"));
-            offset_ = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("offset"));  
-            sigma1_ = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("sigma1")); 
-            sigma2_ = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("sigma2")); 
+            offset_ = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("offset"));
+            sigma1_ = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("sigma1"));
+            sigma2_ = readScalar(dict2T.subDict("ParkCoefficients").subDict(subDictName).lookup("sigma2"));
         }
     }
 }
@@ -203,21 +203,21 @@ Foam::VTRelaxationModels::MillikanWhitePark::tauVT() const
     );
 
     volScalarField& tauVT = ttauVT.ref();
-    
+
     volScalarField nDcol = this->nD_[species1_];
     if(species1_ != species2_)
     {
         nDcol += this->nD_[species2_];
     }
-    
+
     forAll(this->Tt_, celli)
     {
         tauVT[celli] =
             1.01325e5 / this->p_[celli] * exp(A12_*(pow(this->Tt_[celli], -1.0/3.0) - B12_) - offset_)
           + 1.0/(sqrt(8.0*constant::physicoChemical::R.value()*1000.0*this->Tt_[celli]/
-              (constant::mathematical::pi*W1_)) * sigma1_*pow(sigma2_/this->Tt_[celli], 2.0) *max(nDcol[celli], Foam::SMALL));     
+              (constant::mathematical::pi*W1_)) * sigma1_*pow(sigma2_/this->Tt_[celli], 2.0) *max(nDcol[celli], Foam::SMALL));
     }
-    
+
 
     forAll(this->Tt_.boundaryField(), patchi)
     {
@@ -250,7 +250,7 @@ Foam::tmp<Foam::scalarField> Foam::VTRelaxationModels::MillikanWhitePark::tauVT
 {
     tmp<scalarField> ttauVT(new scalarField(Tt.size()));
     scalarField& tauVT = ttauVT.ref();
-    
+
     scalarField nDcol = nD[species1_];
     if(species1_ != species2_)
     {

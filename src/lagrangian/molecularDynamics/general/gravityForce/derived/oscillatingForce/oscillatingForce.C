@@ -69,7 +69,7 @@ oscillatingForce::oscillatingForce
 //     deltaT_(readScalar(propsDict_.lookup("deltaT")))
 {
     timeVarying_ = true;
-    
+
     unitVector_ /= mag(unitVector_);
 
 //     scalar initialForce = (readScalar(propsDict_.lookup("force")));
@@ -77,7 +77,7 @@ oscillatingForce::oscillatingForce
 //     force_ = unitVector_*initialForce;
 
 //     scalar t = offsetTime_;
-    
+
 //     force_ = amplitude_*Foam::sin(2.0*mathematicalConstant::pi*t/period_)*unitVector_;
 }
 
@@ -106,9 +106,9 @@ void oscillatingForce::updateForce()
 //     const scalar initialTime = time_.startTime().value();
 
 //     elapsedTime_ += deltaT_;
-    
+
 //     scalar t = elapsedTime_ + offsetTime_;
-    
+
 //     force_ = amplitude_*Foam::sin(2.0*mathematicalConstant::pi*t/period_)*unitVector_;
 }
 
@@ -116,15 +116,15 @@ void oscillatingForce::updateForce()
 
 // void oscillatingForce::updateForce(const scalar& time)
 // {
-// 
+//
 // }
 
 vector oscillatingForce::force(const scalar& time)
 {
     scalar t = time + offsetTime_;
-    
-    force_ = amplitude_*Foam::sin(2.0*constant::mathematical::pi*t/period_)*unitVector_;    
-    
+
+    force_ = amplitude_*Foam::sin(2.0*constant::mathematical::pi*t/period_)*unitVector_;
+
     return force_;
 }
 

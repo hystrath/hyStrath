@@ -95,14 +95,14 @@ class frictionCoefficient
 
         //- Name of wallShearStress field, default is "wallShearStress"
         word wallShearStress_;
-        
+
         //- Name of inflow patch
         word inflowPatchName_;
-        
+
         //- header of wallShearStress field
         IOobject wallShearStressHeader_;
-        
-    
+
+
     // Private Member Functions
 
         //- File header information

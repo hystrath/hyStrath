@@ -76,64 +76,64 @@ private:
         scalar samplingVolume_;
 
         //- control zone
-        boundedBox bbcontrol_;        
+        boundedBox bbcontrol_;
         scalar controlVolume_;
-        
+
         distributePoints pointsBox_;
-        
+
         //- id of injected polyMolecule
         label molId_;
-        
+
         // max number of molecules to insert/delete
         label maxN_;
 
         polyFadeII insertionScheme_;
-        
+
         scalar molMass_;
-        
+
         scalar density_;
         vector velocity_;
-        scalar temperature_;        
-        
+        scalar temperature_;
+
         bool deltaN_;
         label molsToControlN_;
         label molsControlled_;
-        
+
         // - measurements
         scalar mols_;
         scalar nMeas_;
-        
+
         scalar rhoN_;
-        
+
         DynamicList<vector> molPoints_;
-        
+
         label controlTimeIndex_;
         label nControlSteps_;
-        
+
         // distribution
         bool random_;
         bool uniform_;
-        
+
         //temporary
-        
+
         bool output_;
-        
+
     // Private Member Functions
 
         void setBoundBox
         (
             const dictionary& propsDict,
             boundedBox& bb,
-            const word& name 
+            const word& name
         );
 
         void measureProperties();
-        
+
         void averageProperties();
-        
+
         label noOfMolsToControl();
         void nMolsToInsert(label& molsToControl);
-        
+
 public:
 
     //- Runtime type information
@@ -156,7 +156,7 @@ public:
 
     // Member Functions
 
-        
+
         //- create an initial configuration
         void initialConfiguration();
 
@@ -168,20 +168,20 @@ public:
         (
             polyMolecule* molI,
             polyMolecule* molJ
-        );        
+        );
         void controlAfterForces();
         void controlAfterVelocityII();
-        
+
         //- calculate any required properties (end of time-step)
-        void calculateProperties(); 
-        
+        void calculateProperties();
+
         //- output data (optional)
         void output
         (
-            const fileName& fixedPathName, 
+            const fileName& fixedPathName,
             const fileName& timePath
         );
-        
+
         //- update properties from a modified dictionary (optional)
         void updateProperties(const dictionary&);
 };

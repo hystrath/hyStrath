@@ -62,16 +62,16 @@ timeVaryingForce::timeVaryingForce
     force_(vector::zero),
     forceDirection_(propsDict_.lookup("forceDirection")),
     offsetTime_(readScalar(propsDict_.lookup("offsetTime"))),
-//     deltaT_(readScalar(propsDict_.lookup("deltaT"))),    
+//     deltaT_(readScalar(propsDict_.lookup("deltaT"))),
 //     elapsedTime_(0.0),
 //     index_(0),
 //     times_(),
     forces_()
 
-        
+
 {
     timeVarying_ = true;
-    
+
     forceDirection_ /= mag(forceDirection_);
 
     const word distributionName = propsDict_.lookup("forceDistributionName");
@@ -97,14 +97,14 @@ timeVaryingForce::timeVaryingForce
     }
 
     nBins_ = forces.size();
-    
+
     forces_.setSize(nBins_, 0.0);
 
     forAll(forces, bin)
     {
         forces_[bin] = forces[bin].second();
     }
-    
+
     binWidth_ = forces[1].first()-forces[0].first();
 
     Info << "binWidth = " << binWidth_ << endl;
@@ -131,11 +131,11 @@ vector timeVaryingForce::force(const vector& position)
 vector timeVaryingForce::force(const scalar& time)
 {
     scalar t = time + offsetTime_;
-    
+
     force_ = getForce(t);
-    
+
 //     Info << "force = " << force_ << endl;
-    
+
     return force_;
 }
 
@@ -145,18 +145,18 @@ void timeVaryingForce::updateForce()
 vector timeVaryingForce::getForce(const scalar& t)
 {
     label index = label(t/binWidth_);
-    
+
     if(index < nBins_)
     {
         return forces_[index]*forceDirection_;
     }
     else
     {
-        Info<< "WARNING in timeVaryingForce::getForce() " 
+        Info<< "WARNING in timeVaryingForce::getForce() "
             <<  nl << "exceeded the time-varying list. "
             <<endl;
-            
-        return forces_[nBins_-1]*forceDirection_;    
+
+        return forces_[nBins_-1]*forceDirection_;
     }
 }
 

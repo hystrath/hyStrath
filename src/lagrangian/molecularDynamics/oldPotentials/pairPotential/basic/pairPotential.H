@@ -76,7 +76,7 @@ protected:
 
         scalar fMin_;
         scalar energyMin_;
-        
+
         List<scalar> forceLookup_;
         List<scalar> energyLookup_;
 

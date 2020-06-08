@@ -26,7 +26,7 @@ Class
     polyTemperatureBerendsen
 
 Description
-	The Berendsen thermostat rescales the kinetic temperature over variable time periods rather 
+	The Berendsen thermostat rescales the kinetic temperature over variable time periods rather
     than instantaneously.
 
 SourceFiles
@@ -68,20 +68,20 @@ private:
 
         //- time constant
         scalar tauT_;
-        
+
         List<label> molIds_;
 
         scalar temperature_;
-        
+
         bool componentControl_;
         bool X_;
         bool Y_;
         bool Z_;
 
         bool peculiar_;
-        
+
     // Private Member Functions
-            
+
 //         void readProperties();
 
 public:
@@ -117,20 +117,20 @@ public:
         (
             polyMolecule* molI,
             polyMolecule* molJ
-        );        
+        );
         void controlAfterForces();
         void controlAfterVelocityII();
-        
+
         //- calculate any required properties (end of time-step)
-        void calculateProperties(); 
-        
+        void calculateProperties();
+
         //- output data (optional)
         void output
         (
-            const fileName& fixedPathName, 
+            const fileName& fixedPathName,
             const fileName& timePath
         );
-        
+
         //- update properties from a modified dictionary (optional)
         void updateProperties(const dictionary&);
 };

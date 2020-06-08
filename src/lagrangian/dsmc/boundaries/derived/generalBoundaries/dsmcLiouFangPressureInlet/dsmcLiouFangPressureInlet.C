@@ -94,9 +94,9 @@ void dsmcLiouFangPressureInlet::calculateProperties()
 }
 
 void dsmcLiouFangPressureInlet::controlParcelsBeforeMove()
-{      
+{
     Random& rndGen = cloud_.rndGen();
-        
+
     label nTotalParcelsAdded = 0;
     label nTotalParcelsToBeAdded = 0;
 
@@ -148,43 +148,43 @@ void dsmcLiouFangPressureInlet::controlParcelsBeforeMove()
 
             //  Wall tangential unit vector. Use the direction between the
             // face centre and the first vertex in the list
-            vector t1 = fC - mesh_.points()[mesh_.faces()[faceI][0]]; 
+            vector t1 = fC - mesh_.points()[mesh_.faces()[faceI][0]];
             t1 /= mag(t1);
 
             // Other tangential unit vector.  Rescaling in case face is not
             // flat and n and t1 aren't perfectly orthogonal
             vector t2 = n^t1;
             t2 /= mag(t2);
-            
+
             /* -----------------------------------------------------------------------------*/
-            
+
             //generate Poisson distributed random number of particles to insert
             //see Tysanner & Garcia, Int. J. Numer. Meth. Fluids 2050; 00:1–12
             //this eliminates non-equilibrium behaviour that does not exist in the corresponding physical system
-            
+
             label k = 0;
-            
+
             const scalar target= exp(-accumulatedParcelsToInsert_[iD][f]);
-            
+
             scalar p = rndGen.sample01<scalar>();
-            
+
             while (p > target)
             {
                 p *= rndGen.sample01<scalar>();
                 k += 1;
             }
-            
+
             label nParcelsToInsert = k;
-            
+
             /* -----------------------------------------------------------------------------*/
 
 //             label nParcelsToInsert = label(accumulatedParcelsToInsert_[iD][f]);
-//             
+//
 //             if ((nParcelsToInsert - accumulatedParcelsToInsert_[iD][f]) > rndGen.sample01<scalar>())
 //             {
 //                 nParcelsToInsert++;
 //             }
-            
+
             accumulatedParcelsToInsert_[iD][f] -= nParcelsToInsert; //remainder has been set
 
             nTotalParcelsToBeAdded += nParcelsToInsert;
@@ -193,7 +193,7 @@ void dsmcLiouFangPressureInlet::controlParcelsBeforeMove()
             scalar mass = cloud_.constProps(typeId).mass();
 
             for (label i = 0; i < nParcelsToInsert; i++)
-            {           
+            {
                 // Choose a triangle to insert on, based on their relative
                 // area
 
@@ -217,7 +217,7 @@ void dsmcLiouFangPressureInlet::controlParcelsBeforeMove()
                 const tetIndices& faceTetIs = faceTets[selectedTriI];
 
                 point p = faceTetIs.faceTri(mesh_).randomPoint(rndGen);
-                    
+
                 // Velocity generation
                 scalar mostProbableSpeed
                 (
@@ -227,7 +227,7 @@ void dsmcLiouFangPressureInlet::controlParcelsBeforeMove()
                         mass
                     )
                 );
-                    
+
                 scalar sCosTheta = (faceVelocity & n)/mostProbableSpeed;
 
                 // Coefficients required for Bird eqn 12.5
@@ -281,7 +281,7 @@ void dsmcLiouFangPressureInlet::controlParcelsBeforeMove()
                 {
                     uNormal = sqrt(-log(rndGen.sample01<scalar>()));
                 }
-                
+
                 vector U =
                     sqrt(physicoChemical::k.value()*faceTemperature/mass)
                     *(
@@ -297,25 +297,25 @@ void dsmcLiouFangPressureInlet::controlParcelsBeforeMove()
                     faceTemperature,
                     cloud_.constProps(typeId).rotationalDegreesOfFreedom()
                 );
-                
+
                 labelList vibLevel = cloud_.equipartitionVibrationalEnergyLevel
                 (
                     faceTemperature,
                     cloud_.constProps(typeId).nVibrationalModes(),
                     typeId
                 );
-                
+
                 label ELevel = cloud_.equipartitionElectronicLevel
                 (
                     faceTemperature,
                     cloud_.constProps(typeId).electronicDegeneracyList(),
                     cloud_.constProps(typeId).electronicEnergyList()
                 );
-                
+
                 label newParcel = patchId();
-                
+
                 const scalar& RWF = cloud_.coordSystem().RWF(cellI);
-              
+
                 cloud_.addNewParcel
                 (
                     p,
@@ -336,80 +336,80 @@ void dsmcLiouFangPressureInlet::controlParcelsBeforeMove()
             }
         }
     }
-    
+
     infoCounter_++;
-        
+
     if(infoCounter_ >= cloud_.nTerminalOutputs())
     {
         if(faces_.size() > VSMALL)
-        {    
-            Pout<< "dsmcLiouFangPressureInlet target parcels to insert: " << nTotalParcelsToBeAdded 
+        {
+            Pout<< "dsmcLiouFangPressureInlet target parcels to insert: " << nTotalParcelsToBeAdded
                 <<", number of of inserted parcels: " << nTotalParcelsAdded
                 << endl;
         }
-        
+
         infoCounter_ = 0;
     }
-    
+
     previousInletVelocity_ = inletVelocity_;
 }
 
 void dsmcLiouFangPressureInlet::controlParcelsBeforeCollisions()
 {
     // insert pacels after move, but before collisions - REMINDER: NEW PARCELS MUST BE ADDED TO CELL OCCUPANCY MANUALLY
-    
-   
+
+
 }
 
 void dsmcLiouFangPressureInlet::controlParcelsAfterCollisions()
 {
     const scalar sqrtPi = sqrt(pi);
-    
+
     vectorField momentum(faces_.size(), vector::zero);
     vectorField newInletVelocity(faces_.size(), vector::zero);
     scalarField mass(faces_.size(), scalar(0.0));
-    
+
 
     const List<DynamicList<dsmcParcel*> >& cellOccupancy = cloud_.cellOccupancy();
-    
+
     forAll(cells_, c)
     {
         const label celli = cells_[c];
-        
+
         const List<dsmcParcel*>& parcelsInCell = cellOccupancy[celli];
-                  
+
         forAll(parcelsInCell, pIC)
         {
             dsmcParcel* p = parcelsInCell[pIC];
-                        
+
             momentum[c] += cloud_.nParticles(celli)*cloud_.constProps(p->typeId()).mass()*p->U();
             mass[c] += cloud_.nParticles(celli)*cloud_.constProps(p->typeId()).mass();
         }
 
         newInletVelocity[c] = momentum[c]/mass[c];
-        
+
         inletVelocity_[c] = theta_*newInletVelocity[c] + (1.0 - theta_)*previousInletVelocity_[c];
     }
-    
+
     if(faces_.size() > VSMALL)
     {
         Pout << "dsmcLiouFangPressureInlet inlet velocity = " << inletVelocity_[(faces_.size()/2)].x() << endl;
     }
-    
+
     // compute number of parcels to insert
     forAll(accumulatedParcelsToInsert_, iD)
     {
         const label& typeId = typeIds_[iD];
-        
+
         forAll(accumulatedParcelsToInsert_[iD], f)
         {
             const label& faceI = faces_[f];
             const vector& sF = mesh_.faceAreas()[faceI];
             const scalar fA = mag(sF);
-            
+
             const scalar deltaT = cloud_.deltaTValue(mesh_.boundaryMesh()[patchId_].faceCells()[faceI]);
 
-                scalar mass = cloud_.constProps(typeId).mass();              
+                scalar mass = cloud_.constProps(typeId).mass();
 
                 scalar mostProbableSpeed
                 (
@@ -424,13 +424,13 @@ void dsmcLiouFangPressureInlet::controlParcelsAfterCollisions()
                 // (which points out of the domain, so it must be
                 // negated), dividing by the most probable speed to form
                 // molecularSpeedRatio * cosTheta
-                
+
                 scalar sCosTheta = (inletVelocity_[f] & -sF/fA )/mostProbableSpeed;
-                
+
                 //const scalar& RWF = cloud_.coordSystem().pRWF(patchId_, f); //cloud_.coordSystem().recalculatepRWF(faceI);
-                
+
                 // From Bird eqn 4.22
-                accumulatedParcelsToInsert_[iD][f] += 
+                accumulatedParcelsToInsert_[iD][f] +=
                 moleFractions_[iD]*
                 (
                     fA*n_*deltaT*mostProbableSpeed
@@ -440,7 +440,7 @@ void dsmcLiouFangPressureInlet::controlParcelsAfterCollisions()
                     )
                 )
                 /(2.0*sqrtPi*cloud_.nParticles(patchId_, f));
-        } 
+        }
     }
 }
 
@@ -465,9 +465,9 @@ void dsmcLiouFangPressureInlet::setProperties()
     inletPressure_ = readScalar(propsDict_.lookup("inletPressure"));
 
     inletTemperature_ = readScalar(propsDict_.lookup("inletTemperature"));
-    
+
     theta_ = readScalar(propsDict_.lookup("theta"));
-    
+
     if(0.0 > theta_ || theta_ > 1.0)
     {
         FatalErrorIn("dsmcLiouFangPressureInlet::dsmcLiouFangPressureInlet()")
@@ -475,7 +475,7 @@ void dsmcLiouFangPressureInlet::setProperties()
             << mesh_.time().system()/"boundariesDict"
             << exit(FatalError);
     }
-        
+
     const List<word> molecules (propsDict_.lookup("typeIds"));
 
     if(molecules.size() == 0)
@@ -540,7 +540,7 @@ void dsmcLiouFangPressureInlet::setProperties()
         );
     }
 
-    // set the accumulator  
+    // set the accumulator
 
     accumulatedParcelsToInsert_.setSize(typeIds_.size());
 
@@ -548,7 +548,7 @@ void dsmcLiouFangPressureInlet::setProperties()
     {
         accumulatedParcelsToInsert_[m].setSize(nFaces_, 0.0);
     }
-    
+
 }
 
 void dsmcLiouFangPressureInlet::setNewBoundaryFields()

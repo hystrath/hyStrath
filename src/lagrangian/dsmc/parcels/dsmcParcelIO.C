@@ -52,7 +52,7 @@ Foam::dsmcParcel::dsmcParcel
 {
     //dsmcParcel::TrackedParcel tP = dsmcParcel::TrackedParcel(); // TODO uncomment vincent  11/05/2018
     dsmcParcel::StuckParcel sP = dsmcParcel::StuckParcel();
-    
+
     if (readFields)
     {
         if (is.format() == IOstream::ASCII)
@@ -86,7 +86,7 @@ Foam::dsmcParcel::dsmcParcel
             is >> vibLevel_;
         }
     }
-    
+
     if (false) // tP.tracked())
     {
         /*tracked_ = new dsmcParcel::TrackedParcel
@@ -99,7 +99,7 @@ Foam::dsmcParcel::dsmcParcel
                 tP.distanceTravelledVector()//,
                 //tP.parcelTrajectory()
             );*/ // TODO TO BE REINTRODUCED
-            
+
         /*tracked_ = dsmcParcel::TrackedParcel
             (
                 tP.tracked(),
@@ -111,7 +111,7 @@ Foam::dsmcParcel::dsmcParcel
                 //tP.parcelTrajectory()
             );  */ // TODO uncomment vincent  11/05/2018
     }
-    
+
     if (sP.wallTemperature()[0] != 0.0)
     {
         stuck_ = new dsmcParcel::StuckParcel
@@ -120,7 +120,7 @@ Foam::dsmcParcel::dsmcParcel
                 sP.wallVectors()
             );
     }
-    
+
     // Check state of Istream
     is.check
     (
@@ -141,12 +141,12 @@ void Foam::dsmcParcel::readFields(Cloud<dsmcParcel>& c)
 
     IOField<vector> U(c.fieldIOobject("U", IOobject::MUST_READ));
     c.checkFieldIOobject(c, U);
-    
+
     IOField<scalar> RWF
     (
         c.fieldIOobject
         (
-            "radialWeight", 
+            "radialWeight",
             IOobject::READ_IF_PRESENT
         ),
         scalarField(c.size(), 1.0)
@@ -157,18 +157,18 @@ void Foam::dsmcParcel::readFields(Cloud<dsmcParcel>& c)
     (
         c.fieldIOobject
         (
-            "ERot", 
+            "ERot",
             IOobject::READ_IF_PRESENT
         ),
         scalarField(c.size(), 0.0)
     );
     c.checkFieldIOobject(c, ERot);
-    
+
     IOField<label> ELevel
     (
         c.fieldIOobject
         (
-            "ELevel", 
+            "ELevel",
             IOobject::READ_IF_PRESENT
         ),
         labelField(c.size(), 0)
@@ -180,7 +180,7 @@ void Foam::dsmcParcel::readFields(Cloud<dsmcParcel>& c)
 
     IOField<label> newParcel(c.fieldIOobject("newParcel", IOobject::MUST_READ));
     c.checkFieldIOobject(c, newParcel);
-    
+
     IOField<label> classification(c.fieldIOobject("classification", IOobject::MUST_READ));
     c.checkFieldIOobject(c, classification);
 
@@ -188,22 +188,22 @@ void Foam::dsmcParcel::readFields(Cloud<dsmcParcel>& c)
     (
         c.fieldIOobject
         (
-            "stuckToWall", 
+            "stuckToWall",
             IOobject::READ_IF_PRESENT
         ),
         labelField(c.size(), 0)
     );
     c.checkFieldIOobject(c, stuckToWall);
-    
+
     IOField<scalarField> wallTemperature
     (
         c.fieldIOobject
         (
-            "wallTemperature", 
+            "wallTemperature",
             IOobject::READ_IF_PRESENT
         )
     );
-    
+
     if (wallTemperature.size() != c.size())
     {
         wallTemperature.setSize(c.size());
@@ -212,18 +212,18 @@ void Foam::dsmcParcel::readFields(Cloud<dsmcParcel>& c)
             wallTemperature[i] = scalarField(4, 0.0);
         }
     }
-    
+
     c.checkFieldIOobject(c, wallTemperature);
-    
+
     IOField<vectorField> wallVectors
     (
         c.fieldIOobject
         (
-            "wallVectors", 
+            "wallVectors",
             IOobject::READ_IF_PRESENT
         )
     );
-    
+
     if (wallVectors.size() != c.size())
     {
         wallVectors.setSize(c.size());
@@ -232,62 +232,62 @@ void Foam::dsmcParcel::readFields(Cloud<dsmcParcel>& c)
             wallVectors[i] = vectorField(4, vector::zero);
         }
     }
-    
+
     c.checkFieldIOobject(c, wallVectors);
-    
+
     IOField<label> isTracked
     (
         c.fieldIOobject
         (
-            "isTracked", 
+            "isTracked",
             IOobject::READ_IF_PRESENT
         ),
         labelField(c.size(), 0)
     );
     c.checkFieldIOobject(c, isTracked);
-    
+
     IOField<label> inPatchId
     (
         c.fieldIOobject
         (
-            "inPatchId", 
+            "inPatchId",
             IOobject::READ_IF_PRESENT
         ),
         labelField(c.size(), -1)
     );
     c.checkFieldIOobject(c, inPatchId);
-    
+
     IOField<scalar> tracerInitialTime
     (
         c.fieldIOobject
         (
-            "tracerInitialTime", 
+            "tracerInitialTime",
             IOobject::READ_IF_PRESENT
         ),
         scalarField(c.size(), 0.0)
     );
     c.checkFieldIOobject(c, tracerInitialTime);
-    
+
     IOField<vector> tracerInitialPosition
     (
         c.fieldIOobject
         (
-            "tracerInitialPosition", 
+            "tracerInitialPosition",
             IOobject::READ_IF_PRESENT
         ),
         vectorField(c.size(), vector::zero)
     );
     c.checkFieldIOobject(c, tracerInitialPosition);
-    
+
     IOField<labelField> vibLevel
     (
         c.fieldIOobject
         (
-            "vibLevel", 
+            "vibLevel",
             IOobject::READ_IF_PRESENT
         )
     );
-    
+
     if (vibLevel.size() != c.size())
     {
         vibLevel.setSize(c.size());
@@ -296,7 +296,7 @@ void Foam::dsmcParcel::readFields(Cloud<dsmcParcel>& c)
             vibLevel[i].setSize(0);
         }
     }
-    
+
     c.checkFieldIOobject(c, vibLevel);
 
     label i = 0;
@@ -311,12 +311,12 @@ void Foam::dsmcParcel::readFields(Cloud<dsmcParcel>& c)
         p.typeId_ = typeId[i];
         p.newParcel_ = newParcel[i];
         p.classification_ = classification[i];
-        
+
         if (stuckToWall[i])
         {
             p.setStuck(wallTemperature[i], wallVectors[i]);
         }
-        
+
         if (isTracked[i])
         {
             p.setTracked
@@ -327,9 +327,9 @@ void Foam::dsmcParcel::readFields(Cloud<dsmcParcel>& c)
                 tracerInitialPosition[i]
             );
         }
-        
+
         p.vibLevel_ = vibLevel[i];
-        
+
         i++;
     }
 }
@@ -349,11 +349,11 @@ void Foam::dsmcParcel::writeFields(const Cloud<dsmcParcel>& c)
     IOField<label> typeId(c.fieldIOobject("typeId", IOobject::NO_READ), np);
     IOField<label> newParcel(c.fieldIOobject("newParcel", IOobject::NO_READ), np);
     IOField<label> classification(c.fieldIOobject("classification", IOobject::NO_READ), np);
-    
+
     IOField<label> stuckToWall(c.fieldIOobject("stuckToWall", IOobject::NO_READ), np);
     IOField<scalarField> wallTemperature(c.fieldIOobject("wallTemperature", IOobject::NO_READ), np);
     IOField<vectorField> wallVectors(c.fieldIOobject("wallVectors", IOobject::NO_READ), np);
-    
+
     IOField<label> isTracked(c.fieldIOobject("isTracked", IOobject::NO_READ), np);
     IOField<label> inPatchId(c.fieldIOobject("inPatchId", IOobject::NO_READ), np);
     IOField<scalar> tracerInitialTime(c.fieldIOobject("tracerInitialTime", IOobject::NO_READ), np);
@@ -374,14 +374,14 @@ void Foam::dsmcParcel::writeFields(const Cloud<dsmcParcel>& c)
         typeId[i] = p.typeId();
         newParcel[i] = p.newParcel();
         classification[i] = p.classification();
-        
+
         stuckToWall[i] = p.isStuck();
         if (stuckToWall[i])
         {
             wallTemperature[i] = p.stuck().wallTemperature();
             wallVectors[i] = p.stuck().wallVectors();
         }
-        
+
         isTracked[i] = p.isTracked();
         if (isTracked[i])
         {
@@ -399,18 +399,18 @@ void Foam::dsmcParcel::writeFields(const Cloud<dsmcParcel>& c)
             tracerCurrentPosition[i] = vector::zero;
             tracerDistanceTravelled[i] = vector::zero;
         }
-        
+
         i++;
     }
 
     U.write();
-    
+
     if (gMax(RWF) > 1.0)
     {
         //- this is an axi/spherically -symmetric simulation
         RWF.write();
     }
-    
+
     if (gMax(ERot) > 0.0)
     {
         //- there is at least one molecule
@@ -422,30 +422,30 @@ void Foam::dsmcParcel::writeFields(const Cloud<dsmcParcel>& c)
         //- the electronic mode is activated
         ELevel.write();
     }
-    
+
     typeId.write();
     newParcel.write();
     classification.write();
-    
+
     if (gSum(stuckToWall) > 0)
     {
         //- there is at least one stickingWallPatch with a particle stuck on it
         stuckToWall.write();
-        wallTemperature.write(); 
+        wallTemperature.write();
         wallVectors.write();
     }
-    
+
     if (gSum(isTracked) > 0)
     {
         //- there is at least one tracked parcel in the domain
         isTracked.write();
-        inPatchId.write(); 
+        inPatchId.write();
         tracerInitialTime.write();
         tracerInitialPosition.write();
         tracerCurrentPosition.write();
         tracerDistanceTravelled.write();
     }
-    
+
     vibLevel.write();
 }
 
@@ -463,13 +463,13 @@ Foam::Ostream& Foam::operator<<
     {
         tP = p.tracked();
     }*/ //TODO vincent 11/05/2018
-    
+
     dsmcParcel::StuckParcel sP = dsmcParcel::StuckParcel();
     if (p.isStuck())
     {
         sP = p.stuck();
     }
-    
+
     if (os.format() == IOstream::ASCII)
     {
         os  << static_cast<const particle&>(p)
@@ -487,7 +487,7 @@ Foam::Ostream& Foam::operator<<
     else
     {
         os  << static_cast<const particle&>(p);
-        
+
         os.write
         (
             reinterpret_cast<const char*>(&p.U_),
@@ -499,9 +499,9 @@ Foam::Ostream& Foam::operator<<
             + sizeof(p.newParcel())
             + sizeof(p.classification())
         );
-        
+
         os << p.tracked(); //tP; // TODO vincent  11/05/2018
-        os << sP; 
+        os << sP;
         os << p.vibLevel();
     }
 
@@ -511,7 +511,7 @@ Foam::Ostream& Foam::operator<<
         "Foam::Ostream& Foam::operator<<"
         "(Foam::Ostream&, const Foam::dsmcParcel&)"
     );
-    
+
     return os;
 }
 

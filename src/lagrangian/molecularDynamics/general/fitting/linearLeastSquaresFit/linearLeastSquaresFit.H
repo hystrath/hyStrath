@@ -29,7 +29,7 @@ Description
     Taken from Numerical Recipes in C - The art of scientific computing 2nd edition
     William H. Press
     Pg 665
-    
+
 SourceFiles
     linearLeastSquaresFitI.H
     linearLeastSquaresFit.C
@@ -80,7 +80,7 @@ public:
         linearLeastSquaresFit
         (
             const scalarField& x,
-            const scalarField& y,         
+            const scalarField& y,
 //             scalarField sig,
 //             label mwt,
             scalar& a,

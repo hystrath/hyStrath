@@ -27,7 +27,7 @@ Class
 
 Description
     variableHardSphere model.
-    
+
 SourceFiles
     variableHardSphere.C
 
@@ -59,9 +59,9 @@ class variableHardSphere
 
         // Molecular weight of the species [g/mol]
         scalar molW_;
-        
+
         // Temperature coefficient of viscosity for the specie
-        scalar omega_;  
+        scalar omega_;
 
 
 public:
@@ -94,7 +94,7 @@ public:
 
         //- Mean free path [m]
         virtual tmp<volScalarField> mfp() const;
-         
+
         //- Mean free path for patch [m]
         virtual tmp<scalarField> mfp
         (
@@ -102,7 +102,7 @@ public:
             const scalarField& p,
             const scalarField& Tt
         ) const;
-        
+
 };
 
 

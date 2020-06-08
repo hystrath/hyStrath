@@ -61,7 +61,7 @@ Foam::advancedSpecie::advancedSpecie(Istream& is)
     iHat_(readScalar(is))
 {
     is.check("advancedSpecie::advancedSpecie(Istream& is)");
-    
+
     forAll(vibrationalList_, i)
     {
         is >> vibrationalList_[i];
@@ -118,12 +118,12 @@ Foam::Ostream& Foam::operator<<(Ostream& os, const advancedSpecie& as)
         << as.particleCharge_ << tab
         << as.diameter_ << tab
         << as.omega_ << tab;
-        
+
         forAll(as.vibrationalList_, i)
         {
             os << as.vibrationalList_[i] << tab;
         }
-        
+
     os  << as.dissociationPotential_ << tab
         << as.noVibrationalTemp_ << tab
         << as.noElectronicLevels_ << tab

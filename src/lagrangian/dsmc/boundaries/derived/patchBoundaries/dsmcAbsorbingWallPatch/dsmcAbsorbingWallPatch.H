@@ -68,35 +68,35 @@ class dsmcAbsorbingWallPatch
 private:
 
     // Private data
-    
+
         dictionary propsDict_;
-        
-        
+
+
 protected:
 
-    // Protected data  
-    
+    // Protected data
+
         //- typeIds to be absorbed
         labelList typeIds_;
-        
+
         //- probability of absorption for each species in typeIds_
-        scalarList absorptionProbs_;      
-        
+        scalarList absorptionProbs_;
+
         //- Saturation limit per face [#]
         scalarList saturationLimit_;
-        
+
 
 
     // Protected member functions
-    
+
         virtual void setProperties();
-        
+
         //- Read the number of absorbed particles on the patch
         void readPatchField();
-        
+
         //- Check if absorption can be still operated on this patch/face
         bool isNotSaturated(const label patchi, const label facei);
-        
+
         //- Absorb the particle
         void absorbParticle
         (
@@ -104,7 +104,7 @@ protected:
             const label facei,
             dsmcParcel::trackingData& td
         );
-        
+
         //- Test the particle for absorption
         void testParticleForAbsorption
         (
@@ -144,7 +144,7 @@ public:
         //- control the mols
         virtual void controlParticle
         (
-            dsmcParcel& p, 
+            dsmcParcel& p,
             dsmcParcel::trackingData& td
         ) = 0;
 
@@ -154,7 +154,7 @@ public:
             const fileName& fixedPathName,
             const fileName& timePath
         );
-        
+
         void writeField();
 
         //- update properties from a modified dictionary
@@ -162,36 +162,36 @@ public:
 
 
     // Access
-    
+
         //- Return const access to the patch saturation limit
         const scalarList& saturationLimit() const
         {
             return saturationLimit_;
         }
-        
+
         //- Return const access to the patch saturation limit for a given face
         const scalar& saturationLimit(const label& facei) const
         {
             return saturationLimit_[facei];
         }
-        
+
         //- Return const access to all absorption probabilities
         const List<scalar>& absorptionProbs() const
         {
             return absorptionProbs_;
         }
-        
+
         //- Return const access to a molecule absorption probability
         //  Given by typeId
         scalar absorptionProb(const label& typeId) const
         {
             const label& iD = findIndex(typeIds_, typeId);
-            
+
             if (iD != -1)
             {
                 return absorptionProbs_[iD];
             }
-            
+
             FatalErrorIn
             (
                 "dsmcAbsorbingDiffuseWallPatch::const scalar&\
@@ -199,11 +199,11 @@ public:
             )
                 << "typeId is not listed."
                 << exit(FatalError);
-            
+
             return 0;
         }
 
-        
+
 };
 
 

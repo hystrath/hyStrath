@@ -74,7 +74,7 @@ void cilium::setInitialConfiguration()
 
     Info << nl << "Creating cilium " << endl;
 
-    const word molIdName(mdInitialiseDict_.lookup("molId")); 
+    const word molIdName(mdInitialiseDict_.lookup("molId"));
     const List<word>& idList(molCloud_.cP().molIds());
 
     label molId = findIndex(idList, molIdName);
@@ -87,83 +87,83 @@ void cilium::setInitialConfiguration()
     }
 
     const reducedUnits& rU = molCloud_.redUnits();
-    
+
     scalar temperature = 300/rU.refTemp();
     vector bulkVelocity = vector::zero;
-    
+
     //- start point is the fixed point
     vector startPoint = mdInitialiseDict_.lookup("startPoint");
-    
-    vector endPoint = mdInitialiseDict_.lookup("endPoint");
-    
 
-    
-    
+    vector endPoint = mdInitialiseDict_.lookup("endPoint");
+
+
+
+
     bool tethered = false;
-    
+
     scalar spacing = readScalar(mdInitialiseDict_.lookup("spacingSI"));
-    
+
     spacing /= rU.refLength();
 
     DynamicList<vector> positions;
-    
-    // unit vector 
+
+    // unit vector
     vector n = endPoint - startPoint;
-    
+
     scalar magSE = mag(n);
-    
+
     n /= mag(n);
-    
+
     scalar Ns = magSE/spacing;
-    
+
     label N = label(Ns) + 1;
-    
+
     // new spacing
     scalar s = magSE/scalar(N-1);
-    
+
     for (label i = 0; i < N; i++)
     {
         vector p = startPoint + i*s*n;
         positions.append(p);
     }
-    
+
     positions.shrink();
 
     Info << nl << " No of sites found = " << positions.size() << endl;
 
     DynamicList<label> frozenAtoms(0);
-    
+
     if(mdInitialiseDict_.found("frozenAtoms"))
     {
         List<label> molecules = List<label>(mdInitialiseDict_.lookup("frozenAtoms"));
-        
+
         if(molecules.size() > positions.size())
         {
             FatalErrorIn("cilium::setInitialConfiguration()")
-                << "You can't have more frozen atoms than you have atoms = " << positions.size() 
-                << exit(FatalError);            
+                << "You can't have more frozen atoms than you have atoms = " << positions.size()
+                << exit(FatalError);
         }
-        
+
         forAll(molecules, i)
         {
             frozenAtoms.append(molecules[i]);
         }
-        
+
         Info << "frozen atoms = " << frozenAtoms << endl;
     }
-    
-    
-    
-    
+
+
+
+
     // insert molecules in cloud
     label nMolsInserted = 0;
-    
+
     forAll(positions, i)
     {
         label cell = -1;
         label tetFace = -1;
         label tetPt = -1;
-        
+
         mesh_.findCellFacePt
         (
             positions[i],
@@ -171,14 +171,14 @@ void cilium::setInitialConfiguration()
             tetFace,
             tetPt
         );
-        
+
         bool frozen = false;
-        
+
         if(findIndex(frozenAtoms, i) != -1)
         {
             frozen = true;
         }
-        
+
         if(cell != -1)
         {
             insertMoleculeLocal
@@ -193,7 +193,7 @@ void cilium::setInitialConfiguration()
                 temperature,
                 bulkVelocity
             );
-            
+
             nMolsInserted++;
         }
     }
@@ -201,10 +201,10 @@ void cilium::setInitialConfiguration()
     Info<< nl << " No of initial cloud = " << initialSize
         << ", no of molecules inserted = " << nMolsInserted
         << endl;
-    
-        
-    // write out of ordered locations 
-    
+
+
+    // write out of ordered locations
+
     forAll(trackingNumbers_, i)
     {
         if(i < trackingNumbers_.size() - 1)
@@ -225,8 +225,8 @@ void cilium::insertMoleculeLocal
     const point& position,
     const label cell,
     const label tetFace,
-    const label tetPt, 
-    const label& id, 
+    const label tetPt,
+    const label& id,
     const bool& tethered,
     const bool& frozen,
     const scalar& temperature,
@@ -256,9 +256,9 @@ void cilium::insertMoleculeLocal
 //     vector v = equipartitionLinearVelocity(temperature, molCloud_.cP().mass(id));
 
 //     v += bulkVelocity;
-    
+
     vector v = bulkVelocity;
-    
+
     vector pi = vector::zero;
 
     tensor Q = I;
@@ -266,7 +266,7 @@ void cilium::insertMoleculeLocal
     if (!molCloud_.cP().pointMolecule(id))
     {
 //         Info << "temperature = " << temperature << ", id = " << id << endl;
-        
+
         pi = equipartitionAngularMomentum(temperature, id);
         scalar phi(molCloud_.rndGen().sample01<scalar>()*constant::mathematical::twoPi);
         scalar theta(molCloud_.rndGen().sample01<scalar>()*constant::mathematical::twoPi);
@@ -285,17 +285,17 @@ void cilium::insertMoleculeLocal
             cos(theta)
         );
     }
-    
+
     label tNI = molCloud_.getTrackingNumber();
     trackingNumbers_.append(tNI);
 //     positions_.append(position);
-    
+
     molCloud_.createMolecule
     (
         position,
         cell,
         tetFace,
-        tetPt,     
+        tetPt,
         Q,
         v,
         vector::zero,
@@ -307,7 +307,7 @@ void cilium::insertMoleculeLocal
         1.0,
         tNI
     );
-    
+
 }
 
 

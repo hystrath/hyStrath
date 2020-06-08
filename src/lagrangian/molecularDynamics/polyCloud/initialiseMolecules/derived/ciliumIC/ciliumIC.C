@@ -74,7 +74,7 @@ void ciliumIC::setInitialConfiguration()
 
     Info << nl << "Creating ciliumIC " << endl;
 
-    const word molIdName(mdInitialiseDict_.lookup("molId")); 
+    const word molIdName(mdInitialiseDict_.lookup("molId"));
     const List<word>& idList(molCloud_.cP().molIds());
 
     label molId = findIndex(idList, molIdName);
@@ -85,29 +85,29 @@ void ciliumIC::setInitialConfiguration()
             << "Cannot find molecule id: " << molIdName << nl << "in idList."
             << exit(FatalError);
     }
-    
-    
-    
-    
+
+
+
+
 
     const reducedUnits& rU = molCloud_.redUnits();
-    
+
     scalar temperature = 300/rU.refTemp();
     vector bulkVelocity = vector::zero;
-    
-    
-    
-    
+
+
+
+
    nC_ = readLabel(mdInitialiseDict_.lookup("numberOfCiliumPoints"));
 
    x_.setSize(nC_);
    y_.setSize(nC_);
 
-    
-    
+
+
     {
         ifstream file("X.xy");
-        
+
         if(file.is_open())
         {
             for (label j = 0; j < nC_; j++)
@@ -117,12 +117,12 @@ void ciliumIC::setInitialConfiguration()
             }
         }
     }
-    
+
 //     Info << "x = " << x_ << endl;
-  
+
     {
         ifstream file("Y.xy");
-        
+
         if(file.is_open())
         {
             for (label j = 0; j < nC_; j++)
@@ -132,65 +132,65 @@ void ciliumIC::setInitialConfiguration()
             }
         }
     }
-    
-//     Info << "y = " << y_ << endl;    
-    
-    
+
+//     Info << "y = " << y_ << endl;
+
+
     //- start point is the fixed point
     vector startPoint = mdInitialiseDict_.lookup("startPoint");
-    
 
-    
-    
+
+
+
     bool tethered = false;
-    
-  
+
+
     DynamicList<vector> positions;
-        
+
     for (label i = 0; i < nC_; i++)
     {
         vector p = startPoint + vector(x_[i], y_[i], 0.0);
 //         Info << "pos = " << p << endl;
         positions.append(p);
     }
-    
+
     positions.shrink();
 
     Info << nl << " No of sites found = " << positions.size() << endl;
 
     DynamicList<label> frozenAtoms(0);
-    
+
     if(mdInitialiseDict_.found("frozenAtoms"))
     {
         List<label> molecules = List<label>(mdInitialiseDict_.lookup("frozenAtoms"));
-        
+
         if(molecules.size() > positions.size())
         {
             FatalErrorIn("ciliumIC::setInitialConfiguration()")
-                << "You can't have more frozen atoms than you have atoms = " << positions.size() 
-                << exit(FatalError);            
+                << "You can't have more frozen atoms than you have atoms = " << positions.size()
+                << exit(FatalError);
         }
-        
+
         forAll(molecules, i)
         {
             frozenAtoms.append(molecules[i]);
         }
-        
+
         Info << "frozen atoms = " << frozenAtoms << endl;
     }
-    
-    
-    
-    
+
+
+
+
     // insert molecules in cloud
     label nMolsInserted = 0;
-    
+
     forAll(positions, i)
     {
         label cell = -1;
         label tetFace = -1;
         label tetPt = -1;
-        
+
         mesh_.findCellFacePt
         (
             positions[i],
@@ -198,14 +198,14 @@ void ciliumIC::setInitialConfiguration()
             tetFace,
             tetPt
         );
-        
+
         bool frozen = false;
-        
+
         if(findIndex(frozenAtoms, i) != -1)
         {
             frozen = true;
         }
-        
+
         if(cell != -1)
         {
             insertMoleculeLocal
@@ -220,7 +220,7 @@ void ciliumIC::setInitialConfiguration()
                 temperature,
                 bulkVelocity
             );
-            
+
             nMolsInserted++;
         }
     }
@@ -228,14 +228,14 @@ void ciliumIC::setInitialConfiguration()
     Info<< nl << " No of initial cloud = " << initialSize
         << ", no of molecules inserted = " << nMolsInserted
         << endl;
-    
-        
+
+
     // ordered trackingNUmbers
-        
+
     Info << "trackingNumbers = " << trackingNumbers_ << endl;
-        
-    // write out of ordered locations 
-    
+
+    // write out of ordered locations
+
     forAll(trackingNumbers_, i)
     {
         if(i < trackingNumbers_.size() - 1)
@@ -256,8 +256,8 @@ void ciliumIC::insertMoleculeLocal
     const point& position,
     const label cell,
     const label tetFace,
-    const label tetPt, 
-    const label& id, 
+    const label tetPt,
+    const label& id,
     const bool& tethered,
     const bool& frozen,
     const scalar& temperature,
@@ -287,9 +287,9 @@ void ciliumIC::insertMoleculeLocal
 //     vector v = equipartitionLinearVelocity(temperature, molCloud_.cP().mass(id));
 
 //     v += bulkVelocity;
-    
+
     vector v = bulkVelocity;
-    
+
     vector pi = vector::zero;
 
     tensor Q = I;
@@ -297,7 +297,7 @@ void ciliumIC::insertMoleculeLocal
     if (!molCloud_.cP().pointMolecule(id))
     {
 //         Info << "temperature = " << temperature << ", id = " << id << endl;
-        
+
         pi = equipartitionAngularMomentum(temperature, id);
         scalar phi(molCloud_.rndGen().sample01<scalar>()*constant::mathematical::twoPi);
         scalar theta(molCloud_.rndGen().sample01<scalar>()*constant::mathematical::twoPi);
@@ -316,17 +316,17 @@ void ciliumIC::insertMoleculeLocal
             cos(theta)
         );
     }
-    
+
     label tNI = molCloud_.getTrackingNumber();
     trackingNumbers_.append(tNI);
 //     positions_.append(position);
-    
+
     molCloud_.createMolecule
     (
         position,
         cell,
         tetFace,
-        tetPt,     
+        tetPt,
         Q,
         v,
         vector::zero,
@@ -338,7 +338,7 @@ void ciliumIC::insertMoleculeLocal
         1.0,
         tNI
     );
-    
+
 }
 
 

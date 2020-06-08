@@ -73,7 +73,7 @@ dsmcMassFlowRateInlet::dsmcMassFlowRateInlet
     writeInCase_ = true;
 
     setProperties();
-    
+
     //sorts issues with the velocity pointing out of the mesh
     inletVelocity_ = initialVelocity_;
     previousInletVelocity_ = initialVelocity_;
@@ -97,12 +97,12 @@ void dsmcMassFlowRateInlet::calculateProperties()
 }
 
 void dsmcMassFlowRateInlet::controlParcelsBeforeMove()
-{      
+{
     Random& rndGen = cloud_.rndGen();
-        
+
     label nTotalParcelsAdded = 0;
     label nTotalParcelsToBeAdded = 0;
-    
+
     labelField parcelsInserted(typeIds_.size(), 0);
 
     //loop over all species
@@ -153,43 +153,43 @@ void dsmcMassFlowRateInlet::controlParcelsBeforeMove()
 
             //  Wall tangential unit vector. Use the direction between the
             // face centre and the first vertex in the list
-            vector t1 = fC - mesh_.points()[mesh_.faces()[faceI][0]]; 
+            vector t1 = fC - mesh_.points()[mesh_.faces()[faceI][0]];
             t1 /= mag(t1);
 
             // Other tangential unit vector.  Rescaling in case face is not
             // flat and n and t1 aren't perfectly orthogonal
             vector t2 = n^t1;
             t2 /= mag(t2);
-            
+
             /* -----------------------------------------------------------------------------*/
-            
+
             //generate Poisson distributed random number of particles to insert
             //see Tysanner & Garcia, Int. J. Numer. Meth. Fluids 2050; 00:1–12
             //this eliminates non-equilibrium behaviour that does not exist in the corresponding physical system
-            
+
             label k = 0;
-            
+
             const scalar target= exp(-accumulatedParcelsToInsert_[iD][f]);
-            
+
             scalar p = rndGen.sample01<scalar>();
-            
+
             while (p > target)
             {
                 p *= rndGen.sample01<scalar>();
                 k += 1;
             }
-            
+
             label nParcelsToInsert = k;
-            
+
             /* -----------------------------------------------------------------------------*/
 
 //             label nParcelsToInsert = label(accumulatedParcelsToInsert_[iD][f]);
-//             
+//
 //             if ((nParcelsToInsert - accumulatedParcelsToInsert_[iD][f]) > rndGen.sample01<scalar>())
 //             {
 //                 nParcelsToInsert++;
 //             }
-            
+
             accumulatedParcelsToInsert_[iD][f] -= nParcelsToInsert; //remainder has been set
 
             nTotalParcelsToBeAdded += nParcelsToInsert;
@@ -198,7 +198,7 @@ void dsmcMassFlowRateInlet::controlParcelsBeforeMove()
             scalar mass = cloud_.constProps(typeId).mass();
 
             for (label i = 0; i < nParcelsToInsert; i++)
-            {           
+            {
                 // Choose a triangle to insert on, based on their relative
                 // area
 
@@ -222,7 +222,7 @@ void dsmcMassFlowRateInlet::controlParcelsBeforeMove()
                 const tetIndices& faceTetIs = faceTets[selectedTriI];
 
                 point p = faceTetIs.faceTri(mesh_).randomPoint(rndGen);
-                    
+
                 // Velocity generation
                 scalar mostProbableSpeed
                 (
@@ -232,7 +232,7 @@ void dsmcMassFlowRateInlet::controlParcelsBeforeMove()
                         mass
                     )
                 );
-                    
+
                 scalar sCosTheta = (faceVelocity & n)/mostProbableSpeed;
 
                 // Coefficients required for Bird eqn 12.5
@@ -286,7 +286,7 @@ void dsmcMassFlowRateInlet::controlParcelsBeforeMove()
                 {
                     uNormal = sqrt(-log(rndGen.sample01<scalar>()));
                 }
-                
+
                 vector U =
                     sqrt(physicoChemical::k.value()*faceTemperature/mass)
                     *(
@@ -302,25 +302,25 @@ void dsmcMassFlowRateInlet::controlParcelsBeforeMove()
                     faceTemperature,
                     cloud_.constProps(typeId).rotationalDegreesOfFreedom()
                 );
-                
+
                 labelList vibLevel = cloud_.equipartitionVibrationalEnergyLevel
                 (
                     faceTemperature,
                     cloud_.constProps(typeId).nVibrationalModes(),
                     typeId
                 );
-                
+
                 label ELevel = cloud_.equipartitionElectronicLevel
                 (
                     faceTemperature,
                     cloud_.constProps(typeId).electronicDegeneracyList(),
                     cloud_.constProps(typeId).electronicEnergyList()
                 );
-                
+
                 label newParcel = patchId();
-                
+
                 const scalar& RWF = cloud_.coordSystem().RWF(cellI);
-              
+
                 cloud_.addNewParcel
                 (
                     p,
@@ -341,7 +341,7 @@ void dsmcMassFlowRateInlet::controlParcelsBeforeMove()
                 parcelsInserted[iD]++;
             }
         }
-        
+
         if (Pstream::parRun())
         {
             reduce(parcelsInserted[iD], sumOp<scalar>());
@@ -357,106 +357,106 @@ void dsmcMassFlowRateInlet::controlParcelsBeforeMove()
                 << endl;
         }
     }
-    
-    
+
+
     previousInletVelocity_ = inletVelocity_;
-    
+
 }
 
 void dsmcMassFlowRateInlet::controlParcelsBeforeCollisions()
 {
     // insert pacels after move, but before collisions - REMINDER: NEW PARCELS MUST BE ADDED TO CELL OCCUPANCY MANUALLY
-    
-   
+
+
 }
 
 void dsmcMassFlowRateInlet::controlParcelsAfterCollisions()
 {
     const scalar sqrtPi = sqrt(pi);
-    
+
 //     vectorField momentum(faces_.size(), vector::zero);
     vectorField newInletVelocity(faces_.size(), vector::zero);
 //     scalarField mass(faces_.size(), scalar(0.0));
 
     const List<DynamicList<dsmcParcel*> >& cellOccupancy = cloud_.cellOccupancy();
-    
+
     forAll(cells_, c)
     {
         const label celli = cells_[c];
-        
+
         const List<dsmcParcel*>& parcelsInCell = cellOccupancy[celli];
-                  
+
         forAll(parcelsInCell, pIC)
         {
             dsmcParcel* p = parcelsInCell[pIC];
-                        
+
             momentum_[c] += cloud_.nParticles(celli)*cloud_.constProps(p->typeId()).mass()*p->U();
             mass_[c] += cloud_.nParticles(celli)*cloud_.constProps(p->typeId()).mass();
         }
 
 //         newInletVelocity[c] = momentum[c]/mass[c];
-            
+
 //         inletVelocity_[c] = theta_*newInletVelocity[c] + (1.0 - theta_)*previousInletVelocity_[c];
 
         inletVelocity_[c] = momentum_[c]/mass_[c];
-        
+
         const vector& sF = mesh_.faceAreas()[faces_[c]];
         const scalar fA = mag(sF);
-        
+
         if((inletVelocity_[c] & -sF/fA) < 0)
         {
             inletVelocity_[c] = previousInletVelocity_[c];
         }
-        
+
 //         if( (inletVelocity_[c] & -sF/fA) > (100.0*(initialVelocity_ & -sF/fA)) )
 //         {
 //             inletVelocity_[c] = previousInletVelocity_[c];
 //         }
     }
-    
+
     if(faces_.size() > VSMALL)
     {
         Pout << "dsmcMassFlowRateInlet inlet velocity = " << inletVelocity_[(faces_.size()/2)] << endl;
     }
-    
+
     scalarField massFractions(typeIds_.size(), 0.0);
     scalar totalMass = 0.0;
-    
+
     forAll(massFractions, iD)
     {
         const label& typeId = typeIds_[iD];
-        
+
         scalar mass = cloud_.constProps(typeId).mass();
-        
+
         totalMass += mass*moleFractions_[iD];
     }
-    
+
     forAll(massFractions, iD)
     {
         const label& typeId = typeIds_[iD];
-        
+
         scalar mass = cloud_.constProps(typeId).mass();
-        
+
         massFractions[iD] = moleFractions_[iD]*(mass/totalMass);
     }
-    
+
     Info << "dsmcMassFlowRateInlet massFractions = " << massFractions << endl;
-    
+
     // compute number of parcels to insert
     forAll(accumulatedParcelsToInsert_, iD)
     {
         const label& typeId = typeIds_[iD];
-        
+
         forAll(accumulatedParcelsToInsert_[iD], f)
         {
             const label& faceI = faces_[f];
             const vector& sF = mesh_.faceAreas()[faceI];
             const scalar fA = mag(sF);
-            
+
             const scalar deltaT = cloud_.deltaTValue(mesh_.boundaryMesh()[patchId_].faceCells()[faceI]);
-            
+
             scalar mass = cloud_.constProps(typeId).mass();
-            
+
             n_[iD][f] = (massFractions[iD]*massFlowRate_)/
                     ((inletVelocity_[f] & -sF/fA)*patchSurfaceArea_*mass);
 
@@ -473,13 +473,13 @@ void dsmcMassFlowRateInlet::controlParcelsAfterCollisions()
             // (which points out of the domain, so it must be
             // negated), dividing by the most probable speed to form
             // molecularSpeedRatio * cosTheta
-            
+
             scalar sCosTheta = (inletVelocity_[f] & -sF/fA )/mostProbableSpeed;
-            
+
             //const scalar RWF = cloud_.coordSystem().pRWF(patchId_, f);
-            
+
             // From Bird eqn 4.22
-            accumulatedParcelsToInsert_[iD][f] += 
+            accumulatedParcelsToInsert_[iD][f] +=
 //                 moleFractions_[iD]*
                 (
                     fA*n_[iD][f]*deltaT*mostProbableSpeed
@@ -489,7 +489,7 @@ void dsmcMassFlowRateInlet::controlParcelsAfterCollisions()
                     )
                 )
                 /(2.0*sqrtPi*cloud_.nParticles(patchId_, f));
-        } 
+        }
     }
 }
 
@@ -514,11 +514,11 @@ void dsmcMassFlowRateInlet::setProperties()
     massFlowRate_ = readScalar(propsDict_.lookup("massFlowRate"));
 
     inletTemperature_ = readScalar(propsDict_.lookup("inletTemperature"));
-    
+
     initialVelocity_ = propsDict_.lookup("initialVelocity");
-    
+
 //     theta_ = readScalar(propsDict_.lookup("theta"));
-    
+
 //     if(0.0 > theta_ || theta_ > 1.0)
 //     {
 //         FatalErrorIn("dsmcLiouFangPressureInlet::dsmcLiouFangPressureInlet()")
@@ -526,7 +526,7 @@ void dsmcMassFlowRateInlet::setProperties()
 //             << mesh_.time().system()/"boundariesDict"
 //             << exit(FatalError);
 //     }
-        
+
     const List<word> molecules (propsDict_.lookup("typeIds"));
 
     if(molecules.size() == 0)
@@ -600,12 +600,12 @@ void dsmcMassFlowRateInlet::setProperties()
 
 
     n_.setSize(typeIds_.size());
-    
+
     forAll(n_, m)
     {
         n_[m].setSize(nFaces_, 0.0);
     }
-    
+
 }
 
 

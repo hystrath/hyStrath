@@ -48,11 +48,11 @@ void newPressureFlux::setBoundBox
 (
     const dictionary& propsDict,
     boundedBox& bb,
-    const word& name 
+    const word& name
 )
 {
     const dictionary& dict(propsDict.subDict(name));
-    
+
     vector startPoint = dict.lookup("startPoint");
     vector endPoint = dict.lookup("endPoint");
 
@@ -69,17 +69,17 @@ newPressureFlux::newPressureFlux
 :
     polyStateController(t,  molCloud, dict),
     propsDict_(dict.subDict(typeName + "Properties")),
-    fileName_(propsDict_.lookup("fileName")),  
+    fileName_(propsDict_.lookup("fileName")),
     molIds_()
-    
+
 //     nTimeSteps_(0.0),
 //     force_(vector::zero)
-   
+
 {
     writeInTimeDir_ = true;
     writeInCase_ = true;
 
-    
+
     molIds_.clear();
 
     selectIds ids
@@ -90,36 +90,36 @@ newPressureFlux::newPressureFlux
 
     molIds_ = ids.molIds();
 
-    
+
     setBoundBox(propsDict_, box_, "controlBoundBox");
-    
+
     d_ = propsDict_.lookup("forceDirection");
     d_ /= mag(d_);
-    
+
     area_ = readScalar(propsDict_.lookup("area"));
 
-    targetPressure_ = readScalar(propsDict_.lookup("pressureMPa"));    
-    
+    targetPressure_ = readScalar(propsDict_.lookup("pressureMPa"));
+
     targetPressure_ *= 1e6;
-    
+
     targetPressure_ /= molCloud_.redUnits().refPressure();
-    
+
     Info << "target Pressure RU " <<  targetPressure_ << endl;
 
     min_ = 100.0; // default
-    
+
     if (propsDict_.found("minMols"))
     {
-        min_ = readScalar(propsDict_.lookup("minMols"));         
+        min_ = readScalar(propsDict_.lookup("minMols"));
     }
-    
+
     deltaY_ = 0.0;
-    
+
     if (propsDict_.found("deltaY"))
     {
-        deltaY_ = readScalar(propsDict_.lookup("deltaY"));         
-    }    
-    
+        deltaY_ = readScalar(propsDict_.lookup("deltaY"));
+    }
+
 //     force_ = vector::zero;
 //     nTimeSteps_ = 0.0;
 }
@@ -156,15 +156,15 @@ void newPressureFlux::controlAfterForces()
 {
     Info << "newPressureFlux: control" << endl;
 
-    // measure number of molecules in the entire water slab 
-    
+    // measure number of molecules in the entire water slab
+
     vector centre = vector::zero;
-    
+
     scalar nMols = 0.0;
-    
+
     {
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
-        
+
         for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
         {
             if(findIndex(molIds_, mol().id()) != -1)
@@ -175,28 +175,28 @@ void newPressureFlux::controlAfterForces()
                     centre += mol().position();
                 }
             }
-        }    
+        }
     }
-    
+
     if(Pstream::parRun())
     {
         reduce(nMols, sumOp<scalar>());
         reduce(centre, sumOp<vector>());
     }
-    
+
     if(nMols > 0.0)
     {
         centre /= nMols;
         centre_.append(centre);
     }
 
-    
-    // measure molecules above the centre point of water slab 
+
+    // measure molecules above the centre point of water slab
     scalar mols = 0.0;
-    
+
     {
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
-        
+
         for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
         {
             if(findIndex(molIds_, mol().id()) != -1)
@@ -209,16 +209,16 @@ void newPressureFlux::controlAfterForces()
                     }
                 }
             }
-        }    
-    }    
-    
+        }
+    }
+
     if(Pstream::parRun())
     {
         reduce(mols, sumOp<scalar>());
     }
-    
+
     vector force = vector::zero;
-    
+
     if(mols > min_)
     {
         force = targetPressure_*area_*d_/mols;
@@ -227,19 +227,19 @@ void newPressureFlux::controlAfterForces()
     {
         FatalErrorIn("polyBinsMethod::polyBinsMethod()")
             << "Too few number of molecules inside control region = "
-            << mols 
-            << nl 
-            << exit(FatalError);         
+            << mols
+            << nl
+            << exit(FatalError);
     }
-    
+
     Info << "FORCE = " << force << endl;
-    
+
     force_.append(force);
     mols_.append(mols);
-    
+
     vector totalForce = vector::zero;
-    
-    // apply force to those molecules above the centre point of water slab 
+
+    // apply force to those molecules above the centre point of water slab
     {
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
 
@@ -250,24 +250,24 @@ void newPressureFlux::controlAfterForces()
                 if(box_.contains(mol().position()))
                 {
                     if(mol().position().y() > (centre.y() + deltaY_))
-                    {                
+                    {
                         const scalar& massI = molCloud_.cP().mass(mol().id());
-                    
+
                         mol().a() += force/massI;
-                        
+
                         totalForce += force;
                     }
                 }
             }
         }
     }
-    
-    
+
+
     if(Pstream::parRun())
     {
         reduce(totalForce, sumOp<vector>());
     }
-    
+
     totalForce_.append(totalForce);
 }
 
@@ -292,25 +292,25 @@ void newPressureFlux::output
         {
             scalarField mols (mols_.size(), 0.0);
             vectorField force (force_.size(), vector::zero);
-            vectorField totalForce (totalForce_.size(), vector::zero);                        
+            vectorField totalForce (totalForce_.size(), vector::zero);
             vectorField centre (centre_.size(), vector::zero);
             scalarField timeField (centre_.size(), 0.0);
-            
-            
-            mols.transfer(mols_);            
-            force.transfer(force_);            
-            totalForce.transfer(totalForce_);             
-            
+
+
+            mols.transfer(mols_);
+            force.transfer(force_);
+            totalForce.transfer(totalForce_);
+
             centre.transfer(centre_);
-            
+
 
             const scalar& deltaT = time_.time().deltaT().value();
-            
+
             forAll(timeField, i)
             {
                 timeField[timeField.size()-i-1]=runTime.timeOutputValue()-(deltaT*i);
-            }             
-            
+            }
+
             writeTimeData
             (
                 fixedPathName,
@@ -319,7 +319,7 @@ void newPressureFlux::output
                 centre,
                 true
             );
-            
+
             writeTimeData
             (
                 fixedPathName,
@@ -329,7 +329,7 @@ void newPressureFlux::output
                 true
             );
 
-            
+
             writeTimeData
             (
                 fixedPathName,
@@ -338,7 +338,7 @@ void newPressureFlux::output
                 totalForce,
                 true
             );
-            
+
             writeTimeData
             (
                 fixedPathName,
@@ -346,13 +346,13 @@ void newPressureFlux::output
                 timeField,
                 mols,
                 true
-            );            
+            );
         }
-        
-        mols_.clear();            
-        force_.clear();            
-        totalForce_.clear();           
-        centre_.clear();        
+
+        mols_.clear();
+        force_.clear();
+        totalForce_.clear();
+        centre_.clear();
     }
 }
 

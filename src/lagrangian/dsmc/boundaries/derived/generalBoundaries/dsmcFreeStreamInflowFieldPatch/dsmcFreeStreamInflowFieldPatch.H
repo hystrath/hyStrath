@@ -69,17 +69,17 @@ private:
         dictionary propsDict_;
 
     labelList typeIds_;
-    
+
     //vector so different translational, rotational
     //vibrational temperatures can be set
-    vectorField inletTemperatures_; 
-    
+    vectorField inletTemperatures_;
+
     vectorField inletVelocities_;
 
     // list of (one value) mass densities corresponding to the type Ids
     List <scalarField> numberDensities_;
 
-    // list of species 
+    // list of species
     List <scalarField> accumulatedParcelsToInsert_;
 
     //- boundary temperatures
@@ -87,7 +87,7 @@ private:
 
     //- boundary velocity
     volVectorField boundaryU_;
-    
+
     //- list of inlet densities (one entry for each species)
     List<autoPtr<volScalarField> > boundaryNumberDensity_;
 
@@ -135,7 +135,7 @@ public:
 
         //- update properties from a modified dictionary
         void updateProperties(const dictionary&);
-        
+
         //reset fields if mesh has changed
         void setNewBoundaryFields();
 

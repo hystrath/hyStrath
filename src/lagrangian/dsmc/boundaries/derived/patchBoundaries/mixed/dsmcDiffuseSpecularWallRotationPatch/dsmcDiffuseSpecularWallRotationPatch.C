@@ -38,8 +38,8 @@ defineTypeNameAndDebug(dsmcDiffuseSpecularWallRotationPatch, 0);
 
 addToRunTimeSelectionTable
 (
-    dsmcPatchBoundary, 
-    dsmcDiffuseSpecularWallRotationPatch, 
+    dsmcPatchBoundary,
+    dsmcDiffuseSpecularWallRotationPatch,
     dictionary
 );
 
@@ -72,7 +72,7 @@ dsmcDiffuseSpecularWallRotationPatch::dsmcDiffuseSpecularWallRotationPatch
     writeInTimeDir_ = false;
     writeInCase_ = false;
     measurePropertiesAtWall_ = true;
-    
+
     setProperties();
 }
 
@@ -96,7 +96,7 @@ void dsmcDiffuseSpecularWallRotationPatch::calculateProperties()
 
 void dsmcDiffuseSpecularWallRotationPatch::controlParticle
 (
-    dsmcParcel& p, 
+    dsmcParcel& p,
     dsmcParcel::trackingData& td
 )
 {
@@ -105,14 +105,14 @@ void dsmcDiffuseSpecularWallRotationPatch::controlParticle
     if (diffuseFraction() > cloud_.rndGen().sample01<scalar>())
     {
         //- Calculation of the wall velocity to be added to U
-        const vector& localPatchVelocity = 
+        const vector& localPatchVelocity =
             dsmcRotationPatchBoundary::wallVelocity(p);
-        
+
         //- Diffuse reflection
         dsmcDiffuseWallPatch::performDiffuseReflection
         (
             p,
-            0, 
+            0,
             localPatchVelocity
         );
     }
@@ -120,7 +120,7 @@ void dsmcDiffuseSpecularWallRotationPatch::controlParticle
     {
         //- Specular reflection
         dsmcSpecularWallPatch::performSpecularReflection(p);
-        
+
     }
 
     measurePropertiesAfterControl(p);
@@ -139,7 +139,7 @@ void dsmcDiffuseSpecularWallRotationPatch::updateProperties(const dictionary& ne
 {
     //- the main properties should be updated first
     updateBoundaryProperties(newDict);
-    
+
     setProperties();
 }
 

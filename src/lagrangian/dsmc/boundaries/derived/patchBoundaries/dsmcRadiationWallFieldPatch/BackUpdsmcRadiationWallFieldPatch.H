@@ -73,9 +73,9 @@ private:
         dictionary timeDict_;
 
         timeDataMeas time_;
-	
+
 	int time2_;
-	
+
         scalar EcTot_;
 
 	scalar EcTotPrev_;
@@ -100,7 +100,7 @@ private:
 
         void setProperties();
 
-        
+
 
 public:
 

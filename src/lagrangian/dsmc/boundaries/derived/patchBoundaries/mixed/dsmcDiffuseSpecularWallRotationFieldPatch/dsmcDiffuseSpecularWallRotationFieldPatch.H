@@ -67,20 +67,20 @@ class dsmcDiffuseSpecularWallRotationFieldPatch
 private:
 
     // Private data
-    
+
         dictionary propsDict_;
 
 
 protected:
 
     // Protected data
-    
-    
+
+
     // Protected member functions
-    
+
         void setProperties();
-        
-        
+
+
 public:
 
     //- Runtime type information

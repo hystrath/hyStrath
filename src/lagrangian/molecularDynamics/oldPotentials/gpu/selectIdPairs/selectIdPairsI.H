@@ -46,7 +46,7 @@ namespace Foam
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-inline const List<List<scalar> >& selectIdPairs::epsilon() const 
+inline const List<List<scalar> >& selectIdPairs::epsilon() const
 {
     return epsilon_;
 }
@@ -56,7 +56,7 @@ inline const List<List<scalar> >& selectIdPairs::sigma() const
     return sigma_;
 }
 
-inline const List<List<scalar> >& selectIdPairs::alpha() const 
+inline const List<List<scalar> >& selectIdPairs::alpha() const
 {
     return alpha_;
 }
@@ -66,17 +66,17 @@ inline const List<List<scalar> >& selectIdPairs::rho() const
     return rho_;
 }
 
-inline const List<List<scalar> >& selectIdPairs::C() const 
+inline const List<List<scalar> >& selectIdPairs::C() const
 {
     return C_;
 }
 
-inline const bool& selectIdPairs::lennardJones() const 
+inline const bool& selectIdPairs::lennardJones() const
 {
     return lennardJones_;
 }
 
-inline const bool& selectIdPairs::buckingham() const 
+inline const bool& selectIdPairs::buckingham() const
 {
     return buckinghamPotential_;
 }

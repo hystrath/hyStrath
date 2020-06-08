@@ -194,9 +194,9 @@ polyPropertyFields::polyPropertyFields
     );
 
     molIds_ = ids.molIds();
-    
-    resetAtOutput_ = Switch(propsDict_.lookup("resetAtOutput"));  
-    
+
+    resetAtOutput_ = Switch(propsDict_.lookup("resetAtOutput"));
+
 //     if (propsDict_.found("coarseGrainedMeasurements"))
 //     {
 //         coarseGrainedMeasurements_ = Switch(propsDict_.lookup("coarseGrainedMeasurements"));
@@ -242,26 +242,26 @@ void polyPropertyFields::createField()
             forAll(molsInCell, mIC)
             {
                 polyMolecule* molI = molsInCell[mIC];
-    
+
                 if(findIndex(molIds_, molI->id()) != -1)
                 {
                     mols += 1.0;
 
 //                     const polyMolecule::constantProperties& constProp = molCloud_.constProps(molI->id());
                     const scalar& massI = molCloud_.cP().mass(molI->id());
-                    
+
                     mass += massI;
                     mom += massI*molI->v();
 
                     const diagTensor& molMoI(molCloud_.cP().momentOfInertia(molI->id()));
 
-                    // angular speed 
+                    // angular speed
                     const vector& molOmega(inv(molMoI) & molI->pi());
 
                     angularSpeed += molOmega;
                 }
             }
-    
+
             if(mass > 0.0)
             {
                 velocity = mom/mass;
@@ -292,12 +292,12 @@ void polyPropertyFields::createField()
 
                 const diagTensor& molMoI( molCloud_.cP().momentOfInertia(molI->id()));
 
-                // angular speed 
+                // angular speed
                 const vector& molOmega(inv(molMoI) & molI->pi());
                 angularKeSum += 0.5*(molOmega & molMoI & molOmega);
 
                 stress_[cell] += massI*(molI->v() - velocity)*(molI->v() - velocity)
-                                 + ((molOmega - angularVelocity) & molMoI) * (molOmega - angularVelocity) 
+                                 + ((molOmega - angularVelocity) & molMoI) * (molOmega - angularVelocity)
                                     + 0.5*molI->rf(); // the virial is initially zero
             }
         }
@@ -342,8 +342,8 @@ void polyPropertyFields::calculateField()
     velocity_ = vector::zero;
     angularSpeed_ = vector::zero;
     angularVelocity_ = vector::zero;
-    
-    forAll(molCloud_.cellOccupancy(), cell) 
+
+    forAll(molCloud_.cellOccupancy(), cell)
     {
         const List<polyMolecule*>& molsInCell = molCloud_.cellOccupancy()[cell];
 
@@ -360,7 +360,7 @@ void polyPropertyFields::calculateField()
 
                 const diagTensor& molMoI(molCloud_.cP().momentOfInertia(molI->id()));
 
-                // angular speed 
+                // angular speed
                 const vector& molOmega(inv(molMoI) & molI->pi());
 
                 angularSpeed_[cell] += molOmega;
@@ -369,7 +369,7 @@ void polyPropertyFields::calculateField()
     }
 
 
-//     if(timeVel_.outputTime()) 
+//     if(timeVel_.outputTime())
     {
         velocity_ = vector::zero;
         angularVelocity_ = vector::zero;
@@ -414,13 +414,13 @@ void polyPropertyFields::calculateField()
                 angularKe_[cell] += 0.5*(molOmega & molMoI & molOmega);
 
                 kineticTensor_[cell] += massI*(molI->v() - velocity_[cell])
-                                                *(molI->v() - velocity_[cell])                              
-                                        + ( 
+                                                *(molI->v() - velocity_[cell])
+                                        + (
                                             ( (molOmega - angularVelocity_[cell]) & molMoI)
                                             * (molOmega - angularVelocity_[cell])
                                             );
 
-                virialTensor_[cell] += 0.5*molI->rf(); 
+                virialTensor_[cell] += 0.5*molI->rf();
             }
         }
 
@@ -433,9 +433,9 @@ void polyPropertyFields::calculateField()
         }
     }
 
-    if(time_.outputTime()) 
+    if(time_.outputTime())
     {
-    	const scalar& nAvTimeSteps = nAvTimeSteps_; 
+    	const scalar& nAvTimeSteps = nAvTimeSteps_;
 
         const scalar& kB = molCloud_.redUnits().kB();
 
@@ -461,7 +461,7 @@ void polyPropertyFields::calculateField()
 
                 p_[cell] = tr( (3.0*mols_[cell]*kineticTensor_[cell]/dof_[cell]) + virialTensor_[cell])
                                         /( 3.0*volField[cell]*nAvTimeSteps );
-                
+
                 stress_[cell] = ((3.0*mols_[cell]*kineticTensor_[cell]/dof_[cell]) + virialTensor_[cell])
                                         /(volField[cell]*nAvTimeSteps);
             }
@@ -509,20 +509,20 @@ void polyPropertyFields::setVolumeMeasurements()
     if(coarseGrainedMeasurements_)
     {
         scalarField volumes(mesh_.nCells(), 0.0);
-        
+
         //- sample measurement from real cells
         forAll(mesh_.cellVolumes(), cell)
         {
             volumes[cell] = mesh_.cellVolumes()[cell];
         }
-    
+
         //- parallel-processing
         if(Pstream::parRun())
         {
             List<label> nCellsProcs(Pstream::nProcs(), 0);
-    
+
             nCellsProcs[Pstream::myProcNo()] = mesh_.nCells();
-    
+
             //- sending
             for (int p = 0; p < Pstream::nProcs(); p++)
             {
@@ -535,37 +535,37 @@ void polyPropertyFields::setVolumeMeasurements()
                     }
                 }
             }
-        
+
             //- receiving
             for (int p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
                     label nCellsProc;
-    
+
                     const int proc = p;
                     {
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> nCellsProc;
                     }
-    
+
                     nCellsProcs[p] = nCellsProc;
                 }
             }
-    
+
             //- reconstruct the fields on all processors
             List<scalarField> volumesField(Pstream::nProcs());
-    
+
             forAll(volumesField, p)
             {
                 volumesField[p].setSize(nCellsProcs[p], 0.0);
             }
-    
+
             forAll(volumes, c)
             {
                 volumesField[Pstream::myProcNo()][c] = volumes[c];
             }
-    
+
             //- sending
             for (int p = 0; p < Pstream::nProcs(); p++)
             {
@@ -578,20 +578,20 @@ void polyPropertyFields::setVolumeMeasurements()
                     }
                 }
             }
-        
+
             //- receiving
             for (int p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
                     scalarField volumesProc;
-    
+
                     const int proc = p;
                     {
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> volumesProc;
                     }
-    
+
                     forAll(volumesProc, c)
                     {
                         volumesField[p][c] = volumesProc[c];
@@ -601,14 +601,14 @@ void polyPropertyFields::setVolumeMeasurements()
 
             //- use referred cells to update from processor boundary cells
             const atomisticReferredCellList& referredCells = molCloud_.il().ril();
-        
+
             forAll(referredCells, rIL)
             {
                 const atomisticReferredCell& cellRef = referredCells[rIL];
                 const label& procNo = cellRef.sourceProc();
                 const labelList& cellIntList = cellRef.realCellsForInteraction();
                 const label& sourceCell = cellRef.sourceCell();
-    
+
                 forAll(cellIntList, cIL)
                 {
                     const label& realCellM = cellIntList[cIL];
@@ -619,40 +619,40 @@ void polyPropertyFields::setVolumeMeasurements()
         else //- handle periodic boundaries
         {
             const atomisticReferredCellList& referredCells = molCloud_.il().ril();
-    
+
             scalarField volumesPer(mesh_.nCells(), 0.0);
-    
+
             forAll(referredCells, rIL)
             {
                 const atomisticReferredCell& cellRef = referredCells[rIL];
                 const labelList& cellIntList = cellRef.realCellsForInteraction();
                 const label& sourceCell = cellRef.sourceCell();
-    
+
                 forAll(cellIntList, cIL)
                 {
                     const label& realCellM = cellIntList[cIL];
-    
+
                     volumesPer[realCellM] += volumes[sourceCell];
                 }
             }
-    
+
             volumes += volumesPer;
         }
-    
+
         const List< DynamicList<atomisticMolecule*> >& cellOccupancy
         = molCloud_.cellOccupancy();
 
         forAll(cellOccupancy, cell)
         {
             const labelList& dICL = molCloud_.il().dil().fil()[cell];
-        
+
             forAll(dICL, dCell)
             {
                 const label cellJ = dICL[dCell];
                 volumes[cell] += mesh_.cellVolumes()[cellJ];
             }
         }
-    
+
         forAll(volumes_, c)
         {
             volumes_[c] = volumes[c];
@@ -711,7 +711,7 @@ void polyPropertyFields::setCoarseGrainedMeasurements()
                 }
             }
         }
-    
+
         //- receiving
         for (int p = 0; p < Pstream::nProcs(); p++)
         {
@@ -755,7 +755,7 @@ void polyPropertyFields::setCoarseGrainedMeasurements()
                 }
             }
         }
-    
+
         //- receiving
         for (int p = 0; p < Pstream::nProcs(); p++)
         {
@@ -779,7 +779,7 @@ void polyPropertyFields::setCoarseGrainedMeasurements()
 
         //- use referred cells to update from processor boundary cells
         const atomisticReferredCellList& referredCells = molCloud_.il().ril();
-    
+
         forAll(referredCells, rIL)
         {
             const atomisticReferredCell& cellRef = referredCells[rIL];
@@ -823,7 +823,7 @@ void polyPropertyFields::setCoarseGrainedMeasurements()
     forAll(cellOccupancy, cell)
     {
         const labelList& dICL = molCloud_.il().dil().fil()[cell];
-    
+
         forAll(dICL, dCell)
         {
             const List< atomisticMolecule* >& molsInCellJ = cellOccupancy[dICL[dCell]];

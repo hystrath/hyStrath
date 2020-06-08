@@ -27,7 +27,7 @@ Class
 
 
 Description
-    Used to determine self diffusion coefficient inside a carbon nanotube. 
+    Used to determine self diffusion coefficient inside a carbon nanotube.
 
 
 SourceFiles
@@ -73,52 +73,52 @@ private:
 
         word fieldName_;
 
-        List<label> molIds_;        
+        List<label> molIds_;
 
         vector unitVector_;
 
         // counter for one acf
-        label nS_;        
-        
+        label nS_;
+
         // number of MD time-steps for generating one acf
         label nSteps_;
 
         // outer counter to average over all acfs
-        scalar nBatch_;          
-        
+        scalar nBatch_;
+
         // just the liquid mols
         label nLiquidMols_;
-        
+
         label nTNs_;
-        
+
         List<label> tNaddress_;
-        
+
 //         label nMols_;
-        
+
         // inner list = number of liquid mols
-        // outer list = time (nSteps_)        
+        // outer list = time (nSteps_)
         List<List<scalar> > velocities_;
-        
+
         // outer list = number of liquid mols
         // inner list = nSteps_
         // values = accumulation sum
         List< List<scalar> > acf_;
-        
+
 //         List<label> mols_;
-        
+
         // self diffusion
         scalar D_;
 
         // mean ACF - for outputting (list = number of steps)
         List<scalar> ACF_;
-        
+
     // Private Member Functions
-        
+
         void setVelocities();
-        
+
 //         scalar getIntegral();
 
-        
+
 public:
 
     //- Runtime type information
@@ -166,7 +166,7 @@ public:
 
         //- write field
         void writeField();
-}; 		
+};
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

@@ -37,7 +37,7 @@ namespace Foam
         addToRunTimeSelectionTable
         (
             binaryDiffusivityModel,
-            noBinaryDiffusivityModel, 
+            noBinaryDiffusivityModel,
             dictionary
         );
     }

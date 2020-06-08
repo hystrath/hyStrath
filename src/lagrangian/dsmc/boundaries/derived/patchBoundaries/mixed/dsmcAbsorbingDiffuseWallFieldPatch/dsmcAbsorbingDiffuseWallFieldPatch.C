@@ -18,7 +18,7 @@ License
     You should have received a copy of the GNU General Public License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
-    
+
 Description
 
 \*---------------------------------------------------------------------------*/
@@ -36,8 +36,8 @@ defineTypeNameAndDebug(dsmcAbsorbingDiffuseWallFieldPatch, 0);
 
 addToRunTimeSelectionTable
 (
-    dsmcPatchBoundary, 
-    dsmcAbsorbingDiffuseWallFieldPatch, 
+    dsmcPatchBoundary,
+    dsmcAbsorbingDiffuseWallFieldPatch,
     dictionary
 );
 
@@ -65,7 +65,7 @@ dsmcAbsorbingDiffuseWallFieldPatch::dsmcAbsorbingDiffuseWallFieldPatch
     writeInTimeDir_ = false;
     writeInCase_ = false;
     measurePropertiesAtWall_ = true;
-    
+
     dsmcAbsorbingDiffuseWallPatch::setProperties();
 }
 
@@ -89,32 +89,32 @@ void dsmcAbsorbingDiffuseWallFieldPatch::calculateProperties()
 
 void dsmcAbsorbingDiffuseWallFieldPatch::controlParticle
 (
-    dsmcParcel& p, 
+    dsmcParcel& p,
     dsmcParcel::trackingData& td
 )
 {
     measurePropertiesBeforeControl(p);
-    
+
     const label iD = findIndex(typeIds_, p.typeId());
-    
+
     //- Calculation of the local patch temperature
-    const scalar localPatchTemperature = 
+    const scalar localPatchTemperature =
         dsmcFieldPatchBoundary::patchLocalTemperature(p);
-        
+
     //- Calculation of the local patch velocity
-    const vector& localPatchVelocity = 
+    const vector& localPatchVelocity =
         dsmcFieldPatchBoundary::patchLocalVelocity(p);
-    
-    if(iD != -1) 
+
+    if(iD != -1)
     {
         //- particle considered for absorption
         const scalar absorptionProbability = absorptionProbs_[iD];
-        
+
         const label wppIndex = patchId();
-        
-        const label wppLocalFace = 
+
+        const label wppLocalFace =
             mesh_.boundaryMesh()[wppIndex].whichFace(p.face());
-                
+
         if
         (
             absorptionProbability > cloud_.rndGen().sample01<scalar>()
@@ -133,9 +133,9 @@ void dsmcAbsorbingDiffuseWallFieldPatch::controlParticle
                 localPatchTemperature,
                 localPatchVelocity
             );
-            
+
             measurePropertiesAfterControl(p);
-        }   
+        }
     }
     else
     {
@@ -146,7 +146,7 @@ void dsmcAbsorbingDiffuseWallFieldPatch::controlParticle
             localPatchTemperature,
             localPatchVelocity
         );
-        
+
         measurePropertiesAfterControl(p);
     }
 }

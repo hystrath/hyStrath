@@ -68,25 +68,25 @@ class binaryDiffusivityModel
 protected:
 
     // Protected data
-    
+
         //- Species name
         const word& name1_, name2_;
-        
+
         //- Thermo properties dictionary
         const dictionary& dictThermo_;
-        
+
         //- Transport properties dictionary
         const dictionary& dictTransport_;
-        
+
         //- Pressure [Pa]
         const volScalarField& p_;
-        
+
         //- Electron pressure [Pa]
         const volScalarField& pe_;
 
         //- Temperature [K]
         const volScalarField& T_;
-        
+
         //- Integer to mark the type of collision interaction
         //  0: 2 neutrals, 1: 1 neutral-ion/e-, 2: 2 ions, 3: ion-electron
         //  4: 2 electrons
@@ -126,7 +126,7 @@ public:
             ),
             (name1, name2, dictThermo, dictTransport, p, pe, T)
         );
-        
+
 
     // Selectors
 
@@ -140,7 +140,7 @@ public:
             const volScalarField& p,
             const volScalarField& T
         );
-        
+
         //- Return a reference to the selected diffusivity model
         static autoPtr<binaryDiffusivityModel> New
         (
@@ -166,7 +166,7 @@ public:
             const volScalarField& p,
             const volScalarField& T
         );
-        
+
         //- Construct from components
         binaryDiffusivityModel
         (
@@ -187,10 +187,10 @@ public:
 
 
     // Member Functions
-    
+
         //- Binary diffusion coefficient [m^2/s]
          virtual tmp<volScalarField> D() const;
-         
+
         //- Binary diffusion coefficient for patch [m^2/s]
         virtual tmp<scalarField> D
         (
@@ -198,7 +198,7 @@ public:
             const scalarField& T,
             const label patchi
         ) const;
-        
+
         //- Binary diffusion coefficient for patch [m^2/s]
         //  with addition of the electron pressure
         virtual tmp<scalarField> D
@@ -208,7 +208,7 @@ public:
             const scalarField& T,
             const label patchi
         ) const;
-       
+
 };
 
 

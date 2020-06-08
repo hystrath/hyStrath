@@ -72,7 +72,7 @@ tail::tail
     );
 
     molIds_ = ids.molIds();
-    
+
     // read in tracking numbers
 //     trackingNumbers_ = List<label>(propsDict_.lookup("trackingNumbers"));
     trackingNumber_ = readLabel(propsDict_.lookup("trackingNumber"));
@@ -80,18 +80,18 @@ tail::tail
     centre_ = propsDict_.lookup("centre");
     a_ = readScalar(propsDict_.lookup("a"));
     b_ = readScalar(propsDict_.lookup("b"));
-    deltaT_ = readScalar(propsDict_.lookup("deltaT"));    
+    deltaT_ = readScalar(propsDict_.lookup("deltaT"));
     t_ = 0.0;
     tI_= 0.0;
-    
-    relaxationTime_ = readScalar(propsDict_.lookup("relaxationTime"));    
-    
-    startPoint_ = propsDict_.lookup("startPoint");
-    deltaTMD_ = time_.deltaT().value(); 
-    
 
-      
-        
+    relaxationTime_ = readScalar(propsDict_.lookup("relaxationTime"));
+
+    startPoint_ = propsDict_.lookup("startPoint");
+    deltaTMD_ = time_.deltaT().value();
+
+
+
+
 }
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
@@ -106,53 +106,53 @@ tail::~tail()
 void tail::initialConfiguration()
 {
     getPosition();
-    label nSteps = label((relaxationTime_)/deltaTMD_) - 1;     
+    label nSteps = label((relaxationTime_)/deltaTMD_) - 1;
     deltaR_ = (startPoint_ - rI_)/scalar(nSteps);
     Info << "DeltaR = " << deltaR_ << endl;
 }
-    
+
 
 
 void tail::getPosition()
 {
     rI_ = vector::zero;
-    
+
     IDLList<polyMolecule>::iterator mol(molCloud_.begin());
 
     for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
     {
         if(mol().trackingNumber() == trackingNumber_)
         {
-           
+
             rI_ = mol().position();
-            
+
         }
     }
-    
+
     //- parallel processing
     if(Pstream::parRun())
     {
         reduce(rI_, sumOp<vector>());
-    }    
-    
-    Info << "mol position = " << rI_ << endl; 
+    }
+
+    Info << "mol position = " << rI_ << endl;
 }
 
 void tail::controlBeforeVelocityI()
 {
-    
+
 }
 
 void tail::controlBeforeMove()
 {
     getPosition();
-    
+
     t_ += deltaTMD_;
-    
+
     if(t_ < relaxationTime_)
     {
-        Info << "tail: relaxation" << endl;        
-        
+        Info << "tail: relaxation" << endl;
+
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
 
         for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
@@ -164,13 +164,13 @@ void tail::controlBeforeMove()
             }
         }
     }
-    
-    if(t_ > relaxationTime_) 
+
+    if(t_ > relaxationTime_)
     {
         tI_ += deltaT_;
-        
+
         Info << "tail: control, t = " << tI_ << endl;
-        
+
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
 
         for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
@@ -180,15 +180,15 @@ void tail::controlBeforeMove()
                 {
                     scalar xNew = -a_*cos(tI_+(constant::mathematical::pi/2)) + centre_.x();
                     scalar yNew = b_*sin(tI_+(constant::mathematical::pi/2)) + centre_.y();
-                    
+
                     Info << "xNew = " << xNew
                         << ", yNew = " << yNew
                         << endl;
-                    
+
                     vector rNew = vector(xNew, yNew, centre_.z());
-                    
+
                     vector deltaR = rNew - mol().position();
-                    
+
                     mol().a() = vector::zero;
                     mol().v() = deltaR/deltaTMD_;
                 }
@@ -228,18 +228,18 @@ void tail::output
     if(runTime.outputTime())
     {
 //         vector force = force_;
-// 
+//
 //         if(Pstream::parRun())
 //         {
 //             reduce(force, sumOp<vector>());
 //         }
-// 
+//
 //         if(Pstream::master())
 //         {
 //             vectorField forces(1, force/nTimeSteps_);
-//             
+//
 //             scalarField timeField(1, time_.time().timeOutputValue());
-//    
+//
 //             writeTimeData
 //             (
 //                 fixedPathName,
@@ -247,7 +247,7 @@ void tail::output
 //                 timeField,
 //                 forces,
 //                 true
-//             );            
+//             );
 //         }
     }
 }

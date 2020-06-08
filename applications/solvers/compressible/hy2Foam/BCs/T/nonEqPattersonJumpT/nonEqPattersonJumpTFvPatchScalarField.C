@@ -182,13 +182,13 @@ void Foam::nonEqPattersonJumpTFvPatchScalarField::updateCoeffs()
     const fvPatchScalarField& pmu =
         patch().lookupPatchField<volScalarField, scalar>(muName_);
     const fvPatchScalarField& pTt =
-        patch().lookupPatchField<volScalarField, scalar>(TtName_);    
+        patch().lookupPatchField<volScalarField, scalar>(TtName_);
     const fvPatchScalarField& palpha =
         patch().lookupPatchField<volScalarField, scalar>(alphaName_); // NEW VINCENT 03/03/2016
     const fvPatchScalarField& pgammatr =
-        patch().lookupPatchField<volScalarField, scalar>(gammatrName_); // NEW VINCENT 03/03/2016     
+        patch().lookupPatchField<volScalarField, scalar>(gammatrName_); // NEW VINCENT 03/03/2016
     const fvPatchScalarField& pmfp =
-        patch().lookupPatchField<volScalarField, scalar>(mfpName_); // NEW VINCENT 28/02/2016           
+        patch().lookupPatchField<volScalarField, scalar>(mfpName_); // NEW VINCENT 28/02/2016
     const fvPatchScalarField& prho =
         patch().lookupPatchField<volScalarField, scalar>(rhoName_);
     const fvPatchVectorField& pU =

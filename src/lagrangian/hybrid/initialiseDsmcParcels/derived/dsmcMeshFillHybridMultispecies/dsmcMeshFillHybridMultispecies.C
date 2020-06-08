@@ -41,7 +41,7 @@ defineTypeNameAndDebug(dsmcMeshFillHybridMultispecies, 0);
 
 addToRunTimeSelectionTable
 (
-    dsmcConfiguration, 
+    dsmcConfiguration,
     dsmcMeshFillHybridMultispecies,
     dictionary
 );
@@ -95,7 +95,7 @@ void dsmcMeshFillHybridMultispecies::setInitialConfiguration()
         ),
         mesh_
     );
-    
+
     PtrList<volScalarField> TtInitial(molecules.size());
     PtrList<volScalarField> TrInitial(molecules.size());
     PtrList<volScalarField> TvInitial(molecules.size());
@@ -122,7 +122,7 @@ void dsmcMeshFillHybridMultispecies::setInitialConfiguration()
     forAll(molecules, moleculeI)
     {
         const scalarList& thetaV = cloud_.constProps(moleculeI).thetaV();
-            
+
         TtInitial.set
         (
             moleculeI,
@@ -139,7 +139,7 @@ void dsmcMeshFillHybridMultispecies::setInitialConfiguration()
                 mesh_
             )
         );
-        
+
         maxTranslationalTemperature = max(maxTranslationalTemperature,
             max(TtInitial[moleculeI].primitiveField()));
 
@@ -358,7 +358,7 @@ void dsmcMeshFillHybridMultispecies::setInitialConfiguration()
         if(gMin(TvInitial[moleculeI]) > SMALL)
         {
             const dimensionedScalar dimT_one("dimT_one", dimTemperature, 1.0);
-            
+
             qv.set
             (
                 moleculeI,
@@ -383,7 +383,7 @@ void dsmcMeshFillHybridMultispecies::setInitialConfiguration()
                     / exp(thetaV[0]*dimT_one / TvInitial[moleculeI])
                 )
             );
-            
+
             // TODO write the extension to polyatomics
         }
         else
@@ -520,13 +520,13 @@ void dsmcMeshFillHybridMultispecies::setInitialConfiguration()
                     vector U;
 
                     scalar ERot = 0.0;
-                    
+
                     labelList vibLevel
                     (
                         cloud_.constProps(i).thetaV().size(),
                         0.0
                     );
-                    
+
                     label ELevel = 0; // TODO by generalisedChapmanEnskog
 
                     cloud_.generalisedChapmanEnskog
@@ -547,9 +547,9 @@ void dsmcMeshFillHybridMultispecies::setInitialConfiguration()
                     );
 
                     U += velocity;
-                    
+
                     label newParcel = -1;
-                    
+
                     label classification = 0;
 
                     const scalar& RWF = cloud_.coordSystem().recalculateRWF(cellI);

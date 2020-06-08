@@ -64,7 +64,7 @@ private:
 
         vector force_;
 
-        vector unitVector_; 
+        vector unitVector_;
 
         scalar period_;
 
@@ -73,14 +73,14 @@ private:
 //         scalar offsetTime_;
 
         scalar currentTime_;
-        
+
         List<scalar> periodCoeffs_;
-        
+
         scalar deltaT_;
 
-        
+
         scalar getPeriod(const scalar& t);
-        
+
 public:
 
     //- Runtime type information
@@ -114,13 +114,13 @@ public:
 
         // Edit
             void output(Time& time);
-            
+
             void updateForce();
 
             vector force(const vector& position);
-            
+
             vector force(const scalar& time);
-            
+
         // Write
 
 

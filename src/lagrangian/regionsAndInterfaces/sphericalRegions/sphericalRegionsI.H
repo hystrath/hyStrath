@@ -150,8 +150,8 @@ inline void ovRegion::setNewInterfacePoints()
 // {
 //     return acceptedPoints_;
 // }
-// 
-// 
+//
+//
 // inline const labelList& ovRegion::newInterfacePoints() const
 // {
 //     return newInterfacePoints_;

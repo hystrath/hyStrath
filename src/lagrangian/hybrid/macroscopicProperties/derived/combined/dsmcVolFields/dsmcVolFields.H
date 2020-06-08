@@ -64,7 +64,7 @@ private:
 
     // Private data
         dictionary propsDict_;
-        
+
         scalar mfpReferenceTemperature_;
         word fieldName_;
         volScalarField dsmcRhoN_;
@@ -127,14 +127,14 @@ private:
         List<scalarField> nParcels_;
         List<scalarField> vibT_;
 
-        // effective degrees of freedom 
+        // effective degrees of freedom
         List<scalarField> vDof_;
         List<scalarField> mfp_; // mean free path
         List<scalarField> mcr_; // mean collision rate
-        
+
 
         // boundary measurements
-        
+
         List<scalarField> rhoNBF_;
         List<scalarField> rhoMBF_;
         List<scalarField> linearKEBF_;
@@ -146,18 +146,18 @@ private:
         List<scalarField> speciesRhoNIntBF_;
         List<vectorField> momentumBF_;
         List<vectorField> fDBF_;
-        
+
         List< List < scalarField > > vibrationalEBF_;
-        List< List < scalarField > > speciesRhoNBF_;     
+        List< List < scalarField > > speciesRhoNBF_;
         List< List < scalarField > > vibTBF_;
         List< List < scalarField > > vDofBF_;
-        
+
         bool averagingAcrossManyRuns_;
         bool measureClassifications_;
         bool measureMeanFreePath_;
         bool measureErrors_;
-        
-        
+
+
     // Private Member Functions
 
         void readIn();

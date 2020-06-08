@@ -26,7 +26,7 @@ Class
     Foam::mfpModel
 
 Description
-    Mean free path model for mfp abstract class 
+    Mean free path model for mfp abstract class
 
 SourceFiles
     mfpModel.C
@@ -54,28 +54,28 @@ class mfpModel
 protected:
 
     // Protected data
-    
+
         //- Transport properties dictionary
         const IOdictionary dict_;
-        
+
         //- Thermophysical properties dictionary
         const IOdictionary dictThermoPhy_;
 
         //- Species
         const wordList& species_;
-        
+
         //- Pressure [Pa]
         const volScalarField& p_;
 
         //- Heavy particle temperature [K]
         const volScalarField& Tt_;
-        
 
-        //- Mean free path models 
-        PtrList<basicMfpModel> mfpModels_;   
+
+        //- Mean free path models
+        PtrList<basicMfpModel> mfpModels_;
 
         //- Mean free path
-        PtrList<volScalarField> mfp_;         
+        PtrList<volScalarField> mfp_;
 
 
     // Private Member Functions
@@ -118,7 +118,7 @@ public:
         {
             return mfp_[i];
         }
-        
+
         //- Returns the mfp for species i
         inline volScalarField& mfp(label i)
         {

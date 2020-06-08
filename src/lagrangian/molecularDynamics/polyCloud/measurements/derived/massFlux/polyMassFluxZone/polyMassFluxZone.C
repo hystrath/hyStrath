@@ -47,11 +47,11 @@ void polyMassFluxZone::setBoundBox
 (
     const dictionary& propsDict,
     boundedBox& bb,
-    const word& name 
+    const word& name
 )
 {
     const dictionary& dict(propsDict.subDict(name));
-    
+
     vector startPoint = dict.lookup("startPoint");
     vector endPoint = dict.lookup("endPoint");
     bb.resetBoundedBox(startPoint, endPoint);
@@ -122,16 +122,16 @@ polyMassFluxZone::polyMassFluxZone
     {
         reduce(totalVolume_, sumOp<scalar>());
     }
-    
+
     if (propsDict_.found("useBoundBox"))
     {
         useBoundBox_ = Switch(propsDict_.lookup("useBoundBox"));
-        
+
         if(useBoundBox_)
         {
             setBoundBox(propsDict_, bb_, "samplingRegion");
         }
-    }    
+    }
 }
 
 
@@ -147,27 +147,27 @@ void polyMassFluxZone::createField()
 
 void polyMassFluxZone::calculateField()
 {
-    
+
     const List< DynamicList<polyMolecule*> >& cellOccupancy
             = molCloud_.cellOccupancy();
-    
+
     const labelList& cells = mesh_.cellZones()[regionId_];
-    
+
     vector mom = vector::zero;
-    
+
     forAll(cells, c)
     {
         const label& cellI = cells[c];
         const List<polyMolecule*>& molsInCell = cellOccupancy[cellI];
-        
+
         forAll(molsInCell, mIC)
         {
             polyMolecule* molI = molsInCell[mIC];
-            
+
             if(findIndex(molIds_, molI->id()) != -1)
             {
                 const scalar& massI = molCloud_.cP().mass(molI->id());
-                
+
                 if(useBoundBox_)
                 {
                     if(bb_.contains(molI->position()))
@@ -182,7 +182,7 @@ void polyMassFluxZone::calculateField()
             }
         }
     }
-    
+
     if(Pstream::parRun())
     {
         reduce(mom, sumOp<vector>());
@@ -207,17 +207,17 @@ void polyMassFluxZone::writeField()
             massFlux_.shrink();
             scalarField timeField (massFlux_.size(), 0.0);
             scalarField massFlux (massFlux_.size(), 0.0);
-            
+
             massFlux.transfer(massFlux_);
             massFlux_.clear();
-            
+
             const scalar& deltaT = time_.time().deltaT().value();
-            
+
             forAll(timeField, i)
             {
                 timeField[timeField.size()-i-1]=runTime.timeOutputValue()-(deltaT*i);
             }
-            
+
             writeTimeData
             (
                 casePath_,
@@ -229,7 +229,7 @@ void polyMassFluxZone::writeField()
 
 
             const reducedUnits& rU = molCloud_.redUnits();
-    
+
             if(rU.outputSIUnits())
             {
                 writeTimeData

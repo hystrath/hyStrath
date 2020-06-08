@@ -95,7 +95,7 @@ void dsmcShockGeneralPatch::controlParcelsBeforeMove()
     forAll(cells_, cellI)
     {
         const List<dsmcParcel*>& parcelsInCell = cellOccupancy[cells_[cellI]];
-                    
+
         forAll(parcelsInCell, pIC)
         {
             dsmcParcel* p = parcelsInCell[pIC];

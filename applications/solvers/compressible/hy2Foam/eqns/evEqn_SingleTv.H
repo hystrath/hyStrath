@@ -17,15 +17,15 @@ forAll (rhoEvk, speciei)
     rhoEvk[speciei] = pD[speciei]*hevk[speciei];
     rhoEv += rhoEvk[speciei];
     phiEv += phiEvk[speciei];
-    
+
     QVT += thermalRelaxModelVT().QVT(speciei);
     QCV += reaction->Scv(speciei);
-}    
+}
 
 solve
 (
-    fvm::ddt(rhoEv) 
-  + fvc::div(phiEv)      
+    fvm::ddt(rhoEv)
+  + fvc::div(phiEv)
  ==
     QVT
   + thermalRelaxModelHE().QHE()
@@ -50,7 +50,7 @@ if (!inviscid)
         fvm::ddt(rho, ev) - fvc::ddt(rho, ev)
       - fvm::laplacian(transport().alphave(), ev)
     );
-        
+
 }
 
 rhoEv = rho*ev;

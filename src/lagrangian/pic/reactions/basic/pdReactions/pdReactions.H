@@ -27,10 +27,10 @@ Class
 
 Description
 
-	Stores all the information for the pdReactions models defined within 
+	Stores all the information for the pdReactions models defined within
     the pdReactionsDict, and selects & builds the models automatically.
 
-    
+
 
 \*---------------------------------------------------------------------------*/
 
@@ -86,7 +86,7 @@ public:
 
     // Constructors
 
-        //- Null Constructor 
+        //- Null Constructor
         pdReactions
         (
             Time& t,
@@ -119,7 +119,7 @@ public:
             inline const List< autoPtr<pdReaction> >& reactions() const;
 
             inline const List< List<label> >& pairModelAddressing() const;
-    
+
 };
 
 

@@ -311,7 +311,7 @@ bool Foam::functionObjects::forceCoeffs::execute()
     List<Field<scalar>> momentCoeffs(3);
     List<Field<scalar>> dragCoeffs(3);
     List<Field<scalar>> liftCoeffs(3);
-    
+
     forAll(liftCoeffs, i)
     {
         momentCoeffs[i].setSize(nBin_);

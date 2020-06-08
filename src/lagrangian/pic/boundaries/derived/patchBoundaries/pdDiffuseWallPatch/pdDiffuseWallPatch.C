@@ -73,7 +73,7 @@ pdDiffuseWallPatch::~pdDiffuseWallPatch()
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 void pdDiffuseWallPatch::initialConfiguration()
 {
-    
+
 }
 
 void pdDiffuseWallPatch::calculateProperties()
@@ -84,15 +84,15 @@ void pdDiffuseWallPatch::calculateProperties()
 void pdDiffuseWallPatch::controlParticle(pdParcel& p, pdParcel::trackingData& td)
 {
     measurePropertiesBeforeControl(p);
-    
+
     scalar currentTime = cloud_.mesh().time().value();
-    
+
 //     Info << "currentTime = " << currentTime << endl;
 
     vector& U = p.U();
 
     scalar& ERot = p.ERot();
-    
+
     scalar& EVib = p.EVib();
 
     label typeId = p.typeId();
@@ -137,7 +137,7 @@ void pdDiffuseWallPatch::controlParticle(pdParcel& p, pdParcel::trackingData& td
     scalar mass = cloud_.constProps(typeId).mass();
 
     scalar rotationalDof = cloud_.constProps(typeId).rotationalDegreesOfFreedom();
-    
+
     scalar vibrationalDof = cloud_.constProps(typeId).vibrationalDegreesOfFreedom();
 
     U =
@@ -149,11 +149,11 @@ void pdDiffuseWallPatch::controlParticle(pdParcel& p, pdParcel::trackingData& td
         );
 
     ERot = cloud_.equipartitionRotationalEnergy(T, rotationalDof);
-    
+
     EVib = cloud_.equipartitionVibrationalEnergy(T, vibrationalDof, typeId);
-    
+
     U += velocity_;
-    
+
     measurePropertiesAfterControl(p);
 }
 
@@ -162,7 +162,7 @@ void pdDiffuseWallPatch::output
     const fileName& fixedPathName,
     const fileName& timePath
 )
-{	
+{
 }
 
 

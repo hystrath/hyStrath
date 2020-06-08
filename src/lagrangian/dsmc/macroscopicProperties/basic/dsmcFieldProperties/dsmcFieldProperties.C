@@ -95,22 +95,22 @@ dsmcFieldProperties::dsmcFieldProperties
         }
 
         mkDir(fieldPath);
-        
+
         Info << "Creating fields: " << nl << endl;
-    
+
         forAll(fields_, f)
         {
             const entry& fieldI = fieldList_[f];
             const dictionary& fieldIDict = fieldI.dict();
-    
+
             fields_[f] = autoPtr<dsmcField>
             (
                 dsmcField::New(time_, mesh, cloud, fieldIDict)
             );
-    
+
             fieldNames_[f] = fields_[f]->type();
             fieldIds_[f] = f;
-            
+
             fields_[f]->casePath() = fieldPath;
         }
     }
@@ -148,7 +148,7 @@ void dsmcFieldProperties::updateTimeInfo()
 void dsmcFieldProperties::calculateFields()
 {
 //  Info << "Calculate fields" << endl;
- 
+
     forAll(fields_, f)
     {
         fields_[f]->calculateField();
@@ -157,7 +157,7 @@ void dsmcFieldProperties::calculateFields()
 
 
 void dsmcFieldProperties::resetFields()
-{ 
+{
     forAll(fields_, f)
     {
         fields_[f]->resetField();
@@ -166,7 +166,7 @@ void dsmcFieldProperties::resetFields()
 
 
 
-//- Note, not all fields automatically write out to hard disc. 
+//- Note, not all fields automatically write out to hard disc.
 void dsmcFieldProperties::writeFields()
 {
     const Time& runTime = time_;
@@ -189,23 +189,23 @@ void dsmcFieldProperties::writeFields()
         fields_[f]->timePath() = timePath;
         fields_[f]->writeField();
     }
-   
+
     if(runTime.outputTime())
     {
         //- Checking for modifications in the IOdictionary
         //  this allows for run-time tuning of any parameters.
 
-        // NOTES: 
-        // At the moment, the dictionary is forced to be re-read every write-interval, 
-        // and properties within the abstract and models are re-set to. 
+        // NOTES:
+        // At the moment, the dictionary is forced to be re-read every write-interval,
+        // and properties within the abstract and models are re-set to.
         // The "ideal" case is to have the code identify when the dictionary has been
         // modified, before re-reading it in again. Unfortunately the .modified() function
-        //  is not working properly. 
+        //  is not working properly.
 
         fieldList_.clear();
-    
+
         fieldList_ = dsmcFieldPropertiesDict_.lookup("dsmcFields");
-    
+
         forAll(fields_, f)
         {
             const entry& fieldI = fieldList_[f];
@@ -218,7 +218,7 @@ void dsmcFieldProperties::writeFields()
 
 
 scalar dsmcFieldProperties::translationalT(const label cellI)
-{ 
+{
     if (fields_.size() > 0)
     {
         return fields_[0]->translationalT(cellI);
@@ -231,7 +231,7 @@ scalar dsmcFieldProperties::translationalT(const label cellI)
 
 
 scalar dsmcFieldProperties::overallT(const label cellI)
-{ 
+{
     if (fields_.size() > 0)
     {
         return fields_[0]->overallT(cellI);

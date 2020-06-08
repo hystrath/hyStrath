@@ -111,7 +111,7 @@ public:
 
         void addToDistribution
         (
-            const vector& r, 
+            const vector& r,
             const vector& force,
             const scalar& energy
         );
@@ -139,7 +139,7 @@ public:
             inline const label& nBinsZ() const;
 //             inline const vectorField& forces() const;
 //             inline vectorField& forces();
-// 
+//
 //             inline const scalarField& energies() const;
 //             inline scalarField& energies();
 

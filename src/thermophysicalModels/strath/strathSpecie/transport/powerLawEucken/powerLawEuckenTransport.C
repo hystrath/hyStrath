@@ -78,7 +78,7 @@ Foam::Ostream& Foam::operator<<
     const powerLawEuckenTransport<Thermo>& pet
 )
 {
-    os << static_cast<const Thermo&>(pet) << tab << pet.dref_ << tab 
+    os << static_cast<const Thermo&>(pet) << tab << pet.dref_ << tab
        << pet.omega_ << tab << pet.eta_s_;
 
     os.check

@@ -65,7 +65,7 @@ polyVelocityBounded::polyVelocityBounded
     bb_(),
 //     avMass_(0.0),
     lambda_(readScalar(propsDict_.lookup("lambda"))),
-    deltaT_(t.deltaT().value()), 
+    deltaT_(t.deltaT().value()),
     accumulatedTime_(0.0),
     startTime_(0.0),
     endTime_(GREAT),
@@ -79,7 +79,7 @@ polyVelocityBounded::polyVelocityBounded
 //     singleValueController() = true;
 
     setBoundBox();
-    
+
     molIds_.clear();
 
     selectIds ids
@@ -102,12 +102,12 @@ polyVelocityBounded::polyVelocityBounded
             {
                 X_ = Switch(propsDict_.lookup("X"));
             }
-    
+
             if (propsDict_.found("Y"))
             {
                 Y_ = Switch(propsDict_.lookup("Y"));
             }
-    
+
             if (propsDict_.found("Z"))
             {
                 Z_ = Switch(propsDict_.lookup("Z"));
@@ -122,16 +122,16 @@ polyVelocityBounded::polyVelocityBounded
             }
         }
     }
-    
+
     if (propsDict_.found("startAtTime"))
-    {    
+    {
         startTime_ = readScalar(propsDict_.lookup("startAtTime"));
     }
-    
+
     if (propsDict_.found("endAtTime"))
     {
         endTime_ = readScalar(propsDict_.lookup("endAtTime"));
-    }    
+    }
 }
 
 
@@ -154,7 +154,7 @@ void polyVelocityBounded::controlBeforeVelocityI()
     scalar mass = 0.0;
     scalar mols = 0.0;
     vector mom = vector::zero;
-    
+
     {
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
 
@@ -176,13 +176,13 @@ void polyVelocityBounded::controlBeforeVelocityI()
 
     if (Pstream::parRun())
     {
-        reduce(mols, sumOp<scalar>());        
+        reduce(mols, sumOp<scalar>());
         reduce(mass, sumOp<scalar>());
         reduce(mom, sumOp<vector>());
     }
-    
+
     vector velocityMeasured = vector::zero;
-    
+
     if(mass > 0)
     {
         velocityMeasured = mom/mass;
@@ -191,9 +191,9 @@ void polyVelocityBounded::controlBeforeVelocityI()
     vector deltaU = (velocity_ - velocityMeasured)*lambda_;
 
     accumulatedTime_ += deltaT_;
-    
+
     if((accumulatedTime_ >= startTime_) && (accumulatedTime_ <= endTime_))
-    {    
+    {
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
 
         for (mol = molCloud_.begin(); mol != molCloud_.end(); ++mol)
@@ -224,9 +224,9 @@ void polyVelocityBounded::controlBeforeVelocityI()
                 }
             }
         }
-    
-        Info << "polyVelocityBounded - controlling: " << " target velocity = " << velocity_ 
-                << ", vel Meas = " << velocityMeasured  
+
+        Info << "polyVelocityBounded - controlling: " << " target velocity = " << velocity_
+                << ", vel Meas = " << velocityMeasured
                 << ", DeltaU = " << deltaU
                 << endl;
     }

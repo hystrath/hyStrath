@@ -58,27 +58,27 @@ class dsmcDiffuseWallFieldPatch
 :
 	  public dsmcFieldPatchBoundary,
 	  public dsmcDiffuseWallPatch
-	  
+
 {
 
 private:
 
     // Private data
-    
+
         dictionary propsDict_;
-        
+
 
 protected:
 
-    // Protected data    
-        
-        
+    // Protected data
+
+
     // Protected member functions
-    
+
         //- Perform a diffuse particle-wall reflection
         //  The wall temperature and velocity is given by fvPatchFields
         void performDiffuseFieldReflection(dsmcParcel& p);
-        
+
 
 public:
 

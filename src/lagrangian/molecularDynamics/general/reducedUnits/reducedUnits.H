@@ -112,7 +112,7 @@ public:
 
     // Static data members
 
-        //- Static data 
+        //- Static data
         static const scalar kb;
         static const scalar elementaryCharge;
         static const scalar vacuumPermittivity;
@@ -134,8 +134,8 @@ public:
         reducedUnits
         (
             label unity
-        );        
-        
+        );
+
         //- Construct from dictionary
         reducedUnits(const IOdictionary& reducedUnitsDict);
         reducedUnits(Time& runTime, const polyMesh& mesh);
@@ -167,16 +167,16 @@ public:
 
             inline scalar refLength() const;
 //             inline scalar& refLength();
-            
+
             inline scalar refTime() const;
 //             inline scalar& refTime();
-            
+
             inline scalar refMass() const;
 //             inline scalar& refMass();
-            
+
             inline scalar refCharge() const;
 //             inline scalar& refCharge();
-            
+
             inline scalar refTemp() const;
 
             inline scalar refEnergy() const;
@@ -203,7 +203,7 @@ public:
             inline scalar refAmpere() const;
 
 
-            //- calculated properties   
+            //- calculated properties
 
             inline scalar kB() const;
 

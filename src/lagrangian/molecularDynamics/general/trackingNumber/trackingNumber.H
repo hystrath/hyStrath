@@ -100,8 +100,8 @@ public:
             label getMaxTrackingNumber();
 
             inline const bool& resetTracking() const;
-            
-            
+
+
         // Edit
 
         // Write

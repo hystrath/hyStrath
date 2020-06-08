@@ -133,7 +133,7 @@ vector oneDimForce::force(const vector& position)
 vector oneDimForce::force(const scalar& time)
 {
     vector force = vector::zero;
-    
+
     return force;
 }
 
@@ -175,7 +175,7 @@ scalar oneDimForce::returnForce
     }
 /*
     scalar force = 0.0;
-    
+
     if( (n1 >= 0) && (n2 <= nBins_) )
     {
         if(n1 == nBins_-1)
@@ -188,7 +188,7 @@ scalar oneDimForce::returnForce
             scalar f2 = forces_[n2];
             scalar y1 = n1*binWidth_;
             scalar y2 = n2*binWidth_;
-    
+
             force = ((f1 - f2)*(y - y2))/(y1 - y2) + f2;
         }
     }*/

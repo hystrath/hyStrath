@@ -265,12 +265,12 @@ inline void pointInfo::resetInterfacePoint()
     interfacePoint_ = false;
 }
 
-inline void pointInfo::switchProc() 
+inline void pointInfo::switchProc()
 {
     switchedProc_ = true;
 }
 
-inline void pointInfo::unSwitchProc() 
+inline void pointInfo::unSwitchProc()
 {
     switchedProc_ = false;
 }

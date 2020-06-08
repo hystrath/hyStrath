@@ -69,7 +69,7 @@ private:
         vector unitVector_;
 
         scalar L_;
-        
+
         scalar rOut_;
         scalar rIn_;
 
@@ -100,7 +100,7 @@ public:
 
     // Member Functions
 
- 
+
 };
 
 

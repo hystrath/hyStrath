@@ -77,7 +77,7 @@ rampForce::rampForce
     {
         relaxationTime_ = readScalar(propsDict_.lookup("loadingTime"));
     }
-//     
+//
     direction_ /= mag(direction_);
 
     forceGradient_ = (finalForce_ - initialForce_)/relaxationTime_;
@@ -112,7 +112,7 @@ void rampForce::updateForce()
     currentTime_ += deltaTMD_;
 
     if(currentTime_ > initialTime_)
-    {    
+    {
         if(currentTime_ <= relaxationTime_)
         {
             force_ = (forceGradient_*(currentTime_-initialTime_) + initialForce_)*direction_;

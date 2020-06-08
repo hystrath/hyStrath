@@ -26,7 +26,7 @@ Class
     densityController
 
 Description
-	This is a density controller, which uses a slightly modified version of the 
+	This is a density controller, which uses a slightly modified version of the
     particle insertion protocol called USHER, proposed by Delgado-Buscalioni and Coveney.
 
 SourceFiles
@@ -81,7 +81,7 @@ private:
     // Private Member Functions
     void deleteParcelFromDSMC(const label& c);
     void insertParcelWithinDSMC(const label& c);
-	
+
 	void setProperties();
 
 
@@ -106,7 +106,7 @@ public:
     // Member Functions
 
     void initialConfiguration();
-	
+
 	void controlParcelsBeforeMove();
 	void controlParcelsBeforeCollisions();
 	void controlParcelsAfterCollisions();
@@ -117,7 +117,7 @@ public:
     //- output data
     void output
     (
-	const fileName& fixedPathName, 
+	const fileName& fixedPathName,
 	const fileName& timePath
     );
 

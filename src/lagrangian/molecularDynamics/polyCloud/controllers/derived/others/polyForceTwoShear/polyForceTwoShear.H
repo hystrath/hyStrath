@@ -72,14 +72,14 @@ private:
         List<label> molIds_;
 
         // liquid section
-        
+
         boundedBox bb_liquid_A_;
         boundedBox bb_liquid_B_;
 
         vector forceMagLiquid_;
-        
+
         boundedBox bb_gas_A_;
-        boundedBox bb_gas_B_;        
+        boundedBox bb_gas_B_;
 
         vector forceMagGas_;
 
@@ -91,7 +91,7 @@ private:
         (
             const dictionary& propsDict,
             boundedBox& bb,
-            const word& name 
+            const word& name
         );
 
 public:
@@ -114,7 +114,7 @@ public:
  		~polyForceTwoShear();
 
     // Member Functions
-        
+
         //- create an initial configuration
         void initialConfiguration();
 
@@ -126,20 +126,20 @@ public:
         (
             polyMolecule* molI,
             polyMolecule* molJ
-        );        
+        );
         void controlAfterForces();
         void controlAfterVelocityII();
-        
+
         //- calculate any required properties (end of time-step)
-        void calculateProperties(); 
-        
+        void calculateProperties();
+
         //- output data (optional)
         void output
         (
-            const fileName& fixedPathName, 
+            const fileName& fixedPathName,
             const fileName& timePath
         );
-        
+
         //- update properties from a modified dictionary (optional)
         void updateProperties(const dictionary&);
 

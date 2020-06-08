@@ -42,15 +42,15 @@ defineTypeNameAndDebug(dsmcRotationPatchBoundary, 0);
 vector dsmcRotationPatchBoundary::wallVelocity(const dsmcParcel& p)
 {
     //- Calculation of the wall velocity uNew to be added to U
-    vector uNew = 
+    vector uNew =
         (
           (p.position() - centrePoint_)/mag((p.position() - centrePoint_))
         ) ^ rotationAxis_;
-                  
+
     uNew /= mag(uNew);
 
     uNew *= wallVelocity_;
-    
+
     return uNew;
 }
 
@@ -75,7 +75,7 @@ dsmcRotationPatchBoundary::dsmcRotationPatchBoundary
     writeInTimeDir_ = false;
     writeInCase_ = false;
     measurePropertiesAtWall_ = true;
-    
+
     rotationAxis_ /= mag(rotationAxis_);
 }
 

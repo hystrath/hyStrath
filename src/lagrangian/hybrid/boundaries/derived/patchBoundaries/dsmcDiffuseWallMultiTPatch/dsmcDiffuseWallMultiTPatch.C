@@ -73,7 +73,7 @@ dsmcDiffuseWallMultiTPatch::~dsmcDiffuseWallMultiTPatch()
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 void dsmcDiffuseWallMultiTPatch::initialConfiguration()
 {
-    
+
 }
 
 void dsmcDiffuseWallMultiTPatch::calculateProperties()
@@ -84,17 +84,17 @@ void dsmcDiffuseWallMultiTPatch::calculateProperties()
 void dsmcDiffuseWallMultiTPatch::controlParticle(dsmcParcel& p, dsmcParcel::trackingData& td)
 {
     measurePropertiesBeforeControl(p);
-    
+
 //    scalar currentTime = cloud_.mesh().time().value();
-    
+
 //     Info << "currentTime = " << currentTime << endl;
 
     vector& U = p.U();
 
     scalar& ERot = p.ERot();
-    
+
     labelList& vibLevel = p.vibLevel();
-    
+
     label& ELevel = p.ELevel();
 
     const label& typeId = p.typeId();
@@ -142,7 +142,7 @@ void dsmcDiffuseWallMultiTPatch::controlParticle(dsmcParcel& p, dsmcParcel::trac
     scalar mass = cloud_.constProps(typeId).mass();
 
     scalar rotationalDof = cloud_.constProps(typeId).rotationalDegreesOfFreedom();
-    
+
     scalar vibrationalDof = cloud_.constProps(typeId).nVibrationalModes();
 
     U =
@@ -154,21 +154,21 @@ void dsmcDiffuseWallMultiTPatch::controlParticle(dsmcParcel& p, dsmcParcel::trac
         );
 
     ERot = cloud_.equipartitionRotationalEnergy(Trot, rotationalDof);
-    
-    vibLevel = 
+
+    vibLevel =
         cloud_.equipartitionVibrationalEnergyLevel(Tvib, vibrationalDof, typeId);
-   
-    
+
+
     ELevel = cloud_.equipartitionElectronicLevel
         (
             Tel,
             cloud_.constProps(typeId).electronicDegeneracyList(),
             cloud_.constProps(typeId).electronicEnergyList()
         );
-        
+
 
     U += velocity_;
-    
+
     measurePropertiesAfterControl(p, 0.0);
 }
 
@@ -177,7 +177,7 @@ void dsmcDiffuseWallMultiTPatch::output
     const fileName& fixedPathName,
     const fileName& timePath
 )
-{	
+{
 }
 
 

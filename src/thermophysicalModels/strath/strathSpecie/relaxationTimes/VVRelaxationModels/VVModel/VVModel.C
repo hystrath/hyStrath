@@ -57,7 +57,7 @@ Foam::VVModel::VVModel
             IOobject::NO_WRITE
         )
     ),
-    
+
     dict2_
     (
         IOobject
@@ -70,22 +70,22 @@ Foam::VVModel::VVModel
         )
     ),
 
-    species_(species), 
-    p_(p),    
+    species_(species),
+    p_(p),
     Tt_(Tt),
     Tv_(Tv),
     nD_(nD)
-   
+
 {
     tauVVijModels_.setSize(species.size()*species.size());
     tauVVij_.setSize(tauVVijModels_.size());
-    
+
     forAll(species, i)
     {
         forAll(species, j)
         {
             label k = species_.size()*i+j;
-            
+
             tauVVijModels_.set
             (
                 k,
@@ -113,14 +113,14 @@ Foam::VVModel::VVModel
                 )
             );
         }
-    } 
+    }
 }
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 void Foam::VVModel::update()
-{    
+{
     for(label i=0; i < species_.size(); i++)
     {
         for(label j=0; j < species_.size(); j++)

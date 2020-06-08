@@ -43,20 +43,20 @@ void dsmcCatalyticWallPatch::setProperties()
 {
     velocity_ = propsDict_.lookup("velocity");
     temperature_ = readScalar(propsDict_.lookup("temperature"));
-    
-    // set the molecules/atoms to be catalysed typeIds ------------    
-    const List<word> inputMolecules 
+
+    // set the molecules/atoms to be catalysed typeIds ------------
+    const List<word> inputMolecules
             (propsDict_.lookup("moleculesToBeCatalysed"));
-            
+
     if(inputMolecules.size() == 0)
     {
-        
+
         FatalErrorIn("dsmcCatalyticWallPatch::setProperties()")
             << "Cannot have zero typeIds being catalysed." << nl << "in: "
             << mesh_.time().system()/"boundariesDict"
             << exit(FatalError);
     }
-    
+
     DynamicList<word> inputMoleculesReduced(0);
 
     forAll(inputMolecules, i)
@@ -70,42 +70,42 @@ void dsmcCatalyticWallPatch::setProperties()
     }
 
     inputMoleculesReduced.shrink();
-    
+
     //  set the type ids
-    
-    catalysisTypeIds_.setSize(inputMoleculesReduced.size(), -1); 
-    
+
+    catalysisTypeIds_.setSize(inputMoleculesReduced.size(), -1);
+
     forAll(inputMoleculesReduced, i)
     {
         const word& moleculeName(inputMoleculesReduced[i]);
-        
+
         label typeId = findIndex(cloud_.typeIdList(), moleculeName);
-        
+
         // check that input molecules belong to the typeIdList
         if(typeId == -1)
         {
             FatalErrorIn("dsmcCatalyticWallPatch::setProperties()")
-                << "Cannot find type id: " << moleculeName << nl 
+                << "Cannot find type id: " << moleculeName << nl
                 << exit(FatalError);
         }
-        
+
         catalysisTypeIds_[i] = typeId;
     }
-    
-    // set the product molecules/atoms typeIds   
-    
+
+    // set the product molecules/atoms typeIds
+
     const List<word> outputMolecules (propsDict_.lookup("catalysedMolecules"));
-    
+
     if(outputMolecules.size() != inputMolecules.size())
     {
-        
+
         FatalErrorIn("dsmcCatalyticWallPatch::setProperties()")
             << "catalysedMolecules must be the same size as "
             << "moleculesToBeCatalysed." << nl << "in: "
             << mesh_.time().system()/"boundariesDict"
             << exit(FatalError);
     }
-    
+
     DynamicList<word> outputMoleculesReduced(0);
 
     forAll(outputMolecules, i)
@@ -119,34 +119,34 @@ void dsmcCatalyticWallPatch::setProperties()
     }
 
     outputMoleculesReduced.shrink();
-       
+
     catalysedTypeIds_.setSize(outputMoleculesReduced.size(), -1);
-    
+
     forAll(outputMoleculesReduced, i)
     {
         const word& moleculeName(outputMoleculesReduced[i]);
-        
+
         label typeId = findIndex(cloud_.typeIdList(), moleculeName);
-        
+
         // check that output molecules belong to the typeIdList
         if(typeId == -1)
         {
             FatalErrorIn("dsmcCatalyticWallPatch::setProperties()")
-                << "Cannot find type id: " << moleculeName << nl 
+                << "Cannot find type id: " << moleculeName << nl
                 << exit(FatalError);
         }
-        
+
         catalysedTypeIds_[i] = typeId;
     }
-    
+
     heatOfReaction_.clear();
-    
+
     heatOfReaction_.setSize(catalysisTypeIds_.size(), 0.0);
-    
+
     if(heatOfReaction_.size() == inputMolecules.size())
     {
         // set the heat of reactions
-       
+
         forAll(heatOfReaction_, i)
         {
             heatOfReaction_[i] = readScalar
@@ -159,10 +159,10 @@ void dsmcCatalyticWallPatch::setProperties()
     {
         FatalErrorIn("dsmcCatalyticWallPatch::setProperties()")
                 << "heatOfReaction list must be same size as "
-                << "moleculesToBeCatalysed." << nl 
+                << "moleculesToBeCatalysed." << nl
                 << exit(FatalError);
     }
-    
+
 }
 
 

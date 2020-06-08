@@ -61,17 +61,17 @@ polyDelFromCylindricalShell::polyDelFromCylindricalShell
 {
 
     // check if start point is in the mesh
-   
+
     if(mesh_.findCell(startPoint_) == -1)
     {
-        Info<< "WARNING: starting point " << startPoint_ 
+        Info<< "WARNING: starting point " << startPoint_
             << " is selected outside the mesh."
             << endl;
     }
 
     if(mesh_.findCell(endPoint_) == -1)
     {
-        Info<< "WARNING: end point " << endPoint_ 
+        Info<< "WARNING: end point " << endPoint_
             << " is selected outside the mesh."
             << endl;
     }
@@ -80,7 +80,7 @@ polyDelFromCylindricalShell::polyDelFromCylindricalShell
         molCloud_.cP(),
         propsDict_
     );
-    
+
     molIds_ = ids.molIds();
 
 
@@ -126,7 +126,7 @@ void polyDelFromCylindricalShell::findMolsToDel()
             if
             (
                 (mag(pointOnCentreLine-rI) <= rOut_) &&
-                (mag(pointOnCentreLine-rI) >= rIn_) 
+                (mag(pointOnCentreLine-rI) >= rIn_)
             )
             {
                 label molId = mol().id();
@@ -149,9 +149,9 @@ void polyDelFromCylindricalShell::findMolsToDel()
 
     label molsKept = initialSize - molsToDel.size();
 
-    Info<< tab << " initial polyMolecules: " <<  initialSize 
+    Info<< tab << " initial polyMolecules: " <<  initialSize
         << ", polyMolecules kept: " <<  molsKept
-        << ", polyMolecules removed: " << molsToDel.size() 
+        << ", polyMolecules removed: " << molsToDel.size()
         << endl;
 
 

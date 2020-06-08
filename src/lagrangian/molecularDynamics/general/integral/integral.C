@@ -62,7 +62,7 @@ integral::integral
         {
             area_ += yData[0];
             area_ += yData[noPanels];
-            
+
             for (label i=1; i<noPanels; i++)
             {
                 if((i % 2) == 0) // even
@@ -74,19 +74,19 @@ integral::integral
                     area_ += 4.0*yData[i];
                 }
             }
-            
+
             area_ *= binWidth/3.0;
 
             Info << "Integration (simpsons 1/3) = " << area_  << endl;
         }
 
         else if((noPanels % 3) == 0) // simpsons 3/8 rule
-        { 
+        {
             area_ += yData[0];
             area_ += yData[noPanels];
 
             label counter = 0;
-            
+
             for (label i=1; i<noPanels; i++)
             {
                 if(counter < 2) // even
@@ -100,7 +100,7 @@ integral::integral
                     counter = 0;
                 }
             }
-            
+
             area_ *= binWidth*3.0/8.0;
 
             Info << "Integration (simpsons 3/8) = " << area_  << endl;
@@ -115,13 +115,13 @@ integral::integral
                 <<  "that are even (Simpsons 1/3 rule), or divisible by 3 "
                 <<  "(Simpsons 3/8 rule). "  << nl
                 <<  "Number of panels in this example: " << noPanels << nl
-                <<  "WARNING: Changing to the default type..." 
+                <<  "WARNING: Changing to the default type..."
                 << endl;
 
 //             FatalErrorIn("integral::integral()")
 //                 << "Integration type selected: " << type
 //                 << " does not work on the no. of panels provided: " <<noPanels << nl
-//                 << "Panels have to be even for 1/3 simpsons"  
+//                 << "Panels have to be even for 1/3 simpsons"
 //                 << " rule or divisible by 3 for simpsons 3/8 rule." << nl
 //                 << exit(FatalError);
         }

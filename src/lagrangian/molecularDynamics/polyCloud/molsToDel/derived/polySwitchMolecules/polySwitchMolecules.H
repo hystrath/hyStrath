@@ -66,13 +66,13 @@ private:
 
         //- subDictionary containing the properties
         dictionary propsDict_;
-        
-       
+
+
         label molIdStart_;
         label molIdEnd_;
 
         List<vector> molPoints_;
-        
+
     // Private Member Functions
 
         void checkBoundBox
@@ -105,7 +105,7 @@ public:
 
     // Member Functions
 
- 
+
 };
 
 

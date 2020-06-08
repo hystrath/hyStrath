@@ -47,14 +47,14 @@ coulomb::coulomb
     const polyMesh& mesh,
     polyMoleculeCloud& molCloud,
     const reducedUnits& redUnits,
-    const word& name, 
+    const word& name,
     const dictionary& dict
 )
 :
     pairPotentialModel(mesh, molCloud, redUnits, name, dict),
-    oneOverFourPiEps0_(1.0/(4.0 * constant::mathematical::pi * 8.854187817e-12))   
+    oneOverFourPiEps0_(1.0/(4.0 * constant::mathematical::pi * 8.854187817e-12))
 {
- 
+
     if(redUnits.runReducedUnits())
     {
         oneOverFourPiEps0_ = (1.0/(4.0 * constant::mathematical::pi * redUnits.epsilonPermittivity()));
@@ -64,7 +64,7 @@ coulomb::coulomb
         oneOverFourPiEps0_ = 1.0/(4.0*constant::mathematical::pi*8.854187817e-12);
     }
 
-    setLookupTables();   
+    setLookupTables();
 }
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
@@ -85,7 +85,7 @@ scalar coulomb::force(const scalar r) const
 {
     return forceLookUpFromTable(r);
 }
-    
+
 scalar coulomb::energy(const scalar r) const
 {
     return energyLookUpFromTable(r);
@@ -94,7 +94,7 @@ scalar coulomb::energy(const scalar r) const
 // void coulombEqn::interaction (const scalar r, scalar& force, scalar& energy)
 // {
 //     force = forceLookUpFromTable(r);
-//     
+//
 //     energy = energyLookUpFromTable(r);
 // }
 
@@ -105,7 +105,7 @@ const dictionary& coulomb::dict() const
 
 void  coulomb::write(const fileName& pathName)
 {
-    
+
 }
 
 } // End namespace Foam

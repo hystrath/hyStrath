@@ -86,9 +86,9 @@ private:
 
         label molTrackingNoA_;
         label molTrackingNoB_;
-        
+
         scalar writeInterval_;
-        
+
         scalar rMax_;
         label nBins_;
         scalar binWidth_;
@@ -136,7 +136,7 @@ public:
         void calculateField();
 
         const propertyField& fields() const;
-        
+
         void measureDuringForceComputation
         (
             polyMolecule* molI,
@@ -150,10 +150,10 @@ public:
             label sI,
             label sJ
         );
-        
+
         //- write field
         void writeField();
-}; 		
+};
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

@@ -179,7 +179,7 @@ inline void region::traverse
                             handleBoundaryPoint
                             (
                                 mesh,
-                                pointData, 
+                                pointData,
                                 aP, // boundary point
                                 originPoint,
                                 originPointLabel,
@@ -195,7 +195,7 @@ inline void region::traverse
                         handleBoundaryPoint
                         (
                             mesh,
-                            pointData, 
+                            pointData,
                             aP, // boundary point
                             originPoint,
                             originPointLabel,
@@ -275,9 +275,9 @@ inline void region::handleProcBoundaries
 )
 {
 
-    // - visualisation of communicating points on processor boundaries 
+    // - visualisation of communicating points on processor boundaries
 //     DynamicList<label> procBoundaryPoints(0);
-// 
+//
 //     forAll(originPoints_, patch)
 //     {
 //         if(originPoints_[patch].size() > 0)
@@ -288,15 +288,15 @@ inline void region::handleProcBoundaries
 //                 {
 //                     const polyPatch& patchI = mesh.boundaryMesh()[patch];
 //                     const labelList& meshPoints = patchI.meshPoints();
-// 
+//
 //                     procBoundaryPoints.append(meshPoints[p]);
 //                 }
 //             }
 //         }
 //     }
-// 
+//
 //     procBoundaryPoints.shrink();
-// 
+//
 //     pointsToVisualise_.append(procBoundaryPoints);
 
 
@@ -541,16 +541,16 @@ inline void pointInfoList::findGlobalPoint
 
 //     const label& globalPoint = pointList[pointFaceIndex];
 
-//     Pout << "Local Point " << localPoint 
+//     Pout << "Local Point " << localPoint
 //          << " Global Point: " << globalPoint << endl;
 
 
 //     label startFaceI = 0;
-// 
+//
 //     for(label i = 0; i < patch.size(); i++)
 //     {
 //         label patchFaceI = i + startFaceI;
-// 
+//
 //         label meshFaceI = patch.start() + patchFaceI;
 //     }
 

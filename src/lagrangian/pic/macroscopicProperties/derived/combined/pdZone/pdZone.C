@@ -65,7 +65,7 @@ pdZone::pdZone
     typeIds_(),
     timeIndex_(0),
     averagingCounter_(0.0),
-    
+
     mols_(0.0),
     molsInt_(0.0),
     mass_(0.0),
@@ -95,7 +95,7 @@ pdZone::pdZone
     vDof_(),
     mfp_(),
     mcr_(),
-    
+
     N_(),
     rhoN_(),
     rhoM_(),
@@ -115,11 +115,11 @@ pdZone::pdZone
     meanCollisionTime_(),
     meanCollisionTimeTimeStepRatio_(),
     Ma_(),
-    
+
     outputField_(4, true),
     instantaneous_(false),
     averagingAcrossManyRuns_(false)
-    
+
 {
     const cellZoneMesh& cellZones = mesh_.cellZones();
 
@@ -133,7 +133,7 @@ pdZone::pdZone
             << exit(FatalError);
     }
 
-    // standard to reading typeIds ------------ 
+    // standard to reading typeIds ------------
     const List<word> molecules (propsDict_.lookup("typeIds"));
 
     DynamicList<word> moleculesReduced(0);
@@ -184,32 +184,32 @@ pdZone::pdZone
     }
 
     // ---------------------------------------------------
-    
-    
+
+
 //     instantaneous_ = false;
-    
+
     if (propsDict_.found("instantaneous"))
     {
         instantaneous_ = Switch(propsDict_.lookup("instantaneous"));
     }
-    
+
     // instantaneous
     const scalar& deltaT = time_.mdTimeInterval().deltaT();
     scalar writeInterval = readScalar(t.controlDict().lookup("writeInterval"));
     label nBins = label(writeInterval/deltaT);
     nSteps_ = 1;
-    
+
     if(!instantaneous_) // cumulative
     {
         nBins = 1;
-        nSteps_ = label(writeInterval/deltaT);        
+        nSteps_ = label(writeInterval/deltaT);
     }
-    
+
     N_.setSize(nBins, 0.0);
     rhoN_.setSize(nBins, 0.0);
     rhoM_.setSize(nBins, 0.0);
     UMean_.setSize(nBins, vector::zero);
-    UCAM_.setSize(nBins, vector::zero);    
+    UCAM_.setSize(nBins, vector::zero);
     translationalTemperature_.setSize(nBins, 0.0);
     rotationalTemperature_.setSize(nBins, 0.0);
     vibrationalTemperature_.setSize(nBins, 0.0);
@@ -225,26 +225,26 @@ pdZone::pdZone
     meanCollisionTime_.setSize(nBins, 0.0);
     meanCollisionTimeTimeStepRatio_.setSize(nBins, 0.0);
     Ma_.setSize(nBins, 0.0);
-    
+
     speciesMols_.setSize(typeIds_.size(), 0.0);
     vibrationalETotal_.setSize(typeIds_.size(), 0.0);
     vDof_.setSize(typeIds_.size(), 0.0);
     mfp_.setSize(typeIds_.size(), 0.0);
     mcr_.setSize(typeIds_.size(), 0.0);
-    
+
     if (propsDict_.found("averagingAcrossManyRuns"))
     {
         averagingAcrossManyRuns_ = Switch(propsDict_.lookup("averagingAcrossManyRuns"));
-        
+
         // read in stored data from dictionary
         if(averagingAcrossManyRuns_)
         {
             Info << nl << "Averaging across many runs initiated." << nl << endl;
 
             readIn();
-        }         
+        }
     }
-        
+
     // choice of measurement property to output
 
     if (propsDict_.found("outputProperties"))
@@ -257,7 +257,7 @@ pdZone::pdZone
         forAll(measurements, i)
         {
             const word& propertyName(measurements[i]);
-    
+
             if(findIndex(propertyNames, propertyName) == -1)
             {
                 propertyNames.append(propertyName);
@@ -298,15 +298,15 @@ pdZone::pdZone
                 (propertyName != "temperature") &&
                 (propertyName != "pressure")
             )
-            {    
+            {
                 FatalErrorIn("pdZone::pdZone()")
                     << "Cannot find measurement property: " << propertyName
                     << nl << "in: "
                     << time_.time().system()/"fieldPropertiesDict"
-                    << exit(FatalError);            
+                    << exit(FatalError);
             }
         }
-    }    
+    }
 }
 
 
@@ -340,29 +340,29 @@ void pdZone::readIn()
     dict.readIfPresent("UCollected", UCollected_);
     dict.readIfPresent("rotationalEMean", rotationalEMean_);
     dict.readIfPresent("rotationalDofMean", rotationalDofMean_);
-    
-    dict.readIfPresent("muu", muu_);    
-    dict.readIfPresent("muv", muv_);  
-    dict.readIfPresent("muw", muw_);  
-    dict.readIfPresent("mvv", mvv_);  
-    dict.readIfPresent("mvw", mvw_);  
-    dict.readIfPresent("mww", mww_);  
 
-    dict.readIfPresent("mccu", mccu_);  
-    dict.readIfPresent("mccv", mccv_);  
-    dict.readIfPresent("mccw", mccw_);  
-    dict.readIfPresent("eu", eu_);  
-    dict.readIfPresent("ev", ev_);      
-    dict.readIfPresent("ew", ew_);      
-    dict.readIfPresent("e", e_);     
-    
+    dict.readIfPresent("muu", muu_);
+    dict.readIfPresent("muv", muv_);
+    dict.readIfPresent("muw", muw_);
+    dict.readIfPresent("mvv", mvv_);
+    dict.readIfPresent("mvw", mvw_);
+    dict.readIfPresent("mww", mww_);
+
+    dict.readIfPresent("mccu", mccu_);
+    dict.readIfPresent("mccv", mccv_);
+    dict.readIfPresent("mccw", mccw_);
+    dict.readIfPresent("eu", eu_);
+    dict.readIfPresent("ev", ev_);
+    dict.readIfPresent("ew", ew_);
+    dict.readIfPresent("e", e_);
+
     dict.readIfPresent("vibrationalETotal", vibrationalETotal_);
     dict.readIfPresent("speciesMols", speciesMols_);
-    
+
     dict.readIfPresent("averagingCounter", averagingCounter_);
-    
+
 //     Info << "Some properties read in: "
-//          << "mols = " << mols_[0] 
+//          << "mols = " << mols_[0]
 //          << ", mass = " << mass_[0]
 //          << ", averagingCounter = " << averagingCounter_
 //          << endl;
@@ -394,33 +394,33 @@ void pdZone::writeOut()
         dict.add("UCollected", UCollected_);
         dict.add("rotationalEMean", rotationalEMean_);
         dict.add("rotationalDofMean", rotationalDofMean_);
-        
-        dict.add("muu", muu_);    
-        dict.add("muv", muv_);  
-        dict.add("muw", muw_);  
-        dict.add("mvv", mvv_);  
-        dict.add("mvw", mvw_);  
-        dict.add("mww", mww_);  
 
-        dict.add("mccu", mccu_);  
-        dict.add("mccv", mccv_);  
-        dict.add("mccw", mccw_);  
-        dict.add("eu", eu_);  
-        dict.add("ev", ev_);      
-        dict.add("ew", ew_);      
+        dict.add("muu", muu_);
+        dict.add("muv", muv_);
+        dict.add("muw", muw_);
+        dict.add("mvv", mvv_);
+        dict.add("mvw", mvw_);
+        dict.add("mww", mww_);
+
+        dict.add("mccu", mccu_);
+        dict.add("mccv", mccv_);
+        dict.add("mccw", mccw_);
+        dict.add("eu", eu_);
+        dict.add("ev", ev_);
+        dict.add("ew", ew_);
         dict.add("e", e_);
-        
+
         dict.add("vibrationalETotal", vibrationalETotal_);
         dict.add("speciesMols", speciesMols_);
-        
+
         dict.add("averagingCounter", averagingCounter_);
-        
+
         IOstream::streamFormat fmt = time_.time().writeFormat();
         IOstream::versionNumber ver = time_.time().writeVersion();
         IOstream::compressionType cmp = time_.time().writeCompression();
-    
+
         dict.regIOobject::writeObject(fmt, ver, cmp);
-        
+
 //         Info<< "Some properties written out: "
 //             << "mols = " << mols_[0]
 //             << ", mass = " << mass_[0]
@@ -437,41 +437,41 @@ void pdZone::createField()
 void pdZone::calculateField()
 {
     averagingCounter_ += 1.0;
-      
+
     const List< DynamicList<pdParcel*> >& cellOccupancy
             = cloud_.cellOccupancy();
-            
+
     const labelList& cells = mesh_.cellZones()[regionId_];
 
     forAll(cells, c)
     {
         const label& cellI = cells[c];
-        
+
         const List<pdParcel*>& molsInCell = cellOccupancy[cellI];
 
         forAll(molsInCell, mIC)
         {
             pdParcel* p = molsInCell[mIC];
             label iD = findIndex(typeIds_, p->typeId());
-            
+
             if(iD != -1)
             {
-                const pdParcel::constantProperties& constProp 
+                const pdParcel::constantProperties& constProp
                                 = cloud_.constProps(p->typeId());
-                                
-                const scalar& rotationalDof = 
+
+                const scalar& rotationalDof =
                     cloud_.constProps(p->typeId()).rotationalDegreesOfFreedom();
-                    
+
                 const scalar& mass = constProp.mass()*cloud_.nParticle();
 
                 mols_ += 1.0;
                 mass_ += mass;
-                mcc_ += mass*mag(p->U())*mag(p->U());                   
+                mcc_ += mass*mag(p->U())*mag(p->U());
                 UCollected_ += p->U();
                 mom_ += mass*p->U();
                 rotationalEMean_ += p->ERot();
                 rotationalDofMean_ += rotationalDof;
-                
+
                 muu_ += mass*sqr(p->U().x());
                 muv_ += mass*( (p->U().x()) * (p->U().y()) );
                 muw_ += mass*( (p->U().x()) * (p->U().z()) );
@@ -486,10 +486,10 @@ void pdZone::calculateField()
                 ev_ += cloud_.nParticle()*( p->ERot() + p->EVib() )*(p->U().y());
                 ew_ += cloud_.nParticle()*( p->ERot() + p->EVib() )*(p->U().z());
                 e_ += cloud_.nParticle()*( p->ERot() + p->EVib() );
-                 
+
                 vibrationalETotal_[iD] += p->EVib();
                 speciesMols_[iD] += 1.0;
-                
+
                 if(rotationalDof > VSMALL)
                 {
                     molsInt_ += 1.0;
@@ -499,11 +499,11 @@ void pdZone::calculateField()
     }
 
     stepIndex_++;
-    
+
     if(stepIndex_ >= nSteps_)
     {
         stepIndex_ = 0;
-        
+
         scalar mass = mass_;
         scalar mols = mols_;
         scalar molsInt = molsInt_;
@@ -527,10 +527,10 @@ void pdZone::calculateField()
         scalar ev = ev_;
         scalar ew = ew_;
         scalar e = e_;
-        
+
         scalarField vibrationalETotal = vibrationalETotal_;
         scalarField speciesMols = speciesMols_;
-        
+
         //- parallel communication
 
         if(Pstream::parRun())
@@ -539,11 +539,11 @@ void pdZone::calculateField()
             reduce(molsInt, sumOp<scalar>());
             reduce(mass, sumOp<scalar>());
             reduce(mcc, sumOp<scalar>());
-            reduce(mom, sumOp<vector>());                
+            reduce(mom, sumOp<vector>());
             reduce(UCollected, sumOp<vector>());
             reduce(rotationalEMean, sumOp<scalar>());
             reduce(rotationalDofMean, sumOp<scalar>());
-            
+
             reduce(muu, sumOp<scalar>());
             reduce(muv, sumOp<scalar>());
             reduce(muw, sumOp<scalar>());
@@ -558,27 +558,27 @@ void pdZone::calculateField()
             reduce(ev, sumOp<scalar>());
             reduce(ew, sumOp<scalar>());
             reduce(e, sumOp<scalar>());
-            
+
             forAll(vibrationalETotal, iD)
             {
                 reduce(vibrationalETotal[iD], sumOp<scalar>());
                 reduce(speciesMols[iD], sumOp<scalar>());
             }
         }
-        
+
         const scalar& volume = totalVolume_;
         label n = timeIndex_;
-        
+
         N_[n] = mols/averagingCounter_;
         rhoN_[n] = (mols*cloud_.nParticle())/(averagingCounter_*volume);
         rhoM_[n] = mass/(averagingCounter_*volume);
-        
+
         if(mols > 0.0)
         {
             UMean_[n] = UCollected/mols;
-            
+
             UCAM_[n] = mom/mass;
-            
+
             translationalTemperature_[n] = (1.0/(3.0*physicoChemical::k.value()))
                                             *(
                                                 ((mcc/(mols*cloud_.nParticle())))
@@ -586,7 +586,7 @@ void pdZone::calculateField()
                                                     (mass/(mols*cloud_.nParticle())
                                                     )*mag(UMean_[n])*mag(UMean_[n]))
                                             );
-                                            
+
             if(rotationalDofMean > VSMALL)
             {
                 rotationalTemperature_[n] = (2.0/physicoChemical::k.value())*(rotationalEMean/rotationalDofMean);
@@ -607,23 +607,23 @@ void pdZone::calculateField()
             p.zx() = p.xz();
             p.zy() = p.yz();
             p.zz() = rhoN_[n]*(mww/(mols*cloud_.nParticle()) - ((mass/(mols*cloud_.nParticle()))*UMean_[n].z()*UMean_[n].z()));
-            
+
             pField_[n] = p;
 
             scalarPressure_[n] = (1.0/3.0)*(p.xx() + p.yy() + p.zz());
-                                    
-            // make reference 
-//             tensorField tau(mols.size(), tensor::zero); 
+
+            // make reference
+//             tensorField tau(mols.size(), tensor::zero);
             tensor tau = tensor::zero;
-            
+
             tau = -p[n];
             tau.xx() += scalarPressure_[n];
             tau.yy() += scalarPressure_[n];
             tau.zz() += scalarPressure_[n];
             tauField_[n] = tau;
-            
+
             vector q = vector::zero;
-            
+
             q.x() = rhoN_[n]*(
                                     0.5*(mccu/(mols*cloud_.nParticle()))
                                     - 0.5*(mcc/(mols*cloud_.nParticle()))*UMean_[n].x()
@@ -633,10 +633,10 @@ void pdZone::calculateField()
                                     - p.xx()*UMean_[n].x()
                                     - p.xy()*UMean_[n].y()
                                     - p.xz()*UMean_[n].z();
-                                    
-            //terms involving pressure tensor should not be multiplied 
+
+            //terms involving pressure tensor should not be multiplied
             //by the number density (see Bird corrigendum)
-             
+
             q.y() = rhoN_[n]*(
                                     0.5*(mccv/(mols*cloud_.nParticle()))
                                     - 0.5*(mcc/(mols*cloud_.nParticle()))*UMean_[n].y()
@@ -646,7 +646,7 @@ void pdZone::calculateField()
                                     - p.yx()*UMean_[n].x()
                                     - p.yy()*UMean_[n].y()
                                     - p.yz()*UMean_[n].z();
-            
+
             q.z() = rhoN_[n]*(
                                     0.5*(mccw/(mols*cloud_.nParticle()))
                                     - 0.5*(mcc/(mols*cloud_.nParticle()))*UMean_[n].z()
@@ -656,11 +656,11 @@ void pdZone::calculateField()
                                     - p.zx()*UMean_[n].x()
                                     - p.zy()*UMean_[n].y()
                                     - p.zz()*UMean_[n].z();
-            
+
             qField_[n] = q;
-            
+
             vector qInternal = vector::zero;
-            
+
             qInternal.x() = rhoN_[n]*
                                 (
                                     + eu/(mols*cloud_.nParticle())
@@ -672,25 +672,25 @@ void pdZone::calculateField()
                                     + ev/(mols*cloud_.nParticle())
                                     - (e/(mols*cloud_.nParticle()))*UMean_[n].y()
                                 );
-            
+
             qInternal.z() = rhoN_[n]*
                                 (
                                     + ew/(mols*cloud_.nParticle())
                                     - (e/(mols*cloud_.nParticle()))*UMean_[n].z()
                                 );
-            
+
             qInternalField_[n] = qInternal;
-            
+
             vector qTranslational = vector::zero;
-            
+
             qTranslational.x() = rhoN_[n]*(
                                     0.5*(mccu/(mols*cloud_.nParticle()))
                                     - 0.5*(mcc/(mols*cloud_.nParticle()))*UMean_[n].x()
                                 )
                                     - p.xx()*UMean_[n].x()
                                     - p.xy()*UMean_[n].y()
-                                    - p.xz()*UMean_[n].z();            
-            
+                                    - p.xz()*UMean_[n].z();
+
             qTranslational.y() = rhoN_[n]*(
                                     0.5*(mccv/(mols*cloud_.nParticle()))
                                     - 0.5*(mcc/(mols*cloud_.nParticle()))*UMean_[n].y()
@@ -698,7 +698,7 @@ void pdZone::calculateField()
                                     - p.yx()*UMean_[n].x()
                                     - p.yy()*UMean_[n].y()
                                     - p.yz()*UMean_[n].z();
-            
+
             qTranslational.z() = rhoN_[n]*(
                                     0.5*(mccw/(mols*cloud_.nParticle()))
                                     - 0.5*(mcc/(mols*cloud_.nParticle()))*UMean_[n].z()
@@ -706,54 +706,54 @@ void pdZone::calculateField()
                                     - p.zx()*UMean_[n].x()
                                     - p.zy()*UMean_[n].y()
                                     - p.zz()*UMean_[n].z();
-            
+
             qTranslationalField_[n] = qTranslational;
-            
-            
+
+
             // vibrational temperature
             scalar totalvDof = 0.0;
             scalar vibT = 0.0;
-            
+
             forAll(vibrationalETotal, iD)
             {
                 if(vibrationalETotal[iD] > VSMALL && speciesMols[iD] > VSMALL)
-                {        
+                {
                     const scalar& thetaV = cloud_.constProps(typeIds_[iD]).thetaV();
-                    
+
                     scalar vibrationalEMean = (vibrationalETotal[iD]/speciesMols[iD]);
-                    
+
                     scalar iMean = vibrationalEMean/(physicoChemical::k.value()*thetaV);
-                    
+
                     scalar fraction = speciesMols[iD]/molsInt;
-                    
+
                     scalar vibTID = thetaV / log(1.0 + (1.0/iMean));
-                    
+
                     vDof_[iD] = fraction*(2.0*thetaV/vibTID) / (exp(thetaV/vibTID) - 1.0);
-                    
+
                     totalvDof += vDof_[iD];
-                    
+
                     vibT += vibTID*fraction;
                 }
             }
-            
+
 //             if(totalvDof > VSMALL)
 //             {
                 vibrationalTemperature_[n] = vibT;
 //             }
-            
+
             //overallTemperature
-        
+
             scalar nRotDof = 0.0;
-                
+
             if(mols > VSMALL)
             {
                 nRotDof = rotationalDofMean / mols;
 //                 Info << "nRotDof = " << nRotDof << endl;
             }
-            
+
 //             scalar totalDof = 0.0;
 //             label averageCounter = 0;
-//             
+//
 //             forAll(vDof_, iD)
 //             {
 //                 if(vDof_[iD] > VSMALL)
@@ -762,56 +762,56 @@ void pdZone::calculateField()
 //                     averageCounter++;
 //                 }
 //             }
-//             
+//
 //             scalar averagevDof = 0.0;
-//             
+//
 //             if(averageCounter > VSMALL)
 //             {
 //                 averagevDof = totalDof/averageCounter;
 //             }
-            
-            overallTemperature_[n] = ( 
-                                    (3.0*translationalTemperature_[n]) 
-                                    + (nRotDof*rotationalTemperature_[n]) 
+
+            overallTemperature_[n] = (
+                                    (3.0*translationalTemperature_[n])
+                                    + (nRotDof*rotationalTemperature_[n])
                                     + (totalvDof*vibrationalTemperature_[n])
                                 ) /
                                 (3.0 + nRotDof + totalvDof);
-                  
-                                
+
+
             forAll(mfp_, iD)
             {
                 label qspec = 0;
-                
+
                 //scalar d1 = sqrt(sqrt()/96.0*referenceViscosity)
-                
+
                 for (qspec=0; qspec<typeIds_.size(); qspec++)
                 {
                     scalar dPQ = 0.5*(cloud_.constProps(typeIds_[iD]).d() + cloud_.constProps(typeIds_[qspec]).d());
-                    
+
                     scalar omegaPQ = 0.5*(cloud_.constProps(typeIds_[iD]).omega() + cloud_.constProps(typeIds_[qspec]).omega());
-                    
+
                     scalar massRatio = cloud_.constProps(typeIds_[iD]).mass()/cloud_.constProps(typeIds_[qspec]).mass();
-                    
+
                     scalar reducedMass = (cloud_.constProps(typeIds_[iD]).mass()*cloud_.constProps(typeIds_[qspec]).mass())
                                             / (cloud_.constProps(typeIds_[iD]).mass()+cloud_.constProps(typeIds_[qspec]).mass());
-                    
+
                     if(speciesMols[qspec] > VSMALL && translationalTemperature_[n] > VSMALL)
                     {
                         scalar nDensQ = (cloud_.nParticle()*speciesMols[qspec])/(volume*averagingCounter_);
-                        
+
                         mfp_[iD] += (pi*dPQ*dPQ*nDensQ*pow(273.0/translationalTemperature_[n],omegaPQ-0.5)*sqrt(1.0+massRatio)); //Bird, eq (4.76)
-                        
+
                         mcr_[iD] += (2.0*sqrt(pi)*dPQ*dPQ*nDensQ*pow(translationalTemperature_[n]/273.0,1.0-omegaPQ)
                                             *sqrt(2.0*physicoChemical::k.value()*273.0/reducedMass)); // Bird, eq (4.74)
                     }
                 }
-                
+
                 if(mfp_[iD] > VSMALL)
                 {
                     mfp_[iD] = 1.0/mfp_[iD];
                 }
             }
-            
+
 //             forAll(meanFreePath_, n)
 //             {
                 meanFreePath_[n] = 0.0;
@@ -819,15 +819,15 @@ void pdZone::calculateField()
                 meanCollisionTime_[n] = 0.0;
                 meanCollisionTimeTimeStepRatio_[n] = 0.0;
 //             }
-                                
+
             forAll(mfp_, iD)
             {
                 if(rhoN_[n] > VSMALL)
-                {                    
+                {
                     scalar nDensP = (cloud_.nParticle()*speciesMols[iD])/(volume*averagingCounter_);
-                    
+
                     meanFreePath_[n] += mfp_[iD]*nDensP/rhoN_[n]; //Bird, eq (4.77)
-                    
+
                     meanCollisionRate_[n] += mcr_[iD]*nDensP/rhoN_[n]; //Bird, eq (1.38)
                 }
                 else
@@ -836,9 +836,9 @@ void pdZone::calculateField()
                     meanCollisionRate_[n] = 0.0;
                 }
             }
-            
+
             const scalar deltaT = mesh_.time().deltaTValue();
-            
+
 //             forAll(meanCollisionTime_, n)
 //             {
                 if(meanCollisionRate_[n] > VSMALL)
@@ -852,18 +852,18 @@ void pdZone::calculateField()
                     meanCollisionTimeTimeStepRatio_[n] = GREAT;
                 }
 //             }
-            
+
             mfp_ = scalar(0.0);
             mcr_ = scalar(0.0);
-            
+
             scalar molecularMass = 0.0;
             scalar molarconstantPressureSpecificHeat = 0.0;
             scalar molarconstantVolumeSpecificHeat = 0.0;
             scalar speedOfSound = 0.0;
             scalar gasConstant = 0.0;
             scalar gamma = 0.0;
-            
-            forAll(mfp_, iD)  
+
+            forAll(mfp_, iD)
             {
                 const label& typeId = typeIds_[iD];
 
@@ -873,7 +873,7 @@ void pdZone::calculateField()
                     molarconstantPressureSpecificHeat += (5.0 + cloud_.constProps(typeId).rotationalDegreesOfFreedom())*(speciesMols[iD]/mols);
                     molarconstantVolumeSpecificHeat += (3.0 + cloud_.constProps(typeId).rotationalDegreesOfFreedom())*(speciesMols[iD]/mols);
                 }
-            } 
+            }
 
             if(molecularMass > VSMALL)
             {
@@ -884,12 +884,12 @@ void pdZone::calculateField()
             {
                 gamma = molarconstantPressureSpecificHeat/molarconstantVolumeSpecificHeat; // gamma = cP/cV
             }
-            
+
             if(translationalTemperature_[n] > VSMALL && gamma > VSMALL && gasConstant > VSMALL)
             {
                 speedOfSound = sqrt(gamma*gasConstant*translationalTemperature_[n]);
             }
-            
+
             if(speedOfSound > VSMALL)
             {
                 Ma_[n] = mag(UMean_[n])/speedOfSound;
@@ -904,7 +904,7 @@ void pdZone::calculateField()
         {
             //- reset fields
             averagingCounter_ = 0.0;
-            
+
             mols_ = 0.0;
             molsInt_ = 0.0;
             mass_ = 0.0;
@@ -913,7 +913,7 @@ void pdZone::calculateField()
             UCollected_ = vector::zero;
             rotationalEMean_ = 0.0;
             rotationalDofMean_ = 0.0;
-            
+
             muu_ = 0.0;
             muv_ = 0.0;
             muw_ = 0.0;
@@ -927,20 +927,20 @@ void pdZone::calculateField()
             eu_ = 0.0;
             ev_ = 0.0;
             ew_ = 0.0;
-            e_ = 0.0;  
+            e_ = 0.0;
             speciesMols_ = 0.0;
-            
+
             forAll(vibrationalETotal_, iD)
             {
                 vibrationalETotal_[iD] = 0.0;
             }
         }
-        
+
         if(averagingAcrossManyRuns_)
         {
             writeOut();
         }
-        
+
         timeIndex_++;
     }
 }
@@ -951,27 +951,27 @@ void pdZone::writeField()
 
     if(runTime.outputTime())
     {
-        
+
         timeIndex_ = 0;
-        
+
         if(Pstream::master())
         {
 //             fileName timePath(runTime.path()/runTime.timeName()/"uniform");
 
 //             scalarField bins = binModel_->binPositions();
 //             vectorField vectorBins = binModel_->bins();
-            
+
 //             const scalarField& timeField = time_.averagingTimesInOneWriteInterval();
             scalarField timeField(N_.size(), 0.0);
             const scalar& deltaT = time_.mdTimeInterval().deltaT();
-            
+
             forAll(timeField, t)
             {
-                timeField[N_.size()-t-1] = runTime.timeOutputValue() - deltaT*t; 
+                timeField[N_.size()-t-1] = runTime.timeOutputValue() - deltaT*t;
             }
 
-            
-            
+
+
             // output densities
             if(outputField_[0])
             {
@@ -983,7 +983,7 @@ void pdZone::writeField()
                     N_,
                     true
                 );
-    
+
                 writeTimeData
                 (
                     casePath_,
@@ -992,7 +992,7 @@ void pdZone::writeField()
                     rhoN_,
                     true
                 );
-    
+
                 writeTimeData
                 (
                     casePath_,
@@ -1024,7 +1024,7 @@ void pdZone::writeField()
                     UCAM_,
                     true
                 );
-  
+
             }
 
             // output temperature
@@ -1038,8 +1038,8 @@ void pdZone::writeField()
                     translationalTemperature_,
                     true
                 );
-           
-                
+
+
                 writeTimeData
                 (
                     casePath_,
@@ -1048,7 +1048,7 @@ void pdZone::writeField()
                     rotationalTemperature_,
                     true
                 );
-                
+
                 writeTimeData
                 (
                     casePath_,
@@ -1057,7 +1057,7 @@ void pdZone::writeField()
                     vibrationalTemperature_,
                     true
                 );
-                
+
                 writeTimeData
                 (
                     casePath_,
@@ -1088,7 +1088,7 @@ void pdZone::writeField()
                     scalarPressure_,
                     true
                 );
-                
+
                 writeTimeData
                 (
                     casePath_,
@@ -1106,7 +1106,7 @@ void pdZone::writeField()
                     qField_,
                     true
                 );
-                
+
                 writeTimeData
                 (
                     casePath_,
@@ -1115,7 +1115,7 @@ void pdZone::writeField()
                     qInternalField_,
                     true
                 );
-                
+
                 writeTimeData
                 (
                     casePath_,
@@ -1124,7 +1124,7 @@ void pdZone::writeField()
                     qTranslationalField_,
                     true
                 );
-                
+
                 writeTimeData
                 (
                     casePath_,
@@ -1133,7 +1133,7 @@ void pdZone::writeField()
                     meanFreePath_,
                     true
                 );
-                
+
                 writeTimeData
                 (
                     casePath_,
@@ -1142,7 +1142,7 @@ void pdZone::writeField()
                     meanCollisionRate_,
                     true
                 );
-                
+
                 writeTimeData
                 (
                     casePath_,
@@ -1151,7 +1151,7 @@ void pdZone::writeField()
                     meanCollisionTime_,
                     true
                 );
-                
+
                 writeTimeData
                 (
                     casePath_,
@@ -1160,7 +1160,7 @@ void pdZone::writeField()
                     meanCollisionTimeTimeStepRatio_,
                     true
                 );
-                
+
                 writeTimeData
                 (
                     casePath_,

@@ -74,11 +74,11 @@ private:
         label regionId_;
         word fieldName_;
         scalar totalVolume_;
-        
+
         labelList typeIds_;
         label timeIndex_;
-        scalar averagingCounter_;        
-        
+        scalar averagingCounter_;
+
         scalar mols_;
         scalar dsmcMols_;
         scalar molsInt_;
@@ -89,9 +89,9 @@ private:
         vector UCollected_;
         scalar rotationalEMean_;
         scalar rotationalDofMean_;
-        
+
         // pressure measurements
-        
+
 //         vectorField UMean_;
 //         scalarField nD_;
 //         vectorField Ucollected_;
@@ -112,7 +112,7 @@ private:
         scalar ev_;
         scalar ew_;
         scalar e_;
-        
+
         label stepIndex_;
         scalarField speciesMols_;
         scalarField mccSpecies_;
@@ -123,12 +123,12 @@ private:
         scalarField mfp_;
         scalarField mcr_; // mean collision rate
         label nSteps_;
-        
+
         scalarField N_;
         scalarField rhoN_;
         scalarField rhoM_;
         vectorField UMean_;
-        vectorField UCAM_;        
+        vectorField UCAM_;
         scalarField translationalTemperature_;
         scalarField rotationalTemperature_;
         scalarField vibrationalTemperature_;
@@ -146,16 +146,16 @@ private:
         scalarField meanCollisionTime_;
         scalarField meanCollisionTimeTimeStepRatio_;
         scalarField Ma_;
-        
+
         List<scalarField> vibrationalETotal_;
-       
+
         List<bool> outputField_;
 
         bool instantaneous_;
-        
+
         bool averagingAcrossManyRuns_;
-        
-        
+
+
     // Private Member Functions
 
         void readIn();

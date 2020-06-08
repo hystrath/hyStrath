@@ -44,7 +44,7 @@ namespace Foam
 void randomPointsInSquareZone:: setInitialConfiguration
 (
     const polyMesh& mesh,
-    const label& regionId            
+    const label& regionId
 )
 {
     const cellZoneMesh& cellZones = mesh.cellZones();
@@ -118,7 +118,7 @@ void randomPointsInSquareZone:: setInitialConfiguration
                 }
             }
         }
-    
+
         //- receiving
         for (int p = 0; p < Pstream::nProcs(); p++)
         {
@@ -127,7 +127,7 @@ void randomPointsInSquareZone:: setInitialConfiguration
                 scalar XMinP;
                 scalar YMinP;
                 scalar ZMinP;
-            
+
                 scalar XMaxP;
                 scalar YMaxP;
                 scalar ZMaxP;
@@ -136,7 +136,7 @@ void randomPointsInSquareZone:: setInitialConfiguration
                 const int proc = p;
                 {
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
-                    fromNeighbour >> XMinP >> XMaxP >> YMinP 
+                    fromNeighbour >> XMinP >> XMaxP >> YMinP
                                     >> YMaxP >> ZMinP >> ZMaxP /*>> zoneOnMeshP*/;
                 }
 
@@ -150,7 +150,7 @@ void randomPointsInSquareZone:: setInitialConfiguration
                     {
                         XMax = XMaxP;
                     }
-        
+
                     if(YMinP < YMin)
                     {
                         YMin = YMinP;
@@ -159,7 +159,7 @@ void randomPointsInSquareZone:: setInitialConfiguration
                     {
                         YMax = YMaxP;
                     }
-        
+
                     if(ZMinP < ZMin)
                     {
                         ZMin = ZMinP;
@@ -231,7 +231,7 @@ randomPointsInSquareZone::randomPointsInSquareZone
     setInitialConfiguration
     (
         mesh,
-        regionId            
+        regionId
     );
 }
 
@@ -253,7 +253,7 @@ randomPointsInSquareZone::randomPointsInSquareZone
 
     setInitialConfiguration
     (
-        bb          
+        bb
     );
 }
 

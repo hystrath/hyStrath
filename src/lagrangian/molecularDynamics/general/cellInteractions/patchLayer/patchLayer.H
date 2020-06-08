@@ -26,17 +26,17 @@ Class
 
 Description
     Creates a layer of cells defined by an offset distance from a patch
-    
-    Assumes patch is a flat plane and rectangular
-    
-    Patch is therefore defined by 4 points 
 
-    Builds a boundedBox that starts from points on patch with an offset thickness 
-    
+    Assumes patch is a flat plane and rectangular
+
+    Patch is therefore defined by 4 points
+
+    Builds a boundedBox that starts from points on patch with an offset thickness
+
     Any cells just overlapping with the boundedBox are selected
 
     [note] - still need to test this for inclined planes
-    
+
 SourceFiles
     patchLayerI.H
     patchLayer.C
@@ -72,14 +72,14 @@ class patchLayer
         vector t1_;
         vector t2_;
         boundedBox bb_;
-        
+
         void createLayer();
         void createBox();
         void findCells();
         void transformPointToNewCS(vector& point);
         boundedBox cellToBoundBox(const label& cellI);
         pointField boundingCellPoints(const label& cellI);
-        
+
 public:
 
     // Constructors

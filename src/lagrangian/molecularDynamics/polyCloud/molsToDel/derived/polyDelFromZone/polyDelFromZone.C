@@ -142,9 +142,9 @@ void polyDelFromZone::findMolsToDel()
 
     label molsKept = initialSize - molsToDel.size();
 
-    Info<< tab << " initial polyMolecules: " <<  initialSize 
+    Info<< tab << " initial polyMolecules: " <<  initialSize
         << ", polyMolecules kept: " <<  molsKept
-        << ", polyMolecules removed: " << molsToDel.size() 
+        << ", polyMolecules removed: " << molsToDel.size()
         << endl;
 
 

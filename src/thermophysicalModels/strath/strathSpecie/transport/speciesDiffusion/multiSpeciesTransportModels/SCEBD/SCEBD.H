@@ -27,14 +27,14 @@ Class
 
 Description
     SCEBD multispecies transport model.
-    
+
     Reference paper:
-    J.D. Ramshaw and C.H. Chang, 
-    "Friction-Weighted Self-Consistent Effective Binary Diffusion Approximation," 
+    J.D. Ramshaw and C.H. Chang,
+    "Friction-Weighted Self-Consistent Effective Binary Diffusion Approximation,"
     J. Non-Equilib. Thermodyn. 21, 223 (1996)
-    
+
     http://pdxscholar.library.pdx.edu/cgi/viewcontent.cgi?article=1095&context=phy_fac
-  
+
 SourceFiles
     SCEBD.C
 
@@ -49,7 +49,7 @@ SourceFiles
 
 namespace Foam
 {
-  
+
 /*---------------------------------------------------------------------------*\
                              Class SCEBD Declaration
 \*---------------------------------------------------------------------------*/
@@ -58,31 +58,31 @@ template<class ThermoType>
 class SCEBD
 :
     public multiSpeciesTransportModel
-{  
+{
 
 protected:
-  
+
     // Protected data
-    
+
         //- Thermodynamic data of the species
         const PtrList<ThermoType>& speciesThermo_;
-        
+
         // Mole-fraction below which the contribution of the species is ignored
         const scalar miniXs_;
 
 
     // Protected member functions
-    
+
         //- Update the coefficients of the species equations
         virtual void updateCoefficients();
-    
+
 
 public:
 
     //- Runtime type information
     TypeName("SCEBD");
 
-    
+
     // Constructors
 
         //- Construct from components
@@ -105,7 +105,7 @@ public:
         {
             return speciesThermo_[i].W()*1.0e-3;
         }
-    
+
         //- Specific enthalpy [J/kg] for a specie given by index and temperature
         scalar hs(label i, scalar p, scalar Tt, scalar Tv) const
         {
@@ -114,12 +114,12 @@ public:
 
         //- Update the species diffusion coefficients
         virtual void correct();
-        
+
         //- Read transportProperties dictionary
         virtual bool read();
   };
 
-  
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 }	// End namespace Foam

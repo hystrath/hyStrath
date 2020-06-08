@@ -76,8 +76,8 @@ void polyPDBreader::setInitialConfiguration()
 {
     // collect bound box information
     vector vMax = vector::zero;
-    vector vMin = vector(GREAT, GREAT, GREAT);    
-    
+    vector vMin = vector(GREAT, GREAT, GREAT);
+
     // read in ids
     molIds_.clear();
 
@@ -88,18 +88,18 @@ void polyPDBreader::setInitialConfiguration()
     );
 
     molIds_ = ids.molIds();
-    
+
     const List<word>& idList(molCloud_.cP().molIds());
-    
+
     molIdNames_.setSize(molIds_.size());
-    
+
     forAll(molIdNames_, i)
     {
         molIdNames_[i] = idList[molIds_[i]];
     }
-    
+
     Info << " polyPDBreader on : " << molIdNames_ << endl;
-    
+
     const cellZoneMesh& cellZones = mesh_.cellZones();
     const word regionName(mdInitialiseDict_.lookup("zoneName"));
     label zoneId = cellZones.findZoneID(regionName);
@@ -116,22 +116,22 @@ void polyPDBreader::setInitialConfiguration()
 
     label initialSize = molCloud_.size();
     label nMolsInFile = 0;
-    
+
     if (zone.size())
     {
         Info << "Read positions in zone: " << regionName << endl;
-        
+
         temperature_ = readScalar(mdInitialiseDict_.lookup("temperature"));
         bulkVelocity_ = mdInitialiseDict_.lookup("bulkVelocity");
-        
+
         if (mdInitialiseDict_.found("frozen"))
         {
             frozen_ = Switch(mdInitialiseDict_.lookup("frozen"));
-        }        
-        
+        }
+
         startPoint_ = mdInitialiseDict_.lookup("displacement");
-        
-        word name = mdInitialiseDict_.lookup("pdbFileName");  
+
+        word name = mdInitialiseDict_.lookup("pdbFileName");
 
         ifstream pdbDict(name.c_str());
 
@@ -140,49 +140,49 @@ void polyPDBreader::setInitialConfiguration()
 
             const reducedUnits& rU = molCloud_.redUnits();
             point globalPosition;
-        
+
             while(pdbDict.good())
             {
                 string line;
                 getline (pdbDict, line);
                 word atomName = line.substr(0,4);
-        
+
                 if(atomName == "ATOM")
                 {
                     nMolsInFile ++;
-                    
+
 //                     string xValue = /*line.substr(30,8)*/;
                     scalar xValue = ::atof((line.substr(30,8)).c_str());
                     globalPosition.x() = xValue/(rU.refLength()*1e10);
-                    
+
 //                     word2 = /*line.substr(39,7);*/
                     scalar yValue = ::atof((line.substr(39,7)).c_str());
                     globalPosition.y() = yValue/(rU.refLength()*1e10);
-                    
+
 //                     word2 = line.substr(46,8);
                     scalar zValue = ::atof((line.substr(46,8)).c_str());
                     globalPosition.z() = zValue/(rU.refLength()*1e10);
-                    
-                    
+
+
                     testForBoundBox(vMin, vMax, globalPosition);
-                    
-                    globalPosition += startPoint_;                   
-                    
-                    // find ID 
-                                       
+
+                    globalPosition += startPoint_;
+
+                    // find ID
+
                     label molId = -1;
-                    
-                   
+
+
                     string idNameOneLetterA = line.substr(76,1);
-                    string idNameOneLetterB = line.substr(77,1); 
-                   
+                    string idNameOneLetterB = line.substr(77,1);
+
                     string idStr = idNameOneLetterA+idNameOneLetterB;
 
                     // erase empty spaces
                     idStr.erase(remove_if(idStr.begin(), idStr.end(), isspace), idStr.end());
                     word idName = idStr;
                     label iD = findIndex(molIdNames_, idName);
-                    
+
                     if(iD != -1)
                     {
                         molId = molIds_[iD];
@@ -229,7 +229,7 @@ void polyPDBreader::setInitialConfiguration()
         }
         else
         {
-             Info << "Unable to open file"; 
+             Info << "Unable to open file";
         }
     }
 
@@ -243,19 +243,19 @@ void polyPDBreader::setInitialConfiguration()
     }
 
     Info << tab << " molecules added: " << nMolsAdded_ << endl;
-    
-    Info<< nl << tab << " no of molecules in file: " << nMolsInFile 
+
+    Info<< nl << tab << " no of molecules in file: " << nMolsInFile
         << ", molecules not added = " <<  nMolsInFile - nMolsAdded_
         << endl;
-    
-    
-    Info<< nl << "Information on slab of molecules: Vmin = " 
-        << vMin << ", vMax = " << vMax 
+
+
+    Info<< nl << "Information on slab of molecules: Vmin = "
+        << vMin << ", vMax = " << vMax
         << nl << " span: " << vMax - vMin
         <<  endl;
 }
 
-        
+
 void polyPDBreader::testForBoundBox
 (
     vector& vMin,
@@ -270,12 +270,12 @@ void polyPDBreader::testForBoundBox
     if(p.y() > vMax.y())
     {
         vMax.y() = p.y();
-    }    
+    }
     if(p.z() > vMax.z())
     {
         vMax.z() = p.z();
-    }        
-    
+    }
+
     if(p.x() < vMin.x())
     {
         vMin.x() = p.x();
@@ -283,11 +283,11 @@ void polyPDBreader::testForBoundBox
     if(p.y() < vMin.y())
     {
         vMin.y() = p.y();
-    }    
+    }
     if(p.z() < vMin.z())
     {
         vMin.z() = p.z();
-    }  
+    }
 }
 
 

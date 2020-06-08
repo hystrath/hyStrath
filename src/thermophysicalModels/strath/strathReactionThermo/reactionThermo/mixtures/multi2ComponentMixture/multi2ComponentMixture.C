@@ -52,45 +52,45 @@ template<class ThermoType>
 void Foam::multi2ComponentMixture<ThermoType>::correctMassFractions()
 {
     bool initialiseY = true;
-    
+
     forAll(Y_, speciei)
-    {           
+    {
         const scalarField& YCells = Y_[speciei].internalField();
         if(YCells[0] != 0)
         {
             initialiseY = false;
             break;
         };
-    }    
-        
+    }
+
     if(initialiseY)
     {
         forAll(Y_, speciei)
-        {    
+        {
             const scalarField& XCells = X_[speciei].internalField();
             scalarField& YCells = Y_[speciei].primitiveFieldRef();
-            
+
             forAll(YCells, celli)
-            { 
+            {
                 YCells[celli] = massFractionFromMolarFraction(speciei, XCells[celli]);
-            }    
-        } 
-        
+            }
+        }
+
         forAll(Y_[0].boundaryField(), patchi)
         {
             forAll(Y_, speciei)
             {
                 const fvPatchScalarField& pX = X_[speciei].boundaryField()[patchi];
                 fvPatchScalarField& pY = Y_[speciei].boundaryFieldRef()[patchi];
-                
+
                 forAll(pY, facei)
                 {
                     pY[facei] = massFractionFromMolarFraction(speciei, pX[facei]);
-                }     
-            } 
+                }
+            }
         }
     }
-    
+
     // Multiplication by 1.0 changes Yt patches to "calculated"
     volScalarField Yt("Yt", 1.0*Y_[0]);
 
@@ -127,18 +127,18 @@ void Foam::multi2ComponentMixture<ThermoType>::correctVibTempAssociativity(const
             fileName(dict.lookup("foamChemistryFile")).expand()
         )()
     );
-    
+
     List<label> vTA(chemDict.lookup("vibTempAssociativity"));
     label solvedVibEqCounter = 0;
 
     forAll(Y_, speciei)
-    {           
+    {
         if(vTA[speciei] < 1)
         {
             if(speciesData_[speciei].particleType() != 2)
             {
-                FatalErrorIn("multi2ComponentMixture<ThermoType>::correctVibTempAssociativity") 
-                        << "The vibTempAssociativity table is not correctly defined \n" 
+                FatalErrorIn("multi2ComponentMixture<ThermoType>::correctVibTempAssociativity")
+                        << "The vibTempAssociativity table is not correctly defined \n"
                         << "in " << chemDict.name() << "\nfor the element no " << speciei+1
                         << "." << nl << "The value '0' can be assigned to molecules/ions only." << nl;
                 FatalError<< exit(FatalError);
@@ -147,23 +147,23 @@ void Foam::multi2ComponentMixture<ThermoType>::correctVibTempAssociativity(const
             {
                 vibTempAssociativity_[speciei] = -1;
                 solvedVibEqCounter += 1;
-            } 
+            }
         }
         else
         {
             vibTempAssociativity_[speciei] = vTA[speciei]-1;
         }
     }
-    
+
     forAll(Y_, speciei)
     {
         if(vTA[speciei] > solvedVibEqCounter)
         {
-            FatalErrorIn("multi2ComponentMixture<ThermoType>::correctVibTempAssociativity") 
-                    << "The vibTempAssociativity table is not correctly defined \n" 
+            FatalErrorIn("multi2ComponentMixture<ThermoType>::correctVibTempAssociativity")
+                    << "The vibTempAssociativity table is not correctly defined \n"
                     << "in " << chemDict.name() << "\nfor the element no " << speciei+1
                     << "." << nl << "The value is greater than the number of solved vib. eqn. (i.e., "<< solvedVibEqCounter <<")" << nl;
-            FatalError<< exit(FatalError);            
+            FatalError<< exit(FatalError);
         }
     }
 }
@@ -177,8 +177,8 @@ void Foam::multi2ComponentMixture<ThermoType>::fillSolvedVibEqSpeciesTable()
         if(vibTempAssociativity_[speciei] == -1)
         {
             solvedVibEqSpecies_.append(species_[speciei]);
-        } 
-    } 
+        }
+    }
 }
 
 
@@ -188,11 +188,11 @@ void Foam::multi2ComponentMixture<ThermoType>::fillHackOfSolvedVibEqSpeciesTable
     forAll(Y_, speciei)
     {
         if(speciesData_[speciei].noVibrationalTemp() != 0)
-        // The particle is either a molecule or an ionised molecule    
+        // The particle is either a molecule or an ionised molecule
         {
             solvedVibEqSpecies_.append(species_[speciei]);
         }
-    } 
+    }
 }
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
@@ -221,10 +221,10 @@ Foam::multi2ComponentMixture<ThermoType>::multi2ComponentMixture
     }
 
     correctMassFractions();
-    
-    if(not(thermoDict.lookupOrDefault<bool>("downgradeToSingleTemperature", false) 
+
+    if(not(thermoDict.lookupOrDefault<bool>("downgradeToSingleTemperature", false)
         or thermoDict.lookupOrDefault<bool>("downgradeToSingleTv", false)))
-    // Two-temperature solver with multi-vibrational pools    
+    // Two-temperature solver with multi-vibrational pools
     {
         correctVibTempAssociativity(thermoDict); // NEW VINCENT 05/03/2016;
         fillSolvedVibEqSpeciesTable(); // NEW VINCENT 05/08/2016;
@@ -250,10 +250,10 @@ Foam::multi2ComponentMixture<ThermoType>::multi2ComponentMixture
     mixtureVol_("volMixture", speciesData_[0])
 {
     correctMassFractions();
-    
-    if(not(thermoDict.lookupOrDefault<bool>("downgradeToSingleTemperature", false) 
+
+    if(not(thermoDict.lookupOrDefault<bool>("downgradeToSingleTemperature", false)
         or thermoDict.lookupOrDefault<bool>("downgradeToSingleTv", false)))
-    // Two-temperature solver with multi-vibrational pools    
+    // Two-temperature solver with multi-vibrational pools
     {
         correctVibTempAssociativity(thermoDict); // NEW VINCENT 05/03/2016;
         fillSolvedVibEqSpeciesTable(); // NEW VINCENT 05/08/2016;
@@ -535,7 +535,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::patchFaceMixture_HEt
 (
     const label patchi,
     const label facei,
-    const scalar p, 
+    const scalar p,
     const scalar Tt
 ) const
 {
@@ -557,7 +557,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::patchFaceMixture_HEv
 (
     const label patchi,
     const label facei,
-    const scalar p, 
+    const scalar p,
     const scalar Tv
 ) const
 {
@@ -579,7 +579,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::patchFaceMixture_HEel
 (
     const label patchi,
     const label facei,
-    const scalar p, 
+    const scalar p,
     const scalar Tv
 ) const
 {
@@ -601,7 +601,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::patchFaceMixture_HEvel
 (
     const label patchi,
     const label facei,
-    const scalar p, 
+    const scalar p,
     const scalar Tv
 ) const
 {
@@ -623,7 +623,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::patchFaceMixture_Cv_t
 (
     const label patchi,
     const label facei,
-    const scalar p, 
+    const scalar p,
     const scalar Tt
 ) const
 {
@@ -645,7 +645,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::patchFaceMixture_Cp_t
 (
     const label patchi,
     const label facei,
-    const scalar p, 
+    const scalar p,
     const scalar Tt
 ) const
 {
@@ -667,7 +667,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::patchFaceMixture_gamma
 (
     const label patchi,
     const label facei,
-    const scalar p, 
+    const scalar p,
     const scalar Tt,
     const scalar Tv
 ) const
@@ -690,7 +690,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::patchFaceMixture_kappa_tr
 (
     const label patchi,
     const label facei,
-    const scalar p, 
+    const scalar p,
     const scalar Tt
 ) const
 {
@@ -712,7 +712,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::patchFaceMixture_kappa_ve
 (
     const label patchi,
     const label facei,
-    const scalar p, 
+    const scalar p,
     const scalar Tt,
     const scalar Tv
 ) const
@@ -735,7 +735,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::patchFaceMixture_alpha_tr
 (
     const label patchi,
     const label facei,
-    const scalar p, 
+    const scalar p,
     const scalar Tt
 ) const
 {
@@ -757,7 +757,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::patchFaceMixture_alpha_ve
 (
     const label patchi,
     const label facei,
-    const scalar p, 
+    const scalar p,
     const scalar Tt,
     const scalar Tv
 ) const
@@ -781,7 +781,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::patchFaceMixture
     scalar (ThermoType::*F)(const scalar, const scalar) const,
     const label patchi,
     const label facei,
-    const scalar p, 
+    const scalar p,
     const scalar T
 ) const
 {
@@ -865,13 +865,13 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::molWeightMixture(const la
     {
         invMolWmix += Y_[i][celli]/speciesData_[i].W();
     }
-    
+
     return 1.0/(invMolWmix);
 }
 
 
 template<class ThermoType>
-Foam::tmp<Foam::volScalarField> 
+Foam::tmp<Foam::volScalarField>
 Foam::multi2ComponentMixture<ThermoType>::molWeightMixture() const
 {
     const fvMesh& mesh = Y_[0].mesh();
@@ -956,7 +956,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::RspecificMixture(const la
 
 template<class ThermoType>
 Foam::scalar Foam::multi2ComponentMixture<ThermoType>::massFractionFromMolarFraction
-(   
+(
     const label speciei,
     //const scalar celli,
     const scalar Xi
@@ -968,7 +968,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::massFractionFromMolarFrac
 
 template<class ThermoType>
 Foam::scalar Foam::multi2ComponentMixture<ThermoType>::massFractionFromPartialDensity
-(   
+(
     const scalar rhoi,
     const scalar p,
     const scalar Tt
@@ -980,7 +980,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::massFractionFromPartialDe
 
 template<class ThermoType>
 Foam::scalar Foam::multi2ComponentMixture<ThermoType>::molarFraction
-(   
+(
     const label speciei,
     const scalar Yi,
     const label celli
@@ -992,7 +992,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::molarFraction
 
 template<class ThermoType>
 Foam::scalar Foam::multi2ComponentMixture<ThermoType>::molarFraction
-(   
+(
     const label speciei,
     const scalar Yi,
     const label patchi,
@@ -1005,7 +1005,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::molarFraction
 
 template<class ThermoType>
 Foam::scalar Foam::multi2ComponentMixture<ThermoType>::numberDensity
-(   
+(
     const label speciei,
     const scalar Yi,
     const scalar rho
@@ -1018,7 +1018,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::numberDensity
 
 template<class ThermoType>
 Foam::scalar Foam::multi2ComponentMixture<ThermoType>::partialPressure
-(   
+(
     const scalar Xi,
     const scalar p
 )
@@ -1029,7 +1029,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::partialPressure
 
 template<class ThermoType>
 Foam::scalar Foam::multi2ComponentMixture<ThermoType>::partialPressureEoS
-(   
+(
     const label speciei,
     const scalar rhoi,
     const scalar Ti
@@ -1041,7 +1041,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::partialPressureEoS
 
 template<class ThermoType>
 Foam::scalar Foam::multi2ComponentMixture<ThermoType>::partialDensity
-(   
+(
     const scalar Yi,
     const scalar rho
 )

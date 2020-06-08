@@ -58,7 +58,7 @@ Foam::VTModel::VTModel
             IOobject::NO_WRITE
         )
     ),
-    
+
     dictThermoPhy_
     (
         IOobject
@@ -72,22 +72,22 @@ Foam::VTModel::VTModel
     ),
 
     solvedVibEqSpecies_(solvedVibEqSpecies),
-    species_(species), 
-    p_(p),    
+    species_(species),
+    p_(p),
     Tt_(Tt),
     Tv_(Tv),
     nD_(nD)
-   
+
 {
     tauVTijModels_.setSize(species.size()*species.size());
     tauVTij_.setSize(tauVTijModels_.size());
-    
+
     forAll(solvedVibEqSpecies_, i)
     {
         forAll(species_, j)
         {
             label k = solvedVibEqSpecies_.size()*i+j;
-            
+
             tauVTijModels_.set
             (
                 k,
@@ -115,14 +115,14 @@ Foam::VTModel::VTModel
                 )
             );
         }
-    } 
+    }
 }
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 void Foam::VTModel::update()
-{    
+{
     for(label i=0; i < solvedVibEqSpecies_.size(); i++)
     {
         for(label j=0; j < species_.size(); j++)

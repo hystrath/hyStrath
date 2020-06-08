@@ -82,9 +82,9 @@ void polySpecularPatch::controlMol
 )
 {
 //     Info << "molecule at pos = " << mol.position() << endl;
-    
+
     const label& faceI = mol.face();
-    
+
     vector nF = mesh_.faceAreas()[faceI];
     nF /= mag(nF);
 

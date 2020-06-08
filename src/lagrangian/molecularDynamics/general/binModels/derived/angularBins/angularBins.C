@@ -83,7 +83,7 @@ angularBins::angularBins
     if(deltaR <= 0.0)
     {
         FatalErrorIn("angularBins::angularBins()")
-            << "Rout " << Rout_ << " needs to be greater than Rin: " << Rin_ 
+            << "Rout " << Rout_ << " needs to be greater than Rin: " << Rin_
             << nl << "in: "
             << "system/fieldPropertiesDict"
             << exit(FatalError);
@@ -92,13 +92,13 @@ angularBins::angularBins
     thetaStart_ *= constant::mathematical::pi/180.0;
     thetaEnd_ *= constant::mathematical::pi/180.0;
 
-    Info<< "thetaStart = " << thetaStart_ 
+    Info<< "thetaStart = " << thetaStart_
         << ", thetaEnd = " << thetaEnd_ << endl;
 
     if(thetaEnd_ <= thetaStart_)
     {
         FatalErrorIn("angularBins::angularBins()")
-            << "angleEnd has to be larger than angleStart - define clockwise from referenceVectorY." 
+            << "angleEnd has to be larger than angleStart - define clockwise from referenceVectorY."
             << nl << "in: "
             << "system/fieldPropertiesDict"
             << exit(FatalError);
@@ -165,15 +165,15 @@ label angularBins::isPointWithinBin
 
             label n = label((theta-thetaStart_)/binWidth_);
 
-//             Info << "n (test) " << n << endl;    
-    
-            if(n >= 0) 
+//             Info << "n (test) " << n << endl;
+
+            if(n >= 0)
             {
-                if(n == nBins_) 
+                if(n == nBins_)
                 {
                     n--;
                 }
-        
+
                 if(n < nBins_)
                 {
                     binNumber = n;

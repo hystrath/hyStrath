@@ -45,7 +45,7 @@ namespace Foam
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 
-// Construct from mesh and cloud 
+// Construct from mesh and cloud
 cellMeasurements::cellMeasurements
 (
     const polyMesh& mesh,
@@ -71,7 +71,7 @@ cellMeasurements::cellMeasurements
     nColls_()
 {
     collisionSeparation_.setSize(mesh.nCells(), 0.0);
-    nColls_.setSize(mesh.nCells(), 0.0);   
+    nColls_.setSize(mesh.nCells(), 0.0);
 }
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
@@ -83,7 +83,7 @@ cellMeasurements::~cellMeasurements()
 void cellMeasurements::clean()
 {
     //- clean geometric fields
-    
+
     collisionSeparation_ = 0.0;
     nColls_ = 0.0;
 }
@@ -93,7 +93,7 @@ void cellMeasurements::reset()
     //- reset fields when mesh is edited
     collisionSeparation_.clear();
     collisionSeparation_.setSize(mesh_.nCells(), 0.0);
-    
+
     nColls_.clear();
     nColls_.setSize(mesh_.nCells(), 0.0);
 }

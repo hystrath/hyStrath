@@ -166,12 +166,12 @@ public:
 
 
 //         const scalarField& g() const;
-// 
+//
 //         const scalarField& r() const;
-// 
+//
 //         const scalar& binWidth() const;
 
-}; 		
+};
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

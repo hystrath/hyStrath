@@ -62,36 +62,36 @@ namespace Foam
 // )
 // {
 //     const labelListList& pointFacesList = patch.pointFaces();
-// 
+//
 //     const faceList& localFaces = patch.localFaces();
-// 
+//
 //     const label& faceI = pointFacesList[localPoint][0];
-// 
+//
 // //     Pout << "faceI: " << faceI << endl;
-// 
+//
 //     const label& pointFaceIndex = findIndex(localFaces[faceI], localPoint);
-// 
+//
 //     const label globalFace = patch.start(); //+ faceI
-// 
+//
 // //     Pout << "globalFace: " << globalFace << endl;
-// 
+//
 // //     const labelList& pointList = mesh.faces()[globalFace];
-// 
+//
 // //     const label& globalPoint = pointList[pointFaceIndex];
-// 
-// //     Pout << "Local Point " << localPoint 
+//
+// //     Pout << "Local Point " << localPoint
 // //          << " Global Point: " << globalPoint << endl;
-// 
-// 
+//
+//
 // //     label startFaceI = 0;
-// // 
+// //
 // //     for(label i = 0; i < patch.size(); i++)
 // //     {
 // //         label patchFaceI = i + startFaceI;
-// // 
+// //
 // //         label meshFaceI = patch.start() + patchFaceI;
 // //     }
-// 
+//
 // }
 
 

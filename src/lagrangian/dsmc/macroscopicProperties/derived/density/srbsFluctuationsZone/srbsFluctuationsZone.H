@@ -28,9 +28,9 @@ Class
 Description
     Geometric field for number density
 
-    Coarse-graining technique may be chosen (parallelised):  
-        A measurement within an arbitrary cell, consists also of 
-        sampling from neighbouring cells (within rCut). 
+    Coarse-graining technique may be chosen (parallelised):
+        A measurement within an arbitrary cell, consists also of
+        sampling from neighbouring cells (within rCut).
 
     One specie or all species handled only.
 
@@ -72,24 +72,24 @@ private:
 
 //         propertyField fields_;
         autoPtr<binModel> binModel_;
-        
+
         word fieldName_;
 
         labelList typeIds_;
 
         word regionName_;
         label regionId_;
-        
+
         scalar resetCounter_;
-        
+
         scalar domainLength_;
 
         scalarField n_;
-        
+
         scalarField rt_;
         label timeIndex_;
         label nInstantSteps_;
-        
+
         scalar Rt_;
 
         scalarField RtField_;
@@ -136,9 +136,9 @@ public:
 //         const propertyField& fields() const;
 
         void updateProperties(const dictionary& dict);
-        
+
         void setProperties();
-};      
+};
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

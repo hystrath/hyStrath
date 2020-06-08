@@ -43,7 +43,7 @@ SourceFiles
 #include "polyMesh.H"
 #include "volFields.H"
 #include "dsmcCloud.H"
-#include "boundBox.H" 
+#include "boundBox.H"
 // #include "binModel.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -74,14 +74,14 @@ private:
 //         word regionName_;
 //         label regionId_;
         word fieldName_;
-        
+
         List<boundBox> boxes_;
         scalar totalVolume_;
-        
+
         labelList typeIds_;
         label timeIndex_;
-        scalar averagingCounter_;        
-        
+        scalar averagingCounter_;
+
         scalar mols_;
         scalar dsmcMols_;
         scalar molsInt_;
@@ -92,9 +92,9 @@ private:
         vector UCollected_;
         scalar rotationalEMean_;
         scalar rotationalDofMean_;
-        
+
         // pressure measurements
-        
+
 //         vectorField UMean_;
 //         scalarField nD_;
 //         vectorField Ucollected_;
@@ -115,7 +115,7 @@ private:
         scalar ev_;
         scalar ew_;
         scalar e_;
-        
+
         label stepIndex_;
         scalarField speciesMols_;
         scalarField mccSpecies_;
@@ -125,12 +125,12 @@ private:
         scalarField vDof_;
         scalarField mfp_;
         label nSteps_;
-        
+
         scalarField N_;
         scalarField rhoN_;
         scalarField rhoM_;
         vectorField UMean_;
-        vectorField UCAM_;        
+        vectorField UCAM_;
         scalarField translationalTemperature_;
         scalarField rotationalTemperature_;
         scalarField vibrationalTemperature_;
@@ -139,21 +139,21 @@ private:
         scalarField scalarPressure_;
         tensorField pField_;
         tensorField tauField_;
-        vectorField qField_;  
+        vectorField qField_;
         scalarField meanFreePath_;
         scalarField Ma_;
-        
+
         List<scalarField> vibrationalETotal_;
-       
+
         List<bool> outputField_;
 
         bool instantaneous_;
-        
+
         bool averagingAcrossManyRuns_;
-       
-        
+
+
     // Private Member Functions
-        
+
         void readIn();
 
         void writeOut();
@@ -203,7 +203,7 @@ public:
         void writeField();
 
         void updateProperties(const dictionary& dict);
-}; 		
+};
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

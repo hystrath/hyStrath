@@ -73,11 +73,11 @@ private:
         vector centrePoint_;
 
         scalar wallVelocity_;
-        
+
         scalar referenceTemperature_;
-        
+
         vector rotationAxis_;
-        
+
 public:
 
     //- Runtime type information

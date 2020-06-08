@@ -85,18 +85,18 @@ matteoliAndMansooriMod::matteoliAndMansooriMod
     forAll(functionList, f)
     {
         const entry& function = functionList[f];
-    
+
         const dictionary& functionDict = function.dict();
 
         bool tailPartTrue = false;
 
         tailPartTrue = Switch(functionDict.lookup("tailPart"));
 
-        const scalar rS = readScalar(functionDict.lookup("startPoint"));        
-        const scalar rE = readScalar(functionDict.lookup("endPoint"));        
+        const scalar rS = readScalar(functionDict.lookup("startPoint"));
+        const scalar rE = readScalar(functionDict.lookup("endPoint"));
 
         const dictionary& coeffdict(functionDict.subDict("coefficients"));
-     
+
         if(tailPartTrue)
         {
             scalar h = readScalar(coeffdict.lookup("h"));

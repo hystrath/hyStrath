@@ -40,7 +40,7 @@ namespace Foam
 
 	// Line below commented for BlockMeshDG (doubleGrading)
         //return dim > 1 ? pow(expRatio, 1.0/(dim - 1)) : 0.0;
-	return dim > 1 ? expRatio/mag(expRatio)*pow(mag(expRatio), 1.0/(dim/(expRatio<0.?2:1) - 1)) : 0.0;	
+	return dim > 1 ? expRatio/mag(expRatio)*pow(mag(expRatio), 1.0/(dim/(expRatio<0.?2:1) - 1)) : 0.0;
 
 	// BlockMesh 1.7.1
 	//return pow(expRatio, 1.0/(dim - 1));

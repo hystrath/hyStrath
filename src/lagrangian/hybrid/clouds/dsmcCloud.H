@@ -121,28 +121,28 @@ private:
 
         //- measurement fields
         dsmcStandardFields standardFields_;
-        
-        dsmcFieldProperties fields_; 
+
+        dsmcFieldProperties fields_;
 
         //- boundaries
         dsmcBoundaries boundaries_;
 
 
-        // flux-face tracking 
+        // flux-face tracking
         dsmcFaceTracker trackingInfo_;
 
         // References to the cloud sub-models
 
         //- Binary collision model
         autoPtr<BinaryCollisionModel> binaryCollisionModel_;
-        
+
         // - Collision selection routine model
         autoPtr<collisionPartnerSelection> collisionPartnerSelectionModel_;
 
         dsmcReactions reactions_;
 
         boundaryMeasurements boundaryMeas_;
-        
+
     // Private Member Functions
 
 
@@ -151,7 +151,7 @@ private:
             DynamicList<label>& candidatesInCell
         );
 
-        // whenever you pick from the candidate list 
+        // whenever you pick from the candidate list
         // always update the candidate sublist
         void updateCandidateSubList
         (
@@ -301,7 +301,7 @@ public:
             scalar temperature,
             scalar rotationalDegreesOfFreedom
         );
-        
+
         //- Generate a random vibrational energy
         scalar equipartitionVibrationalEnergy
         (
@@ -431,14 +431,14 @@ public:
 
         inline const dsmcFaceTracker& tracker() const;  //****
         inline dsmcFaceTracker& tracker();//****
-        
+
         inline const dsmcReactions& reactions() const;  //****
         inline dsmcReactions& reactions();//****
 
-        
+
         inline const boundaryMeasurements& boundaryFluxMeasurements() const;
         inline boundaryMeasurements& boundaryFluxMeasurements();
-        
+
         // Check
 
             //- Total mass injected
@@ -455,7 +455,7 @@ public:
 
             //- Total rotational energy in the system
             inline scalar rotationalEnergyOfSystem() const;
-        
+
         //- Total vibratational energy in the system
             inline scalar vibrationalEnergyOfSystem() const;
 
@@ -495,14 +495,14 @@ public:
                 const label newParcel,
                 const label classification
             );
-            
+
             //- redistribute vibrational energy after a reaction
             scalar energyRatio
             (
                 scalar ChiA,
                 scalar ChiB
             );
-            
+
             //- redistribute vibrational energy after a reaction
             scalar PSIm
             (

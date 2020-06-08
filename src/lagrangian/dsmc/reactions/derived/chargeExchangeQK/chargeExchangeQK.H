@@ -63,19 +63,19 @@ protected:
 
         //- Sub-dictionary containing the reaction properties
         dictionary propsDict_;
-        
+
         //- Position of the neutral particle in the list of reactants
         label posNeutralReactant_;
-        
+
         //- Ids of the products
         labelList productIdsChargeExchange_;
-        
+
         //- String to print for the charge exchange reaction
         word chargeExchangeStr_;
-        
+
         label nTotChargeExchangeReactions_;
         label nChargeExchangeReactionsPerTimeStep_;
-       
+
         scalar heatOfReactionChargeExchangeJoules_;
         scalar aCoeffChEx_, bCoeffChEx_;
 
@@ -86,7 +86,7 @@ protected:
     // Protected Member Functions
 
         virtual void setProperties();
-        
+
         void testChargeExchange
         (
             const dsmcParcel& p,
@@ -96,7 +96,7 @@ protected:
             scalar& totalReactionProbability,
             scalar& reactionProbability
         );
-        
+
         void chargeExchange
         (
             dsmcParcel& p,
@@ -119,13 +119,13 @@ public:
             dsmcCloud& cloud,
             const dictionary& dict
         );
-    
-    
+
+
     // Destructor
-    
+
         ~chargeExchangeQK();
-    
-    
+
+
     // Member Functions
 
         //- Initial configuration - read in properties from chemReactDict
@@ -150,7 +150,7 @@ public:
             const label& typeIdP,
             const label& typeIdQ
         );
-        
+
 
       // Access
 

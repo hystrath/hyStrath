@@ -38,8 +38,8 @@ defineTypeNameAndDebug(dsmcSpecularWallPatch, 0);
 
 addToRunTimeSelectionTable
 (
-    dsmcPatchBoundary, 
-    dsmcSpecularWallPatch, 
+    dsmcPatchBoundary,
+    dsmcSpecularWallPatch,
     dictionary
 );
 
@@ -58,7 +58,7 @@ void dsmcSpecularWallPatch::performSpecularReflection(dsmcParcel& p)
     {
         U -= 2.0*U_dot_nw*nw;
     }
-    
+
     cloud_.porousMeas().specularInteraction(p, nw);
 }
 
@@ -101,14 +101,14 @@ void dsmcSpecularWallPatch::calculateProperties()
 
 void dsmcSpecularWallPatch::controlParticle
 (
-    dsmcParcel& p, 
+    dsmcParcel& p,
     dsmcParcel::trackingData& td
 )
 {
     measurePropertiesBeforeControl(p);
 
     performSpecularReflection(p);
-    
+
     measurePropertiesAfterControl(p);
 }
 

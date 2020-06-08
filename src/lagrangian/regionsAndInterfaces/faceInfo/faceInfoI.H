@@ -78,7 +78,7 @@ inline faceInfo::faceInfo
 // //     List<label>& points,
 //     const label& face,
 //     const labelList& points
-// 
+//
 // )
 // :
 // //     List<label>(points),
@@ -131,7 +131,7 @@ inline void faceInfo::setFaceInfo
 // )
 // {
 //     face_ = face;
-// 
+//
 //     connectedPoints_ = mesh.faces()[face];
 // }
 
@@ -166,18 +166,18 @@ inline void faceInfo::setFaceInfo
 // )
 // {
 //     DynamicList<label> connectedCells(0);
-// 
+//
 //     const label& cellA = mesh.faceOwner()[face_];
-// 
+//
 //     const label& cellB = mesh.faceNeighbour()[face_];
-// 
+//
 //     connectedCells.append(cellA);
-// 
+//
 //     if(cellB != -1)
 //     {
 //         connectedCells.append(cellB);
 //     }
-// 
+//
 //     connectedCells_ = connectedCells.shrink();
 // }
 
@@ -263,7 +263,7 @@ inline void faceInfo::updateFaceBoundaryInfo
 //     if(!isAcceptedFace())
 //     {
 //         label noOfAcceptedPoints = 0;
-// 
+//
 //         forAll(connectedPoints_, cP)
 //         {
 //             if(pointData[connectedPoints_[cP]].isAcceptedPoint())
@@ -271,7 +271,7 @@ inline void faceInfo::updateFaceBoundaryInfo
 //                 noOfAcceptedPoints++;
 //             }
 //         }
-// 
+//
 //         if( noOfAcceptedPoints ==  connectedPoints_.size())
 //         {
 //             acceptFace();
@@ -279,8 +279,8 @@ inline void faceInfo::updateFaceBoundaryInfo
 //             faceOutOfZone();
 //         }
 //     }
-// 
-// 
+//
+//
 // }
 
 inline void faceInfo::faceOnInterface()
@@ -340,7 +340,7 @@ inline const label& faceInfo::faceLabel() const
 // inline const labelList& faceInfo::connectedCells(const polyMesh& mesh)
 // {
 //     setConnectedCells(mesh);
-// 
+//
 //     return connectedCells_;
 // }
 

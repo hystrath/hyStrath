@@ -74,13 +74,13 @@ private:
 
 
 public:
-    
+
     scalar normalAccommodationCoefficient_;
-    
+
     scalar tangentialAccommodationCoefficient_;
-	
+
 	scalar rotationalEnergyAccommodationCoefficient_;
-    
+
     //- boundary temperature
     volScalarField boundaryT_;
 

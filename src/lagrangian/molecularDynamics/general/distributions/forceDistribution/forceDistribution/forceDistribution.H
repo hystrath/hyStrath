@@ -159,14 +159,14 @@ public:
 
         void addToDistribution
         (
-            const vector& r, 
+            const vector& r,
             const vector& force,
             const scalar& energy
         );
 
         void addToDistribution
         (
-            const vector& r, 
+            const vector& r,
             const vector& force,
             const scalar& energy,
             const scalar& virial

@@ -53,17 +53,17 @@ inline Foam::subArrhenius2ReactionRate::subArrhenius2ReactionRate
     {
         is >> Tbound_[i];
     }
-    
+
     forAll(A_, i)
     {
         is >> A_[i];
     }
-    
+
     forAll(beta_, i)
     {
         is >> beta_[i];
     }
-    
+
     forAll(Ta_, i)
     {
         is >> Ta_[i];
@@ -97,11 +97,11 @@ inline Foam::scalar Foam::subArrhenius2ReactionRate::operator()
 ) const
 {
     const label temperatureRange(findBounds(T));
-    
+
     scalar A_range = A_[temperatureRange];
     scalar beta_range = beta_[temperatureRange];
     scalar Ta_range = Ta_[temperatureRange];
-    
+
     scalar ak = A_range;
 
     if (mag(beta_range) > VSMALL)
@@ -113,7 +113,7 @@ inline Foam::scalar Foam::subArrhenius2ReactionRate::operator()
     {
         ak *= exp(-Ta_range/T);
     }
-    
+
     if(Tbound_.size() != 0)
     {
         if(T-Tbound_[temperatureRange-1] < smoothingTemperatureRange_ and T-Tbound_[temperatureRange-1] > 0)
@@ -121,7 +121,7 @@ inline Foam::scalar Foam::subArrhenius2ReactionRate::operator()
             A_range = A_[temperatureRange-1];
             beta_range = beta_[temperatureRange-1];
             Ta_range = Ta_[temperatureRange-1];
-            
+
             scalar ak2 = A_range;
 
             if (mag(beta_range) > VSMALL)
@@ -133,7 +133,7 @@ inline Foam::scalar Foam::subArrhenius2ReactionRate::operator()
             {
                 ak2 *= exp(-Ta_range/T);
             }
-            
+
             const scalar alpha = (Tbound_[temperatureRange-1]+smoothingTemperatureRange_ - T)/(2.0*smoothingTemperatureRange_);
             return ak*(1.0-alpha) + ak2*alpha;
         }
@@ -142,7 +142,7 @@ inline Foam::scalar Foam::subArrhenius2ReactionRate::operator()
             A_range = A_[temperatureRange+1];
             beta_range = beta_[temperatureRange+1];
             Ta_range = Ta_[temperatureRange+1];
-            
+
             scalar ak2 = A_range;
 
             if (mag(beta_range) > VSMALL)
@@ -154,7 +154,7 @@ inline Foam::scalar Foam::subArrhenius2ReactionRate::operator()
             {
                 ak2 *= exp(-Ta_range/T);
             }
-            
+
             const scalar alpha = (Tbound_[temperatureRange]+smoothingTemperatureRange_ - T)/(2.0*smoothingTemperatureRange_);
             return ak*alpha + ak2*(1.0-alpha);
         }

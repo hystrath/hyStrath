@@ -97,7 +97,7 @@ Foam::scalar Foam::VariableSoftSphere::sigmaTcR
             cloud_.constProps(typeIdP).omega()
           + cloud_.constProps(typeIdQ).omega()
         );
-       
+
     const scalar cR = mag(pP.U() - pQ.U());
 
     if (cR < VSMALL)
@@ -147,38 +147,38 @@ void Foam::VariableSoftSphere::scatter
         pQ.U(),
         cR
     );
-    
+
     //- Collision separation and measurements
-    cloud_.cellPropMeasurements().collisionSeparation()[cellI] += 
+    cloud_.cellPropMeasurements().collisionSeparation()[cellI] +=
         sqrt
         (
             sqr(pP.position().x() - pQ.position().x())
           + sqr(pP.position().y() - pQ.position().y())
           + sqr(pP.position().z() - pQ.position().z())
         );
-        
+
     cloud_.cellPropMeasurements().nColls()[cellI]++;
-    
+
     const label classificationP = pP.classification();
     const label classificationQ = pQ.classification();
-    
-    //- Class I molecule changes to class III molecule when it collides with 
+
+    //- Class I molecule changes to class III molecule when it collides with
     //  either class II or class III molecules.
     if (classificationP == 0 && classificationQ == 1)
     {
         pP.classification() = 2;
     }
-    
+
     if (classificationQ == 0 && classificationP == 1)
     {
         pQ.classification() = 2;
     }
-    
+
     if (classificationP == 0 && classificationQ == 2)
     {
         pP.classification() = 2;
     }
-    
+
     if (classificationQ == 0 && classificationP == 2)
     {
         pQ.classification() = 2;
@@ -199,14 +199,14 @@ void Foam::VariableSoftSphere::postCollisionVelocities
     {
         cR = mag(UP - UQ);
     }
-    
-    const scalar alphaPQ = 
+
+    const scalar alphaPQ =
         0.5
        *(
             cloud_.constProps(typeIdP).alpha()
           + cloud_.constProps(typeIdQ).alpha()
         );
-        
+
     const scalar mP = cloud_.constProps(typeIdP).mass();
     const scalar mQ = cloud_.constProps(typeIdQ).mass();
 
@@ -221,24 +221,24 @@ void Foam::VariableSoftSphere::postCollisionVelocities
         ) - 1.0;
     const scalar sinTheta = sqrt(1.0 - sqr(cosTheta));
     const scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
-    
+
     const scalar D =
         sqrt
         (
-            cRComponents.y()*cRComponents.y() 
+            cRComponents.y()*cRComponents.y()
           + cRComponents.z()*cRComponents.z()
         );
-    
+
     //- Bird, equation 2.22
     const vector& postCollisionRelU =
         vector
         (
             cosTheta*cRComponents.x() + sinTheta*sin(phi)*D,
-            cosTheta*cRComponents.y() + sinTheta*(cR*cRComponents.z()*cos(phi) 
+            cosTheta*cRComponents.y() + sinTheta*(cR*cRComponents.z()*cos(phi)
                 - cRComponents.x()*cRComponents.y()*sin(phi))/D,
             cosTheta*cRComponents.z() - sinTheta*(cR*cRComponents.y()*cos(phi)
                 + cRComponents.x()*cRComponents.z()*sin(phi))/D
-        ); 
+        );
 
     //- Post-collision velocities
     UP = Ucm + postCollisionRelU*mQ/(mP + mQ);
@@ -256,13 +256,13 @@ void Foam::VariableSoftSphere::postReactionVelocities
     scalar cR
 )
 {
-    const scalar alphaPQ = 
+    const scalar alphaPQ =
         0.5
        *(
             cloud_.constProps(typeIdP).alpha()
           + cloud_.constProps(typeIdQ).alpha()
         );
-        
+
     const scalar mP = cloud_.constProps(typeIdP).mass();
     const scalar mQ = cloud_.constProps(typeIdQ).mass();
 
@@ -275,28 +275,28 @@ void Foam::VariableSoftSphere::postReactionVelocities
         ) - 1.0;
     const scalar sinTheta = sqrt(1.0 - sqr(cosTheta));
     const scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
-    
+
     const scalar D =
         sqrt
         (
-            cRComponents.y()*cRComponents.y() 
+            cRComponents.y()*cRComponents.y()
           + cRComponents.z()*cRComponents.z()
         );
-    
+
     //- Bird, equation 2.22
     const vector& postCollisionRelU =
         vector
         (
             cosTheta*cRComponents.x() + sinTheta*sin(phi)*D,
-            cosTheta*cRComponents.y() + sinTheta*(cR*cRComponents.z()*cos(phi) 
+            cosTheta*cRComponents.y() + sinTheta*(cR*cRComponents.z()*cos(phi)
                 - cRComponents.x()*cRComponents.y()*sin(phi))/D,
             cosTheta*cRComponents.z() - sinTheta*(cR*cRComponents.y()*cos(phi)
                 + cRComponents.x()*cRComponents.z()*sin(phi))/D
-        ); 
+        );
 
     //- Post-collision velocities
     UQ = UP - postCollisionRelU*mP/(mP + mQ);
-    
+
     UP += postCollisionRelU*mQ/(mP + mQ);
 }
 

@@ -98,11 +98,11 @@ void densityController::calculateProperties()
             forAll(parcelsInCell, pIC)
             {
                 dsmcParcel* p = parcelsInCell[pIC];
-                
+
                 if(p->typeId() == typeId_)
                 {
                     const scalar& RWF = cloud_.coordSystem().recalculateRWF(cellI);
-                    
+
                     parcels_[c] += RWF;
                 }
             }
@@ -179,7 +179,7 @@ void densityController::controlParcelsBeforeMove()
                 residualSum_[c] =+ 1;
             }
         }
-        
+
         nMolsToControl_ = 0;
     }
 }
@@ -220,7 +220,7 @@ void densityController::insertParcelWithinDSMC(const label& c)
     {
         const vector& vertexI = mesh_.points()[cellPoints[cP]];
         scalar vertexDist = mag(vertexI- cC);
-        
+
         if(vertexDist > maxDistance)
         {
             maxDistance = vertexDist;
@@ -244,7 +244,7 @@ void densityController::insertParcelWithinDSMC(const label& c)
 
         //- normalise the random vector (unit vector)
         randDirection /= mag(randDirection);
-            
+
         p = randDirection*rndGen_.sample01<scalar>()*maxDistance + cC;
 
         if(mesh_.pointInCell(p, cellI))
@@ -273,7 +273,7 @@ void densityController::insertParcelWithinDSMC(const label& c)
         cP.nVibrationalModes(),
         typeId_
     );
-    
+
     label ELevel = cloud_.equipartitionElectronicLevel
     (
         temperature_,
@@ -295,7 +295,7 @@ void densityController::insertParcelWithinDSMC(const label& c)
         tetFace,
         tetPt
     );
-    
+
     const scalar& RWF = cloud_.coordSystem().recalculateRWF(cellI);
 
     cloud_.addNewParcel
@@ -313,7 +313,7 @@ void densityController::insertParcelWithinDSMC(const label& c)
         0,
         vibLevel
     );
-} 
+}
 
 void densityController::controlParcelsBeforeCollisions()
 {
@@ -353,7 +353,7 @@ void densityController::updateProperties(const dictionary& newDict)
         density_ /= (cloud_.constProps(typeId_).mass() * cloud_.nParticle());
 
         const scalarField& volField = mesh_.cellVolumes();
-        
+
         forAll(densities_, c)
         {
             const label& cellI = controlZone()[c];

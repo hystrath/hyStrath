@@ -171,8 +171,8 @@ public:
             {
                 return part_;
             }
-    };    
-    
+    };
+
 
 private:
 
@@ -213,7 +213,7 @@ private:
         scalar R_;
 
         // - fraction of force potential contribution
-        scalar frac_;    
+        scalar frac_;
 
         //- each molecule will have a unique label
         label trackingNumber_;
@@ -241,7 +241,7 @@ public:
         //- Construct from components
         inline polyMolecule
         (
-            const polyMesh& mesh,            
+            const polyMesh& mesh,
             const vector& position,
             const label cellI,
             const label tetFaceI,
@@ -325,7 +325,7 @@ public:
             );
 
             void setAsReferred();
-            
+
         // Access
 
             inline const tensor& Q() const;
@@ -360,7 +360,7 @@ public:
 
             inline label special() const;
             inline label& special();
-            
+
             inline bool tethered() const;
 
             inline label id() const;
@@ -378,9 +378,9 @@ public:
             inline label& trackingNumber();
 
             inline bool frozen();
-            
+
             inline bool referred();
-            
+
     // Member Operators
 
 

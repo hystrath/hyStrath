@@ -67,7 +67,7 @@ FENE::FENE
         k_ /= rU.refEnergy()/(rU.refLength()*rU.refLength());
     }
 
-    Info << "FENE properties. rO = " << rO_ << ", k = " << k_ << endl; 
+    Info << "FENE properties. rO = " << rO_ << ", k = " << k_ << endl;
 
     setLookupTables(rU);
 }

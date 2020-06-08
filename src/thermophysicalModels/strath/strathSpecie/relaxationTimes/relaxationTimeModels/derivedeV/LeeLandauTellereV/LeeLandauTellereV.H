@@ -27,7 +27,7 @@ Class
 
 Description
     LeeLandauTellereV relaxation time model.
-  
+
 SourceFiles
     LeeLandauTellereV.C
 
@@ -42,7 +42,7 @@ SourceFiles
 
 namespace Foam
 {
-  
+
 /*---------------------------------------------------------------------------*\
                              Class LeeLandauTellereV Declaration
 \*---------------------------------------------------------------------------*/
@@ -51,28 +51,28 @@ template<class ThermoType>
 class LeeLandauTellereV
 :
     public relaxationTimeModeleV
-{  
+{
 
 protected:
-  
+
     // Protected data
-    
+
         //- Thermodynamic data of the species
         const PtrList<ThermoType>& speciesThermo_;
 
 
     // Protected member functions
-    
+
         //- Update the coefficients of the species equations
         virtual void updateCoefficients();
-    
+
 
 public:
 
     //- Runtime type information
     TypeName("LeeLandauTeller");
 
-    
+
     // Constructors
 
         //- Construct from components
@@ -96,15 +96,15 @@ public:
         {
             return speciesThermo_[i].W();
         }
-        
+
         // Correct the e-V relaxation times and e-V energy transfer
         virtual void correct();
-                
+
         //- Read transportProperties dictionary
         virtual bool read();
   };
 
-  
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 }	// End namespace Foam

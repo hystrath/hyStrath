@@ -83,7 +83,7 @@ protected:
 
         //- beta1 coefficient
         scalar beta1_;
-        
+
         //- Von Karman constant
         scalar kappa_;
 

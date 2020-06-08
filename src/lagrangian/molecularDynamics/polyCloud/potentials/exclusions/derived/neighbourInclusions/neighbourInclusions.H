@@ -26,23 +26,23 @@ Class
 
 
 Description
-    Allows interaction only between specific pairs of molecules 
-    
-    E.g. for Morse, FENE potentials etc 
-    
-    code changes required for changes in fluid density 
-    
-    
+    Allows interaction only between specific pairs of molecules
+
+    E.g. for Morse, FENE potentials etc
+
+    code changes required for changes in fluid density
+
+
     reminder:
-    
+
     FALSE = interact
-    TRUE = do not interact 
-    
+    TRUE = do not interact
+
     OR
-    
+
     FALSE = do not exclude interactions
     TRUE = exclude interactions
-    
+
 SourceFiles
     neighbourInclusionsI.H
     neighbourInclusions.C
@@ -80,7 +80,7 @@ private:
         List<label> tNsB_;
 
         List<DynamicList<label> > fullTNs_;
-        
+
 
 public:
 
@@ -113,7 +113,7 @@ public:
         // Check
 
         // Edit
-        
+
         void initialiseExclusions();
 
         bool excludeMolecules
@@ -121,7 +121,7 @@ public:
             polyMolecule* molI,
             polyMolecule* molJ
         );
-        
+
         bool excludeSites
         (
             polyMolecule* molI,
@@ -129,7 +129,7 @@ public:
             const label& siteI,
             const label& siteJ
         );
-        
+
 
         // Write
 

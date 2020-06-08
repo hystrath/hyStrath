@@ -91,9 +91,9 @@ dsmcFixedHeatFluxWallPatch::dsmcFixedHeatFluxWallPatch
     setProperties();
 
     newWallTemperature_ = temperature_;
-    
+
     Info << "patchId_ = " << patchId_ << endl;
-   
+
 }
 
 
@@ -114,37 +114,37 @@ void dsmcFixedHeatFluxWallPatch::calculateProperties()
     stepCounter_++;
 
     const scalar deltaT = mesh_.time().deltaTValue(); //TODO cloud_.deltaTValue(p.cell());
-    
+
     EcTotSum_ += EcTot_;
     EcTot_ = 0.0;
 
-    
+
     if(time_.time().outputTime())
     {
         scalar fA = totalPatchSurfaceArea_;
 
         scalar heatFlux = EcTotSum_/(deltaT*stepCounter_*fA);
-                   
+
         if(fabs(heatFlux) > VSMALL) // zero face temperature not allowed!
-        {            
+        {
             scalar oldWallTemperature = newWallTemperature_;
-            
+
             scalar normalisedDesiredHeatFlux = desiredHeatFlux_ / (referenceCp_*referenceRho_*referenceU_*referenceTemperature_);
-                
+
             scalar normalisedHeatFlux = heatFlux / (referenceCp_*referenceRho_*referenceU_*referenceTemperature_);
-            
+
             scalar deltaWallTemperature = relaxationFactor_*(normalisedHeatFlux - normalisedDesiredHeatFlux)*oldWallTemperature;
-                
+
             newWallTemperature_ = oldWallTemperature + deltaWallTemperature;
-        }                                    
-        
+        }
+
         label wppIndex = patchId_;
-        
+
         if(newWallTemperature_ > VSMALL)
         {
             wallTemperature_.boundaryFieldRef()[wppIndex] = newWallTemperature_;
         }
-        
+
         stepCounter_ = 0.0;
         EcTotSum_ = 0.0;
     }
@@ -207,7 +207,7 @@ void dsmcFixedHeatFluxWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::trac
     scalar mass = cloud_.constProps(typeId).mass();
 
     scalar rotationalDof = cloud_.constProps(typeId).rotationalDegreesOfFreedom();
-    
+
     scalar vibrationalDof = cloud_.constProps(typeId).nVibrationalModes();
 
     U =
@@ -219,9 +219,9 @@ void dsmcFixedHeatFluxWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::trac
         );
 
     ERot = cloud_.equipartitionRotationalEnergy(T, rotationalDof);
-    
+
     vibLevel = cloud_.equipartitionVibrationalEnergyLevel(T, vibrationalDof, typeId);
-    
+
     ELevel = cloud_.equipartitionElectronicLevel
         (
             T,
@@ -230,13 +230,13 @@ void dsmcFixedHeatFluxWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::trac
         );
 
     measurePropertiesAfterControl(p, 0.0);
-    
+
     scalar postIE = 0.5*m*(U & U) + ERot
         + cloud_.constProps(typeId).eVib_tot(vibLevel)
         + cloud_.constProps(typeId).electronicEnergyList()[ELevel];
-    
+
     U += velocity_;
-    
+
     EcTot_ += cloud_.nParticle()*(preIE - postIE);
 }
 

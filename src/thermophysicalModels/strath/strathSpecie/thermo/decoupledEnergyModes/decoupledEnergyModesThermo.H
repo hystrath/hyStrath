@@ -102,7 +102,7 @@ public:
 
         static const int nCoeffs_ = 7;
         typedef FixedList<scalar, nCoeffs_> cvCoeffsArray;
-        
+
         typedef DynamicList<scalar> dynamicArray; // NEW VINCENT 11/02/2016
 
 
@@ -124,10 +124,10 @@ private:
 
         //- Return the cv coefficients
         inline const cvCoeffsArray& cvCoeffs(const scalar T) const;
-        
+
         //- Return the vibrational coefficients in the format degeneracy - temperature
         inline const dynamicArray& vibrationalCoeffs(const scalar T) const;
-        
+
         //- Return the electronic coefficients in the format degeneracy - temperature
         inline const dynamicArray& electronicCoeffs(const scalar T) const;
 
@@ -179,43 +179,43 @@ public:
 
             //- Return const access to the list of cv coeffs
             inline const cvCoeffsArray& decoupledCvCoeffs() const;
-            
+
             //- Return const access to the list of vibrational coeffs
             inline const dynamicArray& vibrationalList() const;
-            
+
             //- Return const access to the list of electronic coeffs
             inline const dynamicArray& electronicList() const;
 
 
 
         // Fundamental properties
-            
+
             // NEW VINCENT ****************************************************
-            //- Heat capacity at constant volume for the 
+            //- Heat capacity at constant volume for the
             //  translational mode [J/(kmol K)]
             inline scalar cv_trans(const scalar p, const scalar Tt) const;
-            
-            //- Heat capacity at constant volume for the 
+
+            //- Heat capacity at constant volume for the
             //  rotational mode [J/(kmol K)]
             inline scalar cv_r(const scalar p, const scalar Tt) const;
-            
-            //- Heat capacity at constant volume for the 
+
+            //- Heat capacity at constant volume for the
             //  trans-rotational mode [J/(kmol K)]
             inline scalar cv_t(const scalar p, const scalar Tt) const;
-            
-            //- Heat capacity at constant volume for the 
+
+            //- Heat capacity at constant volume for the
             //  vibrational energy mode, for the mode vibMode [J/(kmol K)]
             inline scalar cv_v_mode(const label vibMode, const scalar p, const scalar Tv) const;
-            
-            //- Heat capacity at constant volume for the 
+
+            //- Heat capacity at constant volume for the
             //  vibrational mode [J/(kmol K)]
             inline scalar cv_v(const scalar p, const scalar Tv) const;
-            
-            //- Heat capacity at constant volume for the 
+
+            //- Heat capacity at constant volume for the
             //  electronic mode [J/(kmol K)]
             inline scalar cv_el(const scalar p, const scalar Tv) const;
-            
-            //- Heat capacity at constant volume for the 
+
+            //- Heat capacity at constant volume for the
             //  electron mode [J/(kmol K)]
             inline scalar cv_e(const scalar p, const scalar Tv) const;
             // END NEW VINCENT ************************************************
@@ -227,38 +227,38 @@ public:
             //- Sensible enthalpy [J/kmol]
             //inline scalar hs(const scalar p, const scalar Tt, const scalar Tv = 0) const;
             // END DELETION VINCENT *******************************************
-            
+
             // NEW VINCENT ****************************************************
             //- Trans-rotational sensible internal energy [J/kmol]
             inline scalar ets(const scalar p, const scalar Tt) const;
-            
+
             //- Rotational sensible internal energy [J/kmol]
             inline scalar ers(const scalar p, const scalar Tt) const;
-            
+
             //- Vibrational sensible internal energy for vib. mode vibMode [J/kmol]
             inline scalar evs_mode(const label vibMode, const scalar p, const scalar Tv) const;
-            
+
             //- Vibrational sensible internal energy [J/kmol]
             inline scalar evs(const scalar p, const scalar Tv) const;
-            
+
             //- Electronic sensible internal energy [J/kmol]
             inline scalar eels(const scalar p, const scalar Tv) const;
-            
+
              //- Electron sensible internal energy [J/kmol]
             inline scalar ees(const scalar p, const scalar Tv) const;
-            
+
             //- Degrees of freedom associated with the rotational energy mode [-]
             inline scalar zetar(const scalar p, const scalar Tt, const scalar Tv) const;
-            
+
             //- Degrees of freedom associated with the vibrational energy mode, mode vibMode [-]
             inline scalar zetav_mode(const label vibMode, const scalar p, const scalar Tv) const;
-            
+
             //- Degrees of freedom associated with the vibrational energy mode [-]
             inline scalar zetav(const scalar p, const scalar Tv) const;
-            
+
             //- Degrees of freedom associated with the electronic energy mode [-]
             inline scalar zetael(const scalar p, const scalar Tv) const;
-            
+
             //- Degrees of freedom associated with the electron energy mode [-]
             inline scalar zetae(const scalar p, const scalar Tv) const;
             // END NEW VINCENT ************************************************

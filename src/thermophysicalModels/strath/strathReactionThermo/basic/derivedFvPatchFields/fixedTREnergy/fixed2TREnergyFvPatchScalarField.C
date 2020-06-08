@@ -97,17 +97,17 @@ void Foam::fixed2TREnergyFvPatchScalarField::updateCoeffs()
         return;
     }
 
-    //Info << "fixed2TREnergy is used for patch called " << patch().name() << endl; 
-    
+    //Info << "fixed2TREnergy is used for patch called " << patch().name() << endl;
+
     const multi2Thermo& thermo = multi2Thermo::lookup2Thermo(*this);
     const label patchi = patch().index();
 
     const scalarField& pw = thermo.p().boundaryField()[patchi];
-    
+
     fvPatchScalarField& Ttw =
         const_cast<fvPatchScalarField&>(thermo.Tt().boundaryField()[patchi]);
     Ttw.evaluate();
-    
+
     operator==(thermo.het(pw, Ttw, patchi)); // Force an assignment, overriding fixedValue status
 
     fixedValueFvPatchScalarField::updateCoeffs();

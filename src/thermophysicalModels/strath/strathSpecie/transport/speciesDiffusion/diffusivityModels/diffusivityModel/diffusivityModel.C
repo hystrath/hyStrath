@@ -55,7 +55,7 @@ Foam::diffusivityModel::diffusivityModel
             IOobject::NO_WRITE
         )
     ),
-    
+
     dictThermo_
     (
         IOobject
@@ -72,17 +72,17 @@ Foam::diffusivityModel::diffusivityModel
     pe_(volScalarField::null()),
     T_(T),
     species_(species)
-    
+
 {
     DijModels_.setSize(0.5*species.size()*(species.size()+1));
     Dij_.setSize(DijModels_.size());
-           
+
     forAll(species, i)
     {
         for(label j=i; j < species.size(); j++)
         {
             const label k = species.size()*i+j-0.5*i*(i+1);
-            
+
             DijModels_.set
             (
                 k,
@@ -104,9 +104,9 @@ Foam::diffusivityModel::diffusivityModel
                 (
                    DijModels_[k].D()
                 )
-            );   
+            );
         }
-    } 
+    }
 }
 
 
@@ -131,7 +131,7 @@ Foam::diffusivityModel::diffusivityModel
             IOobject::NO_WRITE
         )
     ),
-    
+
     dictThermo_
     (
         IOobject
@@ -148,17 +148,17 @@ Foam::diffusivityModel::diffusivityModel
     pe_(pe),
     T_(T),
     species_(species)
-    
+
 {
     DijModels_.setSize(0.5*species.size()*(species.size()+1));
     Dij_.setSize(DijModels_.size());
-           
+
     forAll(species, i)
     {
         for(label j=i; j < species.size(); j++)
         {
             const label k = species.size()*i+j-0.5*i*(i+1);
-            
+
             DijModels_.set
             (
                 k,
@@ -181,16 +181,16 @@ Foam::diffusivityModel::diffusivityModel
                 (
                    DijModels_[k].D()
                 )
-            );   
+            );
         }
-    } 
+    }
 }
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 void Foam::diffusivityModel::update()
-{    
+{
     forAll(species_, i)
     {
         for(label j=i; j < species_.size(); j++)

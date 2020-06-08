@@ -31,7 +31,7 @@ License
 
 template<class ThermoType>
 void Foam::noSpeciesDiffusion<ThermoType>::updateCoefficients()
-{} 
+{}
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
@@ -44,20 +44,20 @@ Foam::noSpeciesDiffusion<ThermoType>::noSpeciesDiffusion
 )
 :
     multiSpeciesTransportModel(thermo, turbulence),
-    
+
     speciesThermo_
     (
         dynamic_cast<const multi2ComponentMixture<ThermoType>&>
             (this->thermo_).speciesData()
     )
-{    
+{
     D_.setSize(species().size());
-    
+
     forAll(D_, speciei)
     {
         D_.set
         (
-            speciei, 
+            speciei,
             new volScalarField
             (
                 IOobject
@@ -72,7 +72,7 @@ Foam::noSpeciesDiffusion<ThermoType>::noSpeciesDiffusion
                 dimensionedScalar("D", dimMass/dimLength/dimTime, 0.0)
             )
         );
-    } 
+    }
 }
 
 
@@ -80,8 +80,8 @@ Foam::noSpeciesDiffusion<ThermoType>::noSpeciesDiffusion
 
 template<class ThermoType>
 void Foam::noSpeciesDiffusion<ThermoType>::correct()
-{}    
-    
+{}
+
 
 template<class ThermoType>
 bool Foam::noSpeciesDiffusion<ThermoType>::read()
@@ -95,6 +95,6 @@ bool Foam::noSpeciesDiffusion<ThermoType>::read()
         return false;
     }
 }
-   
+
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

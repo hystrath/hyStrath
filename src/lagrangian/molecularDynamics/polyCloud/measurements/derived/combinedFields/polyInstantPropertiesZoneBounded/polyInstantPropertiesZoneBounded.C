@@ -45,7 +45,7 @@ addToRunTimeSelectionTable(polyField, polyInstantPropertiesZoneBounded, dictiona
 
 void polyInstantPropertiesZoneBounded::setBoundBoxes()
 {
- 
+
     PtrList<entry> boxList(propsDict_.lookup("boxes"));
 
     boxes_.setSize(boxList.size());
@@ -110,7 +110,7 @@ polyInstantPropertiesZoneBounded::~polyInstantPropertiesZoneBounded()
 
 void polyInstantPropertiesZoneBounded::createField()
 {
- 
+
 }
 
 void polyInstantPropertiesZoneBounded::calculateField()
@@ -136,8 +136,8 @@ void polyInstantPropertiesZoneBounded::calculateField()
                 }
             }
         }
-    }    
-    
+    }
+
     // - parallel processing
     if(Pstream::parRun())
     {
@@ -145,16 +145,16 @@ void polyInstantPropertiesZoneBounded::calculateField()
         reduce(vel, sumOp<vector>());
 //         reduce(frc, sumOp<vector>());
     }
-    
+
     vector velocity = vector::zero;
 //     vector force = vector::zero;
-    
+
     if(mols > 0.0)
     {
         velocity = vel/mols;
 //         force = frc/mols;
     }
-    
+
     velocityField_.append(velocity);
 //     forceField_.append(force);
 }
@@ -174,19 +174,19 @@ void polyInstantPropertiesZoneBounded::writeField()
             scalarField timeField (velocityField_.size(), 0.0);
             vectorField velocity (velocityField_.size(), vector::zero);
 //            vectorField force (forceField_.size(), vector::zero);
-            
+
             velocity.transfer(velocityField_);
             velocityField_.clear();
 //            force.transfer(forceField_);
 //            forceField_.clear();
-            
+
             const scalar& deltaT = time_.time().deltaT().value();
-            
+
             forAll(timeField, i)
             {
                 timeField[timeField.size()-i-1]=runTime.timeOutputValue()-(deltaT*i);
             }
-            
+
             writeTimeData
             (
                 casePath_,
@@ -195,7 +195,7 @@ void polyInstantPropertiesZoneBounded::writeField()
                 velocity,
                 true
             );
-/*            
+/*
             writeTimeData
             (
                 casePath_,

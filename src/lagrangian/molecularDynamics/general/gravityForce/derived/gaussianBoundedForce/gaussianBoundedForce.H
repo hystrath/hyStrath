@@ -65,10 +65,10 @@ private:
         vector startPoint_;
         vector endPoint_;
         vector normalVector_;
-        
+
         boundedBox bb_;
-        
-        // shear stress 
+
+        // shear stress
 //         scalar stress_;
         scalar amplitude_;
 //         scalar density_;
@@ -127,9 +127,9 @@ public:
             void updateForce();
 
             vector force(const vector& position);
-            
+
             vector force(const scalar& time);
-            
+
         // Write
 
 

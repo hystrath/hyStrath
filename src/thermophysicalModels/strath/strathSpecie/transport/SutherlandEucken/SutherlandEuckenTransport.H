@@ -102,7 +102,7 @@ class SutherlandEuckenTransport
 
         //- Sutherland's coefficients
         scalar As_, Ts_;
-        
+
         //- Factor in vibrational thermal conductivity kappave
         // Hard-sphere: (7-2*omega_m)/5 with omega_m = 0.5
         // Default value: 1.2
@@ -117,7 +117,7 @@ class SutherlandEuckenTransport
         (
             const scalar mu1, const scalar T1,
             const scalar mu2, const scalar T2
-            
+
         );
 
 
@@ -174,19 +174,19 @@ public:
 
         //- Thermal conductivity, translational mode [W/mK]
         inline scalar kappatrans(const scalar p, const scalar Tt) const;
-        
+
         //- Thermal conductivity, rotational mode [W/mK]
         inline scalar kappar(const scalar p, const scalar Tr) const;
-        
+
         //- Thermal conductivity, trans-rotational mode [W/mK]
         inline scalar kappatr(const scalar p, const scalar Tt) const;
-        
+
         //- Thermal conductivity, vib-electronic mode [W/mK]
         inline scalar kappave(const scalar p, const scalar Tt, const scalar Tve) const;
-        
+
         //- Thermal diffusivity, trans-rotational mode [kg/ms]
         inline scalar alphatr(const scalar p, const scalar Tt) const;
-        
+
         //- Thermal diffusivity, vib-electronic mode [kg/ms]
         inline scalar alphave(const scalar p, const scalar Tt, const scalar Tve) const;
 

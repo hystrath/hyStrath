@@ -92,7 +92,7 @@ Foam::label Foam::dsmcCloud::pickFromCandidateList
 
         // build a new list without the chosen entry
         DynamicList<label> newCandidates(0);
-    
+
         forAll(candidatesInCell, i)
         {
             if(i != randomIndex)
@@ -149,14 +149,14 @@ Foam::label Foam::dsmcCloud::pickFromCandidateSubList
 
     label entry = -1;
     label subCellSize = candidatesInSubCell.size();
-    
+
     if(subCellSize > 0)
     {
         //label randomIndex = rndGen_.position<label>(0, subCellSize - 1); OLD
         label randomIndex = cloud_.randomLabel(0, subCellSize-1);
         entry = candidatesInSubCell[randomIndex];
 
-//         Info<< "random index: " << randomIndex <<" entry " 
+//         Info<< "random index: " << randomIndex <<" entry "
 //             << entry << endl;
 
         DynamicList<label> newSubCellList(0);
@@ -177,7 +177,7 @@ Foam::label Foam::dsmcCloud::pickFromCandidateSubList
         label newIndex = findIndex(candidatesInCell, entry);
 
         DynamicList<label> newList(0);
-    
+
         forAll(candidatesInCell, i)
         {
             if(i != newIndex)
@@ -308,7 +308,7 @@ Foam::scalar Foam::dsmcCloud::PSIm
     {
         return (DOFm/DOFtot);
     }
-    
+
     scalar rPSIm = 0.0;
     scalar prob = 0.0;
 
@@ -405,7 +405,7 @@ Foam::dsmcCloud::dsmcCloud
     {
         collisionSelectionRemainder_[i] = rndGen_.sample01<scalar>();
     }
-    
+
 	collisionPartnerSelectionModel_ = autoPtr<collisionPartnerSelection>
 	(
     	collisionPartnerSelection::New(mesh, *this, particleProperties_)
@@ -501,15 +501,15 @@ Foam::dsmcCloud::dsmcCloud
     conf.setInitialConfig();
 
     label finalParcels = this->size();
-    
+
     if (Pstream::parRun())
     {
         reduce(finalParcels, sumOp<label>());
     }
 
-    Info << nl << "Initial no. of parcels: " << initialParcels 
+    Info << nl << "Initial no. of parcels: " << initialParcels
          << " added parcels: " << finalParcels - initialParcels
-         << ", total no. of parcels: " << finalParcels 
+         << ", total no. of parcels: " << finalParcels
          << endl;
 
 }
@@ -634,7 +634,7 @@ void Foam::dsmcCloud::evolveWrite()
 
     trackingInfo_.clean(); //****
     boundaryMeas_.clean(); //****
-    
+
     List<label> cellsToWrite_;
     cellsToWrite_.setSize(3);
     cellsToWrite_[0] = 2;
@@ -673,7 +673,7 @@ void Foam::dsmcCloud::info() const
 
     scalar rotationalEnergy = rotationalEnergyOfSystem();
     reduce(rotationalEnergy, sumOp<scalar>());
-    
+
     scalar vibrationalEnergy = vibrationalEnergyOfSystem();
     reduce(vibrationalEnergy, sumOp<scalar>());
 
@@ -744,13 +744,13 @@ void Foam::dsmcCloud::resetHybrid
             forAll(zone, c)
             {
                 const label& cellI = zone[c];
-    
+
                 List<tetIndices> cellTets = polyMeshTetDecomposition::cellTetIndices
                 (
                     mesh_,
                     cellI
                 );
-    
+
                 forAll(cellTets, tetI)
                 {
                     const tetIndices& cellTetIs = cellTets[tetI];
@@ -804,7 +804,7 @@ void Foam::dsmcCloud::resetHybrid
                                 rotationalTemperature,
                                 cP.rotationalDegreesOfFreedom()
                             );
-        
+
                             scalar EVib = this->equipartitionVibrationalEnergy
                             (
                                 vibrationalTemperature,
@@ -813,9 +813,9 @@ void Foam::dsmcCloud::resetHybrid
                             );
 
                             U += velocity;
-                
+
                             label newParcel = -1;
-            
+
                             label classification = 0;
 
                             this->addNewParcel
@@ -879,13 +879,13 @@ void Foam::dsmcCloud::resetHybrid2
             forAll(zone, c)
             {
                 const label& cellI = zone[c];
-    
+
                 List<tetIndices> cellTets = polyMeshTetDecomposition::cellTetIndices
                 (
                     mesh_,
                     cellI
                 );
-    
+
                 forAll(cellTets, tetI)
                 {
                     const tetIndices& cellTetIs = cellTets[tetI];
@@ -938,7 +938,7 @@ void Foam::dsmcCloud::resetHybrid2
                                 rotationalTemperature,
                                 cP.rotationalDegreesOfFreedom()
                             );
-        
+
                             scalar EVib = this->equipartitionVibrationalEnergy
                             (
                                 vibrationalTemperature,
@@ -947,9 +947,9 @@ void Foam::dsmcCloud::resetHybrid2
                             );
 
                             U += velocity;
-                
+
                             label newParcel = -1;
-            
+
                             label classification = 0;
 
                             this->addNewParcel
@@ -1010,13 +1010,13 @@ void Foam::dsmcCloud::resetHybridMax
             forAll(zone, c)
             {
                 const label& cellI = zone[c];
-    
+
                 List<tetIndices> cellTets = polyMeshTetDecomposition::cellTetIndices
                 (
                     mesh_,
                     cellI
                 );
-    
+
                 forAll(cellTets, tetI)
                 {
                     const tetIndices& cellTetIs = cellTets[tetI];
@@ -1067,7 +1067,7 @@ void Foam::dsmcCloud::resetHybridMax
                                 rotationalTemperature,
                                 cP.rotationalDegreesOfFreedom()
                             );
-        
+
                             scalar EVib = this->equipartitionVibrationalEnergy
                             (
                                 vibrationalTemperature,
@@ -1076,9 +1076,9 @@ void Foam::dsmcCloud::resetHybridMax
                             );
 
                             U += velocity;
-                
+
                             label newParcel = -1;
-            
+
                             label classification = 0;
 
                             this->addNewParcel
@@ -1141,13 +1141,13 @@ void Foam::dsmcCloud::resetHybridTra
             forAll(zone, c)
             {
                 const label& cellI = zone[c];
-    
+
                 List<tetIndices> cellTets = polyMeshTetDecomposition::cellTetIndices
                 (
                     mesh_,
                     cellI
                 );
-    
+
                 forAll(cellTets, tetI)
                 {
                     const tetIndices& cellTetIs = cellTets[tetI];
@@ -1200,7 +1200,7 @@ void Foam::dsmcCloud::resetHybridTra
                                 rotationalTemperature,
                                 cP.rotationalDegreesOfFreedom()
                             );
-        
+
                             scalar EVib = this->equipartitionVibrationalEnergy
                             (
                                 vibrationalTemperature,
@@ -1209,9 +1209,9 @@ void Foam::dsmcCloud::resetHybridTra
                             );
 
                             U += velocity;
-                
+
                             label newParcel = -1;
-            
+
                             label classification = 0;
 
                             this->addNewParcel
@@ -1292,7 +1292,7 @@ void Foam::dsmcCloud::resetHybridTraRotVib
                     mesh_,
                     cellI
                 );
-    
+
                 forAll(cellTets, tetI)
                 {
                     const tetIndices& cellTetIs = cellTets[tetI];
@@ -1355,9 +1355,9 @@ void Foam::dsmcCloud::resetHybridTraRotVib
                             );
 
                             U += velocity;
-                
+
                             label newParcel = -1;
-            
+
                             label classification = 0;
 
                             this->addNewParcel
@@ -1435,13 +1435,13 @@ void Foam::dsmcCloud::resetHybridTraRotVib2
             forAll(zone, c)
             {
                 const label& cellI = zone[c];
-    
+
                 List<tetIndices> cellTets = polyMeshTetDecomposition::cellTetIndices
                 (
                     mesh_,
                     cellI
                 );
-    
+
                 forAll(cellTets, tetI)
                 {
                     const tetIndices& cellTetIs = cellTets[tetI];
@@ -1504,9 +1504,9 @@ void Foam::dsmcCloud::resetHybridTraRotVib2
                             );
 
                             U += velocity;
-                
+
                             label newParcel = -1;
-            
+
                             label classification = 0;
 
                             this->addNewParcel
@@ -1558,7 +1558,7 @@ void Foam::dsmcCloud::shockReset()
     scalar areaTube = readScalar(shockDict.lookup("areaTube"));
 
     scalar maxDeltaParticles = maxPercentageParticles * initialParticles / 100.0;
- 
+
     scalar deltaParticles = nDsmcParticles - initialParticles;
     Info << "deltaParticles [%]: " << 100.0 * deltaParticles / initialParticles
         << nl << "updating:" << (mag(deltaParticles) >= maxDeltaParticles)
@@ -1688,7 +1688,7 @@ Foam::scalar Foam::dsmcCloud::equipartitionVibrationalEnergy
         return EVib;
     }
     else
-    {  
+    {
         label i = -log(rndGen_.sample01<scalar>())*temperature/constProps(typeId).thetaV();
         EVib = i*physicoChemical::k.value()*constProps(typeId).thetaV();
     }
@@ -1710,7 +1710,7 @@ Foam::scalar Foam::dsmcCloud::equipartitionVibrationalEnergy2
         return EVib;
     }
     else
-    {  
+    {
         label i = -log(rndGen_.sample01<scalar>())*temperature/constProps(typeId).thetaV();
         Info << "Real: " <<
             -log(rndGen_.sample01<scalar>())*temperature/constProps(typeId).thetaV()
@@ -1826,7 +1826,7 @@ void Foam::dsmcCloud::generalisedChapmanEnskog
                 rotationalTemperature,
                 constProps(typeID).rotationalDegreesOfFreedom()
             );
-        
+
         EVib = this->equipartitionVibrationalEnergy
             (
                 vibrationalTemperature,
@@ -1899,7 +1899,7 @@ void Foam::dsmcCloud::generalisedChapmanEnskog2
             rotationalTemperature,
             constProps(typeID).rotationalDegreesOfFreedom()
         );
-        
+
     EVib = this->equipartitionVibrationalEnergy
         (
             vibrationalTemperature,

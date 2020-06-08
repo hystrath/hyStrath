@@ -1,5 +1,5 @@
 #include "createTimeControls.H"
-#include "createThermoFields.H"   
+#include "createThermoFields.H"
 #include "readTimeControls.H"
 
 // --- Initialisation of reacting and two-temperature fields
@@ -13,7 +13,7 @@
 #include "numerics/readFluxScheme.H"
 
 // --- Write fields in the 0 folder
-#include "write/write0.H" 
+#include "write/write0.H"
 
 dimensionedScalar v_zero("v_zero", dimVolume/dimTime, 0.0);
 /*dimensionedScalar vv_zero("vv_zero", dimArea, 0.0);

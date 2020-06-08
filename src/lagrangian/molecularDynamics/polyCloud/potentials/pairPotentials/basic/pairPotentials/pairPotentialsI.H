@@ -71,7 +71,7 @@ inline const autoPtr<pairPotentialModel>& pairPotentials::electrostaticPot() con
 // )
 // {
 //      label k = pairPotLinks_[pairSiteA][pairSiteB];
-//     
+//
 //      return pairPotentials_[k];
 // }
 

@@ -54,34 +54,34 @@ class VVModel
 protected:
 
     // Protected data
-    
+
         //- Two-temperature model dictionary
         const IOdictionary dict1_;
-        
+
         //- Thermophysical properties dictionary
         const IOdictionary dict2_;
 
         //- Species
         const wordList& species_;
-        
+
         //- Pressure [Pa]
         const volScalarField& p_;
 
         //- Translational temperature [K]
         const volScalarField& Tt_;
-        
+
         //- Vibrational temperature [K]
         const PtrList<volScalarField>& Tv_;
-        
+
         //- Number density [m^-3]
         const PtrList<volScalarField>& nD_;
-        
 
-        //- V-V relaxation models 
-        PtrList<VVRelaxationModel> tauVVijModels_;   
+
+        //- V-V relaxation models
+        PtrList<VVRelaxationModel> tauVVijModels_;
 
         //- Interspecies V-V relaxation time
-        PtrList<volScalarField> tauVVij_;         
+        PtrList<volScalarField> tauVVij_;
 
 
     // Private Member Functions
@@ -109,7 +109,7 @@ public:
             const volScalarField& p,
             const volScalarField& Tt,
             const PtrList<volScalarField>& Tv,
-            const PtrList<volScalarField>& nD 
+            const PtrList<volScalarField>& nD
         );
 
 

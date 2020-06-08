@@ -61,7 +61,7 @@ dsmcVibrationalQuantumLevelDistribution::dsmcVibrationalQuantumLevelDistribution
     typeId_(-1),
     regionName_(propsDict_.lookup("zoneName")),
     regionId_(-1),
-    binWidth_(1), 
+    binWidth_(1),
     distr_(binWidth_)
 {
     word typeIdName = propsDict_.lookup("typeId");
@@ -116,7 +116,7 @@ void dsmcVibrationalQuantumLevelDistribution::calculateField()
         {
             const label& cellI = cells[c];
             const List<dsmcParcel*>& parcelsInCell = cellOccupancy[cellI];
-    
+
             forAll(parcelsInCell, pIC)
             {
                 dsmcParcel* p = parcelsInCell[pIC];
@@ -141,14 +141,14 @@ void dsmcVibrationalQuantumLevelDistribution::writeField()
     if((runTime.outputTime()) && (time_.averagingTime()))
     {
         fileName timePath(runTime.path()/runTime.timeName()/"uniform");
-    
+
         if (!isDir(timePath))
         {
             mkDir(timePath);
         }
 
         List< Pair<scalar> > normalisedDistribution = distr_.normalised();
-    
+
         if(Pstream::master())
         {
             scalarField xAxis (normalisedDistribution.size(), 0.0);
@@ -161,7 +161,7 @@ void dsmcVibrationalQuantumLevelDistribution::writeField()
             }
 
             writeTimeData(timePath, "dsmcVibrationalQuantumLevelDistribution_"+fieldName_+"_"+regionName_, xAxis, yAxis);
-            
+
             if(time_.resetFieldsAtOutput())
             {
                     distr_.clear();

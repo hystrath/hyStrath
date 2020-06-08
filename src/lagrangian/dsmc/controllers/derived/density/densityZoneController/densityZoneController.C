@@ -108,7 +108,7 @@ void densityZoneController::initialConfiguration()
                 }
             }
         }
-    
+
         //- receiving
         for (int p = 0; p < Pstream::nProcs(); p++)
         {
@@ -150,11 +150,11 @@ void densityZoneController::calculateProperties()
             forAll(parcelsInCell, pIC)
             {
                 dsmcParcel* p = parcelsInCell[pIC];
-                
+
                 if(p->typeId() == typeId_)
                 {
                     const scalar& RWF = cloud_.coordSystem().recalculateRWF(cellI);
-                    
+
                     measuredParcels_ += RWF;
                 }
             }
@@ -290,14 +290,14 @@ void densityZoneController::nMolsToControl()
             if( mag(nMolsCumul) < mag(nMolsMesh) )
             {
                 label residualMols = nMolsMesh - nMolsCumul;
-    
+
                 DynamicList<label> cellsChosen(0);
-            
+
                 for (int n = 0; n < mag(residualMols); n++)
                 {
                     label iter = 0;
                     bool foundCell = false;
-        
+
                     while(!foundCell)
                     {
                         //label cellId = rndGen_.position<label>(0, controlZone().size()-1); OLD
@@ -310,7 +310,7 @@ void densityZoneController::nMolsToControl()
                         else
                         {
                             iter++;
-        
+
                             if(iter > controlZone().size())
                             {
                                 cellsChosen.append(cellId);
@@ -319,9 +319,9 @@ void densityZoneController::nMolsToControl()
                         }
                     }
                 }
-    
+
                 cellsChosen.shrink();
-    
+
                 forAll(cellsChosen, c)
                 {
                     if(mag(nMolsCumul) < mag(nMolsMesh))
@@ -343,17 +343,17 @@ void densityZoneController::nMolsToControl()
         else //- residual dsmcParcels
         {
             DynamicList<label> cellsChosen(0);
-        
+
             for (int n = 0; n < mag(nMolsMesh); n++)
             {
                 label iter = 0;
                 bool foundCell = false;
-    
+
                 while(!foundCell)
                 {
                     //label cellId = rndGen_.position<label>(0, controlZone().size()-1); OLD
                     label cellId = cloud_.randomLabel(0, controlZone().size()-1);
-    
+
                     if( findIndex(cellsChosen, cellId) == -1)
                     {
                         cellsChosen.append(cellId);
@@ -362,7 +362,7 @@ void densityZoneController::nMolsToControl()
                     else
                     {
                         iter++;
-    
+
                         if(iter > controlZone().size())
                         {
                             cellsChosen.append(cellId);
@@ -405,10 +405,10 @@ void densityZoneController::nMolsToControl()
         {
             if(mag(totalMols) > 0)
             {
-                Pout<< "sampled parcel density: " << avParcelDensity_ 
-                    <<", nMols: " << nMols << ", mols per mesh: " <<  nMolsMesh 
+                Pout<< "sampled parcel density: " << avParcelDensity_
+                    <<", nMols: " << nMols << ", mols per mesh: " <<  nMolsMesh
                     << ", nMolsPerCell " << nMolsPerCell
-                    << ", check on nMols : " << totalMols 
+                    << ", check on nMols : " << totalMols
                     << endl;
             }
         }
@@ -416,10 +416,10 @@ void densityZoneController::nMolsToControl()
         {
             if(mag(totalMols) > 0)
             {
-                Info<< "sampled parcel density: " << avParcelDensity_ 
-                    <<", nMols: " << nMols << ", mols per mesh: " <<  nMolsMesh 
+                Info<< "sampled parcel density: " << avParcelDensity_
+                    <<", nMols: " << nMols << ", mols per mesh: " <<  nMolsMesh
                     << ", nMolsPerCell " << nMolsPerCell
-                    << ", check on nMols : " << totalMols 
+                    << ", check on nMols : " << totalMols
                     << endl;
             }
         }
@@ -435,7 +435,7 @@ void densityZoneController::controlParcelsBeforeMove()
         const scalar& nControlSteps = time_.nControlSteps();
 
         labelField nMols(nMols_.size(), 0);
-    
+
         forAll(nMols_, c)
         {
             if(nMols_[c] > 0)
@@ -450,7 +450,7 @@ void densityZoneController::controlParcelsBeforeMove()
             else if (nMols_[c] < 0)
             {
                 nMols[c] = label((scalar(nMols_[c]) / nControlSteps) - 1.0);
-    
+
                 if((nMolsActualSum_[c] + nMols[c]) < nMols_[c])
                 {
                     nMols[c] = nMols_[c] - nMolsActualSum_[c];
@@ -479,13 +479,13 @@ void densityZoneController::insertParcels(const label& nMols, const label& c)
     for (int n = 0; n < mag(nMols); n++)
     {
         const label& cellI = controlZone()[c];
-    
+
         vector cC = mesh_.cellCentres()[cellI];
-    
+
         // find the maximum distance between cell centre and cell vertices
         const labelList& cellPoints = mesh_.cellPoints()[cellI];
         scalar maxDistance = 0.0;
-    
+
         forAll(cellPoints, cP)
         {
             const vector& vertexI = mesh_.points()[cellPoints[cP]];
@@ -497,7 +497,7 @@ void densityZoneController::insertParcels(const label& nMols, const label& c)
                 maxDistance = vertexDist;
             }
         }
-    
+
         // find a random point within the cell
         bool isPointInCell = false;
 
@@ -515,7 +515,7 @@ void densityZoneController::insertParcels(const label& nMols, const label& c)
 
             //- normalise the random vector (unit vector)
             randDirection /= mag(randDirection);
-            
+
             p = randDirection*rndGen_.sample01<scalar>()*maxDistance + cC;
 
             if(mesh_.pointInCell(p, cellI))
@@ -523,7 +523,7 @@ void densityZoneController::insertParcels(const label& nMols, const label& c)
                 isPointInCell = true;
             }
         }
-    
+
         const dsmcParcel::constantProperties& cP = cloud_.constProps(typeId_);
 
         vector U = cloud_.equipartitionLinearVelocity
@@ -544,7 +544,7 @@ void densityZoneController::insertParcels(const label& nMols, const label& c)
             cP.nVibrationalModes(),
             typeId_
         );
-        
+
         label ELevel = cloud_.equipartitionElectronicLevel
         (
             temperature_,
@@ -566,7 +566,7 @@ void densityZoneController::insertParcels(const label& nMols, const label& c)
             tetFace,
             tetPt
         );
-        
+
         const scalar& RWF = cloud_.coordSystem().recalculateRWF(cellI);
 
         cloud_.addNewParcel
@@ -584,12 +584,12 @@ void densityZoneController::insertParcels(const label& nMols, const label& c)
             0,
             vibLevel
         );
-        
+
    // if parcel is inserted before the move function, the cell occupnacy need not be updated
-    // only if the parcel is inserted after the buildCellOccupancy step, should the the 
+    // only if the parcel is inserted after the buildCellOccupancy step, should the the
     // cell occupancy be updated.
     }
-} 
+}
 
 void densityZoneController::deleteParcels(const label& nMols, const label& c)
 {
@@ -598,13 +598,13 @@ void densityZoneController::deleteParcels(const label& nMols, const label& c)
         const List<DynamicList<dsmcParcel*> >& cellOccupancy = cloud_.cellOccupancy();
         const label& cellI = controlZone()[c];
         const List<dsmcParcel*>& molsInCell = cellOccupancy[cellI];
-    
+
         if(molsInCell.size() > 0)
         {
             //label cellMolRemoveId = rndGen_.position<label>(0, molsInCell.size()-1);
             label cellMolRemoveId = cloud_.randomLabel(0, molsInCell.size()-1);
             dsmcParcel* delParcel = molsInCell[cellMolRemoveId];
-            
+
             //- delete molecule from cellOccupancy (before deleting it from cloud)
             cloud_.removeParcelFromCellOccupancy(cellMolRemoveId, cellI);
             cloud_.deleteParticle(*delParcel);

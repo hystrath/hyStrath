@@ -132,12 +132,12 @@ rotationalCyclic::rotationalCyclic
         //A -> B
         {
             vector pADash = (RBA & (pA_ - rotationPt_)) + rotationPt_;
-    
-            Info<< "midpoint on boundary A, " << pA_ 
-                << ", rotated (trial attempt 1) = " << pADash 
+
+            Info<< "midpoint on boundary A, " << pA_
+                << ", rotated (trial attempt 1) = " << pADash
                 << ", comparing with midpoint on boundary B: " << pB_
                 << endl;
-    
+
             if(mag(pADash - pB_) < tolerance )
             {
                 RAB_ = RBA;
@@ -146,12 +146,12 @@ rotationalCyclic::rotationalCyclic
             else
             {
                 pADash = (RAB & (pA_ - rotationPt_)) + rotationPt_;
-    
-                Info<< "midpoint on boundary A, " << pA_ 
-                    << ", rotated (trial attempt 2) = " << pADash 
+
+                Info<< "midpoint on boundary A, " << pA_
+                    << ", rotated (trial attempt 2) = " << pADash
                     << ", comparing with midpoint on boundary B: " << pB_
                     << endl;
-    
+
                 if(mag(pADash - pB_) < tolerance )
                 {
                     RAB_ = RAB;
@@ -160,10 +160,10 @@ rotationalCyclic::rotationalCyclic
                 else
                 {
                     FatalErrorIn("rotationalCyclic::rotationalCyclic()")
-                        << "Rotation of boundary midpoint A: " << pA_ 
-                        << " does not coindcide with midpoint on boundary B: " << pB_ 
+                        << "Rotation of boundary midpoint A: " << pA_
+                        << " does not coindcide with midpoint on boundary B: " << pB_
                         << ". Please pick midpoints on both boundaries so that they coincide exactly. "
-                        << " Change tolerance if necessary: " << tolerance 
+                        << " Change tolerance if necessary: " << tolerance
                         << nl << "in: "
                         << t.system()/"boundariesDict"
                         << exit(FatalError);
@@ -174,12 +174,12 @@ rotationalCyclic::rotationalCyclic
         //B -> A
         {
             vector pBDash = (RBA & (pB_ - rotationPt_)) + rotationPt_;
-    
-            Info<< "midpoint on boundary B, " << pB_ 
-                << ", rotated (trial attempt 1) = " << pBDash 
+
+            Info<< "midpoint on boundary B, " << pB_
+                << ", rotated (trial attempt 1) = " << pBDash
                 << ", comparing with midpoint on boundary A: " << pA_
                 << endl;
-    
+
             if(mag(pBDash - pA_) < tolerance )
             {
                 RBA_ = RBA;
@@ -188,12 +188,12 @@ rotationalCyclic::rotationalCyclic
             else
             {
                 pBDash = (RAB & (pB_ - rotationPt_)) + rotationPt_;
-    
-                Info<< "midpoint on boundary B, " << pB_ 
-                    << ", rotated (trial attempt 2) = " << pBDash 
+
+                Info<< "midpoint on boundary B, " << pB_
+                    << ", rotated (trial attempt 2) = " << pBDash
                     << ", comparing with midpoint on boundary A: " << pA_
                     << endl;
-    
+
                 if(mag(pBDash - pA_) < tolerance )
                 {
                     RBA_ = RAB;
@@ -202,10 +202,10 @@ rotationalCyclic::rotationalCyclic
                 else
                 {
                     FatalErrorIn("rotationalCyclic::rotationalCyclic()")
-                        << "Rotation of boundary midpoint B: " << pB_ 
-                        << " does not coindcide with midpoint on boundary A: " << pA_ 
+                        << "Rotation of boundary midpoint B: " << pB_
+                        << " does not coindcide with midpoint on boundary A: " << pA_
                         << ". Please pick midpoints on both boundaries so that they coincide exactly. "
-                        << " Change tolerance if necessary: " << tolerance 
+                        << " Change tolerance if necessary: " << tolerance
                         << nl << "in: "
                         << t.system()/"boundariesDict"
                         << exit(FatalError);
@@ -216,7 +216,7 @@ rotationalCyclic::rotationalCyclic
     else
     {
         FatalErrorIn("rotationalCyclic::rotationalCyclic()")
-            << "Patch: " << patchName_ << " does not need a rotational cyclic boundary model. " 
+            << "Patch: " << patchName_ << " does not need a rotational cyclic boundary model. "
             << " Angle = " << theta_
             << nl << "in: "
             << t.system()/"boundariesDict"
@@ -229,7 +229,7 @@ rotationalCyclic::rotationalCyclic
 //     labelList coupledFacesA = coupledFacesA_;
 //     labelList coupledFacesB = coupledFacesB_;
 //     labelList cellsB = cellsB_;
-// 
+//
 // //     Info << "coupledFacesA: "  << coupledFacesA << endl;
 // //     Info << "coupledFacesB: "  << coupledFacesB << endl;
 //     label nCoupled = 0;
@@ -237,12 +237,12 @@ rotationalCyclic::rotationalCyclic
 //     {
 //         const label& faceA = coupledFacesA[fA];
 //         const vector& fCA = mesh_.faceCentres()[faceA];
-// 
-//         forAll(coupledFacesB, fB)  
+//
+//         forAll(coupledFacesB, fB)
 //         {
 //             const label& faceB = coupledFacesB[fB];
 //             const vector& fCB = mesh_.faceCentres()[faceB];
-// 
+//
 //             vector fCBDash = (RBA_ & (fCB - rotationPt_)) + rotationPt_;
 // //             Info << "face centre: " << fCB << " trial face matching centre: "
 // //                  << fCBDash << endl;

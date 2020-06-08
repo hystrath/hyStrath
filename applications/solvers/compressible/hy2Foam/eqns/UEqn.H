@@ -18,6 +18,6 @@ if (!inviscid)
       - fvm::laplacian(muEff, U)
       - fvc::div(tauMC)
     );
-    
+
     rhoU = rho*U;
 }

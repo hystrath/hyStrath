@@ -97,8 +97,8 @@ inline const label& twoDimForceDistribution::nBinsY() const
 // {
 //     return radialDistribution_;
 // }
-// 
-// 
+//
+//
 // inline List< scalar > radialDistribution::radialPosition() const
 // {
 //     return radialPosition_;

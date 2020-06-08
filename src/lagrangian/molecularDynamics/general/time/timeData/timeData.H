@@ -164,7 +164,7 @@ public:
         const timeInterval& averageTimeInterval() const;
 //         const timeInterval& calcPropTimeInterval() const;
         const timeInterval& controlTimeInterval() const;
-        
+
         timeInterval& controlTimeInterval();
 //         timeInterval& calcPropTimeInterval();
         timeInterval& averageTimeInterval();

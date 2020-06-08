@@ -55,7 +55,7 @@ class noBinaryDiffusivityModel
 :
     public binaryDiffusivityModel
 {
-  
+
 public:
 
     //- Runtime type information

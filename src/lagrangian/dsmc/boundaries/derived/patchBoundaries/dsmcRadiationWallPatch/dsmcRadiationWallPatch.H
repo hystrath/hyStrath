@@ -88,11 +88,11 @@ private:
         scalar alpha_;
 
         scalar stepCounter_;
-        
+
         bool resetFieldsAtOutput_;
 
         void setProperties();
-        
+
         void initialTemperatureEstimate();
 
 public:

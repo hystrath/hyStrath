@@ -175,7 +175,7 @@ void omegaLowReWallFunctionFvPatchScalarField::updateCoeffs()
             internalField().group()
         )
     );
-    
+
     const scalarField& y = turbModel.y()[patchI];
 
     scalarField& ow = *this;
@@ -184,7 +184,7 @@ void omegaLowReWallFunctionFvPatchScalarField::updateCoeffs()
     const scalarField& muw = tmu().boundaryField()[patchI];
 
     const scalarField& rhow = patch().lookupPatchField<volScalarField, scalar>("rho");
-    
+
     // Set wall values for omega
     forAll(ow, faceI)
     {

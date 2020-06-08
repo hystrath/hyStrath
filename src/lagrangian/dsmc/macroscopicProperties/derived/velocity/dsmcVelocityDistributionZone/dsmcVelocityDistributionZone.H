@@ -131,7 +131,7 @@ public:
 
         void updateProperties(const dictionary& dict);
 
-}; 		
+};
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

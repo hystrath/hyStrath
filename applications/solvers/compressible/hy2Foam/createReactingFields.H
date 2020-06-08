@@ -9,7 +9,7 @@ PtrList<volScalarField>& pD = composition.pD();
 bool containsElectrons = false;
 if (composition.contains("e-"))
 {
-    containsElectrons = true; 
+    containsElectrons = true;
 }
 
 /*Generic multi-variate discretisation scheme class which may be

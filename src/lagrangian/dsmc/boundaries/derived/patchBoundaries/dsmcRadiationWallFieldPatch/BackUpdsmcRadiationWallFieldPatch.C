@@ -92,7 +92,7 @@ void dsmcRadiationWallFieldPatch::calculateProperties()
     time2_++;
 
     const scalar deltaT = mesh_.time().deltaTValue(); // TODO cloud_.deltaTValue(p.cell());
-    
+
     Info << "Outside loop" << endl;
 
     if(time2_ > 1)
@@ -101,11 +101,11 @@ void dsmcRadiationWallFieldPatch::calculateProperties()
     	 TwallRad_ = pow(alpha_*cloud_.nParticle()*EcTotPrev_/(deltaT*epsilonSigma_*patchSurfaceArea_), 0.25); // TwallRad_ here only calculated after first time-step
 	 Info << "In loop after TwallRad_" << endl;
     }
-    
+
     Info << "Before TwallRadCumul_" << endl;
 
     TwallRadCumul_ += TwallRad_ +  (1/thermalCapacity_)*deltaT*((cloud_.nParticle()*EcTot_/deltaT) - (patchSurfaceArea_*epsilonSigma_*(pow(TwallRad_, 4.0))));
-    
+
     Info << "After TwallRadCumul_" << endl;
 
     if(time_.averagingTime())
@@ -114,16 +114,16 @@ void dsmcRadiationWallFieldPatch::calculateProperties()
 
         TwallRad_ = TwallRadCumul_/nAvTimeSteps;
 
-        Info << "Temperature at radiation wall patch ( " << patchName_ 
+        Info << "Temperature at radiation wall patch ( " << patchName_
              << "): " << TwallRad_ << endl;
 
-        //- reset 
+        //- reset
         if(time_.resetFieldsAtOutput())
         {
             TwallRadCumul_ = 0.0;
         }
-	
-	EcTotPrev_ = EcTot_; //stores the EcTot_ value to be used in the next time-step 
+
+	EcTotPrev_ = EcTot_; //stores the EcTot_ value to be used in the next time-step
 
         EcTot_ = 0.0;
     }
@@ -134,13 +134,13 @@ void dsmcRadiationWallFieldPatch::calculateProperties()
 void dsmcRadiationWallFieldPatch::controlParticle(dsmcParcel& p, dsmcParcel::trackData& td)
 {
     measurePropertiesBeforeControl(p);
-    
+
     Info << "After measurePropertiesBeforeControl" << endl;
 
     vector& U = p.U();
 
     scalar& ERot = p.ERot();
-    
+
     scalar& EVib = p.EVib();
 
     label typeId = p.typeId();
@@ -151,10 +151,10 @@ void dsmcRadiationWallFieldPatch::controlParticle(dsmcParcel& p, dsmcParcel::tra
     scalar Etrans = 0.5*magSqr(U)*cloud_.constProps(typeId).mass();
 
     scalar EcTot = Etrans + ERot + EVib;
-    
+
     Info << "EcTot" << endl;
 
-   
+
     EcTot_ += EcTot;
 
     Info << "EcTot_" << endl;
@@ -169,7 +169,7 @@ void dsmcRadiationWallFieldPatch::controlParticle(dsmcParcel& p, dsmcParcel::tra
     vector Ut = U - U_dot_nw*nw;
 
     Random& rndGen(cloud_.rndGen());
-    
+
     Info << "Before while loop" << endl;
 
     while (mag(Ut) < SMALL)
@@ -189,7 +189,7 @@ void dsmcRadiationWallFieldPatch::controlParticle(dsmcParcel& p, dsmcParcel::tra
 
         Ut = U - U_dot_nw*nw;
     }
-    
+
     Info << "After while loop" << endl;
 
     // Wall tangential unit vector
@@ -197,17 +197,17 @@ void dsmcRadiationWallFieldPatch::controlParticle(dsmcParcel& p, dsmcParcel::tra
 
     // Other tangential unit vector
     vector tw2 = nw^tw1;
-    
+
     Info << "Before scalar& T" << endl;
 
     const scalar& T = TwallRad_;
-    
+
     Info << "After scalar& T" << endl;
 
     scalar mass = cloud_.constProps(typeId).mass();
 
     scalar rotationalDof = cloud_.constProps(typeId).rotationalDegreesOfFreedom();
-    
+
     scalar vibrationalDof = cloud_.constProps(typeId).nVibrationalModes();
 
     U =
@@ -219,17 +219,17 @@ void dsmcRadiationWallFieldPatch::controlParticle(dsmcParcel& p, dsmcParcel::tra
         );
 
     U += velocity_;
-    
+
     Info << "After velocity generation" << endl;
 
     ERot = cloud_.equipartitionRotationalEnergy(T, rotationalDof);
-    
+
     EVib = cloud_.equipartitionVibrationalEnergy(T, vibrationalDof, typeId);
-    
+
     Info << "Before measurePropertiesAfterControl" << endl;
 
     measurePropertiesAfterControl(p);
-    
+
     Info << "After measurePropertiesAfterControl" << endl;
 }
 
@@ -272,8 +272,8 @@ void dsmcRadiationWallFieldPatch::setProperties()
     {
 
         FatalErrorIn("dsmcRadiationWallFieldPatch::setProperties()")
-            << "The value of alpha should be between 0 and 1: " 
-            << alpha_ << nl 
+            << "The value of alpha should be between 0 and 1: "
+            << alpha_ << nl
             << exit(FatalError);
     }
 

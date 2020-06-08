@@ -29,20 +29,20 @@ Description
     Obtained from:
 
     http://mathworld.wolfram.com/LeastSquaresFittingPolynomial.html
-    
+
     Solving for the polynomial equation:
-    
+
     y = a_0 + a_1*x + ... + a_m x^m
-    
+
     where m = degree.
-    
-    return coeffs in this order a_0, a_1, ... , a_m 
-    
+
+    return coeffs in this order a_0, a_1, ... , a_m
+
     (note the list is of size m + 1)
-    
+
     ensure that n >= m + 1, wher n = size of input lists.
-    
-    
+
+
 SourceFiles
     polynomialLeastSquaresFit.C
 
@@ -70,7 +70,7 @@ namespace Foam
 class polynomialLeastSquaresFit
 {
     // Private data
-    
+
          scalarField coeffs_;
 
     // Private Member Functions
@@ -88,7 +88,7 @@ public:
         polynomialLeastSquaresFit
         (
             const scalarField& x,
-            const scalarField& y, 
+            const scalarField& y,
             const label& degree
         );
 

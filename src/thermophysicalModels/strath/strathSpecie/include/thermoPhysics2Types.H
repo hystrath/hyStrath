@@ -51,7 +51,7 @@ Description
 namespace Foam
 {
     // thermo physics types based on sensibleEnthalpy
-    
+
     typedef
     constantTransport
     <
@@ -64,7 +64,7 @@ namespace Foam
             sensible2Enthalpy
         >
     > demConstGasHThermoPhysicsH2TGD;
-    
+
     typedef
     SutherlandEuckenTransport
     <
@@ -77,7 +77,7 @@ namespace Foam
             sensible2Enthalpy
         >
     > demGasHThermoPhysicsH2TGD;
-    
+
     typedef
     BlottnerEuckenTransport
     <
@@ -90,7 +90,7 @@ namespace Foam
             sensible2Enthalpy
         >
     > demBEGasHThermoPhysicsH2TGD;
-    
+
     typedef
     powerLawEuckenTransport
     <
@@ -103,7 +103,7 @@ namespace Foam
             sensible2Enthalpy
         >
     > demPLEGasHThermoPhysicsH2TGD;
-    
+
     typedef
     CEATransport
     <
@@ -118,7 +118,7 @@ namespace Foam
     > demCEAGasHThermoPhysicsH2TGD;
 
     // thermo physics types based on sensibleInternalEnergy
-    
+
     typedef
     constantTransport
     <
@@ -131,7 +131,7 @@ namespace Foam
             sensible2InternalEnergy
         >
     > demConstGasEThermoPhysicsH2TGD;
-    
+
     typedef
     SutherlandEuckenTransport
     <
@@ -144,7 +144,7 @@ namespace Foam
             sensible2InternalEnergy
         >
     > demGasEThermoPhysicsH2TGD;
-    
+
     typedef
     BlottnerEuckenTransport
     <
@@ -157,7 +157,7 @@ namespace Foam
             sensible2InternalEnergy
         >
     > demBEGasEThermoPhysicsH2TGD;
-    
+
     typedef
     powerLawEuckenTransport
     <
@@ -170,7 +170,7 @@ namespace Foam
             sensible2InternalEnergy
         >
     > demPLEGasEThermoPhysicsH2TGD;
-    
+
     typedef
     CEATransport
     <

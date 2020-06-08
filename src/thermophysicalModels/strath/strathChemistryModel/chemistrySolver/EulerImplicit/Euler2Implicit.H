@@ -55,7 +55,7 @@ class Euler2Implicit
 
         //- Coefficients dictionary
         dictionary coeffsDict_;
-        
+
         // Model constants
 
             //- Chemistry timescale
@@ -110,7 +110,7 @@ public:
         scalar& deltaT,
         scalar& subDeltaT
     ) const;
-    
+
     //- Update the concentrations (also forward apart) and return the chemical time
     virtual void solve
     (

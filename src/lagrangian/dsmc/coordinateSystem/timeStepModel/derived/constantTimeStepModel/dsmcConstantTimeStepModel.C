@@ -41,7 +41,7 @@ namespace Foam
 
     addToRunTimeSelectionTable
     (
-        dsmcTimeStepModel, 
+        dsmcTimeStepModel,
         dsmcConstantTimeStepModel,
         fvMesh
     );

@@ -72,29 +72,29 @@ private:
         dictionary propsDict_;
 
         propertyField fields_;
-        
+
         fileName pathName_;
         fileName nameFile_;
-        
+
         word fieldName_;
 
         vector startPoint_; // only y component is important here
 //         vector endPoint_;
-        
+
         vector unitVectorX_;
         vector unitVectorY_; // height
-        vector unitVectorZ_;        
-        
+        vector unitVectorZ_;
+
         label nBinsX_;
-        label nBinsY_; // height 
+        label nBinsY_; // height
 
         scalar lengthX_; // radius
-        scalar lengthY_; 
-        
+        scalar lengthY_;
+
         scalar binWidthX_; // radius
         scalar binWidthY_; // height
 
-        
+
         List<label> molIdsWall_;
         List<label> molIdsFluid_;
 
@@ -104,10 +104,10 @@ private:
         scalarField binsY_;
 
         List<scalarField> volumes_;
-        
+
         List<scalarField> pairs_;
         List<scalarField> mols_;
-        List<scalarField> energy_;        
+        List<scalarField> energy_;
 
         // fields
         List<scalarField> bindingEnergy_;
@@ -117,27 +117,27 @@ private:
         List<bool> fluidMols_;
         List<scalar> nPairs_;
         List<scalar> DeltaE_;
-        
-        
+
+
 //         scalar nAvTimeSteps_;
-        
-        bool resetAtOutput_;        
-        
-        
-        
+
+        bool resetAtOutput_;
+
+
+
     // Private Member Functions
 
         bool readFromStorage();
-        
+
         void writeToStorage();
-        
+
         List<label> isPointWithinBin
         (
             const vector& rI
         );
-        
+
         void centreOfMass();
-        
+
 public:
 
     //- Runtime type information
@@ -185,7 +185,7 @@ public:
 
         //- write field
         void writeField();
-}; 		
+};
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

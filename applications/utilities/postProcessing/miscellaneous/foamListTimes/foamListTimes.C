@@ -131,7 +131,7 @@ int main(int argc, char *argv[])
         databases[0].times(),
         args
     );
-    
+
     if (args.optionFound("rm"))
     {
         if (args.optionFound("processor"))

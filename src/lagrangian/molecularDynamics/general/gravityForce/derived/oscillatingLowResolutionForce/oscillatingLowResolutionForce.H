@@ -63,7 +63,7 @@ private:
 
         vector force_;
 
-        vector unitVector_; 
+        vector unitVector_;
 
         scalar omega_;
 
@@ -113,9 +113,9 @@ public:
             void updateForce();
 
             vector force(const vector& position);
-            
+
             vector force(const scalar& time);
-            
+
         // Write
 
 

@@ -67,8 +67,8 @@ private:
 
         // exclusion lists may go here
 
-        
-        
+
+
     // Private Member Functions
 
 
@@ -86,7 +86,7 @@ public:
             const polyMesh& mesh,
             polyMoleculeCloud& molCloud,
             const reducedUnits& redUnits,
-            const word& name,         
+            const word& name,
             const dictionary& dict
         );
 
@@ -100,16 +100,16 @@ public:
 
 
         scalar force(const scalar r) const;
-        
-        scalar energy(const scalar r) const;        
-        
+
+        scalar energy(const scalar r) const;
+
 //         void interaction (const scalar r, scalar& force, scalar& energy);
         //- Read dictionary
 //         bool read
 //         (
 //             const dictionary& pairPotentialProperties,
 //         );
-        
+
 
         void write(const fileName& pathName);
 

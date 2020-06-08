@@ -159,7 +159,7 @@ void mixedFixedValueSlipFvPatchField<Type>::evaluate(const Pstream::commsTypes)
 
     vectorField nHat = this->patch().nf();
 
-    // Info << " slipVel = " <<          
+    // Info << " slipVel = " <<
     // valueFraction_*refValue_ +
     //     (1.0 - valueFraction_)
     //    *transform(I - nHat*nHat, this->patchInternalField()) << endl;

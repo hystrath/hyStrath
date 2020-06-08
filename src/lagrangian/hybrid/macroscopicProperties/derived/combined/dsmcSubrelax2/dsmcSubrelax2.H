@@ -64,7 +64,7 @@ private:
 
     // Private data
         dictionary propsDict_;
-        
+
         scalar mfpReferenceTemperature_;
         word fieldName_;
         label itBeforeRelaxing_;

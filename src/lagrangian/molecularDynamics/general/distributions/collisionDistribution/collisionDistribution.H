@@ -87,7 +87,7 @@ public:
         //- (used for reading an rdf from input file)
         collisionDistribution(const word&);
 
-        //- Construct from binWidth, rMax and name 
+        //- Construct from binWidth, rMax and name
         collisionDistribution
         (
             const scalar&,
@@ -136,7 +136,7 @@ public:
         // Write
 
             void writeDistribution(const Time& runTime);
-// 
+//
 //             void writeTimeData
 //             (
 //                 const fileName& pathName,

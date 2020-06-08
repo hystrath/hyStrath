@@ -54,7 +54,7 @@ void dsmcReaction::setProperties()
             << "reaction rates to the terminal." << nl << endl;
             writeRatesToTerminal_ = false;
     }
-    
+
     forAll(reactantIds_, r)
     {
         reactantTypes_[r] = cloud_.constProps(reactantIds_[r]).type();
@@ -92,18 +92,18 @@ dsmcReaction::dsmcReaction
     const List<word> reactants(dict.lookup("reactants"));
     reactantIds_.setSize(reactants.size(), -1);
     reactantTypes_.setSize(reactantIds_.size(), -1);
-    
+
     forAll(reactantIds_, r)
     {
         reactantIds_[r] = findIndex(cloud_.typeIdList(), reactants[r]);
-        
-        //- Check that reactants belong to the typeIdList as defined in 
+
+        //- Check that reactants belong to the typeIdList as defined in
         //  constant/dsmcProperties
         if (reactantIds_[r] == -1)
         {
             FatalErrorIn("dsmcReaction::setProperties()")
                 << "For reaction named " << reactionName_ << nl
-                << "Cannot find type id: " << reactants[r] << nl 
+                << "Cannot find type id: " << reactants[r] << nl
                 << exit(FatalError);
         }
     }

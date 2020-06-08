@@ -53,8 +53,8 @@ patchLayer::patchLayer
         FatalErrorIn ("patchLayer.C")
             << nl << "BoundaryPoints has to be equal to 4 points. " << nl
             << abort(FatalError);
-    }    
-    
+    }
+
     createLayer();
 }
 
@@ -77,15 +77,15 @@ void patchLayer::findCells()
     forAll(mesh_.cells(), c)
     {
         boundedBox bb = cellToBoundBox(c);
-        
+
         if(bb_.justOverlaps(bb))
         {
             cells.append(c);
         }
     }
-    
+
     cells.shrink();
-    
+
     cells_.setSize(cells.size());
     cells_.transfer(cells);
 }
@@ -102,12 +102,12 @@ void patchLayer::createBox()
 
     scalar yMax = 0.0;
     scalar yMin = GREAT;
-    
+
     forAll(boundaryPoints_, i)
     {
         scalar x = (boundaryPoints_[i]-centroid_) & t1_;
         scalar y = (boundaryPoints_[i]-centroid_) & t2_;
-        
+
         if(x > xMax)
         {
             xMax = x;
@@ -115,8 +115,8 @@ void patchLayer::createBox()
         if(x < xMin)
         {
             xMin = x;
-        }  
-        
+        }
+
         if(y > yMax)
         {
             yMax = y;
@@ -124,14 +124,14 @@ void patchLayer::createBox()
         if(y < yMin)
         {
             yMin = y;
-        }         
+        }
     }
-    
+
     vector min(xMin, yMin, 0);
     vector max(xMax, yMax, offset_);
-    
+
     boundedBox bb (min, max);
-    
+
     bb_ = bb;
 }
 
@@ -139,18 +139,18 @@ void patchLayer::transformPointToNewCS(vector& point)
 {
     vector newPoint =  vector
                         (
-                            ((point - centroid_) & t1_),     
+                            ((point - centroid_) & t1_),
                             ((point - centroid_) & t2_),
                             ((point - centroid_) & nF_)
                         );
-    
+
     point = newPoint;
 }
 
 boundedBox patchLayer::cellToBoundBox(const label& cellI)
 {
     pointField points = boundingCellPoints(cellI);
-    
+
     boundedBox bb(points, false);
 
     return bb;
@@ -185,7 +185,7 @@ pointField patchLayer::boundingCellPoints(const label& cellI)
     {
         transformPointToNewCS(vectorPoints[i]);
     }
-    
+
 
     return vectorPoints;
 }

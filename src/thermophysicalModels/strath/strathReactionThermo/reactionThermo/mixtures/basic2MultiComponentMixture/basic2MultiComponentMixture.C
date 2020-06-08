@@ -47,7 +47,7 @@ License
 
 Foam::wordList Foam::basic2MultiComponentMixture::hev2BoundaryBaseTypes
 (
-    const label speciei, 
+    const label speciei,
     const volScalarField::Boundary& tbf1T,
     const bool downgradeToSingleTemperature
 )
@@ -55,8 +55,8 @@ Foam::wordList Foam::basic2MultiComponentMixture::hev2BoundaryBaseTypes
     /*volScalarField::Boundary& tbf =
         this->spTv_[speciei].boundaryField();*/
     volScalarField::Boundary tbf =
-        this->spTv_[speciei].boundaryField();    
-    
+        this->spTv_[speciei].boundaryField();
+
     if(downgradeToSingleTemperature)
     {
         tbf = tbf1T;
@@ -84,7 +84,7 @@ Foam::wordList Foam::basic2MultiComponentMixture::hev2BoundaryBaseTypes
             hbt[patchi] = pf.interfaceFieldType();
         }
     }
-    
+
     return hbt;
 }
 
@@ -93,7 +93,7 @@ Foam::wordList Foam::basic2MultiComponentMixture::he2BoundaryBaseTypes(const vol
 {
     /*const volScalarField::Boundary& tbff =
         this->spTv_[0].boundaryField();*/
-        
+
     wordList hbt(tbf.size(), word::null);
 
     forAll(tbf, patchi)
@@ -123,17 +123,17 @@ Foam::wordList Foam::basic2MultiComponentMixture::he2BoundaryBaseTypes(const vol
 
 Foam::wordList Foam::basic2MultiComponentMixture::hev2BoundaryTypes
 (
-    const label speciei, 
+    const label speciei,
     const volScalarField::Boundary& tbf1T,
     const bool downgradeToSingleTemperature
 )
 {
     /*volScalarField::Boundary& tbf =
         this->spTv_[speciei].boundaryField();*/
-        
+
     volScalarField::Boundary tbf =
-        this->spTv_[speciei].boundaryField();    
-    
+        this->spTv_[speciei].boundaryField();
+
     if(downgradeToSingleTemperature)
     {
         tbf = tbf1T;
@@ -218,7 +218,7 @@ Foam::wordList Foam::basic2MultiComponentMixture::he2BoundaryTypes
         else if (isA<fixedJumpFvPatchScalarField>(tbf[patchi]))
         {
             hbt[patchi] = energyJumpFvPatchScalarField::typeName;
-            
+
         }
         else if (isA<fixedJumpAMIFvPatchScalarField>(tbf[patchi]))
         {
@@ -252,15 +252,15 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
     pP_(species_.size()),
     pD_(species_.size()),
     spTv_(species_.size()),
-    //spmodeTv_(species_.size()), TODO ONGOING WORK 
+    //spmodeTv_(species_.size()), TODO ONGOING WORK
     hev_(species_.size()),
     heel_(species_.size()),
     hevel_(species_.size()),
     h_(species_.size()),
-    //modehevel_(species_.size()), TODO ONGOING WORK 
+    //modehevel_(species_.size()), TODO ONGOING WORK
     zetaRot_(species_.size()),
     zetaVib_(species_.size()),
-    //modezetaVib_(species_.size()), TODO ONGOING WORK 
+    //modezetaVib_(species_.size()), TODO ONGOING WORK
     zetaElec_(species_.size()),
     Wmix_
     (
@@ -283,7 +283,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
             fileName(thermoDict.lookup("foamChemistryThermoFile")).expand()
         )()
     );
-    
+
     IOobject TtHeader
     (
         "Tt",
@@ -291,11 +291,11 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
         mesh,
         IOobject::MUST_READ
     );
-    
+
     volScalarField Tt(TtHeader, mesh);
     bool downgradeToSingleTemperature = false;
     bool downgradeToSingleTv = false;
-    
+
     forAll(species_, i)
     {
         IOobject YHeader
@@ -305,7 +305,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
             mesh,
             IOobject::NO_READ
         );
-        
+
         IOobject XHeader
         (
             "X_" + species_[i],
@@ -313,20 +313,20 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
             mesh,
             IOobject::NO_READ
         );
-        
+
         bool headersOK = false;
 
         // check if field exists and can be read
         if (YHeader.typeHeaderOk<volScalarField>(false) && TtHeader.typeHeaderOk<volScalarField>(false))
         {
             headersOK = true;
-            
+
             vibTempAssociativity_.set // NEW VINCENT 05/03/2016
             (
                 i,
                 new label(0)
             );
-            
+
             Y_.set
             (
                 i,
@@ -343,7 +343,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                     mesh
                 )
             );
-            
+
             X_.set
             (
                 i,
@@ -365,7 +365,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
         else if (XHeader.typeHeaderOk<volScalarField>(false) && TtHeader.typeHeaderOk<volScalarField>(false))
         {
             headersOK = true;
-            
+
             X_.set
             (
                 i,
@@ -382,7 +382,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                     mesh
                 )
             );
-            
+
             Y_.set
             (
                 i,
@@ -401,7 +401,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                 )
             );
         }
-        
+
         if (headersOK)
         {
             nD_.set
@@ -421,7 +421,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                     dimensionedScalar("nD_" + species_[i], dimless/dimVolume, 0.0)
                 )
             );
-            
+
             pP_.set
             (
                 i,
@@ -439,7 +439,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                     dimensionedScalar("p_" + species_[i], dimPressure, 0.0)
                 )
             );
-            
+
             pD_.set
             (
                 i,
@@ -457,7 +457,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                     dimensionedScalar("rho_" + species_[i], dimDensity, 0.0)
                 )
             );
-            
+
             {
                 IOdictionary thermophysicalProperties
                 (
@@ -470,11 +470,11 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                         IOobject::NO_WRITE
                     )
                 );
-                
+
                 downgradeToSingleTemperature = thermophysicalProperties.lookupOrDefault<bool>("downgradeToSingleTemperature", false);
                 downgradeToSingleTv = thermophysicalProperties.lookupOrDefault<bool>("downgradeToSingleTv", false);
             }
-            
+
             if(downgradeToSingleTemperature or downgradeToSingleTv)
             {
                 spTv_.set
@@ -494,7 +494,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                         dimTemperature
                     )
                 );
-                
+
                 spTv_[i] = Tt;
             }
             else
@@ -516,10 +516,10 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                     )
                 );
             }
-            
+
             // NEW VINCENT 13/03/2016 ***************************************** TODO ONGOING WORK
             /*const label noVibModes = readScalar(thermoDEM.subDict(species_[i]).subDict("specie").lookup("noVibTemp"));
-            
+
             PtrList<volScalarField> fillList1(noVibModes), fillList2(noVibModes), fillList3(noVibModes);
 
             for(label vibMode = 0 ; vibMode < noVibModes ; vibMode++)
@@ -541,7 +541,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                         dimensionedScalar("Tv_" + species_[i] + "." + name(vibMode+1), dimTemperature, 0.0)
                     )
                 );
-                
+
                 fillList2.set
                 (
                     vibMode,
@@ -561,7 +561,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                         this->hev2BoundaryBaseTypes(i, Tt.boundaryField()) // TODO wrong for now
                     )
                 );
-                
+
                 fillList3.set
                 (
                     vibMode,
@@ -580,41 +580,41 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                     )
                 );
             }
-            
+
             spmodeTv_.set
             (
                 i, new PtrList<volScalarField>(noVibModes)
             );
-            
+
             modehevel_.set
             (
                 i, new PtrList<volScalarField>(noVibModes)
             );
-            
+
             modezetaVib_.set
             (
                 i, new PtrList<volScalarField>(noVibModes)
             );
-            
+
             forAll(spmodeTv_[i], mode)
             {
                 spmodeTv_[i].set
                 (
                     mode, fillList1[mode]
                 );
-                
+
                 modehevel_[i].set
                 (
                     mode, fillList2[mode]
                 );
-                
+
                 modezetaVib_[i].set
                 (
                     mode, fillList3[mode]
                 );
             }*/
             // END NEW VINCENT 13/03/2016 *************************************
-            
+
             hev_.set
             (
                 i,
@@ -632,7 +632,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                     dimensionedScalar("ev_" + species_[i], dimEnergy/dimMass, 0.0)
                 )
             );
-            
+
             heel_.set
             (
                 i,
@@ -650,7 +650,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                     dimensionedScalar("eel_" + species_[i], dimEnergy/dimMass, 0.0)
                 )
             );
-            
+
             if(downgradeToSingleTemperature or downgradeToSingleTv)
             {
                 hevel_.set
@@ -693,7 +693,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                     )
                 );
             }
-            
+
             h_.set
             (
                 i,
@@ -711,7 +711,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                     dimensionedScalar("h_" + species_[i], dimEnergy/dimMass, 0.0)
                 )
             );
-            
+
             zetaRot_.set
             (
                 i,
@@ -729,7 +729,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                     dimensionedScalar("zetar_" + species_[i], dimless, 0.0)
                 )
             );
-            
+
             zetaVib_.set
             (
                 i,
@@ -747,7 +747,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                     dimensionedScalar("zetav_" + species_[i], dimless, 0.0)
                 )
             );
-            
+
             zetaElec_.set
             (
                 i,
@@ -770,18 +770,18 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
         {
             if (not YHeader.typeHeaderOk<volScalarField>(false) and not XHeader.typeHeaderOk<volScalarField>(false))
             {
-                FatalErrorIn("basic2MultiComponentMixture::basic2MultiComponentMixture") 
+                FatalErrorIn("basic2MultiComponentMixture::basic2MultiComponentMixture")
                     << "Mass-fractions or Molar-fractions header missing in the 0 folder" << nl;
             }
             if (not TtHeader.typeHeaderOk<volScalarField>(false))
             {
-                FatalErrorIn("basic2MultiComponentMixture::basic2MultiComponentMixture") 
+                FatalErrorIn("basic2MultiComponentMixture::basic2MultiComponentMixture")
                     << "Translational temperature header missing in the 0 folder" << nl;
             }
             FatalError<< exit(FatalError);
         }
     }
-    
+
     /*forAll(spmodeTv_, speciei) // NEW VINCENT 13/03/2016 TODO ONGOING WORK
     {
         forAll(spmodeTv_[speciei], vibMode)
@@ -789,7 +789,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
             spmodeTv_[speciei][vibMode] = spTv_[speciei];
         }
     }*/
-        
+
     e_ = new volScalarField
     (
         IOobject
@@ -821,14 +821,14 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                 false
             )
         );
-        
+
         writenD_   = hTCPropertiesDict.subDict("mixtureOutputs").lookupOrDefault<bool>("numberDensity", false);
         writepD_   = hTCPropertiesDict.subDict("mixtureOutputs").lookupOrDefault<bool>("partialDensity", false);
         writeX_    = hTCPropertiesDict.subDict("mixtureOutputs").lookupOrDefault<bool>("molarFraction", false);
         writepP_   = hTCPropertiesDict.subDict("mixtureOutputs").lookupOrDefault<bool>("partialPressure", false);
         writezeta_ = hTCPropertiesDict.subDict("mixtureOutputs").lookupOrDefault<bool>("degreesOfFreedom", false);
         writehev_  = hTCPropertiesDict.subDict("mixtureOutputs").lookupOrDefault<bool>("vibrationalEnergy", false);
-    }    
+    }
 }
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
@@ -845,7 +845,7 @@ void Foam::basic2MultiComponentMixture::write()
             }
         }
     }*/
-    
+
     if(writenD_)
     {
         forAll(species(), speciei)
@@ -853,7 +853,7 @@ void Foam::basic2MultiComponentMixture::write()
             nD_[speciei].write();
         }
     }
-    
+
     if(writepD_)
     {
         forAll(species(), speciei)
@@ -861,7 +861,7 @@ void Foam::basic2MultiComponentMixture::write()
             pD_[speciei].write();
         }
     }
-    
+
     if(writeX_)
     {
         forAll(species(), speciei)
@@ -869,7 +869,7 @@ void Foam::basic2MultiComponentMixture::write()
             X_[speciei].write();
         }
     }
-    
+
     if(writepP_)
     {
         forAll(species(), speciei)
@@ -877,7 +877,7 @@ void Foam::basic2MultiComponentMixture::write()
             pP_[speciei].write();
         }
     }
-    
+
     if(writezeta_)
     {
         forAll(species(), speciei)
@@ -887,7 +887,7 @@ void Foam::basic2MultiComponentMixture::write()
             zetaElec_[speciei].write();
         }
     }
-    
+
     if(writehev_)
     {
         forAll(species(), speciei)

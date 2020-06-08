@@ -54,7 +54,7 @@ polyStateController::polyStateController
     mesh_(refCast<const fvMesh>(molCloud.mesh())),
     molCloud_(molCloud),
 //     controllerDict_(dict.subDict("controllerProperties")),
-	time_(t), 
+	time_(t),
     regionName_(dict.lookup("zoneName")),
     regionId_(-1),
     control_(true),
@@ -72,9 +72,9 @@ polyStateController::polyStateController
             << time_.time().system()/"controllersDict"
             << exit(FatalError);
     }
-    
+
     if(dict.found("control"))
-    {    
+    {
         control_ = Switch(dict.lookup("control"));
     }
 //     readStateFromFile_ = Switch(dict.lookup("readStateFromFile"));

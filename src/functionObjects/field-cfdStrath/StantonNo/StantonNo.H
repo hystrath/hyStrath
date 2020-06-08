@@ -94,14 +94,14 @@ class StantonNo
 
         //- Name of wallHeatFlux field, default is "wallHeatFlux"
         word wallHeatFlux_;
-        
+
         //- Name of inflow patch
         word inflowPatchName_;
-        
+
         //- header of wallHeatFlux field
         IOobject wallHeatFluxHeader_;
-        
-    
+
+
     // Private Member Functions
 
         //- File header information

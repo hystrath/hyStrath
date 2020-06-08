@@ -105,7 +105,7 @@ public:
             ),
             (t, mesh, cloud, dict)
         );
-   
+
     // Constructors
 
         //- Construct from components
@@ -191,7 +191,7 @@ public:
 
         //- calculate field
         virtual void calculateField() = 0;
-        
+
         //reset field if mesh has changed
         virtual void resetField() = 0;
 
@@ -208,7 +208,7 @@ public:
 //         virtual const propertyField& field() const = 0;
 
         virtual scalar translationalT(const label cellI) = 0;
-        
+
         virtual scalar overallT(const label cellI) = 0;
 
 };

@@ -53,17 +53,17 @@ class subArrhenius2ReactionRate
 {
     // Bounds delimiting the different temperature sub-ranges
         DynamicList<scalar> Tbound_;
-        
+
         // List of the standard Arrhenius coefficients
         DynamicList<scalar> A_;
         DynamicList<scalar> beta_;
         DynamicList<scalar> Ta_;
-        
+
         // Smoothing between the sub-ranges
         scalar smoothingTemperatureRange_;
-        
+
     // Private member function
-        
+
         label findBounds
         (
             const scalar xpt
@@ -71,7 +71,7 @@ class subArrhenius2ReactionRate
         {
             label bMax = Tbound_.size();
             label bCurrent = 0;
-            
+
             if (bMax == 0)
             {
                 return bCurrent;
@@ -80,7 +80,7 @@ class subArrhenius2ReactionRate
             {
                 while (bCurrent < bMax and xpt > Tbound_[bCurrent])
                 {
-                    bCurrent += 1;   
+                    bCurrent += 1;
                 }
                 return bCurrent;
             }

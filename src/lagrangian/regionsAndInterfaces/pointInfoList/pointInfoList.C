@@ -47,7 +47,7 @@ pointInfoList::pointInfoList()
 // constructor from list
 pointInfoList::pointInfoList
 (
-    const List<pointInfo>& pointInfos 
+    const List<pointInfo>& pointInfos
 )
 :
     List<pointInfo> (pointInfos)
@@ -77,8 +77,8 @@ pointInfoList::pointInfoList
 //     os << static_cast<const List<pointInfo>&>(p);
 //     return os;
 // }
-// 
-// 
+//
+//
 // Istream& operator>>(Istream& is, pointInfoList& p)
 // {
 //     is >> static_cast<List<pointInfo>&>(p);
@@ -129,7 +129,7 @@ void pointInfoList::setBoundaryPoints( const polyMesh& mesh )
                 const label& faceI = faceList[f];
 
                 // make sure this works for global faces rather than local faces
-                const label& patchIndex = mesh.boundaryMesh().whichPatch(faceI); 
+                const label& patchIndex = mesh.boundaryMesh().whichPatch(faceI);
 
                 if(patchIndex >= 0)
                 {

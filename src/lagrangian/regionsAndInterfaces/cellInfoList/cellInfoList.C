@@ -47,7 +47,7 @@ cellInfoList::cellInfoList()
 // constructor from list
 cellInfoList::cellInfoList
 (
-    const List<cellInform>& cellInfos 
+    const List<cellInform>& cellInfos
 )
 :
     List<cellInform> (cellInfos)
@@ -86,7 +86,7 @@ cellInfoList::cellInfoList
 //             <<  p.currentPointLabel() << p.originPoint() <<  p.Rsqr();
 //     }
 // }
-// 
+//
 // Istream& operator>>(Istream& is, cellInfoList& p)
 // {
 //     return is >> p.currentPointLabel_ >> p.originPoint_ >>  p.Rsqr_;

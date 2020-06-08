@@ -41,7 +41,7 @@ namespace Foam
 
     addToRunTimeSelectionTable
     (
-        porousMeasurements, 
+        porousMeasurements,
         dsmcGlobalPorousMediumMeasurements,
         fvMesh
     );
@@ -59,19 +59,19 @@ void dsmcGlobalPorousMediumMeasurements::updateMediumPropertiesMeasurement
         if (p.tracked().inPatchId() != -1)
         {
             p.tracked().updateTotalDistanceTravelled(p.position());
-            
-            const word patchesKey = std::to_string(p.tracked().inPatchId()) 
+
+            const word patchesKey = std::to_string(p.tracked().inPatchId())
                 + std::to_string(delPatchId);
-            
+
             if (tracerPatchNamesMap_.found(patchesKey))
             {
                 //- The deletion patch is in the list of outflow patches of the
                 //  tracer inflow patch
                 dsmcParcel::TrackedParcel::nDELETED++;
-                
-                mediumTotalDistanceTravelled_ += 
+
+                mediumTotalDistanceTravelled_ +=
                     p.tracked().distanceTravelled();
-                
+
                 mediumTransitTime_ += mesh_.time().value()
                     - p.tracked().initialTime();
             }
@@ -80,8 +80,8 @@ void dsmcGlobalPorousMediumMeasurements::updateMediumPropertiesMeasurement
                 //- The deletion patch is NOT in the list of outflow patches of
                 //  the tracer inflow patch. Add a time penalty
                 nLooping_++;
-                
-                timeLooping_ += mesh_.time().value() 
+
+                timeLooping_ += mesh_.time().value()
                     - p.tracked().initialTime();
             }
         }
@@ -103,19 +103,19 @@ void dsmcGlobalPorousMediumMeasurements::updateMediumPropertiesMeasurement_cycli
         {
             // orgPatchId is the id of the patch on which the particle strikes, i.e., the 'deletion' patch
             // neiPatchId is the id of the neighbouring patch, i.e., the patch of reintroduction
-            
+
             // TODO update mediumTotalDistanceTravelled_
-            
+
             if (orgPatchId != p.tracked().inPatchId())
             {
                 //- The cyclic patch is different from the patch of insertion
                 //Info << "inP: " << p.tracked().inPatchId() << tab << "orgP: " << orgPatchId << tab << "neiP: " << neiPatchId << endl;
                 dsmcParcel::TrackedParcel::nDELETED++;
-                
+
                 mediumTotalDistanceTravelled_ += p.tracked().distanceTravelled();
-                    
+
                 mediumTransitTime_ += mesh_.time().value() - p.tracked().initialTime();
-                
+
                 if (trackingProbability_ > rndGen_.sample01<scalar>())
                 {
                     //- Since the DSMC parcel is not physically deleted,
@@ -147,24 +147,24 @@ void dsmcGlobalPorousMediumMeasurements::updateMediumPropertiesMeasurement_cycli
                         timeLooping_ += mesh_.time().value() - p.tracked().initialTime();
                         break;
                     }
-                    
+
                     patchNameCounter++;
-                    
+
                 } while(patchNameCounter < trackFromPatchNames_.size());
-                
+
                 // 2) Delete the tracked data
                 p.deleteTracked();
             }
         }
         else
         {
-            //- Every particle crossing a cyclic patch has a chance to be 
+            //- Every particle crossing a cyclic patch has a chance to be
             //  tracked since there is no inlet for that purpose.
             if (trackingProbability_ > rndGen_.sample01<scalar>())
-            {   
+            {
                 p.setTracked
                 (
-                    true, 
+                    true,
                     neiPatchId,
                     mesh_.time().value(),
                     p.position()
@@ -220,12 +220,12 @@ void dsmcGlobalPorousMediumMeasurements::checkPorousMeasurementsInputs()
 {
     dsmcParcel::TrackedParcel::nDELETED = 0;
     nLooping_ = 0;
-    
+
     if (cloud_.particleProperties().isDict("tracerProperties"))
     {
         wordList trackFromPatchNames;
         List<wordList> trackToPatchNames;
-        
+
         if
         (
             cloud_.particleProperties().subDict("tracerProperties")
@@ -235,7 +235,7 @@ void dsmcGlobalPorousMediumMeasurements::checkPorousMeasurementsInputs()
             cloud_.particleProperties().subDict("tracerProperties")
                 .lookup("inflowPatchNames") >> trackFromPatchNames;
         }
-            
+
         if
         (
             cloud_.particleProperties().subDict("tracerProperties")
@@ -245,8 +245,8 @@ void dsmcGlobalPorousMediumMeasurements::checkPorousMeasurementsInputs()
             cloud_.particleProperties().subDict("tracerProperties")
                .lookup("outflowPatchNames") >> trackToPatchNames;
         }
-            
-        
+
+
         if (trackFromPatchNames.size() != trackToPatchNames.size())
         {
             FatalErrorIn
@@ -259,10 +259,10 @@ void dsmcGlobalPorousMediumMeasurements::checkPorousMeasurementsInputs()
             << "inflowPatchNames: size " << trackFromPatchNames.size() << nl
             << "outflowPatchNames: size " << trackToPatchNames.size()
             << exit(FatalError);
-        }    
-            
+        }
+
         label noCombinations = 0;
-        
+
         forAll(trackFromPatchNames, inflowPatch)
         {
             if (mesh_.boundaryMesh().findPatchID(trackFromPatchNames[inflowPatch]) == -1)
@@ -276,7 +276,7 @@ void dsmcGlobalPorousMediumMeasurements::checkPorousMeasurementsInputs()
                 << " defined in constant/dsmcProperties does not exist"
                 << exit(FatalError);
             }
-            
+
             forAll(trackToPatchNames[inflowPatch], outflowPatch)
             {
                 if (mesh_.boundaryMesh().findPatchID(trackToPatchNames[inflowPatch][outflowPatch]) == -1)
@@ -293,18 +293,18 @@ void dsmcGlobalPorousMediumMeasurements::checkPorousMeasurementsInputs()
                     << " and defined in constant/dsmcProperties does not exist"
                     << exit(FatalError);
                 }
-                
+
                 noCombinations++;
             }
-        } 
-        
+        }
+
         tracerPatchNamesMap_.resize(noCombinations);
-        
+
         forAll(trackFromPatchNames, inflowPatch)
         {
             forAll(trackToPatchNames[inflowPatch], outflowPatch)
             {
-                const word key = 
+                const word key =
                     std::to_string
                     (
                         mesh_.boundaryMesh().findPatchID
@@ -319,15 +319,15 @@ void dsmcGlobalPorousMediumMeasurements::checkPorousMeasurementsInputs()
                             trackToPatchNames[inflowPatch][outflowPatch]
                         )
                     );
-                
+
                 tracerPatchNamesMap_.insert(key);
             }
         }
-        
+
         trackingProbability_ = cloud_.particleProperties()
             .subDict("tracerProperties")
             .lookupOrDefault<scalar>("trackingProbability", 0.1);
-            
+
         dimensionality_ = cloud_.particleProperties()
             .subDict("tracerProperties")
             .lookupOrDefault<label>("dimensionality", 3);
@@ -343,7 +343,7 @@ void dsmcGlobalPorousMediumMeasurements::checkPorousMeasurementsInputs()
            "constant/dsmcProperties"
         << endl;
     }
-        
+
     writeGlobalPorousMeasurementsInfo();
 }
 
@@ -402,9 +402,9 @@ void dsmcGlobalPorousMediumMeasurements::additionInteraction
         {
             p.setTracked
             (
-                true, 
+                true,
                 patchId,
-                mesh_.time().value(), 
+                mesh_.time().value(),
                 p.position()
             );
         }
@@ -416,31 +416,31 @@ void dsmcGlobalPorousMediumMeasurements::writePorousMeasurementsInfo() const
 {
     const scalar nDel = dsmcParcel::TrackedParcel::nDELETED + SMALL;
     const scalar nLooping = nLooping_ + SMALL;
-    
+
     scalar weightingFactor = 0.0;
-    
+
     if (dsmcParcel::TrackedParcel::nDELETED > 0)
     {
         weightingFactor = nLooping_/nDel;
     }
-    
+
     /*const scalar mediumSpatialExtension = 1.0; // TODO
-    
+
     mediumTortuosity_ = mediumTotalDistanceTravelled_
         /(nDel*mediumSpatialExtension);*/
-    
-    Info << "    Tracked parcels recorded        = " 
+
+    Info << "    Tracked parcels recorded        = "
          << dsmcParcel::TrackedParcel::nDELETED << nl
-         << "    Mean particle displacement      = " 
+         << "    Mean particle displacement      = "
          << mediumTotalDistanceTravelled_/nDel << nl
-         //<< "    Medium tortuosity               = " 
+         //<< "    Medium tortuosity               = "
          //<< mediumTortuosity_ << nl
          << "    Recorded flow transit time      = "
          << mediumTransitTime_/nDel << nl
-         << "    Looping parcels recorded        = " 
+         << "    Looping parcels recorded        = "
          << nLooping_ << nl
          << "    Flow time penalty               = "
-         << timeLooping_/nLooping << nl 
+         << timeLooping_/nLooping << nl
          << "    Corrected flow transit time     = "
          << mediumTransitTime_/nDel + weightingFactor*timeLooping_/nLooping
          << endl;

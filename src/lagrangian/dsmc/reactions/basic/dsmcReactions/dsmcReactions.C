@@ -39,7 +39,7 @@ namespace Foam
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-//- Null Constructor 
+//- Null Constructor
 dsmcReactions::dsmcReactions
 (
     Time& t,
@@ -101,15 +101,15 @@ dsmcReactions::dsmcReactions
         {
             const entry& dsmcReactionsI = reactionsList_[r];
             const dictionary& dsmcReactionsIDict = dsmcReactionsI.dict();
-    
+
             reactions_[r] = autoPtr<dsmcReaction>
             (
                 dsmcReaction::New(time_, cloud, dsmcReactionsIDict)
             );
-    
+
             reactionNames_[r] = reactions_[r]->type();
             reactionIds_[r] = r;
-    
+
             nReactions_++;
         }
 
@@ -153,9 +153,9 @@ void dsmcReactions::initialConfiguration()
             label nReactionModelsPerPair = 0;
 
             forAll(reactions_, r)
-            {                
+            {
                 if (reactions_[r]->tryReactMolecules(i, j))
-                {                    
+                {
                     pairAddressing_[i][j] = r;
                     pairAddressing_[j][i] = r;
                     nReactionModelsPerPair++;
@@ -171,7 +171,7 @@ void dsmcReactions::initialConfiguration()
             }
         }
     }
-   
+
     Info << "pair addressing: " << pairAddressing_ << endl;
 }
 

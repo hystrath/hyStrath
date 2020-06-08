@@ -25,7 +25,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-inline const bool& 
+inline const bool&
 Foam::rarefactionParameter::computeRarefaction() const
 {
     return computeRarefaction_;

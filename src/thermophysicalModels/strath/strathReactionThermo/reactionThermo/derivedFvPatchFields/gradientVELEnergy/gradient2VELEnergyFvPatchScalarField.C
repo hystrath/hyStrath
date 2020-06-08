@@ -115,25 +115,25 @@ void Foam::gradient2VELEnergyFvPatchScalarField::updateCoeffs()
     {
         return;
     }
-    
+
     //Info << "gradient2VELEnergy is used for patch called " << patch().name() << ", species " << specieName_ << endl;
 
     const multi2Thermo& multiThermo = multi2Thermo::lookup2Thermo(*this);
     const label patchi = patch().index();
 
     const scalarField& pw = multiThermo.p().boundaryField()[patchi];
-    
+
     fvPatchScalarField& spTvw =
         const_cast<fvPatchScalarField&>(thermo_.composition().Tv(specieName_).boundaryField()[patchi]);
     spTvw.evaluate();
-    
+
     gradient() = thermo_.composition().Cv_vel(specieName_, pw, spTvw, patchi)*spTvw.snGrad()
       + patch().deltaCoeffs()*
         (
             thermo_.composition().hevel(specieName_, pw, spTvw, patchi)
           - thermo_.composition().hevel(specieName_, pw, spTvw, patch().faceCells())
         );
-        
+
     fixedGradientFvPatchScalarField::updateCoeffs();
 }
 

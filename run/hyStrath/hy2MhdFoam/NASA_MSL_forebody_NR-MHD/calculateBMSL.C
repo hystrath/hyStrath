@@ -3,13 +3,13 @@
 #include <math.h>
 
 void calculateCoilPoints(double** coil_points, const int steps, double x, double y, double z, double radius)
-{ 
+{
   //double center[3];
   double angle;
   const double pi = 3.1415926;
   int i;
 
-  for (i = 0; i < steps; i++) 
+  for (i = 0; i < steps; i++)
   {
     angle = 2*pi*i/(steps-1);
     //printf("%d %f\n", i, angle);
@@ -67,7 +67,7 @@ int main()
   int line_num_start = 21;
   int num_cells;
   int counter;
-  
+
   double pi = 3.1415926;
   double mu0 = 4*pi*pow(10, -7);
   double B_target = 0.5*5.0/1.3; ///B at the center
@@ -75,10 +75,10 @@ int main()
   double r[3], dl[3], r_unit[3];
   double r_mag;
   double c;
-  double B[3];  
+  double B[3];
 
   int i, j, k;
-  
+
   //===allocate memory for coil points================
   coil_points = (double**)malloc(steps*sizeof(double*));
   for (i = 0; i < steps; i++)
@@ -118,7 +118,7 @@ int main()
       cell_centers[i][j] = 0.0;
   }
   //=========================================================
- 
+
   //=======Reading cell center coordinates into memory=======
   i = 0;
   while (fgets(buffx, sizeof(buff), ccx) != 0)
@@ -145,7 +145,7 @@ int main()
     }
     counter++;
   }
-  
+
   i = 0;
   counter = 0;
   while (fgets(buffz, sizeof(buff), ccz) != 0)
@@ -180,11 +180,11 @@ FoamFile\n\
 dimensions\t[1 0 -2 0 0 -1 0];\n\n\
 internalField   nonuniform List<vector>\n");
 
-  fprintf(B_file, "%d\n(\n", num_cells); 
-   
+  fprintf(B_file, "%d\n(\n", num_cells);
+
   //======Calculating B components===========================
   for (k = 0; k < num_cells; k++)
-  { 
+  {
     fprintf(centers_file, "%f %f %f;\n", cell_centers[k][0], cell_centers[k][1], cell_centers[k][2]);
     B[0] = 0.0;
     B[1] = 0.0;
@@ -204,8 +204,8 @@ internalField   nonuniform List<vector>\n");
       c = mu0*I/(4*pi*pow(r_mag, 2));
       B[0] += c*(dl[1]*r_unit[2] - dl[2]*r_unit[1]);
       B[1] += c*(dl[2]*r_unit[0] - dl[0]*r_unit[2]);
-      B[2] += c*(dl[0]*r_unit[1] - dl[1]*r_unit[0]); 
-      
+      B[2] += c*(dl[0]*r_unit[1] - dl[1]*r_unit[0]);
+
     }
     if (sqrt((pow(B[0], 2) + pow(B[1], 2) + pow(B[2], 2))) > 0.01)
       {
@@ -222,12 +222,12 @@ internalField   nonuniform List<vector>\n");
   //===================================================
 
   //=====Finishing the file===========================
-  
+
   fprintf(B_file, ")\n;\n\nboundaryField\n{\nfront\n{\n\ttype\t\twedge;\n}\nback\n{\n\ttype\t\twedge;\n}");
   fprintf(B_file, "\nobject\n{\n\ttype\t\tzeroGradient;\n}\n");
   fprintf(B_file, "inlet\n{\n\ttype\t\tzeroGradient;\n}\noutlet\n{\n\ttype\t\tzeroGradient;\n}\n}\n");
   fprintf(B_file, "// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //");
-    
+
   fprintf(coil_file, "[");
   for (i = 0; i < steps; i++)
   {
@@ -242,7 +242,7 @@ internalField   nonuniform List<vector>\n");
   fclose(ccx);
   fclose(ccy);
   fclose(ccz);
-  return 0;  
+  return 0;
 }
 
 

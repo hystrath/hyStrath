@@ -60,24 +60,24 @@ class dsmcDiffuseSpecularWallFieldPatch
 :
 	  public dsmcFieldPatchBoundary,
 	  public dsmcDiffuseSpecularWallPatch
-	  
+
 {
 
 private:
 
     // Private data
-    
+
         dictionary propsDict_;
-        
+
 
 protected:
 
-    // Protected data        
+    // Protected data
 
-        
-        
+
+
     // Protected member functions
-    
+
 
 public:
 

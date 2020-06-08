@@ -63,26 +63,26 @@ protected:
 
         //- Sub-dictionary containing the reaction properties
         dictionary propsDict_;
-        
+
         //- Id of the intermediate molecule
         label intermediateMoleculeId_;
-        
+
         //- Ids of the products
         labelList productIdsAssociativeIonisation_;
-        
-        //- Switch to determine whether or not the reaction is a forward or 
+
+        //- Switch to determine whether or not the reaction is a forward or
         //  reverse associative ionisation reaction
         bool forwardAssociativeIonisation_;
-        
+
         //- Position of the ionised molecule in the reactant or product list
         label posIonisedMol_;
-        
+
         //- String to print for the associative ionisation reaction
         word associativeIonisationStr_;
-        
+
         label nTotAssociativeIonisationReactions_;
         label nAssociativeIonisationReactionsPerTimeStep_;
-       
+
         scalarList heatOfReactionAssociativeIonisationJoules_;
 
         //- Total volume of the numerical domain (NB: should not be there)
@@ -92,7 +92,7 @@ protected:
     // Protected Member Functions
 
         virtual void setProperties();
-        
+
         void testForwardAssociativeIonisation
         (
             const dsmcParcel& p,
@@ -102,7 +102,7 @@ protected:
             scalar& totalReactionProbability,
             scalar& reactionProbability
         );
-        
+
         void testReverseAssociativeIonisation
         (
             const dsmcParcel& p,
@@ -112,14 +112,14 @@ protected:
             scalar& totalReactionProbability,
             scalar& reactionProbability
         );
-        
+
         void forwardAssociativeIonisation
         (
             dsmcParcel& p,
             dsmcParcel& q,
             scalar collisionEnergy
         );
-        
+
         void reverseAssociativeIonisation
         (
             dsmcParcel& p,
@@ -142,13 +142,13 @@ public:
             dsmcCloud& cloud,
             const dictionary& dict
         );
-    
-    
+
+
     // Destructor
-    
+
         ~associativeIonisationQK();
-    
-    
+
+
     // Member Functions
 
         //- initial configuration - read in properties from chemReactDict
@@ -170,10 +170,10 @@ public:
         //- Return true if both particles belong to this reaction model
         virtual bool tryReactMolecules
         (
-            const label& typeIdP, 
+            const label& typeIdP,
             const label& typeIdQ
         );
-        
+
 
       // Access
 

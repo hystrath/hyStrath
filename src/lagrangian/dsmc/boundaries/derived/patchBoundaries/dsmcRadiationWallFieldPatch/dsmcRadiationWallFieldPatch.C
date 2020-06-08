@@ -115,29 +115,29 @@ void dsmcRadiationWallFieldPatch::calculateProperties()
     {
         EcTotSum_[f] += EcTot_[f];
         EcTot_[f] = 0.0;
-        
+
         if(EcTotSum_[f] > VSMALL) // zero face temperature not allowed!
         {
             const label& faceI = faces_[f];
             scalar fA = mag(mesh_.faceAreas()[faceI]);
 
-            TwallRad_[f] = 
+            TwallRad_[f] =
             pow
             (
                 (alpha_*cloud_.nParticle()*EcTotSum_[f]/(deltaT*stepCounter_*epsilonSigma_*fA)), 0.25
             );
-        }                                    
+        }
     }
-    
+
     if(time_.time().outputTime())
     {
         label wppIndex = patchId_;
-        
+
         forAll(TwallRad_, f)
         {
             radiativeT_.boundaryFieldRef()[wppIndex][f] = TwallRad_[f];
         }
-        
+
         //- reset
         if(resetFieldsAtOutput_)
         {
@@ -154,20 +154,20 @@ void dsmcRadiationWallFieldPatch::controlParticle(dsmcParcel& p, dsmcParcel::tra
     vector& U = p.U();
 
     scalar& ERot = p.ERot();
-    
+
     labelList& vibLevel = p.vibLevel();
 
     label typeId = p.typeId();
-    
+
     scalar m = cloud_.constProps(typeId).mass();
 
     scalar preIE = 0.5*m*(U & U) + ERot;
-    
+
     forAll(vibLevel, i)
     {
         preIE += vibLevel[i]*physicoChemical::k.value()*cloud_.constProps(typeId).thetaV()[i];
     }
-    
+
     label faceId = findIndex(faces_, p.face());
 
     vector nw = p.normal();
@@ -210,7 +210,7 @@ void dsmcRadiationWallFieldPatch::controlParticle(dsmcParcel& p, dsmcParcel::tra
     scalar mass = cloud_.constProps(typeId).mass();
 
     scalar rotationalDof = cloud_.constProps(typeId).rotationalDegreesOfFreedom();
-    
+
     scalar vibrationalDof = cloud_.constProps(typeId).nVibrationalModes();
 
     U =
@@ -224,18 +224,18 @@ void dsmcRadiationWallFieldPatch::controlParticle(dsmcParcel& p, dsmcParcel::tra
     U += velocity_;
 
     ERot = cloud_.equipartitionRotationalEnergy(T, rotationalDof);
-    
+
     vibLevel = cloud_.equipartitionVibrationalEnergyLevel(T, vibrationalDof, typeId);
 
     measurePropertiesAfterControl(p, 0.0);
-    
+
     scalar postIE = 0.5*m*(U & U) + ERot;
-    
+
     forAll(vibLevel, i)
     {
         postIE += vibLevel[i]*physicoChemical::k.value()*cloud_.constProps(typeId).thetaV()[i];
     }
-    
+
     EcTot_[faceId] += (preIE - postIE);
 }
 
@@ -276,8 +276,8 @@ void dsmcRadiationWallFieldPatch::setProperties()
     {
 
         FatalErrorIn("dsmcRadiationWallFieldPatch::setProperties()")
-            << "The value of energyAccommodationCoeff should be between 0 and 1: " 
-            << alpha_ << nl 
+            << "The value of energyAccommodationCoeff should be between 0 and 1: "
+            << alpha_ << nl
             << exit(FatalError);
     }
 }

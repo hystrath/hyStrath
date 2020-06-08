@@ -98,10 +98,10 @@ label uniformBins::isPointWithinBin
     scalar rD = rSI & unitVector_;
     label n = label(rD/binWidth_);
 
-//     Info << "n = " << n << ", rD = " << rD 
+//     Info << "n = " << n << ", rD = " << rD
 //          << endl;
-    
-    
+
+
     if
     (
         (rD <= rSEMag_) && (rD >= 0.0)

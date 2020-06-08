@@ -70,7 +70,7 @@ void Foam::Euler2Implicit<Chemistry2Model>::updateRRInReactionI
 {
     const Reaction2<typename Chemistry2Model::thermoType>& R =
         this->reactions_[index];
-        
+
     const label lSize = int(R.lhs().size());
     for(int s = 0; s < lSize; ++s)
     {
@@ -113,7 +113,7 @@ void Foam::Euler2Implicit<Chemistry2Model>::solve
     }
 
     scalar cTot = sum(c);
-    
+
     scalar deltaTEst = min(deltaT, subDeltaT);
 
     forAll(this->reactions(), i)
@@ -138,7 +138,7 @@ void Foam::Euler2Implicit<Chemistry2Model>::solve
 
         updateRRInReactionI(i, pr, pf, corr, lRef, rRef, p, T, RR);
     }
-    
+
     // Calculate the stable/accurate time-step
     scalar tMin = GREAT;
 
@@ -201,7 +201,7 @@ void Foam::Euler2Implicit<Chemistry2Model>::solve
     // PRINTED = YES
     const label nSpecie = this->nSpecie();
     simpleMatrix<scalar> RR(nSpecie, 0, 0);
-    simpleMatrix<scalar> RRfwd(nSpecie, 0, 0); // NEW VINCENT 25/03/2016 
+    simpleMatrix<scalar> RRfwd(nSpecie, 0, 0); // NEW VINCENT 25/03/2016
     /*simpleMatrix<scalar> RReiiN(nSpecie, 0, 0); // NEW VINCENT 22/02/2017 TODO VINCENT
     simpleMatrix<scalar> RReiiO(nSpecie, 0, 0); // NEW VINCENT 22/02/2017*/
 
@@ -236,28 +236,28 @@ void Foam::Euler2Implicit<Chemistry2Model>::solve
 
         updateRRInReactionI(i, pr, pf, corr, lRef, rRef, p, T, RR);
         updateRRInReactionI(i, 0, pf, corr, lRef, rRef, p, T, RRfwd); // NEW VINCENT 25/03/2016 TODO
-        
+
         // NEW VINCENT 22/02/2017 ************************************************* TODO
         //if(this->reactions()[i].controlT() == impactIonisation)
         //{
             //if(this->reactions()[i].species().contains("N+"))
             //{
                 //updateRRInReactionI(i, pr, pf, corr, lRef, rRef, p, T, RReiiN);
-                /*rriirN = RR[this->reactions()[i].rhs()[0].index][rRef] 
+                /*rriirN = RR[this->reactions()[i].rhs()[0].index][rRef]
                     + RR[this->reactions()[i].rhs()[0].index][lRef];*/
             //}
             //else if(this->reactions()[i].species().contains("O+"))
             //{
                 //updateRRInReactionI(i, pr, pf, corr, lRef, rRef, p, T, RReiiO);
-                /*rriirO = RR[this->reactions()[i].rhs()[0].index][rRef] 
+                /*rriirO = RR[this->reactions()[i].rhs()[0].index][rRef]
                     + RR[this->reactions()[i].rhs()[0].index][lRef];*/
             //}
         //}
         // END NEW VINCENT 22/02/2017 *********************************************
     }
-    
+
     //Info << "Pt1: Euler2Implicit::solve" << endl;
-    
+
     // Calculate the stable/accurate time-step
     scalar tMin = GREAT;
 
@@ -280,34 +280,34 @@ void Foam::Euler2Implicit<Chemistry2Model>::solve
             tMin = min(tMin, cm/d);
         }
     }
-    
+
     //Info << "Pt2: Euler2Implicit::solve " << deltaT << endl;
 
     subDeltaT = cTauChem_*tMin;
     deltaT = min(deltaT, subDeltaT);
-    
+
     // Add the diagonal and source contributions from the time-derivative
     for (label i=0; i<nSpecie; i++)
     {
         RR[i][i] += 1.0/deltaT;
         RR.source()[i] = c[i]/deltaT;
-        
-        RRfwd[i][i] += 1.0/deltaT; // NEW VINCENT 25/03/2016 
+
+        RRfwd[i][i] += 1.0/deltaT; // NEW VINCENT 25/03/2016
         RRfwd.source()[i] = cfwd[i]/deltaT; // NEW VINCENT 25/03/2016
-        
+
         /*RReiiN[i][i] += 1.0/deltaT; // NEW VINCENT 25/03/2016 TODO VINCENT
         RReiiN.source()[i] = ceiiN[i]/deltaT; // NEW VINCENT 25/03/2016
         RReiiO[i][i] += 1.0/deltaT; // NEW VINCENT 25/03/2016
         RReiiO.source()[i] = ceiiO[i]/deltaT; // NEW VINCENT 25/03/2016*/
     }
-    
+
     //Info << "Pt3: Euler2Implicit::solve" << cTot << endl;
 
     // Solve for the new composition
     c = RR.LUsolve();
     //Info << "Pt4: Euler2Implicit::solve" << c << endl;
     cfwd = RRfwd.LUsolve(); // NEW VINCENT 25/03/2016 TODO VINCENT
-    
+
     //Info << "Pt5: Euler2Implicit::solve" << endl;
 
     // Limit the composition

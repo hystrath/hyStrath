@@ -208,15 +208,15 @@ Foam::dsmcStandardFields::dsmcStandardFields
     )
 {
     volScalarField qCopy = q_;
-    
+
     wordList qBFCopy = q_.boundaryField().types();
-   
+
     forAll(mesh_.boundaryMesh(), i)
-    {        
+    {
         if (isA<polyPatch>(mesh_.boundaryMesh()[i]))
         {
             if(mesh_.boundaryMesh()[i].type() == "patch")
-            {  
+            {
                 Info << "Remember to change the type entries in q, rhoN, etc to 'zeroGradient' for the '" <<
                 mesh_.boundaryMesh()[i].name() << "' patch!" << endl << endl;
             }
@@ -388,7 +388,7 @@ void Foam::dsmcStandardFields::calculateFields()
     scalarField& rotationalE = rotationalE_.internalField();
 
     scalarField& rotationalDof = rotationalDof_.internalField();
-    
+
     scalarField& vibrationalE = vibrationalE_.internalField();
 
     scalarField& vibrationalDof = vibrationalDof_.internalField();
@@ -436,7 +436,7 @@ void Foam::dsmcStandardFields::calculateFields()
 
     rotationalDof *= cloud_.nParticle()/mesh_.cellVolumes();
     rotationalDof_.correctBoundaryConditions();
-    
+
     vibrationalE *= cloud_.nParticle()/mesh_.cellVolumes();
     vibrationalE_.correctBoundaryConditions();
 
@@ -469,7 +469,7 @@ void Foam::dsmcStandardFields::resetFields()
     rotationalE_ = dimensionedScalar("zero",  dimensionSet(1, -1, -2, 0, 0), 0.0);
 
     rotationalDof_ = dimensionedScalar("zero",  dimensionSet(0, -3, 0, 0, 0), VSMALL);
-    
+
     vibrationalE_ = dimensionedScalar("zero",  dimensionSet(1, -1, -2, 0, 0), 0.0);
 
     vibrationalDof_ = dimensionedScalar("zero",  dimensionSet(0, -3, 0, 0, 0), VSMALL);

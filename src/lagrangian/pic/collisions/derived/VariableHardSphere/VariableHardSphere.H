@@ -55,7 +55,7 @@ class VariableHardSphere
         //- Reference temperature
         const scalar Tref_;
 
-        
+
 
 public:
 

@@ -61,19 +61,19 @@ namespace Foam
 class dsmcDeletionPatch
 :
 	  public dsmcPatchBoundary
-{ 
+{
 
 private:
 
     // Private data
-    
+
         dictionary propsDict_;
 
 
 protected:
 
     // Protected data
-        
+
         //label timeIndex_;
 
         //scalar writeInterval_;
@@ -90,13 +90,13 @@ protected:
 
 
         //scalar massFlux_;
-        
-        
+
+
     // Protected member functions
 
         void setProperties();
-        
-        
+
+
 
 public:
 

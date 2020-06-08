@@ -88,7 +88,7 @@ class referredCell
 
         // rotational tensor
         tensor R_;
-    
+
 
 
 
@@ -129,7 +129,7 @@ public:
 
 
     // Member Functions
-    
+
         void initialise
         (
             const polyMesh& mesh,
@@ -149,7 +149,7 @@ public:
             (
                 const bool& rotate,
                 const vector& rotationPt,
-//                 const vector& rotationAxis,   
+//                 const vector& rotationAxis,
 //                 const scalar& angle
                 const tensor& R
             );
@@ -171,8 +171,8 @@ public:
             const labelList& neighbouringCells() const;
 
             const vector& translation() const;
-            
-            const bool& rotate() const;            
+
+            const bool& rotate() const;
             //- Return non-const access to the stored points
 //             inline pointField& points();
 

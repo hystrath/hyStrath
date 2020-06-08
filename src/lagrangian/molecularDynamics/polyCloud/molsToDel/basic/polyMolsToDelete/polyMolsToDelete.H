@@ -27,7 +27,7 @@ Class
 
 Description
 
-    
+
 
 \*---------------------------------------------------------------------------*/
 
@@ -64,7 +64,7 @@ public:
 
     // Constructors
 
-        //- Constructor 
+        //- Constructor
         polyMolsToDelete
         (
             const polyMesh& mesh,
@@ -72,7 +72,7 @@ public:
         );
 
     // Member Functions
-        
+
         // Access
 };
 

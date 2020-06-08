@@ -38,7 +38,7 @@ void pointsToCellsToFaceZone
     }
 
 //     Info << "Accepted Points: "<< pointList << endl;
-// 
+//
 //     Info << "Accepted Cells: "<< cellList.shrink() << endl;
 
     // check that all points in pointList are included at least once in the cellList.

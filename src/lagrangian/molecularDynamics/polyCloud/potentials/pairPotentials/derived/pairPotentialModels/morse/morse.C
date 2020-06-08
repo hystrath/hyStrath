@@ -45,9 +45,9 @@ addToRunTimeSelectionTable(pairPotentialModel, morse, dictionary);
 morse::morse
 (
     const polyMesh& mesh,
-    polyMoleculeCloud& molCloud, 
+    polyMoleculeCloud& molCloud,
     const reducedUnits& redUnits,
-    const word& name, 
+    const word& name,
     const dictionary& dict
 )
 :
@@ -55,16 +55,16 @@ morse::morse
     propsDict_(dict.subDict(typeName + "Coeffs")),
     Kcr_(readScalar(propsDict_.lookup("Kcr"))),
     gamma_(readScalar(propsDict_.lookup("gamma"))),
-    rC_(readScalar(propsDict_.lookup("rC")))      
+    rC_(readScalar(propsDict_.lookup("rC")))
 {
     if(redUnits.runReducedUnits())
     {
         Kcr_ /= redUnits.refEnergy();
-        gamma_ *= redUnits.refLength();        
+        gamma_ *= redUnits.refLength();
         rC_ /= redUnits.refLength();
     }
-    
-    setLookupTables();    
+
+    setLookupTables();
 }
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
@@ -78,7 +78,7 @@ scalar morse::unscaledEnergy(const scalar r) const
 {
     scalar exponent = -gamma_*(r-rC_);
     scalar exp = Foam::exp(exponent);
-    
+
     return Kcr_*(exp-1.0)*(exp-1.0);
 }
 
@@ -86,7 +86,7 @@ scalar morse::force(const scalar r) const
 {
     return forceLookUpFromTable(r);
 }
-    
+
 scalar morse::energy(const scalar r) const
 {
     return energyLookUpFromTable(r);
@@ -100,23 +100,23 @@ scalar morse::energy(const scalar r) const
 // )
 // {
 //     pairPotentialModel::read(pairPotentialProperties, rU);
-// 
+//
 //     morseCoeffs_ = pairPotentialProperties.subDict(typeName + "Coeffs");
-// 
+//
 //     morseCoeffs_.lookup("sigma") >> sigma_;
 //     morseCoeffs_.lookup("epsilon") >> epsilon_;
-// 
+//
 //     if(rU.runReducedUnits())
 //     {
 //         sigma_ /= rU.refLength();
 //         epsilon_ /= rU.refEnergy();
 //     }
-// 
+//
 //     return true;
 // }
 void morse::write(const fileName& pathName)
 {
-    
+
 }
 
 const dictionary& morse::dict() const

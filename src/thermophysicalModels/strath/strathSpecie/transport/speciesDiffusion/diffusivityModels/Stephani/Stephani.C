@@ -37,7 +37,7 @@ namespace Foam
         addToRunTimeSelectionTable
         (
             binaryDiffusivityModel,
-            Stephani, 
+            Stephani,
             dictionary
         );
     }
@@ -62,7 +62,7 @@ Foam::binaryDiffusivityModels::Stephani::Stephani
     pi(Foam::constant::mathematical::pi),
     kB(Foam::constant::physicoChemical::k.value()),
     Runi(Foam::constant::physicoChemical::R.value()),
-    
+
     MStar_(1e-3*readScalar(dictThermo.subDict(name1).subDict("specie").lookup("molWeight"))*
         readScalar(dictThermo.subDict(name2).subDict("specie").lookup("molWeight"))/
         (readScalar(dictThermo.subDict(name1).subDict("specie").lookup("molWeight"))+
@@ -73,7 +73,7 @@ Foam::binaryDiffusivityModels::Stephani::Stephani
     dref_(0.5*(readScalar(dictThermo.subDict(name1).subDict("specie").lookup("diameter"))+
         readScalar(dictThermo.subDict(name2).subDict("specie").lookup("diameter")))),
     Tref_(273.0),
-    constantOmegaNeutral1_(constantExpressionInOmegaNeutral1()) 
+    constantOmegaNeutral1_(constantExpressionInOmegaNeutral1())
 {}
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //

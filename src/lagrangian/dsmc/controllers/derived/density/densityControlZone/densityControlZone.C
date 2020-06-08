@@ -63,14 +63,14 @@ densityControlZone::densityControlZone
 
 {
     density_ = readScalar(propsDict_.lookup("numberDensity"));
-    
+
     velocity_ = propsDict_.lookup("velocity");
-    
+
     temperature_ = readScalar(propsDict_.lookup("temperature"));
 
 
-	
-	// standard to reading typeIds ------------ 
+
+	// standard to reading typeIds ------------
     const List<word> molecules (propsDict_.lookup("typeIds"));
 
     DynamicList<word> moleculesReduced(0);
@@ -105,26 +105,26 @@ densityControlZone::densityControlZone
 
         typeIds_[i] = typeId;
     }
-    
+
     // ---------------------------------------------------
-    
+
     if(molecules.size() != 1)
     {
         FatalErrorIn("densityControlZone")
-                << "This controller allows only one typeId: " << molecules 
+                << "This controller allows only one typeId: " << molecules
                 << nl << "in: "
                 << t.system()/"controllersDict"
                 << exit(FatalError);
     }
-     
+
     Info << "densityControlZone" << nl << endl;
-    
+
     forAll(controlZone(), c)
     {
         const label& cellI = controlZone()[c];
         volume_ += mesh_.cellVolumes()[cellI];
     }
-    
+
     if(Pstream::parRun())
     {
         reduce(volume_, sumOp<scalar>());
@@ -135,8 +135,8 @@ densityControlZone::densityControlZone
         mesh_,
         regionId_
     );
-    
-    
+
+
 }
 
 
@@ -158,7 +158,7 @@ void densityControlZone::calculateProperties()
 
 void densityControlZone::controlParcelsBeforeMove()
 {
-	
+
 }
 
 
@@ -179,13 +179,13 @@ void densityControlZone::output
 
 void densityControlZone::controlParcelsBeforeCollisions()
 {
-    
+
 }
 
 void densityControlZone::controlParcelsAfterCollisions()
 {
     label nParcels = 0;
-    
+
     //1. measure number of molecules
     {
         const labelList& cells = mesh_.cellZones()[regionId_];
@@ -203,29 +203,29 @@ void densityControlZone::controlParcelsAfterCollisions()
                 dsmcParcel* p = molsInCell[mIC];
 
                 const label& typeId = p->typeId();
-                
-                if(findIndex(typeIds_, typeId) != -1) 
+
+                if(findIndex(typeIds_, typeId) != -1)
                 {
                     const scalar& RWF = cloud_.coordSystem().recalculateRWF(cell);
-                    
+
                     nParcels += RWF;
                 }
             }
         }
     }
-    
+
     if(Pstream::parRun())
     {
         reduce(nParcels, sumOp<label>());
     }
-    
-    Info << "nParcels (measured) = " << nParcels 
+
+    Info << "nParcels (measured) = " << nParcels
         << ", measured number density = " << nParcels*cloud_.nParticle()/volume_
         << ", target number density = " << density_
         << endl;
 
     //2. compute no of parcels to insert
-    
+
     label nParcelsNew = label(density_*volume_/cloud_.nParticle()) - nParcels;
     bool insert = true;
 
@@ -235,19 +235,19 @@ void densityControlZone::controlParcelsAfterCollisions()
     {
         nParcelsNew = -nParcelsNew;
         insert = false;
-        
-        Info << "nParcels to delete: " << nParcelsNew << endl;        
+
+        Info << "nParcels to delete: " << nParcelsNew << endl;
     }
     else
     {
-        Info << "nParcels to insert: " << nParcelsNew << endl;    
+        Info << "nParcels to insert: " << nParcelsNew << endl;
     }
-    
+
     //3. pick random points to insert new set of parcels
-    
+
     vectorField parcelPositionToInsert(nParcelsNew, vector::zero);
 
-    
+
     if(Pstream::master())
     {
         //randomly generate points in square
@@ -257,7 +257,7 @@ void densityControlZone::controlParcelsAfterCollisions()
             parcelPositionToInsert[p].z() = 0.0;
         }
     }
-    
+
     if(Pstream::parRun())
     {
         //- sending
@@ -272,7 +272,7 @@ void densityControlZone::controlParcelsAfterCollisions()
                 }
             }
         }
-   
+
         //- receiving
         for (int p = 0; p < Pstream::nProcs(); p++)
         {
@@ -290,16 +290,16 @@ void densityControlZone::controlParcelsAfterCollisions()
             }
         }
     }
-    
+
     // insert parcels
     if(insert)
     {
         label nParcelsAdded = 0;
-        
+
         forAll(parcelPositionToInsert, p)
         {
             const vector& position = parcelPositionToInsert[p];
-            
+
             label cell = -1;
             label tetFace = -1;
             label tetPt = -1;
@@ -316,46 +316,46 @@ void densityControlZone::controlParcelsAfterCollisions()
             {
                 //insert parcel
                 const label& typeId = typeIds_[0];
-                
+
                 // new velocity picked from Maxwellian distribution
                 scalar mass = cloud_.constProps(typeId).mass();
 
                 scalar sigma = sqrt(physicoChemical::k.value()*temperature_/mass);
 
-        
+
                 vector U
                 (
                     sigma*rndGen_.GaussNormal<scalar>(),
                     sigma*rndGen_.GaussNormal<scalar>(),
                     sigma*rndGen_.GaussNormal<scalar>()
                 );
-                
+
                 U += velocity_;
-                
+
                 scalar ERot = cloud_.equipartitionRotationalEnergy
                 (
                     temperature_,
                     cloud_.constProps(typeId).rotationalDegreesOfFreedom()
                 );
-                
+
                 labelList vibLevel = cloud_.equipartitionVibrationalEnergyLevel
                 (
                     temperature_,
                     cloud_.constProps(typeId).nVibrationalModes(),
                     typeId
                 );
-                
+
                 const dsmcParcel::constantProperties& cP = cloud_.constProps(typeId);
-                
+
                 label ELevel = cloud_.equipartitionElectronicLevel
                 (
                     temperature_,
                     cP.electronicDegeneracyList(),
                     cP.electronicEnergyList()
                 );
-                
+
                 const scalar& RWF = cloud_.coordSystem().recalculateRWF(cell);
-              
+
                 cloud_.addNewParcel
                 (
                     position,
@@ -371,29 +371,29 @@ void densityControlZone::controlParcelsAfterCollisions()
                     0,
                     vibLevel
                 );
-                
+
                 nParcelsAdded++;
             }
         }
 
-    
+
         if(Pstream::parRun())
         {
             reduce(nParcelsAdded, sumOp<label>());
         }
 
-        cloud_.reBuildCellOccupancy(); 
-        
+        cloud_.reBuildCellOccupancy();
+
         Info << "no. of parcels added = " << nParcelsAdded << endl;
     }
     else //delete parcels
     {
         label nParcelsDeleted = 0;
-        
+
         forAll(parcelPositionToInsert, p)
         {
             const vector& position = parcelPositionToInsert[p];
-            
+
             label cell = -1;
             label tetFace = -1;
             label tetPt = -1;
@@ -412,17 +412,17 @@ void densityControlZone::controlParcelsAfterCollisions()
                 label cellMolRemoveId = -1;
 
                 scalar rClosest = GREAT;
-                
+
                 forAll(molsInCell, mIC)
                 {
                     dsmcParcel* p = molsInCell[mIC];
 
                     const label& typeId = p->typeId();
-                    
-                    if(findIndex(typeIds_, typeId) != -1) 
+
+                    if(findIndex(typeIds_, typeId) != -1)
                     {
                         scalar rD = mag(p->position() - position);
-                        
+
                         if(rD < rClosest)
                         {
                             rClosest = rD;
@@ -434,24 +434,24 @@ void densityControlZone::controlParcelsAfterCollisions()
                 if(cellMolRemoveId != -1)
                 {
                     dsmcParcel* delParcel = molsInCell[cellMolRemoveId];
-                    
+
                     //- remove from cellOccupancy before deleting it from cloud
                     cloud_.removeParcelFromCellOccupancy(cellMolRemoveId, cell);
                     cloud_.deleteParticle(*delParcel);
-                    
+
                     nParcelsDeleted++;
                 }
             }
         }
-        
+
         if(Pstream::parRun())
         {
             reduce(nParcelsDeleted, sumOp<label>());
         }
 
-        Info << "no. of parcels deleted = " << nParcelsDeleted << endl;        
+        Info << "no. of parcels deleted = " << nParcelsDeleted << endl;
     }
-    
+
     Info << "new size of cloud = " << cloud_.size() << endl;
 }
 

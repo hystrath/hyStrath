@@ -49,23 +49,23 @@ namespace Foam
 polynomialLeastSquaresFit::polynomialLeastSquaresFit
 (
     const scalarField& x,
-    const scalarField& y,         
+    const scalarField& y,
     const label& degree
 )
 :
     coeffs_(degree+1, 0.0)
 {
-    
+
     // check if x and y are of the same size
     if(x.size() != y.size())
     {
         FatalErrorIn("polynomialLeastSquaresFit::polynomialLeastSquaresFit()")
             << "Error in input lists. x and y have to be of the same size. "
-            << nl << " size of x: " << x.size() 
+            << nl << " size of x: " << x.size()
             << ", size of y: " << y.size()
             << exit(FatalError);
-    }    
-    
+    }
+
     // check that n >= m + 1
     if(x.size() < degree+1 )
     {
@@ -74,12 +74,12 @@ polynomialLeastSquaresFit::polynomialLeastSquaresFit
             << ", where n (= "<< x.size() << ") is the size of the input list (x,y)"
             << ", and m (= " << degree <<") is the degree of polynomial."
             << exit(FatalError);
-    }     
-    
+    }
+
     label matrixSize = degree + 1;
-    
+
     simpleMatrix<scalar> luMatrix(matrixSize, 0.0, 0.0);
-    
+
     // for all rows / equations
     for (label i = 0; i <= degree; i++)
     {
@@ -89,30 +89,30 @@ polynomialLeastSquaresFit::polynomialLeastSquaresFit
         for (label j = 0; j <= degree; j++)
         {
             label col = j;
-            
+
             scalar sk = 0.0;
-            
+
             forAll(x, n)
             {
                 sk += Foam::pow(x[n], (j+i) );
             }
-            
+
             luMatrix[row][col] = sk;
         }
-        
-        scalar tk = 0.0;        
-        
+
+        scalar tk = 0.0;
+
         forAll(x, n)
         {
             tk += y[n]*Foam::pow(x[n], i);
-        }        
-        
-        luMatrix.source()[row] = tk; 
+        }
+
+        luMatrix.source()[row] = tk;
     }
-    
+
 //     Info << "matrix = " << luMatrix << endl;
-    
-    coeffs_ = luMatrix.LUsolve();    
+
+    coeffs_ = luMatrix.LUsolve();
 }
 
 

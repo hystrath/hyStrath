@@ -42,15 +42,15 @@ defineTypeNameAndDebug(dsmcSphericalPatchBoundary, 0);
 vector dsmcSphericalPatchBoundary::wallVelocity(const dsmcParcel& p)
 {
     const scalar pi = Foam::constant::mathematical::pi;
-    
+
     scalar theta = 0.0; //longitude
     scalar phi = 0.0; //latitude
     scalar radius = 0.0;
-    
+
     radius = mag(centrePoint_ - p.position());
     phi = acos(p.position().y()/radius);
     theta = atan(p.position().x()/p.position().z());
-    
+
     if(p.position().z() < 0 && p.position().x() > 0)
     {
         theta *= -1.0;
@@ -61,7 +61,7 @@ vector dsmcSphericalPatchBoundary::wallVelocity(const dsmcParcel& p)
     {
         theta += pi;
     }
-    
+
 //         if(p.position().y() < 500)
 //         {
 //             Info << "radius = " << radius << endl;
@@ -69,14 +69,14 @@ vector dsmcSphericalPatchBoundary::wallVelocity(const dsmcParcel& p)
 //             Info << "phi = " << phi*57.2957795 << endl;
 //             Info << "theta = " << theta*57.2957795 << endl;
 //         }
-    
+
     // add wall velocity
     vector uNew = vector::zero;
-    
+
     scalar linearVelocityXPlane = angularVelocityXPlane_*radius;
     scalar linearVelocityYPlane = angularVelocityYPlane_*radius;
     scalar linearVelocityZPlane = angularVelocityZPlane_*radius;
-    
+
 //         if(p.position().y() < 500)
 //         {
         uNew.x() = linearVelocityYPlane*cos(theta)*fabs(sin(phi));
@@ -89,10 +89,10 @@ vector dsmcSphericalPatchBoundary::wallVelocity(const dsmcParcel& p)
 //         }
 //         Info << "Ubefore = " << U << endl;
 //         if(p.position().y() < 500)
-//         {    
+//         {
 //             Info << "uNew = " << uNew << endl;
 //         }
-    
+
     return uNew;
 }
 

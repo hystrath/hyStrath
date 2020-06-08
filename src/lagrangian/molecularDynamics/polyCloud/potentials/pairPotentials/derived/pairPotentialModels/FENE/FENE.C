@@ -45,9 +45,9 @@ addToRunTimeSelectionTable(pairPotentialModel, FENE, dictionary);
 FENE::FENE
 (
     const polyMesh& mesh,
-    polyMoleculeCloud& molCloud, 
+    polyMoleculeCloud& molCloud,
     const reducedUnits& redUnits,
-    const word& name, 
+    const word& name,
     const dictionary& dict
 )
 :
@@ -62,12 +62,12 @@ FENE::FENE
         k_ /= (redUnits.refMass()/ (redUnits.refTime()*redUnits.refTime()));
         r0_ /= redUnits.refLength();
         r0in_ /= redUnits.refLength();
-        
+
         Info << "k = " << k_ << endl;
     }
-    
+
     useTables_ = false;
-//     setLookupTables();    
+//     setLookupTables();
 }
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
@@ -85,7 +85,7 @@ scalar FENE::unscaledEnergy(const scalar r) const
 scalar FENE::energy(const scalar r) const
 {
     scalar U = 0;
-    
+
     if(r < r0in_)
     {
         U = -0.5*k_*r0_*r0_*Foam::log(1- ((r/r0_)*(r/r0_)));
@@ -93,24 +93,24 @@ scalar FENE::energy(const scalar r) const
     else
     {
        U = -0.5*k_*r0_*r0_*Foam::log(1- ((r0in_/r0_)*(r0in_/r0_)));
-    }    
-    
-    return U;    
+    }
+
+    return U;
 }
 
 scalar FENE::force(const scalar r) const
 {
     scalar F = 0;
-    
+
     if(r < r0in_)
     {
-        F = -k_*r/(1.0-((r/r0_)*(r/r0_))); 
+        F = -k_*r/(1.0-((r/r0_)*(r/r0_)));
     }
     else
     {
         F = -k_*r0in_/(1.0-((r0in_/r0_)*(r0in_/r0_)));
     }
-    
+
     return F;
 }
 
@@ -123,16 +123,16 @@ void FENE::write(const fileName& pathName)
 {
     Info<< "Writing energy and force to file for potential "
             << name_ << endl;
-            
+
     label nBins = 10000;
     scalar dr = r0_/nBins;
     scalarField U(nBins, 0.0);
     scalarField f(nBins, 0.0);
-    
+
     for (label i=0; i<nBins; ++i)
     {
         scalar r = dr*i;
-        
+
         U[i] = energy(r);
         f[i] = force(r);
     }
@@ -143,7 +143,7 @@ void FENE::write(const fileName& pathName)
         {
             forAll(U, i)
             {
-                file 
+                file
                     << dr*i << "\t"
                     << U[i] << "\t"
                     << f[i]
@@ -157,7 +157,7 @@ void FENE::write(const fileName& pathName)
                 << abort(FatalError);
         }
     }
-    
+
     {
         OFstream file(pathName/name_+"-FENE-SI.xy");
 
@@ -165,7 +165,7 @@ void FENE::write(const fileName& pathName)
         {
             forAll(U, i)
             {
-                file 
+                file
                     << dr*i*rU_.refLength() << "\t"
                     << U[i]*rU_.refEnergy() << "\t"
                     << f[i]*rU_.refForce()
@@ -177,7 +177,7 @@ void FENE::write(const fileName& pathName)
             FatalErrorIn("void FENE::write()")
                 << "Cannot open file " << file.name()
                 << abort(FatalError);
-        }  
+        }
     }
 }
 

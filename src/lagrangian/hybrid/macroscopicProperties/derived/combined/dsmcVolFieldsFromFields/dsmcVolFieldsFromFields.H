@@ -59,11 +59,11 @@ class dsmcVolFieldsFromFields
 protected:
 
     // Protected data
-    
+
       volVectorField heatFluxTraVector_;
       volVectorField heatFluxRotVector_;
       volVectorField heatFluxVibVector_;
-      
+
       scalarField eRotU_;
       scalarField eRotV_;
       scalarField eRotW_;
@@ -98,7 +98,7 @@ public:
 
       //- calculate field
       void calculateField();
-      
+
       //- reset fields if mesh has changed
       void resetField();
 

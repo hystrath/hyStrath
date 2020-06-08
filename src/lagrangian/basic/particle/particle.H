@@ -454,7 +454,7 @@ public:
             //- Check the stored cell value (setting if necessary) and
             //  initialise the tetFace and tetPt values
             inline void initCellFacePt();
-            
+
             //- Check the stored cell value (setting if necessary) and
             //  initialise the tetFace and tetPt values
             inline bool initCellFacePtOrDeleteLostParticle();
@@ -585,7 +585,7 @@ public:
 
 
     // Operators
-    
+
         //- Assignment operator
         particle& operator=(const particle& p)
         {
@@ -597,15 +597,15 @@ public:
             tetPtI_ = p.tetPtI_;
             origProc_ = p.origProc_;
             origId_ = p.origId_;
-            
+
             return *this;
         }
-    
-    
+
+
     // Friend Operators
 
         friend Ostream& operator<<(Ostream&, const particle&);
-        
+
         friend bool operator==(const particle& pA, const particle& pB);
 
         friend bool operator!=(const particle& pA, const particle& pB);

@@ -62,7 +62,7 @@ label radial3DBins::findBinR(const scalar& r)
 
         scalar rLimit1 = magRadii_[n] - 0.5*binWidthsR_[n];
         scalar rLimit2 = magRadii_[n] + 0.5*binWidthsR_[n];
-    
+
         if((r >= rLimit1) && (r < rLimit2))
         {}
         else
@@ -78,7 +78,7 @@ label radial3DBins::findBinL(const scalar& r)
 {
     label n = label(r/binWidthL_);
 
-    if(n == nBinsL_) 
+    if(n == nBinsL_)
     {
         n--;
     }
@@ -235,7 +235,7 @@ radial3DBins::radial3DBins
 //     if (propsDict_.found("normalVector"))
 //     {
 //         normalVector_ = propsDict_.lookup("normalVector");
-// 
+//
 //         normalVector_ /= mag(normalVector_);
 //     }
 
@@ -300,11 +300,11 @@ binNumbers.append(-1);
                 nR != -1
             )
             {
-//                 Pout<< "mol position: " << rI 
-//                     << ", rD: " << rD 
-//                     << ", bin number " << nL 
-//                     << ", radius: " << rN 
-//                     << ", bin number: " << nR 
+//                 Pout<< "mol position: " << rI
+//                     << ", rD: " << rD
+//                     << ", bin number " << nL
+//                     << ", radius: " << rN
+//                     << ", bin number: " << nR
 //                     << ", theta (rad): " << theta
 //                     << ", theta (deg): " << theta*180.0/mathematicalConstant::pi
 //                     << ", bin Number: " << nA
@@ -325,29 +325,29 @@ binNumbers.append(-1);
 // {
 //     // length
 //     scalarField positionsL(nBinsL_, 0.0);
-// 
+//
 //     forAll(positionsL, i)
 //     {
 //         positionsL[i] = 0.5*binWidthL_ + scalar(i)*binWidthL_;
 //     }
-// 
+//
 //     // radii
 //     scalarField positionsR(nBinsR_, 0.0);
-// 
+//
 //     forAll(positionsR, i)
 //     {
 //         positionsR[i] = (0.5 + scalar(i))*binWidthsR_[i];
 //     }
-// 
+//
 //     // angle (radians)
-// 
+//
 //     scalarField positionsA(nBinsA_, 0.0);
-// 
+//
 //     forAll(positionsA, i)
 //     {
 //         positionsA[i] = 0.5*binWidthA_ + scalar(i)*binWidthA_;
 //     }
-// 
+//
 //     return magRadii_;
 // }
 
@@ -437,11 +437,11 @@ void radial3DBins::write
                     h = positionsL[nL];
                     r = positionsR[nR];
                     theta = positionsA[nA];
-    
-                    p = h + r*cos(theta)*angleUnitVectorY_ 
+
+                    p = h + r*cos(theta)*angleUnitVectorY_
                         + r*sin(theta)*angleUnitVectorX_;
 
-                    positionsFile 
+                    positionsFile
                         << "(" << p.x() << " " << p.y() << " "
                         << p.z() << ") " << -1
                         << endl;
@@ -457,7 +457,7 @@ void radial3DBins::write
 
 vector radial3DBins::position(const vector& h, const scalar& r, const scalar& theta)
 {
-    vector p = h + r*cos(theta)*angleUnitVectorY_ 
+    vector p = h + r*cos(theta)*angleUnitVectorY_
                                     + r*sin(theta)*angleUnitVectorX_;
     return p;
 }

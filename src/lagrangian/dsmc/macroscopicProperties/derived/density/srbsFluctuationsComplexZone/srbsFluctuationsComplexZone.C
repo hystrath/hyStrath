@@ -65,7 +65,7 @@ srbsFluctuationsComplexZone::srbsFluctuationsComplexZone
     RtStarField_(time_.totalNAvSteps()+1)
 {
 
-    // standard to reading typeIds ------------ 
+    // standard to reading typeIds ------------
     const List<word> molecules (propsDict_.lookup("typeIds"));
 
     DynamicList<word> moleculesReduced(0);
@@ -114,7 +114,7 @@ srbsFluctuationsComplexZone::srbsFluctuationsComplexZone
             << time_.time().system()/"fieldPropertiesDict"
             << exit(FatalError);
     }
-    
+
    // create bin model
     binModel_ = autoPtr<binModel>
     (
@@ -135,9 +135,9 @@ srbsFluctuationsComplexZone::srbsFluctuationsComplexZone
         RtField_.setSize(nInstantSteps_);
         RtStarField_.setSize(nInstantSteps_);
     }
-    
+
     timeIndex_ = 0;
-    
+
     scalar binWidth = binModel_->binPositions()[1]-binModel_->binPositions()[0];
     domainLength_ = binWidth*nBins;
 }
@@ -159,12 +159,12 @@ void srbsFluctuationsComplexZone::createField()
 
 void srbsFluctuationsComplexZone::calculateField()
 {
-       
+
     const List< DynamicList<dsmcParcel*> >& cellOccupancy
         = cloud_.cellOccupancy();
 
     const labelList& cells = mesh_.cellZones()[regionId_];
-    
+
     forAll(cells, c)
     {
         const label& cellI = cells[c];
@@ -173,7 +173,7 @@ void srbsFluctuationsComplexZone::calculateField()
         forAll(parcelsInCell, pIC)
         {
             dsmcParcel* p = parcelsInCell[pIC];
-            
+
             const vector& rI = p->position();
 
             label n = binModel_->isPointWithinBin(rI, cellI);
@@ -186,9 +186,9 @@ void srbsFluctuationsComplexZone::calculateField()
                     {
                         const point& cC = cloud_.mesh().cellCentres()[cellI];
                         scalar radius = cC.y();
-                        
+
                         scalar RWF = 1.0 + cloud_.maxRWF()*(radius/cloud_.radialExtent());
-                        
+
                         n_[n] += cloud_.nParticle()*RWF;
                     }
                     else
@@ -202,25 +202,25 @@ void srbsFluctuationsComplexZone::calculateField()
 
     Rt_.Re() = 0.0;
     Rt_.Im() = 0.0;
-    
+
     RtStar_.Re() = 0.0;
     RtStar_.Im() = 0.0;
-    
+
     const scalarField& binCentres = binModel_->binPositions();
-    
+
     forAll(binCentres, n)
     {
         scalar volume = binModel_->binVolume(n);
         rtSin_[n] = (n_[n]/volume)*sin(twoPi*binCentres[n]/domainLength_);
         rtCos_[n] = (n_[n]/volume)*cos(twoPi*binCentres[n]/domainLength_);
-        
+
         Rt_.Re() += rtCos_[n];
         Rt_.Im() += rtSin_[n];
-        
+
         RtStar_.Re() += rtCos_[n];
         RtStar_.Im() -= rtSin_[n];
     }
-    
+
     Rt_ /= binModel_->nBins();
     RtStar_ /= binModel_->nBins();
 
@@ -239,16 +239,16 @@ void srbsFluctuationsComplexZone::writeField()
     if(runTime.outputTime())
     {
         timeIndex_ = 0;
-        
+
         if(Pstream::master())
         {
             fileName timePath(runTime.path()/runTime.timeName()/"uniform");
-        
+
             if (!isDir(timePath))
             {
                 mkDir(timePath);
             }
-            
+
             scalar dt = time_.time().deltaT().value();
             scalarField timeField (nInstantSteps_, 0.0);
 
@@ -256,7 +256,7 @@ void srbsFluctuationsComplexZone::writeField()
             {
                 timeField[nInstantSteps_-t-1] = time_.time().timeOutputValue()-dt*t;
             }
-            
+
             writeTimeData
             (
                 casePath_,
@@ -265,7 +265,7 @@ void srbsFluctuationsComplexZone::writeField()
                 RtField_,
                 true
             );
-            
+
             writeTimeData
             (
                 casePath_,

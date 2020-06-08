@@ -27,7 +27,7 @@ Class
 
 Description
 
-    Used for applying instantaneous actions on molecules colliding with a cyclic 
+    Used for applying instantaneous actions on molecules colliding with a cyclic
     boundary.
 
 SourceFiles
@@ -75,10 +75,10 @@ protected:
 
         //- name of this patch
         word patchName_;
-        
+
         //- id on boundaryMesh
         label patchId_;
-        
+
         //- writing out properties
         bool writeInTimeDir_;
         bool writeInCase_;
@@ -104,7 +104,7 @@ public:
             ),
             (t, mesh, molCloud, dict)
         );
-   
+
     // Constructors
 
         //- Construct from components
@@ -161,7 +161,7 @@ public:
             const fileName& fixedPathName,
             const fileName& timePath
         ) = 0;
-        
+
 	// Access
 
 		const word& patchName() const;

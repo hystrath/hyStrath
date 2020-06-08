@@ -3,19 +3,19 @@ if(hyDev)
 {
     /*
     *heatFluxVector = -turbulence->kappaEff()*fvc::grad(thermo.Tt());
-    
+
     scalarField Ycoord = mesh.C().component(1);
     vectorField& myHFV = heatFluxVector->internalField();
-    
+
     forAll(Y, speciei)
     {
         *heatFluxVector -= transport().kappave(speciei)*fvc::grad(composition.Tv()[speciei]);
     }
-    
+
     volScalarField hFV = heatFluxVector->component(1);
     volVectorField derivhFV = fvc::grad(hFV);
     scalarField derivhFV1 = derivhFV.component(1);
-    
+
     forAll(*heatFluxVector, celli)
     {
         scalar xs = 1.0;
@@ -29,13 +29,13 @@ if(hyDev)
         scalar c = (a-gprime)/(2.0*(x1-xs));
         scalar d = -2.0*c*xs + gprime;
         scalar e = -c*Foam::sqr(x1) + (a-d)*x1 + b;
-        
+
         if(Ycoord[celli] > x1)
         {
             myHFV[celli].y() = c*Foam::sqr(Ycoord[celli]) + d*Ycoord[celli] + e;
         }
-        
-        
+
+
         xs = 0.0;
         extentLayer = 0.1;
         x1 = 1-0.9625;
@@ -44,13 +44,13 @@ if(hyDev)
         c = (a-gprime)/(2.0*(x1-xs));
         d = -2.0*c*xs + gprime;
         e = -c*Foam::pow(x1, 2.0) + (a-d)*x1 + b;
-        
+
         if(Ycoord[celli] < x1)
         {
             myHFV[celli].y() = c*Foam::sqr(Ycoord[celli]) + d*Ycoord[celli] + e;
         }
     }
-    
+
     *heatFluxVector += turbulence->kappaEff()*fvc::grad(thermo.Tt());
     forAll(Y, speciei)
     {

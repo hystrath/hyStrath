@@ -69,29 +69,29 @@ private:
         dictionary propsDict_;
 
         propertyField fields_;
-        
+
         word fieldName_;
-        
+
         List<boundedBox> boxes_;
 
         List<label> molIds_;
-        
+
         DynamicList<vector> velocityField_;
-//         DynamicList<vector> forceField_;      
-        
+//         DynamicList<vector> forceField_;
+
         // Private Member Functions
 
         void setBoundBoxes();
 
 
-  
+
 public:
-	
+
 	//- Runtime type information
 	TypeName("polyInstantPropertiesZoneBounded");
-	
+
 	// Constructors
-	
+
 	//- Construct from components
 	polyInstantPropertiesZoneBounded
 	(
@@ -134,7 +134,7 @@ public:
 	void writeField();
 
 	//void updateProperties(const dictionary&);
-}; 		
+};
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

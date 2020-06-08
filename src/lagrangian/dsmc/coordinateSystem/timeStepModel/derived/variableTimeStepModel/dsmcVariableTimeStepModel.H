@@ -53,37 +53,37 @@ class dsmcVariableTimeStepModel
 :
     public dsmcTimeStepModel
 {
-    
+
     // Private data
-    
+
       //- Const reference to the DSMC cloud
       const dsmcCloud& cloud_;
-        
+
       //- Label of the reference cell for the variable time-step method
       //  described in [Wu, 2004]
       label refCell_;
-      
+
       //- Variable time-step
       volScalarField deltaT_;
-        
+
 
     // Private Member Functions
-    
+
       //- Find the reference cell (cell with the smallest volume in the domain)
       //  and edit refCell_
       void findRefCell();
-      
+
       //- Calculate number of equivalent particles field according to the
       //  variable time step method described in [Wu, 2004]
       //  Uses the cell volumes as an input
       void updatenParticles();
-      
-      //- Calculate the variable time step field according to the 
+
+      //- Calculate the variable time step field according to the
       //  variable time-step method described in [Wu, 2004]
       //  Uses the number of equivalent particles and the reference cell as an
       //  input
       void updateTimeStep();
-      
+
       //- Update time step and nParticle fields
       //  when the mesh is changed
       void updateVariableTimeStepMethod();
@@ -94,7 +94,7 @@ public:
 
     //- Runtime type information
     TypeName("dsmcVariableTimeStepModel");
-    
+
     // Constructors
 
         //- Constructor
@@ -114,30 +114,30 @@ public:
     // Member Functions
 
       // Access
-      
+
         //- Return const access to the time-step field
         virtual inline const scalarField& deltaTField() const;
-        
+
         //- Return const access to the time-step for a given cell
         virtual inline scalar deltaTValue(const label celli = 0) const;
-        
-        
+
+
       // Check
-      
+
         //- Check the validity of the time-step model inputs present in
         //  constant/dsmcProperties and assign inputs to data members if
         //  correct.
         virtual void checkTimeStepModelInputs();
-      
-      
+
+
       // Edit
-      
+
         //- Update function
         virtual void update();
-        
+
 
       // Write
-      
+
         //- Write time-step model info
         virtual void writeTimeStepModelInfo() const;
 

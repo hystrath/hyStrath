@@ -30,7 +30,7 @@ License
 namespace Foam
 {
     defineTypeNameAndDebug(BinaryCollisionModel, 0);
-    
+
     defineRunTimeSelectionTable(BinaryCollisionModel, dictionary);
 };
 

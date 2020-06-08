@@ -561,17 +561,17 @@ void dsmcMeshFillFromCFD::setInitialConfiguration()
                     );
 
                     U += velocity;
-                    
+
                     label newParcel = -1;
-                    
+
                     label classification = 0;
 
                     label stuckToWall = 0;
-                    
+
                     scalarField wallTemperature(4, 0.0);
-                    
+
                     vectorField wallVectors(4, vector::zero);
-                    
+
                     const scalar& RWF = cloud_.coordSystem().recalculateRWF(cellI);
 
                     cloud_.addNewParcel

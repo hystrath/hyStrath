@@ -56,7 +56,7 @@ namespace Foam
 class polyIdPairs
 {
     // Private data
-        
+
         List<List<List<scalar> > > coeffVals_;
         List<word> coeffNames_;
         List<label> coeffNumIds_;

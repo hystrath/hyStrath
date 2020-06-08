@@ -57,7 +57,7 @@ void Foam::fv::acousticDampingSource::setBlendingFactor()
     const vectorField& Cf = mesh_.C();
 
     const scalar pi = constant::mathematical::pi;
- 
+
     forAll(cells_, i)
     {
         label celli = cells_[i];

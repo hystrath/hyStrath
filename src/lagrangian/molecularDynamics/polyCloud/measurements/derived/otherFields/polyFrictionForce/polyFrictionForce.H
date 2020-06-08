@@ -27,7 +27,7 @@ Class
 
 
 Description
-    output every write interval folder for this to work 
+    output every write interval folder for this to work
 
 SourceFiles
     polyFrictionForceI.H
@@ -69,63 +69,63 @@ private:
         dictionary propsDict_;
 
         propertyField fields_;
-        
+
 //         fileName pathName_;
 //         fileName nameFile_;
-        
+
         word fieldName_;
 
         List<label> molIdsFluid_;
         List<label> molIdsWall_;
-        
+
         vector startPoint_;
         vector endPoint_;
-        
+
         // choose this small enough ~0.5 nm
         vector endPointS_;
-        
+
         label nMolsMin_;
-        
+
         scalar dr_;
         scalar radius_;
         label nBins_;
         scalar binWidth_;
-        
+
         scalar h_;
         scalar hS_;
-        
+
         vector n_;
-        
+
         DynamicList<scalar> radii_;
         DynamicList<scalar> radii_;
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
 //         List<scalar> volume_;
-        
+
         void refreshBins();
-        
+
         void setCentreOfMass();
-        
+
         void setRadius();
-        
-        
+
+
     // Private Member Functions
 
 //         bool readFromStorage();
-        
+
 //         void writeToStorage();
-        
+
         List<label> isPointWithinBin
         (
             const vector& rI
         );
-        
+
         void centreOfMass();
-        
+
 public:
 
     //- Runtime type information
@@ -173,7 +173,7 @@ public:
 
         //- write field
         void writeField();
-}; 		
+};
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

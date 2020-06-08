@@ -138,7 +138,7 @@ void Foam::Cloud<ParticleType>::initCloud(const bool checkClass)
     // them, otherwise, if some processors have no particles then
     // there is a comms mismatch.
     polyMesh_.tetBasePtIs();
-    
+
     scalar lostParticles = 0; // NEW VINCENT
     scalar totParticles = 0; // NEW VINCENT
 
@@ -156,10 +156,10 @@ void Foam::Cloud<ParticleType>::initCloud(const bool checkClass)
             deleteParticle(p);
         }
     }
-    
+
     if (lostParticles > 0) // NEW VINCENT
     {
-        Info<< "Lost particles deleted due to change in topology:" << tab 
+        Info<< "Lost particles deleted due to change in topology:" << tab
             << lostParticles << "/" << totParticles << endl;
     }
 }

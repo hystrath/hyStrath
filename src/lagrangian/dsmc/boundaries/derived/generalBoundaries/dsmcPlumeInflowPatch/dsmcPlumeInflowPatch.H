@@ -69,19 +69,19 @@ private:
     dictionary propsDict_;
 
     labelList typeIds_;
-    
-    scalar axialVelocity_; 
-    
+
+    scalar axialVelocity_;
+
     scalar radialVelocity_;
-    
+
     scalar origin_;
 
     // list of (one value) mass densities corresponding to the type Ids
     scalarField numberDensities_;
 
-    // list of species 
+    // list of species
     List <scalarField> accumulatedParcelsToInsert_;
-    
+
     vectorField inletVelocities_;
 
     //- boundary temperatures
@@ -134,7 +134,7 @@ public:
 
         //- update properties from a modified dictionary
         void updateProperties(const dictionary&);
-        
+
         //reset fields if mesh has changed
     void setNewBoundaryFields();
 

@@ -39,7 +39,7 @@ namespace Foam
         addToRunTimeSelectionTable
         (
             VTRelaxationModel,
-            strathVT, 
+            strathVT,
             dictionary
         );
     }
@@ -63,13 +63,13 @@ Foam::VTRelaxationModels::strathVT::strathVT
 )
 :
     VTRelaxationModel(name1, name2, lname1, lname2, dict2T, dictThermoPhy, p, Tt, Tv, nD)
-{   
+{
     species1_ = lname1;
     W1_ = readScalar(dictThermoPhy.subDict(name1).subDict("specie").lookup("molWeight"));
     const scalar W2 = readScalar(dictThermoPhy.subDict(name2).subDict("specie").lookup("molWeight"));
     DynamicList<scalar> vibData(dictThermoPhy.subDict(name1).subDict("thermodynamics").lookup("vibrationalList"));
     THETA1_ = vibData[1];
-      
+
     if (not VTFullCoeffsForm_)
     {
         scalar W12 = (W1_ * W2) / (W1_ + W2);
@@ -77,7 +77,7 @@ Foam::VTRelaxationModels::strathVT::strathVT
         B12_ = pow(W12, 0.25);
         scalar preAij = 0.0;
         scalar preMij = 0.0;
-        
+
         if (not VTOverwriteDefault_)
         {
             preAij  = 1.16e-3;
@@ -85,13 +85,13 @@ Foam::VTRelaxationModels::strathVT::strathVT
             offset_ = 18.42;
             sigma1_ = 1.0e-21;
             sigma2_ = 5.0e4;
-            
+
             LambdaD_ = 0.0;
             LambdaE_ = 1.0;
             LambdaG_ = 1.0;
         }
         else if (VTSpeciesDependent_ and VTCollidingPartner_)
-        {        
+        {
             if (dict2T.subDict("strathVTCoefficients").isDict(name1+"_"+name2))
             {
                 preAij = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1+"_"+name2).lookup("preAij"));
@@ -116,29 +116,29 @@ Foam::VTRelaxationModels::strathVT::strathVT
             }
             else if (dict2T.subDict("strathVTCoefficients").isDict(name1))
             {
-                preAij = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("preAij")); 
+                preAij = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("preAij"));
                 preMij = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("preMij"));
-                offset_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("offset")); 
-                sigma1_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("sigma1")); 
+                offset_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("offset"));
+                sigma1_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("sigma1"));
                 sigma2_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("sigma2"));
                 LambdaD_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("LambdaD"));
                 LambdaE_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("LambdaE"));
-                LambdaG_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("LambdaG")); 
+                LambdaG_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("LambdaG"));
             }
             else
             {
-                preAij = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("preAij")); 
-                preMij = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("preMij")); 
-                offset_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("offset")); 
-                sigma1_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("sigma1")); 
-                sigma2_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("sigma2")); 
+                preAij = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("preAij"));
+                preMij = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("preMij"));
+                offset_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("offset"));
+                sigma1_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("sigma1"));
+                sigma2_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("sigma2"));
                 LambdaD_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("LambdaD"));
                 LambdaE_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("LambdaE"));
                 LambdaG_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("LambdaG"));
-            }    
+            }
         }
         else if (VTSpeciesDependent_ and dict2T.subDict("strathVTCoefficients").isDict(name1))
-        {        
+        {
             preAij = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("preAij"));
             preMij = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("preMij"));
             offset_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("offset"));
@@ -147,21 +147,21 @@ Foam::VTRelaxationModels::strathVT::strathVT
             LambdaD_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("LambdaD"));
             LambdaE_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("LambdaE"));
             LambdaG_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("LambdaG"));
-        } 
+        }
         else
         {
             preAij = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("preAij"));
             preMij = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("preMij"));
-            offset_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("offset"));  
-            sigma1_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("sigma1")); 
-            sigma2_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("sigma2")); 
+            offset_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("offset"));
+            sigma1_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("sigma1"));
+            sigma2_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("sigma2"));
             LambdaD_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("LambdaD"));
             LambdaE_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("LambdaE"));
-            LambdaG_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("LambdaG"));    
+            LambdaG_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("LambdaG"));
         }
-        
-        A12_ *= preAij;  
-        B12_ *= preMij; 
+
+        A12_ *= preAij;
+        B12_ *= preMij;
     }
     else
     {
@@ -172,13 +172,13 @@ Foam::VTRelaxationModels::strathVT::strathVT
             offset_ = 18.42;
             sigma1_ = 1.0e-21;
             sigma2_ = 5.0e4;
-            
+
             LambdaD_ = 0.0;
             LambdaE_ = 1.0;
             LambdaG_ = 1.0;
         }
         else if (VTSpeciesDependent_ and VTCollidingPartner_)
-        {        
+        {
             if (dict2T.subDict("strathVTCoefficients").isDict(name1+"_"+name2))
             {
                 A12_= readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1+"_"+name2).lookup("Aij"));
@@ -203,29 +203,29 @@ Foam::VTRelaxationModels::strathVT::strathVT
             }
             else if (dict2T.subDict("strathVTCoefficients").isDict(name1))
             {
-                A12_= readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("Aij")); 
+                A12_= readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("Aij"));
                 B12_= readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("Bij"));
-                offset_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("offset")); 
-                sigma1_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("sigma1")); 
+                offset_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("offset"));
+                sigma1_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("sigma1"));
                 sigma2_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("sigma2"));
                 LambdaD_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("LambdaD"));
                 LambdaE_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("LambdaE"));
-                LambdaG_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("LambdaG")); 
+                LambdaG_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("LambdaG"));
             }
             else
             {
-                A12_= readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("Aij")); 
-                B12_= readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("Bij")); 
-                offset_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("offset")); 
-                sigma1_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("sigma1")); 
-                sigma2_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("sigma2")); 
+                A12_= readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("Aij"));
+                B12_= readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("Bij"));
+                offset_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("offset"));
+                sigma1_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("sigma1"));
+                sigma2_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("sigma2"));
                 LambdaD_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("LambdaD"));
                 LambdaE_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("LambdaE"));
                 LambdaG_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("LambdaG"));
-            }    
+            }
         }
         else if (VTSpeciesDependent_ and dict2T.subDict("strathVTCoefficients").isDict(name1))
-        {        
+        {
             A12_= readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("Aij"));
             B12_= readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("Bij"));
             offset_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("offset"));
@@ -234,20 +234,20 @@ Foam::VTRelaxationModels::strathVT::strathVT
             LambdaD_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("LambdaD"));
             LambdaE_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("LambdaE"));
             LambdaG_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict(name1).lookup("LambdaG"));
-        } 
+        }
         else
         {
             A12_= readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("Aij"));
             B12_= readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("Bij"));
-            offset_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("offset"));  
-            sigma1_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("sigma1")); 
-            sigma2_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("sigma2")); 
+            offset_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("offset"));
+            sigma1_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("sigma1"));
+            sigma2_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("sigma2"));
             LambdaD_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("LambdaD"));
             LambdaE_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("LambdaE"));
-            LambdaG_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("LambdaG"));    
+            LambdaG_ = readScalar(dict2T.subDict("strathVTCoefficients").subDict("allSpecies").lookup("LambdaG"));
         }
     }
-    
+
 }
 
 
@@ -284,7 +284,7 @@ Foam::VTRelaxationModels::strathVT::tauVT() const
           + LambdaG_/(sqrt(8.0*constant::physicoChemical::R.value()*1000.0*this->Tt_[celli]/
               (constant::mathematical::pi*W1_)) * sigma1_*pow(sigma2_/this->Tt_[celli], 2.0) *max(this->nD_[species1_][celli], Foam::SMALL));
     }
-    
+
 
     forAll(this->Tt_.boundaryField(), patchi)
     {

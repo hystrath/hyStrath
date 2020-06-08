@@ -78,41 +78,41 @@ clockTimer::~clockTimer()
 // void clockTimer::startClock()
 // {
 //     scalar newTime = time_.elapsedCpuTime();
-// 
+//
 //     if(timeIndex_ == 0.0)
 //     {
 //         startTimeBefore_ = newTime;
-// 
+//
 //         Info << "startTimeBefore: " << startTimeBefore_ << endl;
 //     }
 //     else
 //     {
 //         innerIncrement_ += newTime - startTimeAfter_;
 //     }
-// 
+//
 // //     Info << "time before: " << lastTime_ << endl;
 // }
-// 
+//
 // void clockTimer::stopClock()
 // {
 //     scalar newTime = time_.elapsedCpuTime();
-// 
+//
 //     if(timeIndex_ == 0.0)
 //     {
 //         startTimeAfter_ = newTime;
-// 
+//
 //         Info << "startTimeAfter: " << startTimeAfter_ << endl;
 //     }
 //     else
 //     {
 //         outerIncrement_ = newTime - startTimeBefore_;
 //     }
-// 
+//
 //     timeIndex_ += 1.0;
-//     
+//
 //     Info << "outerIncrement: " << outerIncrement_ << endl;
 //     Info << "innerIncrement: " << innerIncrement_ << endl;
-// 
+//
 //     Info << "average timing: " << averageTime() << endl;
 // }
 
@@ -145,7 +145,7 @@ void clockTimer::stopClock()
     instTimeIndex_ += 1.0;
     timeIndex_ += 1.0;
 
-    
+
     Info<< "Duration: " << fieldName_ << ", inst. = " << duration
         << " s   av. write int. = " << averageTimeWriteInterval()
         << " s   av. sim. = " << averageTime()
@@ -164,8 +164,8 @@ void clockTimer::stopClock()
 // {
 //     return (outerIncrement_-innerIncrement_)/timeIndex_;
 // }
-    
-    
+
+
 scalar clockTimer::averageTimeWriteInterval()
 {
     if(instTimeIndex_ > 0)
@@ -196,7 +196,7 @@ const scalar& clockTimer::instantDuration() const
     return duration_;
 }
 
-    
+
 const scalar& clockTimer::totalDuration() const
 {
     return totalDuration_;
@@ -232,7 +232,7 @@ void clockTimer::write()
                  instantDuration,
                  true
              );
-            
+
             writeTimeData
             (
                 timePath_,
@@ -243,7 +243,7 @@ void clockTimer::write()
             );
 
         }
-        
+
         // reset
         instTimeIndex_ = 0.0;
         instantDuration_ = 0.0;

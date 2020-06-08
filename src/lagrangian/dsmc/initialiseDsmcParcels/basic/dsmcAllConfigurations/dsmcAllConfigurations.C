@@ -32,7 +32,7 @@ Description
 
 namespace Foam
 {
-//- Null Constructor 
+//- Null Constructor
 
 //- Constructor for mdInitialise
 dsmcAllConfigurations::dsmcAllConfigurations
@@ -56,7 +56,7 @@ dsmcAllConfigurations::dsmcAllConfigurations
         {
             const entry& configurationI = configurationList_[c];
             const dictionary& configurationIDict = configurationI.dict();
-    
+
             configurations_[c] = autoPtr<dsmcConfiguration>
             (
                 dsmcConfiguration::New(cloud, configurationIDict)

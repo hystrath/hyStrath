@@ -83,12 +83,12 @@ polyTemperatureBerendsenBinsNew::polyTemperatureBerendsenBinsNew
             {
                 X_ = Switch(propsDict_.lookup("X"));
             }
-    
+
             if (propsDict_.found("Y"))
             {
                 Y_ = Switch(propsDict_.lookup("Y"));
             }
-    
+
             if (propsDict_.found("Z"))
             {
                 Z_ = Switch(propsDict_.lookup("Z"));
@@ -103,13 +103,13 @@ polyTemperatureBerendsenBinsNew::polyTemperatureBerendsenBinsNew
             }
         }
     }
-    
+
     measureFullTemperature_ = false;
-    
+
     if (propsDict_.found("measureFullTemperature"))
     {
         measureFullTemperature_ = Switch(propsDict_.lookup("measureFullTemperature"));
-    }    
+    }
 
     if (propsDict_.found("peculiar"))
     {
@@ -120,9 +120,9 @@ polyTemperatureBerendsenBinsNew::polyTemperatureBerendsenBinsNew
     {
         resetFieldsAtOutput_ = Switch(propsDict_.lookup("resetFieldsAtOutput"));
     }
-    
+
     angularControl_ = false;
-    
+
     if (propsDict_.found("angularControl"))
     {
         angularControl_ = Switch(propsDict_.lookup("angularControl"));
@@ -155,7 +155,7 @@ polyTemperatureBerendsenBinsNew::polyTemperatureBerendsenBinsNew
     chi_.setSize(nBins, 1.0);
     chiLin_.setSize(nBins, 1.0);
     chiAng_.setSize(nBins, 1.0);
-    
+
     if (propsDict_.found("output"))
     {
         output_ = Switch(propsDict_.lookup("output"));
@@ -201,10 +201,10 @@ void polyTemperatureBerendsenBinsNew::initialConfiguration()
                 {
                     const scalar& massI = molCloud_.cP().mass(molI->id());
 
-//                     Info << "molI->position() "  << molI->position() 
+//                     Info << "molI->position() "  << molI->position()
 //                     << ", n = " << n
 //                     << endl;
-                    
+
                     mass[n] += massI;
                     momentum[n] += massI*molI->v();
                 }
@@ -226,7 +226,7 @@ void polyTemperatureBerendsenBinsNew::initialConfiguration()
                 }
             }
         }
-    
+
         //- receiving
         for (int p = 0; p < Pstream::nProcs(); p++)
         {
@@ -240,7 +240,7 @@ void polyTemperatureBerendsenBinsNew::initialConfiguration()
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> massProc >> momProc;
                 }
-    
+
                 mass += massProc;
                 momentum += momProc;
             }
@@ -296,14 +296,14 @@ void polyTemperatureBerendsenBinsNew::controlAfterVelocityII()
         {
             const label& cell = cells[c];
             const List<polyMolecule*>& molsInCell = cellOccupancy[cell];
-    
+
             forAll(molsInCell, mIC)
             {
                 polyMolecule* molI = molsInCell[mIC];
                 const vector& rI = molI->position();
-    
+
                 label n = binModel_->isPointWithinBin(rI, cell);
-    
+
                 if(n != -1)
                 {
                     if(findIndex(molIds_, molI->id()) != -1)
@@ -364,14 +364,14 @@ void polyTemperatureBerendsenBinsNew::calculateProperties()
         {
             const label& cell = cells[c];
             const List<polyMolecule*>& molsInCell = cellOccupancy[cell];
-    
+
             forAll(molsInCell, mIC)
             {
                 polyMolecule* molI = molsInCell[mIC];
                 const vector& rI = molI->position();
-    
+
                 label n = binModel_->isPointWithinBin(rI, cell);
-    
+
                 if(n != -1)
                 {
                     if((findIndex(molIds_, molI->id()) != -1) || measureFullTemperature_)
@@ -404,7 +404,7 @@ void polyTemperatureBerendsenBinsNew::calculateProperties()
                     }
                 }
             }
-        
+
             //- receiving
             for (int p = 0; p < Pstream::nProcs(); p++)
             {
@@ -418,7 +418,7 @@ void polyTemperatureBerendsenBinsNew::calculateProperties()
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> massProc >> momProc;
                     }
-        
+
                     mass += massProc;
                     momentum += momProc;
                 }
@@ -435,7 +435,7 @@ void polyTemperatureBerendsenBinsNew::calculateProperties()
             }
         }
 
-        //- reset 
+        //- reset
         if(resetFieldsAtOutput_)
         {
             mass_ = 0.0;
@@ -446,28 +446,28 @@ void polyTemperatureBerendsenBinsNew::calculateProperties()
     {
         const List< DynamicList<polyMolecule*> >& cellOccupancy
                                         = molCloud_.cellOccupancy();
-    
+
         forAll(cells, c)
         {
             const label& cell = cells[c];
             const List<polyMolecule*>& molsInCell = cellOccupancy[cell];
-    
+
             forAll(molsInCell, mIC)
             {
                 polyMolecule* molI = molsInCell[mIC];
                 const vector& rI = molI->position();
-    
+
                 label n = binModel_->isPointWithinBin(rI, cell);
-    
+
                 if(n != -1)
                 {
                     if((findIndex(molIds_, molI->id()) != -1) || measureFullTemperature_)
                     {
                         const scalar& massI = molCloud_.cP().mass(molI->id());
-    
+
                         kE_[n] += 0.5*massI*magSqr(molI->v() - velocity_[n]);
                         dof_[n] += molCloud_.cP().degreesOfFreedom(molI->id());
-                        
+
                         const diagTensor& molMoI(molCloud_.cP().momentOfInertia(molI->id()));
                         const vector& molOmega(inv(molMoI) & molI->pi());
                         angularKe_[n] += 0.5*(molOmega & molMoI & molOmega);
@@ -482,7 +482,7 @@ void polyTemperatureBerendsenBinsNew::calculateProperties()
         scalarField kE = kE_;
         scalarField dof = dof_;
         scalarField angularKe = angularKe_;
-        
+
        //- parallel processing
         if(Pstream::parRun())
         {
@@ -498,7 +498,7 @@ void polyTemperatureBerendsenBinsNew::calculateProperties()
                     }
                 }
             }
-        
+
             //- receiving
             for (int p = 0; p < Pstream::nProcs(); p++)
             {
@@ -524,10 +524,10 @@ void polyTemperatureBerendsenBinsNew::calculateProperties()
         measuredT_ = scalar(0.0);
 
         const scalar& kB = molCloud_.redUnits().kB();
-         const scalar deltaTMD = time_.deltaT().value(); 
+         const scalar deltaTMD = time_.deltaT().value();
         chiAng_ = 1.0;
         chiLin_ = 1.0;
-        
+
         forAll(measuredT_, n)
         {
             if(dof[n] > 0)
@@ -538,12 +538,12 @@ void polyTemperatureBerendsenBinsNew::calculateProperties()
 
                 scalar measuredTLin = (2.0*kE[n])/(kB*dof[n]);
                 scalar measuredTAng = (2.0*angularKe[n])/(kB*dof[n]);
-                
+
                 if(mag(measuredTLin) > 0)
                 {
                     chiLin_[n] = sqrt(1.0 + (deltaTMD/tauT_)*((0.5*temperature_/measuredTLin) - 1.0) );
                 }
-                
+
                 if(mag(measuredTAng) > 0)
                 {
                     chiAng_[n] = sqrt(1.0 + (deltaTMD/tauT_)*((0.5*temperature_/measuredTAng) - 1.0) );
@@ -551,8 +551,8 @@ void polyTemperatureBerendsenBinsNew::calculateProperties()
 
                 if(output_)
                 {
-                    Info << "measured T (R.U.) = " << measuredT_[n] 
-                        << ", chi: " << chi_[n] 
+                    Info << "measured T (R.U.) = " << measuredT_[n]
+                        << ", chi: " << chi_[n]
                         << ", chiLin : " << chiLin_[n]
                         << ", chiAng : " << chiAng_[n]
                         << endl;
@@ -564,7 +564,7 @@ void polyTemperatureBerendsenBinsNew::calculateProperties()
         if(resetFieldsAtOutput_)
         {
             kE_ = 0.0;
-            angularKe_ = 0.0;            
+            angularKe_ = 0.0;
             dof_ = 0.0;
         }
     }
@@ -574,7 +574,7 @@ void polyTemperatureBerendsenBinsNew::calculateProperties()
 
 void polyTemperatureBerendsenBinsNew::output
 (
-    const fileName& fixedPathName, 
+    const fileName& fixedPathName,
     const fileName& timePath
 )
 {

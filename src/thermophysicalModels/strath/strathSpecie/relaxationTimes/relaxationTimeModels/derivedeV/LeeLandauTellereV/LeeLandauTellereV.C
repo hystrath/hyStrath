@@ -31,9 +31,9 @@ License
 
 template<class ThermoType>
 void Foam::LeeLandauTellereV<ThermoType>::updateCoefficients()
-{     
+{
     taueViModel_().update();
-} 
+}
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
@@ -46,20 +46,20 @@ Foam::LeeLandauTellereV<ThermoType>::LeeLandauTellereV
 )
 :
     relaxationTimeModeleV(thermo, turbulence),
-    
+
     speciesThermo_
     (
         dynamic_cast<const multi2ComponentMixture<ThermoType>&>
             (this->thermo_).speciesData()
     )
-{    
+{
     taueV_.setSize(solvedVibEqSpecies().size());
-    
+
     forAll(taueV_, speciei)
     {
         taueV_.set
         (
-            speciei, 
+            speciei,
             new volScalarField
             (
                 IOobject
@@ -74,7 +74,7 @@ Foam::LeeLandauTellereV<ThermoType>::LeeLandauTellereV
                 dimensionedScalar("taueV", dimTime, 0.0)
             )
         );
-    } 
+    }
 }
 
 
@@ -83,50 +83,50 @@ Foam::LeeLandauTellereV<ThermoType>::LeeLandauTellereV
 template<class ThermoType>
 void Foam::LeeLandauTellereV<ThermoType>::correct()
 {
-    updateCoefficients(); 
-    
+    updateCoefficients();
+
     const volScalarField& ee = thermo_.composition().hevel("e-");
     const volScalarField& Xe = thermo_.composition().X("e-");
     const scalarField& eeCells = ee.internalField();
-    
+
     forAll(solvedVibEqSpecies(), speciei)
-    {  
+    {
         /*if(speciei != thermo_.composition().vibTempAssociativity("e-"))
         {
             const volScalarField& pD = thermo_.composition().pD(speciei);
             const volScalarField& ev = thermo_.composition().hevel(speciei);
             const volScalarField& taueV = this->taueV_[speciei];
             volScalarField& QeV = this->QeV_[speciei];
-            
+
             const scalarField& pDCells = pD.internalField();
             const scalarField& evCells = ev.internalField();
             const scalarField& taueVCells = taueV.internalField();
             scalarField& QeVCells = QeV.internalField();
-            
+
             forAll(QeVCells, celli)
-            {        
+            {
                 Info << "taueVCells[celli] " << tab << taueVCells[celli] << "eeCells[celli] " << eeCells[celli] << endl;
                 QeVCells[celli] = pDCells[celli]/taueVCells[celli]*(evCells[celli]-eeCells[celli]);
              // Info << "QeVCells[celli]" << tab << QeVCells[celli] << endl;
             }
-            
+
             forAll(QeV.boundaryField(), patchi)
-            {        
+            {
                 const fvPatchScalarField& pee = ee.boundaryField()[patchi];
                 const fvPatchScalarField& ppD = pD.boundaryField()[patchi];
                 const fvPatchScalarField& pev = ev.boundaryField()[patchi];
                 const fvPatchScalarField& ptaueV = taueV.boundaryField()[patchi];
-                
+
                 fvPatchScalarField& pQeV = QeV.boundaryField()[patchi];
-                
+
                 forAll(pQeV, facei)
                 {
                     pQeV[facei] = ppD[facei]/ptaueV[facei]*(pev[facei] - pee[facei]);
                 }
             }
         } */
-    } 
-} 
+    }
+}
 
 
 template<class ThermoType>

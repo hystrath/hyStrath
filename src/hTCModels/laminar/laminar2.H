@@ -106,11 +106,11 @@ public:
 
             //-  Return source for enthalpy equation [kg/m/s3]
             virtual tmp<volScalarField> Sh() const;
-            
-            //-  Return chemistry-vibrational coupling source term 
+
+            //-  Return chemistry-vibrational coupling source term
             //  in the vibrational equation [kg/m/s3]
             virtual tmp<volScalarField> Scv(label i) const;
-            
+
             //- Return energy removed from free-electrons during impact
             //  ionisation reactions [kg/m/s3]
             virtual tmp<volScalarField> Seiir(label i) const;

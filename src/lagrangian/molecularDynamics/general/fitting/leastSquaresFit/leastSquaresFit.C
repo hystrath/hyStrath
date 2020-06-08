@@ -166,12 +166,12 @@ void leastSquaresFit::writeField
         if(write_)
         {
             fileName timePath(runTime.path()/runTime.timeName()/"uniform");
-    
+
             if (!isDir(timePath))
             {
                 mkDir(timePath);
             }
-    
+
             writeTimeData(timePath, name_, xs_ , ys_);
         }
     }
@@ -204,9 +204,9 @@ void leastSquaresFit::writeTimeData
 //             << "Attempted assignment to self"
 //             << abort(FatalError);
 //     }
-// 
+//
 //     Map<label>::operator=(rhs);
-// 
+//
 //     binWidth_ = rhs.binWidth();
 // }
 
@@ -220,14 +220,14 @@ void leastSquaresFit::writeTimeData
 // {
 //     os  << d.binWidth_
 //         << static_cast<const Map<label>&>(d);
-// 
+//
 //     // Check state of Ostream
 //     os.check
 //     (
 //         "Ostream& operator<<(Ostream&, "
 //         "const leastSquaresFit&)"
 //     );
-// 
+//
 //     return os;
 // }
 

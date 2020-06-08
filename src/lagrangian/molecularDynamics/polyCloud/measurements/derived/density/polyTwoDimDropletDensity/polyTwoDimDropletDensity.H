@@ -74,17 +74,17 @@ private:
 
         word fieldName_;
 
-       
+
         // total number of species in droplet
         List<label> dropletMolIds_;
-        
+
         // species you want to measure
         List<label> molIds_;
-        
-        
+
+
         // bottom centre point of droplet
         vector startPoint_;
-        
+
         // top centre point of droplet
         vector endPoint_;
 
@@ -96,22 +96,22 @@ private:
 
         // no of bins in the height dir h
         label nBinsX_;
-        
+
         // no of bins in the radial dir R (may vary depending on algorithm)
         label nBinsY_;
 
         scalar binWidthX_;
         scalar binWidthY_;
-        
+
         vector oldCenterOfMass_;
-        
-        
+
+
         Field<scalarField> mols_;
         Field<scalarField> mass_;
 
         Field<scalarField> rhoN_;
         Field<scalarField> rhoM_;
-        
+
         scalarField magRadii_;
         scalarField binWidths_;
         scalarField volume_;
@@ -123,14 +123,14 @@ private:
         labelField n_;
 
         scalar nAvTimeSteps_;
-        
+
         boundedBox box_;
         scalar x_;
         scalar y_;
         scalar z_;
-        
+
         bool resetAtOutput_;
-        
+
     // Private Member Functions
 
         label findBin(const scalar& r);

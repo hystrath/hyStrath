@@ -77,15 +77,15 @@ dsmcWangPressureInlet::dsmcWangPressureInlet
     writeInCase_ = true;
 
     setProperties();
-    
+
     // calculate required number density at inlet boundary
     // equation 32, Liou and Fang (2000)
-    n_ = inletPressure_ / (physicoChemical::k.value()*inletTemperature_); 
-   
+    n_ = inletPressure_ / (physicoChemical::k.value()*inletTemperature_);
+
     //get volume of each boundary cell
     forAll(cellVolume_, c)
     {
-        cellVolume_[c] = mesh_.cellVolumes()[cells_[c]]; 
+        cellVolume_[c] = mesh_.cellVolumes()[cells_[c]];
     }
 
 }
@@ -108,12 +108,12 @@ void dsmcWangPressureInlet::calculateProperties()
 }
 
 void dsmcWangPressureInlet::controlParcelsBeforeMove()
-{   
+{
     Random& rndGen = cloud_.rndGen();
-        
+
     label nTotalParcelsAdded = 0;
     label nTotalParcelsToBeAdded = 0;
-    
+
     labelField parcelsInserted(typeIds_.size(), 0);
 
     //loop over all species
@@ -164,7 +164,7 @@ void dsmcWangPressureInlet::controlParcelsBeforeMove()
 
             // Wall tangential unit vector. Use the direction between the
             // face centre and the first vertex in the list
-            vector t1 = fC - mesh_.points()[mesh_.faces()[faceI][0]]; 
+            vector t1 = fC - mesh_.points()[mesh_.faces()[faceI][0]];
             t1 /= mag(t1);
 
             //Other tangential unit vector.  Rescaling in case face is not
@@ -173,34 +173,34 @@ void dsmcWangPressureInlet::controlParcelsBeforeMove()
             t2 /= mag(t2);
 
             /* -----------------------------------------------------------------------------*/
-            
+
             //generate Poisson distributed random number of particles to insert
             //see Tysanner & Garcia, Int. J. Numer. Meth. Fluids 2050; 00:1–12
             //this eliminates non-equilibrium behaviour that does not exist in the corresponding physical system
-            
+
 //             label k = 0;
-//             
+//
 //             const scalar target= exp(-accumulatedParcelsToInsert_[iD][f]);
-//             
+//
 //             scalar p = rndGen.sample01<scalar>();
-//             
+//
 //             while (p > target)
 //             {
 //                 p *= rndGen.sample01<scalar>();
 //                 k += 1;
 //             }
-//             
+//
 //             label nParcelsToInsert = k;
-//             
+//
             /* -----------------------------------------------------------------------------*/
-            
+
             label nParcelsToInsert = label(accumulatedParcelsToInsert_[iD][f]);
-                
+
             if ((nParcelsToInsert - accumulatedParcelsToInsert_[iD][f]) > rndGen.sample01<scalar>())
             {
                 nParcelsToInsert++;
             }
-            
+
             accumulatedParcelsToInsert_[iD][f] -= nParcelsToInsert; //remainder has been set
 
             nTotalParcelsToBeAdded += nParcelsToInsert;
@@ -209,7 +209,7 @@ void dsmcWangPressureInlet::controlParcelsBeforeMove()
             scalar mass = cloud_.constProps(typeId).mass();
 
             for (label i = 0; i < nParcelsToInsert; i++)
-            {           
+            {
                 // Choose a triangle to insert on, based on their relative
                 // area
 
@@ -233,7 +233,7 @@ void dsmcWangPressureInlet::controlParcelsBeforeMove()
                 const tetIndices& faceTetIs = faceTets[selectedTriI];
 
                 point p = faceTetIs.faceTri(mesh_).randomPoint(rndGen);
-                    
+
                 // Velocity generation
                 scalar mostProbableSpeed
                 (
@@ -243,7 +243,7 @@ void dsmcWangPressureInlet::controlParcelsBeforeMove()
                         mass
                     )
                 );
-                    
+
                 scalar sCosTheta = (faceVelocity & n)/mostProbableSpeed;
 
                 // Coefficients required for Bird eqn 12.5
@@ -297,7 +297,7 @@ void dsmcWangPressureInlet::controlParcelsBeforeMove()
                 {
                     uNormal = sqrt(-log(rndGen.sample01<scalar>()));
                 }
-                
+
                 vector U =
                     sqrt(physicoChemical::k.value()*faceTemperature/mass)
                     *(
@@ -313,25 +313,25 @@ void dsmcWangPressureInlet::controlParcelsBeforeMove()
                     faceTemperature,
                     cloud_.constProps(typeId).rotationalDegreesOfFreedom()
                 );
-                
+
                 labelList vibLevel = cloud_.equipartitionVibrationalEnergyLevel
                 (
                     faceTemperature,
                     cloud_.constProps(typeId).nVibrationalModes(),
                     typeId
                 );
-                
+
                 label ELevel = cloud_.equipartitionElectronicLevel
                 (
                     faceTemperature,
                     cloud_.constProps(typeId).electronicDegeneracyList(),
                     cloud_.constProps(typeId).electronicEnergyList()
                 );
-                
+
                 label newParcel = patchId();
-                
+
                 const scalar& RWF = cloud_.coordSystem().RWF(cellI);
-              
+
                 cloud_.addNewParcel
                 (
                     p,
@@ -352,9 +352,9 @@ void dsmcWangPressureInlet::controlParcelsBeforeMove()
                 parcelsInserted[iD]++;
             }
         }
-        
+
         infoCounter_++;
-        
+
         if(infoCounter_ >= cloud_.nTerminalOutputs())
         {
             if (Pstream::parRun())
@@ -371,15 +371,15 @@ void dsmcWangPressureInlet::controlParcelsBeforeMove()
                     <<", inserted parcels: " << parcelsInserted[iD]
                     << endl;
             }
-            
+
             infoCounter_ = 0;
         }
-        
+
     }
-    
+
 //     if(faces_.size() > VSMALL)
 //     {
-//         Pout<< "dsmcWangPressureInlet target parcels to insert: " << nTotalParcelsToBeAdded 
+//         Pout<< "dsmcWangPressureInlet target parcels to insert: " << nTotalParcelsToBeAdded
 //             <<", number of inserted parcels: " << nTotalParcelsAdded
 //             << endl;
 //     }
@@ -387,32 +387,32 @@ void dsmcWangPressureInlet::controlParcelsBeforeMove()
 
 void dsmcWangPressureInlet::controlParcelsBeforeCollisions()
 {
-    
+
 }
 
 void dsmcWangPressureInlet::controlParcelsAfterCollisions()
-{    
+{
     nTimeSteps_ += 1.0;
-    
+
     const scalar sqrtPi = sqrt(pi);
-        
+
     scalar molecularMass = 0.0;
     scalar molarconstantPressureSpecificHeat = 0.0;
     scalar molarconstantVolumeSpecificHeat = 0.0;
-        
-    forAll(moleFractions_, iD)  
+
+    forAll(moleFractions_, iD)
     {
         const label& typeId_ = typeIds_[iD];
-        
+
         molecularMass += cloud_.constProps(typeId_).mass()*moleFractions_[iD];
         molarconstantPressureSpecificHeat += (5.0 + cloud_.constProps(typeId_).rotationalDegreesOfFreedom())*moleFractions_[iD];
         molarconstantVolumeSpecificHeat += (3.0 + cloud_.constProps(typeId_).rotationalDegreesOfFreedom())*moleFractions_[iD];
     }
 
-     // R = k/m  
-    const scalar gasConstant = physicoChemical::k.value()/molecularMass;  
+     // R = k/m
+    const scalar gasConstant = physicoChemical::k.value()/molecularMass;
 
-    const scalar gamma = molarconstantPressureSpecificHeat/molarconstantVolumeSpecificHeat; 
+    const scalar gamma = molarconstantPressureSpecificHeat/molarconstantVolumeSpecificHeat;
 
     vectorField momentum(faces_.size(), vector::zero);
     vectorField UCollected(faces_.size(), vector::zero);
@@ -427,18 +427,18 @@ void dsmcWangPressureInlet::controlParcelsAfterCollisions()
     scalarField velocityCorrection(faces_.size(), scalar(0.0));
 
     const List<DynamicList<dsmcParcel*> >& cellOccupancy = cloud_.cellOccupancy();
-        
+
     forAll(cells_, c)
     {
         const label celli = cells_[c];
-        
+
         const List<dsmcParcel*>& parcelsInCell = cellOccupancy[celli];
-        
+
         forAll(parcelsInCell, pIC)
         {
             dsmcParcel* p = parcelsInCell[pIC];
             label iD = findIndex(typeIds_, p->typeId());
-                
+
             if(iD != -1)
             {
                 momentum[c] += cloud_.nParticles(celli)*cloud_.constProps(p->typeId()).mass()*p->U();
@@ -448,23 +448,23 @@ void dsmcWangPressureInlet::controlParcelsAfterCollisions()
                 UCollected[c] += p->U();
             }
         }
-   
+
         nTotalParcels_[c] += nParcels[c];
-        
+
         totalMomentum_[c] += momentum[c];
-        
+
         totalMass_[c] += mass[c];
-        
+
         mcc_[c] += mcc[c];
-        
+
         UCollected_[c] += UCollected[c];
-            
+
         massDensity[c] = totalMass_[c] / (cellVolume_[c]*nTimeSteps_);
-        
+
         numberDensity[c] = massDensity[c]/molecularMass;
-        
+
         if(nTotalParcels_[c] > 1)
-        {           
+        {
             UMean_[c] = UCollected_[c]/nTotalParcels_[c];
 
             translationalTemperature[c] = (1.0/(3.0*physicoChemical::k.value()))
@@ -474,25 +474,25 @@ void dsmcWangPressureInlet::controlParcelsAfterCollisions()
                         (mass[c]/(nTotalParcels_[c]*cloud_.nParticles(celli))
                         )*mag(UMean_[c])*mag(UMean_[c]))
                 );
-                                        
+
             if(translationalTemperature[c] < VSMALL)
             {
                 translationalTemperature[c] = 300.00;
             }
-            
+
             pressure[c] = numberDensity[c]*physicoChemical::k.value()*translationalTemperature[c];
 
-            
+
             speedOfSound[c] = sqrt(gamma*gasConstant*translationalTemperature[c]);
-            
+
             label faceI = faces_[c];
-            vector n = mesh_.faceAreas()[faceI];        
+            vector n = mesh_.faceAreas()[faceI];
             n /= mag(n);
-            
+
 //             scalar faceNormalVelocity = (n & inletVelocity_[c]);
-            
-            inletVelocity_[c] = totalMomentum_[c]/totalMass_[c]; 
-            
+
+            inletVelocity_[c] = totalMomentum_[c]/totalMass_[c];
+
             if(nTimeSteps_ > 100)
             {
             //velocity correction for each boundary cellI
@@ -506,29 +506,29 @@ void dsmcWangPressureInlet::controlParcelsAfterCollisions()
 //                 velocityCorrection[c] = (inletPressure_ - pressure[c]) / (massDensity[c]*speedOfSound[c]);
 //                 inletVelocity_[c] -= velocityCorrection[c]*n;
 //             }
-            }   
+            }
         }
     }
-    
+
 //     if(faces_.size() > VSMALL)
 //     {
 //         Pout << "dsmcWangPressureInlet inlet velocity correction = " << velocityCorrection[(faces_.size()/2)] << endl;
 //         Pout << "dsmcWangPressureInlet inlet velocity = " << inletVelocity_[(faces_.size()/2)] << endl;
 //     }
-    
+
     // compute number of parcels to insert
     forAll(accumulatedParcelsToInsert_, iD)
     {
         const label& typeId = typeIds_[iD];
-        scalar mass = cloud_.constProps(typeId).mass();  
-        
+        scalar mass = cloud_.constProps(typeId).mass();
+
         forAll(accumulatedParcelsToInsert_[iD], f)
         {
             const label& faceI = faces_[f];
             const vector& sF = mesh_.faceAreas()[faceI];
-            const scalar fA = mag(sF);  
-            
-            const scalar deltaT = cloud_.deltaTValue(mesh_.boundaryMesh()[patchId_].faceCells()[faceI]);         
+            const scalar fA = mag(sF);
+
+            const scalar deltaT = cloud_.deltaTValue(mesh_.boundaryMesh()[patchId_].faceCells()[faceI]);
 
             scalar mostProbableSpeed
             (
@@ -543,11 +543,11 @@ void dsmcWangPressureInlet::controlParcelsAfterCollisions()
             // (which points out of the domain, so it must be
             // negated), dividing by the most probable speed to form
             // molecularSpeedRatio * cosTheta
-            
+
             scalar sCosTheta = (inletVelocity_[f] & -sF/fA )/mostProbableSpeed;
-            
+
             // From Bird eqn 4.22
-            accumulatedParcelsToInsert_[iD][f] += 
+            accumulatedParcelsToInsert_[iD][f] +=
                 moleFractions_[iD]*
                 (
                     fA*n_*deltaT*mostProbableSpeed
@@ -557,8 +557,8 @@ void dsmcWangPressureInlet::controlParcelsAfterCollisions()
                     )
                 )
                 /(2.0*sqrtPi*cloud_.nParticles(patchId_, f));
-        } 
-    } 
+        }
+    }
 }
 
 void dsmcWangPressureInlet::output
@@ -582,7 +582,7 @@ void dsmcWangPressureInlet::setProperties()
     inletPressure_ = readScalar(propsDict_.lookup("inletPressure"));
 
     inletTemperature_ = readScalar(propsDict_.lookup("inletTemperature"));
-        
+
     const List<word> molecules (propsDict_.lookup("typeIds"));
 
     if(molecules.size() == 0)
@@ -592,7 +592,7 @@ void dsmcWangPressureInlet::setProperties()
             << mesh_.time().system()/"boundariesDict"
             << exit(FatalError);
     }
- 
+
     DynamicList<word> moleculesReduced(0);
 
     forAll(molecules, i)
@@ -647,7 +647,7 @@ void dsmcWangPressureInlet::setProperties()
         );
     }
 
-    // set the accumulator  
+    // set the accumulator
 
     accumulatedParcelsToInsert_.setSize(typeIds_.size());
 
@@ -665,13 +665,13 @@ void dsmcWangPressureInlet::setNewBoundaryFields()
     //- initialise data members
     faces_.clear();
     cells_.clear();
-    
+
     faces_.setSize(patch.size());
     cells_.setSize(patch.size());
 
     //- loop through all faces and set the boundary cells
     //- no conflict with parallelisation because the faces are unique
-    
+
     nFaces_ = 0;
     patchSurfaceArea_ = 0.0;
 
@@ -691,25 +691,25 @@ void dsmcWangPressureInlet::setNewBoundaryFields()
     }
 
     /***/
-    
+
     nTimeSteps_ = 0;
-    
+
     forAll(accumulatedParcelsToInsert_, iD)
     {
         accumulatedParcelsToInsert_[iD].clear();
-        
+
         accumulatedParcelsToInsert_[iD].setSize(nFaces_, 0.0);
     }
-    
+
     // recalculate volume of each boundary cell
     cellVolume_.clear();
     cellVolume_.setSize(nFaces_, 0.0);
-    
+
     forAll(cellVolume_, c)
     {
-        cellVolume_[c] = mesh_.cellVolumes()[cells_[c]]; 
+        cellVolume_[c] = mesh_.cellVolumes()[cells_[c]];
     }
-    
+
     // reset other fields
     inletVelocity_.clear();
     totalMomentum_.clear();
@@ -718,7 +718,7 @@ void dsmcWangPressureInlet::setNewBoundaryFields()
     mcc_.clear();
     UMean_.clear();
     UCollected_.clear();
-    
+
     inletVelocity_.setSize(nFaces_, vector::zero);
     totalMomentum_.setSize(nFaces_, vector::zero);
     totalMass_.setSize(nFaces_, 0.0);

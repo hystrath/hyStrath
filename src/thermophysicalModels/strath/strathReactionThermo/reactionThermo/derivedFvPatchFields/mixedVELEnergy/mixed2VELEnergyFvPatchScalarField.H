@@ -28,7 +28,7 @@ Group
     grpThermoBoundaryConditions
 
 Description
-    This boundary condition provides a mixed condition for the 
+    This boundary condition provides a mixed condition for the
     vibro-electronic mode of the internal energy
 
 SeeAlso
@@ -66,10 +66,10 @@ private:
 
         //- Species index
         word specieName_;
-        
+
         // Thermo package that contains species patch data
         const rho2ReactionThermo& thermo_;
-        
+
 
 public:
 

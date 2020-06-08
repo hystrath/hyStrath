@@ -101,7 +101,7 @@ void polyDeletionPatch::controlMol
     polyMolecule::trackingData& td
 )
 {
-    if(findIndex(molIds_, mol.id()) != -1) 
+    if(findIndex(molIds_, mol.id()) != -1)
     {
 //         const polyMolecule::constantProperties& constProp = molCloud_.constProps(mol.id());
         const scalar& massI = molCloud_.cP().mass(mol.id());
@@ -119,7 +119,7 @@ void polyDeletionPatch::controlMol
         const label& faceI = mol.face();
         vector nF = mesh_.faceAreas()[faceI];
         nF /= mag(nF);
-        
+
         scalar Un = mol.v() & nF;
 
         if (Un > 0.0)
@@ -163,7 +163,7 @@ void polyDeletionPatch::output
 
         elapsedTime_ += writeInterval_;
 //         scalarField writeTimes(writeIntSteps_+1, 0.0);
-//     
+//
 //         forAll(writeTimes, tT)
 //         {
 //             writeTimes[tT] = startTime_ + tT*writeInterval_;

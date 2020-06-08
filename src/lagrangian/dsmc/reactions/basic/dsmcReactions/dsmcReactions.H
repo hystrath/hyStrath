@@ -27,10 +27,10 @@ Class
 
 Description
 
-	Stores all the information for the dsmcReactions models defined within 
+	Stores all the information for the dsmcReactions models defined within
     the dsmcReactionsDict, and selects & builds the models automatically.
 
-    
+
 
 \*---------------------------------------------------------------------------*/
 
@@ -63,7 +63,7 @@ class dsmcReactions
     // Private data
 
         Time& time_;
-        
+
         //- The entire dictionary (containing multiple subDictionaries)
         IOdictionary chemReactDict_;
 
@@ -79,7 +79,7 @@ class dsmcReactions
         //  Return the reaction class corresponding to a given pair of typeIds
         //  if there is one
         List<List<label>> pairAddressing_;
-        
+
         //- Label to count the number of time-steps
         //  Used when printing the reaction rates
         label counter_;
@@ -88,7 +88,7 @@ public:
 
     // Constructors
 
-        //- Null Constructor 
+        //- Null Constructor
         dsmcReactions
         (
             Time& t,
@@ -105,7 +105,7 @@ public:
 
 
     // Destructor
-    
+
         ~dsmcReactions();
 
 
@@ -113,7 +113,7 @@ public:
 
           //- Initial configuration
           void initialConfiguration();
-          
+
           //- Printing reaction info
           void outputData();
 
@@ -125,9 +125,9 @@ public:
           inline const List<autoPtr<dsmcReaction>>& reactions() const;
 
           inline const List<List<label>>& pairModelAddressing() const;
-          
+
           //- Return const access to the number of reactions
-          inline const label& nReactions() const; 
+          inline const label& nReactions() const;
 };
 
 

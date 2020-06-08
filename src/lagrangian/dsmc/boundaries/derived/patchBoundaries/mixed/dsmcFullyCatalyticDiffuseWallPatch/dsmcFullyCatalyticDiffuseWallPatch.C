@@ -40,9 +40,9 @@ namespace Foam
 defineTypeNameAndDebug(dsmcFullyCatalyticDiffuseWallPatch, 0);
 
 addToRunTimeSelectionTable
-( 
-    dsmcPatchBoundary, 
-    dsmcFullyCatalyticDiffuseWallPatch, 
+(
+    dsmcPatchBoundary,
+    dsmcFullyCatalyticDiffuseWallPatch,
     dictionary
 );
 
@@ -98,24 +98,24 @@ void dsmcFullyCatalyticDiffuseWallPatch::calculateProperties()
 
 void dsmcFullyCatalyticDiffuseWallPatch::controlParticle
 (
-    dsmcParcel& p, 
+    dsmcParcel& p,
     dsmcParcel::trackingData& td
 )
 {
     measurePropertiesBeforeControl(p);
 
     const label& iD = findIndex(catalysisTypeIds_, p.typeId());
-    
+
     if(iD == -1)
-    {       
+    {
         //- diffuse reflection
         dsmcDiffuseWallPatch::performDiffuseReflection(p);
     }
     else
-    {          
+    {
         //- Edit the particle's identity
         p.typeId() = catalysedTypeIds_[iD];
-        
+
         //- diffuse reflection
         dsmcDiffuseWallPatch::performDiffuseReflection(p);
 

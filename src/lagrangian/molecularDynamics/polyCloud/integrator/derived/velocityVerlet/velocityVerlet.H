@@ -26,11 +26,11 @@ Class
     velocityVerlet
 
 Description
-    simple velocity controller in a zone 
+    simple velocity controller in a zone
 
     parallelised
 
-    recommendation: control and measure properties every time step, ensure  
+    recommendation: control and measure properties every time step, ensure
                     size of zone.
 
 SourceFiles
@@ -69,7 +69,7 @@ private:
     // Private data
 
        void updateVelocity(const scalar& trackTime);
-       
+
 public:
 
     //- Runtime type information
@@ -93,7 +93,7 @@ public:
     // Member Functions
 
         void init();
-        
+
         void evolve();
 
 };

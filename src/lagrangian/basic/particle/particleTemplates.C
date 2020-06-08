@@ -818,9 +818,9 @@ Foam::scalar Foam::particle::trackToFace
         // denominator for tracking in this cell.
         const scalar& lambdaDistanceTolerance =
             lambdaDistanceToleranceCoeff*mesh_.cellVolumes()[cellI_];
-            
+
         do
-        {           
+        {
             if (triI != -1)
             {
                 // Change tet ownership because a tri face has been crossed
@@ -1106,7 +1106,7 @@ Foam::scalar Foam::particle::trackToFace
                 }
 
                 const polyPatch& patch = mesh_.boundaryMesh()[patchI];
-                
+
                 if (isA<processorPolyPatch>(patch))
                 {
                     p.hitProcessorPatch
@@ -1236,7 +1236,7 @@ Foam::scalar Foam::particle::trackToFace
 
             cloud.trackingRescue();
         }
-    
+
     return trackFraction;
 }
 

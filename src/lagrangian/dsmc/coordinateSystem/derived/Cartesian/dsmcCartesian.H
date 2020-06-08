@@ -52,7 +52,7 @@ class dsmcCartesian
 :
     public dsmcCoordinateSystem
 {
-    
+
     // Private data
 
 
@@ -64,8 +64,8 @@ public:
 
     //- Runtime type information
     TypeName("dsmcCartesian");
-    
-    
+
+
     // Constructors
 
         //- Constructor
@@ -79,34 +79,34 @@ public:
 
     // Destructor
 
-        ~dsmcCartesian();   
+        ~dsmcCartesian();
 
 
     // Member Functions
 
       // Access
-        
-        
+
+
       // Check
-      
+
         //- Check the validity of the coordinate system inputs present in
         //  constant/dsmcProperties and assign inputs to data members if
-        //  correct. Pass init as true if used in the constructor of 
+        //  correct. Pass init as true if used in the constructor of
         //  the dsmcInitialise application
         void checkCoordinateSystemInputs(const bool init = false);
-      
-      
+
+
       // Edit
-      
+
         //- Evolve function
         virtual void evolve();
 
 
       // Write
-      
+
         //- Write coordinate system info
         virtual void writeCoordinateSystemInfo() const;
-      
+
 
 };
 

@@ -69,28 +69,28 @@ twoDimBinsII::twoDimBinsII
 
     unitVectorX_ /= mag(unitVectorX_);
     unitVectorY_ /= mag(unitVectorY_);
-    unitVectorZ_ /= mag(unitVectorZ_);  
+    unitVectorZ_ /= mag(unitVectorZ_);
     box_.resetBoundedBox(startPoint_, endPoint_);
-    
+
     vector rS = box_.span();
-    
+
     lengthX_ = rS & unitVectorX_;
     lengthY_ = rS & unitVectorY_;
-    lengthZ_ = rS & unitVectorZ_; 
-    
+    lengthZ_ = rS & unitVectorZ_;
+
     binWidthX_ = lengthX_/nBinsX_;
     binWidthY_ = lengthY_/nBinsY_;
-    
+
 //     unitVectorZ_ = unitVectorX_ ^ unitVectorY_;
-//     unitVectorZ_ /= mag(unitVectorZ_);  
-  
- 
-    
-    Info  << nl << "twoDimBinsII properties" << nl 
+//     unitVectorZ_ /= mag(unitVectorZ_);
+
+
+
+    Info  << nl << "twoDimBinsII properties" << nl
         << "binWidthX: " << binWidthX_ << nl
         << "binWidthY: " << binWidthY_
         << endl;
-    
+
 }
 
 
@@ -115,7 +115,7 @@ List<label> twoDimBinsII::isPointWithinBin
     List<label> binNumbers;
 binNumbers.append(-1);
 binNumbers.append(-1);
-    
+
     if(box_.contains(rI))
     {
         vector rSI = rI - startPoint_;
@@ -123,37 +123,37 @@ binNumbers.append(-1);
         scalar rDy = rSI & unitVectorY_;
         label nX = label(rDx/binWidthX_);
         label nY = label(rDy/binWidthY_);
-        
+
         if( (nX >= 0) && (nY >= 0) )
         {
-            if(nX == nBinsX_) 
+            if(nX == nBinsX_)
             {
                 nX--;
             }
-            
+
             binNumbers[0] = nX;
-        
-            if(nY == nBinsY_) 
+
+            if(nY == nBinsY_)
             {
                 nY--;
             }
-            
-            binNumbers[1] = nY;            
-        }    
+
+            binNumbers[1] = nY;
+        }
     }
-    
+
     return binNumbers;
 }
 
 scalarField twoDimBinsII::binPositionsX()
 {
     scalarField positionsX(nBinsX_, 0.0);
-    
+
     forAll(positionsX, i)
     {
         positionsX[i] = binWidthX_*i + binWidthX_*0.5;
     }
-    
+
     return positionsX;
 }
 
@@ -164,8 +164,8 @@ scalarField twoDimBinsII::binPositionsY()
     forAll(positionsY, i)
     {
         positionsY[i] = binWidthY_*i + binWidthY_*0.5;
-    }    
-    
+    }
+
     return positionsY;
 }
 
@@ -182,7 +182,7 @@ void twoDimBinsII::write
 vector twoDimBinsII::position(/*const vector& h,*/ const scalar& r, const scalar& theta)
 {
     vector p = vector::zero;
-//     vector p = r*cos(theta)*angleUnitVectorY_ 
+//     vector p = r*cos(theta)*angleUnitVectorY_
 //                                     + r*sin(theta)*angleUnitVectorX_;
     return p;
 }

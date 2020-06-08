@@ -157,7 +157,7 @@ volScalarField Boltzmann::sigma() const
 	FixedList<scalar, 4> piOmegaCoeffs;
 	scalar cfA, cfB, cfC, cfD;
 
-// * * * * * * * * * * * * * * * * Reading species data from dictionaries * * * * * * * * * * * * * * * * 
+// * * * * * * * * * * * * * * * * Reading species data from dictionaries * * * * * * * * * * * * * * * *
 	const dictionary thermoDEM =
         (
         	IFstream
@@ -214,7 +214,7 @@ volScalarField Boltzmann::sigma() const
     {
         defaultList[i] = 0.0;
     }
-    
+
     forAll(dict_.thermo().composition().species(), i)
     {
         word name = dict_.thermo().composition().species()[i];
@@ -227,13 +227,13 @@ volScalarField Boltzmann::sigma() const
                 .subDict("Omega11").found("e-_"+name))
                 {
                     piOmegaCoeffs = transportDict.subDict("collisionData").subDict("neutralNeutralInteractions")
-                    .subDict("Gupta1990O").subDict("Omega11").lookupOrDefault<FixedList<scalar, 4>>("e-_"+name, defaultList);    
+                    .subDict("Gupta1990O").subDict("Omega11").lookupOrDefault<FixedList<scalar, 4>>("e-_"+name, defaultList);
                 }
                 else if (transportDict.subDict("collisionData").subDict("neutralNeutralInteractions")
                 .subDict("Gupta1990O").subDict("Omega11").found(name+"_e-"))
                 {
                     piOmegaCoeffs = transportDict.subDict("collisionData").subDict("neutralNeutralInteractions")
-                    .subDict("Gupta1990O").subDict("Omega11").lookupOrDefault<FixedList<scalar, 4>>(name+"_e-", defaultList);    
+                    .subDict("Gupta1990O").subDict("Omega11").lookupOrDefault<FixedList<scalar, 4>>(name+"_e-", defaultList);
                 }
                 else
                 {
@@ -241,7 +241,7 @@ volScalarField Boltzmann::sigma() const
                     << "Collision integral data missing for electrons and" << name << "."
                     << exit(FatalError);
                 }
-            
+
                 Info << "Calculating piOmegaCoeffs" << endl;
                 cfA = piOmegaCoeffs[0];
                 cfB = piOmegaCoeffs[1];
@@ -280,7 +280,7 @@ volScalarField Boltzmann::sigma() const
                 nu_k = dict_.thermo().composition().nD(name)*piOmega*ve;
             }
             Info << "Adding to total collision frequency" << endl;
-            collision_frequency = collision_frequency+nu_k; 
+            collision_frequency = collision_frequency+nu_k;
         }
         if (crossSections_ == "BityurinBocharov")
         {
@@ -315,16 +315,16 @@ volScalarField Boltzmann::sigma() const
                 nu_k = dict_.thermo().composition().nD(name)*Qen*ve;
             }
             Info << "Adding to total collision frequency" << endl;
-            collision_frequency = collision_frequency+nu_k; 
+            collision_frequency = collision_frequency+nu_k;
         }
 
 
 		Info << max(nu_k) << endl;
 		Info << min(nu_k) << endl;
 		Info << min(collision_frequency) << endl;
-		Info << max(collision_frequency) << endl;		
+		Info << max(collision_frequency) << endl;
 	}
-    
+
     volScalarField taue
     (
         IOobject
@@ -347,13 +347,13 @@ volScalarField Boltzmann::sigma() const
         else
         {
             taue[cellI] = pow(collision_frequency[cellI], -1);
-        } 
+        }
     }
     Info << min(taue) << endl;
     Info << max(taue) << endl;
 
 
-// * * * * * * * * * * * * * * * * Allocating sigma * * * * * * * * * * * * * * * * 
+// * * * * * * * * * * * * * * * * Allocating sigma * * * * * * * * * * * * * * * *
     	volScalarField sigma
     	(
             IOobject

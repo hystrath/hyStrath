@@ -112,15 +112,15 @@ void Foam::mixed2EnergyFvPatchScalarField::updateCoeffs()
     const scalarField& pw = multiThermo.p().boundaryField()[patchi];
 
     mixedFvPatchScalarField& Ttw = refCast<mixedFvPatchScalarField>
-    (  
+    (
         const_cast<fvPatchScalarField&>(multiThermo.Tt().boundaryField()[patchi])
     );
     Ttw.evaluate();
-  
+
     tmp<Field<scalar> > thevel(new Field<scalar>(pw.size()));
     Field<scalar>& hevel = thevel.ref();
     hevel = 0.0;
-    
+
     tmp<Field<scalar> > thevelRef(new Field<scalar>(pw.size()));
     Field<scalar>& hevelRef = thevelRef.ref();
     hevelRef = 0.0;
@@ -128,7 +128,7 @@ void Foam::mixed2EnergyFvPatchScalarField::updateCoeffs()
     tmp<Field<scalar> > thevelfC(new Field<scalar>(pw.size()));
     Field<scalar>& hevelfC = thevelfC.ref();
     hevelfC = 0.0;
-    
+
     tmp<Field<scalar> > tCvvelTvw(new Field<scalar>(pw.size()));
     Field<scalar>& cvvelTvw = tCvvelTvw.ref();
     cvvelTvw = 0.0;
@@ -138,11 +138,11 @@ void Foam::mixed2EnergyFvPatchScalarField::updateCoeffs()
         fvPatchScalarField& spYw =
             const_cast<fvPatchScalarField&>(thermo_.composition().Y(speciei).boundaryField()[patchi]);
         spYw.evaluate();
-        
+
         mixedFvPatchScalarField& spTvw = refCast<mixedFvPatchScalarField>
             (const_cast<fvPatchScalarField&>(thermo_.composition().Tv(speciei).boundaryField()[patchi]));
         spTvw.evaluate();
-        
+
         hevel += spYw*thermo_.composition().hevel(speciei, pw, spTvw, patchi);
         hevelRef += spYw*thermo_.composition().hevel(speciei, pw, spTvw.refValue(), patchi);
         hevelfC += spYw*thermo_.composition().hevel(speciei, pw, spTvw, patch().faceCells());

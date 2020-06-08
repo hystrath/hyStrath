@@ -65,7 +65,7 @@ polyMassFluxMultiSurfaces::polyMassFluxMultiSurfaces
     nAvTimeSteps_(0.0),
     resetAtOutput_(true)
 {
-    resetAtOutput_ = Switch(propsDict_.lookup("resetAtOutput")); 
+    resetAtOutput_ = Switch(propsDict_.lookup("resetAtOutput"));
 
    // choose molecule ids to sample
 
@@ -81,7 +81,7 @@ polyMassFluxMultiSurfaces::polyMassFluxMultiSurfaces
 
     fluxDirection_ /= mag(fluxDirection_);
 
-    // read in list of zone names - test for one or more defined zones and 
+    // read in list of zone names - test for one or more defined zones and
     //                              for multiple definitions
 
     const List<word> zoneNames (propsDict_.lookup("faceZoneNames"));
@@ -163,7 +163,7 @@ void polyMassFluxMultiSurfaces::createField()
 void polyMassFluxMultiSurfaces::calculateField()
 {
     nAvTimeSteps_ += 1.0;
-    
+
     const List<scalarField>& molIdFlux = molCloud_.tracker().molIdFlux();
     const List<scalarField>& massIdFlux = molCloud_.tracker().massIdFlux();
 
@@ -196,7 +196,7 @@ void polyMassFluxMultiSurfaces::calculateField()
     }
 
     // -average measurement and calculate properties
-    if(time_.outputTime()) 
+    if(time_.outputTime())
     {
         scalarField molsZone = molsZone_;
         scalarField massZone = massZone_;
@@ -247,7 +247,7 @@ void polyMassFluxMultiSurfaces::writeField()
                     molFluxZone_[r],
                     true
                 );
-    
+
                 writeTimeData
                 (
                     casePath_,
@@ -272,9 +272,9 @@ void polyMassFluxMultiSurfaces::writeField()
 					massFluxZone_[r],
 					true
 				);
-    
+
                 const reducedUnits& rU = molCloud_.redUnits();
-        
+
                 if(rU.outputSIUnits())
                 {
 
@@ -286,7 +286,7 @@ void polyMassFluxMultiSurfaces::writeField()
                         molFluxZone_[r]*rU.refMolFlux(),
                         true
                     );
-        
+
                     writeTimeData
                     (
                         casePath_,

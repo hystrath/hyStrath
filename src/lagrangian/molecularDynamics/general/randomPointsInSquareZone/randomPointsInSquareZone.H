@@ -27,7 +27,7 @@ Class
 
 Description
 
-    Generating a random point in a square zone on the mesh 
+    Generating a random point in a square zone on the mesh
 
     as well in parallel
 
@@ -76,7 +76,7 @@ class randomPointsInSquareZone
 
     // Private Member Functions
 
-    
+
 public:
 
     // Static data members
@@ -92,7 +92,7 @@ public:
             const polyMesh& mesh,
             const label& regionId
         );
-    
+
         randomPointsInSquareZone
         (
             const boundBox& bb

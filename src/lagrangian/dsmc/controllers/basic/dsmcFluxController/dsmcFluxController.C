@@ -144,9 +144,9 @@ dsmcFluxController::~dsmcFluxController()
 // void dsmcFluxController::updateTime()
 // {
 //     time_++;
-// 
+//
 //     const scalar& t = time_.time().timeOutputValue();
-//     
+//
 //     if((t - initialTime_) < timePeriod_)
 //     {
 //         time_.controlTimeInterval().endTime() = false;
@@ -185,7 +185,7 @@ void dsmcFluxController::setFacesInfo()
                 }
             }
         }
-        
+
         processorFaces.shrink();
 
         processorFaces_.setSize(processorFaces.size(), -1);
@@ -225,9 +225,9 @@ void dsmcFluxController::setFacesInfo()
         forAll(processorFaces_, f)
         {
             const label& faceI = processorFaces_[f];
-            zoneSurfaceArea_ += 0.5*mag(mesh_.faceAreas()[faceI]);           
+            zoneSurfaceArea_ += 0.5*mag(mesh_.faceAreas()[faceI]);
         }
-    
+
 
         if(Pstream::parRun())
         {
@@ -242,20 +242,20 @@ void dsmcFluxController::setFacesInfo()
                     }
                 }
             }
-        
+
             //- receiving
             for (int p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
                     scalar zoneSurfaceAreaProc;
-    
+
                     const int proc = p;
                     {
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> zoneSurfaceAreaProc;
                     }
-        
+
                     zoneSurfaceArea_ += zoneSurfaceAreaProc;
                 }
             }
@@ -324,10 +324,10 @@ void dsmcFluxController::writeTimeData
     {
         forAll(yData, n)
         {
-            file 
-                << xData[n] << "\t" 
-                << yData[n].x() << "\t" << yData[n].y() 
-                << "\t" << yData[n].z() 
+            file
+                << xData[n] << "\t"
+                << yData[n].x() << "\t" << yData[n].y()
+                << "\t" << yData[n].z()
                 << endl;
         }
     }
@@ -346,7 +346,7 @@ void dsmcFluxController::writeTimeData
     const scalarField& xData,
     const tensorField& yData
 )
-{ 
+{
     OFstream file(pathName/nameFile + ".xyz");
 
     if(file.good())
@@ -374,7 +374,7 @@ void dsmcFluxController::updateTime()
     time_++;
 
 //     const scalar& t = time_.time().timeOutputValue();
-//     
+//
 //     if((t - initialTime_) < timePeriod_)
 //     {
 //         time_.controlTimeInterval().endTime() = false;
@@ -415,7 +415,7 @@ const labelList& dsmcFluxController::controlZone() const
     return mesh_.faceZones()[regionId_];
 }
 
-label dsmcFluxController::isFaceOnControlZone(const label& faceI) 
+label dsmcFluxController::isFaceOnControlZone(const label& faceI)
 {
     const label f = findIndex(controlZone(), faceI);
 
@@ -563,51 +563,51 @@ const bool& dsmcFluxController::writeInCase() const
 // const scalar dsmcFluxController::avReqDensity() const
 // {
 //     scalar totalDensity = 0.0;
-// 
+//
 //     forAll(densities_, c)
 //     {
 //         totalDensity += densities_[c];
 //     }
-// 
+//
 //     if(cells_.size() > 0)
 //     {
 //         totalDensity /= scalar(cells_.size());
 //     }
-// 
+//
 //     return totalDensity;
 // }
-// 
+//
 // const vector dsmcFluxController::avReqVelocity() const
 // {
 //     vector totalVel = vector::zero;
-// 
+//
 //     forAll(velocities_, c)
 //     {
 //         totalVel += velocities_[c];
 //     }
-// 
+//
 //     if(cells_.size() > 0)
 //     {
 //         totalVel /= scalar(cells_.size());
 //     }
-// 
+//
 //     return totalVel;
 // }
-// 
+//
 // const scalar dsmcFluxController::avReqTemperature() const
 // {
 //     scalar totalTemp = 0.0;
-// 
+//
 //     forAll(densities_, c)
 //     {
 //         totalTemp += temperatures_[c];
 //     }
-// 
+//
 //     if(cells_.size() > 0)
 //     {
 //         totalTemp /= scalar(cells_.size());
 //     }
-// 
+//
 //     return totalTemp;
 // }
 

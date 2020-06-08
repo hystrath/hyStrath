@@ -55,7 +55,7 @@ polyDelListOfAtoms::polyDelListOfAtoms
     propsDict_(dict.subDict(typeName + "Properties")),
     molIds_()
 {
-    
+
     molIds_.clear();
 
     selectIds ids
@@ -65,13 +65,13 @@ polyDelListOfAtoms::polyDelListOfAtoms
     );
 
     molIds_ = ids.molIds();
-    
 
-    molPoints_ = List<vector>(propsDict_.lookup("molPoints"));  
-    
-    
+
+    molPoints_ = List<vector>(propsDict_.lookup("molPoints"));
+
+
     findMolsToDel();
-  
+
 }
 
 
@@ -88,20 +88,20 @@ void polyDelListOfAtoms::findMolsToDel()
 
     label initialSize = molCloud_.size();
     label deletedMols = 0;
-    
+
     Info << nl << "Deleting the following molecules... " << nl << endl;
 
     DynamicList<vector> positions;
-    DynamicList<scalar> rMinCollect;    
-    
+    DynamicList<scalar> rMinCollect;
+
     forAll(molPoints_, i)
-    {    
+    {
         DynamicList<polyMolecule*> molsToDel;
 
         IDLList<polyMolecule>::iterator mol(molCloud_.begin());
-       
+
         scalar rMin = GREAT;
-        
+
         for
         (
             mol = molCloud_.begin();
@@ -113,7 +113,7 @@ void polyDelListOfAtoms::findMolsToDel()
             {
                 vector rT = molPoints_[i];
                 scalar magRIJ = mag(rT-mol().position());
-                
+
                 if(magRIJ < rMin)
                 {
                     molsToDel.clear();
@@ -123,26 +123,26 @@ void polyDelListOfAtoms::findMolsToDel()
                 }
             }
         }
-        
-       
+
+
 
         forAll(molsToDel, m)
         {
             positions.append(molsToDel[m]->position());
-            rMinCollect.append(rMin);     
-            
+            rMinCollect.append(rMin);
+
             Info << molsToDel[m]->position()
-                << endl;            
+                << endl;
 
 
-                
+
             deletedMols++;
             deleteMolFromMoleculeCloud(*molsToDel[m]);
         }
     }
-    
+
     Info << nl << "more details ... " << nl << endl;
-    
+
     forAll(molPoints_, i)
     {
 
@@ -150,14 +150,14 @@ void polyDelListOfAtoms::findMolsToDel()
                 << positions[i]
                 << ", requested position = " << molPoints_[i]
                 << ", residual = " << rMinCollect[i]
-                << endl;        
-        
+                << endl;
+
     }
-    
+
 
     label molsKept = initialSize - deletedMols;
 
-    Info<< tab << " initial polyMolecules: " <<  initialSize 
+    Info<< tab << " initial polyMolecules: " <<  initialSize
         << ", polyMolecules kept: " <<  molsKept
         << ", polyMolecules removed: " << deletedMols
         << endl;

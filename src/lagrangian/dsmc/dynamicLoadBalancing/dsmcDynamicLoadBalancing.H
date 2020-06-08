@@ -59,23 +59,23 @@ class dsmcDynamicLoadBalancing
     // Private data
 
         Time& time_;
-        
+
         const fvMesh& mesh_;
 
         dsmcCloud& cloud_;
-        
+
         IOdictionary dsmcLoadBalanceDict_;
-        
+
         //IOdictionary controlDict_;
-        
+
         bool performBalance_;
-        
+
         bool enableBalancing_;
-        
+
         scalar originalEndTime_;
-        
+
         scalar maxImbalance_;
-        
+
 //         label nProcs_;
 
     // Private Member Functions
@@ -103,19 +103,19 @@ public:
     // Member Functions
 
         void update();
-        
+
         void perform
         (
             const int noRefinement = 0
         );
-        
+
         void copyPolyMeshToLatestTimeFolder() const;
 
-        
+
         void updateProperties(/*const IOdictionary&*/);
 
         // Access
-        
+
           inline bool performBalance() const
           {
               return performBalance_;

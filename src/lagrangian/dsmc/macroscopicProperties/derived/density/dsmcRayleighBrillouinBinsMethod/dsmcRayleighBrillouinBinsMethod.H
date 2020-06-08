@@ -73,21 +73,21 @@ private:
         word regionName_;
         label regionId_;
         word fieldName_;
-        
+
         labelList typeIds_;
-        
+
 //         label nBins_;
 
-        scalar averagingCounter_;        
-        
-        scalarField mols_;       
+        scalar averagingCounter_;
+
+        scalarField mols_;
         scalarField rhoN_;
-      
+
         List<bool> outputField_;
-        
+
         bool averagingAcrossManyRuns_;
-        
-        
+
+
     // Private Member Functions
 
         void readIn();

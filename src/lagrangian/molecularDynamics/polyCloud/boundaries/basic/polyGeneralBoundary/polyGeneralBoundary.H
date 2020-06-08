@@ -68,7 +68,7 @@ protected:
 
         dictionary boundaryDict_;
 
-        Time& time_; 
+        Time& time_;
 
         //- name of boundary patch
         word patchName_;
@@ -113,7 +113,7 @@ public:
             ),
             (t, mesh, molCloud, dict)
         );
-   
+
     // Constructors
 
         //- Construct from components
@@ -187,7 +187,7 @@ public:
             const label& patchId() const;
 
 
-            //- return the targeted fields 
+            //- return the targeted fields
             const scalarField& densityField() const;
             scalarField& densityField();
 

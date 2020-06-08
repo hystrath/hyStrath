@@ -54,9 +54,9 @@ class dsmcNoPorousMediumMeasurements
 :
     public porousMeasurements
 {
-    
+
     // Private data
-        
+
 
     // Private Member Functions
 
@@ -66,7 +66,7 @@ public:
 
     //- Runtime type information
     TypeName("dsmcNoPorousMediumMeasurements");
-    
+
     // Constructors
 
         //- Constructor
@@ -86,31 +86,31 @@ public:
     // Member Functions
 
       // Access
-      
-        
-        
+
+
+
       // Check
-      
+
         //- Check the validity of the porous measurement inputs present in
         //  constant/dsmcProperties and assign inputs to data members if
         //  correct.
         virtual void checkPorousMeasurementsInputs();
-      
-      
+
+
       // Edit
-      
+
         //- Update function
         virtual void update();
-        
+
         //- Effect of a specular interaction on porous medium measurements
         virtual void specularInteraction(dsmcParcel& p, const vector& nw);
-        
+
         //- Effect of a diffuse interaction on porous medium measurements
         virtual void diffuseInteraction(dsmcParcel& p);
-        
+
 
       // Write
-      
+
         //- Write porous measurements info
         virtual void writePorousMeasurementsInfo() const;
 

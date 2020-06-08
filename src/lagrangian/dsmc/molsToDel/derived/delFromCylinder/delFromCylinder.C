@@ -61,23 +61,23 @@ delFromCylinder::delFromCylinder
 {
 
     // check if start point is in the mesh
-   
+
     if(mesh_.findCell(startPoint_) == -1)
     {
-        Info<< "WARNING: starting point " << startPoint_ 
+        Info<< "WARNING: starting point " << startPoint_
             << " is selected outside the mesh."
             << endl;
     }
 
     if(mesh_.findCell(endPoint_) == -1)
     {
-        Info<< "WARNING: end point " << endPoint_ 
+        Info<< "WARNING: end point " << endPoint_
             << " is selected outside the mesh."
             << endl;
     }
 
 
-    // standard to reading typeIds ------------ 
+    // standard to reading typeIds ------------
     const List<word> molecules (propsDict_.lookup("typeIds"));
 
     DynamicList<word> moleculesReduced(0);
@@ -169,9 +169,9 @@ void delFromCylinder::findMolsToDel()
 
     label molsKept = initialSize - molsToDel.size();
 
-    Info<< tab << " initial molecules: " <<  initialSize 
+    Info<< tab << " initial molecules: " <<  initialSize
         << ", molecules kept: " <<  molsKept
-        << ", molecules removed: " << molsToDel.size() 
+        << ", molecules removed: " << molsToDel.size()
         << endl;
 
 

@@ -28,7 +28,7 @@ Group
     grpThermoBoundaryConditions
 
 Description
-    This boundary condition provides a mixed condition for the 
+    This boundary condition provides a mixed condition for the
     trnas-rotational mode of the internal energy
 
 SeeAlso

@@ -106,7 +106,7 @@ Foam::functionObjects::StantonNo::StantonNo
     );
 
     mesh_.objectRegistry::store(StantonNoPtr);
-    
+
     //- Check if the wallHeatFlux field exists
     wallHeatFluxHeader_ = IOobject
     (
@@ -115,13 +115,13 @@ Foam::functionObjects::StantonNo::StantonNo
         mesh_,
         IOobject::MUST_READ
     );
-    
+
     if (!wallHeatFluxHeader_.typeHeaderOk<volScalarField>(false))
     {
         FatalErrorInFunction
             << "Unable to find the wallHeatFlux"
             << exit(FatalError);
-    } 
+    }
 }
 
 
@@ -137,9 +137,9 @@ bool Foam::functionObjects::StantonNo::read(const dictionary& dict)
 {
     fvMeshFunctionObject::read(dict);
     writeFile::read(dict);
-    
+
     wallHeatFlux_ = dict.lookupOrDefault<word>("wallHeatFlux", "wallHeatFlux");
-        
+
     inflowPatchName_ = dict.lookupOrDefault<word>("inflowPatchName", "inlet");
 
     return true;
@@ -157,7 +157,7 @@ bool Foam::functionObjects::StantonNo::execute()
     if (foundObject<turbulenceModel>(turbulenceModel::propertiesName))
     {
         if (foundObject<multi2Thermo>(multi2Thermo::dictName))
-        {    
+        {
             volScalarField::Boundary& StantonNoBf =
                 StantonNo.boundaryFieldRef();
 
@@ -166,28 +166,28 @@ bool Foam::functionObjects::StantonNo::execute()
                 (
                     turbulenceModel::propertiesName
                 );
-                
+
             const multi2Thermo& thermo =
                 lookupObject<multi2Thermo>(multi2Thermo::dictName);
-                
+
             const volScalarField wallHeatFlux(wallHeatFluxHeader_, mesh_);
-            
-            const volScalarField::Boundary& wallHeatFluxBf = 
+
+            const volScalarField::Boundary& wallHeatFluxBf =
                 wallHeatFlux.boundaryField();
 
-            const label inflowPatchId = 
+            const label inflowPatchId =
                 mesh_.boundaryMesh().findPatchID(inflowPatchName_);
-                
+
             tmp<volScalarField> trho = thermo.rho();
             const volScalarField::Boundary& rhoBf = trho().boundaryField();
 
             const volVectorField::Boundary& UBf = model.U().boundaryField();
-            
+
             const scalar rhoinf = rhoBf[inflowPatchId][0];
             const scalar magUinf = mag(UBf[inflowPatchId][0]);
 
             const fvPatchList& patches = mesh_.boundary();
-            
+
             forAll(patches, patchi)
             {
                 const fvPatch& patch = patches[patchi];

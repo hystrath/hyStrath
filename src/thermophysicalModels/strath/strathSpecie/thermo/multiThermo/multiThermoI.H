@@ -106,7 +106,7 @@ inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::T
         Test = Tnew;
         Tnew =
             (this->*limit)
-            (Test - ((this->*F)(vibMode, p, Test) - f)/(this->*dFdT)(vibMode, p, Test));   
+            (Test - ((this->*F)(vibMode, p, Test) - f)/(this->*dFdT)(vibMode, p, Test));
 
         if (iter++ > maxIter_)
         {

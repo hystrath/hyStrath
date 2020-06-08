@@ -63,7 +63,7 @@ class cellInteractions
         const cyclicBoundaries& cyclics_;
 
         const reducedUnits& redUnits_;
-        
+
         word fieldName_;
 
         // dummy cloud
@@ -87,22 +87,22 @@ class cellInteractions
 
         // outer list is mesh_.nCells()
         // inner list are the ids to those cells in the DIL interaction of cellI (not including cellI)
-        // that abide with dil_ structure 
+        // that abide with dil_ structure
         labelListList inverseDIL_;
 
 
-        // outer list is processor numbers, 
-        // inner list is referred ids for receiving data. 
+        // outer list is processor numbers,
+        // inner list is referred ids for receiving data.
         // The stored ids correspond to the data member: refCells_
         labelListList recRefIds_;
 
-        // outer list is processor numbers, 
+        // outer list is processor numbers,
         // inner list is source cell labels for sending data
-        // This processor should know which real particles in its source cells 
+        // This processor should know which real particles in its source cells
         // to send to other processors
         labelListList sendSrcCells_;
-        
-        // list of referred cells 
+
+        // list of referred cells
         List<referredCell> refCells_;
 
         // outer list is the mesh cells
@@ -112,24 +112,24 @@ class cellInteractions
         //  imaged from this source cell
         labelListList sourceCellToRefs_;
 
-        
+
         // outer list is the mesh cells
-        // inner list is the ids to the refCells 
+        // inner list is the ids to the refCells
         // full real-to-referred interaction list - from a real cell, obtain the full list
         // of referred cells within interactions (ids only)
         labelListList inverseFRIL_;
-        
+
         // similar to refCells but with molecules per referred cell
-        // outer list is referred cells 
+        // outer list is referred cells
         // inner list is referred particles within referred cell
         List<DynamicList<ParticleType*> > refCellsParticles_;
 
-        // each (real) cell on the mesh stores a list of the full referred list of 
+        // each (real) cell on the mesh stores a list of the full referred list of
         // particles for interaction
         // outer list is mesh_.nCells()
         // inner list is list of referred particles within interaction of real cell, cellI
         List<DynamicList<ParticleType*> > ripl_;
-        
+
         //- container of referred particles in no particular order (local mesh)
         IDLList<ParticleType> referredCloud_;
 
@@ -140,7 +140,7 @@ class cellInteractions
 
         bool write_;
         bool writeReferredCells_;
-        
+
 
     // Private Member Functions
 
@@ -149,13 +149,13 @@ class cellInteractions
             void buildOptimisedDIL();
 
             void buildComplexDIL();
-            
-            void buildInverseDirectInteractionList();            
-            
+
+            void buildInverseDirectInteractionList();
+
             void buildFullInteractionList();
-            
+
             void buildReferredCells();
-            
+
 
             pointField boundingCellPoints(const label& cellI);
 
@@ -178,28 +178,28 @@ class cellInteractions
             labelList getProcessorSourceCells
             (
                 const polyPatch& patch
-            );             
-            
+            );
+
             boundedBox faceToBoundBox
             (
                 const label& faceI,
                 const scalar& smallOffset
             );
-           
+
             labelList returnNeighbouringCells(const label& cellI);
-  
+
             //debug
             void checkForOverlaps();
-            
+
 public:
 
     // Constructors
 
-        //- Construct from mesh 
+        //- Construct from mesh
         cellInteractions
         (
             const polyMesh& mesh,
-            const reducedUnits& rU,           
+            const reducedUnits& rU,
             const cyclicBoundaries& cyclics,
             const scalar& rCut,
             const word& fieldName
@@ -210,7 +210,7 @@ public:
         cellInteractions
         (
             const polyMesh& mesh,
-            const reducedUnits& rU,  
+            const reducedUnits& rU,
             const cyclicBoundaries& cyclics,
             const label& dummy
         );
@@ -228,23 +228,23 @@ public:
             DynamicList<ParticleType*>& newRefParticles,
             DynamicList<label>& refIds
         );
-        
+
         void deleteParticle
         (
             ParticleType* particle,
             DynamicList<ParticleType*>& newRefParticles,
             DynamicList<label>& refIds
         );
-        
+
         void setReferredParticles
         (
             const List<DynamicList<ParticleType*> >& cellOccupancy
-        );              
+        );
 
         void setRIPL();
-        
+
         // Access
-        
+
             inline const labelListList& inverseDIL() const;
 
             inline const labelListList& dil() const;
@@ -259,12 +259,12 @@ public:
 
             inline const labelListList& sourceCellToRefs() const;
 
-            inline const labelListList& inverseFRIL() const;            
-            
+            inline const labelListList& inverseFRIL() const;
+
             inline const List<DynamicList<ParticleType*> >& ripl() const;
 
             inline IDLList<ParticleType>& referredCloud();
-               
+
         // Check
 
         // Edit

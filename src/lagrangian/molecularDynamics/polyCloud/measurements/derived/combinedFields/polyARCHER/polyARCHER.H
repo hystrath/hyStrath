@@ -25,7 +25,7 @@ License
 Class
 
 Description
-    The model which outputs standard properties to the terminal screen 
+    The model which outputs standard properties to the terminal screen
     in an MD simulation run.
 
 SourceFiles
@@ -65,18 +65,18 @@ private:
 
         //- subDictionary containing the properties
         dictionary propsDict_;
-        
+
         propertyField fields_;
-        
+
         word nameOfFile_;
-        
+
         fileName pathName_;
-        
+
     // Private Member Functions
-    
+
         void outputInitialisation();
         void outputTime();
-        
+
         scalar getTotalEnergy();
 public:
 
@@ -124,7 +124,7 @@ public:
         );
 
         const propertyField& fields() const;
-}; 		
+};
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

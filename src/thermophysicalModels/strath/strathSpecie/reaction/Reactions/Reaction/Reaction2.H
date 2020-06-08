@@ -61,8 +61,8 @@ inline Ostream& operator<<(Ostream&, const Reaction2<Reaction2Thermo>&);
 
 
 // NEW VINCENT
-enum ControllingTemperatureType {chargeExchange, dissociation, exchange, 
-    impactDissociation, impactIonisation, associativeIonisation, 
+enum ControllingTemperatureType {chargeExchange, dissociation, exchange,
+    impactDissociation, impactIonisation, associativeIonisation,
     transrotational, vibrational};
 
 /*---------------------------------------------------------------------------*\
@@ -147,7 +147,7 @@ private:
 
         //- Specie info for the right-hand-side of the reaction
         List<specieCoeffs> rhs_;
-        
+
         //- Controlling temperature
         ControllingTemperatureType controlT_; // NEW VINCENT
 
@@ -318,7 +318,7 @@ public:
             // - Access to basic components of the reaction
             inline const List<specieCoeffs>& lhs() const;
             inline const List<specieCoeffs>& rhs() const;
-            
+
             //- Controlling temperature of the reaction
             inline const ControllingTemperatureType& controlT() const;
 

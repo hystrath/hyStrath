@@ -26,7 +26,7 @@ Class
     region
 
 Description
-    
+
 
 
 SourceFiles
@@ -161,7 +161,7 @@ class region
             const List<label>& facePointIndex
         );
 
-        inline const label& correspondingPatchPoint 
+        inline const label& correspondingPatchPoint
         (
             const polyMesh& mesh,
 //             const label& oldPatchPoint,
@@ -184,7 +184,7 @@ class region
         void synchIntProcPoints
         (
             const polyMesh& ,
-            pointInfoList& 
+            pointInfoList&
         );
 
         void setInterface

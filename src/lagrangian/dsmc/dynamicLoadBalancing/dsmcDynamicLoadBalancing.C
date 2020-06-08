@@ -87,9 +87,9 @@ void dsmcDynamicLoadBalancing::update()
     if(time_.time().outputTime())
     {
         //- Checking for modifications in the IOdictionary
-        //  this allows for run-time tuning of any parameters.  
+        //  this allows for run-time tuning of any parameters.
         // DLETED VINCENT: not useful
-        
+
         /*IOdictionary newDict
         (
             IOobject
@@ -103,73 +103,73 @@ void dsmcDynamicLoadBalancing::update()
         );*/
 
         updateProperties(/*newDict*/);
-        
+
         //- Load Balancing
         if (Pstream::parRun())
         {
             const scalar& allowableImbalance = maxImbalance_;
-                
+
             // First determine current level of imbalance - do this for all
             // parallel runs, even if balancing is disabled
             scalar nGlobalParticles = cloud_.size();
             Foam::reduce(nGlobalParticles, sumOp<scalar>());
-            
+
             scalar idealNParticles = scalar(nGlobalParticles)/scalar(Pstream::nProcs());
-            
+
             scalar nParticles = cloud_.size();
             scalar localImbalance = mag(nParticles - idealNParticles);
             Foam::reduce(localImbalance, maxOp<scalar>());
             scalar maxImbalance = localImbalance/idealNParticles;
-            
+
             Info << "    Maximum imbalance = " << 100*maxImbalance << "%" << endl;
-            
+
             if( maxImbalance > allowableImbalance && enableBalancing_)
-            {   
+            {
                 performBalance_ = true;
-                
+
                 originalEndTime_ = time_.time().endTime().value();
-                
+
                 scalar currentTime = time_.time().value();
-                
+
                 time_.setEndTime(currentTime);
             }
         }
     }
 }
-    
-    
+
+
 void dsmcDynamicLoadBalancing::copyPolyMeshToLatestTimeFolder() const
 {
     const fileName constantInProcessor0 = "processor0/constant";
-    
+
     if (not isDir(constantInProcessor0))
     {
         for (label i=0; i<Pstream::nProcs(); i++)
         {
-            const word findStartTime = 
+            const word findStartTime =
                 "starting=`foamListTimes -processor -withZero -startTime`; ";
-                
+
             if (findStartTime != "0")
-            {    
-                const word findLatestTime = 
+            {
+                const word findLatestTime =
                     "latest=`foamListTimes -processor -withZero -latestTime`; ";
                 const word findTimes = findStartTime + findLatestTime;
                 const word processorName = "processor" + name(i) + "/";
-                const word copyPolyMesh = findTimes + "cp -r " 
-                    + processorName + "$starting" + "/polyMesh " 
+                const word copyPolyMesh = findTimes + "cp -r "
+                    + processorName + "$starting" + "/polyMesh "
                     + processorName + "$latest/";
-                
+
                 Foam::system(copyPolyMesh);
             }
         }
     }
     /*else
     {
-        const word findLatestTime = 
+        const word findLatestTime =
                     "latest=`foamListTimes -processor -withZero -latestTime`; ";
-                    
+
         const fileName polyMeshInTimeFolder = "processor0/" + findLatestTime + "/polyMesh";
-        
+
         if (isDir(polyMeshInTimeFolder))
         {
             const fileName constantInProcessor0 = "processor0/constant";
@@ -179,32 +179,32 @@ void dsmcDynamicLoadBalancing::copyPolyMeshToLatestTimeFolder() const
 
 
 void dsmcDynamicLoadBalancing::perform(const int noRefinement)
-{    
+{
     if(performBalance_)
-    {      
+    {
         if (Pstream::master())
-        {   
+        {
             if (noRefinement == 0)
             {
                 copyPolyMeshToLatestTimeFolder();
             }
-            
+
             //string redistributeCommand("mpirun -np " + word(nProcs_) + " redistributeParDSMCLoadBalance -parallel");
             //system("redistributeCommand");
 
-            /*const char reconstructParMeshCommand[] =  
+            /*const char reconstructParMeshCommand[] =
                 "reconstructParMesh -latestTime";
-                
-            const word reconstructParCommand = 
-                "reconstructPar -latestTime -parallel"; 
-                
-            const word decomposeDSMCLoadBalanceParCommand = 
-                "decomposeDSMCLoadBalancePar -force -latestTime -copyUniform -parallel";       
-            
+
+            const word reconstructParCommand =
+                "reconstructPar -latestTime -parallel";
+
+            const word decomposeDSMCLoadBalanceParCommand =
+                "decomposeDSMCLoadBalancePar -force -latestTime -copyUniform -parallel";
+
             const word decomposeDSMCCommand = word("var=`foamListTimes -noZero`; ")
-                + word("if [ -z ${var+x} ]; then echo 'error'; else ") 
+                + word("if [ -z ${var+x} ]; then echo 'error'; else ")
                 + decomposeDSMCLoadBalanceParCommand + word("; fi");*/
-                
+
             // Open MPI does not support recursive calls of mpirun
             // MPI_Comm_spawn must be used instead
             //int threading_level_required = MPI_THREAD_MULTIPLE;
@@ -213,30 +213,30 @@ void dsmcDynamicLoadBalancing::perform(const int noRefinement)
             /*MPI_Comm comm_to_workers;
             char worker_program[100];
             strcpy(worker_program, "hhh");*/
-            
+
             /*MPI_Comm_spawn(worker_program, MPI_ARGV_NULL, Pstream::nProcs(),
                 MPI_INFO_NULL, 0, MPI_COMM_SELF, &comm_to_workers, MPI_ERRCODES_IGNORE);*/
-                
+
             //system(reconstructParMeshCommand);
             //system(reconstructParCommand);
             //system("rm -r processor*");
             //system(decomposeDSMCCommand);
-            
+
             Foam::system("reconstructParMesh -latestTime");
             Foam::system("reconstructPar -latestTime");
             Foam::system("rm -r processor*");
-            
+
             Foam::system("var=`foamListTimes -noZero`; if [ -z ${var+x} ]; then echo 'error'; else decomposeDSMCLoadBalancePar -force -latestTime -copyUniform; fi");
-            
+
             // Backup folders must be stored in resultFolders and moved back
             // as the simulation finishes
             //system("foamListTimes -rm"); // no backup alternative but risky
             mkDir("resultFolders");
             Foam::system("var2=`foamListTimes`; mv $var2 resultFolders");
-            
+
             performBalance_ = false;
         }
-            
+
         time_.setEndTime(originalEndTime_);
     }
 }

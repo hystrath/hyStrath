@@ -42,7 +42,7 @@ inline Foam::scalar Foam::reducedUnits::refLength() const
 {
     return refLength_;
 }
-// inline Foam::scalar& Foam::reducedUnits::refLength() 
+// inline Foam::scalar& Foam::reducedUnits::refLength()
 // {
 //     return refLength_;
 // }
@@ -52,7 +52,7 @@ inline Foam::scalar Foam::reducedUnits::refTime() const
 {
     return refTime_;
 }
-// inline Foam::scalar& Foam::reducedUnits::refTime() 
+// inline Foam::scalar& Foam::reducedUnits::refTime()
 // {
 //     return refTime_;
 // }
@@ -61,7 +61,7 @@ inline Foam::scalar Foam::reducedUnits::refMass() const
 {
     return refMass_;
 }
-// inline Foam::scalar& Foam::reducedUnits::refMass() 
+// inline Foam::scalar& Foam::reducedUnits::refMass()
 // {
 //     return refMass_;
 // }
@@ -70,7 +70,7 @@ inline Foam::scalar Foam::reducedUnits::refCharge() const
 {
     return refCharge_;
 }
-// inline Foam::scalar& Foam::reducedUnits::refCharge() 
+// inline Foam::scalar& Foam::reducedUnits::refCharge()
 // {
 //     return refCharge_;
 // }

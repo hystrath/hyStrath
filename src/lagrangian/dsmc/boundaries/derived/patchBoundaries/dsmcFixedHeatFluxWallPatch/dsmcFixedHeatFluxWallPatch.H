@@ -73,29 +73,29 @@ private:
         volScalarField wallTemperature_;
 
         scalar EcTot_;
-        
+
         scalar EcTotSum_;
-        
+
         scalar newWallTemperature_;
-        
+
         scalar desiredHeatFlux_;
 
         scalar relaxationFactor_;
 
         label stepCounter_;
-        
+
         label nSamples_;
-        
+
         scalar referenceCp_;
-        
+
         scalar referenceRho_;
-        
+
         scalar referenceU_;
-        
+
         scalar referenceTemperature_;
 
         void setProperties();
-        
+
         void initialTemperatureEstimate();
 
 public:

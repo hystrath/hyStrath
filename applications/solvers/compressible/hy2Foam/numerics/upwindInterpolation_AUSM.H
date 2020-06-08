@@ -101,10 +101,10 @@ surfaceScalarField Machf //- Step VI
 
 /*Machf -= AUSM_Kp/scalingFunction*max(1.0-AUSM_sigma*meanSqrMach, 0.0)*(p_pos-p_neg)
   / (0.5*(rho_pos+rho_neg)*sqr(cf));*/
-  
+
 Info << "Machf" << tab << Machf[2] << tab << Machf[3] << endl;
 
-surfaceScalarField pf 
+surfaceScalarField pf
 (
     "pf",
     //splitPressureDeg5_pos(Mach_neg, AUSM_alpha)*p_neg + splitPressureDeg5_neg(Mach_pos, AUSM_alpha)*p_pos

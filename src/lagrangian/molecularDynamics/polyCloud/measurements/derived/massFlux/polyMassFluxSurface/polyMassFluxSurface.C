@@ -96,7 +96,7 @@ polyMassFluxSurface::polyMassFluxSurface
             meanMassFlux_= readScalar(propsDict_.lookup("meanMassFlux"));
         }
     }
-    
+
    // choose molecule ids to sample
 
     molIds_.clear();
@@ -141,7 +141,7 @@ polyMassFluxSurface::polyMassFluxSurface
                 << ", averagingTime = " << averagingTime_
                 << endl;
         }
-       
+
     }
 
     if (propsDict_.found("resetAtOutput"))
@@ -190,11 +190,11 @@ polyMassFluxSurface::polyMassFluxSurface
                 }
             }
         }
-        
+
         //processorFaces.shrink();
 
         label nInternalFaces = faces.size() - processorFaces.size();
-           
+
         List<label> internalFaces(nInternalFaces, 0);
 
         label counter = 0;
@@ -217,13 +217,13 @@ polyMassFluxSurface::polyMassFluxSurface
         }
 
 
-    
+
         forAll(processorFaces, f)
         {
             const label& faceI = processorFaces[f];
-            zoneSurfaceArea_ += 0.5*mag(mesh_.faceAreas()[faceI]);           
+            zoneSurfaceArea_ += 0.5*mag(mesh_.faceAreas()[faceI]);
         }
-    
+
 
         if(Pstream::parRun())
         {
@@ -238,20 +238,20 @@ polyMassFluxSurface::polyMassFluxSurface
                     }
                 }
             }
-        
+
             //- receiving
             for (int p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
                     scalar zoneSurfaceAreaProc;
-    
+
                     const int proc = p;
                     {
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> zoneSurfaceAreaProc;
                     }
-        
+
                     zoneSurfaceArea_ += zoneSurfaceAreaProc;
                 }
             }
@@ -330,9 +330,9 @@ void polyMassFluxSurface::calculateField()
             {
                 reduce(massFlux, sumOp<scalar>());
             }
-    
-            scalar flux = massFlux/time_.deltaT().value(); 
-    
+
+            scalar flux = massFlux/time_.deltaT().value();
+
             stdTerm_ += (flux - meanMassFlux_)*(flux - meanMassFlux_);
         }
     }
@@ -415,7 +415,7 @@ bool polyMassFluxSurface::readFromStorage()
     }
 
     return goodFile;
-    
+
 }
 
 void polyMassFluxSurface::writeField()
@@ -466,11 +466,11 @@ void polyMassFluxSurface::writeField()
             if(computeErrorBars_)
             {
                 scalar sigma = sqrt((stdTerm_)/scalar(averagingCounter_));
-    
+
                 scalarField errorBarField(1, 0.0);
-    
+
                 errorBarField[0] = sigma/sqrt(scalar(averagingCounter_));
-    
+
                 writeTimeData
                 (
                     casePath_,
@@ -482,7 +482,7 @@ void polyMassFluxSurface::writeField()
             }
 
             const reducedUnits& rU = molCloud_.redUnits();
-    
+
             if(rU.outputSIUnits())
             {
                 writeTimeData
@@ -493,7 +493,7 @@ void polyMassFluxSurface::writeField()
                     molFluxZone_*rU.refMolFlux(),
                     true
                 );
-    
+
                 writeTimeData
                 (
                     casePath_,
@@ -515,7 +515,7 @@ void polyMassFluxSurface::measureDuringForceComputation
 {}
 
 void polyMassFluxSurface::measureDuringForceComputationSite
-(   
+(
     polyMolecule* molI,
     polyMolecule* molJ,
     label sI,

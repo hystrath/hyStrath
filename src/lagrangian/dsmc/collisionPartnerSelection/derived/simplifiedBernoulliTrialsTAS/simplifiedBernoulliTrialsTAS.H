@@ -23,7 +23,7 @@ License
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 Class
- 
+
 
 Description
 
@@ -80,10 +80,10 @@ private:
 
         vectorField startPoints_;
 
-        // nx, ny nz slices in x y z directions 
+        // nx, ny nz slices in x y z directions
         labelListList nSlices_;
 
-        // no of actual sub-cells 
+        // no of actual sub-cells
         labelList nSubCells_;
 
 

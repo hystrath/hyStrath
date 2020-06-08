@@ -27,7 +27,7 @@ Class
 
 Description
     hardSphere model.
-    
+
 SourceFiles
     hardSphere.C
 
@@ -91,7 +91,7 @@ public:
 
         //- Mean free path [m]
         virtual tmp<volScalarField> mfp() const;
-         
+
         //- Mean free path for patch [m]
         virtual tmp<scalarField> mfp
         (
@@ -99,7 +99,7 @@ public:
             const scalarField& p,
             const scalarField& Tt
         ) const;
-        
+
 };
 
 

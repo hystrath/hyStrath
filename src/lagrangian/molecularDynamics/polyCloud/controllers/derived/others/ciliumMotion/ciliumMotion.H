@@ -64,42 +64,42 @@ private:
 
         //- subDictionary containing the properties
         dictionary propsDict_;
-        
-        word fieldName_;
-        
-        List<label> molIds_;
-        
-        List <label> trackingNumbers_;
-        
 
-        
+        word fieldName_;
+
+        List<label> molIds_;
+
+        List <label> trackingNumbers_;
+
+
+
         scalar deltaTMD_;
 
         label nC_;
-        
+
         label nT_;
-        
-        
-        // outer list = time 
+
+
+        // outer list = time
         // inner list = cilium positions
         List< List <scalar> > x_;
-        
+
         List< List <scalar> > y_;
 
         vector startPoint_;
-        
+
         label tI_;
-        
-        
+
+
         vectorField velocities_;
         vectorField forces_;
         scalar nAvTimeSteps_;
         label nWrite_;
-        
+
     // Private Member Functions
-        
+
 //          void getPosition();
-        
+
 public:
 
     //- Runtime type information
@@ -121,7 +121,7 @@ public:
 
 
     // Member Functions
-        
+
         //- create an initial configuration
         void initialConfiguration();
 
@@ -133,20 +133,20 @@ public:
         (
             polyMolecule* molI,
             polyMolecule* molJ
-        );        
+        );
         void controlAfterForces();
         void controlAfterVelocityII();
-        
+
         //- calculate any required properties (end of time-step)
-        void calculateProperties(); 
-        
+        void calculateProperties();
+
         //- output data (optional)
         void output
         (
-            const fileName& fixedPathName, 
+            const fileName& fixedPathName,
             const fileName& timePath
         );
-        
+
         //- update properties from a modified dictionary (optional)
         void updateProperties(const dictionary&);
 };
