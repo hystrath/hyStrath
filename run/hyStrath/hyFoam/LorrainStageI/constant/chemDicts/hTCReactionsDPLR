@@ -892,40 +892,4 @@ reactions
         A3       (-5.5728 -5.4058 -5.3426 -5.3513 -5.342 -5.3467);
         A4       (0.039655 0.028533 0.024301 0.024936 0.024321 0.024631);
     }*/
-    
-    // Reaction no 48
-    /*oxygenCationAtomicOxygenChargeExchangeReaction
-    {
-        type     reversibleArrheniusReaction;
-        reaction "O2+ + O = O+ + O2";
-        controlT chargeExchange;
-        A        4.0e09;
-        beta     -0.09;
-        Ta       18000;
-        
-        ni       (1e20 1e21 1e22 1e23 1e24 1e25);
-        A0       ("no data");
-        A1       ();
-        A2       ();
-        A3       ();
-        A4       ();
-    }
-    
-    // Reaction no 49
-    atomicNitrogenCationNitrogenChargeExchangeReaction
-    {
-        type     reversibleArrheniusReaction;
-        reaction "N+ + N2 = N2+ + N";
-        controlT chargeExchange;
-        A        1.0e09;
-        beta     0.5;
-        Ta       12200;
-        
-        ni       (1e20 1e21 1e22 1e23 1e24 1e25);
-        A0       ("no data");
-        A1       ();
-        A2       ();
-        A3       ();
-        A4       ();
-    }*/
 }
