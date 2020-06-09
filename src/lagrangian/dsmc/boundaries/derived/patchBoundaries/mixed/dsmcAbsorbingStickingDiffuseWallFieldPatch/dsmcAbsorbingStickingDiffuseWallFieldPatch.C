@@ -161,10 +161,7 @@ void dsmcAbsorbingStickingDiffuseWallFieldPatch::controlParticle
                     else
                     {
                         //- absorb particle
-                        dsmcAbsorbingWallPatch::absorbParticle
-                        (
-                            wppIndex, wppLocalFace, td
-                        );
+                        dsmcAbsorbingWallPatch::absorbParticle(p, td);
                     }
                 }
                 else
@@ -203,10 +200,7 @@ void dsmcAbsorbingStickingDiffuseWallFieldPatch::controlParticle
                     if(absorptionProbability > cloud_.rndGen().sample01<scalar>())
                     {
                         //- absorb particle
-                        dsmcAbsorbingWallPatch::absorbParticle
-                        (
-                            wppIndex, wppLocalFace, td
-                        );
+                        dsmcAbsorbingWallPatch::absorbParticle(p, td);
                     }
                     else
                     {

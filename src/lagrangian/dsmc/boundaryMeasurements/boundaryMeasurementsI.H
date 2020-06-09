@@ -136,12 +136,12 @@ inline const fvPatchScalarField& boundaryMeasurements::pnStuckParticles
 }
 
 
-inline const fvPatchScalarField& boundaryMeasurements::pnAbsorbedParcels
+inline const fvPatchScalarField& boundaryMeasurements::pnAbsorbedParticles
 (
     const label& patchi
 ) const
 {
-    return nAbsorbedParcels_[patchi];
+    return nAbsorbedParticles_[patchi];
 }
 
 
@@ -264,12 +264,12 @@ inline fvPatchScalarField& boundaryMeasurements::pnStuckParticles
 }
 
 
-inline fvPatchScalarField& boundaryMeasurements::pnAbsorbedParcels
+inline fvPatchScalarField& boundaryMeasurements::pnAbsorbedParticles
 (
     const label& patchi
 )
 {
-    return nAbsorbedParcels_[patchi];
+    return nAbsorbedParticles_[patchi];
 }
 
 

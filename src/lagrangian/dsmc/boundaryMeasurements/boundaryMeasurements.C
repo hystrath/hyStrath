@@ -67,30 +67,30 @@ void boundaryMeasurements::writenStuckParticles()
 }
 
 
-void boundaryMeasurements::writenAbsorbedParcels()
+void boundaryMeasurements::writenAbsorbedParticles()
 {
-    tmp<volScalarField> tnAbsorbedParcels
+    tmp<volScalarField> tnAbsorbedParticles
     (
         new volScalarField
         (
             IOobject
             (
-                "nAbsorbedParcels",
+                "nAbsorbedParticles",
                 mesh_.time().timeName(),
                 mesh_,
                 IOobject::NO_READ,
                 IOobject::NO_WRITE
             ),
             mesh_,
-            dimensionedScalar("nAbsorbedParcels", dimless, 0.0)
+            dimensionedScalar("nAbsorbedParticles", dimless, 0.0)
         )
     );
 
-    volScalarField& nAbsorbedParcels = tnAbsorbedParcels.ref();
+    volScalarField& nAbsorbedParticles = tnAbsorbedParticles.ref();
 
-    nAbsorbedParcels.boundaryFieldRef() = nAbsorbedParcels_;
+    nAbsorbedParticles.boundaryFieldRef() = nAbsorbedParticles_;
 
-    nAbsorbedParcels.write();
+    nAbsorbedParticles.write();
 }
 
 
@@ -163,7 +163,7 @@ boundaryMeasurements::boundaryMeasurements
         mesh_.V(),
         calculatedFvPatchScalarField::typeName
     ),
-    nAbsorbedParcels_
+    nAbsorbedParticles_
     (
         mesh_.boundary(),
         mesh_.V(),
@@ -216,7 +216,7 @@ boundaryMeasurements::boundaryMeasurements
         mesh_.V(),
         calculatedFvPatchScalarField::typeName
     ),
-    nAbsorbedParcels_
+    nAbsorbedParticles_
     (
         mesh_.boundary(),
         mesh_.V(),
@@ -259,13 +259,14 @@ void boundaryMeasurements::updatenStuckParticlesOnPatch
 }
 
 
-void boundaryMeasurements::updatenAbsorbedParcelOnPatch
+void boundaryMeasurements::updatenAbsorbedParticlesOnPatch
 (
     const label patchi,
-    const label facei
+    const label facei,
+    const scalar nAbsorbedParticles
 )
 {
-    nAbsorbedParcels_[patchi][facei]++;
+    nAbsorbedParticles_[patchi][facei] += nAbsorbedParticles;
 }
 
 
@@ -308,15 +309,15 @@ void boundaryMeasurements::setBoundarynStuckParticles
 }
 
 
-void boundaryMeasurements::setBoundarynAbsorbedParcels
+void boundaryMeasurements::setBoundarynAbsorbedParticles
 (
     const label patchi,
-    const scalarList& pnAbsorbedParcels
+    const scalarList& pnAbsorbedParticles
 )
 {
-    forAll(pnAbsorbedParcels, facei)
+    forAll(pnAbsorbedParticles, facei)
     {
-        nAbsorbedParcels_[patchi][facei] = pnAbsorbedParcels[facei];
+        nAbsorbedParticles_[patchi][facei] = pnAbsorbedParticles[facei];
     }
 }
 
@@ -332,7 +333,7 @@ void boundaryMeasurements::outputResults()
 
         if(cloud_.boundaries().isAAbsorbingPatch())
         {
-            writenAbsorbedParcels();
+            writenAbsorbedParticles();
         }
 
         if(cloud_.boundaries().isAFieldPatch())
@@ -476,7 +477,7 @@ void boundaryMeasurements::reset()
         forAll(nParticlesOnStickingBoundaries_[patchi], facei)
         {
             nParticlesOnStickingBoundaries_[patchi][facei] = 0.0;
-            nAbsorbedParcels_[patchi][facei] = 0.0;
+            nAbsorbedParticles_[patchi][facei] = 0.0;
             boundaryT_[patchi][facei] = 0.0;
             boundaryU_[patchi][facei] = vector::zero;
         }

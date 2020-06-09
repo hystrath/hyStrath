@@ -94,7 +94,7 @@ private:
         volScalarField::Boundary nParticlesOnStickingBoundaries_;
 
         //- Number of absorbed parcels on every boundary patch
-        volScalarField::Boundary nAbsorbedParcels_;
+        volScalarField::Boundary nAbsorbedParticles_;
 
         //- Boundary temperature field when dsmcFieldPatchBoundary is used
         volScalarField::Boundary boundaryT_;
@@ -109,7 +109,7 @@ private:
         void writenStuckParticles();
 
         //- write the number of absorbed parcels for absorbing patches
-        void writenAbsorbedParcels();
+        void writenAbsorbedParticles();
 
         //- writePatchFields()
         void writePatchFields();
@@ -152,11 +152,12 @@ public:
             const scalarList& pnStuckParticles
         );
 
-        //- update the number of absorbed parcels on patchi
-        void updatenAbsorbedParcelOnPatch
+        //- update the number of absorbed parcels on patchi/facei
+        void updatenAbsorbedParticlesOnPatch
         (
             const label patchi,
-            const label facei
+            const label facei,
+            const scalar nAbsorbedParticles
         );
 
         //- set the boundaryT field on patchi
@@ -181,10 +182,10 @@ public:
         );
 
         //- set the number of absorbed parcels on patchi
-        void setBoundarynAbsorbedParcels
+        void setBoundarynAbsorbedParticles
         (
             const label patchi,
-            const scalarList& pnAbsorbedParcels
+            const scalarList& pnAbsorbedParticles
         );
 
         void setInitialConfig();
@@ -216,7 +217,7 @@ public:
       const fvPatchScalarField& pnStuckParticles(const label& patchi) const;
 
       //- Return const access to the number of absorbed parcels on patchi
-      const fvPatchScalarField& pnAbsorbedParcels(const label& patchi) const;
+      const fvPatchScalarField& pnAbsorbedParticles(const label& patchi) const;
 
       //- Return access to the temperature boundary values on patchi
       const fvPatchScalarField& boundaryT(const label& patchi) const;
@@ -249,7 +250,7 @@ public:
       fvPatchScalarField& pnStuckParticles(const label& patchi);
 
       //- Return access to the number of absorbed parcels on patchi
-      fvPatchScalarField& pnAbsorbedParcels(const label& patchi);
+      fvPatchScalarField& pnAbsorbedParticles(const label& patchi);
 
       //- Return access to the temperature boundary values on patchi
       fvPatchScalarField& boundaryT(const label& patchi);

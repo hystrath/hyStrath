@@ -100,8 +100,7 @@ protected:
         //- Absorb the particle
         void absorbParticle
         (
-            const label patchi,
-            const label facei,
+            dsmcParcel& p,
             dsmcParcel::trackingData& td
         );
 

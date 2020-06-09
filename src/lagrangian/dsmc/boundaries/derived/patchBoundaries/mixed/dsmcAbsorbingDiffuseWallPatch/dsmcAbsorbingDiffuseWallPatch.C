@@ -119,7 +119,7 @@ void dsmcAbsorbingDiffuseWallPatch::controlParticle
         )
         {
             //- absorb particle
-            absorbParticle(wppIndex, wppLocalFace, td);
+            absorbParticle(p, td);
         }
         else
         {
