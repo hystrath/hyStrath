@@ -127,12 +127,12 @@ inline const List<List<vectorField>>& boundaryMeasurements::fDBF() const
 }
 
 
-inline const fvPatchScalarField& boundaryMeasurements::pnStuckParcels
+inline const fvPatchScalarField& boundaryMeasurements::pnStuckParticles
 (
     const label& patchi
 ) const
 {
-    return nParcelsOnStickingBoundaries_[patchi];
+    return nParticlesOnStickingBoundaries_[patchi];
 }
 
 
@@ -255,12 +255,12 @@ inline List<List<vectorField>>& boundaryMeasurements::fDBF()
 }
 
 
-inline fvPatchScalarField& boundaryMeasurements::pnStuckParcels
+inline fvPatchScalarField& boundaryMeasurements::pnStuckParticles
 (
     const label& patchi
 )
 {
-    return nParcelsOnStickingBoundaries_[patchi];
+    return nParticlesOnStickingBoundaries_[patchi];
 }
 
 

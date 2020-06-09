@@ -124,42 +124,42 @@ void dsmcStickingWallPatch::setProperties()
     forAll(saturationLimit_, facei)
     {
         saturationLimit_[facei] =
-            saturationLimitPerSquareMeters*facesArea[facei]
-           /cloud_.nParticles(patchId(), facei);
+            saturationLimitPerSquareMeters*facesArea[facei];
     }
 }
 
 
 void dsmcStickingWallPatch::readPatchField()
 {
-    tmp<volScalarField> tnStuckParcels
+    tmp<volScalarField> tnStuckParticles
     (
         new volScalarField
         (
             IOobject
             (
-                "nStuckParcels",
+                "nStuckParticles",
                 mesh_.time().timeName(),
                 mesh_,
                 IOobject::READ_IF_PRESENT,
                 IOobject::NO_WRITE
             ),
             mesh_,
-            dimensionedScalar("nStuckParcels", dimless, 0.0)
+            dimensionedScalar("nStuckParticles", dimless, 0.0)
         )
     );
 
-    volScalarField& nStuckParcels = tnStuckParcels.ref();
+    volScalarField& nStuckParticles = tnStuckParticles.ref();
 
-    nStuckParcels_ = nStuckParcels.boundaryField()[patchId()];
+    nStuckParticles_ = nStuckParticles.boundaryField()[patchId()];
 
-    cloud_.boundaryFluxMeasurements().setBoundarynStuckParcels(patchId(), nStuckParcels_);
+    cloud_.boundaryFluxMeasurements()
+        .setBoundarynStuckParticles(patchId(), nStuckParticles_);
 }
 
 
 bool dsmcStickingWallPatch::isNotSaturated(const label facei)
 {
-    if(saturationLimit(facei) - nStuckParcels(facei) > 1e-6)
+    if(saturationLimit(facei) - nStuckParticles(facei) > 1e-6)
     {
         return true;
     }
@@ -229,7 +229,8 @@ void dsmcStickingWallPatch::adsorbParticle
     wallVectors[2] = nw;
 
     //- Increment the number of stuck particles for this face
-    nStuckParcels_[wallTemperature[2]]++;
+    nStuckParticles_[wppLocalFace] += p.RWF() * cloud_.coordSystem().dtModel()
+        .nParticles(wppIndex, wppLocalFace);
 }
 
 
@@ -265,7 +266,10 @@ void dsmcStickingWallPatch::testForDesorption(dsmcParcel& p)
                 );
 
             //- Decrement the number of stuck particles for this face
-            nStuckParcels_[p.stuck().wallTemperature()[2]]--;
+            const label& wppIndex = p.stuck().wallTemperature()[1];
+            const label& wppLocalFace = p.stuck().wallTemperature()[2];
+            nStuckParticles_[wppLocalFace] -= p.RWF() * cloud_.coordSystem()
+                .dtModel().nParticles(wppIndex, wppLocalFace);
 
             measurePropertiesAfterDesorption(p);
 
@@ -421,7 +425,7 @@ dsmcStickingWallPatch::dsmcStickingWallPatch
     typeIds_(),
     adsorptionProbs_(),
     residenceTimes_(),
-    nStuckParcels_(mesh_.boundaryMesh()[patchId()].size(), 0.0),
+    nStuckParticles_(mesh_.boundaryMesh()[patchId()].size(), 0.0),
     saturationLimit_(mesh_.boundaryMesh()[patchId()].size(), 0.0)
 {
     writeInTimeDir_ = false;
