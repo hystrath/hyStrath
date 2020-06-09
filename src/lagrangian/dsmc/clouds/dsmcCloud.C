@@ -410,6 +410,53 @@ void Foam::dsmcCloud::addNewParcel
 }
 
 
+void Foam::dsmcCloud::addNewStuckParcel
+(
+    const vector& position,
+    const vector& U,
+    const scalar RWF,
+    const scalar ERot,
+    const label ELevel,
+    const label cellI,
+    const label tetFaceI,
+    const label tetPtI,
+    const label typeId,
+    const label newParcel,
+    const label classification,
+    const labelList& vibLevel,
+    const scalarField& wallTemperature,
+    const vectorField& wallVectors
+)
+{
+    dsmcParcel* pPtr = new dsmcParcel
+    (
+        mesh_,
+        position,
+        U,
+        RWF,
+        ERot,
+        ELevel,
+        cellI,
+        tetFaceI,
+        tetPtI,
+        typeId,
+        newParcel,
+        classification,
+        vibLevel
+    );
+
+    // set parcel stuck
+    dsmcParcel& p = *pPtr;
+    p.setStuck();
+    p.stuck().wallTemperature() = wallTemperature;
+    p.stuck().wallVectors() = wallVectors;
+
+    porousMeas().additionInteraction(p, newParcel);
+
+    addParticle(pPtr);
+}
+
+
 Foam::scalar Foam::dsmcCloud::energyRatio
 (
     scalar ChiA,

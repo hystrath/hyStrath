@@ -616,6 +616,40 @@ public:
                 const labelList& vibLevel
             );
 
+            //- Add new stuck parcel
+            // used to clone stuck particles during evolution of coordinate
+            // system (axisymmetric, spherical)
+            void addNewStuckParcel
+            (
+                const vector& position,
+                const vector& U,
+                const scalar RWF,
+                const scalar ERot,
+                const label ELevel,
+                const label cellI,
+                const label tetFaceI,
+                const label tetPtI,
+                const label typeId,
+                const label newParcel,
+                const label classification,
+                const labelList& vibLevel,
+                // stuck properties of the parent parcel:
+                // wallTemperature:
+                //   [0]: Temperature
+                //   [1]: Patch index
+                //   [2]: Face index
+                //   [3]: Pre-interaction energy (note: this is split across all
+                //        splitted parcels)
+                const scalarField& wallTemperature,
+                // wallVectors:
+                //   [0]: Wall unit tangential vector 1
+                //   [1]: Wall unit tangential vector 2
+                //   [2]: Wall unit normal vector
+                //   [3]: Pre-interaction momentum (note: this is split across
+                //        all splitted parcels)
+                const vectorField& wallVectors
+            );
+
             //- redistribute vibrational energy after a reaction
             scalar energyRatio
             (

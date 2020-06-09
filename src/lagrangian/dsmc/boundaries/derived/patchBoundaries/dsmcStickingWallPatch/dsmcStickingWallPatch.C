@@ -384,7 +384,7 @@ void dsmcStickingWallPatch::measurePropertiesAfterDesorption
         // assumes the wrong RWF. Because this calculation can happen at
         // completely different time steps the parcel RWF might have been up-
         // dated in the mean time. As the parcel might have been cloned in the
-        // mean time (note: the new parcel would then _not_ be adsorbed), we
+        // mean time (note: the new parcel would then also be adsorbed), we
         // have to use the RWF of the impinging parcel in the pre-interaction
         // calculations and the RWF of the leaving parcel in the post-
         // interaction parcels. The heat of reaction is calculated with the

@@ -56,13 +56,15 @@ void Foam::dsmcSpherical::sphericalWeighting()
 
         forAll(molsInCell, mIC)
         {
-            dsmcParcel* p = molsInCell[mIC];
+            dsmcParcel& p = *molsInCell[mIC];
 
-            const scalar oldRadialWeight = p->RWF();
+            const scalar oldRadialWeight = p.RWF();
 
             const scalar newRadialWeight = RWF(c);
 
-            p->RWF() = newRadialWeight;
+            const scalar rwfFactor = newRadialWeight / oldRadialWeight;
+
+            p.RWF() = newRadialWeight;
 
             if (oldRadialWeight > newRadialWeight)
             {
@@ -71,47 +73,134 @@ void Foam::dsmcSpherical::sphericalWeighting()
 
                 while(prob > 1.0)
                 {
-                    //- add a particle and reduce prob by 1.0
-                    vector U = p->U();
+                    // Add a particle and reduce the probability by 1. If a
+                    // stuck (adsorbed) parcel is cloned, the new parcel(s)
+                    // should also be stuck.
+                    if (p.isFree())
+                    {
+                        vector U = p.U();
 
-                    cloud_.addNewParcel
-                    (
-                        p->position(),
-                        U,
-                        p->RWF(),
-                        p->ERot(),
-                        p->ELevel(),
-                        p->cell(),
-                        p->tetFace(),
-                        p->tetPt(),
-                        p->typeId(),
-                        p->newParcel(),
-                        p->classification(),
-                        p->vibLevel()
-                    );
+                        cloud_.addNewParcel
+                        (
+                            p.position(),
+                            U,
+                            p.RWF(),
+                            p.ERot(),
+                            p.ELevel(),
+                            p.cell(),
+                            p.tetFace(),
+                            p.tetPt(),
+                            p.typeId(),
+                            p.newParcel(),
+                            p.classification(),
+                            p.vibLevel()
+                        );
 
-                    prob -= 1.0;
+                        prob -= 1.0;
+                    }
+                    else
+                    {
+                        // this particle is stuck -> cloned particles will also
+                        // be initialized as stuck with the wall properties of
+                        // the parent parcel:
+
+                        scalarField wallTemperature =
+                            p.stuck().wallTemperature();
+                        vectorField wallVectors =
+                            p.stuck().wallVectors();
+
+                        // adjust the pre-interaction energy and momentum to
+                        // the new RWF, factor is [0, 1]:
+                        wallTemperature[3] *= rwfFactor;
+                        wallVectors[3] *= rwfFactor;
+
+                        cloud_.addNewStuckParcel
+                        (
+                            p.position(),
+                            vector::zero,
+                            p.RWF(),
+                            p.ERot(),
+                            p.ELevel(),
+                            p.cell(),
+                            p.tetFace(),
+                            p.tetPt(),
+                            p.typeId(),
+                            p.newParcel(),
+                            p.classification(),
+                            p.vibLevel(),
+                            wallTemperature,
+                            wallVectors
+                        );
+
+                        prob -= 1.0;
+                    }
                 }
-
+                // Add another parcel with probability equal to the remainder
                 if (prob > cloud_.rndGen().sample01<scalar>())
                 {
-                    vector U = p->U();
+                    // If a stuck (adsorbed) parcel is cloned, the new parcel(s)
+                    // should also be stuck.
+                    if (p.isFree())
+                    {
+                        vector U = p.U();
 
-                    cloud_.addNewParcel
-                    (
-                        p->position(),
-                        U,
-                        p->RWF(),
-                        p->ERot(),
-                        p->ELevel(),
-                        p->cell(),
-                        p->tetFace(),
-                        p->tetPt(),
-                        p->typeId(),
-                        p->newParcel(),
-                        p->classification(),
-                        p->vibLevel()
-                    );
+                        cloud_.addNewParcel
+                        (
+                            p.position(),
+                            U,
+                            p.RWF(),
+                            p.ERot(),
+                            p.ELevel(),
+                            p.cell(),
+                            p.tetFace(),
+                            p.tetPt(),
+                            p.typeId(),
+                            p.newParcel(),
+                            p.classification(),
+                            p.vibLevel()
+                        );
+                    }
+                    else
+                    {
+                        // this particle is stuck -> cloned particles will also
+                        // be initialized as stuck with the wall properties of
+                        // the parent parcel:
+
+                        scalarField wallTemperature =
+                            p.stuck().wallTemperature();
+                        vectorField wallVectors =
+                            p.stuck().wallVectors();
+
+                        // adjust the pre-interaction energy and momentum to
+                        // the new RWF, factor is [0, 1]:
+                        wallTemperature[3] *= rwfFactor;
+                        wallVectors[3] *= rwfFactor;
+
+                        cloud_.addNewStuckParcel
+                        (
+                            p.position(),
+                            vector::zero,
+                            p.RWF(),
+                            p.ERot(),
+                            p.ELevel(),
+                            p.cell(),
+                            p.tetFace(),
+                            p.tetPt(),
+                            p.typeId(),
+                            p.newParcel(),
+                            p.classification(),
+                            p.vibLevel(),
+                            wallTemperature,
+                            wallVectors
+                        );
+                    }
+                }
+                // if the original parcel was stuck we also have to adjust its
+                // wall properties:
+                if (p.isStuck())
+                {
+                    p.stuck().wallTemperature()[3] *= rwfFactor;
+                    p.stuck().wallVectors()[3] *= rwfFactor;
                 }
             }
             else if (newRadialWeight > oldRadialWeight)
@@ -119,7 +208,7 @@ void Foam::dsmcSpherical::sphericalWeighting()
                 //- particle might be deleted
                 if ((oldRadialWeight/newRadialWeight) < cloud_.rndGen().sample01<scalar>())
                 {
-                    cloud_.deleteParticle(*p);
+                    cloud_.deleteParticle(p);
                 }
             }
         }
