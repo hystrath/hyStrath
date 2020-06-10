@@ -217,6 +217,9 @@ private:
         //- Record which particles are in which cell
         void buildCellOccupancy();
 
+        //- When mesh changed, relocate the patch/face of stuck parcels
+        void relocateStuckParcels();
+
         //- When mesh has changed, changed the size of cellOccupancy_
         void buildCellOccupancyFromScratch();
 
