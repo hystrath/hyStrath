@@ -257,7 +257,7 @@ void noTimeCounterAdaptiveSubcelling::collide()
 
             scalar selectedPairs =
                 cloud_.collisionSelectionRemainder()[cellI]
-                + 0.5*nC*(nC - 1)*cloud_.nParticles(cellI, true)*sigmaTcRMax*deltaT
+                + 0.5*nC*(nC - 1)*cloud_.nParticles(cellI)*sigmaTcRMax*deltaT
                 /mesh.cellVolumes()[cellI];
 
             label nCandidates(selectedPairs);

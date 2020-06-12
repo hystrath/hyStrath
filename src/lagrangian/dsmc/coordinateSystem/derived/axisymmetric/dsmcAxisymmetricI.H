@@ -53,27 +53,7 @@ inline const volScalarField& dsmcAxisymmetric::nParticles() const
 }
 
 
-inline scalar dsmcAxisymmetric::nParticles
-(
-    const label celli,
-    const bool mixedRWMethod
-) const
-{
-    return timeStepModel_().nParticles(celli)*RWF(celli, mixedRWMethod);
-}
-
-
-inline scalar dsmcAxisymmetric::nParticles
-(
-    const label patchi,
-    const label facei
-) const
-{
-    return timeStepModel_().nParticles(patchi, facei)*pRWF(patchi, facei);
-}
-
-
-inline scalar dsmcAxisymmetric::nParticles(const label celli)
+inline scalar dsmcAxisymmetric::nParticles(const label celli) const
 {
     return timeStepModel_().nParticles(celli)*RWF(celli);
 }
@@ -83,23 +63,14 @@ inline scalar dsmcAxisymmetric::nParticles
 (
     const label patchi,
     const label facei
-)
+) const
 {
     return timeStepModel_().nParticles(patchi, facei)*pRWF(patchi, facei);
 }
 
 
-inline scalar dsmcAxisymmetric::RWF
-(
-    const label celli,
-    const bool mixedRWMethod
-) const
+inline scalar dsmcAxisymmetric::RWF(const label celli) const
 {
-    if (rWMethod_ == "mixed" and mixedRWMethod)
-    {
-        return recalculateRWF(celli, mixedRWMethod);
-    }
-
     return RWF_[celli];
 }
 

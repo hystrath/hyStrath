@@ -140,7 +140,10 @@ void dsmcSpherical::updateRWF()
 
         forAll(pRWF, facei)
         {
-            pRWF[facei] = recalculatepRWF(patchi, facei);
+            const label celli =
+                mesh_.boundaryMesh()[patchi].faceCells()[facei];
+
+            pRWF[facei] = RWF_[celli];
         }
     }
 }
@@ -202,20 +205,13 @@ void dsmcSpherical::checkCoordinateSystemInputs(const bool init)
     rWMethod_ = cloud_.particleProperties().subDict("sphericalProperties")
         .lookupOrDefault<word>("radialWeightingMethod", "cell");
 
-    if
-    (
-        rWMethod_ != "cell" and rWMethod_ != "particle"
-            and rWMethod_ != "mixed"
-    )
+    if (rWMethod_ != "cell" and rWMethod_ != "particleAverage")
     {
-        FatalErrorIn
-        (
-            "dsmcSpherical::checkCoordinateSystemInputs(const bool init)"
-        )
-        << "The radial weighting method is badly defined. Choices "
-           "in constant/dsmcProperties are cell, particle, or "
-           "mixed. Please edit the entry: radialWeightingMethod"
-        << exit(FatalError);
+        FatalErrorInFunction
+            << "The radial weighting method is badly defined. Choices in "
+            << "constant/dsmcProperties are \"cell\" or \"particleAverage\". "
+            << "Please edit the entry: radialWeightingMethod."
+            << exit(FatalError);
     }
 
     maxRWF_ = readScalar
@@ -245,12 +241,13 @@ void dsmcSpherical::checkCoordinateSystemInputs(const bool init)
 
     if (init)
     {
-        // "particle" cannot be used in dsmcInitialise, "cell" is thus employed
+        // "particleAverage" cannot be used in dsmcInitialise, "cell" is thus
+        // employed
         rWMethod_ = "cell";
     }
     else
     {
-        if (rWMethod_ != "particle")
+        if (rWMethod_ != "particleAverage")
         {
             updateRWF();
         }
@@ -260,7 +257,7 @@ void dsmcSpherical::checkCoordinateSystemInputs(const bool init)
 
 void dsmcSpherical::evolve()
 {
-    if (rWMethod_ == "particle")
+    if (rWMethod_ == "particleAverage")
     {
         updateRWF();
     }
@@ -270,34 +267,11 @@ void dsmcSpherical::evolve()
 }
 
 
-scalar dsmcSpherical::recalculatepRWF
-(
-    const label patchI,
-    const label faceI
-) const
-{
-    const point& fC = mesh_.boundaryMesh()[patchI].faceCentres()[faceI];
-    const scalar radius =
-        sqrt
-        (
-            sqr(fC.x() - origin_.x())
-          + sqr(fC.y() - origin_.y())
-          + sqr(fC.z() - origin_.z())
-        );
-
-    return 1.0 + (maxRWF() - 1.0)*sqr(radius/radialExtent());
-}
-
-
-scalar dsmcSpherical::recalculateRWF
-(
-    const label cellI,
-    const bool mixedRWMethod
-) const
+scalar dsmcSpherical::recalculateRWF(const label cellI) const
 {
     scalar RWF = 1.0;
 
-    if (rWMethod_ == "particle" or (mixedRWMethod and rWMethod_ == "mixed"))
+    if (rWMethod_ == "particleAverage")
     {
         const DynamicList<dsmcParcel*>& cellParcels(cloud_.cellOccupancy()[cellI]);
 

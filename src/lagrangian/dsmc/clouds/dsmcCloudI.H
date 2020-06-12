@@ -73,13 +73,9 @@ inline const Foam::volScalarField& Foam::dsmcCloud::nParticles() const
 }
 
 
-inline Foam::scalar Foam::dsmcCloud::nParticles
-(
-    const label celli,
-    const bool mixedRWMethod
-) const
+inline Foam::scalar Foam::dsmcCloud::nParticles(const label celli) const
 {
-    return coordSystem().nParticles(celli, mixedRWMethod);
+    return coordSystem().nParticles(celli);
 }
 
 

@@ -331,14 +331,7 @@ public:
 
         //- Return the number of real particles represented by one parcel for
         //  a given cell
-        //  Locally in the code, the radialWeightingMethod (RWM) can be
-        //  changed from "cell"- to "particle"-based if rWMethod is set to
-        //  mixed and the method call uses mixedRWM = true (e.g., nTC)
-        inline scalar nParticles
-        (
-            const label celli,
-            const bool mixedRWMethod = false
-        ) const;
+        inline scalar nParticles(const label celli) const;
 
         //- Return the number of real particles represented by one parcel for
         //  a given patch/face couple
