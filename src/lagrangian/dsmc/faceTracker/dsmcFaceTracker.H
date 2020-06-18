@@ -64,12 +64,7 @@ class dsmcFaceTracker
         List<scalarField> parcelIdFlux_;
         List<scalarField> massIdFlux_;
 
-
-
-
     // Private Member Functions
-
-
 
 public:
 
