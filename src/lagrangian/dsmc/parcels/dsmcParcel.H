@@ -1369,6 +1369,9 @@ public:
                 trackingData& td
             );
 
+
+        // Particle properties
+
             //- Transform the physical properties of the particle
             //  according to the given transformation tensor
             void transformProperties(const tensor& T);
@@ -1376,6 +1379,15 @@ public:
             //- Transform the physical properties of the particle
             //  according to the given separation vector
             void transformProperties(const vector& separation);
+
+            //- Relocate a stuck parcel
+            //  This is necessary after the mesh changed. In parallel the mesh
+            //  on each processor also changes after dynamic load balancing.
+            //  After such a change the saved patch and patch face of a stuck
+            //  parcel will not be valid anymore. This function finds the patch
+            //  and face in the new mesh. Returns true if a new patch/face was
+            //  found and allocated, false otherwise.
+            bool relocateStuckParcel(const polyMesh& mesh);
 
 
         // I-O

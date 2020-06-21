@@ -73,6 +73,22 @@ void Foam::dsmcCloud::buildCellOccupancy()
     }
 }
 
+void Foam::dsmcCloud::relocateStuckParcels()
+{
+    forAllIter(dsmcCloud, *this, iter)
+    {
+        if (iter().isStuck())
+        {
+            bool success = iter().relocateStuckParcel(mesh_);
+            if (!success)
+            {
+                FatalErrorInFunction
+                    << "Could not relocate stuck parcel!"
+                    << exit(FatalError);
+            }
+        }
+    }
+}
 
 void Foam::dsmcCloud::buildCellOccupancyFromScratch()
 {
@@ -80,6 +96,7 @@ void Foam::dsmcCloud::buildCellOccupancyFromScratch()
     cellOccupancy_.setSize(mesh_.nCells());
 
     buildCellOccupancy();
+    relocateStuckParcels();
 }
 
 void Foam::dsmcCloud::buildCollisionSelectionRemainderFromScratch()

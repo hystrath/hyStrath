@@ -219,6 +219,67 @@ void Foam::dsmcParcel::transformProperties
     particle::transformProperties(separation);
 }
 
+bool Foam::dsmcParcel::relocateStuckParcel
+(
+    const polyMesh& mesh
+)
+{
+    const polyBoundaryMesh& bMesh = mesh.boundaryMesh();
+
+    // find the closest patch and patch face indices, as this is the patch/face
+    // on which this parcel is stuck.
+    scalar closestFaceDistance = GREAT;
+    label closestPatchi = -1;
+    label closestPatchFacei = -1;
+
+    forAll(mesh.cells()[cell()], i)
+    {
+        const label facei = mesh.cells()[cell()][i];
+
+        // find corresponding boundary patch
+        const label patchi = bMesh.whichPatch(facei);
+
+        if (patchi != -1)
+        {
+            // this is a boundary patch, i.e. a potential candidate for the
+            // patch to which parcel is stuck.
+            const polyPatch& wpp = bMesh[patchi];
+
+            // patch face index:
+            const label patchFacei = wpp.whichFace(facei);
+
+            // calculate distance between parcel position and this patch face:
+            pointHit pHit
+            (
+                wpp[patchFacei].nearestPoint(position(), wpp.points())
+            );
+
+            if (pHit.hit())
+            {
+                const scalar distance = pHit.distance();
+                if (distance < closestFaceDistance)
+                {
+                    // found new closest patch face
+                    closestFaceDistance = distance;
+                    closestPatchi = patchi;
+                    closestPatchFacei = patchFacei;
+                }
+            }
+        }
+    }
+
+    // did we find a closest patch face?
+    if (closestPatchi != -1)
+    {
+        // yes, reset stuck parcel information to this patch face
+        stuck().wallTemperature()[1] = closestPatchi;
+        stuck().wallTemperature()[2] = closestPatchFacei;
+        return true;
+    }
+    // no, indicates fatal error
+    return false;
+}
+
 
 // * * * * * * * * * * * * * * * *  IOStream operators * * * * * * * * * * * //
 
