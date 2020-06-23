@@ -74,7 +74,20 @@ dsmcDynamicLoadBalancing::dsmcDynamicLoadBalancing
     maxImbalance_(readScalar
     (
         dsmcLoadBalanceDict_.lookup("maximumAllowableImbalance")
-    ))
+    )),
+    // allow specifying a limit for the number of time directories that will be
+    // backuped up in the resultFolders directory.
+    //  - -1 (default): backup all time directories
+    //  - N >= 0: backup the N most recent time directories and delete oldest
+    //            directories in case the limit is exceeded.
+    limitTimeDirBackups_
+    (
+        dsmcLoadBalanceDict_.lookupOrDefault<label>
+        (
+            "limitTimeDirBackups",
+            -1
+        )
+    )
 {}
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
@@ -180,13 +193,51 @@ void dsmcDynamicLoadBalancing::perform(const int noRefinement)
                 + word("fi");
             Foam::system(decomposePar);
 
-            // Backup folders must be stored in resultFolders and moved back
-            // when the simulation finishes
+            // backup time dirs must be stored in resultFolders to prevent them
+            // from being cleared. They can be moved back when the simulation
+            // has finished.
             mkDir("resultFolders");
-            Foam::system
-            (
-                "timeDirs=`foamListTimes`; mv $timeDirs resultFolders/"
-            );
+
+            // respect the specified limit of max. concurrent time dir backups
+            if (limitTimeDirBackups_ >= 0)
+            {
+                // impose the limit by moving back the time dirs that are
+                // currently already backuped up and then only keeping the
+                // most recent time dirs <= the imposed limit.
+                const word backupTimeDirsWithLimit =
+                    // move the time dirs currently backed up to the case dir
+                    // so the foamListTimes utility can be used
+                    word("mv resultFolders/* .;")
+                    // total number of time directories
+                    + word("timeDirs=`foamListTimes`;")
+                    + word("nTimeDirs=$(echo $timeDirs | tr -cd ' ' | wc -c);")
+                    + word("$((nTimeDirs=nTimeDirs+1));")
+                    // convert OpenFOAM label to shell variable for limit
+                    + word("limitNTimeDirs=")
+                    + name(limitTimeDirBackups_)
+                    + word(";")
+                    // if the total number of time directories is larger than
+                    // limit remove the oldest time directories first
+                    + word("diffNTimeDirs=$((nTimeDirs-limitNTimeDirs));")
+                    + word("if [ $diffNTimeDirs -gt 0 ];")
+                    + word("then timeDirs=$(echo $timeDirs | ")
+                    + word("cut -d ' ' -f$((diffNTimeDirs+1))-$nTimeDirs);")
+                    + word("fi;")
+                    // move the time dirs that were chosen to be eligible for
+                    // backup to the backup dir
+                    + word("mv $timeDirs resultFolders/;")
+                    // clear all other time dirs
+                    + word("foamListTimes -rm");
+                Foam::system(backupTimeDirsWithLimit);
+            }
+            else
+            {
+                // keep all time dirs in the backup dir
+                Foam::system
+                (
+                    "timeDirs=`foamListTimes`; mv $timeDirs resultFolders/"
+                );
+            }
 
             performBalance_ = false;
         }
@@ -201,6 +252,11 @@ void dsmcDynamicLoadBalancing::updateProperties()
     maxImbalance_ = readScalar
     (
         dsmcLoadBalanceDict_.lookup("maximumAllowableImbalance")
+    );
+    limitTimeDirBackups_ = dsmcLoadBalanceDict_.lookupOrDefault<label>
+    (
+        "limitTimeDirBackups",
+        -1
     );
 }
 

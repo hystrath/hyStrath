@@ -70,6 +70,8 @@ class dsmcDynamicLoadBalancing
 
         bool enableBalancing_;
 
+        label limitTimeDirBackups_;
+
         scalar originalEndTime_;
 
         scalar maxImbalance_;
