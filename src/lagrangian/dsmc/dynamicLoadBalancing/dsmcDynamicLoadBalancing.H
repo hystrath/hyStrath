@@ -66,8 +66,6 @@ class dsmcDynamicLoadBalancing
 
         IOdictionary dsmcLoadBalanceDict_;
 
-        //IOdictionary controlDict_;
-
         bool performBalance_;
 
         bool enableBalancing_;
@@ -76,10 +74,7 @@ class dsmcDynamicLoadBalancing
 
         scalar maxImbalance_;
 
-//         label nProcs_;
-
     // Private Member Functions
-
 
 
 public:
@@ -112,7 +107,7 @@ public:
         void copyPolyMeshToLatestTimeFolder() const;
 
 
-        void updateProperties(/*const IOdictionary&*/);
+        void updateProperties();
 
         // Access
 
@@ -146,7 +141,6 @@ public:
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-//#include "dsmcDynamicLoadBalancingI.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
