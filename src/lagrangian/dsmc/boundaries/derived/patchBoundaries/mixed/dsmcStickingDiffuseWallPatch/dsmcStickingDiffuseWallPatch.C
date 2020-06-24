@@ -156,10 +156,10 @@ void dsmcStickingDiffuseWallPatch::controlParticle
     }
 
     //- Update the boundaryMeasurement relative to this sticking patch
-    cloud_.boundaryFluxMeasurements().updatenStuckParcelOnPatch
+    cloud_.boundaryFluxMeasurements().updatenStuckParticlesOnPatch
     (
         patchId(),
-        nStuckParcels_
+        nStuckParticles_
     );
 }
 

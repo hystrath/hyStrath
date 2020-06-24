@@ -427,6 +427,53 @@ void Foam::dsmcCloud::addNewParcel
 }
 
 
+void Foam::dsmcCloud::addNewStuckParcel
+(
+    const vector& position,
+    const vector& U,
+    const scalar RWF,
+    const scalar ERot,
+    const label ELevel,
+    const label cellI,
+    const label tetFaceI,
+    const label tetPtI,
+    const label typeId,
+    const label newParcel,
+    const label classification,
+    const labelList& vibLevel,
+    const scalarField& wallTemperature,
+    const vectorField& wallVectors
+)
+{
+    dsmcParcel* pPtr = new dsmcParcel
+    (
+        mesh_,
+        position,
+        U,
+        RWF,
+        ERot,
+        ELevel,
+        cellI,
+        tetFaceI,
+        tetPtI,
+        typeId,
+        newParcel,
+        classification,
+        vibLevel
+    );
+
+    // set parcel stuck
+    dsmcParcel& p = *pPtr;
+    p.setStuck();
+    p.stuck().wallTemperature() = wallTemperature;
+    p.stuck().wallVectors() = wallVectors;
+
+    porousMeas().additionInteraction(p, newParcel);
+
+    addParticle(pPtr);
+}
+
+
 Foam::scalar Foam::dsmcCloud::energyRatio
 (
     scalar ChiA,
@@ -780,6 +827,19 @@ void Foam::dsmcCloud::evolve_moveAndCollide()
     }
 
     //- Move the particles ballistically with their current velocities
+    // Note: The parcels radial weighting factor (RWF) will stay constant over
+    // the _entire_ move step. It will be updated by coordSystem().evolve (see
+    // below). Any function that operates on the parcel in between has to
+    // consider this. This is especially relevant for boundary measurements
+    // that are performed when a parcel hits a wall during the move step.
+    // Consider the following situation:
+    //  1. parcel starts in cell = x
+    //  2. parcel is moved to cell = y
+    //  3. parcel hits a wall face y1 that belongs to cell = y. This hit now has
+    //     to be counted with the RWF that the parcel had at the beginning of
+    //     its move step, i.e. RWF(cell = x), _neither_ RWF(cell = y) _nor_
+    //     RWF(face = y1)
+
     //scalar timer = mesh_.time().elapsedCpuTime();
     Cloud<dsmcParcel>::move(td, deltaTValue());
     //Info<< "move" << tab << mesh_.time().elapsedCpuTime() - timer << " s" << endl;
@@ -797,7 +857,9 @@ void Foam::dsmcCloud::evolve_moveAndCollide()
         buildCellOccupancy();
     }
 
-    //- Radial weighting for non-Cartesian flows (e.g., axisymmetric)
+    //- Radial weighting for non-Cartesian flows (e.g., axisymmetric). This is
+    // where parcels will receive their new RWF and will possibly be cloned or
+    // deleted.
     coordSystem().evolve();
 
     controllers_.controlBeforeCollisions();

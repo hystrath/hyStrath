@@ -636,8 +636,6 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsAfterCollisions
             )
             /(2.0*sqrtPi*cloud_.nParticles(patchId_, f));   */
 
-            //const scalar& RWF = cloud_.coordSystem().pRWF(patchId_, f);
-
             accumulatedParcelsToInsert_[iD][f] +=
             moleFractions_[iD][f]*
             (

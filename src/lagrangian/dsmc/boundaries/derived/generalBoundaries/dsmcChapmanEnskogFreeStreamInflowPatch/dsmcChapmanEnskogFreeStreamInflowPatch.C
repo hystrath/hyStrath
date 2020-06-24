@@ -137,7 +137,6 @@ void dsmcChapmanEnskogFreeStreamInflowPatch::controlParcelsBeforeMove()
 
             scalar sCosTheta = (velocity_ & -sF/fA )/mostProbableSpeed;
 
-            //const scalar& RWF = cloud_.coordSystem().pRWF();
             // From Bird eqn 4.22
             accumulatedParcelsToInsert_[i][f] += fA*numberDensities_[i]
                 *deltaT*mostProbableSpeed

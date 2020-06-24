@@ -101,37 +101,36 @@ void dsmcAbsorbingWallPatch::setProperties()
     forAll(saturationLimit_, facei)
     {
         saturationLimit_[facei] =
-            saturationLimitPerSquareMeters*facesArea[facei]
-           /cloud_.nParticles(patchId(), facei);
+            saturationLimitPerSquareMeters*facesArea[facei];
     }
 }
 
 
 void dsmcAbsorbingWallPatch::readPatchField()
 {
-    tmp<volScalarField> tnAbsorbedParcels
+    tmp<volScalarField> tnAbsorbedParticles
     (
         new volScalarField
         (
             IOobject
             (
-                "nAbsorbedParcels",
+                "nAbsorbedParticles",
                 mesh_.time().timeName(),
                 mesh_,
                 IOobject::READ_IF_PRESENT,
                 IOobject::NO_WRITE
             ),
             mesh_,
-            dimensionedScalar("nAbsorbedParcels", dimless, 0.0)
+            dimensionedScalar("nAbsorbedParticles", dimless, 0.0)
         )
     );
 
-    volScalarField& nAbsorbedParcels = tnAbsorbedParcels.ref();
+    volScalarField& nAbsorbedParticles = tnAbsorbedParticles.ref();
 
-    cloud_.boundaryFluxMeasurements().setBoundarynAbsorbedParcels
+    cloud_.boundaryFluxMeasurements().setBoundarynAbsorbedParticles
     (
         patchId(),
-        nAbsorbedParcels.boundaryField()[patchId()]
+        nAbsorbedParticles.boundaryField()[patchId()]
     );
 }
 
@@ -145,7 +144,7 @@ bool dsmcAbsorbingWallPatch::isNotSaturated
     if
     (
         saturationLimit(facei) - cloud_.boundaryFluxMeasurements()
-            .pnAbsorbedParcels(patchi)[facei] > 1e-6
+            .pnAbsorbedParticles(patchi)[facei] > 1e-6
     )
     {
         return true;
@@ -157,19 +156,28 @@ bool dsmcAbsorbingWallPatch::isNotSaturated
 
 void dsmcAbsorbingWallPatch::absorbParticle
 (
-    const label patchi,
-    const label facei,
+    dsmcParcel& p,
     dsmcParcel::trackingData& td
 )
 {
-    //- Delete particle
+    // Particle location on patch / face
+    const label wppIndex = patchId();
+    const label wppLocalFace =
+        mesh_.boundaryMesh()[wppIndex].whichFace(p.face());
+
+    // Calculate the real number of particles that this parcel represented
+    const scalar nAbsorbedParticles = p.RWF() * cloud_.coordSystem().dtModel()
+        .nParticles(wppIndex, wppLocalFace);
+
+    // Delete parcel
     td.keepParticle = false;
 
-    //- Update the boundaryMeasurement relative to this absorbing patch
-    cloud_.boundaryFluxMeasurements().updatenAbsorbedParcelOnPatch
+    // Update the boundaryMeasurement relative to this absorbing patch
+    cloud_.boundaryFluxMeasurements().updatenAbsorbedParticlesOnPatch
     (
-        patchi,
-        facei
+        wppIndex,
+        wppLocalFace,
+        nAbsorbedParticles
     );
 }
 
@@ -199,7 +207,7 @@ void dsmcAbsorbingWallPatch::testParticleForAbsorption
         )
         {
             //- absorb particle
-            absorbParticle(wppIndex, wppLocalFace, td);
+            absorbParticle(p, td);
         }
     }
 }

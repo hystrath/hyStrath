@@ -666,8 +666,6 @@ void dsmcLiouFangPressureOutletSpecifiedMolarFraction::controlParcelsAfterCollis
 
             scalar sCosTheta = (outletVelocity_[f] & -sF/fA )/mostProbableSpeed;
 
-            //const scalar& RWF = cloud_.coordSystem().pRWF();
-
             // From Bird eqn 4.22
             accumulatedParcelsToInsert_[iD][f] +=
                 moleFractions_[iD]*

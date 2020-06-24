@@ -319,7 +319,7 @@ void dsmcYePressureOutletCalculatedMolarFraction::controlParcelsBeforeMove()
 
                 label newParcel = patchId();
 
-                const scalar& RWF = cloud_.coordSystem().recalculateRWF(cellI);
+                const scalar& RWF = cloud_.coordSystem().RWF(cellI);
 
                 cloud_.addNewParcel
                 (
@@ -618,8 +618,6 @@ void dsmcYePressureOutletCalculatedMolarFraction::controlParcelsAfterCollisions(
             // molecularSpeedRatio * cosTheta
 
             scalar sCosTheta = (outletVelocity_[f] & -sF/fA )/mostProbableSpeed;
-
-            //const scalar& RWF = cloud_.coordSystem().pRWF(patchId_, f);
 
             // From Bird eqn 4.22
             accumulatedParcelsToInsert_[iD][f] +=

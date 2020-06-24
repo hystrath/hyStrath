@@ -40,57 +40,57 @@ namespace Foam
 {
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
-void boundaryMeasurements::writenStuckParcels()
+void boundaryMeasurements::writenStuckParticles()
 {
-    tmp<volScalarField> tnStuckParcels
+    tmp<volScalarField> tnStuckParticles
     (
         new volScalarField
         (
             IOobject
             (
-                "nStuckParcels",
+                "nStuckParticles",
                 mesh_.time().timeName(),
                 mesh_,
                 IOobject::NO_READ,
                 IOobject::NO_WRITE
             ),
             mesh_,
-            dimensionedScalar("nStuckParcels", dimless, 0.0)
+            dimensionedScalar("nStuckParticles", dimless, 0.0)
         )
     );
 
-    volScalarField& nStuckParcels = tnStuckParcels.ref();
+    volScalarField& nStuckParticles = tnStuckParticles.ref();
 
-    nStuckParcels.boundaryFieldRef() = nParcelsOnStickingBoundaries_;
+    nStuckParticles.boundaryFieldRef() = nParticlesOnStickingBoundaries_;
 
-    nStuckParcels.write();
+    nStuckParticles.write();
 }
 
 
-void boundaryMeasurements::writenAbsorbedParcels()
+void boundaryMeasurements::writenAbsorbedParticles()
 {
-    tmp<volScalarField> tnAbsorbedParcels
+    tmp<volScalarField> tnAbsorbedParticles
     (
         new volScalarField
         (
             IOobject
             (
-                "nAbsorbedParcels",
+                "nAbsorbedParticles",
                 mesh_.time().timeName(),
                 mesh_,
                 IOobject::NO_READ,
                 IOobject::NO_WRITE
             ),
             mesh_,
-            dimensionedScalar("nAbsorbedParcels", dimless, 0.0)
+            dimensionedScalar("nAbsorbedParticles", dimless, 0.0)
         )
     );
 
-    volScalarField& nAbsorbedParcels = tnAbsorbedParcels.ref();
+    volScalarField& nAbsorbedParticles = tnAbsorbedParticles.ref();
 
-    nAbsorbedParcels.boundaryFieldRef() = nAbsorbedParcels_;
+    nAbsorbedParticles.boundaryFieldRef() = nAbsorbedParticles_;
 
-    nAbsorbedParcels.write();
+    nAbsorbedParticles.write();
 }
 
 
@@ -157,13 +157,13 @@ boundaryMeasurements::boundaryMeasurements
 :
     mesh_(refCast<const fvMesh>(mesh)),
     cloud_(cloud),
-    nParcelsOnStickingBoundaries_
+    nParticlesOnStickingBoundaries_
     (
         mesh_.boundary(),
         mesh_.V(),
         calculatedFvPatchScalarField::typeName
     ),
-    nAbsorbedParcels_
+    nAbsorbedParticles_
     (
         mesh_.boundary(),
         mesh_.V(),
@@ -210,13 +210,13 @@ boundaryMeasurements::boundaryMeasurements
     qBF_(),
     fDBF_(),
     evmsBF_(),
-    nParcelsOnStickingBoundaries_
+    nParticlesOnStickingBoundaries_
     (
         mesh_.boundary(),
         mesh_.V(),
         calculatedFvPatchScalarField::typeName
     ),
-    nAbsorbedParcels_
+    nAbsorbedParticles_
     (
         mesh_.boundary(),
         mesh_.V(),
@@ -245,27 +245,28 @@ boundaryMeasurements::~boundaryMeasurements()
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-void boundaryMeasurements::updatenStuckParcelOnPatch
+void boundaryMeasurements::updatenStuckParticlesOnPatch
 (
     const label patchi,
-    const scalarList& pnStuckParcels
+    const scalarList& pnStuckParticles
 )
 {
-    forAll(pnStuckParcels, facei)
+    forAll(pnStuckParticles, facei)
     {
-        nParcelsOnStickingBoundaries_[patchi][facei] =
-            pnStuckParcels[facei];
+        nParticlesOnStickingBoundaries_[patchi][facei] =
+            pnStuckParticles[facei];
     }
 }
 
 
-void boundaryMeasurements::updatenAbsorbedParcelOnPatch
+void boundaryMeasurements::updatenAbsorbedParticlesOnPatch
 (
     const label patchi,
-    const label facei
+    const label facei,
+    const scalar nAbsorbedParticles
 )
 {
-    nAbsorbedParcels_[patchi][facei]++;
+    nAbsorbedParticles_[patchi][facei] += nAbsorbedParticles;
 }
 
 
@@ -295,28 +296,28 @@ void boundaryMeasurements::setBoundaryU
 }
 
 
-void boundaryMeasurements::setBoundarynStuckParcels
+void boundaryMeasurements::setBoundarynStuckParticles
 (
     const label patchi,
-    const scalarList& pnStuckParcels
+    const scalarList& pnStuckParticles
 )
 {
-    forAll(pnStuckParcels, facei)
+    forAll(pnStuckParticles, facei)
     {
-        nParcelsOnStickingBoundaries_[patchi][facei] = pnStuckParcels[facei];
+        nParticlesOnStickingBoundaries_[patchi][facei] = pnStuckParticles[facei];
     }
 }
 
 
-void boundaryMeasurements::setBoundarynAbsorbedParcels
+void boundaryMeasurements::setBoundarynAbsorbedParticles
 (
     const label patchi,
-    const scalarList& pnAbsorbedParcels
+    const scalarList& pnAbsorbedParticles
 )
 {
-    forAll(pnAbsorbedParcels, facei)
+    forAll(pnAbsorbedParticles, facei)
     {
-        nAbsorbedParcels_[patchi][facei] = pnAbsorbedParcels[facei];
+        nAbsorbedParticles_[patchi][facei] = pnAbsorbedParticles[facei];
     }
 }
 
@@ -327,12 +328,12 @@ void boundaryMeasurements::outputResults()
     {
         if(cloud_.boundaries().isAStickingPatch())
         {
-            writenStuckParcels();
+            writenStuckParticles();
         }
 
         if(cloud_.boundaries().isAAbsorbingPatch())
         {
-            writenAbsorbedParcels();
+            writenAbsorbedParticles();
         }
 
         if(cloud_.boundaries().isAFieldPatch())
@@ -386,11 +387,11 @@ void boundaryMeasurements::clean()
         }
     }
 
-    forAll(nParcelsOnStickingBoundaries_, patchi)
+    forAll(nParticlesOnStickingBoundaries_, patchi)
     {
-        forAll(nParcelsOnStickingBoundaries_[patchi], facei)
+        forAll(nParticlesOnStickingBoundaries_[patchi], facei)
         {
-            nParcelsOnStickingBoundaries_[patchi][facei] = 0.0;
+            nParticlesOnStickingBoundaries_[patchi][facei] = 0.0;
         }
     }
 }
@@ -471,12 +472,12 @@ void boundaryMeasurements::reset()
         }
     }
 
-    forAll(nParcelsOnStickingBoundaries_, patchi)
+    forAll(nParticlesOnStickingBoundaries_, patchi)
     {
-        forAll(nParcelsOnStickingBoundaries_[patchi], facei)
+        forAll(nParticlesOnStickingBoundaries_[patchi], facei)
         {
-            nParcelsOnStickingBoundaries_[patchi][facei] = 0.0;
-            nAbsorbedParcels_[patchi][facei] = 0.0;
+            nParticlesOnStickingBoundaries_[patchi][facei] = 0.0;
+            nAbsorbedParticles_[patchi][facei] = 0.0;
             boundaryT_[patchi][facei] = 0.0;
             boundaryU_[patchi][facei] = vector::zero;
         }

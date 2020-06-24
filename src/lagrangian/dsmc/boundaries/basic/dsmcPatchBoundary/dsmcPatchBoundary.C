@@ -285,65 +285,68 @@ void dsmcPatchBoundary::measurePropertiesBeforeControl(dsmcParcel& p)
 
         const vector& Ut = p.U() - U_dot_nw*nw;
 
-        const scalar invMagUnfADt = 1.0/max(mag(U_dot_nw)*fA*deltaT, SMALL);
+        const scalar rwfDivMagUnfADt =
+            p.RWF()/max(mag(U_dot_nw)*fA*deltaT, SMALL);
 
         //- Update boundary flux measurements
         cloud_.boundaryFluxMeasurements()
-            .rhoNBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfADt;
+            .rhoNBF()[p.typeId()][wppIndex][wppLocalFace] += rwfDivMagUnfADt;
 
         if(constProps.rotationalDegreesOfFreedom() > 0)
         {
-           cloud_.boundaryFluxMeasurements()
-              .rhoNIntBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfADt;
+            cloud_.boundaryFluxMeasurements()
+                .rhoNIntBF()[p.typeId()][wppIndex][wppLocalFace] +=
+                    rwfDivMagUnfADt;
         }
 
         if(constProps.nElectronicLevels() > 1)
         {
-           cloud_.boundaryFluxMeasurements()
-              .rhoNElecBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfADt;
+            cloud_.boundaryFluxMeasurements()
+                .rhoNElecBF()[p.typeId()][wppIndex][wppLocalFace] +=
+                    rwfDivMagUnfADt;
         }
 
         cloud_.boundaryFluxMeasurements()
-            .rhoMBF()[p.typeId()][wppIndex][wppLocalFace] += m*invMagUnfADt;
+            .rhoMBF()[p.typeId()][wppIndex][wppLocalFace] += m*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
             .linearKEBF()[p.typeId()][wppIndex][wppLocalFace] +=
-                0.5*m*(p.U() & p.U())*invMagUnfADt;
+                0.5*m*(p.U() & p.U())*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
             .mccSpeciesBF()[p.typeId()][wppIndex][wppLocalFace] +=
-                m*(p.U() & p.U())*invMagUnfADt;
+                m*(p.U() & p.U())*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
             .momentumBF()[p.typeId()][wppIndex][wppLocalFace] +=
-                m*Ut*invMagUnfADt;
+                m*Ut*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
             .rotationalEBF()[p.typeId()][wppIndex][wppLocalFace] +=
-                p.ERot()*invMagUnfADt;
+                p.ERot()*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
             .rotationalDofBF()[p.typeId()][wppIndex][wppLocalFace] +=
-                constProps.rotationalDegreesOfFreedom()*invMagUnfADt;
+                constProps.rotationalDegreesOfFreedom()*rwfDivMagUnfADt;
 
         const scalar EVibP_tot = constProps.eVib_tot(p.vibLevel());
 
         cloud_.boundaryFluxMeasurements()
             .vibrationalEBF()[p.typeId()][wppIndex][wppLocalFace] +=
-                EVibP_tot*invMagUnfADt;
+                EVibP_tot*rwfDivMagUnfADt;
 
         forAll(p.vibLevel(), mode)
         {
             cloud_.boundaryFluxMeasurements()
                 .evmsBF()[p.typeId()][mode][wppIndex][wppLocalFace] +=
                     constProps.eVib_m(mode, p.vibLevel()[mode])
-                   *invMagUnfADt;
+                    * rwfDivMagUnfADt;
         }
 
         cloud_.boundaryFluxMeasurements()
             .electronicEBF()[p.typeId()][wppIndex][wppLocalFace] +=
                 constProps.electronicEnergyList()[p.ELevel()]
-              * invMagUnfADt;
+                * rwfDivMagUnfADt;
 
         //- pre-interaction energy
         preIE_ = 0.5*m*(p.U() & p.U()) + p.ERot() + EVibP_tot
@@ -382,64 +385,67 @@ void dsmcPatchBoundary::measurePropertiesAfterControl
 
         const vector Ut = p.U() - U_dot_nw*nw;
 
-        const scalar invMagUnfADt = 1.0/max(mag(U_dot_nw)*fA*deltaT, SMALL);
+        const scalar rwfDivMagUnfADt =
+            p.RWF()/max(mag(U_dot_nw)*fA*deltaT, SMALL);
 
         //- Update boundary flux measurements
         cloud_.boundaryFluxMeasurements()
-            .rhoNBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfADt;
+            .rhoNBF()[p.typeId()][wppIndex][wppLocalFace] += rwfDivMagUnfADt;
 
         if(constProps.rotationalDegreesOfFreedom() > 0)
         {
-           cloud_.boundaryFluxMeasurements()
-              .rhoNIntBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfADt;
+            cloud_.boundaryFluxMeasurements()
+                .rhoNIntBF()[p.typeId()][wppIndex][wppLocalFace]
+                    += rwfDivMagUnfADt;
         }
 
         if(constProps.nElectronicLevels() > 1)
         {
-           cloud_.boundaryFluxMeasurements()
-              .rhoNElecBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfADt;
+            cloud_.boundaryFluxMeasurements()
+                .rhoNElecBF()[p.typeId()][wppIndex][wppLocalFace] +=
+                    rwfDivMagUnfADt;
         }
 
         cloud_.boundaryFluxMeasurements()
-            .rhoMBF()[p.typeId()][wppIndex][wppLocalFace] += m*invMagUnfADt;
+            .rhoMBF()[p.typeId()][wppIndex][wppLocalFace] += m*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
             .linearKEBF()[p.typeId()][wppIndex][wppLocalFace] +=
-                0.5*m*(p.U() & p.U())*invMagUnfADt;
+                0.5*m*(p.U() & p.U())*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
             .mccSpeciesBF()[p.typeId()][wppIndex][wppLocalFace] +=
-                m*(p.U() & p.U())*invMagUnfADt;
+                m*(p.U() & p.U())*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
             .momentumBF()[p.typeId()][wppIndex][wppLocalFace] +=
-                m*Ut*invMagUnfADt;
+                m*Ut*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
             .rotationalEBF()[p.typeId()][wppIndex][wppLocalFace] +=
-                p.ERot()*invMagUnfADt;
+                p.ERot()*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
             .rotationalDofBF()[p.typeId()][wppIndex][wppLocalFace] +=
-                constProps.rotationalDegreesOfFreedom()*invMagUnfADt;
+                constProps.rotationalDegreesOfFreedom()*rwfDivMagUnfADt;
 
         const scalar EVibP_tot = constProps.eVib_tot(p.vibLevel());
 
         cloud_.boundaryFluxMeasurements()
             .vibrationalEBF()[p.typeId()][wppIndex][wppLocalFace] +=
-                EVibP_tot*invMagUnfADt;
+                EVibP_tot*rwfDivMagUnfADt;
 
         forAll(p.vibLevel(), mode)
         {
             cloud_.boundaryFluxMeasurements()
                 .evmsBF()[p.typeId()][mode][wppIndex][wppLocalFace] +=
                     constProps.eVib_m(mode, p.vibLevel()[mode])
-                   *invMagUnfADt;
+                    * rwfDivMagUnfADt;
         }
 
         cloud_.boundaryFluxMeasurements()
             .electronicEBF()[p.typeId()][wppIndex][wppLocalFace] +=
-                constProps.electronicEnergyList()[p.ELevel()]*invMagUnfADt;
+                constProps.electronicEnergyList()[p.ELevel()]*rwfDivMagUnfADt;
 
         //- post-interaction energy
         scalar postIE = 0.5*m*(p.U() & p.U()) + p.ERot() + EVibP_tot
@@ -448,7 +454,19 @@ void dsmcPatchBoundary::measurePropertiesAfterControl
         //- post-interaction momentum
         const vector& postIMom = m*p.U();
 
-        const scalar nParticle = cloud_.nParticles(wppIndex, wppLocalFace);
+        // Note: Do _not_ use the cloud._nParticles() command here because it
+        // assumes the wrong RWF. Because this calculation happens during a
+        // parcel move step we have to use the parcels RWF here. Since the
+        // measurements before/after control are always done within one move
+        // step the parcels RWF does not change, therefore we can use it to
+        // calculate the pre- and post-interaction values below.
+        // Note: this is not the case for parcels that are stuck to the wall,
+        // but in that case a special function called
+        //   measurePropertiesAfterDesorption
+        // is used to calculate the post interaction values. In that case the
+        // pre-interaction values (preIE and preIMom) are _not_ used.
+        const scalar nParticle = p.RWF() * cloud_.coordSystem().dtModel()
+            .nParticles(wppIndex, wppLocalFace);
 
         const scalar deltaQ = nParticle
             * (preIE_ - postIE + (heatOfReaction*physicoChemical::k.value()))

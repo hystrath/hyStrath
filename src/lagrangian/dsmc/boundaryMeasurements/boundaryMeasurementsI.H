@@ -127,21 +127,21 @@ inline const List<List<vectorField>>& boundaryMeasurements::fDBF() const
 }
 
 
-inline const fvPatchScalarField& boundaryMeasurements::pnStuckParcels
+inline const fvPatchScalarField& boundaryMeasurements::pnStuckParticles
 (
     const label& patchi
 ) const
 {
-    return nParcelsOnStickingBoundaries_[patchi];
+    return nParticlesOnStickingBoundaries_[patchi];
 }
 
 
-inline const fvPatchScalarField& boundaryMeasurements::pnAbsorbedParcels
+inline const fvPatchScalarField& boundaryMeasurements::pnAbsorbedParticles
 (
     const label& patchi
 ) const
 {
-    return nAbsorbedParcels_[patchi];
+    return nAbsorbedParticles_[patchi];
 }
 
 
@@ -255,21 +255,21 @@ inline List<List<vectorField>>& boundaryMeasurements::fDBF()
 }
 
 
-inline fvPatchScalarField& boundaryMeasurements::pnStuckParcels
+inline fvPatchScalarField& boundaryMeasurements::pnStuckParticles
 (
     const label& patchi
 )
 {
-    return nParcelsOnStickingBoundaries_[patchi];
+    return nParticlesOnStickingBoundaries_[patchi];
 }
 
 
-inline fvPatchScalarField& boundaryMeasurements::pnAbsorbedParcels
+inline fvPatchScalarField& boundaryMeasurements::pnAbsorbedParticles
 (
     const label& patchi
 )
 {
-    return nAbsorbedParcels_[patchi];
+    return nAbsorbedParticles_[patchi];
 }
 
 

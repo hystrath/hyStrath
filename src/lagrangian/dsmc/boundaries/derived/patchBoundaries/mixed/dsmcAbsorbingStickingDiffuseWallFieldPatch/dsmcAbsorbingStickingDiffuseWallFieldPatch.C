@@ -161,10 +161,7 @@ void dsmcAbsorbingStickingDiffuseWallFieldPatch::controlParticle
                     else
                     {
                         //- absorb particle
-                        dsmcAbsorbingWallPatch::absorbParticle
-                        (
-                            wppIndex, wppLocalFace, td
-                        );
+                        dsmcAbsorbingWallPatch::absorbParticle(p, td);
                     }
                 }
                 else
@@ -203,10 +200,7 @@ void dsmcAbsorbingStickingDiffuseWallFieldPatch::controlParticle
                     if(absorptionProbability > cloud_.rndGen().sample01<scalar>())
                     {
                         //- absorb particle
-                        dsmcAbsorbingWallPatch::absorbParticle
-                        (
-                            wppIndex, wppLocalFace, td
-                        );
+                        dsmcAbsorbingWallPatch::absorbParticle(p, td);
                     }
                     else
                     {
@@ -246,10 +240,10 @@ void dsmcAbsorbingStickingDiffuseWallFieldPatch::controlParticle
     }
 
     //- Update the boundaryMeasurement relative to this sticking patch
-    cloud_.boundaryFluxMeasurements().updatenStuckParcelOnPatch
+    cloud_.boundaryFluxMeasurements().updatenStuckParticlesOnPatch
     (
         patchId(),
-        dsmcStickingWallPatch::nStuckParcels()
+        nStuckParticles_
     );
 }
 

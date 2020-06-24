@@ -85,7 +85,7 @@ protected:
         scalarList residenceTimes_;
 
         //- Number of stuck particles per face
-        scalarList nStuckParcels_;
+        scalarList nStuckParticles_;
 
         //- Saturation limit per face [#]
         scalarList saturationLimit_;
@@ -183,28 +183,27 @@ public:
         }
 
         //- Return const access to the number of stuck parcels
-        const scalarList& nStuckParcels() const
+        const scalarList& nStuckParticles() const
         {
-            return nStuckParcels_;
+            return nStuckParticles_;
         }
 
         //- Return const access to the number of stuck parcels for a given face
-        const scalar& nStuckParcels(const label& facei) const
+        const scalar& nStuckParticles(const label& facei) const
         {
-            return nStuckParcels_[facei];
+            return nStuckParticles_[facei];
         }
 
         //- Return const access to the surface coverage
         const scalarList& surfaceCoverage() const
         {
-            return nStuckParcels()/saturationLimit()*cloud_.nParticles();
+            return nStuckParticles()/saturationLimit();
         }
 
         //- Return const access to the surface coverage for a given face
         scalar surfaceCoverage(const label& facei) const
         {
-            return nStuckParcels(facei)/saturationLimit(facei)
-                *cloud_.nParticles(patchId(), facei);
+            return nStuckParticles(facei)/saturationLimit(facei);
         }
 
         //- Return const access to the patch saturation limit

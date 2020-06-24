@@ -114,10 +114,18 @@ void dsmcFaceTracker::updateFields
 {
     const label& crossedFace = p.face();
     const label& typeId = p.typeId();
+    // Note: We have to use the parcels RWF in the following accumulations, the
+    // reason for this being that the step in which parcels might be cloned or
+    // deleted (e.g. in axisymmetric simulations) is carried out _after_ the
+    // parcel movement step is completed. Therefore we have to use the current
+    // parcel RWF here. Obviously this also has to be considered in all further
+    // calculations that are based on parcelIdFlux and massIdFlux.
+    const scalar& RWF = p.RWF();
     const dsmcParcel::constantProperties& constProp = cloud_.constProps(typeId);
     const scalar& mass = constProp.mass();
     const vector& U = p.U();
-//     const vector mom = p.U()*mass;
+    // TODO: This is the place to add momentum (m*U), kinetic energy, etc. if
+    // these shall also be counted.
 
     //- check which patch was hit
     const label& patchId = mesh_.boundaryMesh().whichPatch(crossedFace);
@@ -125,8 +133,7 @@ void dsmcFaceTracker::updateFields
     //- direction of dsmcParcel trajectory with respect to the face normal
     scalar sgn = sign( U & mesh_.faceAreas()[crossedFace] ) * 1.0;
 
-    //- geometric fields
-
+    // check patch type and count accordingly
     if(patchId != -1) //- boundary face
     {
         const polyPatch& patch = mesh_.boundaryMesh()[patchId];
@@ -141,8 +148,8 @@ void dsmcFaceTracker::updateFields
                 patch
             ).neighbPatch().start() + faceIndex;
 
-            parcelIdFlux_[typeId][coupledFace] += 1.0;
-            massIdFlux_[typeId][coupledFace] += mass;
+            parcelIdFlux_[typeId][coupledFace] += RWF;
+            massIdFlux_[typeId][coupledFace] += RWF*mass;
         }
 
 
@@ -150,15 +157,15 @@ void dsmcFaceTracker::updateFields
         // normal vector points out from the domain.
         if (isA<processorPolyPatch>(patch))
         {
-            parcelIdFlux_[typeId][crossedFace] += sgn*1.0;
-            massIdFlux_[typeId][crossedFace] += sgn*mass;
+            parcelIdFlux_[typeId][crossedFace] += sgn*RWF;
+            massIdFlux_[typeId][crossedFace] += sgn*RWF*mass;
         }
     }
     else //- internal face
     {
         //- properties
-        parcelIdFlux_[typeId][crossedFace] += sgn*1.0;
-        massIdFlux_[typeId][crossedFace] += sgn*mass;
+        parcelIdFlux_[typeId][crossedFace] += sgn*RWF;
+        massIdFlux_[typeId][crossedFace] += sgn*RWF*mass;
     }
 }
 

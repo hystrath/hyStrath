@@ -1940,7 +1940,16 @@ void dsmcVolFields::calculateField()
                 {
                     forAll(rhoN_.boundaryField()[j], k)
                     {
-                        const scalar nParticles = cloud_.nParticles(j, k);
+                        // Note: do not use the nParticles value that includes
+                        // the RWF here. This is wrong because boundary
+                        // measurements are performend during move steps. Hence
+                        // radial weighting (if simulation is axisymmetric or
+                        // spherical) is performed after the measurement. That
+                        // is why the parcel RWFs are already included during
+                        // the measurement step and we only need the FNUM value
+                        // here.
+                        const scalar nParticles = cloud_.coordSystem().dtModel()
+                            .nParticles(j, k);
 
                         const scalar rhoNMean =
                             rhoNBF_[j][k]*nParticles/nAvTimeSteps;

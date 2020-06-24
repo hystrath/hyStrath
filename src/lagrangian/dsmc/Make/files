@@ -134,7 +134,7 @@ boundaries/derived/patchBoundaries/mixed/dsmcStickingDiffuseWallFieldPatch/dsmcS
 
 /* GENERAL BOUNDARY MODELS */
 boundaries/derived/generalBoundaries/dsmcFreeStreamInflowPatch/dsmcFreeStreamInflowPatch.C
-boundaries/derived/generalBoundaries/dsmcPlumeInflowPatch/dsmcPlumeInflowPatch.C
+/*boundaries/derived/generalBoundaries/dsmcPlumeInflowPatch/dsmcPlumeInflowPatch.C*/
 boundaries/derived/generalBoundaries/dsmcChapmanEnskogFreeStreamInflowPatch/dsmcChapmanEnskogFreeStreamInflowPatch.C
 boundaries/derived/generalBoundaries/dsmcFreeStreamInflowFieldPatch/dsmcFreeStreamInflowFieldPatch.C
 boundaries/derived/generalBoundaries/dsmcLiouFangPressureInlet/dsmcLiouFangPressureInlet.C
