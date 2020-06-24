@@ -32,10 +32,10 @@
 #### Installation  
 ```sh
 git clone https://github.com/vincentcasseau/hyStrath.git --branch master --single-branch && cd hyStrath/  
-./install-all.sh 8 > logInstall 2>&1 &
+./install.sh 8  
 ```  
 
-where _8_ is the number of processors to be used during the installation.  
+where _8_ is the number of processors to be used during the installation (it can be edited).  
 
 #### [View more](https://github.com/vincentcasseau/hyStrath/wiki/Compatibility,-Maintenance,-Installation-and-Sync)  
 
@@ -64,7 +64,7 @@ where _8_ is the number of processors to be used during the installation.
 
 __GitHub coordinator:__ Dr Vincent Casseau  
 
-__Contributors:__ Dr Vincent Casseau, Dr Daniel E.R. Espinoza, Dr Christopher J. Capon, Alexey Ryakhovskiy, Dr Jimmy-John O.E. Hoste, Dr Viola Renato, Dr Rodrigo C. Palharini, Dr Craig White, Dr Melrose Brown, Prof Russell R. Boyce, Dr Thomas J. Scanlon, Dr Richard E. Brown     
+__Contributors:__ Dr Vincent Casseau, Dr Daniel E.R. Espinoza, Dr Christopher J. Capon, Alexey Ryakhovskiy, Dr Jimmy-John O.E. Hoste, Tim Teichmann, Dr Viola Renato, Dr Rodrigo C. Palharini, Dr Craig White, Dr Melrose Brown, Prof Russell R. Boyce, Dr Thomas J. Scanlon, Dr Richard E. Brown     
 
 __External contributors:__ the Micro & Nano Flows Group, R.Tech Engineering   
 
