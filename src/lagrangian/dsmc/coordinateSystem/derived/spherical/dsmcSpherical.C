@@ -238,6 +238,54 @@ void dsmcSpherical::updateRWF()
 }
 
 
+scalar dsmcSpherical::recalculateRWF(const label cellI) const
+{
+    scalar RWF = 1.0;
+
+    if (rWMethod_ == "particleAverage")
+    {
+        const DynamicList<dsmcParcel*>& cellParcels(cloud_.cellOccupancy()[cellI]);
+
+        RWF = 0.0;
+        label nMols = 0;
+
+        forAll(cellParcels, i)
+        {
+            const dsmcParcel& p = *cellParcels[i];
+
+            const scalar radius =
+                sqrt
+                (
+                    sqr(p.position().x() - origin_.x())
+                  + sqr(p.position().y() - origin_.y())
+                  + sqr(p.position().z() - origin_.z())
+                );
+
+            RWF += 1.0 + (maxRWF() - 1.0)*sqr(radius/radialExtent());
+
+            nMols++;
+        }
+
+        RWF /= max(nMols, 1);
+    }
+    else
+    {
+        const point& cC = mesh_.cellCentres()[cellI];
+        const scalar radius =
+            sqrt
+            (
+                sqr(cC.x() - origin_.x())
+              + sqr(cC.y() - origin_.y())
+              + sqr(cC.z() - origin_.z())
+            );
+
+        RWF += (maxRWF() - 1.0)*sqr(radius/radialExtent());
+    }
+
+    return RWF;
+}
+
+
 void dsmcSpherical::writeSphericalInfo() const
 {
     Info<< nl << "Spherical simulation:" << nl
@@ -353,54 +401,6 @@ void dsmcSpherical::evolve()
 
     sphericalWeighting();
     cloud_.reBuildCellOccupancy();
-}
-
-
-scalar dsmcSpherical::recalculateRWF(const label cellI) const
-{
-    scalar RWF = 1.0;
-
-    if (rWMethod_ == "particleAverage")
-    {
-        const DynamicList<dsmcParcel*>& cellParcels(cloud_.cellOccupancy()[cellI]);
-
-        RWF = 0.0;
-        label nMols = 0;
-
-        forAll(cellParcels, i)
-        {
-            const dsmcParcel& p = *cellParcels[i];
-
-            const scalar radius =
-                sqrt
-                (
-                    sqr(p.position().x() - origin_.x())
-                  + sqr(p.position().y() - origin_.y())
-                  + sqr(p.position().z() - origin_.z())
-                );
-
-            RWF += 1.0 + (maxRWF() - 1.0)*sqr(radius/radialExtent());
-
-            nMols++;
-        }
-
-        RWF /= max(nMols, 1);
-    }
-    else
-    {
-        const point& cC = mesh_.cellCentres()[cellI];
-        const scalar radius =
-            sqrt
-            (
-                sqr(cC.x() - origin_.x())
-              + sqr(cC.y() - origin_.y())
-              + sqr(cC.z() - origin_.z())
-            );
-
-        RWF += (maxRWF() - 1.0)*sqr(radius/radialExtent());
-    }
-
-    return RWF;
 }
 
 

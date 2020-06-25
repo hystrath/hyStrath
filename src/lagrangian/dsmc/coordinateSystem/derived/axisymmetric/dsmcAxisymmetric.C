@@ -242,6 +242,47 @@ void dsmcAxisymmetric::updateRWF()
 }
 
 
+scalar dsmcAxisymmetric::recalculateRWF(const label cellI) const
+{
+    scalar RWF = 1.0;
+
+    if (rWMethod_ == "particleAverage")
+    {
+        const DynamicList<dsmcParcel*>& cellParcels(cloud_.cellOccupancy()[cellI]);
+
+        RWF = 0.0;
+        label nMols = 0;
+
+        forAll(cellParcels, i)
+        {
+            const dsmcParcel& p = *cellParcels[i];
+
+            const scalar radius =
+                sqrt
+                (
+                    sqr(p.position().component(polarAxis_))
+                  + sqr(p.position().component(angularCoordinate_))
+                );
+
+            RWF += 1.0 + (maxRWF() - 1.0)*radius/radialExtent();
+
+            nMols++;
+        }
+
+        RWF /= max(nMols, 1);
+    }
+    else
+    {
+        const point& cC = mesh_.cellCentres()[cellI];
+        const scalar radius = mag(cC.component(polarAxis_));
+
+        RWF += (maxRWF() - 1.0)*radius/radialExtent();
+    }
+
+    return RWF;
+}
+
+
 void dsmcAxisymmetric::writeAxisymmetricInfo() const
 {
     Info<< nl << "Axisymmetric simulation:" << nl
@@ -446,47 +487,6 @@ void dsmcAxisymmetric::evolve()
 
     axisymmetricWeighting();
     cloud_.reBuildCellOccupancy();
-}
-
-
-scalar dsmcAxisymmetric::recalculateRWF(const label cellI) const
-{
-    scalar RWF = 1.0;
-
-    if (rWMethod_ == "particleAverage")
-    {
-        const DynamicList<dsmcParcel*>& cellParcels(cloud_.cellOccupancy()[cellI]);
-
-        RWF = 0.0;
-        label nMols = 0;
-
-        forAll(cellParcels, i)
-        {
-            const dsmcParcel& p = *cellParcels[i];
-
-            const scalar radius =
-                sqrt
-                (
-                    sqr(p.position().component(polarAxis_))
-                  + sqr(p.position().component(angularCoordinate_))
-                );
-
-            RWF += 1.0 + (maxRWF() - 1.0)*radius/radialExtent();
-
-            nMols++;
-        }
-
-        RWF /= max(nMols, 1);
-    }
-    else
-    {
-        const point& cC = mesh_.cellCentres()[cellI];
-        const scalar radius = mag(cC.component(polarAxis_));
-
-        RWF += (maxRWF() - 1.0)*radius/radialExtent();
-    }
-
-    return RWF;
 }
 
 
