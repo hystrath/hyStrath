@@ -320,8 +320,8 @@ dsmcSpherical::dsmcSpherical
             "RWF",
             mesh_.time().timeName(),
             mesh_,
-            IOobject::NO_READ,
-            IOobject::NO_WRITE
+            IOobject::READ_IF_PRESENT,
+            IOobject::AUTO_WRITE
         ),
         mesh_,
         dimensionedScalar("RWF", dimless, 1.0)
@@ -376,18 +376,15 @@ void dsmcSpherical::checkCoordinateSystemInputs(const bool init)
 
     writeCoordinateSystemInfo();
 
+    // The RWFs have to be initialized only during the first run. This is done
+    // by dsmcInitialise+. After that the RWFs will be read from file during
+    // construction (this is for example the case in repeated running of
+    // dsmcFoam+ when using dynamic load balancing).
     if (init)
     {
-        // "particleAverage" cannot be used in dsmcInitialise, "cell" is thus
+        // "particleAverage" cannot be used in dsmcInitialise+, "cell" is thus
         // employed
         rWMethod_ = "cell";
-    }
-    else
-    {
-        if (rWMethod_ != "particleAverage")
-        {
-            updateRWF();
-        }
     }
 }
 
