@@ -190,7 +190,7 @@ void dsmcInitialiseOnLine::setInitialConfiguration()
                 tetPt
             );
 
-            const scalar& RWF = cloud_.coordSystem().recalculateRWF(cellI);
+            const scalar& RWF = cloud_.coordSystem().RWF(cellI);
 
             cloud_.addNewParcel
             (
