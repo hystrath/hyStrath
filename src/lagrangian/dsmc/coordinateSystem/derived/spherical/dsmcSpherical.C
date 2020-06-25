@@ -385,6 +385,8 @@ void dsmcSpherical::checkCoordinateSystemInputs(const bool init)
         // "particleAverage" cannot be used in dsmcInitialise+, "cell" is thus
         // employed
         rWMethod_ = "cell";
+
+        updateRWF();
     }
 }
 
