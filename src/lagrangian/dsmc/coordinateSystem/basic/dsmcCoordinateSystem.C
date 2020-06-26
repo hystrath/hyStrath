@@ -114,9 +114,5 @@ Foam::dsmcCoordinateSystem::~dsmcCoordinateSystem()
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-Foam::scalar Foam::dsmcCoordinateSystem::recalculateRWF(const label cellI) const
-{
-    return 1.0;
-}
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

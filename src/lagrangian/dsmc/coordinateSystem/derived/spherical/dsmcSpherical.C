@@ -238,6 +238,54 @@ void dsmcSpherical::updateRWF()
 }
 
 
+scalar dsmcSpherical::recalculateRWF(const label cellI) const
+{
+    scalar RWF = 1.0;
+
+    if (rWMethod_ == "particleAverage")
+    {
+        const DynamicList<dsmcParcel*>& cellParcels(cloud_.cellOccupancy()[cellI]);
+
+        RWF = 0.0;
+        label nMols = 0;
+
+        forAll(cellParcels, i)
+        {
+            const dsmcParcel& p = *cellParcels[i];
+
+            const scalar radius =
+                sqrt
+                (
+                    sqr(p.position().x() - origin_.x())
+                  + sqr(p.position().y() - origin_.y())
+                  + sqr(p.position().z() - origin_.z())
+                );
+
+            RWF += 1.0 + (maxRWF() - 1.0)*sqr(radius/radialExtent());
+
+            nMols++;
+        }
+
+        RWF /= max(nMols, 1);
+    }
+    else
+    {
+        const point& cC = mesh_.cellCentres()[cellI];
+        const scalar radius =
+            sqrt
+            (
+                sqr(cC.x() - origin_.x())
+              + sqr(cC.y() - origin_.y())
+              + sqr(cC.z() - origin_.z())
+            );
+
+        RWF += (maxRWF() - 1.0)*sqr(radius/radialExtent());
+    }
+
+    return RWF;
+}
+
+
 void dsmcSpherical::writeSphericalInfo() const
 {
     Info<< nl << "Spherical simulation:" << nl
@@ -272,8 +320,8 @@ dsmcSpherical::dsmcSpherical
             "RWF",
             mesh_.time().timeName(),
             mesh_,
-            IOobject::NO_READ,
-            IOobject::NO_WRITE
+            IOobject::READ_IF_PRESENT,
+            IOobject::AUTO_WRITE
         ),
         mesh_,
         dimensionedScalar("RWF", dimless, 1.0)
@@ -328,18 +376,17 @@ void dsmcSpherical::checkCoordinateSystemInputs(const bool init)
 
     writeCoordinateSystemInfo();
 
+    // The RWFs have to be initialized only during the first run. This is done
+    // by dsmcInitialise+. After that the RWFs will be read from file during
+    // construction (this is for example the case in repeated running of
+    // dsmcFoam+ when using dynamic load balancing).
     if (init)
     {
-        // "particleAverage" cannot be used in dsmcInitialise, "cell" is thus
+        // "particleAverage" cannot be used in dsmcInitialise+, "cell" is thus
         // employed
         rWMethod_ = "cell";
-    }
-    else
-    {
-        if (rWMethod_ != "particleAverage")
-        {
-            updateRWF();
-        }
+
+        updateRWF();
     }
 }
 
@@ -353,54 +400,6 @@ void dsmcSpherical::evolve()
 
     sphericalWeighting();
     cloud_.reBuildCellOccupancy();
-}
-
-
-scalar dsmcSpherical::recalculateRWF(const label cellI) const
-{
-    scalar RWF = 1.0;
-
-    if (rWMethod_ == "particleAverage")
-    {
-        const DynamicList<dsmcParcel*>& cellParcels(cloud_.cellOccupancy()[cellI]);
-
-        RWF = 0.0;
-        label nMols = 0;
-
-        forAll(cellParcels, i)
-        {
-            const dsmcParcel& p = *cellParcels[i];
-
-            const scalar radius =
-                sqrt
-                (
-                    sqr(p.position().x() - origin_.x())
-                  + sqr(p.position().y() - origin_.y())
-                  + sqr(p.position().z() - origin_.z())
-                );
-
-            RWF += 1.0 + (maxRWF() - 1.0)*sqr(radius/radialExtent());
-
-            nMols++;
-        }
-
-        RWF /= max(nMols, 1);
-    }
-    else
-    {
-        const point& cC = mesh_.cellCentres()[cellI];
-        const scalar radius =
-            sqrt
-            (
-                sqr(cC.x() - origin_.x())
-              + sqr(cC.y() - origin_.y())
-              + sqr(cC.z() - origin_.z())
-            );
-
-        RWF += (maxRWF() - 1.0)*sqr(radius/radialExtent());
-    }
-
-    return RWF;
 }
 
 

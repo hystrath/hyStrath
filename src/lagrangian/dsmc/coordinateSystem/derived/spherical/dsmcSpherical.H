@@ -85,6 +85,9 @@ class dsmcSpherical
         //- Update the radial weighting factor field
         void updateRWF();
 
+        //- Recalculate and return the radial weighting factor for a cell
+        scalar recalculateRWF(const label cellI) const;
+
         //- Write spherical info
         void writeSphericalInfo() const;
 
@@ -161,9 +164,6 @@ public:
 
         //- Evolve function
         virtual void evolve();
-
-        //- Recalculate and return the radial weighting factor for a cell
-        virtual scalar recalculateRWF(const label cellI) const;
 
 
       // Write

@@ -170,7 +170,6 @@ void dsmcZoneFill::setInitialConfiguration()
                     // Calculate the number of particles required
                     scalar particlesRequired = numberDensity*tetVolume;
 
-                    //const scalar& RWF = cloud_.coordSystem().recalculateRWF(cellI);
                     particlesRequired /= cloud_.nParticles(cellI);
 
                     // Only integer numbers of particles can be inserted
@@ -223,7 +222,7 @@ void dsmcZoneFill::setInitialConfiguration()
 
                         label classification = 0;
 
-                        const scalar& RWF = cloud_.coordSystem().recalculateRWF(cellI);
+                        const scalar& RWF = cloud_.coordSystem().RWF(cellI);
 
                         cloud_.addNewParcel
                         (
