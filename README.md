@@ -13,7 +13,6 @@
 + *hyFoam*: a CFD solver for supersonic combusting flows   
 + *hy2Foam*: a CFD solver for hypersonic reacting flows   
 + *hy2MhdFoam*: the *hy2Foam* solver with additional MHD capabilities  
-+ *ARC*: a low computationally demanding 3-D Ablative Response Code (**on hold**)  
 + *dsmcFoam+*: the direct simulation Monte Carlo (DSMC) code with all the latest features  
 + *pdFoam*: a hybrid PIC-DSMC solver   
 
@@ -32,7 +31,7 @@
 #### Installation  
 ```sh
 git clone https://github.com/vincentcasseau/hyStrath.git --branch master --single-branch && cd hyStrath/  
-./install.sh 8  
+./install.sh 8 2>/dev/null  
 ```  
 
 where _8_ is the number of processors to be used during the installation (it can be edited).  
