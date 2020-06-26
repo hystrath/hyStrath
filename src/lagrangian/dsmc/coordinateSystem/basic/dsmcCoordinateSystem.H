@@ -195,9 +195,6 @@ public:
         //- Evolve function
         virtual void evolve() = 0;
 
-        //- Recalculate and return the radial weighting factor for a cell
-        virtual scalar recalculateRWF(const label cellI) const;
-
 
       // Write
 
