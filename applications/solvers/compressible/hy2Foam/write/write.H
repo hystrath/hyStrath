@@ -67,35 +67,44 @@ if (writeWallHeatFlux)
         if (isA<wallFvPatch>(mesh.boundary()[patchi]))
         {
             wallHeatFlux.boundaryFieldRef()[patchi] = patchHeatFlux[patchi];
-
-            const scalar int_tot_whf =
+            
+            const scalar int_tot_whf = 
                 gSum
                 (
                     mesh.magSf().boundaryField()[patchi]
                    *patchHeatFlux[patchi]
                 );
-
-            const scalar int_convtr_whf =
-                gSum
-                (
-                    mesh.magSf().boundaryField()[patchi]
-                   *heatFlux_convtr.boundaryField()[patchi]
-                )/int_tot_whf*100.0;
-
-            const scalar int_convve_whf =
-                gSum
-                (
-                    mesh.magSf().boundaryField()[patchi]
-                   *heatFlux_convve.boundaryField()[patchi]
-                )/int_tot_whf*100.0;
-
+                
+            scalar int_convtr_whf = 0.0;
+            scalar int_convve_whf = 0.0;
+            scalar int_diff_whf = 0.0;
+            
+            if ( abs(int_tot_whf) > SMALL )
+            {
+                int_convtr_whf = 
+                    gSum
+                    (
+                        mesh.magSf().boundaryField()[patchi]
+                       *heatFlux_convtr.boundaryField()[patchi]
+                    )/int_tot_whf*100.0;
+                    
+                int_convve_whf = 
+                    gSum
+                    (
+                        mesh.magSf().boundaryField()[patchi]
+                       *heatFlux_convve.boundaryField()[patchi]
+                    )/int_tot_whf*100.0;
+                    
+                int_diff_whf = 0.0; 
+            }
+            
             Info<< "Patch " << patchi
                 << " named " << patchHeatFlux[patchi].patch().name()
                 << ": " << int_tot_whf << nl
                 << "   convective trans-rot  (%): " << int_convtr_whf << nl
-                << "   convective vibrp-elec (%): " << int_convve_whf << nl
-                << "   diffusive             (%): TBC" << nl
-                << endl;
+                << "   convective vibro-elec (%): " << int_convve_whf << nl
+                << "   diffusive             (%): " << int_diff_whf << nl
+                << endl;    
         }
     }
     Info<< endl;
