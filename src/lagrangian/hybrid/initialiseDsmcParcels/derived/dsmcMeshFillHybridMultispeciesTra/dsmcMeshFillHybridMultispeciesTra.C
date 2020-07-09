@@ -378,7 +378,7 @@ void dsmcMeshFillHybridMultispeciesTra::setInitialConfiguration()
 
                     label classification = 0;
 
-                    const scalar& RWF = cloud_.coordSystem().recalculateRWF(cellI);
+                    const scalar& RWF = cloud_.coordSystem().RWF(cellI);
 
                     cloud_.addNewParcel
                     (

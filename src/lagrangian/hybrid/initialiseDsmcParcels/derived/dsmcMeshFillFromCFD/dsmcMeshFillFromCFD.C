@@ -572,7 +572,7 @@ void dsmcMeshFillFromCFD::setInitialConfiguration()
 
                     vectorField wallVectors(4, vector::zero);
 
-                    const scalar& RWF = cloud_.coordSystem().recalculateRWF(cellI);
+                    const scalar& RWF = cloud_.coordSystem().RWF(cellI);
 
                     cloud_.addNewParcel
                     (
