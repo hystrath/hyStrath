@@ -128,8 +128,11 @@ surfaceScalarField cSf_pos //- Intermediate quantity to appear in Eq.8a
     "cSf_pos",
     interpolate(c, pos, "T")*mesh.magSf()
 );
+cSf_pos.setOriented();
+
 surfaceScalarField cSf_neg //- Intermediate quantity to appear in Eq.8b
 (
     "cSf_neg",
     interpolate(c, neg, "T")*mesh.magSf()
 );
+cSf_neg.setOriented();

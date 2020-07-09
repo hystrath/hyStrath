@@ -8,6 +8,13 @@ Info << "mesh.magSf(): " << mesh.magSf() << endl;
 surfaceScalarField phiv_pos("phiv_pos", (U_pos & mesh.Sf())); //- Step II, + direction
 surfaceScalarField phiv_neg("phiv_neg", (U_neg & mesh.Sf())); //- Step II, - direction
 
+// Make fluxes relative to mesh-motion
+if (mesh.moving())
+{
+    phiv_pos -= mesh.phi();
+    phiv_neg -= mesh.phi();
+}
+
 Info << "phiv_pos: " << phiv_pos << endl;
 Info << "phiv_neg: " << phiv_neg << endl;
 
@@ -16,11 +23,14 @@ surfaceScalarField cSf_pos
     "cSf_pos",
     fvc::interpolate(c, pos, "reconstruct(T)")*mesh.magSf()*sign(mesh.Sf().component(0))
 );
+cSf_pos.setOriented();
+
 surfaceScalarField cSf_neg
 (
     "cSf_neg",
     fvc::interpolate(c, neg, "reconstruct(T)")*mesh.magSf()*sign(mesh.Sf().component(0))
 );
+cSf_neg.setOriented();
 
 Info << "cSf_pos: " << cSf_pos << endl;
 Info << "cSf_neg: " << cSf_neg << endl;

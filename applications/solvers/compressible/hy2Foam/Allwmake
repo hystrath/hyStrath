@@ -4,4 +4,8 @@ set -x
 
 (wmake libso BCs && wmake)
 
+cd DyM
+wmake
+cd ../
+
 # ----------------------------------------------------------------- end-of-file

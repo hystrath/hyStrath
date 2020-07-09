@@ -27,6 +27,12 @@ surfaceScalarField phiEp
   + aSf*p_pos - aSf*p_neg*/
 );
 
+// Make flux for pressure-work absolute
+if (mesh.moving())
+{
+    phiEp += mesh.phi()*(a_pos*p_pos + a_neg*p_neg);
+}
+
 Info << "phiEp: " << phiEp << endl;
 
 // NEW VINCENT ****************************************************************

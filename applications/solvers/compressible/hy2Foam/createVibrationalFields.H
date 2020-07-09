@@ -90,12 +90,7 @@ volScalarField rhoEv
 
 PtrList<volScalarField> rhoEvk(noSolvedVibEq);
 
-if(downgradeSingleT) // NEW VINCENT 05-16/08/2016
-{
-   rhoEvk.clear();
-   rhoEv.clear();
-}
-else if(downgradeSingleTv)
+if (downgradeSingleT or downgradeSingleTv)
 {
    rhoEvk.clear();
 }

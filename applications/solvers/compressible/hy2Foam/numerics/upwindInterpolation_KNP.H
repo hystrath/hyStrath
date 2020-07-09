@@ -2,6 +2,13 @@
 surfaceScalarField phiv_pos("phiv_pos", U_pos & mesh.Sf()); //- Eq in the text after Eq.6, + direc
 surfaceScalarField phiv_neg("phiv_neg", U_neg & mesh.Sf()); //- Eq in the text after Eq.6, - direc
 
+// Make fluxes relative to mesh-motion
+if (mesh.moving())
+{
+    phiv_pos -= mesh.phi();
+    phiv_neg -= mesh.phi();
+}
+
 surfaceScalarField ap //- Eq.8a
 (
     "ap",
