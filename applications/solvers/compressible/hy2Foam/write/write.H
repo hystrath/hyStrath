@@ -79,7 +79,7 @@ if (writeWallHeatFlux)
             scalar int_convve_whf = 0.0;
             scalar int_diff_whf = 0.0;
             
-            if ( abs(int_tot_whf) > SMALL )
+            if ( mag(int_tot_whf) > SMALL )
             {
                 int_convtr_whf = 
                     gSum
