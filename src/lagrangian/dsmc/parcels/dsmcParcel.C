@@ -104,7 +104,7 @@ bool Foam::dsmcParcel::move
             if (face() != -1)
             {
                 //- measure flux properties
-                td.cloud().tracker().updateFields(*this);
+                td.cloud().tracker().trackParcelFaceTransition(*this);
             }
 
             if (onBoundary() && td.keepParticle)
