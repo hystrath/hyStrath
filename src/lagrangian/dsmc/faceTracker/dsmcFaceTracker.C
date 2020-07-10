@@ -148,14 +148,25 @@ void dsmcFaceTracker::trackFaceTransition
     scalar sgn = sign( U & mesh_.faceAreas()[crossedFaceI] ) * 1.0;
 
     // check patch type and count accordingly
-    if(patchId != -1) //- boundary face
+    if(patchId != -1) // face belongs to boundary patch
     {
         const polyPatch& patch = mesh_.boundaryMesh()[patchId];
-
         const label faceIndex = crossedFaceI - patch.start();
 
-        //- correct cyclic patches
-        if (isA<cyclicPolyPatch>(patch))
+        // check for the most likely case first. In general that should mean
+        // processor patches.
+
+        // processor patches:
+        //   Molecular properties are appended to the face of the leaving
+        //   processor only. Normal vector points out from the domain.
+        if (isA<processorPolyPatch>(patch))
+        {
+            parcelIdFlux_[typeId][crossedFaceI] += sgn*RWF;
+            massIdFlux_[typeId][crossedFaceI] += sgn*RWF*mass;
+        }
+
+        // cyclic patches:
+        else if (isA<cyclicPolyPatch>(patch))
         {
             label coupledFace = refCast<const cyclicPolyPatch>
             (
@@ -166,18 +177,15 @@ void dsmcFaceTracker::trackFaceTransition
             massIdFlux_[typeId][coupledFace] += RWF*mass;
         }
 
-
-        // molecular properties are appended to the face of the leaving processor only.
-        // normal vector points out from the domain.
-        if (isA<processorPolyPatch>(patch))
+        // all other boundary patches:
+        else
         {
             parcelIdFlux_[typeId][crossedFaceI] += sgn*RWF;
             massIdFlux_[typeId][crossedFaceI] += sgn*RWF*mass;
         }
     }
-    else //- internal face
+    else // internal face
     {
-        //- properties
         parcelIdFlux_[typeId][crossedFaceI] += sgn*RWF;
         massIdFlux_[typeId][crossedFaceI] += sgn*RWF*mass;
     }
