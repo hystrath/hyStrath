@@ -207,11 +207,14 @@ void dsmcDynamicLoadBalancing::perform(const int noRefinement)
                 const word backupTimeDirsWithLimit =
                     // move the time dirs currently backed up to the case dir
                     // so the foamListTimes utility can be used
-                    word("mv resultFolders/* .;")
+                    // make sure directory is not empty to prevent mv from
+                    // printing a warning
+                    word("if [ \"$(ls -A resultFolders)\" ];")
+                    + word("then mv resultFolders/* .; fi;")
                     // total number of time directories
                     + word("timeDirs=`foamListTimes`;")
                     + word("nTimeDirs=$(echo $timeDirs | tr -cd ' ' | wc -c);")
-                    + word("$((nTimeDirs=nTimeDirs+1));")
+                    + word("nTimeDirs=$((nTimeDirs+1));")
                     // convert OpenFOAM label to shell variable for limit
                     + word("limitNTimeDirs=")
                     + name(limitTimeDirBackups_)
