@@ -28,7 +28,6 @@ Class
 Description
 
 SourceFiles
-    dsmcDynamicLoadBalancingI.H
     dsmcDynamicLoadBalancing.C
 
 \*---------------------------------------------------------------------------*/
@@ -70,11 +69,11 @@ class dsmcDynamicLoadBalancing
 
         bool enableBalancing_;
 
-        label limitTimeDirBackups_;
-
         scalar originalEndTime_;
 
         scalar maxImbalance_;
+
+        label limitTimeDirBackups_;
 
     // Private Member Functions
 
