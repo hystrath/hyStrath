@@ -179,6 +179,8 @@ macroscopicProperties/derived/otherFields/dsmcElectronicEnergyLevelDistribution/
 
 /* PRESSURE */
 
+/* FLUX */
+macroscopicProperties/derived/flux/dsmcFluxSurface/dsmcFluxSurface.C
 
 /*    MASS FLUX */
 /*macroscopicProperties/derived/massFlux/dsmcMassFluxSurface/dsmcMassFluxSurface.C
