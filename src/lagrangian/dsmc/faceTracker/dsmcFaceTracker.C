@@ -107,41 +107,66 @@ void dsmcFaceTracker::reset()
 }
 
 
-void dsmcFaceTracker::updateFields
+void dsmcFaceTracker::trackParcelFaceTransition
 (
-    dsmcParcel& p
+    const dsmcParcel& p
 )
 {
-    const label& crossedFace = p.face();
+    // parcel properties:
     const label& typeId = p.typeId();
+    const vector& U = p.U();
+    const scalar& RWF = p.RWF();
+    const label& crossedFaceI = p.face();
+
+    trackFaceTransition(typeId, U, RWF, crossedFaceI);
+}
+
+
+void dsmcFaceTracker::trackFaceTransition
+(
+    const label& typeId,
+    const vector& U,
+    const scalar& RWF,
+    const label& crossedFaceI
+)
+{
     // Note: We have to use the parcels RWF in the following accumulations, the
     // reason for this being that the step in which parcels might be cloned or
     // deleted (e.g. in axisymmetric simulations) is carried out _after_ the
     // parcel movement step is completed. Therefore we have to use the current
     // parcel RWF here. Obviously this also has to be considered in all further
     // calculations that are based on parcelIdFlux and massIdFlux.
-    const scalar& RWF = p.RWF();
     const dsmcParcel::constantProperties& constProp = cloud_.constProps(typeId);
     const scalar& mass = constProp.mass();
-    const vector& U = p.U();
     // TODO: This is the place to add momentum (m*U), kinetic energy, etc. if
     // these shall also be counted.
 
     //- check which patch was hit
-    const label& patchId = mesh_.boundaryMesh().whichPatch(crossedFace);
+    const label& patchId = mesh_.boundaryMesh().whichPatch(crossedFaceI);
 
     //- direction of dsmcParcel trajectory with respect to the face normal
-    scalar sgn = sign( U & mesh_.faceAreas()[crossedFace] ) * 1.0;
+    scalar sgn = sign( U & mesh_.faceAreas()[crossedFaceI] ) * 1.0;
 
     // check patch type and count accordingly
-    if(patchId != -1) //- boundary face
+    if(patchId != -1) // face belongs to boundary patch
     {
         const polyPatch& patch = mesh_.boundaryMesh()[patchId];
+        const label faceIndex = crossedFaceI - patch.start();
 
-        const label faceIndex = crossedFace - patch.start();
+        // check for the most likely case first. In general that should mean
+        // processor patches.
 
-        //- correct cyclic patches
-        if (isA<cyclicPolyPatch>(patch))
+        // processor patches:
+        //   Molecular properties are appended to the face of the leaving
+        //   processor only. Normal vector points out from the domain.
+        if (isA<processorPolyPatch>(patch))
+        {
+            parcelIdFlux_[typeId][crossedFaceI] += sgn*RWF;
+            massIdFlux_[typeId][crossedFaceI] += sgn*RWF*mass;
+        }
+
+        // cyclic patches:
+        else if (isA<cyclicPolyPatch>(patch))
         {
             label coupledFace = refCast<const cyclicPolyPatch>
             (
@@ -152,20 +177,17 @@ void dsmcFaceTracker::updateFields
             massIdFlux_[typeId][coupledFace] += RWF*mass;
         }
 
-
-        // molecular properties are appended to the face of the leaving processor only.
-        // normal vector points out from the domain.
-        if (isA<processorPolyPatch>(patch))
+        // all other boundary patches:
+        else
         {
-            parcelIdFlux_[typeId][crossedFace] += sgn*RWF;
-            massIdFlux_[typeId][crossedFace] += sgn*RWF*mass;
+            parcelIdFlux_[typeId][crossedFaceI] += sgn*RWF;
+            massIdFlux_[typeId][crossedFaceI] += sgn*RWF*mass;
         }
     }
-    else //- internal face
+    else // internal face
     {
-        //- properties
-        parcelIdFlux_[typeId][crossedFace] += sgn*RWF;
-        massIdFlux_[typeId][crossedFace] += sgn*RWF*mass;
+        parcelIdFlux_[typeId][crossedFaceI] += sgn*RWF;
+        massIdFlux_[typeId][crossedFaceI] += sgn*RWF*mass;
     }
 }
 
