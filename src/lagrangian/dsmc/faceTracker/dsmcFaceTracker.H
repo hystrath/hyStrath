@@ -93,9 +93,17 @@ public:
 
     // Member Functions
 
-        void updateFields
+        void trackParcelFaceTransition
         (
-            dsmcParcel& p
+            const dsmcParcel& p
+        );
+
+        void trackFaceTransition
+        (
+            const label& typeId,
+            const vector& U,
+            const scalar& RWF,
+            const label& crossedFaceI
         );
 
         void clean();

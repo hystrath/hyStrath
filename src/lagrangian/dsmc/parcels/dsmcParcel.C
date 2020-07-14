@@ -51,6 +51,9 @@ bool Foam::dsmcParcel::move
 
         if (newParcel() != -1)
         {
+            // note: this justifies that freshly inserted parcels should be
+            // tracked as if they had passed the boundary face on which they
+            // have been inserted in the time step in which they are inserted.
             stepFraction() = td.cloud().rndGen().sample01<scalar>();
             newParcel() = -1;
         }
@@ -104,7 +107,7 @@ bool Foam::dsmcParcel::move
             if (face() != -1)
             {
                 //- measure flux properties
-                td.cloud().tracker().updateFields(*this);
+                td.cloud().tracker().trackParcelFaceTransition(*this);
             }
 
             if (onBoundary() && td.keepParticle)
