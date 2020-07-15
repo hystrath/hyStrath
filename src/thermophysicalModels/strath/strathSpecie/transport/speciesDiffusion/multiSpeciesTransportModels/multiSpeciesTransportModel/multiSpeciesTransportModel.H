@@ -99,8 +99,8 @@ protected:
         //- Use the non-corrected version of the mass diffusion term
         bool useNonCorrected_;
 
-        //- Use the gradient of molar fraction in the species and transport equation
-        //  and use the gradient of mass fraction if disabled
+        //- Use the gradient of molar fraction in the species and transport
+        //  equation and use the gradient of mass fraction if disabled
         //  Always true for the SCEBD model
         bool solvingForX_;
 
@@ -204,6 +204,9 @@ public:
 
         //- Get the mass flux for specie i and store it into spMassFlux
         void getSpeciesMassFlux(const label i, const surfaceScalarField& flux);
+        
+        //- Return the diffusive wall heat flux
+        surfaceScalarField getDiffusiveWallHeatFlux() const;
 
         //- Read transportProperties dictionary
         virtual bool read() = 0;
@@ -227,7 +230,8 @@ public:
             inline const volScalarField& Dij(label i, label j) const;
 
             //- Return the const product of the mixture density by the
-            //  effective diffusion coefficient field for species i in a mixture
+            //  effective diffusion coefficient field for species i in a
+            //  mixture
             inline const volScalarField& rhoD(label i) const;
 
             //- Return the const effective diffusion coefficient field for
@@ -266,8 +270,8 @@ public:
             //- Molar weight for a specie given by index
             virtual scalar W(label i) const = 0;
 
-            //- Specific enthalpy for a specie given by index and temperature
-            virtual scalar hs(label i, scalar p, scalar Tt, scalar Tv) const = 0;
+            //- Absolute enthalpy for a specie given by index and temperature
+            virtual scalar ha(label i, scalar p, scalar Tt, scalar Tv) const = 0;
 };
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

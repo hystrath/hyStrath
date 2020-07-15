@@ -56,19 +56,23 @@ if (writeWallHeatFlux)
 
     surfaceScalarField heatFlux_convve =
         -fvc::interpolate(transport().alphave())*fvc::snGrad(ev);
+        
+    surfaceScalarField heatFlux_diff =
+        speciesDiffusion().getDiffusiveWallHeatFlux();
 
-    surfaceScalarField heatFlux = heatFlux_convtr + heatFlux_convve;
+    surfaceScalarField heatFlux = heatFlux_convtr + heatFlux_convve
+        + heatFlux_diff;
 
     const surfaceScalarField::Boundary& patchHeatFlux = heatFlux.boundaryField();
 
-    Info<< "\nIntegrated convection wall heat flux [W]" << endl;
+    Info<< "\nIntegrated wall heat flux [W]" << endl;
     forAll(patchHeatFlux, patchi)
     {
         if (isA<wallFvPatch>(mesh.boundary()[patchi]))
         {
             wallHeatFlux.boundaryFieldRef()[patchi] = patchHeatFlux[patchi];
-            
-            const scalar int_tot_whf = 
+
+            const scalar int_tot_whf =
                 gSum
                 (
                     mesh.magSf().boundaryField()[patchi]
@@ -77,8 +81,8 @@ if (writeWallHeatFlux)
                 
             scalar int_convtr_whf = 0.0;
             scalar int_convve_whf = 0.0;
-            scalar int_diff_whf = 0.0;
-            
+            scalar int_diff_whf = 0.0;    
+
             if ( mag(int_tot_whf) > SMALL )
             {
                 int_convtr_whf = 
@@ -95,7 +99,12 @@ if (writeWallHeatFlux)
                        *heatFlux_convve.boundaryField()[patchi]
                     )/int_tot_whf*100.0;
                     
-                int_diff_whf = 0.0; 
+                int_diff_whf =
+                    gSum
+                    (
+                        mesh.magSf().boundaryField()[patchi]
+                       *heatFlux_diff.boundaryField()[patchi]
+                    )/int_tot_whf*100.0;  
             }
             
             Info<< "Patch " << patchi

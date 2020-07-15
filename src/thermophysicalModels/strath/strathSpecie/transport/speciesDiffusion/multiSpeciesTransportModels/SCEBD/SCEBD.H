@@ -106,10 +106,10 @@ public:
             return speciesThermo_[i].W()*1.0e-3;
         }
 
-        //- Specific enthalpy [J/kg] for a specie given by index and temperature
-        scalar hs(label i, scalar p, scalar Tt, scalar Tv) const
+        //- Absolute enthalpy [J/kg] for a specie given by index and temperature
+        scalar ha(label i, scalar p, scalar Tt, scalar Tv) const
         {
-            return speciesThermo_[i].Hs(p, Tt, Tv);
+            return speciesThermo_[i].Ha(p, Tt, Tv);
         }
 
         //- Update the species diffusion coefficients
