@@ -3,8 +3,8 @@ binaryDiffusivityModel/binaryDiffusivityModel.C
 
 noBinaryDiffusivityModel/noBinaryDiffusivityModel.C
 constant/constant.C
-Gupta/GuptaO.C
-Gupta/GuptaD.C
+collisionDataD/collisionDataD.C
+collisionDataO/collisionDataO.C
 Stephani/Stephani.C
 
 diffusivityModel/diffusivityModel.C
