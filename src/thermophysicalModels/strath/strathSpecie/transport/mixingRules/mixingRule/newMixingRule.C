@@ -35,14 +35,24 @@ Foam::mixingRule::New
     const compressibleTurbulenceModel& turbulence
 )
 {
-    const word partialMixingRuleName = word(thermo.transportDictionary()
-            .subDict("transportModels").lookup("mixingRule"));
-
+    word partialMixingRuleName = word::null;
+    
+    if (thermo.composition().species().size() == 1)
+    {
+        partialMixingRuleName = "molar";
+    }
+    else
+    {
+        partialMixingRuleName = thermo.transportDictionary()
+            .subDict("transportModels")
+            .lookupOrDefault<word>("mixingRule", "Wilke");
+    }
+    
     word mixingRuleName = partialMixingRuleName + word("MR")
         +'<' + thermo.partialThermoName() + '>';
 
-    Info<< "\nLoading the transport mixing rule:" << tab << partialMixingRuleName
-        << "\n" << endl;
+    Info<< "\nLoading the transport mixing rule:" << tab 
+        << partialMixingRuleName << "\n" << endl;
 
     fvMeshConstructorTable::iterator cstrIter =
         fvMeshConstructorTablePtr_->find(mixingRuleName);
