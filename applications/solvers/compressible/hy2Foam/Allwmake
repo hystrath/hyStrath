@@ -2,10 +2,6 @@
 cd ${0%/*} || exit 1    # run from this directory
 set -x
 
-(wmake libso BCs && wmake)
-
-cd DyM
-wmake
-cd ../
+(wmake libso BCs && wmake && wmake ./DyM)
 
 # ----------------------------------------------------------------- end-of-file

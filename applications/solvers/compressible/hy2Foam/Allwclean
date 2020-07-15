@@ -4,5 +4,6 @@ set -x
 
 wclean libso BCs
 wclean
+wclean ./DyM
 
 # ----------------------------------------------------------------- end-of-file

@@ -63,11 +63,11 @@ int main(int argc, char *argv[])
 {
     #define NO_CONTROL
     #include "postProcess.H"
-    
+
     #include "setRootCase.H"
     #include "createTime.H"
     #include "createDynamicFvMesh.H"
-    
+
     scalar currentIterationTime = 0.0;
     scalar previousIterationTime = 1.0;
     label noRefinement = 0;
@@ -75,33 +75,33 @@ int main(int argc, char *argv[])
     label noIteration = 1;
     label totNoIteration = 0;
     bool restart = false;
-    
+
     do
     {
         noRestart += 1;
-        
+
         restart = run
         (
             args,
             runTime,
             mesh,
-            currentIterationTime, 
+            currentIterationTime,
             previousIterationTime,
             noRefinement,
-            noRestart, 
+            noRestart,
             noIteration
         );
-        
+
         totNoIteration += noIteration - 1;
         noIteration = 1;
-        
+
     } while(restart);
-    
+
     Foam::rho2ReactionThermo::hasCrashedButRecoveredReport();
-    
+
     Info<< "Total no of Iterations " << totNoIteration << "\n"
         << "End\n" << endl;
-    
+
     return 0;
 }
 
@@ -119,11 +119,11 @@ bool run
 {
     #include "hy2Foam_createFields.H"
     #include "createDyMFields.H"
-    
+
     Info<< "\nStarting time loop\n" << endl;
-    
+
     label noSubRestart = 0;
-    
+
     while(runTime.run())
     {
         #include "hy2DyMFoam_solver.H"

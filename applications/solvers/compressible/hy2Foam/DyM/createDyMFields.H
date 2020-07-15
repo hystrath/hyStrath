@@ -27,6 +27,10 @@ bool useCustomAdapField = false;
 
 word adapFieldName =
     refineDict.subDict("dynamicRefineFvMeshCoeffs").lookup("field");
+    
+label refineInterval =
+    refineDict.subDict("dynamicRefineFvMeshCoeffs")
+              .lookupOrDefault<label>("refineInterval", GREAT);
 
 volScalarField adapField
 (

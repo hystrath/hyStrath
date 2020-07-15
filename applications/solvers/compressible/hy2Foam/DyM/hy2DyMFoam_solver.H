@@ -4,6 +4,7 @@
 #include "runTimeEditing/twoTemperatureDictModification.H"
 
 // --- Time control and local time stepping
+#include "numerics/compressibleCourantNo.H"
 #include "readTimeControls.H"
 #include "LTS/readLTSTimeControls.H"
 #include "setDeltaT.H"
@@ -33,12 +34,9 @@ if (mesh.changing())
         << " s" << endl;
 }
 
-// --- Upwind interpolation of primitive fields on faces
+// --- Directed interpolation of primitive fields onto faces
 #include "numerics/upwindInterpolation.H"
 #include "numerics/fluxesCalculation.H"
-
-// --- Time control
-#include "numerics/compressibleCourantNo.H"
 
         
 volScalarField muEff(turbulence->muEff());
@@ -50,7 +48,7 @@ if (activateLTS)
     #include "LTS/setrDeltaT.H"
 }
 
-// --- Re-set the switch/counter that serves as a warning if the 
+// --- Re-set the switch/counter that serves as a warning if the
 //     temperature goes unbounded
 thermo.resetTemperatureBoundingInfo();
 
@@ -76,10 +74,10 @@ else if (downgradeSingleTv)
     // --- Solve the vibrational energy equation
     // --- Solve the total energy equation
     //- inviscid
-    #include "eqns/evEqnInviscid_SingleTv.H" 
+    #include "eqns/evEqnInviscid_SingleTv.H"
     #include HY2FOAM_EXTERNAL_FILE_TOTENERGYIVC_EQN
     //- viscous
-    #include "eqns/evEqnViscous_SingleTv.H" 
+    #include "eqns/evEqnViscous_SingleTv.H"
     #include HY2FOAM_EXTERNAL_FILE_TOTENERGYVIS_EQN
 }
 else if (downgradeSingleVibMode)
@@ -87,7 +85,7 @@ else if (downgradeSingleVibMode)
     // --- Solve the vibrational energy equations
     // --- Solve the total energy equation
     //- inviscid
-    #include "eqns/evEqnInviscid.H" 
+    #include "eqns/evEqnInviscid.H"
     #include HY2FOAM_EXTERNAL_FILE_TOTENERGYIVC_EQN
     //- viscous
     #include "eqns/evEqnViscous.H"
@@ -101,7 +99,7 @@ else
     //#include "eqns/evEqn_MultiModes.H"
     //#include HY2FOAM_EXTERNAL_FILE_TOTENERGYIVC_EQN
     //- viscous
-    //#include HY2FOAM_EXTERNAL_FILE_TOTENERGYVIS_EQN 
+    //#include HY2FOAM_EXTERNAL_FILE_TOTENERGYVIS_EQN
 }
 
 // --- Pressure field calculation
@@ -120,9 +118,9 @@ rarefactionParameters().correct(U);
 // --- Print a report in the log file if temperature had to be bounded
 thermo.temperatureBoundingReport();
 
-if (runTime.outputTime())
+// --- Update field to base refinement on
+if ( (noIteration + 1)%refineInterval == 0 or runTime.outputTime())
 {
-    // --- Update field to base refinement on
     if (useCustomAdapField)
     {
         if (adapFieldName == "normalisedDensityGradient")
@@ -138,23 +136,26 @@ if (runTime.outputTime())
             adapField = mag(fvc::grad(Mach));
         }
     }
-    
+}
+
+if (runTime.outputTime())
+{
     runTime.write();
     #include "write/write.H"
-    
+
     #ifdef HY2FOAM_EXTERNAL_FILE_OUTPUT
     #include HY2FOAM_EXTERNAL_FILE_OUTPUT
     #endif
 }
 
-previousIterationTime = 
+previousIterationTime =
     max(runTime.elapsedCpuTime()-currentIterationTime, 1e-3);
-    
+
 Info<< "Phase no " << noRefinement << "/" << noRestart << "." << noSubRestart
     << "  ExecutionTime = " << runTime.elapsedCpuTime() << " s"
     << "  ClockTime = " << runTime.elapsedClockTime() << " s"
-    << "  Iteration no " << noIteration<<" (" << previousIterationTime 
+    << "  Iteration no " << noIteration<<" (" << previousIterationTime
     << " s)" << nl << endl;
-    
+
 currentIterationTime = runTime.elapsedCpuTime();
 noIteration += 1;
