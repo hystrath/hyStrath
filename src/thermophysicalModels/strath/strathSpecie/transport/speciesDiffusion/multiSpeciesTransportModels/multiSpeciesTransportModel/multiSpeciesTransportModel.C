@@ -183,17 +183,23 @@ Foam::multiSpeciesTransportModel::multiSpeciesTransportModel
     JGradp_(species().size()),
     JGradT_(species().size()),
 
-    useNonCorrected_(subDict("transportModels")
-        .subDict("diffusiveFluxesParameters")
-        .lookupOrDefault<bool>("useNonCorrectedForm", false)),
+    useNonCorrected_
+    (
+        subDict("transportModels").subDict("diffusiveFluxesParameters")
+            .lookupOrDefault<bool>("useNonCorrectedForm", false)
+    ),
     solvingForX_(false),
 
-    addPressureGradientTerm_(subDict("transportModels")
-        .subDict("diffusiveFluxesParameters")
-        .lookupOrDefault<bool>("addPressureGradientTerm", false)),
-    addTemperatureGradientTerm_(subDict("transportModels")
-        .subDict("diffusiveFluxesParameters")
-        .lookupOrDefault<bool>("addTemperatureGradientTerm", false))
+    addPressureGradientTerm_
+    (
+        subDict("transportModels").subDict("diffusiveFluxesParameters")
+            .lookupOrDefault<bool>("addPressureGradientTerm", false)
+    ),
+    addTemperatureGradientTerm_
+    (
+        subDict("transportModels").subDict("diffusiveFluxesParameters")
+            .lookupOrDefault<bool>("addTemperatureGradientTerm", false)
+    )
 {
     const word dictThermoPhy
     (

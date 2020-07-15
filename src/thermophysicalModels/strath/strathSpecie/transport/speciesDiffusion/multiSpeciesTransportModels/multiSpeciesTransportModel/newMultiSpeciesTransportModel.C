@@ -35,11 +35,18 @@ Foam::multiSpeciesTransportModel::New
     const compressible::turbulenceModel& turbulence
 )
 {
-    const word partialModelName = word(thermo.transportDictionary().subDict("transportModels").lookup("multiSpeciesTransport"));
+    const word partialModelName =
+        word
+        (
+            thermo.transportDictionary().subDict("transportModels")
+                .lookup("multiSpeciesTransport")
+        );
 
-    const word modelName = partialModelName + '<' + thermo.partialThermoName() + '>';
+    const word modelName = partialModelName + '<'
+        + thermo.partialThermoName() + '>';
 
-    Info<< "Loading the multispecies transport model:" << tab << partialModelName << "\n" << endl;
+    Info<< "Loading the multispecies transport model:" << tab
+        << partialModelName << "\n" << endl;
 
     fvMeshConstructorTable::iterator cstrIter =
         fvMeshConstructorTablePtr_->find(modelName);
@@ -56,9 +63,9 @@ Foam::multiSpeciesTransportModel::New
             << fvMeshConstructorTablePtr_->toc()
             << exit(FatalError);
     }
-
-  return autoPtr<multiSpeciesTransportModel>
-      (cstrIter()(thermo, turbulence));
+    
+    return autoPtr<multiSpeciesTransportModel>
+        (cstrIter()(thermo, turbulence));
 }
 
 

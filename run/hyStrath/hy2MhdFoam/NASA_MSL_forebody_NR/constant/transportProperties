@@ -50,15 +50,12 @@ transportModels
     //- Parameters for transport modelling
     diffusiveFluxesParameters
     {
-        useNonCorrectedForm            off;
-        
         addPressureGradientTerm        off;
         addTemperatureGradientTerm     off;
         
         LewisNumber                    1.4;
-        modifiedLewisNumber            1.77255e-5;
         
-        yearGuptaModel                 "1989";          
+        collisionDataModel    "Gupta1989D";          
         
         constantBinaryDiffusivityModelCoefficients
         {
@@ -269,13 +266,13 @@ collisionData
                 NO+_NO  (0 -0.0047 -0.0551 4.8737);
                 NO+_NO+	(0.1251 -3.5134 31.2277 -80.6515);
                 e-_N2		(0.1147 -2.8945 24.5080 -67.3691);
-              //  e-_O2   (0.0241 -0.3467 1.3887 -0.0110); // T = 1000-9000	K	
-              e-_O2		(0.0025 -0.0742 0.7235 -0.2116); // T = 9000-30000 K
+                e-_O2   (0.0241 -0.3467 1.3887 -0.0110); // T = 1000-9000	K	
+              //e-_O2		(0.0025 -0.0742 0.7235 -0.2116); // T = 9000-30000 K
                 e-_N		(0 0 0 1.6094);
-               // e-_O    (0.0164 -0.2431 1.1231 -1.5561); // T = 1000-9000	K	
-              e-_O		(-0.2027 5.6428 -51.5646 155.6091); // T = 9000-30,000 K
-              //  e-_NO   (-0.2202 5.2265 -40.5659 104.7126); // T = 1000-8000 K		
-              e-_NO		(-0.2871 8.3757 -81.3787 265.6292); // T = 8000-30,000 K
+                e-_O    (0.0164 -0.2431 1.1231 -1.5561); // T = 1000-9000	K	
+              //e-_O		(-0.2027 5.6428 -51.5646 155.6091); // T = 9000-30,000 K
+                e-_NO   (-0.2202 5.2265 -40.5659 104.7126); // T = 1000-8000 K		
+              //e-_NO		(-0.2871 8.3757 -81.3787 265.6292); // T = 8000-30,000 K
                 e-_NO+	(0.1251 -3.5134 31.2277 -80.6515);
                 e-_e-		(0.1251 -3.5134 31.2277 -80.6515);
                 N+_N2		(0 0 -0.4000 6.8543);
@@ -685,42 +682,6 @@ collisionData
         } 
       
         // TODO, TABLE NUMBER TO BE ADDED
-        Omega22
-        {
-            attractive
-            {
-                Cn  -0.146;
-                cn  0.0377;
-                Dn  1.262;
-            }
-            repulsive
-            {
-                Cn  0.157;
-                cn  0.0274; 
-                Dn  1.235;
-            }    
-        } 
-    }      
-}
-  
-    shieldedCoulombPotential
-    {
-        Omega11
-        {
-            attractive
-            {
-                Cn  -0.476;
-                cn  0.0313;
-                Dn  0.784;
-            }
-            repulsive
-            {
-                Cn  0.138;
-                cn  0.0106; 
-                Dn  0.765;
-            }
-        } 
-      
         Omega22
         {
             attractive

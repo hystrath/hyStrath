@@ -24,7 +24,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "GuptaD.H"
+#include "collisionDataD.H"
 #include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
@@ -33,11 +33,11 @@ namespace Foam
 {
     namespace binaryDiffusivityModels
     {
-        defineTypeNameAndDebug(GuptaD, 0);
+        defineTypeNameAndDebug(collisionDataD, 0);
         addToRunTimeSelectionTable
         (
             binaryDiffusivityModel,
-            GuptaD,
+            collisionDataD,
             dictionary
         );
     }
@@ -46,7 +46,7 @@ namespace Foam
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::binaryDiffusivityModels::GuptaD::GuptaD
+Foam::binaryDiffusivityModels::collisionDataD::collisionDataD
 (
     const word& name1,
     const word& name2,
@@ -59,18 +59,19 @@ Foam::binaryDiffusivityModels::GuptaD::GuptaD
 :
     binaryDiffusivityModel(name1, name2, dictThermo, dictTransport, p, pe, T)
 {
-    word year = word::null;
+    word collisionDataModel = word::null;
 
-    if(dictTransport.subDict("transportModels")
-        .subDict("diffusiveFluxesParameters").found("yearGuptaModel"))
+    if (dictTransport.subDict("transportModels")
+        .subDict("diffusiveFluxesParameters").found("collisionDataModel"))
     {
-        year = word(dictTransport.subDict("transportModels")
-            .subDict("diffusiveFluxesParameters").lookup("yearGuptaModel"));
+        collisionDataModel = word(dictTransport.subDict("transportModels")
+            .subDict("diffusiveFluxesParameters").lookup("collisionDataModel"));
     }
     else
     {
-        FatalErrorIn("void Foam::binaryDiffusivityModels::GuptaD::GuptaD(...)")
-            << "Entry 'yearGuptaModel' is missing in transportModels/diffusiveFluxesParameters."
+        FatalErrorIn("void Foam::binaryDiffusivityModels::collisionDataD::collisionDataD(...)")
+            << "Entry 'collisionDataModel' is missing in transportModels/"
+            << "diffusiveFluxesParameters."
             << exit(FatalError);
     }
 
@@ -80,22 +81,35 @@ Foam::binaryDiffusivityModels::GuptaD::GuptaD
         defaultList[i] = 0.0;
     }
 
-    if(dictTransport.subDict("collisionData").subDict("neutralNeutralInteractions")
-           .subDict("Gupta"+year+"D").subDict("Dbar").found(name1+"_"+name2))
+    if
+    (
+        dictTransport.subDict("collisionData")
+            .subDict("neutralNeutralInteractions").subDict(collisionDataModel)
+            .subDict("Dbar").found(name1+"_"+name2)
+    )
     {
-        Dbar_ = dictTransport.subDict("collisionData").subDict("neutralNeutralInteractions")
-           .subDict("Gupta"+year+"D").subDict("Dbar").lookupOrDefault<FixedList<scalar,4>>(name1+"_"+name2, defaultList);
+        Dbar_ = dictTransport.subDict("collisionData")
+            .subDict("neutralNeutralInteractions")
+            .subDict(collisionDataModel).subDict("Dbar")
+            .lookupOrDefault<FixedList<scalar,4>>(name1+"_"+name2, defaultList);
     }
-    else if(dictTransport.subDict("collisionData").subDict("neutralNeutralInteractions")
-           .subDict("Gupta"+year+"D").subDict("Dbar").found(name2+"_"+name1))
+    else if
+    (
+        dictTransport.subDict("collisionData")
+            .subDict("neutralNeutralInteractions").subDict(collisionDataModel)
+            .subDict("Dbar").found(name2+"_"+name1)
+    )
     {
-        Dbar_ = dictTransport.subDict("collisionData").subDict("neutralNeutralInteractions")
-           .subDict("Gupta"+year+"D").subDict("Dbar").lookupOrDefault<FixedList<scalar,4>>(name2+"_"+name1, defaultList);
+        Dbar_ = dictTransport.subDict("collisionData")
+            .subDict("neutralNeutralInteractions")
+            .subDict(collisionDataModel).subDict("Dbar")
+            .lookupOrDefault<FixedList<scalar,4>>(name2+"_"+name1, defaultList);
     }
     else
     {
-        FatalErrorIn("void Foam::binaryDiffusivityModels::GuptaD::GuptaD(...)")
-            << "Collision integral data missing for species couple (" << name1 << ", " << name2 << ")."
+        FatalErrorIn("void Foam::binaryDiffusivityModels::collisionDataD::collisionDataD(...)")
+            << "Collision integral data missing for species couple (" 
+            << name1 << ", " << name2 << ")."
             << exit(FatalError);
     }
 
@@ -105,7 +119,7 @@ Foam::binaryDiffusivityModels::GuptaD::GuptaD
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
 Foam::tmp<Foam::volScalarField>
-Foam::binaryDiffusivityModels::GuptaD::D() const
+Foam::binaryDiffusivityModels::collisionDataD::D() const
 {
     const fvMesh& mesh = this->T_.mesh();
 
@@ -151,7 +165,7 @@ Foam::binaryDiffusivityModels::GuptaD::D() const
 
 
 Foam::tmp<Foam::scalarField>
-Foam::binaryDiffusivityModels::GuptaD::D
+Foam::binaryDiffusivityModels::collisionDataD::D
 (
     const scalarField& p,
     const scalarField& T,
@@ -171,7 +185,7 @@ Foam::binaryDiffusivityModels::GuptaD::D
 
 
 Foam::tmp<Foam::scalarField>
-Foam::binaryDiffusivityModels::GuptaD::D
+Foam::binaryDiffusivityModels::collisionDataD::D
 (
     const scalarField& p,
     const scalarField& pe,

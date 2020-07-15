@@ -113,10 +113,27 @@ Foam::autoPtr<Foam::binaryDiffusivityModel> Foam::binaryDiffusivityModel::New
             dictTransport.subDict("transportModels")
                 .lookup("binaryDiffusivityModel")
          );
+    
+    word binaryDiffusivityModelsubTypeName = word::null;
+    
+    if (binaryDiffusivityModelTypeName == "collisionData")
+    {
+        binaryDiffusivityModelsubTypeName =
+            word
+            (
+                dictTransport.subDict("transportModels")
+                    .subDict("diffusiveFluxesParameters")
+                    .lookup("collisionDataModel")
+            ).back();
+    }
 
     dictionaryConstructorTable::iterator cstrIter =
-        dictionaryConstructorTablePtr_->find(binaryDiffusivityModelTypeName);
-
+        dictionaryConstructorTablePtr_->find
+        (
+            binaryDiffusivityModelTypeName
+          + binaryDiffusivityModelsubTypeName
+        );
+    
     if (cstrIter == dictionaryConstructorTablePtr_->end())
     {
         FatalErrorIn
@@ -125,8 +142,10 @@ Foam::autoPtr<Foam::binaryDiffusivityModel> Foam::binaryDiffusivityModel::New
             "const surfaceScalarField&)"
         )   << "Unknown binaryDiffusivityModel type "
             << binaryDiffusivityModelTypeName << endl << endl
-            << "Valid  binaryDiffusivityModels are : " << endl
-            << dictionaryConstructorTablePtr_->toc()
+            << "Valid binaryDiffusivityModels are: " << endl
+            << dictionaryConstructorTablePtr_->toc() << nl
+            << "NB: for the 'collisionData' model, the last letter, D or O, "
+            << "may be omitted"
             << exit(FatalError);
     }
 
@@ -151,9 +170,26 @@ Foam::autoPtr<Foam::binaryDiffusivityModel> Foam::binaryDiffusivityModel::New
             dictTransport.subDict("transportModels")
                 .lookup("binaryDiffusivityModel")
          );
+    
+    word binaryDiffusivityModelsubTypeName = word::null;
+    
+    if (binaryDiffusivityModelTypeName == "collisionData")
+    {
+        binaryDiffusivityModelsubTypeName =
+            word
+            (
+                dictTransport.subDict("transportModels")
+                    .subDict("diffusiveFluxesParameters")
+                    .lookup("collisionDataModel")
+            ).back();
+    }
 
     dictionaryConstructorTable::iterator cstrIter =
-        dictionaryConstructorTablePtr_->find(binaryDiffusivityModelTypeName);
+        dictionaryConstructorTablePtr_->find
+        (
+            binaryDiffusivityModelTypeName
+          + binaryDiffusivityModelsubTypeName
+        );
 
     if (cstrIter == dictionaryConstructorTablePtr_->end())
     {
@@ -163,8 +199,10 @@ Foam::autoPtr<Foam::binaryDiffusivityModel> Foam::binaryDiffusivityModel::New
             "const surfaceScalarField&)"
         )   << "Unknown binaryDiffusivityModel type "
             << binaryDiffusivityModelTypeName << endl << endl
-            << "Valid  binaryDiffusivityModels are : " << endl
-            << dictionaryConstructorTablePtr_->toc()
+            << "Valid binaryDiffusivityModels are: " << endl
+            << dictionaryConstructorTablePtr_->toc() << nl
+            << "NB: for the 'collisionData' model, the last letter, D or O, "
+            << "may be omitted"
             << exit(FatalError);
     }
 

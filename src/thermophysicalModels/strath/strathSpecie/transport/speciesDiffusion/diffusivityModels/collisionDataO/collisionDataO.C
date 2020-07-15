@@ -24,7 +24,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "GuptaO.H"
+#include "collisionDataO.H"
 #include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
@@ -33,11 +33,11 @@ namespace Foam
 {
     namespace binaryDiffusivityModels
     {
-        defineTypeNameAndDebug(GuptaO, 0);
+        defineTypeNameAndDebug(collisionDataO, 0);
         addToRunTimeSelectionTable
         (
             binaryDiffusivityModel,
-            GuptaO,
+            collisionDataO,
             dictionary
         );
     }
@@ -45,7 +45,7 @@ namespace Foam
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::binaryDiffusivityModels::GuptaO::GuptaO
+Foam::binaryDiffusivityModels::collisionDataO::collisionDataO
 (
     const word& name1,
     const word& name2,
@@ -58,26 +58,45 @@ Foam::binaryDiffusivityModels::GuptaO::GuptaO
 :
     binaryDiffusivityModel(name1, name2, dictThermo, dictTransport, p, pe, T),
 
-    W1_(readScalar(dictThermo.subDict(name1).subDict("specie").lookup("molWeight"))*1.0e-3),
-    W2_(readScalar(dictThermo.subDict(name2).subDict("specie").lookup("molWeight"))*1.0e-3),
+    W1_
+    (
+        readScalar
+        (
+            dictThermo.subDict(name1).subDict("specie").lookup("molWeight")
+        )*1.0e-3
+    ),
+    W2_
+    (
+        readScalar
+        (
+            dictThermo.subDict(name2).subDict("specie").lookup("molWeight")
+        )*1.0e-3
+    ),
     pi(Foam::constant::mathematical::pi),
     kB(Foam::constant::physicoChemical::k.value()),
     Runi(Foam::constant::physicoChemical::R.value()),
-    constantFactorInCollisionTerm_(8.0e-20*sqrt(2.0*W1_*W2_/(pi*Runi*(W1_+W2_)))),
+    constantFactorInCollisionTerm_
+    (
+        8.0e-20*sqrt(2.0*W1_*W2_/(pi*Runi*(W1_+W2_)))
+    ),
     e4OverkB2_(pow(4.8032e-10, 4.0)/sqr(kB))
 {
-    word year = word::null;
+    word collisionDataModel = word::null;
 
-    if(dictTransport.subDict("transportModels")
-        .subDict("diffusiveFluxesParameters").found("yearGuptaModel"))
+    if
+    (
+        dictTransport.subDict("transportModels")
+            .subDict("diffusiveFluxesParameters").found("collisionDataModel")
+    )
     {
-        year = word(dictTransport.subDict("transportModels")
-            .subDict("diffusiveFluxesParameters").lookup("yearGuptaModel"));
+        collisionDataModel = word(dictTransport.subDict("transportModels")
+            .subDict("diffusiveFluxesParameters").lookup("collisionDataModel"));
     }
     else
     {
-        FatalErrorIn("void Foam::binaryDiffusivityModels::GuptaO::GuptaO(...)")
-            << "Entry 'yearGuptaModel' is missing in transportModels/diffusiveFluxesParameters."
+        FatalErrorIn("void Foam::binaryDiffusivityModels::collisionDataO::collisionDataO(...)")
+            << "Entry 'collisionDataModel' is missing in transportModels/"
+            << "diffusiveFluxesParameters."
             << exit(FatalError);
     }
 
@@ -87,22 +106,36 @@ Foam::binaryDiffusivityModels::GuptaO::GuptaO
         defaultList[i] = 0.0;
     }
 
-    if(dictTransport.subDict("collisionData").subDict("neutralNeutralInteractions")
-           .subDict("Gupta"+year+"O").subDict("Omega11").found(name1+"_"+name2))
+    if
+    (
+        dictTransport.subDict("collisionData")
+            .subDict("neutralNeutralInteractions").subDict(collisionDataModel)
+            .subDict("Omega11").found(name1+"_"+name2)
+    )
     {
-        piOmega1_ = dictTransport.subDict("collisionData").subDict("neutralNeutralInteractions")
-           .subDict("Gupta"+year+"O").subDict("Omega11").lookupOrDefault<FixedList<scalar,4>>(name1+"_"+name2, defaultList);
+        piOmega1_ = dictTransport.subDict("collisionData")
+            .subDict("neutralNeutralInteractions")
+            .subDict(collisionDataModel).subDict("Omega11")
+            .lookupOrDefault<FixedList<scalar,4>>(name1+"_"+name2, defaultList);
     }
-    else if(dictTransport.subDict("collisionData").subDict("neutralNeutralInteractions")
-           .subDict("Gupta"+year+"O").subDict("Omega11").found(name2+"_"+name1))
+    else if
+    (
+        dictTransport.subDict("collisionData")
+            .subDict("neutralNeutralInteractions")
+            .subDict(collisionDataModel)
+            .subDict("Omega11").found(name2+"_"+name1)
+    )
     {
-        piOmega1_ = dictTransport.subDict("collisionData").subDict("neutralNeutralInteractions")
-           .subDict("Gupta"+year+"O").subDict("Omega11").lookupOrDefault<FixedList<scalar,4>>(name2+"_"+name1, defaultList);
+        piOmega1_ = dictTransport.subDict("collisionData")
+            .subDict("neutralNeutralInteractions")
+            .subDict(collisionDataModel).subDict("Omega11")
+            .lookupOrDefault<FixedList<scalar,4>>(name2+"_"+name1, defaultList);
     }
     else
     {
-        FatalErrorIn("void Foam::binaryDiffusivityModels::GuptaO::GuptaO(...)")
-            << "Gupta's 1990 curve fit data missing for species couple (" << name1 << ", " << name2 << ")."
+        FatalErrorIn("void Foam::binaryDiffusivityModels::collisionDataO::collisionDataO(...)")
+            << "Gupta's 1990 curve fit data missing for species couple ("
+            << name1 << ", " << name2 << ")."
             << exit(FatalError);
     }
 }
@@ -110,7 +143,7 @@ Foam::binaryDiffusivityModels::GuptaO::GuptaO
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
 Foam::tmp<Foam::volScalarField>
-Foam::binaryDiffusivityModels::GuptaO::D() const
+Foam::binaryDiffusivityModels::collisionDataO::D() const
 {
     const fvMesh& mesh = this->T_.mesh();
 
@@ -157,7 +190,7 @@ Foam::binaryDiffusivityModels::GuptaO::D() const
 }
 
 
-Foam::tmp<Foam::scalarField> Foam::binaryDiffusivityModels::GuptaO::D
+Foam::tmp<Foam::scalarField> Foam::binaryDiffusivityModels::collisionDataO::D
 (
     const scalarField& p,
     const scalarField& T,
@@ -177,7 +210,7 @@ Foam::tmp<Foam::scalarField> Foam::binaryDiffusivityModels::GuptaO::D
 }
 
 
-Foam::tmp<Foam::scalarField> Foam::binaryDiffusivityModels::GuptaO::D
+Foam::tmp<Foam::scalarField> Foam::binaryDiffusivityModels::collisionDataO::D
 (
     const scalarField& p,
     const scalarField& pe,

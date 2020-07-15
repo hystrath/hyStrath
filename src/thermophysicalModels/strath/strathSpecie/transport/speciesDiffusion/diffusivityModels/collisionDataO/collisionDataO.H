@@ -23,33 +23,18 @@ License
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 Class
-    Foam::binaryDiffusivityModels::GuptaO
+    Foam::binaryDiffusivityModels::collisionDataO
 
 Description
-    GuptaO binary diffusivity model.
-
-    See:
-    R. N. Gupta, J. M. Yos, R. A. Thompson, and A. Richard 1989
-    A Review of Reaction Rates and Thermodynamic and Transport Properties
-    for the 11-Species Air Model for Chemical and Thermal Nonequilbrium
-    Calculations to 30000 K.
-    NASA TM-101528
-
-    and
-
-    R. N. Gupta, J. M. Yos, R. A. Thompson, and K.-P. Lee. 1990
-    A Review of Reaction Rates and Thermodynamic and Transport Properties for
-    an 11-Species Air Model for Chemical and Thermal Nonequilbrium Calculations
-    to 30000 K.
-    NASA RP-1232
+    collisionDataO binary diffusivity model
 
 SourceFiles
-    GuptaO.C
+    collisionDataO.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef GuptaO_H
-#define GuptaO_H
+#ifndef collisionDataO_H
+#define collisionDataO_H
 
 #include "binaryDiffusivityModel.H"
 #include "dimensionedScalar.H"
@@ -65,10 +50,10 @@ namespace binaryDiffusivityModels
 {
 
 /*---------------------------------------------------------------------------*\
-                           Class GuptaO Declaration
+                       Class collisionDataO Declaration
 \*---------------------------------------------------------------------------*/
 
-class GuptaO
+class collisionDataO
 :
     public binaryDiffusivityModel
 {
@@ -205,13 +190,13 @@ class GuptaO
 public:
 
     //- Runtime type information
-    TypeName("GuptaO");
+    TypeName("collisionDataO");
 
 
     // Constructors
 
         //- construct from components
-        GuptaO
+        collisionDataO
         (
             const word& name1,
             const word& name2,
@@ -225,7 +210,7 @@ public:
 
     // Destructor
 
-        ~GuptaO()
+        ~collisionDataO()
         {}
 
 
