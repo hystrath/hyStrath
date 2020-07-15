@@ -342,12 +342,6 @@ void dsmcLiouFangPressureOutletCalculatedMolarFraction::controlParcelsBeforeMove
                         vibLevel
                     );
 
-                    // track this parcel as having crossed the boundary face
-                    // this is justified because the trackFraction of the parcel is
-                    // initialized as a random value in the interval [0, 1].
-                    // cf. dsmcParcel::move newParcel handling.
-                    cloud_.tracker().trackFaceTransition(typeId, U, RWF, faces_[f]);
-
                     nTotalParcelsAdded++;
                     parcelsInserted[iD]++;
                 }

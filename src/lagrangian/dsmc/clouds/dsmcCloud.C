@@ -421,6 +421,16 @@ void Foam::dsmcCloud::addNewParcel
         vibLevel
     );
 
+    // parcels that have been freshly injected on boundary patch faces should
+    // be tracked as having crossed that boundary patch face in the time step
+    // in which they have been inserted. This is justified as the trackFraction
+    // is initialized to a random value in the interval [0, 1] (cf.
+    // dsmcParcel::move newParcel handling).
+    if (newParcel != -1)
+    {
+        tracker().trackFaceTransition(typeId, U, RWF, tetFaceI);
+    }
+
     porousMeas().additionInteraction(*pPtr, newParcel);
 
     addParticle(pPtr);
