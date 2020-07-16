@@ -305,7 +305,7 @@ void dsmcLiouFangPressureOutletSpecifiedMolarFraction::controlParcelsBeforeMove(
                     typeId
                 );
 
-                label newParcel = 1;
+                label newParcel = patchId();
 
                 label ELevel = cloud_.equipartitionElectronicLevel
                 (
