@@ -1,11 +1,5 @@
 <h1 align="center">hyStrath</h1>  
 
-<p align="center">
-  <a href="https://github.com/vincentcasseau/hyStrath/wiki">
-    <img src="https://github.com/vincentcasseau/hyStrath/blob/master/doc/images/satelliteMachLogo.png" width="200">
-  </a>
-</p>
-
 #### Hypersonic / Rarefied gas dynamics code developments released under license GPL-3.0 
 #### The only platform to conjointly host open-source CFD and DSMC codes designed for atmospheric re-entry analysis
 
