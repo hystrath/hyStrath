@@ -148,12 +148,12 @@ void dsmcDynamicLoadBalancing::copyPolyMeshToLatestTimeFolder() const
         for (label i=0; i<Pstream::nProcs(); i++)
         {
             const word findStartTime =
-                "starting=`foamListTimes -processor -withZero -startTime`;";
+                "starting=$(foamListTimes -processor -withZero -startTime);";
 
             if (findStartTime != "0")
             {
                 const word findLatestTime =
-                    "latest=`foamListTimes -processor -withZero -latestTime`;";
+                    "latest=$(foamListTimes -processor -withZero -latestTime);";
                 const word findTimes = findStartTime + findLatestTime;
                 const word processorName = "processor" + name(i) + "/";
                 const word copyPolyMesh = findTimes + "cp -r "
@@ -182,7 +182,7 @@ void dsmcDynamicLoadBalancing::perform(const int noRefinement)
             Foam::system("rm -r processor*");
 
             const word decomposePar =
-                word("timeDirs=`foamListTimes -noZero`;")
+                word("timeDirs=$(foamListTimes -noZero);")
                 // check if there are any time dirs, if not this indicates a
                 // fatal error
                 + word("if [ -z ${timeDirs+x} ];")
@@ -212,7 +212,7 @@ void dsmcDynamicLoadBalancing::perform(const int noRefinement)
                     word("if [ \"$(ls -A resultFolders)\" ];")
                     + word("then mv resultFolders/* .; fi;")
                     // total number of time directories
-                    + word("timeDirs=`foamListTimes`;")
+                    + word("timeDirs=$(foamListTimes);")
                     + word("nTimeDirs=$(echo $timeDirs | tr -cd ' ' | wc -c);")
                     + word("nTimeDirs=$((nTimeDirs+1));")
                     // convert OpenFOAM label to shell variable for limit
@@ -238,7 +238,7 @@ void dsmcDynamicLoadBalancing::perform(const int noRefinement)
                 // keep all time dirs in the backup dir
                 Foam::system
                 (
-                    "timeDirs=`foamListTimes`; mv $timeDirs resultFolders/"
+                    "timeDirs=$(foamListTimes); mv $timeDirs resultFolders/"
                 );
             }
 
