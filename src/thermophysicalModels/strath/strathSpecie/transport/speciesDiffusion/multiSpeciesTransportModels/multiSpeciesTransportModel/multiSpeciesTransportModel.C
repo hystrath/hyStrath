@@ -82,17 +82,17 @@ void Foam::multiSpeciesTransportModel::calculateJ
 }
 
 
-void Foam::multiSpeciesTransportModel::calculateSumDiffusiveFluxes()
+void Foam::multiSpeciesTransportModel::calculateSumDiffusionFluxes()
 {
-    // Uses the non-corrected diffusive fluxes for the calculation
-    // of the diffusive fluxes
-    sumDiffusiveFluxes_ = JnonCorrected_[0];
+    // Uses the non-corrected diffusion fluxes for the calculation
+    // of the diffusion fluxes
+    sumDiffusionFluxes_ = JnonCorrected_[0];
 
     for(label speciej=1 ; speciej < species().size(); speciej++)
     {
         if (thermo_.composition().particleType(speciej) != 0)
         {
-            sumDiffusiveFluxes_ += JnonCorrected_[speciej];
+            sumDiffusionFluxes_ += JnonCorrected_[speciej];
         }
     }
 }
@@ -104,7 +104,7 @@ Foam::multiSpeciesTransportModel::Jcorrected(const label i) const
     if ((thermo_.composition().particleType(i) != 0) and (not useNonCorrected_))
     {
         return JnonCorrected_[i]
-            - thermo_.composition().Y(i)*sumDiffusiveFluxes_;
+            - thermo_.composition().Y(i)*sumDiffusionFluxes_;
     }
     else
     {
@@ -161,11 +161,11 @@ Foam::multiSpeciesTransportModel::multiSpeciesTransportModel
     spMassFlux_(species().size()),
     JnonCorrected_(species().size()),
 
-    sumDiffusiveFluxes_
+    sumDiffusionFluxes_
     (
         IOobject
         (
-            "sumDiffusiveFluxes",
+            "sumDiffusionFluxes",
             mesh_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
@@ -174,7 +174,7 @@ Foam::multiSpeciesTransportModel::multiSpeciesTransportModel
         mesh_,
         dimensionedVector
         (
-            "sumDiffusiveFluxes",
+            "sumDiffusionFluxes",
             dimMass/dimArea/dimTime, vector::zero
         )
     ),
@@ -184,19 +184,19 @@ Foam::multiSpeciesTransportModel::multiSpeciesTransportModel
 
     useNonCorrected_
     (
-        subDict("transportModels").subDict("diffusiveFluxesParameters")
+        subDict("transportModels").subDict("diffusionModelParameters")
             .lookupOrDefault<bool>("useNonCorrectedForm", false)
     ),
     solvingForX_(false),
 
     addPressureGradientTerm_
     (
-        subDict("transportModels").subDict("diffusiveFluxesParameters")
+        subDict("transportModels").subDict("diffusionModelParameters")
             .lookupOrDefault<bool>("addPressureGradientTerm", false)
     ),
     addTemperatureGradientTerm_
     (
-        subDict("transportModels").subDict("diffusiveFluxesParameters")
+        subDict("transportModels").subDict("diffusionModelParameters")
             .lookupOrDefault<bool>("addTemperatureGradientTerm", false)
     )
 {
@@ -205,43 +205,30 @@ Foam::multiSpeciesTransportModel::multiSpeciesTransportModel
         fileName(thermo.lookup("foamChemistryThermoFile")).name()
     );
 
-    const word partialModelName = word(thermo.transportDictionary()
-        .subDict("transportModels").lookup("multiSpeciesTransport"));
+    const word partialModelName =
+        word
+        (
+            thermo.transportDictionary()
+                .subDict("transportModels").lookup("multiSpeciesTransport")
+        );
 
     if (partialModelName == "SCEBD")
     {
         solvingForX_ = true;
     }
 
-    if (thermo.composition().species().contains("e-"))
-    {
-        DijModel_.set
+    DijModel_.set
+    (
+        new diffusionModel
         (
-            new diffusivityModel
-            (
-                IOdictionary::name(),
-                dictThermoPhy,
-                thermo.p(),
-                thermo.composition().pP("e-"),
-                thermo.Tt(),
-                species()
-             )
-        );
-    }
-    else
-    {
-        DijModel_.set
-        (
-            new diffusivityModel
-            (
-                IOdictionary::name(),
-                dictThermoPhy,
-                thermo.p(),
-                thermo.Tt(),
-                species()
-             )
-        );
-    }
+            IOdictionary::name(),
+            dictThermoPhy,
+            thermo.p(),
+            thermo.pe(),
+            thermo.Tt(),
+            species()
+         )
+    );
 
     forAll(species(), speciei)
     {

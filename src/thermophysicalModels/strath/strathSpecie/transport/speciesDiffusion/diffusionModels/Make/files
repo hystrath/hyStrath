@@ -1,0 +1,12 @@
+
+binaryDiffusionModel/binaryDiffusionModel.C
+
+noBinaryDiffusionModel/noBinaryDiffusionModel.C
+constantBinaryDiffusionModel/constantBinaryDiffusionModel.C
+collisionDataD/collisionDataD.C
+collisionDataO/collisionDataO.C
+Stephani/Stephani.C
+
+diffusionModel/diffusionModel.C
+
+LIB = $(FOAM_USER_LIBBIN)/libdiffusionModels

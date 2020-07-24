@@ -54,11 +54,11 @@ Foam::multiSpeciesTransportModel::New
     {
         FatalErrorIn
         (
-            "DiffusivityModel::New(const volVectorField&, "
+            "DiffusionModel::New(const volVectorField&, "
             "const surfaceScalarField&)"
-        )   << "Unknown diffusivityModel type "
+        )   << "Unknown diffusionModel type "
             << modelName << endl << endl
-            << "Valid  diffusivityModels are : " << endl
+            << "Valid diffusionModels are : " << endl
             << fvMeshConstructorTablePtr_->toc()
             << exit(FatalError);
     }

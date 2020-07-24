@@ -138,7 +138,7 @@ void Foam::Fick<ThermoType>::correct()
         calculateJ(speciei);
     }
 
-    calculateSumDiffusiveFluxes();
+    calculateSumDiffusionFluxes();
 }
 
 

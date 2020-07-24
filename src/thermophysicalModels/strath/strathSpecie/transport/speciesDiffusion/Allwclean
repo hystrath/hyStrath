@@ -3,7 +3,7 @@ cd ${0%/*} || exit 1    # run from this directory
 makeType=${1:-libso}
 set -x
 
-wclean $makeType diffusivityModels
+wclean $makeType diffusionModels
 wclean $makeType multiSpeciesTransportModels
 
 # ----------------------------------------------------------------- end-of-file

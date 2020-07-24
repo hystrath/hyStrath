@@ -143,7 +143,7 @@ void Foam::SCEBD<ThermoType>::correct()
         calculateJ(speciei);
     }
 
-    calculateSumDiffusiveFluxes();
+    calculateSumDiffusionFluxes();
 }
 
 

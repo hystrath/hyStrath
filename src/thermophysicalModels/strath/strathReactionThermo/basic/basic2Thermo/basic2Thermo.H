@@ -67,15 +67,12 @@ protected:
 
             //- Pressure [Pa]
             volScalarField& p_;
+            
+            //- Electron pressure [Pa]
+            volScalarField pe_;
 
             //- Overall temperature [K]
             volScalarField T_;
-
-            //- Laminar thermal diffusivity [kg/m/s]
-            //volScalarField alpha_;
-
-        //- Should the dpdt term be included in the enthalpy equation
-        //Switch dpdt_;
 
 
     // Protected Member Functions
@@ -241,6 +238,13 @@ public:
 
             //- Pressure [Pa]
             virtual const volScalarField& p() const;
+            
+            //- Electron pressure [Pa]
+            //  Non-const access allowed for transport equations
+            virtual volScalarField& pe();
+
+            //- Electron pressure [Pa]
+            virtual const volScalarField& pe() const;
 
             //- Density [kg/m^3]
             virtual tmp<volScalarField> rho() const = 0;

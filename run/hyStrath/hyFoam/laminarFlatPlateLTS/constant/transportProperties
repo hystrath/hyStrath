@@ -44,13 +44,13 @@ transportModels
     writeWallHeatFlux              on;
     
     multiSpeciesTransport          noSpeciesDiffusion;
-    binaryDiffusivityModel         noBinaryDiffusivityModel;
+    binaryDiffusionModel         noBinaryDiffusionModel;
     
     
     //- Parameters for transport modelling
     correctedArmalySutton          off;
     
-    diffusiveFluxesParameters
+    diffusionModelParameters
     {
         addPressureGradientTerm        off;
         addTemperatureGradientTerm     off;
@@ -59,7 +59,7 @@ transportModels
         
         collisionDataModel    "Gupta1989D";          
         
-        constantBinaryDiffusivityModelCoefficients
+        constantBinaryDiffusionModelCoefficients
         {
             allSpecies                 1.0e-5;
         }
@@ -69,7 +69,7 @@ transportModels
     
 collisionData
 {
-    neutralNeutralInteractions
+    tabulatedInteractions
     { 
         // NASA-TM-101528 (Gupta, Yos, Thompson: Feb. 1989)
         // Document ID: 19890011822

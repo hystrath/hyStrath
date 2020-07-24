@@ -82,7 +82,7 @@ Foam::multiSpeciesTransportModel::Jcorr(const label i) const
 inline const Foam::volVectorField&
 Foam::multiSpeciesTransportModel::sumDiffusiveFluxes() const
 {
-    return sumDiffusiveFluxes_;
+    return sumDiffusionFluxes_;
 }
 
 

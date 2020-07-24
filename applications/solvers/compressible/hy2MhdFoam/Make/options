@@ -10,7 +10,7 @@ EXE_INC = \
     -I$(WM_PROJECT_USER_DIR)/src/thermophysicalModels/strath/strathSpecie/lnInclude \
     -I$(WM_PROJECT_USER_DIR)/src/thermophysicalModels/strath/strathReactionThermo/lnInclude \
     -I$(WM_PROJECT_USER_DIR)/src/thermophysicalModels/strath/strathChemistryModel/lnInclude \
-    -I$(WM_PROJECT_USER_DIR)/src/thermophysicalModels/strath/strathSpecie/transport/speciesDiffusion/diffusivityModels/lnInclude \
+    -I$(WM_PROJECT_USER_DIR)/src/thermophysicalModels/strath/strathSpecie/transport/speciesDiffusion/diffusionModels/lnInclude \
     -I$(WM_PROJECT_USER_DIR)/src/thermophysicalModels/strath/strathSpecie/transport/speciesDiffusion/multiSpeciesTransportModels/lnInclude \
     -I$(WM_PROJECT_USER_DIR)/src/thermophysicalModels/strath/strathSpecie/relaxationTimes/relaxationTimeModels/lnInclude \
     -I$(WM_PROJECT_USER_DIR)/src/thermophysicalModels/strath/strathSpecie/rarefied/rarefactionParameters/lnInclude \
@@ -31,7 +31,7 @@ EXE_LIBS = \
     -lstrathSpecie \
     -lstrathReactionThermophysicalModels \
     -lstrathChemistryModel \
-    -ldiffusivityModels \
+    -ldiffusionModels \
     -lmultiSpeciesTransportModels \
     -lVTRelaxationModels \
     -lVVRelaxationModels \

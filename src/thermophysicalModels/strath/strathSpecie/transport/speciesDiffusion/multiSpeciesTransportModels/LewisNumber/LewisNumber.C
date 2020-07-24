@@ -76,7 +76,7 @@ Foam::LewisNumber<ThermoType>::LewisNumber
     Fick<ThermoType>(thermo, turbulence),
 
     Le_(readScalar(IOdictionary::subDict("transportModels")
-        .subDict("diffusiveFluxesParameters").lookup("LewisNumber")))
+        .subDict("diffusionModelParameters").lookup("LewisNumber")))
 {}
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

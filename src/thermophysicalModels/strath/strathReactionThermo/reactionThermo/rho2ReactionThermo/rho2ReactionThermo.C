@@ -108,7 +108,6 @@ void Foam::rho2ReactionThermo::correctChemFractions()
 
         if(speciei < Y.size() - 1) // NEW VINCENT 25/04/2016
         // This loop ensures that the sum of the chemical quantities are bounded
-        // (needs to be < Y.size()-1 to be activated)
         {
             forAll(pCells, celli)
             {
@@ -180,7 +179,18 @@ void Foam::rho2ReactionThermo::correctChemFractions()
             }
         }//end species loop
     }//end patches loop
-
+    
+    // Calculation of the electron pressure 
+    if (composition().contains("e-"))
+    {
+        this->pe_ = composition().pP("e-");
+    }
+    else
+    {
+        this->pe_.primitiveFieldRef() = 0.0;
+        this->pe_.boundaryFieldRef() = 0.0;
+    }
+    
     Wmix = composition().molWeightMixture(); // NEW VINCENT 26/04/2017
 }
 
