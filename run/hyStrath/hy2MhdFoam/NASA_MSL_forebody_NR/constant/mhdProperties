@@ -15,21 +15,26 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-mhd             false;
+active          false;
 
 mhdModel        noMHD;
 
 collisionData   constant;
 
-conductivityModel Bush;
-
-T0              12000;
-
-n               2;
-
-sigma0          5100;
+electricalConductivityModel Bush;
 
 hallEffect      false;
 
+constantElectricalConductivityCoeffs
+{
+    value           5100;
+}
+
+BushCoeffs
+{
+    sigma0          5100;
+    T0              12000;
+    n               2;
+}
 
 // ************************************************************************* //

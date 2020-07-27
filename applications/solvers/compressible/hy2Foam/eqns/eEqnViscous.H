@@ -16,7 +16,7 @@ if (!inviscid)
       ==
         fvOptions(rho, e)
     );
-    
+
     if (speciesDiffusionName != "noSpeciesDiffusion")
     {
         eEqnViscous += 
@@ -32,9 +32,9 @@ if (!inviscid)
     fvOptions.constrain(eEqnViscous);
     
     eEqnViscous.solve();
-    
+
     fvOptions.correct(e);
-    
+
     et.ref() = e() - ev();
     et.correctBoundaryConditions();
     e.boundaryFieldRef() = et.boundaryField() + ev.boundaryField();
@@ -42,7 +42,7 @@ if (!inviscid)
     rhoE = rho*(e + 0.5*magSqr(U));
 }
 
-if (hyLight) 
+if (hyLight)
 {
     thermo.correct2T_Light();
 }
@@ -51,4 +51,3 @@ else
     thermo.correct2T();
     thermo.correctOverallTemperature();
 }
-

@@ -1,0 +1,16 @@
+/* MHD models */
+mhdModel/mhdModel.C
+mhdModel/mhdModelNew.C
+noMHD/noMHD.C
+lowReMag/lowReMag.C
+
+/* Electrical conductivity models */
+submodels/electricalConductivityModels/electricalConductivityModel/electricalConductivityModel.C
+submodels/electricalConductivityModels/constant/constantElectricalConductivity.C
+submodels/electricalConductivityModels/Bush/Bush.C
+submodels/electricalConductivityModels/Raizer/Raizer.C
+submodels/electricalConductivityModels/ChapmanCowling/ChapmanCowling.C
+submodels/electricalConductivityModels/SpitzerHarm/SpitzerHarm.C
+/*submodels/electricalConductivityModels/Boltzmann/Boltzmann.C*/
+
+LIB = $(FOAM_USER_LIBBIN)/libspbpuMhdModels

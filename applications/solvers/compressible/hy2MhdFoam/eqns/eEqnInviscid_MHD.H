@@ -19,7 +19,6 @@ solve
  ==
     reaction->Sh()
   + mhd->Q(U)
-  // + radiation->Sh(thermo)
 );
 
 Info<< "max(Q_mag) = " << max(mhd->Q(U)) << endl;

@@ -15,21 +15,26 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-mhd             true;
+active          true;
 
 mhdModel        lowReMag;
 
 collisionData   constant;
 
-conductivityModel Bush;
-
-T0              12000;
-
-n               2;
-
-sigma0          5100;
+electricalConductivityModel Bush;
 
 hallEffect      true;
 
+constantElectricalConductivityCoeffs
+{
+    value           5100;
+}
+
+BushCoeffs
+{
+    sigma0          5100;
+    T0              12000;
+    n               2;
+}
 
 // ************************************************************************* //

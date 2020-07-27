@@ -22,7 +22,7 @@ cp -r $currentDir/run $sendingDir/
 
 
 # compile new libraries -------------------------------------------------------
-cd $sendingDir/src/mhdModel/
+cd $sendingDir/src/mhdModels/
 wclean libso
 wmake -j$nProcs libso
 

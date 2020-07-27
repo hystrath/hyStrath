@@ -15,8 +15,8 @@ fi
 
 
 # synchronize folders and compile new libraries -------------------------------
-rsync -rtvuc $currentDir/src/mhdModel/ $sendingDir/src/mhdModel/
-cd $sendingDir/src/mhdModel/
+rsync -rtvuc $currentDir/src/mhdModels/ $sendingDir/src/mhdModels/
+cd $sendingDir/src/mhdModels/
 wmake -j$nProcs libso
 
 

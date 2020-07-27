@@ -18,7 +18,7 @@ EXE_INC = \
     -I$(LIB_SRC)/TurbulenceModels/turbulenceModels/lnInclude \
     -I$(WM_PROJECT_USER_DIR)/src/TurbulenceModels/compressible/lnInclude \
     -I$(WM_PROJECT_USER_DIR)/src/hTCModels/lnInclude \
-    -I$(WM_PROJECT_USER_DIR)/src/mhdModel/lnInclude
+    -I$(WM_PROJECT_USER_DIR)/src/mhdModels/lnInclude
 
 EXE_LIBS = \
     -L$(FOAM_USER_LIBBIN) \
