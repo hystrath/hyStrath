@@ -99,11 +99,6 @@ void dsmcMassFlowRateInlet::controlParcelsBeforeMove()
 {
     Random& rndGen = cloud_.rndGen();
 
-    label nTotalParcelsAdded = 0;
-    label nTotalParcelsToBeAdded = 0;
-
-    labelField parcelsInserted(typeIds_.size(), 0);
-
     //loop over all species
     forAll(accumulatedParcelsToInsert_, iD)   // I Added.
     {
@@ -190,8 +185,6 @@ void dsmcMassFlowRateInlet::controlParcelsBeforeMove()
 //             }
 
             accumulatedParcelsToInsert_[iD][f] -= nParcelsToInsert; //remainder has been set
-
-            nTotalParcelsToBeAdded += nParcelsToInsert;
 
             const label& typeId = typeIds_[iD];
             scalar mass = cloud_.constProps(typeId).mass();
@@ -335,31 +328,10 @@ void dsmcMassFlowRateInlet::controlParcelsBeforeMove()
                     0,
                     vibLevel
                 );
-
-                nTotalParcelsAdded++;
-                parcelsInserted[iD]++;
             }
         }
-
-        if (Pstream::parRun())
-        {
-            reduce(parcelsInserted[iD], sumOp<scalar>());
-
-            Info<< "dsmcMassFlowRateInlet specie: " << typeIds_[iD]
-                <<", inserted parcels: " << parcelsInserted[iD]
-                << endl;
-        }
-        else
-        {
-            Info<< "dsmcMassFlowRateInlet specie: " << typeIds_[iD]
-                <<", inserted parcels: " << parcelsInserted[iD]
-                << endl;
-        }
     }
-
-
     previousInletVelocity_ = inletVelocity_;
-
 }
 
 void dsmcMassFlowRateInlet::controlParcelsBeforeCollisions()

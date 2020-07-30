@@ -126,9 +126,6 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsBeforeMove()
 {
     Random& rndGen = cloud_.rndGen();
 
-    label nTotalParcelsAdded = 0;
-    label nTotalParcelsToBeAdded = 0;
-
     forAll(accumulatedParcelsToInsert_, iD)   // I Added.
     {
         // loop over all faces of the patch
@@ -194,8 +191,6 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsBeforeMove()
             }
 
             accumulatedParcelsToInsert_[iD][f] -= nParcelsToInsert; //remainder has been set
-
-            nTotalParcelsToBeAdded += nParcelsToInsert;
 
             const label& typeId = typeIds_[iD];
             scalar mass = cloud_.constProps(typeId).mass();
@@ -334,16 +329,9 @@ void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsBeforeMove()
                     0,
                     vibLevel
                 );
-
-                nTotalParcelsAdded++;
-
             }
         }
     }
-
-    Info<< "dsmcNewPressureOutletCalculatedMolarFraction target parcels to insert: " << nTotalParcelsToBeAdded
-        <<", number of inserted parcels: " << nTotalParcelsAdded
-        << endl;
 }
 
 void dsmcNewPressureOutletCalculatedMolarFraction::controlParcelsBeforeCollisions()

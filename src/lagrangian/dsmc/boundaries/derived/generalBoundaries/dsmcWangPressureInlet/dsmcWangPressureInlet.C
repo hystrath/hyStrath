@@ -57,7 +57,6 @@ dsmcWangPressureInlet::dsmcWangPressureInlet
     propsDict_(dict.subDict(typeName + "Properties")),
     typeIds_(),
     moleFractions_(),
-    infoCounter_(0),
     inletPressure_(),
     inletTemperature_(),
     n_(),
@@ -109,11 +108,6 @@ void dsmcWangPressureInlet::calculateProperties()
 void dsmcWangPressureInlet::controlParcelsBeforeMove()
 {
     Random& rndGen = cloud_.rndGen();
-
-    label nTotalParcelsAdded = 0;
-    label nTotalParcelsToBeAdded = 0;
-
-    labelField parcelsInserted(typeIds_.size(), 0);
 
     //loop over all species
     forAll(accumulatedParcelsToInsert_, iD)   // I Added.
@@ -201,8 +195,6 @@ void dsmcWangPressureInlet::controlParcelsBeforeMove()
             }
 
             accumulatedParcelsToInsert_[iD][f] -= nParcelsToInsert; //remainder has been set
-
-            nTotalParcelsToBeAdded += nParcelsToInsert;
 
             const label& typeId = typeIds_[iD];
             scalar mass = cloud_.constProps(typeId).mass();
@@ -346,42 +338,9 @@ void dsmcWangPressureInlet::controlParcelsBeforeMove()
                     0,
                     vibLevel
                 );
-
-                nTotalParcelsAdded++;
-                parcelsInserted[iD]++;
             }
         }
-
-        infoCounter_++;
-
-        if(infoCounter_ >= cloud_.nTerminalOutputs())
-        {
-            if (Pstream::parRun())
-            {
-                reduce(parcelsInserted[iD], sumOp<scalar>());
-
-                Info<< "dsmcWangPressureInlet specie: " << typeIds_[iD]
-                    <<", inserted parcels: " << parcelsInserted[iD]
-                    << endl;
-            }
-            else
-            {
-                Info<< "dsmcWangPressureInlet specie: " << typeIds_[iD]
-                    <<", inserted parcels: " << parcelsInserted[iD]
-                    << endl;
-            }
-
-            infoCounter_ = 0;
-        }
-
     }
-
-//     if(faces_.size() > VSMALL)
-//     {
-//         Pout<< "dsmcWangPressureInlet target parcels to insert: " << nTotalParcelsToBeAdded
-//             <<", number of inserted parcels: " << nTotalParcelsAdded
-//             << endl;
-//     }
 }
 
 void dsmcWangPressureInlet::controlParcelsBeforeCollisions()

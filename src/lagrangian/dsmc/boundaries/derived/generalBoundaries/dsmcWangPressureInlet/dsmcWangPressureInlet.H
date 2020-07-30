@@ -69,7 +69,6 @@ private:
 
     labelList typeIds_;  // I Added.
     scalarField moleFractions_; // I Added.
-    label infoCounter_;
     scalar inletPressure_;
     scalar inletTemperature_;
     scalar n_; // inlet number density

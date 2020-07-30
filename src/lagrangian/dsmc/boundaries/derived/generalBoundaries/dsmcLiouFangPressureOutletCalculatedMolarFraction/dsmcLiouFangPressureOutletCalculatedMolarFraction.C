@@ -115,9 +115,6 @@ void dsmcLiouFangPressureOutletCalculatedMolarFraction::controlParcelsBeforeMove
     {
         Random& rndGen = cloud_.rndGen();
 
-        label nTotalParcelsAdded = 0;
-        label nTotalParcelsToBeAdded = 0;
-
         forAll(moleFractions_, iD)
         {
             forAll(moleFractions_[iD], c)
@@ -128,9 +125,6 @@ void dsmcLiouFangPressureOutletCalculatedMolarFraction::controlParcelsBeforeMove
                 }
             }
         }
-
-        labelField parcelsInserted(typeIds_.size(), 0);
-        scalarField averageMoleFractions(moleFractions_.size(), 0.0);
 
         forAll(accumulatedParcelsToInsert_, iD)
         {
@@ -195,8 +189,6 @@ void dsmcLiouFangPressureOutletCalculatedMolarFraction::controlParcelsBeforeMove
                 }
 
                 accumulatedParcelsToInsert_[iD][f] -= nParcelsToInsert; //remainder has been set
-
-                nTotalParcelsToBeAdded += nParcelsToInsert;
 
                 const label& typeId = typeIds_[iD];
                 scalar mass = cloud_.constProps(typeId).mass();
@@ -340,48 +332,10 @@ void dsmcLiouFangPressureOutletCalculatedMolarFraction::controlParcelsBeforeMove
                         0,
                         vibLevel
                     );
-
-                    nTotalParcelsAdded++;
-                    parcelsInserted[iD]++;
                 }
             }
-
-            if (Pstream::parRun())
-            {
-                reduce(parcelsInserted[iD], sumOp<scalar>());
-
-                Info<< "dsmcLiouFangPressureOutletCalculatedMolarFraction specie: " << typeIds_[iD]
-                    <<", inserted parcels: " << parcelsInserted[iD]
-                    << endl;
-            }
-            else
-            {
-                Info<< "dsmcLiouFangPressureOutletCalculatedMolarFraction specie: " << typeIds_[iD]
-                    <<", inserted parcels: " << parcelsInserted[iD]
-                    << endl;
-            }
-        }
-
-        forAll(moleFractions_, iD)
-        {
-            forAll(moleFractions_[iD], f)
-            {
-                averageMoleFractions[iD] += moleFractions_[iD][f];
-            }
-
-            averageMoleFractions[iD] /= moleFractions_[iD].size();
-        }
-
-        if (Pstream::parRun())
-        {
-            Info << "moleFractions = " << averageMoleFractions << endl;
-        }
-        else
-        {
-            Info << "moleFractions = " << averageMoleFractions << endl;
         }
     }
-
 }
 
 void dsmcLiouFangPressureOutletCalculatedMolarFraction::controlParcelsBeforeCollisions()

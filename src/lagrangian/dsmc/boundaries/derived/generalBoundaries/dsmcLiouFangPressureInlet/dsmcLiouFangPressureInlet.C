@@ -60,7 +60,6 @@ dsmcLiouFangPressureInlet::dsmcLiouFangPressureInlet
     inletVelocity_(faces_.size(), vector::zero),
     previousInletVelocity_(faces_.size(), vector::zero),
     accumulatedParcelsToInsert_(),
-    infoCounter_(0),
     inletPressure_(),
     inletTemperature_(),
     theta_(),
@@ -95,9 +94,6 @@ void dsmcLiouFangPressureInlet::calculateProperties()
 void dsmcLiouFangPressureInlet::controlParcelsBeforeMove()
 {
     Random& rndGen = cloud_.rndGen();
-
-    label nTotalParcelsAdded = 0;
-    label nTotalParcelsToBeAdded = 0;
 
     //loop over all species
     forAll(accumulatedParcelsToInsert_, iD)   // I Added.
@@ -185,8 +181,6 @@ void dsmcLiouFangPressureInlet::controlParcelsBeforeMove()
 //             }
 
             accumulatedParcelsToInsert_[iD][f] -= nParcelsToInsert; //remainder has been set
-
-            nTotalParcelsToBeAdded += nParcelsToInsert;
 
             const label& typeId = typeIds_[iD];
             scalar mass = cloud_.constProps(typeId).mass();
@@ -330,26 +324,9 @@ void dsmcLiouFangPressureInlet::controlParcelsBeforeMove()
                     0,
                     vibLevel
                 );
-
-                nTotalParcelsAdded++;
             }
         }
     }
-
-    infoCounter_++;
-
-    if(infoCounter_ >= cloud_.nTerminalOutputs())
-    {
-        if(faces_.size() > VSMALL)
-        {
-            Pout<< "dsmcLiouFangPressureInlet target parcels to insert: " << nTotalParcelsToBeAdded
-                <<", number of of inserted parcels: " << nTotalParcelsAdded
-                << endl;
-        }
-
-        infoCounter_ = 0;
-    }
-
     previousInletVelocity_ = inletVelocity_;
 }
 

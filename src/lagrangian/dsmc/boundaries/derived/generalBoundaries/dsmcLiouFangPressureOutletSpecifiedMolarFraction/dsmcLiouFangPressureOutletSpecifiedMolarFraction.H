@@ -69,7 +69,6 @@ private:
 
     scalar outletPressure_;
     scalar nTimeSteps_;
-    label infoCounter_;
     labelList typeIds_;
     vectorField UMean_;
     vectorField outletVelocity_;
