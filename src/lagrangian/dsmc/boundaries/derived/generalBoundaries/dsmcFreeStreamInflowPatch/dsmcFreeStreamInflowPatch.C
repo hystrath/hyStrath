@@ -141,9 +141,6 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
         }
     }
 
-    labelField parcelsInserted(typeIds_.size(), 0);
-    labelField parcelsToAdd(typeIds_.size(), 0);
-
     const vector faceVelocity = velocity_;
     const scalar faceTranslationalTemperature = translationalTemperature_;
     const scalar faceRotationalTemperature = rotationalTemperature_;
@@ -219,7 +216,6 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
             }
 
             faceAccumulator -= nI;
-            parcelsToAdd[m] += nI;
 
             const scalar mass = cloud_.constProps(typeId).mass();
 
@@ -362,36 +358,7 @@ void dsmcFreeStreamInflowPatch::controlParcelsBeforeMove()
                     0,
                     vibLevel
                 );
-
-                parcelsInserted[m] += 1.0;
             }
-        }
-    }
-
-
-    if (Pstream::parRun())
-    {
-        forAll(parcelsInserted, m)
-        {
-            reduce(parcelsToAdd[m], sumOp<scalar>());
-            reduce(parcelsInserted[m], sumOp<scalar>());
-
-            Info<< "Patch " << patchName_ << ", Specie: "
-                << cloud_.typeIdList()[typeIds_[m]]
-                << ", target parcels to insert: " << parcelsToAdd[m]
-                <<", inserted parcels: " << parcelsInserted[m]
-                << endl;
-        }
-    }
-    else
-    {
-        forAll(parcelsInserted, m)
-        {
-            Info<< "Patch " << patchName_ << ", Specie: "
-                << cloud_.typeIdList()[typeIds_[m]]
-                << ", target parcels to insert: " << parcelsToAdd[m]
-                <<", inserted parcels: " << parcelsInserted[m]
-                << endl;
         }
     }
 }

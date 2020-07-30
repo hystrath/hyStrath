@@ -71,7 +71,6 @@ private:
     vectorField inletVelocity_;
     vectorField previousInletVelocity_;
     List <scalarField> accumulatedParcelsToInsert_;
-    label infoCounter_;
     scalar inletPressure_;
     scalar inletTemperature_;
     scalar theta_;

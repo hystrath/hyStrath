@@ -169,9 +169,6 @@ void dsmcFreeStreamInflowFieldPatch::controlParcelsBeforeMove()
         }
     }
 
-    labelField parcelsInserted(typeIds_.size(), 0);
-    labelField parcelsToAdd(typeIds_.size(), 0);
-
     // insert pacels
     forAll(faces_, f)
     {
@@ -245,7 +242,6 @@ void dsmcFreeStreamInflowFieldPatch::controlParcelsBeforeMove()
             }
 
             faceAccumulator -= nI;
-            parcelsToAdd[m] += nI;
 
             scalar mass = cloud_.constProps(typeId).mass();
 
@@ -380,21 +376,8 @@ void dsmcFreeStreamInflowFieldPatch::controlParcelsBeforeMove()
                     0,
                     vibLevel
                 );
-
-                parcelsInserted[m] += 1.0;
             }
         }
-    }
-
-    forAll(parcelsInserted, m)
-    {
-       reduce(parcelsToAdd[m], sumOp<scalar>());
-       reduce(parcelsInserted[m], sumOp<scalar>());
-
-       Info<< "Patch " << patchId() << ", specie: " << typeIds_[m]
-           << ", target parcels to insert: " << parcelsToAdd[m]
-           <<", inserted parcels: " << parcelsInserted[m]
-           << endl;
     }
 }
 

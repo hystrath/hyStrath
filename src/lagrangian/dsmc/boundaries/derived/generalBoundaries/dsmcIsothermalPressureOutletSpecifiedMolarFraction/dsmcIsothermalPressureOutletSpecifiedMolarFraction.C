@@ -59,7 +59,6 @@ dsmcIsothermalPressureOutletSpecifiedMolarFraction::dsmcIsothermalPressureOutlet
     outletTemperature_(),
     outletNumberDensity_(),
     nTimeSteps_(scalar(0.0)),
-    infoCounter_(0),
     typeIds_(),
     UMean_(faces_.size(), vector::zero),
     outletVelocity_(faces_.size(), vector::zero),
@@ -115,11 +114,6 @@ void dsmcIsothermalPressureOutletSpecifiedMolarFraction::calculateProperties()
 void dsmcIsothermalPressureOutletSpecifiedMolarFraction::controlParcelsBeforeMove()
 {
     Random& rndGen = cloud_.rndGen();
-
-    label nTotalParcelsAdded = 0;
-    label nTotalParcelsToBeAdded = 0;
-
-    labelField parcelsInserted(typeIds_.size(), 0);
 
     //loop over all species
     forAll(accumulatedParcelsToInsert_, iD)   // I Added.
@@ -185,8 +179,6 @@ void dsmcIsothermalPressureOutletSpecifiedMolarFraction::controlParcelsBeforeMov
             }
 
             accumulatedParcelsToInsert_[iD][f] -= nParcelsToInsert; //remainder has been set
-
-            nTotalParcelsToBeAdded += nParcelsToInsert;
 
             const label& typeId = typeIds_[iD];
             scalar mass = cloud_.constProps(typeId).mass();
@@ -330,34 +322,8 @@ void dsmcIsothermalPressureOutletSpecifiedMolarFraction::controlParcelsBeforeMov
                     0,
                     vibLevel
                 );
-
-                nTotalParcelsAdded++;
-                parcelsInserted[iD]++;
             }
         }
-
-        infoCounter_++;
-
-        if(infoCounter_ >= cloud_.nTerminalOutputs())
-        {
-            if (Pstream::parRun())
-            {
-                reduce(parcelsInserted[iD], sumOp<scalar>());
-
-                Info<< "dsmcIsothermalPressureOutletSpecifiedMolarFraction specie: " << typeIds_[iD]
-                    <<", inserted parcels: " << parcelsInserted[iD]
-                    << endl;
-            }
-            else
-            {
-                Info<< "dsmcIsothermalPressureOutletSpecifiedMolarFraction specie: " << typeIds_[iD]
-                    <<", inserted parcels: " << parcelsInserted[iD]
-                    << endl;
-            }
-
-            infoCounter_ = 0;
-        }
-
     }
 }
 

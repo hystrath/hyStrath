@@ -71,7 +71,6 @@ private:
     scalar outletTemperature_;
     scalar outletNumberDensity_;
     scalar nTimeSteps_;
-    label infoCounter_;
     labelList typeIds_;
     vectorField UMean_;
     vectorField outletVelocity_;
