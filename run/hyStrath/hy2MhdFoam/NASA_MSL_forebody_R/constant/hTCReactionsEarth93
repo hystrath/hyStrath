@@ -150,7 +150,7 @@ reactions
         type     reversibleArrheniusReaction;
         reaction "N2 + e- = 2N + e-";
         controlT impactDissociation;
-        A        3.0e21;
+        A        1.2e22;
         beta     -1.6;
         Ta       113220;
         
