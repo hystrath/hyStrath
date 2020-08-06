@@ -24,9 +24,6 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "AppletonBray.H"
-#include "fvm.H"
-
-// * * * * * * * * * * * * * Protected Member Functions  * * * * * * * * * * //
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
@@ -46,13 +43,21 @@ Foam::AppletonBray<ThermoType>::AppletonBray
     ),
 
     electronListPosition_(species()["e-"]),
-
-    RR(constant::physicoChemical::R.value()),
-    NA(constant::physicoChemical::NA.value()),
-    kB(RR/NA),
-    ec(Foam::constant::electromagnetic::e.value()),
-    pi(constant::mathematical::pi)
-{}
+    sigma_er_(1.0e-20)
+{
+    const scalar ec = constant::electromagnetic::e.value();
+    const scalar RR = constant::physicoChemical::R.value();
+    const scalar NA = constant::physicoChemical::NA.value();
+    const scalar pi = constant::mathematical::pi;
+    const scalar kB = RR/NA;
+    const scalar We = W(electronListPosition_);
+    
+    sigma_eIon_factor1_ = 8.0*pi*pow4(ec)/(27.0*sqr(kB));
+    
+    sigma_eIon_factor2_ = 9.0*pow3(kB)/(4.0*pi*pow6(ec));
+    
+    Qhe_factor_ = 3.0*RR*NA*sqrt(8.0*RR/(pi*We));
+}
 
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
@@ -60,11 +65,10 @@ Foam::AppletonBray<ThermoType>::AppletonBray
 template<class ThermoType>
 void Foam::AppletonBray<ThermoType>::correct()
 {
-    // Scalabrin PhD thesis, Eq.(2.65)
     const volScalarField& Tt = thermo_.Tt();
+    const volScalarField& Te = thermo_.composition().Tv(electronListPosition_);
     const volScalarField& pDe = thermo_.composition().pD(electronListPosition_);
     const volScalarField& nDe = thermo_.composition().nD(electronListPosition_);
-    const volScalarField& Te = thermo_.composition().Tv(electronListPosition_);
 
     const scalarField& TtCells = Tt.internalField();
     const scalarField& pDeCells = pDe.internalField();
@@ -82,28 +86,28 @@ void Foam::AppletonBray<ThermoType>::correct()
 
     forAll(species(), specier)
     {
-        if(specier != electronListPosition_)
+        if (specier != electronListPosition_)
         {
             const volScalarField& pDr = thermo_.composition().pD(specier);
             const scalarField& pDrCells = pDr.internalField();
 
-            if(speciesThermo_[specier].particleType() < 3)
+            if (speciesThermo_[specier].particleType() < 3)
             {
-                const scalar sigma_er = 1.0e-20;
-
                 forAll(pDrCells, celli)
                 {
-                    QHECells[celli] += sigma_er*pDr[celli]/sqr(W(electronListPosition_));
+                    QHECells[celli] += sigma_er_*pDr[celli]/sqr(W(specier));
                 }
 
                 forAll(pDr.boundaryField(), patchi)
                 {
-                    const fvPatchScalarField& ppDr = pDr.boundaryField()[patchi];
-                    fvPatchScalarField& pQHE = this->QHE_.boundaryFieldRef()[patchi];
+                    const fvPatchScalarField& ppDr =
+                        pDr.boundaryField()[patchi];
+                    fvPatchScalarField& pQHE =
+                        this->QHE_.boundaryFieldRef()[patchi];
 
                     forAll(ppDr, facei)
                     {
-                        pQHE[facei] += sigma_er*ppDr[facei]/sqr(W(electronListPosition_));
+                        pQHE[facei] += sigma_er_*ppDr[facei]/sqr(W(specier));
                     }
                 }
             }
@@ -111,44 +115,61 @@ void Foam::AppletonBray<ThermoType>::correct()
             {
                 forAll(pDrCells, celli)
                 {
-                    scalar sigma_eIon = 8.0*pi*pow4(ec)/(27.0*sqr(kB*TeCells[celli]));
+                    scalar sigma_eIon = sigma_eIon_factor1_/sqr(TeCells[celli]);
 
-                    if(nDeCells[celli] != 0.0)
+                    if (nDeCells[celli] != 0.0)
                     {
-                        sigma_eIon *= log(1.0+(9.0*pow3(kB*TeCells[celli]))/(4.0*pi*nDeCells[celli]*pow6(ec)));
+                        sigma_eIon *=
+                            log
+                            (
+                                1.0
+                              + sigma_eIon_factor2_
+                                  *pow3(TeCells[celli])/nDeCells[celli]
+                            );
                     }
 
-                    QHECells[celli] += sigma_eIon*pDr[celli]/sqr(W(electronListPosition_));
+                    QHECells[celli] += sigma_eIon*pDr[celli]/sqr(W(specier));
                 }
 
                 forAll(pDr.boundaryField(), patchi)
                 {
-                    const fvPatchScalarField& pnDe = nDe.boundaryField()[patchi];
+                    const fvPatchScalarField& pnDe =
+                        nDe.boundaryField()[patchi];
                     const fvPatchScalarField& pTe = Te.boundaryField()[patchi];
-                    const fvPatchScalarField& ppDr = pDr.boundaryField()[patchi];
-                    fvPatchScalarField& pQHE = this->QHE_.boundaryFieldRef()[patchi];
+                    const fvPatchScalarField& ppDr =
+                        pDr.boundaryField()[patchi];
+                    fvPatchScalarField& pQHE =
+                        this->QHE_.boundaryFieldRef()[patchi];
 
                     forAll(ppDr, facei)
                     {
-                        scalar sigma_eIon = 8.0*pi*pow4(ec)/(27.0*sqr(kB*pTe[facei]));
+                        scalar sigma_eIon = sigma_eIon_factor1_/sqr(pTe[facei]);
 
-                        if(pnDe[facei] != 0.0)
+                        if (pnDe[facei] != 0.0)
                         {
-                            sigma_eIon *= log(1.0+(9.0*pow3(kB*pTe[facei]))/(4.0*pi*pnDe[facei]*pow6(ec)));
+                            sigma_eIon *=
+                                log
+                                (
+                                    1.0
+                                 + sigma_eIon_factor2_
+                                      *pow3(pTe[facei])/pnDe[facei]
+                                );
                         }
 
-                        pQHE[facei] += sigma_eIon*ppDr[facei]/sqr(W(electronListPosition_));
+                        pQHE[facei] += sigma_eIon*ppDr[facei]/sqr(W(specier));
                     }
                 }
             }
         }
-    }//end species loop
+    }
 
     forAll(TtCells, celli)
     {
-        QHECells[celli] *= 3.0*RR*pDeCells[celli]*(TtCells[celli]-TeCells[celli])*NA
-            *sqrt(8.0*RR*TeCells[celli]/(pi*W(electronListPosition_)));
-      //Info<< "QHECells[celli]:"<< tab << QHECells[celli]<<endl;
+        Info<< "QHEC"<< tab << QHECells[celli]<<endl;
+        Info<< "rhoe-"<< tab << pDeCells[celli]<<endl;
+        QHECells[celli] *= Qhe_factor_*pDeCells[celli]*sqrt(TeCells[celli])
+            *(TtCells[celli] - TeCells[celli]);
+//        Info<< "QHEC"<< tab << QHECells[celli]<<endl;
     }
 
     forAll(Tt.boundaryField(), patchi)
@@ -160,8 +181,8 @@ void Foam::AppletonBray<ThermoType>::correct()
 
         forAll(pTt, facei)
         {
-            pQHE[facei] *= 3.0*RR*ppDe[facei]*(pTt[facei]-pTe[facei])*NA
-                *sqrt(8.0*RR*pTe[facei]/(pi*W(electronListPosition_)));
+            pQHE[facei] *= Qhe_factor_*ppDe[facei]*sqrt(pTe[facei])
+                *(pTt[facei] - pTe[facei]);
         }
     }
 }

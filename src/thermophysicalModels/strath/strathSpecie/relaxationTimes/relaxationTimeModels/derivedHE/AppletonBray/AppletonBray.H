@@ -25,7 +25,9 @@ Class
     Foam::AppletonBray
 
 Description
-    AppletonBray (1964) relaxation time model.
+    J. P. Appleton and K. N. C. Bray (1964) relaxation time model.
+    "The Conservation equations for a non-equilibrium plasma"
+    J. Fluid Mech., vol. 20, part 4, pp. 659-672
 
 SourceFiles
     AppletonBray.C
@@ -36,9 +38,7 @@ SourceFiles
 #define AppletonBray_H
 
 #include "relaxationTimeModelHE.H"
-
-#include "fundamentalConstants.H"
-#include "physicoChemicalConstants.H"
+#include "constants.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -46,7 +46,7 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                             Class AppletonBray Declaration
+                           Class AppletonBray Declaration
 \*---------------------------------------------------------------------------*/
 
 template<class ThermoType>
@@ -63,10 +63,19 @@ protected:
         const PtrList<ThermoType>& speciesThermo_;
 
         //- Position of the electrons in the species table
-        label electronListPosition_;
+        const label electronListPosition_;
+        
+        //- Collision cross-section for electron / heavy-particle interactions
+        const scalar sigma_er_;
 
-        //- Fundamental and physico-chemical constants
-        const scalar RR, NA, kB, ec, pi;
+        //- Two constant factors appearing in the expression of the collision
+        //  cross section for electron-ion interactions
+        //  (cf. Scalabrin's PhD, 2007, eq. 2.67)
+        scalar sigma_eIon_factor1_, sigma_eIon_factor2_;
+        
+        //- Constant factor appearing in the expression of the energy transfer
+        //  rate between heavy-particles and electrons
+        scalar Qhe_factor_;
 
 
     // Protected member functions
@@ -99,7 +108,7 @@ public:
         //  becouse depend on thermoType template
         virtual scalar W(label i) const
         {
-            return speciesThermo_[i].W();
+            return speciesThermo_[i].W()*1.0e-3;
         }
 
         // Correct the h-e relaxation times and h-e energy transfer
