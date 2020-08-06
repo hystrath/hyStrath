@@ -165,11 +165,8 @@ void Foam::AppletonBray<ThermoType>::correct()
 
     forAll(TtCells, celli)
     {
-        Info<< "QHEC"<< tab << QHECells[celli]<<endl;
-        Info<< "rhoe-"<< tab << pDeCells[celli]<<endl;
         QHECells[celli] *= Qhe_factor_*pDeCells[celli]*sqrt(TeCells[celli])
             *(TtCells[celli] - TeCells[celli]);
-//        Info<< "QHEC"<< tab << QHECells[celli]<<endl;
     }
 
     forAll(Tt.boundaryField(), patchi)
