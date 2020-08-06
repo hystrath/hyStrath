@@ -45,7 +45,9 @@ Foam::chemistry2Model<CompType, ThermoType>::chemistry2Model
     specieThermo_
     (
         dynamic_cast<const reacting2Mixture<ThermoType>&>
-            (this->thermo()).speciesData()
+        (
+            this->thermo()
+        ).speciesData()
     ),
 
     nSpecie_(Y_.size()),
@@ -53,7 +55,7 @@ Foam::chemistry2Model<CompType, ThermoType>::chemistry2Model
     Treact_(CompType::template lookupOrDefault<scalar>("Treact", 0.0)),
 
     RR_(nSpecie_),
-    RRf_(nSpecie_),
+    RRf_(),
     containsIonisedAtoms_(false),
     posIonisedAtoms_(-1),
     posNeutralAtoms_(-1),
@@ -87,26 +89,31 @@ Foam::chemistry2Model<CompType, ThermoType>::chemistry2Model
     }
 
     // create the fields for the forward chemistry sources
-    forAll(RRf_, fieldI)
+    if (this->CVModel_ == "CVDV")
     {
-        RRf_.set
-        (
-            fieldI,
-            new DimensionedField<scalar, volMesh>
+        RRf_.setSize(nSpecie_);
+        
+        forAll(RRf_, fieldI)
+        {
+            RRf_.set
             (
-                IOobject
+                fieldI,
+                new DimensionedField<scalar, volMesh>
                 (
-                    "RRfwd_" + Y_[fieldI].name(),
-                    mesh.time().timeName(),
+                    IOobject
+                    (
+                        "RRfwd_" + Y_[fieldI].name(),
+                        mesh.time().timeName(),
+                        mesh,
+                        IOobject::NO_READ,
+                        IOobject::NO_WRITE,
+                        false
+                    ),
                     mesh,
-                    IOobject::NO_READ,
-                    IOobject::NO_WRITE,
-                    false
-                ),
-                mesh,
-                dimensionedScalar("zero", dimMass/dimVolume/dimTime, 0.0)
-            )
-        );
+                    dimensionedScalar("zero", dimMass/dimVolume/dimTime, 0.0)
+                )
+            );
+        }
     }
     
     if (this->chemistry())
@@ -1695,7 +1702,7 @@ Foam::scalar Foam::chemistry2Model<CompType, ThermoType>::solve
     const scalarField& p = this->thermo().p();
 
     scalarField c(nSpecie_);
-    scalarField cfwd(nSpecie_); // NEW VINCENT 25/03/2016
+    scalarField cfwd(nSpecie_);
     scalarField c0(nSpecie_);
 
     forAll(rho, celli)
@@ -1777,7 +1784,10 @@ Foam::scalar Foam::chemistry2Model<CompType, ThermoType>::solve
             for (label i=0; i<nSpecie_; i++)
             {
                 RR_[i][celli] = 0.0;
-                RRf_[i][celli] = 0.0;
+                if (this->CVModel_ == "CVDV")
+                {
+                    RRf_[i][celli] = 0.0;
+                }
             }
         }
     }

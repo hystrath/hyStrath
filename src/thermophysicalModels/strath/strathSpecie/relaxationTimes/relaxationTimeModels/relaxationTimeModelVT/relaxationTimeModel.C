@@ -164,7 +164,7 @@ Foam::tmp<Foam::volScalarField> Foam::relaxationTimeModel::QVT()
         )
     );
     
-    scalarField& QVTCells = tQVT.ref();
+    scalarField& QVTCells = tQVT.ref().primitiveFieldRef();
     
     forAll(thermo_.composition().species(), speciei)
     {

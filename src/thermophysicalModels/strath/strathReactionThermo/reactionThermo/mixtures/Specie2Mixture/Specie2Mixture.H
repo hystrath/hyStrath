@@ -37,8 +37,8 @@ SourceFiles
 
 #include "scalar.H"
 
-#include "volFields.H" // NEW VINCENT 19/02/2016
-#include "DynamicList.H" // NEW VINCENT 24/02/2016
+#include "volFields.H"
+#include "DynamicList.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -95,8 +95,12 @@ public:
             //- Diameter of the particle
             virtual scalar diameter(const label speciei) const;
 
-            //- Vibrational list with degeneracy and characteristic vibrational temperature [K] for each vib. mode
-            virtual DynamicList<scalar> vibrationalList(const label speciei) const; // NEW VINCENT 24/02/2016
+            //- Vibrational list with degeneracy and characteristic vibrational
+            //  temperature [K] for each vib. mode
+            virtual DynamicList<scalar> vibrationalList
+            (
+                const label speciei
+            ) const;
 
             //- Dissociation potential of the particle [J/kg]
             virtual scalar dissociationPotential(const label speciei) const;
@@ -104,7 +108,7 @@ public:
             //- Temperature-viscosity coefficient [-]
             virtual scalar omega(const label speciei) const;
 
-            //- Number of characteristic vibrational temperatures // NEW VINCENT 17/02/2016
+            //- Number of characteristic vibrational temperatures
             virtual label noVibrationalTemp(const label speciei) const;
 
             //- Number of electronic energy levels
@@ -116,7 +120,7 @@ public:
 
         // Per specie thermo properties
 
-            // COMPATIBILITY VINCENT ******************************************
+            // Backward compatibility
             //- Heat capacity at constant pressure [J/(kg K)]
             virtual scalar Cp
             (
@@ -148,12 +152,12 @@ public:
                 const scalar p,
                 const scalar T
             ) const;
-            // END COMPATIBILITY VINCENT **************************************
+            // End backward compatibility
 
             //- Chemical enthalpy [J/kg]
             virtual scalar Hc(const label speciei) const;
 
-            // COMPATIBILITY VINCENT ******************************************
+            // Backward compatibility
             //- Entropy [J/(kg K)]
             virtual scalar S
             (
@@ -185,9 +189,8 @@ public:
                 const scalar p,
                 const scalar T
             ) const;
-            // END COMPATIBILITY VINCENT **************************************
+            // End backward compatibility
 
-            // NEW VINCENT ****************************************************
             //- Heat capacity at constant pressure [J/(kg K)]
             virtual scalar Cp
             (
@@ -296,7 +299,6 @@ public:
                 const scalar Tv
             ) const;
 
-            // BRAND NEW VINCENT **************************
             //- Sensible enthalpy, trans-rotational [J/kg]
             virtual scalar Hts
             (
@@ -328,7 +330,6 @@ public:
                 const scalar p,
                 const scalar Tv
             ) const;
-            // END BRAND NEW VINCENT **********************
 
             //- Entropy [J/(kg K)]
             virtual scalar S
@@ -348,7 +349,6 @@ public:
                 const scalar Tv
             ) const;
 
-            // BRAND NEW VINCENT **************************
             //- Sensible internal energy, trans-rot. [J/kg]
             virtual scalar Ets
             (
@@ -423,7 +423,6 @@ public:
                 const scalar Tv
             ) const;*/
 
-            // NEW VINCENT 20/02/2016 *****************************************
             //- Heat capacity at constant volume for patch[J/kg/K]
             //  vib-electronic energy mode
             virtual tmp<scalarField> Cv_vel
@@ -451,12 +450,10 @@ public:
                 const scalarField& Tv,
                 const label patchi
             ) const;
-            // END NEW VINCENT 20/02/2016 *************************************
-
 
             //- Trans-rotational temperature from sensible internal energy
             //  given an initial T0
-            virtual scalar TtHEt // NEW VINCENT 03/03/2016
+            virtual scalar TtHEt
             (
                 const label speciei,
                 const scalar het,
@@ -484,8 +481,8 @@ public:
                 const scalar Tvel
             ) const;
 
-            //- Vib-electronic temperature from sensible internal energy given an
-            //  initial T0, for the vibrational mode m TODO ONGOING WORK
+            //- Vib-electronic temperature from sensible internal energy given
+            //  an initial T0, for the vibrational mode m TODO ONGOING WORK
             /*virtual scalar TvelHEvel_mode
             (
                 const label speciei,
@@ -529,7 +526,6 @@ public:
                 const scalar p,
                 const scalar Tv
             ) const;
-            // END BRAND NEW VINCENT **********************
 
             //- Gibbs free energy [J/kg]
             virtual scalar G
@@ -548,12 +544,11 @@ public:
                 const scalar Tt,
                 const scalar Tv
             ) const;
-            // END NEW VINCENT ************************************************
 
 
         // Per specie transport properties
 
-            //- Compressibility rho/p [s^2/m^2] // NEW VINCENT 14/02/2016
+            //- Compressibility rho/p [s^2/m^2]
             virtual scalar psi
             (
                 const label speciei,

@@ -71,7 +71,7 @@ protected:
         volScalarField kappatr_;
 
         //- Thermal conductivity of the mixture [W/mK]
-        //  vib-electronic energy mode
+        //  vibro-electronic energy mode
         volScalarField kappave_;
 
         //- Thermal diffusivity of the mixture [kg/ms]
@@ -79,7 +79,7 @@ protected:
         volScalarField alphatr_;
 
         //- Thermal diffusivity of the mixture [kg/ms]
-        //  vib-electronic energy mode
+        //  vibro-electronic energy mode
         volScalarField alphave_;
 
 
@@ -192,14 +192,14 @@ public:
             virtual volScalarField& kappatr();
 
           //- kappave
-            //- Thermal conductivity of mixture [W/mK], vib-electronic mode
+            //- Thermal conductivity of mixture [W/mK], vibro-electronic mode
             virtual const volScalarField& kappave() const;
 
-            //- Thermal conductivity of mixture for patch [W/mK], vib-electronic mode
+            //- Thermal conductivity of mixture for patch [W/mK], vibro-electronic mode
             virtual const scalarField& kappave(const label patchi) const;
 
             //- Return non-const access to the thermal conductivity of mixture [W/mK]
-            //  vib-electronic energy mode
+            //  vibro-electronic energy mode
             virtual volScalarField& kappave();
 
           //- alphatr
@@ -214,14 +214,14 @@ public:
             virtual volScalarField& alphatr();
 
           //- alphave
-            //- Thermal diffusivity of mixture [kg/m/s], vib-electronic mode
+            //- Thermal diffusivity of mixture [kg/m/s], vibro-electronic mode
             virtual const volScalarField& alphave() const;
 
-            //- Thermal diffusivity of mixture for patch [kg/m/s], vib-electronic mode
+            //- Thermal diffusivity of mixture for patch [kg/m/s], vibro-electronic mode
             virtual const scalarField& alphave(const label patchi) const;
 
             //- Return non-const access to the thermal diffusivity of mixture [kg/m/s]
-            //  vib-electronic energy mode
+            //  vibro-electronic energy mode
             virtual volScalarField& alphave();
 
           //- kappaEff

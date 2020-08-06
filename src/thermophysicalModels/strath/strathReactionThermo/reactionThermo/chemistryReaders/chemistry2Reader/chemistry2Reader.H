@@ -37,8 +37,7 @@ SourceFiles
 
 #include "typeInfo.H"
 #include "runTimeSelectionTables.H"
-//#include "Reaction.H" // DELETED VINCENT 08/02/2016
-#include "Reaction2.H" // NEW VINCENT 08/02/2016
+#include "Reaction2.H"
 #include "Reaction2List.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -134,32 +133,28 @@ public:
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-// NEW VINCENT ****************************************************************
-// TWO-TEMPERATURE CFD MODEL
-#define make2ChemistryReader(MultiThermo)                                           \
-    defineTemplateTypeNameAndDebug(chemistry2Reader<MultiThermo>, 0);               \
+#define make2ChemistryReader(MultiThermo)                                     \
+    defineTemplateTypeNameAndDebug(chemistry2Reader<MultiThermo>, 0);         \
     defineTemplateRunTimeSelectionTable(chemistry2Reader<MultiThermo>, dictionary)
 
 
-#define make2ChemistryReaderType(Reader, MultiThermo)                               \
-    defineNamedTemplateTypeNameAndDebug(Reader<MultiThermo>, 0);                   \
+#define make2ChemistryReaderType(Reader, MultiThermo)                          \
+    defineNamedTemplateTypeNameAndDebug(Reader<MultiThermo>, 0);               \
     chemistry2Reader<MultiThermo>::adddictionaryConstructorToTable<Reader<MultiThermo> > \
         add##Reader##MultiThermo##ConstructorToTable_
 
-// TWO-TEMPERATURE CFD MODEL
 // for non-templated chemistry readers
-#define add2ChemistryReaderType(Reader, MultiThermo)                                \
+#define add2ChemistryReaderType(Reader, MultiThermo)                          \
     defineTypeNameAndDebug(Reader, 0);                                        \
-    chemistry2Reader<MultiThermo>::adddictionaryConstructorToTable<Reader>          \
+    chemistry2Reader<MultiThermo>::adddictionaryConstructorToTable<Reader>    \
         add##Reader##Thermo##ConstructorToTable_
 
 
 // for templated chemistry readers
-#define add2TemplateChemistryReaderType(Reader, MultiThermo)                        \
+#define add2TemplateChemistryReaderType(Reader, MultiThermo)                  \
     defineNamedTemplateTypeNameAndDebug(Reader, 0);                           \
-    chemistry2Reader<MultiThermo>::adddictionaryConstructorToTable<Reader>          \
-        add##Reader##MultiThermo##ConstructorToTable_
-// END NEW VINCENT ************************************************************
+    chemistry2Reader<MultiThermo>::adddictionaryConstructorToTable<Reader>    \
+        add##Reader##MultiThermo##ConstructorToTable_                         \
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

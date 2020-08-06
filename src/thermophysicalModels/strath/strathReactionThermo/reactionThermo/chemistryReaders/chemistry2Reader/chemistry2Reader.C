@@ -35,12 +35,10 @@ Foam::chemistry2Reader<ThermoType>::New
     speciesTable& species
 )
 {
-    // DELETION VINCENT *******************************************************
     // Let the chemistry reader type default to CHEMKIN
     // for backward compatibility
     //word chemistry2ReaderTypeName("chemkinReader");
-    // END DELETION VINCENT ***************************************************
-    word chemistry2ReaderTypeName("foam2ChemistryReader"); // NEW VINCENT
+    word chemistry2ReaderTypeName("foam2ChemistryReader");
 
     // otherwise use the specified reader
     thermoDict.readIfPresent("chemistry2Reader", chemistry2ReaderTypeName);

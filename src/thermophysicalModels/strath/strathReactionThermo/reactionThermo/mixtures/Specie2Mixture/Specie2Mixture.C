@@ -107,7 +107,8 @@ Foam::scalar Foam::Specie2Mixture<MixtureType>::diameter
 
 
 template<class MixtureType>
-Foam::DynamicList<Foam::scalar> Foam::Specie2Mixture<MixtureType>::vibrationalList
+Foam::DynamicList<Foam::scalar>
+Foam::Specie2Mixture<MixtureType>::vibrationalList
 (
     const label speciei
 ) const
@@ -136,7 +137,7 @@ Foam::scalar Foam::Specie2Mixture<MixtureType>::omega
 }
 
 
-template<class MixtureType> // NEW VINCENT 17/02/2016
+template<class MixtureType>
 Foam::label Foam::Specie2Mixture<MixtureType>::noVibrationalTemp
 (
     const label speciei
@@ -165,8 +166,7 @@ Foam::scalar Foam::Specie2Mixture<MixtureType>::iHat
     return this->getLocalThermo(speciei).iHat();
 }
 
-
-// COMPATIBILITY VINCENT ******************************************************
+// * * * * * * * * * * * * * Backward compatibility  * * * * * * * * * * * * //
 template<class MixtureType>
 Foam::scalar Foam::Specie2Mixture<MixtureType>::Cp
 (
@@ -271,9 +271,9 @@ Foam::scalar Foam::Specie2Mixture<MixtureType>::A
 {
     return this->getLocalThermo(speciei).A(p, T);
 }
-// END COMPATIBILITY VINCENT **************************************************
+// * * * * * * * * * * * * End backward compatibility  * * * * * * * * * * * //
 
-// NEW VINCENT ****************************************************************
+
 template<class MixtureType>
 Foam::scalar Foam::Specie2Mixture<MixtureType>::Cp
 (
@@ -300,7 +300,6 @@ Foam::scalar Foam::Specie2Mixture<MixtureType>::Cv
 }
 
 
-// NEW VINCENT **********************************************************
 template<class MixtureType>
 Foam::scalar Foam::Specie2Mixture<MixtureType>::Cv_t
 (
@@ -395,7 +394,7 @@ Foam::scalar Foam::Specie2Mixture<MixtureType>::Cp_vel
 {
     return this->getLocalThermo(speciei).Cp_vel(p, Tv);
 }
-// END BRAND NEW VINCENT ******************************************************
+
 
 template<class MixtureType>
 Foam::scalar Foam::Specie2Mixture<MixtureType>::Ha
@@ -423,7 +422,6 @@ Foam::scalar Foam::Specie2Mixture<MixtureType>::Hs
 }
 
 
-// BRAND NEW VINCENT **************************************
 template<class MixtureType>
 Foam::scalar Foam::Specie2Mixture<MixtureType>::Hts
 (
@@ -470,7 +468,6 @@ Foam::scalar Foam::Specie2Mixture<MixtureType>::Hvels
 {
     return this->getLocalThermo(speciei).Hvels(p, Tv);
 }
-// END BRAND NEW VINCENT **********************************
 
 
 template<class MixtureType>
@@ -499,7 +496,6 @@ Foam::scalar Foam::Specie2Mixture<MixtureType>::Es
 }
 
 
-// BRAND NEW VINCENT **************************************
 template<class MixtureType>
 Foam::scalar Foam::Specie2Mixture<MixtureType>::Ets
 (
@@ -608,7 +604,7 @@ Foam::scalar Foam::Specie2Mixture<MixtureType>::HEvel_mode
     return this->getLocalThermo(speciei).HEvel_mode(mode, p, Tv);
 }*/
 
-// NEW VINCENT 20/02/2016 *****************************************
+
 template<class MixtureType>
 Foam::tmp<Foam::scalarField> Foam::Specie2Mixture<MixtureType>::Cv_vel
 (
@@ -670,10 +666,8 @@ Foam::tmp<Foam::scalarField> Foam::Specie2Mixture<MixtureType>::hevel
 
     return thevel;
 }
-// END NEW VINCENT 20/02/2016 *************************************************
 
 
-// NEW VINCENT 03/03/2016 *****************************************************
 template<class MixtureType>
 Foam::scalar Foam::Specie2Mixture<MixtureType>::TtHEt
 (
@@ -685,7 +679,6 @@ Foam::scalar Foam::Specie2Mixture<MixtureType>::TtHEt
 {
     return this->getLocalThermo(speciei).TtHEt(het, p, Tt);
 }
-// END NEW VINCENT 03/03/2016 *************************************************
 
 
 template<class MixtureType>
@@ -776,7 +769,6 @@ Foam::scalar Foam::Specie2Mixture<MixtureType>::zetael
 {
     return this->getLocalThermo(speciei).zetael(p, Tv);
 }
-// END BRAND NEW VINCENT **********************************
 
 
 template<class MixtureType>
@@ -803,11 +795,10 @@ Foam::scalar Foam::Specie2Mixture<MixtureType>::A
 {
     return this->getLocalThermo(speciei).A(p, Tt, Tv);
 }
-// END NEW VINCENT ************************************************************
 
 
 template<class MixtureType>
-Foam::scalar Foam::Specie2Mixture<MixtureType>::psi // NEW VINCENT 14/02/2016
+Foam::scalar Foam::Specie2Mixture<MixtureType>::psi
 (
     const label speciei,
     const scalar p,
@@ -865,6 +856,7 @@ Foam::scalar Foam::Specie2Mixture<MixtureType>::alphatr
 {
     return this->getLocalThermo(speciei).alphatr(p, Tt);
 }
+
 
 template<class MixtureType>
 Foam::scalar Foam::Specie2Mixture<MixtureType>::alphave

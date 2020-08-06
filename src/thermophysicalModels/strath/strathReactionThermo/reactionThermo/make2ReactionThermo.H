@@ -32,80 +32,80 @@ License
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 #define make2ReactionMixtureThermo(BaseThermo,CThermo,MixtureThermo,Mixture,ThermoPhys)   \
-                                                                               \
-typedef MixtureThermo                                                          \
-<                                                                              \
-    CThermo,                                                                   \
-    Specie2Mixture                                                              \
-    <                                                                          \
-        Mixture                                                                \
-        <                                                                      \
-            ThermoPhys                                                         \
-        >                                                                      \
-    >                                                                          \
-> MixtureThermo##Mixture##ThermoPhys;                                          \
-                                                                               \
-defineTemplateTypeNameAndDebugWithName                                         \
-(                                                                              \
-    MixtureThermo##Mixture##ThermoPhys,                                        \
-    (#MixtureThermo"<"#Mixture"<" + ThermoPhys::typeName() + ">>").c_str(),    \
-    0                                                                          \
-);                                                                             \
-                                                                               \
-addToRunTimeSelectionTable                                                     \
-(                                                                              \
-    basic2Thermo,                                                               \
-    MixtureThermo##Mixture##ThermoPhys,                                        \
-    fvMesh                                                                     \
-);                                                                             \
-                                                                               \
-addToRunTimeSelectionTable                                                     \
-(                                                                              \
-    multi2Thermo,                                                               \
-    MixtureThermo##Mixture##ThermoPhys,                                        \
-    fvMesh                                                                     \
-);                                                                             \
-                                                                               \
-addToRunTimeSelectionTable                                                     \
-(                                                                              \
-    BaseThermo,                                                                \
-    MixtureThermo##Mixture##ThermoPhys,                                        \
-    fvMesh                                                                     \
-);                                                                             \
-                                                                               \
-addToRunTimeSelectionTable                                                     \
-(                                                                              \
-    CThermo,                                                                   \
-    MixtureThermo##Mixture##ThermoPhys,                                        \
-    fvMesh                                                                     \
+                                                                              \
+typedef MixtureThermo                                                         \
+<                                                                             \
+    CThermo,                                                                  \
+    Specie2Mixture                                                            \
+    <                                                                         \
+        Mixture                                                               \
+        <                                                                     \
+            ThermoPhys                                                        \
+        >                                                                     \
+    >                                                                         \
+> MixtureThermo##Mixture##ThermoPhys;                                         \
+                                                                              \
+defineTemplateTypeNameAndDebugWithName                                        \
+(                                                                             \
+    MixtureThermo##Mixture##ThermoPhys,                                       \
+    (#MixtureThermo"<"#Mixture"<" + ThermoPhys::typeName() + ">>").c_str(),   \
+    0                                                                         \
+);                                                                            \
+                                                                              \
+addToRunTimeSelectionTable                                                    \
+(                                                                             \
+    basic2Thermo,                                                             \
+    MixtureThermo##Mixture##ThermoPhys,                                       \
+    fvMesh                                                                    \
+);                                                                            \
+                                                                              \
+addToRunTimeSelectionTable                                                    \
+(                                                                             \
+    multi2Thermo,                                                             \
+    MixtureThermo##Mixture##ThermoPhys,                                       \
+    fvMesh                                                                    \
+);                                                                            \
+                                                                              \
+addToRunTimeSelectionTable                                                    \
+(                                                                             \
+    BaseThermo,                                                               \
+    MixtureThermo##Mixture##ThermoPhys,                                       \
+    fvMesh                                                                    \
+);                                                                            \
+                                                                              \
+addToRunTimeSelectionTable                                                    \
+(                                                                             \
+    CThermo,                                                                  \
+    MixtureThermo##Mixture##ThermoPhys,                                       \
+    fvMesh                                                                    \
 );
 
 
 #define make2ReactionThermo(BaseThermo,CThermo,MixtureThermo,Mixture,Transport,Type,MultiThermo,EqnOfState,Specie) \
-                                                                               \
-typedef                                                                        \
-    Transport                                                                  \
-    <                                                                          \
-        species::multiThermo                                                        \
-        <                                                                      \
-            MultiThermo                                                             \
-            <                                                                  \
-                EqnOfState                                                     \
-                <                                                              \
-                    Specie                                                     \
-                >                                                              \
-            >,                                                                 \
-            Type                                                               \
-        >                                                                      \
-    > Transport##Type##MultiThermo##EqnOfState##Specie;                             \
-                                                                               \
-make2ReactionMixtureThermo                                                      \
-(                                                                              \
-    BaseThermo,                                                                \
-    CThermo,                                                                   \
-    MixtureThermo,                                                             \
-    Mixture,                                                                   \
-    Transport##Type##MultiThermo##EqnOfState##Specie                                \
+                                                                              \
+typedef                                                                       \
+    Transport                                                                 \
+    <                                                                         \
+        species::multiThermo                                                  \
+        <                                                                     \
+            MultiThermo                                                       \
+            <                                                                 \
+                EqnOfState                                                    \
+                <                                                             \
+                    Specie                                                    \
+                >                                                             \
+            >,                                                                \
+            Type                                                              \
+        >                                                                     \
+    > Transport##Type##MultiThermo##EqnOfState##Specie;                       \
+                                                                              \
+make2ReactionMixtureThermo                                                    \
+(                                                                             \
+    BaseThermo,                                                               \
+    CThermo,                                                                  \
+    MixtureThermo,                                                            \
+    Mixture,                                                                  \
+    Transport##Type##MultiThermo##EqnOfState##Specie                          \
 );
 
 
