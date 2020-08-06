@@ -41,7 +41,7 @@ License
 #include "energyJumpFvPatchScalarField.H"
 #include "energyJumpAMIFvPatchScalarField.H"
 
-#include "IFstream.H" // NEW VINCENT 14/03/2016
+#include "IFstream.H"
 
 // * * * * * * * * * * * * Protected Member Functions  * * * * * * * * * * * //
 
@@ -52,12 +52,10 @@ Foam::wordList Foam::basic2MultiComponentMixture::hev2BoundaryBaseTypes
     const bool downgradeToSingleTemperature
 )
 {
-    /*volScalarField::Boundary& tbf =
-        this->spTv_[speciei].boundaryField();*/
     volScalarField::Boundary tbf =
         this->spTv_[speciei].boundaryField();
 
-    if(downgradeToSingleTemperature)
+    if (downgradeToSingleTemperature)
     {
         tbf = tbf1T;
     }
@@ -89,11 +87,11 @@ Foam::wordList Foam::basic2MultiComponentMixture::hev2BoundaryBaseTypes
 }
 
 
-Foam::wordList Foam::basic2MultiComponentMixture::he2BoundaryBaseTypes(const volScalarField::Boundary& tbf)
+Foam::wordList Foam::basic2MultiComponentMixture::he2BoundaryBaseTypes
+(
+    const volScalarField::Boundary& tbf
+)
 {
-    /*const volScalarField::Boundary& tbff =
-        this->spTv_[0].boundaryField();*/
-
     wordList hbt(tbf.size(), word::null);
 
     forAll(tbf, patchi)
@@ -128,13 +126,10 @@ Foam::wordList Foam::basic2MultiComponentMixture::hev2BoundaryTypes
     const bool downgradeToSingleTemperature
 )
 {
-    /*volScalarField::Boundary& tbf =
-        this->spTv_[speciei].boundaryField();*/
-
     volScalarField::Boundary tbf =
         this->spTv_[speciei].boundaryField();
 
-    if(downgradeToSingleTemperature)
+    if (downgradeToSingleTemperature)
     {
         tbf = tbf1T;
     }
@@ -183,9 +178,6 @@ Foam::wordList Foam::basic2MultiComponentMixture::he2BoundaryTypes
     const bool downgradeToSingleTemperature
 )
 {
-    /*const volScalarField::Boundary& tbff =
-        this->spTv_[0].boundaryField();*/
-
     wordList hbt = tbf.types();
 
     forAll(tbf, patchi)
@@ -205,7 +197,7 @@ Foam::wordList Foam::basic2MultiComponentMixture::he2BoundaryTypes
         }
         else if (isA<mixedFvPatchScalarField>(tbf[patchi]))
         {
-            /*if(downgradeToSingleTemperature)
+            /*if (downgradeToSingleTemperature)
             {
                 hbt[patchi] = mixed2EnergyFvPatchScalarField::typeName;
             }
@@ -294,7 +286,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
 
     volScalarField Tt(TtHeader, mesh);
     bool downgradeToSingleTemperature = false;
-    bool downgradeToSingleTv = false;
+    bool downgradeToSingleTv = true;
 
     forAll(species_, i)
     {
@@ -317,7 +309,11 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
         bool headersOK = false;
 
         // check if field exists and can be read
-        if (YHeader.typeHeaderOk<volScalarField>(false) && TtHeader.typeHeaderOk<volScalarField>(false))
+        if
+        (
+            YHeader.typeHeaderOk<volScalarField>(false)
+         && TtHeader.typeHeaderOk<volScalarField>(false)
+        )
         {
             headersOK = true;
 
@@ -362,7 +358,11 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                 )
             );
         }
-        else if (XHeader.typeHeaderOk<volScalarField>(false) && TtHeader.typeHeaderOk<volScalarField>(false))
+        else if
+        (
+            XHeader.typeHeaderOk<volScalarField>(false)
+         && TtHeader.typeHeaderOk<volScalarField>(false)
+        )
         {
             headersOK = true;
 
@@ -471,11 +471,21 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                     )
                 );
 
-                downgradeToSingleTemperature = thermophysicalProperties.lookupOrDefault<bool>("downgradeToSingleTemperature", false);
-                downgradeToSingleTv = thermophysicalProperties.lookupOrDefault<bool>("downgradeToSingleTv", false);
+                downgradeToSingleTemperature =
+                    thermophysicalProperties.lookupOrDefault<bool>
+                    (
+                        "downgradeToSingleTemperature",
+                        false
+                    );
+                downgradeToSingleTv =
+                    thermophysicalProperties.lookupOrDefault<bool>
+                    (
+                        "downgradeToSingleTv",
+                        true
+                    );
             }
 
-            if(downgradeToSingleTemperature or downgradeToSingleTv)
+            if (downgradeToSingleTemperature or downgradeToSingleTv)
             {
                 spTv_.set
                 (
@@ -629,7 +639,12 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                         IOobject::NO_WRITE
                     ),
                     mesh,
-                    dimensionedScalar("ev_" + species_[i], dimEnergy/dimMass, 0.0)
+                    dimensionedScalar
+                    (
+                        "ev_" + species_[i],
+                        dimEnergy/dimMass,
+                        0.0
+                    )
                 )
             );
 
@@ -647,11 +662,16 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                         IOobject::NO_WRITE
                     ),
                     mesh,
-                    dimensionedScalar("eel_" + species_[i], dimEnergy/dimMass, 0.0)
+                    dimensionedScalar
+                    (
+                        "eel_" + species_[i],
+                        dimEnergy/dimMass,
+                        0.0
+                    )
                 )
             );
 
-            if(downgradeToSingleTemperature or downgradeToSingleTv)
+            if (downgradeToSingleTemperature or downgradeToSingleTv)
             {
                 hevel_.set
                 (
@@ -667,7 +687,12 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                             IOobject::NO_WRITE
                         ),
                         mesh,
-                        dimensionedScalar("evel_" + species_[i], dimEnergy/dimMass, 0.0)
+                        dimensionedScalar
+                        (
+                            "evel_" + species_[i],
+                            dimEnergy/dimMass,
+                            0.0
+                        )
                     )
                 );
             }
@@ -687,7 +712,12 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                             IOobject::NO_WRITE
                         ),
                         mesh,
-                        dimensionedScalar("evel_" + species_[i], dimEnergy/dimMass, 0.0),
+                        dimensionedScalar
+                        (
+                            "evel_" + species_[i],
+                            dimEnergy/dimMass,
+                            0.0
+                        ),
                         this->hev2BoundaryTypes(i, Tt.boundaryField()),
                         this->hev2BoundaryBaseTypes(i, Tt.boundaryField())
                     )
@@ -708,7 +738,12 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                         IOobject::NO_WRITE
                     ),
                     mesh,
-                    dimensionedScalar("h_" + species_[i], dimEnergy/dimMass, 0.0)
+                    dimensionedScalar
+                    (
+                        "h_" + species_[i],
+                        dimEnergy/dimMass,
+                        0.0
+                    )
                 )
             );
 
@@ -768,15 +803,25 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
         }
         else
         {
-            if (not YHeader.typeHeaderOk<volScalarField>(false) and not XHeader.typeHeaderOk<volScalarField>(false))
+            if
+            (
+                not YHeader.typeHeaderOk<volScalarField>(false)
+             && not XHeader.typeHeaderOk<volScalarField>(false)
+            )
             {
-                FatalErrorIn("basic2MultiComponentMixture::basic2MultiComponentMixture")
-                    << "Mass-fractions or Molar-fractions header missing in the 0 folder" << nl;
+                FatalErrorIn
+                (
+                    "basic2MultiComponentMixture::basic2MultiComponentMixture"
+                )   << "Mass-fractions or molar-fractions header missing in "
+                    << "the 0 folder" << nl;
             }
             if (not TtHeader.typeHeaderOk<volScalarField>(false))
             {
-                FatalErrorIn("basic2MultiComponentMixture::basic2MultiComponentMixture")
-                    << "Translational temperature header missing in the 0 folder" << nl;
+                FatalErrorIn
+                (
+                    "basic2MultiComponentMixture::basic2MultiComponentMixture"
+                )   << "Translational temperature header missing in the 0/ "
+                    << "folder" << nl;
             }
             FatalError<< exit(FatalError);
         }
@@ -802,7 +847,11 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
         ),
         mesh,
         dimensionedScalar("e", dimEnergy/dimMass, 0.0),
-        this->he2BoundaryTypes(Tt.boundaryField(), downgradeToSingleTemperature),
+        this->he2BoundaryTypes
+        (
+            Tt.boundaryField(),
+            downgradeToSingleTemperature
+        ),
         this->he2BoundaryBaseTypes(Tt.boundaryField())
     );
 
@@ -822,12 +871,42 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
             )
         );
 
-        writenD_   = hTCPropertiesDict.subDict("mixtureOutputs").lookupOrDefault<bool>("numberDensity", false);
-        writepD_   = hTCPropertiesDict.subDict("mixtureOutputs").lookupOrDefault<bool>("partialDensity", false);
-        writeX_    = hTCPropertiesDict.subDict("mixtureOutputs").lookupOrDefault<bool>("molarFraction", false);
-        writepP_   = hTCPropertiesDict.subDict("mixtureOutputs").lookupOrDefault<bool>("partialPressure", false);
-        writezeta_ = hTCPropertiesDict.subDict("mixtureOutputs").lookupOrDefault<bool>("degreesOfFreedom", false);
-        writehev_  = hTCPropertiesDict.subDict("mixtureOutputs").lookupOrDefault<bool>("vibrationalEnergy", false);
+        writenD_ =
+            hTCPropertiesDict.subDict("mixtureOutputs").lookupOrDefault<bool>
+            (
+                "numberDensity",
+                false
+            );
+        writepD_ =
+            hTCPropertiesDict.subDict("mixtureOutputs").lookupOrDefault<bool>
+            (
+                "partialDensity",
+                false
+            );
+        writeX_ =
+            hTCPropertiesDict.subDict("mixtureOutputs").lookupOrDefault<bool>
+            (
+                "molarFraction",
+                false
+            );
+        writepP_ =
+            hTCPropertiesDict.subDict("mixtureOutputs").lookupOrDefault<bool>
+            (
+                "partialPressure",
+                false
+            );
+        writezeta_ =
+            hTCPropertiesDict.subDict("mixtureOutputs").lookupOrDefault<bool>
+            (
+                "degreesOfFreedom",
+                false
+            );
+        writehev_  =
+            hTCPropertiesDict.subDict("mixtureOutputs").lookupOrDefault<bool>
+            (
+                "vibrationalEnergy",
+                false
+            );
     }
 }
 
@@ -837,7 +916,7 @@ void Foam::basic2MultiComponentMixture::write()
 {
     /*forAll(spmodeTv_, speciei) // TODO ONGOING WORK
     {
-        if(spmodeTv_[speciei].size() > 1)
+        if (spmodeTv_[speciei].size() > 1)
         {
             forAll(spmodeTv_[speciei], vibMode)
             {
@@ -846,7 +925,7 @@ void Foam::basic2MultiComponentMixture::write()
         }
     }*/
 
-    if(writenD_)
+    if (writenD_)
     {
         forAll(species(), speciei)
         {
@@ -854,7 +933,7 @@ void Foam::basic2MultiComponentMixture::write()
         }
     }
 
-    if(writepD_)
+    if (writepD_)
     {
         forAll(species(), speciei)
         {
@@ -862,7 +941,7 @@ void Foam::basic2MultiComponentMixture::write()
         }
     }
 
-    if(writeX_)
+    if (writeX_)
     {
         forAll(species(), speciei)
         {
@@ -870,7 +949,7 @@ void Foam::basic2MultiComponentMixture::write()
         }
     }
 
-    if(writepP_)
+    if (writepP_)
     {
         forAll(species(), speciei)
         {
@@ -878,7 +957,7 @@ void Foam::basic2MultiComponentMixture::write()
         }
     }
 
-    if(writezeta_)
+    if (writezeta_)
     {
         forAll(species(), speciei)
         {
@@ -888,7 +967,7 @@ void Foam::basic2MultiComponentMixture::write()
         }
     }
 
-    if(writehev_)
+    if (writehev_)
     {
         forAll(species(), speciei)
         {

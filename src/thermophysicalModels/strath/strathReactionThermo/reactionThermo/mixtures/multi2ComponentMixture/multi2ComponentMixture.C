@@ -24,8 +24,7 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "multi2ComponentMixture.H"
-
-#include "IFstream.H" // NEW VINCENT 05/03/2016
+#include "IFstream.H"
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
@@ -118,7 +117,10 @@ void Foam::multi2ComponentMixture<ThermoType>::correctMassFractions()
 
 
 template<class ThermoType>
-void Foam::multi2ComponentMixture<ThermoType>::correctVibTempAssociativity(const dictionary& dict)
+void Foam::multi2ComponentMixture<ThermoType>::correctVibTempAssociativity
+(
+    const dictionary& dict
+)
 {
     const dictionary chemDict
     (
@@ -161,8 +163,10 @@ void Foam::multi2ComponentMixture<ThermoType>::correctVibTempAssociativity(const
         {
             FatalErrorIn("multi2ComponentMixture<ThermoType>::correctVibTempAssociativity")
                     << "The vibTempAssociativity table is not correctly defined \n"
-                    << "in " << chemDict.name() << "\nfor the element no " << speciei+1
-                    << "." << nl << "The value is greater than the number of solved vib. eqn. (i.e., "<< solvedVibEqCounter <<")" << nl;
+                    << "in " << chemDict.name() << "\nfor the element no "
+                    << speciei+1 << "." << nl
+                    << "The value is greater than the number of solved vib. eqn. (i.e., "
+                    << solvedVibEqCounter <<")" << nl;
             FatalError<< exit(FatalError);
         }
     }
@@ -183,12 +187,13 @@ void Foam::multi2ComponentMixture<ThermoType>::fillSolvedVibEqSpeciesTable()
 
 
 template<class ThermoType>
-void Foam::multi2ComponentMixture<ThermoType>::fillHackOfSolvedVibEqSpeciesTable()
+void
+Foam::multi2ComponentMixture<ThermoType>::fillHackOfSolvedVibEqSpeciesTable()
 {
     forAll(Y_, speciei)
     {
-        if(speciesData_[speciei].noVibrationalTemp() != 0)
         // The particle is either a molecule or an ionised molecule
+        if(speciesData_[speciei].noVibrationalTemp() != 0)
         {
             solvedVibEqSpecies_.append(species_[speciei]);
         }
@@ -222,16 +227,22 @@ Foam::multi2ComponentMixture<ThermoType>::multi2ComponentMixture
 
     correctMassFractions();
 
-    if(not(thermoDict.lookupOrDefault<bool>("downgradeToSingleTemperature", false)
-        or thermoDict.lookupOrDefault<bool>("downgradeToSingleTv", false)))
-    // Two-temperature solver with multi-vibrational pools
+    if
+    (
+        not
+        (
+            thermoDict.lookupOrDefault<bool>("downgradeToSingleTemperature", false)
+         or thermoDict.lookupOrDefault<bool>("downgradeToSingleTv", false)
+        )
+    )
     {
+        // Two-temperature solver with multi-vibrational pools
         correctVibTempAssociativity(thermoDict); // NEW VINCENT 05/03/2016;
         fillSolvedVibEqSpeciesTable(); // NEW VINCENT 05/08/2016;
     }
-    else if(thermoDict.lookupOrDefault<bool>("downgradeToSingleTv", false))
-    // Two-temperature solver with a single vibrational pool
+    else if(thermoDict.lookupOrDefault<bool>("downgradeToSingleTv", true))
     {
+        // Two-temperature solver with a single vibrational pool
         fillHackOfSolvedVibEqSpeciesTable(); // NEW VINCENT 17/02/2017;
     }
 }
@@ -252,15 +263,15 @@ Foam::multi2ComponentMixture<ThermoType>::multi2ComponentMixture
     correctMassFractions();
 
     if(not(thermoDict.lookupOrDefault<bool>("downgradeToSingleTemperature", false)
-        or thermoDict.lookupOrDefault<bool>("downgradeToSingleTv", false)))
-    // Two-temperature solver with multi-vibrational pools
+        or thermoDict.lookupOrDefault<bool>("downgradeToSingleTv", true)))
     {
+        // Two-temperature solver with multi-vibrational energy pools
         correctVibTempAssociativity(thermoDict); // NEW VINCENT 05/03/2016;
         fillSolvedVibEqSpeciesTable(); // NEW VINCENT 05/08/2016;
     }
-    else if(thermoDict.lookupOrDefault<bool>("downgradeToSingleTv", false))
-    // Two-temperature solver with a single vibrational pool
+    else if(thermoDict.lookupOrDefault<bool>("downgradeToSingleTv", true))
     {
+        // Two-temperature solver with a single vibrational energy pool
         fillHackOfSolvedVibEqSpeciesTable(); // NEW VINCENT 17/02/2017;
     }
 }
