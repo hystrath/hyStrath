@@ -23,17 +23,6 @@ internalField   uniform $Y_N;
 
 boundaryField
 {
-    inlet
-    {
-        type            fixedValue;
-        value           uniform $Y_N;
-    }
-    
-    fire
-    {
-        type            zeroGradient;
-    }
-    
     #include "include/boundaries"
 }
 

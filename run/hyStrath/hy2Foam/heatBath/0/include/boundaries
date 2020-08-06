@@ -11,17 +11,4 @@ empty
     type            empty;
 }
 
-outlet
-{
-    type            zeroGradient;
-}
-
-lWedge
-{
-    type            wedge;
-}
-
-rWedge
-{
-    type            wedge;
-}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

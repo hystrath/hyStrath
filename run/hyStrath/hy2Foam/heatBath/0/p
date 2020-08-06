@@ -22,17 +22,6 @@ internalField   uniform $pressure;
 
 boundaryField
 {
-    inlet
-    {
-        type            fixedValue;
-        value           uniform $pressure;
-    }
-    
-    fire
-    {
-        type            zeroGradient;
-    }
-    
     #include "include/boundaries"
 }
 

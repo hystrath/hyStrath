@@ -22,24 +22,6 @@ internalField   uniform $velocityField;
 
 boundaryField
 {
-    inlet
-    {
-        type            fixedValue;
-        value           uniform $velocityInlet;
-    }
-    
-    fire
-    {
-        type            nonEqMaxwellSlipU;
-        accommodationCoeff 1;
-        Uwall           $velocityWall;
-        refValue        uniform $velocityWall;
-        valueFraction   uniform 1.0;
-        thermalCreep    true;
-        curvature       true;
-        value           uniform $velocityWall;
-    }
-    
     #include "include/boundaries"
 }
 

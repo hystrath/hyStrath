@@ -22,18 +22,6 @@ internalField   uniform $TveAtom;
 
 boundaryField
 {
-    inlet
-    {
-        type            fixedValue;
-        value           uniform $TveAtom;
-    }
-    
-    fire
-    {
-        type            fixedValue;
-        value           uniform $TveAtom;
-    }
-    
     #include "include/boundaries"
 }
 
