@@ -40,7 +40,7 @@ SourceFiles
 #include "PtrList.H"
 #include "speciesTable.H"
 
-#include "DynamicList.H" // NEW VINCENT 24/02/2016
+#include "DynamicList.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -207,10 +207,10 @@ public:
         }
 
         //- Return the energy field
-        inline volScalarField& e(); // NEW VINCENT 23/02/2016
+        inline volScalarField& e();
 
         //- Return the const energy field
-        inline const volScalarField& e() const; // NEW VINCENT 23/02/2016
+        inline const volScalarField& e() const;
 
         //- Return the mass-fraction fields
         inline PtrList<volScalarField>& Y();
@@ -230,7 +230,6 @@ public:
         //- Return the const mass-fraction field for a specie given by name
         inline const volScalarField& Y(const word& specieName) const;
 
-        // NEW VINCENT ********************************************************
       //- X
         //- Return the molar-fraction fields
         inline PtrList<volScalarField>& X();
@@ -317,7 +316,8 @@ public:
         //- Return the vibrational energy field for a specie given by index
         inline volScalarField& hev(const label i);
 
-        //- Return the const vibrational energy field for a specie given by index
+        //- Return the const vibrational energy field for a specie given by
+        //  index
         inline const volScalarField& hev(const label i) const;
 
         //- Return the vibrational energy field for a specie given by name
@@ -355,13 +355,15 @@ public:
         //- Return the vibro-electronic energy field for a specie given by index
         inline volScalarField& hevel(const label i);
 
-        //- Return the const vibro-electronic energy field for a specie given by index
+        //- Return the const vibro-electronic energy field for a specie given
+        //  by index
         inline const volScalarField& hevel(const label i) const;
 
         //- Return the vibro-electronic energy field for a specie given by name
         inline volScalarField& hevel(const word& specieName);
 
-        //- Return the const vibro-electronic energy field for a specie given by name
+        //- Return the const vibro-electronic energy field for a specie given
+        //  by name
         inline const volScalarField& hevel(const word& specieName) const;
 
       //- h
@@ -412,13 +414,15 @@ public:
         //- Return the vibrational temperature field for a specie given by index
         inline volScalarField& Tv(const label i);
 
-        //- Return the const vibrational temperature field for a specie given by index
+        //- Return the const vibrational temperature field for a specie given
+        //  by index
         inline const volScalarField& Tv(const label i) const;
 
         //- Return the vibrational temperature field for a specie given by name
         inline volScalarField& Tv(const word& specieName);
 
-        //- Return the const vibrational temperature field for a specie given by name
+        //- Return the const vibrational temperature field for a specie given
+        //  by name
         inline const volScalarField& Tv(const word& specieName) const;
 
       //- Tv for a specific mode m  TODO ONGOING WORK
@@ -447,16 +451,20 @@ public:
         //- Return the const no of deg of freedom / rot energy mode fields
         inline const PtrList<volScalarField>& zetar() const;
 
-        //- Return the no of deg of freedom / rot energy mode field for a specie given by index
+        //- Return the no of deg of freedom / rot energy mode field for a
+        //  specie given by index
         inline volScalarField& zetar(const label i);
 
-        //- Return the const no of deg of freedom / rot energy mode field for a specie given by index
+        //- Return the const no of deg of freedom / rot energy mode field for a
+        //  specie given by index
         inline const volScalarField& zetar(const label i) const;
 
-        //- Return the no of deg of freedom / rot energy mode field for a specie given by name
+        //- Return the no of deg of freedom / rot energy mode field for a
+        //  specie given by name
         inline volScalarField& zetar(const word& specieName);
 
-        //- Return the const no of deg of freedom / rot energy mode field for a specie given by name
+        //- Return the const no of deg of freedom / rot energy mode field for a
+        //  specie given by name
         inline const volScalarField& zetar(const word& specieName) const;
 
       //- zetav
@@ -466,16 +474,20 @@ public:
         //- Return the const no of deg of freedom / vib energy mode fields
         inline const PtrList<volScalarField>& zetav() const;
 
-        //- Return the no of deg of freedom / vib energy mode field for a specie given by index
+        //- Return the no of deg of freedom / vib energy mode field for a
+        //  specie given by index
         inline volScalarField& zetav(const label i);
 
-        //- Return the const no of deg of freedom / vib energy mode field for a specie given by index
+        //- Return the const no of deg of freedom / vib energy mode field for a
+        //  specie given by index
         inline const volScalarField& zetav(const label i) const;
 
-        //- Return the no of deg of freedom / vib energy mode field for a specie given by name
+        //- Return the no of deg of freedom / vib energy mode field for a
+        //  specie given by name
         inline volScalarField& zetav(const word& specieName);
 
-        //- Return the const no of deg of freedom / vib energy mode field for a specie given by name
+        //- Return the const no of deg of freedom / vib energy mode field for a
+        //  specie given by name
         inline const volScalarField& zetav(const word& specieName) const;
 
       //- zetav  for a specific mode m TODO ONGOING WORK
@@ -485,13 +497,16 @@ public:
         //- Return the const no of deg of freedom / vib energy mode fields
         inline const PtrList<PtrList<volScalarField> >& zetav_mode() const;
 
-        //- Return the no of deg of freedom / vib energy mode field for a specie given by index
+        //- Return the no of deg of freedom / vib energy mode field for a
+        //  specie given by index
         inline volScalarField& zetav_mode(const label i, const label m);
 
-        //- Return the const no of deg of freedom / vib energy mode field for a specie given by index
+        //- Return the const no of deg of freedom / vib energy mode field for a
+        //  specie given by index
         inline const volScalarField& zetav_mode(const label i, const label m) const;
 
-        //- Return the no of deg of freedom / vib energy mode field for a specie given by name
+        //- Return the no of deg of freedom / vib energy mode field for a
+        //  specie given by name
         inline volScalarField& zetav_mode(const word& specieName, const label m);
 
         //- Return the const no of deg of freedom / vib energy mode field for a specie given by name
@@ -504,24 +519,27 @@ public:
         //- Return the const no of deg of freedom / elec energy mode fields
         inline const PtrList<volScalarField>& zetael() const;
 
-        //- Return the no of deg of freedom / elec energy mode field for a specie given by index
+        //- Return the no of deg of freedom / elec energy mode field for a
+        //  specie given by index
         inline volScalarField& zetael(const label i);
 
-        //- Return the const no of deg of freedom / elec energy mode field for a specie given by index
+        //- Return the const no of deg of freedom / elec energy mode field for
+        //  a specie given by index
         inline const volScalarField& zetael(const label i) const;
 
-        //- Return the no of deg of freedom / elec energy mode field for a specie given by name
+        //- Return the no of deg of freedom / elec energy mode field for a
+        //  specie given by name
         inline volScalarField& zetael(const word& specieName);
 
-        //- Return the const no of deg of freedom / elec energy mode field for a specie given by name
+        //- Return the const no of deg of freedom / elec energy mode field for
+        //  a specie given by name
         inline const volScalarField& zetael(const word& specieName) const;
 
         //- Return the non-const mixture molecular weight field
-        inline volScalarField& Wmix(); // NEW VINCENT 26/04/2016
+        inline volScalarField& Wmix();
 
         //- Return the const mixture molecular weight field
-        inline const volScalarField& Wmix() const; // NEW VINCENT 26/04/2016
-        // END NEW VINCENT ****************************************************
+        inline const volScalarField& Wmix() const;
 
         //- Does the mixture include this specie?
         inline bool contains(const word& specieName) const;
@@ -549,46 +567,90 @@ public:
             const dimensionedScalar& stoicRatio
         ) const;
 
-        // NEW VINCENT ******************************************************** TODO transform in inline fcts
+        // TODO VINCENT: transform in inline fcts
         //- Mixture specific gas constant for cell-set [J/kg/K]
-        virtual scalar RspecificMixture(const label celli) const = 0; // NEW VINCENT 18/04/2016
+        virtual scalar RspecificMixture(const label celli) const = 0;
 
         //- Mixture specific gas constant for patch [J/kg/K]
-        virtual scalar RspecificMixture(const label patchi, const label facei) const = 0; // NEW VINCENT 18/04/2016
+        virtual scalar RspecificMixture
+        (
+            const label patchi,
+            const label facei
+        ) const = 0;
 
         //- Mixture molecular weight for cell-set [g/mol]
-        virtual scalar molWeightMixture(const label celli) const = 0; // NEW VINCENT 04/03/2016
+        virtual scalar molWeightMixture
+        (
+            const label celli,
+            const bool fromMolarFrac = false
+        ) const = 0;
 
         //- Mixture molecular weight for patch [g/mol]
-        virtual scalar molWeightMixture(const label patchi, const label facei) const = 0; // NEW VINCENT 04/03/2016
+        virtual scalar molWeightMixture
+        (
+            const label patchi,
+            const label facei,
+            const bool fromMolarFrac = false
+        ) const = 0;
 
         //- Mixture molecular weight [g/mol]
-        virtual tmp<volScalarField> molWeightMixture() const = 0; // NEW VINCENT 11/11/2016
+        virtual tmp<volScalarField> molWeightMixture() const = 0;
 
         //- Update values of molar-fractions from mass-fractions for cell-set
-        virtual scalar molarFraction(const label speciei, const scalar Yi, const label celli) = 0;
+        virtual scalar molarFraction
+        (
+            const label speciei,
+            const scalar Yi,
+            const label celli
+        ) = 0;
 
         //- Update values of molar-fractions from mass-fractions for patch
-        virtual scalar molarFraction(const label speciei, const scalar Yi, const label patchi, const label facei) = 0;
+        virtual scalar molarFraction
+        (
+            const label speciei,
+            const scalar Yi,
+            const label patchi,
+            const label facei
+        ) = 0;
 
-        //- Update values of mass-fractions from molar-fractions during the initialisation
-        virtual scalar massFractionFromMolarFraction(const label speciei, /*const scalar celli,*/ const scalar Xi) = 0;
+        //- Update values of mass-fractions from molar-fractions during the
+        //  initialisation
+        virtual scalar massFractionFromMolarFraction
+        (
+            const label speciei,
+            const scalar Xi,
+            const scalar Wmix
+        ) = 0;
 
         //- Update values of mass-fractions from partial densities
-        virtual scalar massFractionFromPartialDensity(const scalar rhoi, const scalar p, const scalar Tt) = 0;
+        virtual scalar massFractionFromPartialDensity
+        (
+            const scalar rhoi,
+            const scalar p,
+            const scalar Tt
+        ) = 0;
 
         //- Update values of number densities from mass fractions
-        virtual scalar numberDensity(const label speciei, const scalar Yi, const scalar rho) = 0;
+        virtual scalar numberDensity
+        (
+            const label speciei,
+            const scalar Yi,
+            const scalar rho
+        ) = 0;
 
         //- Update values of partial pressures from molar fractions
         virtual scalar partialPressure(const scalar Xi, const scalar p) = 0;
 
         //- Update values of partial pressures from the equation of state
-        virtual scalar partialPressureEoS(const label speciei, const scalar rhoi, const scalar Ti) = 0;
+        virtual scalar partialPressureEoS
+        (
+            const label speciei,
+            const scalar rhoi,
+            const scalar Ti
+        ) = 0;
 
         //- Update values of partial densities from mass fractions
         virtual scalar partialDensity(const scalar Yi, const scalar rho) = 0;
-        // END NEW VINCENT ****************************************************
 
 
         // Per specie properties
@@ -602,7 +664,6 @@ public:
             //- Molecular weight [kg/kmol]
             virtual scalar W(const word& specieName) const = 0;
 
-            // NEW VINCENT **********************************************
             //- Particle Type
             virtual label particleType(const label speciei) const = 0;
 
@@ -612,19 +673,24 @@ public:
             //- Diameter of the particle
             virtual scalar diameter(const label speciei) const = 0;
 
-            //- Vibrational list with degeneracy and characteristic vibrational temperature [K] for each vib. mode
-            virtual DynamicList<scalar> vibrationalList(const label speciei) const = 0;  // NEW VINCENT 24/02/2016
+            //- Vibrational list with degeneracy and characteristic vibrational
+            //  temperature [K] for each vib. mode
+            virtual DynamicList<scalar> vibrationalList
+            (
+                const label speciei
+            ) const = 0;
 
             //- Temperature-viscosity coefficient [-]
             virtual scalar omega(const label speciei) const = 0;
 
             //- Number of characteristic vibrational temperatures
-            virtual label noVibrationalTemp(const label speciei) const = 0; // NEW VINCENT 17/02/2016
+            virtual label noVibrationalTemp(const label speciei) const = 0;
 
             //- Number of electronic energy levels
             virtual label noElectronicLevels(const label speciei) const = 0;
 
-            //- Fraction of the first ionisation energy of a given species [J/kg]
+            //- Fraction of the first ionisation energy of a given species
+            //  [J/kg]
             virtual scalar iHat(const label speciei) const = 0;
 
             //- Return the element of the table of vibro-electronic temperature
@@ -633,8 +699,10 @@ public:
 
             //- Return the element of the table of vibro-electronic temperature
             //  associations for a specie given by name
-            inline const label& vibTempAssociativity(const word& specieName) const;
-            // END NEW VINCENT ******************************************
+            inline const label& vibTempAssociativity
+            (
+                const word& specieName
+            ) const;
 
 
         // Per specie thermo properties
@@ -706,7 +774,6 @@ public:
                 const scalar T
             ) const = 0;
 
-            // NEW VINCENT ****************************************************
             //- Heat capacity at constant pressure [J/(kg K)]
             virtual scalar Cp
             (
@@ -725,7 +792,6 @@ public:
                 const scalar Tv
             ) const = 0;
 
-            // NEW VINCENT **********************************************
             //- Heat capacity at constant volume [J/(kg K)]
             //  trans-rotational energy mode
             virtual scalar Cv_t
@@ -797,7 +863,6 @@ public:
                 const scalar p,
                 const scalar Tv
             ) const = 0;
-            // END NEW VINCENT ******************************************
 
             //- Absolute enthalpy [J/kg]
             virtual scalar Ha
@@ -817,7 +882,6 @@ public:
                 const scalar Tv
             ) const = 0;
 
-            // NEW VINCENT **************************
             //- Sensible enthalpy, trans-rotational [J/kg]
             virtual scalar Hts
             (
@@ -849,7 +913,6 @@ public:
                 const scalar p,
                 const scalar Tv
             ) const = 0;
-            // END NEW VINCENT **********************
 
             //- Entropy [J/(kg K)]
             virtual scalar S
@@ -869,7 +932,6 @@ public:
                 const scalar Tv
             ) const = 0;
 
-            // NEW VINCENT **************************
             //- Sensible internal energy, trans-rotational [J/kg]
             virtual scalar Ets
             (
@@ -944,7 +1006,6 @@ public:
                 const scalar Tv
             ) const = 0;*/
 
-            // NEW VINCENT 20/02/2016 *****************************************
             //- Heat capacity at constant volume for patch[J/kg/K]
             //  vibro-electronic energy mode
             virtual tmp<scalarField> Cv_vel
@@ -1033,7 +1094,7 @@ public:
 
             //- Trans-rotational temperature from sensible internal energy
             //  given an initial T0
-            virtual scalar TtHEt // NEW VINCENT 03/03/2016
+            virtual scalar TtHEt
             (
                 const label speciei,
                 const scalar het,
@@ -1106,7 +1167,6 @@ public:
                 const scalar p,
                 const scalar Tv
             ) const = 0;
-            // END NEW VINCENT **********************
 
             //- Gibbs free energy [J/kg]
             virtual scalar G
@@ -1128,7 +1188,7 @@ public:
 
         // Per specie transport properties
 
-            //- Compressibility rho/p [s^2/m^2] // NEW VINCENT 14/02/2016
+            //- Compressibility rho/p [s^2/m^2]
             virtual scalar psi
             (
                 const label speciei,

@@ -418,7 +418,12 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                         IOobject::NO_WRITE
                     ),
                     mesh,
-                    dimensionedScalar("nD_" + species_[i], dimless/dimVolume, 0.0)
+                    dimensionedScalar
+                    (
+                        "nD_" + species_[i],
+                        dimless/dimVolume,
+                        0.0
+                    )
                 )
             );
 

@@ -24,14 +24,20 @@ License
 \*---------------------------------------------------------------------------*/
 
 inline const Foam::label&
-Foam::basic2MultiComponentMixture::vibTempAssociativity(const label speciei) const // NEW VINCENT 05/03/2016
+Foam::basic2MultiComponentMixture::vibTempAssociativity
+(
+    const label speciei
+) const // NEW VINCENT 05/03/2016
 {
     return vibTempAssociativity_[speciei];
 }
 
 
 inline const Foam::label&
-Foam::basic2MultiComponentMixture::vibTempAssociativity(const word& specieName) const // NEW VINCENT 06/08/2016
+Foam::basic2MultiComponentMixture::vibTempAssociativity
+(
+    const word& specieName
+) const // NEW VINCENT 06/08/2016
 {
     return vibTempAssociativity_[species_[specieName]];
 }
@@ -99,8 +105,6 @@ inline const Foam::volScalarField& Foam::basic2MultiComponentMixture::Y
 }
 
 
-// NEW VINCENT ****************************************************************
-
 //----                               X                                  -----//
 inline Foam::PtrList<Foam::volScalarField>&
 Foam::basic2MultiComponentMixture::X()
@@ -164,7 +168,8 @@ Foam::basic2MultiComponentMixture::nD() const
 }
 
 
-inline Foam::volScalarField& Foam::basic2MultiComponentMixture::nD(const label i)
+inline Foam::volScalarField&
+Foam::basic2MultiComponentMixture::nD(const label i)
 {
     return nD_[i];
 }
@@ -212,7 +217,8 @@ Foam::basic2MultiComponentMixture::pP() const
 }
 
 
-inline Foam::volScalarField& Foam::basic2MultiComponentMixture::pP(const label i)
+inline Foam::volScalarField&
+Foam::basic2MultiComponentMixture::pP(const label i)
 {
     return pP_[i];
 }
@@ -260,7 +266,8 @@ Foam::basic2MultiComponentMixture::pD() const
 }
 
 
-inline Foam::volScalarField& Foam::basic2MultiComponentMixture::pD(const label i)
+inline Foam::volScalarField&
+Foam::basic2MultiComponentMixture::pD(const label i)
 {
     return pD_[i];
 }
@@ -308,7 +315,8 @@ Foam::basic2MultiComponentMixture::hev() const
 }
 
 
-inline Foam::volScalarField& Foam::basic2MultiComponentMixture::hev(const label i)
+inline Foam::volScalarField&
+Foam::basic2MultiComponentMixture::hev(const label i)
 {
     return hev_[i];
 }
@@ -341,7 +349,7 @@ inline const Foam::volScalarField& Foam::basic2MultiComponentMixture::hev
 }
 
 
-//----                               heel                                -----//
+//----                               heel                               -----//
 inline Foam::PtrList<Foam::volScalarField>&
 Foam::basic2MultiComponentMixture::heel()
 {
@@ -356,7 +364,8 @@ Foam::basic2MultiComponentMixture::heel() const
 }
 
 
-inline Foam::volScalarField& Foam::basic2MultiComponentMixture::heel(const label i)
+inline Foam::volScalarField&
+Foam::basic2MultiComponentMixture::heel(const label i)
 {
     return heel_[i];
 }
@@ -389,7 +398,7 @@ inline const Foam::volScalarField& Foam::basic2MultiComponentMixture::heel
 }
 
 
-//----                               hevel                                -----//
+//----                               hevel                              -----//
 inline Foam::PtrList<Foam::volScalarField>&
 Foam::basic2MultiComponentMixture::hevel()
 {
@@ -404,7 +413,8 @@ Foam::basic2MultiComponentMixture::hevel() const
 }
 
 
-inline Foam::volScalarField& Foam::basic2MultiComponentMixture::hevel(const label i)
+inline Foam::volScalarField&
+Foam::basic2MultiComponentMixture::hevel(const label i)
 {
     return hevel_[i];
 }
@@ -452,7 +462,8 @@ Foam::basic2MultiComponentMixture::enthalpy() const
 }
 
 
-inline Foam::volScalarField& Foam::basic2MultiComponentMixture::enthalpy(const label i)
+inline Foam::volScalarField&
+Foam::basic2MultiComponentMixture::enthalpy(const label i)
 {
     return h_[i];
 }
@@ -485,7 +496,7 @@ inline const Foam::volScalarField& Foam::basic2MultiComponentMixture::enthalpy
 }
 
 
-//----                               hevel_mode                           -----// TODO ONGOING WORK
+//----                               hevel_mode                         -----// TODO ONGOING WORK
 /*inline Foam::PtrList<Foam::PtrList<Foam::volScalarField> >&
 Foam::basic2MultiComponentMixture::hevel_mode()
 {
@@ -548,7 +559,8 @@ Foam::basic2MultiComponentMixture::Tv() const
 }
 
 
-inline Foam::volScalarField& Foam::basic2MultiComponentMixture::Tv(const label i)
+inline Foam::volScalarField&
+Foam::basic2MultiComponentMixture::Tv(const label i)
 {
     return spTv_[i];
 }
@@ -644,7 +656,8 @@ Foam::basic2MultiComponentMixture::zetar() const
 }
 
 
-inline Foam::volScalarField& Foam::basic2MultiComponentMixture::zetar(const label i)
+inline Foam::volScalarField&
+Foam::basic2MultiComponentMixture::zetar(const label i)
 {
     return zetaRot_[i];
 }
@@ -692,7 +705,8 @@ Foam::basic2MultiComponentMixture::zetav() const
 }
 
 
-inline Foam::volScalarField& Foam::basic2MultiComponentMixture::zetav(const label i)
+inline Foam::volScalarField&
+Foam::basic2MultiComponentMixture::zetav(const label i)
 {
     return zetaVib_[i];
 }
@@ -725,7 +739,7 @@ inline const Foam::volScalarField& Foam::basic2MultiComponentMixture::zetav
 }
 
 
-//----                               zetav_mode                        -----// TODO ONGOING WORK
+//----                               zetav_mode                         -----// TODO ONGOING WORK
 /*inline Foam::PtrList<Foam::PtrList<Foam::volScalarField> >&
 Foam::basic2MultiComponentMixture::zetav_mode()
 {
@@ -773,7 +787,7 @@ inline const Foam::volScalarField& Foam::basic2MultiComponentMixture::zetav_mode
 }*/
 
 
-//----                               zetael                              -----//
+//----                               zetael                             -----//
 inline Foam::PtrList<Foam::volScalarField>&
 Foam::basic2MultiComponentMixture::zetael()
 {
@@ -788,7 +802,8 @@ Foam::basic2MultiComponentMixture::zetael() const
 }
 
 
-inline Foam::volScalarField& Foam::basic2MultiComponentMixture::zetael(const label i)
+inline Foam::volScalarField&
+Foam::basic2MultiComponentMixture::zetael(const label i)
 {
     return zetaElec_[i];
 }
@@ -827,11 +842,11 @@ inline Foam::volScalarField& Foam::basic2MultiComponentMixture::Wmix()
 }
 
 
-inline const Foam::volScalarField& Foam::basic2MultiComponentMixture::Wmix() const
+inline const Foam::volScalarField&
+Foam::basic2MultiComponentMixture::Wmix() const
 {
     return Wmix_;
 }
-// END NEW VINCENT ************************************************************
 
 
 inline bool Foam::basic2MultiComponentMixture::contains

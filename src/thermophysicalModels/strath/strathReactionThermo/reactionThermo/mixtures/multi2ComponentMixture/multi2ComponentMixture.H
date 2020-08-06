@@ -128,7 +128,6 @@ public:
             const label facei
         ) const;
 
-        // NEW VINCENT 07/08/2016 *********************************************
         scalar cellMixture_HEt
         (
             const label celli,
@@ -309,7 +308,6 @@ public:
             const scalar p,
             const scalar T
         ) const;
-        // END NEW VINCENT 07/08/2016 *****************************************
 
         const ThermoType& cellVolMixture
         (
@@ -327,40 +325,85 @@ public:
         ) const;
 
         //- Mixture molecular weight for cell-set [g/mol]
-        virtual scalar molWeightMixture(const label posi) const; // NEW VINCENT 04/03/2016
+        virtual scalar molWeightMixture
+        (
+            const label celli,
+            const bool fromMolarFrac = false
+        ) const;
 
+        //- Mixture molecular weight for patch [g/mol]
+        virtual scalar molWeightMixture
+        (
+            const label patchi,
+            const label facei,
+            const bool fromMolarFrac = false
+        ) const;
+        
         //- Mixture molecular weight [g/mol]
-        virtual tmp<volScalarField> molWeightMixture() const; // NEW VINCENT 11/11/2016
-
-        //- Mixture molecular weight for patch [kg/mol]
-        virtual scalar molWeightMixture(const label patchi, const label facei) const; // NEW VINCENT 04/03/2016
+        virtual tmp<volScalarField> molWeightMixture() const;
 
         //- Mixture specific gas constant for cell-set [J/kg/K]
-        virtual scalar RspecificMixture(const label celli) const; // NEW VINCENT 18/04/2016
+        virtual scalar RspecificMixture(const label celli) const;
 
         //- Mixture specific gas constant for cell-set for patch [J/kg/K]
-        virtual scalar RspecificMixture(const label patchi, const label facei) const; // NEW VINCENT 18/04/2016
+        virtual scalar RspecificMixture
+        (
+            const label patchi,
+            const label facei
+        ) const;
 
         //- Update values of molar-fractions from mass-fractions for cell-set
-        virtual scalar molarFraction(const label speciei, const scalar Yi, const label celli);
+        virtual scalar molarFraction
+        (
+            const label speciei,
+            const scalar Yi,
+            const label celli
+        );
 
         //- Update values of molar-fractions from mass-fractions for patch
-        virtual scalar molarFraction(const label speciei, const scalar Yi, const label patchi, const label facei);
+        virtual scalar molarFraction
+        (
+            const label speciei,
+            const scalar Yi,
+            const label patchi,
+            const label facei
+        );
 
-        //- Update values of mass-fractions from molar-fractions during the initialisation
-        virtual scalar massFractionFromMolarFraction(const label speciei, /*const scalar celli,*/ const scalar Xi);
+        //- Update values of mass-fractions from molar-fractions during the
+        //  initialisation
+        virtual scalar massFractionFromMolarFraction
+        (
+            const label speciei,
+            const scalar Xi,
+            const scalar Wmix
+        );
 
         //- Update values of mass-fractions from partial densities
-        virtual scalar massFractionFromPartialDensity(const scalar rhoi, const scalar p, const scalar Tt);
+        virtual scalar massFractionFromPartialDensity
+        (
+            const scalar rhoi,
+            const scalar p,
+            const scalar Tt
+        );
 
         //- Update values of number densities from mass fractions
-        virtual scalar numberDensity(const label speciei, const scalar Yi, const scalar rho);
+        virtual scalar numberDensity
+        (
+            const label speciei,
+            const scalar Yi,
+            const scalar rho
+        );
 
         //- Update values of partial pressures from molar fractions
         virtual scalar partialPressure(const scalar Xi, const scalar p);
 
         //- Update values of partial pressures from the equation of state
-        virtual scalar partialPressureEoS(const label speciei, const scalar rhoi, const scalar Ti);
+        virtual scalar partialPressureEoS
+        (
+            const label speciei,
+            const scalar rhoi,
+            const scalar Ti
+        );
 
         //- Update values of partial densities from mass fractions
         virtual scalar partialDensity(const scalar Yi, const scalar rho);
