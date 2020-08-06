@@ -55,8 +55,7 @@ void Foam::ode2<Chemistry2Model>::solve
 (
     scalarField& c,
     scalar& T,
-    scalar& Tv, // NEW VINCENT
-    List<scalar>& spTv, // NEW VINCENT
+    scalarList& spTv,
     scalar& p,
     scalar& deltaT,
     scalar& subDeltaT
@@ -70,7 +69,7 @@ void Foam::ode2<Chemistry2Model>::solve
         cTp_[i] = c[i];
     }
     cTp_[nSpecie] = T;
-    cTp_[nSpecie+1] = Tv; // NEW VINCENT
+    cTp_[nSpecie+1] = spTv[0]; // NEW VINCENT
     cTp_[nSpecie+2] = p; // MODIFIED VINCENT
 
     ode2Solver_->solve(0, deltaT, cTp_, subDeltaT);
@@ -80,7 +79,7 @@ void Foam::ode2<Chemistry2Model>::solve
         c[i] = max(0.0, cTp_[i]);
     }
     T = cTp_[nSpecie];
-    Tv = cTp_[nSpecie+1]; // NEW VINCENT
+    spTv[0] = cTp_[nSpecie+1]; // NEW VINCENT TODO WRONG REVISE IF NEEDED
     p = cTp_[nSpecie+2]; // MODIFIED VINCENT
 }
 
@@ -90,11 +89,8 @@ void Foam::ode2<Chemistry2Model>::solve
 (
     scalarField&,
     scalarField&,
-    scalarField&, // NEW VINCENT
-    scalarField&, // NEW VINCENT
     scalar&,
-    scalar&, // NEW VINCENT
-    List<scalar>&,  // NEW VINCENT
+    scalarList&,
     scalar&,
     scalar&,
     scalar&

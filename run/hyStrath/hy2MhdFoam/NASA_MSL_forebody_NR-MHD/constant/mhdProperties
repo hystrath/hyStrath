@@ -19,11 +19,9 @@ active          true;
 
 mhdModel        lowReMag;
 
-collisionData   constant;
+hallEffect      true;
 
 electricalConductivityModel Bush;
-
-hallEffect      true;
 
 constantElectricalConductivityCoeffs
 {

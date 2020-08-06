@@ -73,22 +73,18 @@ public:
         (
             scalarField &c,
             scalar& T,
-            scalar& Tv,
             List<scalar>& spTv,
             scalar& p,
             scalar& deltaT,
             scalar& subDeltaT
         ) const = 0;
 
-        //- Update the concentrations (also forward apart) and return the chemical time
+        //- Update the concentrations and return the chemical time
         virtual void solve
         (
             scalarField& c,
-            scalarField& cwfd, // NEW VINCENT
-            scalarField& ceiiN, // NEW VINCENT
-            scalarField& ceiiO, // NEW VINCENT
+            scalarField& cwfd,
             scalar& T,
-            scalar& Tv,
             List<scalar>& spTv,
             scalar& p,
             scalar& deltaT,

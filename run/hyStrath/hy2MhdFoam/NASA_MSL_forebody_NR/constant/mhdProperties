@@ -19,11 +19,9 @@ active          false;
 
 mhdModel        noMHD;
 
-collisionData   constant;
+hallEffect      false;
 
 electricalConductivityModel Bush;
-
-hallEffect      false;
 
 constantElectricalConductivityCoeffs
 {

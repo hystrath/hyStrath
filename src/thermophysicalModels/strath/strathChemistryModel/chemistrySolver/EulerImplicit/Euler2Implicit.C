@@ -27,7 +27,7 @@ License
 #include "addToRunTimeSelectionTable.H"
 #include "simpleMatrix.H"
 
-#include "rho2ReactionThermo.H" // NEW VINCENT 21/03/2016
+#include "rho2ReactionThermo.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
@@ -64,7 +64,6 @@ void Foam::Euler2Implicit<Chemistry2Model>::updateRRInReactionI
     const label lRef,
     const label rRef,
     const scalar p,
-    const scalar T,
     simpleMatrix<scalar>& RR
 ) const
 {
@@ -96,14 +95,12 @@ void Foam::Euler2Implicit<Chemistry2Model>::solve
 (
     scalarField& c,
     scalar& T,
-    scalar& Tv,
-    List<scalar>& spTv,
+    scalarList& spTv,
     scalar& p,
     scalar& deltaT,
     scalar& subDeltaT
 ) const
 {
-    // PRINTED = NO
     const label nSpecie = this->nSpecie();
     simpleMatrix<scalar> RR(nSpecie, 0, 0);
 
@@ -121,7 +118,8 @@ void Foam::Euler2Implicit<Chemistry2Model>::solve
         scalar pf, cf, pr, cr;
         label lRef, rRef;
 
-        scalar omegai = this->omegaI(i, c, T, Tv, spTv, p, pf, cf, lRef, pr, cr, rRef);
+        scalar omegai =
+            this->omegaI(i, c, T, spTv, p, pf, cf, lRef, pr, cr, rRef);
 
         scalar corr = 1.0;
         if (eqRateLimiter_)
@@ -136,7 +134,7 @@ void Foam::Euler2Implicit<Chemistry2Model>::solve
             }
         }
 
-        updateRRInReactionI(i, pr, pf, corr, lRef, rRef, p, T, RR);
+        updateRRInReactionI(i, pr, pf, corr, lRef, rRef, p, RR);
     }
 
     // Calculate the stable/accurate time-step
@@ -161,7 +159,7 @@ void Foam::Euler2Implicit<Chemistry2Model>::solve
             tMin = min(tMin, cm/d);
         }
     }
-
+    
     subDeltaT = cTauChem_*tMin;
     deltaT = min(deltaT, subDeltaT);
 
@@ -187,23 +185,17 @@ template<class Chemistry2Model>
 void Foam::Euler2Implicit<Chemistry2Model>::solve
 (
     scalarField& c,
-    scalarField& cfwd, // NEW VINCENT
-    scalarField& ceiiN, // NEW VINCENT
-    scalarField& ceiiO, // NEW VINCENT
+    scalarField& cfwd,
     scalar& T,
-    scalar& Tv,
-    List<scalar>& spTv,
+    scalarList& spTv,
     scalar& p,
     scalar& deltaT,
     scalar& subDeltaT
 ) const
 {
-    // PRINTED = YES
     const label nSpecie = this->nSpecie();
     simpleMatrix<scalar> RR(nSpecie, 0, 0);
-    simpleMatrix<scalar> RRfwd(nSpecie, 0, 0); // NEW VINCENT 25/03/2016
-    /*simpleMatrix<scalar> RReiiN(nSpecie, 0, 0); // NEW VINCENT 22/02/2017 TODO VINCENT
-    simpleMatrix<scalar> RReiiO(nSpecie, 0, 0); // NEW VINCENT 22/02/2017*/
+    simpleMatrix<scalar> RRfwd(nSpecie, 0, 0);
 
     for (label i=0; i<nSpecie; i++)
     {
@@ -219,7 +211,8 @@ void Foam::Euler2Implicit<Chemistry2Model>::solve
         scalar pf, cf, pr, cr;
         label lRef, rRef;
 
-        scalar omegai = this->omegaI(i, c, T, Tv, spTv, p, pf, cf, lRef, pr, cr, rRef); //MODIFIED VINCENT
+        scalar omegai =
+            this->omegaI(i, c, T, spTv, p, pf, cf, lRef, pr, cr, rRef);
 
         scalar corr = 1.0;
         if (eqRateLimiter_)
@@ -234,29 +227,9 @@ void Foam::Euler2Implicit<Chemistry2Model>::solve
             }
         }
 
-        updateRRInReactionI(i, pr, pf, corr, lRef, rRef, p, T, RR);
-        updateRRInReactionI(i, 0, pf, corr, lRef, rRef, p, T, RRfwd); // NEW VINCENT 25/03/2016 TODO
-
-        // NEW VINCENT 22/02/2017 ************************************************* TODO
-        //if(this->reactions()[i].controlT() == impactIonisation)
-        //{
-            //if(this->reactions()[i].species().contains("N+"))
-            //{
-                //updateRRInReactionI(i, pr, pf, corr, lRef, rRef, p, T, RReiiN);
-                /*rriirN = RR[this->reactions()[i].rhs()[0].index][rRef]
-                    + RR[this->reactions()[i].rhs()[0].index][lRef];*/
-            //}
-            //else if(this->reactions()[i].species().contains("O+"))
-            //{
-                //updateRRInReactionI(i, pr, pf, corr, lRef, rRef, p, T, RReiiO);
-                /*rriirO = RR[this->reactions()[i].rhs()[0].index][rRef]
-                    + RR[this->reactions()[i].rhs()[0].index][lRef];*/
-            //}
-        //}
-        // END NEW VINCENT 22/02/2017 *********************************************
+        updateRRInReactionI(i, pr, pf, corr, lRef, rRef, p, RR);
+        updateRRInReactionI(i, 0, pf, corr, lRef, rRef, p, RRfwd);
     }
-
-    //Info << "Pt1: Euler2Implicit::solve" << endl;
 
     // Calculate the stable/accurate time-step
     scalar tMin = GREAT;
@@ -281,40 +254,28 @@ void Foam::Euler2Implicit<Chemistry2Model>::solve
         }
     }
 
-    //Info << "Pt2: Euler2Implicit::solve " << deltaT << endl;
-
     subDeltaT = cTauChem_*tMin;
     deltaT = min(deltaT, subDeltaT);
-
+    
     // Add the diagonal and source contributions from the time-derivative
     for (label i=0; i<nSpecie; i++)
     {
         RR[i][i] += 1.0/deltaT;
         RR.source()[i] = c[i]/deltaT;
 
-        RRfwd[i][i] += 1.0/deltaT; // NEW VINCENT 25/03/2016
-        RRfwd.source()[i] = cfwd[i]/deltaT; // NEW VINCENT 25/03/2016
-
-        /*RReiiN[i][i] += 1.0/deltaT; // NEW VINCENT 25/03/2016 TODO VINCENT
-        RReiiN.source()[i] = ceiiN[i]/deltaT; // NEW VINCENT 25/03/2016
-        RReiiO[i][i] += 1.0/deltaT; // NEW VINCENT 25/03/2016
-        RReiiO.source()[i] = ceiiO[i]/deltaT; // NEW VINCENT 25/03/2016*/
+        RRfwd[i][i] += 1.0/deltaT;
+        RRfwd.source()[i] = cfwd[i]/deltaT;
     }
-
-    //Info << "Pt3: Euler2Implicit::solve" << cTot << endl;
 
     // Solve for the new composition
     c = RR.LUsolve();
-    //Info << "Pt4: Euler2Implicit::solve" << c << endl;
-    cfwd = RRfwd.LUsolve(); // NEW VINCENT 25/03/2016 TODO VINCENT
-
-    //Info << "Pt5: Euler2Implicit::solve" << endl;
+    cfwd = RRfwd.LUsolve();
 
     // Limit the composition
     for (label i=0; i<nSpecie; i++)
     {
         c[i] = max(0.0, c[i]);
-        cfwd[i] = max(0.0, cfwd[i]); // NEW VINCENT 25/03/2016 TODO VINCENT
+        cfwd[i] = max(0.0, cfwd[i]);
     }
 }
 // ************************************************************************* //

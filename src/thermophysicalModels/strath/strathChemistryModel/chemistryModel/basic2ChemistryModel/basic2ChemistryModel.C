@@ -74,20 +74,37 @@ Foam::basic2ChemistryModel::basic2ChemistryModel(const fvMesh& mesh)
         dimensionedScalar("deltaTChem0", dimTime, deltaTChemIni_)
     ),
 
-    modifiedTemperature_(lookupOrDefault<Switch>("modifiedTemperature", false)) // NEW VINCENT 16/02/2017
+    modifiedTemperature_(lookupOrDefault<Switch>("modifiedTemperature", false))
 
 {
-    if(modifiedTemperature_)
+    if (modifiedTemperature_)
     {
         modTCoeffs_.setSize(2);
-        modTCoeffs_.set(0, new scalar(readScalar(subDict("modifiedTemperatureCoeffs").lookup("Tmin"))));
-        modTCoeffs_.set(1, new scalar(readScalar(subDict("modifiedTemperatureCoeffs").lookup("epsilon"))));
+        modTCoeffs_.set
+        (
+            0,
+            new scalar
+            (
+                subDict("modifiedTemperatureCoeffs")
+                    .lookupOrDefault<scalar>("Tmin", 800.0)
+            )
+        );
+        modTCoeffs_.set
+        (
+            1,
+            new scalar
+            (
+                subDict("modifiedTemperatureCoeffs")
+                    .lookupOrDefault<scalar>("epsilon", 80.0)
+            )
+        );
     }
 
 
-    if(isDict("chemistryVibrationCoupling")) // NEW VINCENT 13/08/2016
+    if (isDict("chemistryVibrationCoupling"))
     {
-        CVModel_ = subDict("chemistryVibrationCoupling").lookupOrDefault<word>("model", word::null);
+        CVModel_ = subDict("chemistryVibrationCoupling")
+            .lookupOrDefault<word>("model", "none");
     }
     else
     {
@@ -96,33 +113,56 @@ Foam::basic2ChemistryModel::basic2ChemistryModel(const fvMesh& mesh)
 
     if (CVModel_ == "ParkTTv")
     {
-        exponentPark_ = readScalar(subDict("chemistryVibrationCoupling").subDict(CVModel_ + "Coeffs").lookup("exponentTtr"));
+        exponentPark_ =
+            subDict("chemistryVibrationCoupling").subDict(CVModel_ + "Coeffs")
+                .lookupOrDefault<scalar>("exponentTtr", 0.7);
 
-        ScvModel_ = subDict("chemistryVibrationCoupling").subDict(CVModel_ + "Coeffs").lookupOrDefault<word>("sourceTermModel", "preferential");
+        ScvModel_ =
+            subDict("chemistryVibrationCoupling").subDict(CVModel_ + "Coeffs")
+                .lookupOrDefault<word>("sourceTermModel", "preferential");
 
         if (ScvModel_ != "preferential" and ScvModel_ != "nonPreferential")
         {
-            FatalErrorIn("Foam::basic2ChemistryModel::basic2ChemistryModel(const fvMesh& mesh)")
-                << "ScvModel_ model can either be 'preferential' or 'nonPreferential'."
+            FatalErrorIn
+            (
+                "Foam::basic2ChemistryModel::basic2ChemistryModel"
+                "(const fvMesh& mesh)"
+            )   << "Park's TTV sourceTerm model can either be 'preferential' "
+                << "or 'nonPreferential'"
                 << exit(FatalError);
         }
-
-        if (ScvModel_ == "preferential")
+        else if (ScvModel_ == "preferential")
         {
-            preferentialModel_ = subDict("chemistryVibrationCoupling").subDict(CVModel_ + "Coeffs").subDict("preferentialModel").lookupOrDefault<word>("factorType", word::null);
+            preferentialModel_ =
+                subDict("chemistryVibrationCoupling")
+                    .subDict(CVModel_ + "Coeffs").subDict("preferentialModel")
+                    .lookupOrDefault<word>("factorType", word::null);
 
-            if (preferentialModel_ != "constant" and preferentialModel_ != "lineFitted")
+            if
+            (
+                preferentialModel_ != "constant" 
+             && preferentialModel_ != "lineFitted"
+            )
             {
-                FatalErrorIn("Foam::basic2ChemistryModel::basic2ChemistryModel(const fvMesh& mesh)")
-                    << "ScvModel_ preferential model can either be defined as 'constant' or 'lineFitted'."
+                FatalErrorIn
+                (
+                    "Foam::basic2ChemistryModel::basic2ChemistryModel"
+                    "(const fvMesh& mesh)"
+                )   << "Park's TTV preferential model can either have "
+                    << "'constant' or 'lineFitted' coefficients"
                     << exit(FatalError);
             }
         }
     }
     else if (CVModel_ != "CVDV" and CVModel_ != "none")
     {
-        FatalErrorIn("Foam::basic2ChemistryModel::basic2ChemistryModel(const fvMesh& mesh)")
-            << "This chemistryVibrationCoupling model does not exist. Valid models are 'ParkTTv' and 'CVDV'."
+        FatalErrorIn
+        (
+            "Foam::basic2ChemistryModel::basic2ChemistryModel(const fvMesh& "
+            "mesh)"
+        )
+            << "This chemistry-vibration coupling model does not exist. "
+            << "Valid models are 'ParkTTv', 'CVDV' and 'none'"
             << exit(FatalError);
     }
 }

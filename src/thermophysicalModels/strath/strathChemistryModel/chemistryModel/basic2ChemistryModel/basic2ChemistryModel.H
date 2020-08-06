@@ -84,21 +84,18 @@ protected:
         //- Latest estimation of integration step
         DimensionedField<scalar, volMesh> deltaTChem_;
 
-        // NEW VINCENT 16/02/2017 *********************************************
-        //- Modified temperature activation switch when bounding (fixed min
-        //  value) is required (cf Scalabrin's PhD thesis (2007), Eq.3.13, p37)
+        //- Modified temperature switch when bounding is required 
+        //  (cf Scalabrin's PhD thesis (2007), Eq.3.13, p37)
         Switch modifiedTemperature_;
 
         //- Coefficients for the modified temperature calculation
         PtrList<scalar> modTCoeffs_;
 
-        // END NEW VINCENT 16/02/2017 *****************************************
-
-        // NEW VINCENT ********************************************************
         //- Model for chemistry-vibrational coupling
         word CVModel_;
 
         // Park TTV model
+        
             //- Park's exponent for heavy-particle temperature
             scalar exponentPark_;
 
@@ -108,7 +105,6 @@ protected:
             //- Model for the preferential chemistry-vibrational coupling
             //  source term, if chosen
             word preferentialModel_;
-        // END NEW VINCENT ****************************************************
 
 
     // Protected Member Functions
@@ -181,8 +177,8 @@ public:
                     const label i
                 ) = 0;
 
-                // NEW VINCENT 25/03/2016 *************************************
-                //- Return const access to forward chemical source terms [kg/m3/s]
+                //- Return const access to forward chemical source terms
+                //  [kg/m3/s]
                 virtual const DimensionedField<scalar, volMesh>& RRf
                 (
                     const label i
@@ -193,7 +189,6 @@ public:
                 (
                     const label i
                 ) = 0;
-                // END NEW VINCENT 25/03/2016 *********************************
 
                 //- Return reaction rate of the specieI in reactionI
                 virtual tmp<DimensionedField<scalar, volMesh> > calculateRR
@@ -222,15 +217,21 @@ public:
                 //- Return source for enthalpy equation [kg/m/s3]
                 virtual tmp<volScalarField> Sh() const = 0;
 
-                // NEW VINCENT ************************************************
+                //- Return chemistry-vibrational coupling source term
+                //  in the vibrational equation [kg/m/s3]
+                virtual tmp<volScalarField> Scv() const = 0;
+                
                 //- Return chemistry-vibrational coupling source term
                 //  in the vibrational equation for specie i [kg/m/s3]
-                virtual tmp<volScalarField> Scv(label i) const = 0;
+                virtual tmp<volScalarField> Scv(const label i) const = 0;
 
                 //- Return energy removed from free-electrons during impact
                 //  ionisation reactions [kg/m/s3]
-                virtual tmp<volScalarField> Seiir(label i) const = 0;
-                // END NEW VINCENT ********************************************
+                virtual tmp<volScalarField> Seiir() const = 0;
+                
+                //- Return energy removed from free-electrons during impact
+                //  ionisation reactions for specie i [kg/m/s3]
+                virtual tmp<volScalarField> Seiir(const label i) const = 0;
 
                 //- Return the heat release, i.e. enthalpy/sec [m2/s3]
                 virtual tmp<volScalarField> dQ() const = 0;

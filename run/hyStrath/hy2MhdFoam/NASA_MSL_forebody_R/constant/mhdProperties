@@ -15,15 +15,13 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-active          false; //true;
+active          false;
 
-mhdModel        noMHD; //lowReMag;
+mhdModel        noMHD;
 
-collisionData   constant;
+hallEffect      false;
 
 electricalConductivityModel Bush;
-
-hallEffect      false; //true;
 
 constantElectricalConductivityCoeffs
 {

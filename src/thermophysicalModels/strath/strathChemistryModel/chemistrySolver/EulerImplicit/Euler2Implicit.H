@@ -95,7 +95,6 @@ public:
         const label lRef,
         const label rRef,
         const scalar p,
-        const scalar T,
         simpleMatrix<scalar>& RR
     ) const;
 
@@ -104,22 +103,18 @@ public:
     (
         scalarField& c,
         scalar& T,
-        scalar& Tv, // MODIFIED VINCENT
-        List<scalar>& spTv, // NEW VINCENT
+        List<scalar>& spTv,
         scalar& p,
         scalar& deltaT,
         scalar& subDeltaT
     ) const;
 
-    //- Update the concentrations (also forward apart) and return the chemical time
+    //- Update the concentrations and return the chemical time
     virtual void solve
     (
         scalarField& c,
-        scalarField& cfwd, // MODIFIED VINCENT
-        scalarField& ceiiN, // NEW VINCENT
-        scalarField& ceiiO, // NEW VINCENT
+        scalarField& cfwd,
         scalar& T,
-        scalar& Tv,
         List<scalar>& spTv,
         scalar& p,
         scalar& deltaT,

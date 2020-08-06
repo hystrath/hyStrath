@@ -125,7 +125,33 @@ Foam::hTC2Models::noHTC2<HTempThermoType>::Sh() const
 
 template<class Type>
 Foam::tmp<Foam::volScalarField>
-Foam::hTC2Models::noHTC2<Type>::Scv(label i) const
+Foam::hTC2Models::noHTC2<Type>::Scv() const
+{
+    tmp<volScalarField> tScv
+    (
+        new volScalarField
+        (
+            IOobject
+            (
+                typeName + ":Scv",
+                this->mesh().time().timeName(),
+                this->mesh(),
+                IOobject::NO_READ,
+                IOobject::NO_WRITE,
+                false
+            ),
+            this->mesh(),
+            dimensionedScalar("zero", dimEnergy/dimTime/dimVolume, 0.0)
+        )
+    );
+
+    return tScv;
+}
+
+
+template<class Type>
+Foam::tmp<Foam::volScalarField>
+Foam::hTC2Models::noHTC2<Type>::Scv(const label i) const
 {
     tmp<volScalarField> tScv
     (
@@ -151,7 +177,33 @@ Foam::hTC2Models::noHTC2<Type>::Scv(label i) const
 
 template<class Type>
 Foam::tmp<Foam::volScalarField>
-Foam::hTC2Models::noHTC2<Type>::Seiir(label i) const
+Foam::hTC2Models::noHTC2<Type>::Seiir() const
+{
+    tmp<volScalarField> tSeiir
+    (
+        new volScalarField
+        (
+            IOobject
+            (
+                typeName + ":Seiir",
+                this->mesh().time().timeName(),
+                this->mesh(),
+                IOobject::NO_READ,
+                IOobject::NO_WRITE,
+                false
+            ),
+            this->mesh(),
+            dimensionedScalar("zero", dimEnergy/dimTime/dimVolume, 0.0)
+        )
+    );
+
+    return tSeiir;
+}
+
+
+template<class Type>
+Foam::tmp<Foam::volScalarField>
+Foam::hTC2Models::noHTC2<Type>::Seiir(const label i) const
 {
     tmp<volScalarField> tSeiir
     (

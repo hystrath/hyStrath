@@ -115,6 +115,7 @@ bool run
     while(runTime.run())
     {
         #include "hy2Foam_solver.H"
+        mhd->update();
     }
 
     return false;

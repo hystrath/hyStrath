@@ -109,11 +109,19 @@ public:
 
             //-  Return chemistry-vibrational coupling source term
             //  in the vibrational equation [kg/m/s3]
-            virtual tmp<volScalarField> Scv(label i) const;
+            virtual tmp<volScalarField> Scv() const;
+            
+            //-  Return chemistry-vibrational coupling source term
+            //  in the vibrational equation for specie i [kg/m/s3]
+            virtual tmp<volScalarField> Scv(const label i) const;
 
             //- Return energy removed from free-electrons during impact
             //  ionisation reactions [kg/m/s3]
-            virtual tmp<volScalarField> Seiir(label i) const;
+            virtual tmp<volScalarField> Seiir() const;
+            
+            //- Return energy removed from free-electrons during impact
+            //  ionisation reactions for specie i [kg/m/s3]
+            virtual tmp<volScalarField> Seiir(const label i) const;
 
 
     // I-O

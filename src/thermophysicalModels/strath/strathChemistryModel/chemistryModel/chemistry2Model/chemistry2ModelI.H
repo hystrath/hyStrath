@@ -68,44 +68,6 @@ Foam::chemistry2Model<CompType, ThermoType>::nReaction() const
 }
 
 
-// NEW VINCENT 25/07/2016 *****************************************************
-template<class CompType, class ThermoType>
-inline Foam::scalar
-Foam::chemistry2Model<CompType, ThermoType>::energyLevelSimpleHarmonicOscillator
-(
-    const label speciei,
-    const label alpha
-) const
-{
-    // Simplification by the Boltzmann constant to save time
-    return double(alpha)*specieThermo_[speciei].vibrationalList()[1];
-}
-
-
-template<class CompType, class ThermoType>
-inline Foam::scalar Foam::chemistry2Model<CompType, ThermoType>::termQ
-(
-    const label speciei,
-    const scalar T
-) const
-{
-    // Simplification by the Boltzmann constant to save time
-    scalar sumEnergyLevels = 0.0;
-    //const scalar charVibT = specieThermo_[speciei].vibrationalList()[1];
-    for(label lvl=0 ; lvl<simpleHarmonicOscillatorVibCutOff_[speciei]; lvl++)
-    {
-        sumEnergyLevels +=
-            exp
-            (
-                -energyLevelSimpleHarmonicOscillator(speciei, lvl)/T
-            );
-    }
-
-    return sumEnergyLevels;
-}
-// END NEW VINCENT 25/07/2016 *************************************************
-
-
 template<class CompType, class ThermoType>
 inline const Foam::DimensionedField<Foam::scalar, Foam::volMesh>&
 Foam::chemistry2Model<CompType, ThermoType>::RR
@@ -115,6 +77,7 @@ Foam::chemistry2Model<CompType, ThermoType>::RR
 {
     return RR_[i];
 }
+
 
 template<class CompType, class ThermoType>
 Foam::DimensionedField<Foam::scalar, Foam::volMesh>&
@@ -127,7 +90,6 @@ Foam::chemistry2Model<CompType, ThermoType>::RR
 }
 
 
-// NEW VINCENT 25/03/2016 *****************************************************
 template<class CompType, class ThermoType>
 inline const Foam::DimensionedField<Foam::scalar, Foam::volMesh>&
 Foam::chemistry2Model<CompType, ThermoType>::RRf
@@ -148,7 +110,7 @@ Foam::chemistry2Model<CompType, ThermoType>::RRf
 {
     return RRf_[i];
 }
-// END NEW VINCENT 25/03/2016 *************************************************
+
 
 template<class CompType, class ThermoType>
 Foam::scalar Foam::chemistry2Model<CompType, ThermoType>::modTemperature
@@ -158,8 +120,8 @@ Foam::scalar Foam::chemistry2Model<CompType, ThermoType>::modTemperature
 {
     return 0.5*
         (
-            (T+this->modTCoeffs_[0])
-          + sqrt(sqr(T-this->modTCoeffs_[0])+sqr(this->modTCoeffs_[1]))
+            (T + this->modTCoeffs_[0])
+          + sqrt(sqr(T - this->modTCoeffs_[0]) + sqr(this->modTCoeffs_[1]))
         );
 }
 

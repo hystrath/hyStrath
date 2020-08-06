@@ -199,7 +199,38 @@ Foam::hTC2Models::laminar2<Type>::Sh() const
 
 template<class Type>
 Foam::tmp<Foam::volScalarField>
-Foam::hTC2Models::laminar2<Type>::Scv(label i) const
+Foam::hTC2Models::laminar2<Type>::Scv() const
+{
+    tmp<volScalarField> tScv
+    (
+        new volScalarField
+        (
+            IOobject
+            (
+                typeName + ":Scv",
+                this->mesh().time().timeName(),
+                this->mesh(),
+                IOobject::NO_READ,
+                IOobject::NO_WRITE,
+                false
+            ),
+            this->mesh(),
+            dimensionedScalar("zero", dimEnergy/dimTime/dimVolume, 0.0)
+        )
+    );
+
+    if (this->active())
+    {
+        tScv.ref() = this->chemistryPtr_->Scv();
+    }
+
+    return tScv;
+}
+
+
+template<class Type>
+Foam::tmp<Foam::volScalarField>
+Foam::hTC2Models::laminar2<Type>::Scv(const label i) const
 {
     tmp<volScalarField> tScv
     (
@@ -230,7 +261,38 @@ Foam::hTC2Models::laminar2<Type>::Scv(label i) const
 
 template<class Type>
 Foam::tmp<Foam::volScalarField>
-Foam::hTC2Models::laminar2<Type>::Seiir(label i) const
+Foam::hTC2Models::laminar2<Type>::Seiir() const
+{
+    tmp<volScalarField> tSeiir
+    (
+        new volScalarField
+        (
+            IOobject
+            (
+                typeName + ":Seiir",
+                this->mesh().time().timeName(),
+                this->mesh(),
+                IOobject::NO_READ,
+                IOobject::NO_WRITE,
+                false
+            ),
+            this->mesh(),
+            dimensionedScalar("zero", dimEnergy/dimTime/dimVolume, 0.0)
+        )
+    );
+
+    if (this->active())
+    {
+        tSeiir.ref() = this->chemistryPtr_->Seiir();
+    }
+
+    return tSeiir;
+}
+
+
+template<class Type>
+Foam::tmp<Foam::volScalarField>
+Foam::hTC2Models::laminar2<Type>::Seiir(const label i) const
 {
     tmp<volScalarField> tSeiir
     (

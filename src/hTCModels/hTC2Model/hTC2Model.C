@@ -109,7 +109,28 @@ Foam::tmp<Foam::volScalarField> Foam::hTC2Model::Sh() const
 }
 
 
-Foam::tmp<Foam::volScalarField> Foam::hTC2Model::Scv(label i) const
+Foam::tmp<Foam::volScalarField> Foam::hTC2Model::Scv() const
+{
+    return tmp<Foam::volScalarField>
+    (
+        new volScalarField
+        (
+            IOobject
+            (
+                "Scv",
+                mesh_.time().timeName(),
+                mesh_,
+                IOobject::NO_READ,
+                IOobject::NO_WRITE
+            ),
+            mesh_,
+            dimensionedScalar("zero", dimEnergy/dimVolume/dimTime, 0.0)
+        )
+    );
+}
+
+
+Foam::tmp<Foam::volScalarField> Foam::hTC2Model::Scv(const label i) const
 {
     return tmp<Foam::volScalarField>
     (
@@ -130,7 +151,28 @@ Foam::tmp<Foam::volScalarField> Foam::hTC2Model::Scv(label i) const
 }
 
 
-Foam::tmp<Foam::volScalarField> Foam::hTC2Model::Seiir(label i) const
+Foam::tmp<Foam::volScalarField> Foam::hTC2Model::Seiir() const
+{
+    return tmp<Foam::volScalarField>
+    (
+        new volScalarField
+        (
+            IOobject
+            (
+                "Seiir",
+                mesh_.time().timeName(),
+                mesh_,
+                IOobject::NO_READ,
+                IOobject::NO_WRITE
+            ),
+            mesh_,
+            dimensionedScalar("zero", dimEnergy/dimVolume/dimTime, 0.0)
+        )
+    );
+}
+
+
+Foam::tmp<Foam::volScalarField> Foam::hTC2Model::Seiir(const label i) const
 {
     return tmp<Foam::volScalarField>
     (

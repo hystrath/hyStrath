@@ -24,7 +24,7 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "basic2ChemistryModel.H"
-#include "basic2Thermo.H" // NEW VINCENT 19/04/2016
+#include "basic2Thermo.H"
 
 // * * * * * * * * * * * * * * * * Selectors * * * * * * * * * * * * * * * * //
 

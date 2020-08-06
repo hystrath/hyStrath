@@ -42,7 +42,6 @@ namespace Foam
 {
     // Chemistry models based on sensibleEnthalpy
 
-    // NEW VINCENT ************************************************************
     make2ChemistryModel
     (
         chemistry2Model,

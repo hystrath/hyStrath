@@ -52,8 +52,7 @@ void Foam::no2ChemistrySolver<Chemistry2Model>::solve
 (
     scalarField&,
     scalar&,
-    scalar&, // NEW VINCENT
-    List<scalar>&,  // NEW VINCENT
+    scalarList&,
     scalar&,
     scalar&,
     scalar&
@@ -65,11 +64,8 @@ void Foam::no2ChemistrySolver<Chemistry2Model>::solve
 (
     scalarField&,
     scalarField&,
-    scalarField&, // NEW VINCENT
-    scalarField&, // NEW VINCENT
     scalar&,
-    scalar&, // NEW VINCENT
-    List<scalar>&,  // NEW VINCENT
+    scalarList&,
     scalar&,
     scalar&,
     scalar&
