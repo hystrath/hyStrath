@@ -26,7 +26,6 @@ License
 #include "relaxationTimeModel.H"
 #include "dimensionedConstants.H"
 #include "constants.H"
-
 #include <string>
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -56,11 +55,9 @@ Foam::relaxationTimeModel::relaxationTimeModel
     (
         thermo.twoTemperatureDictionary()
     ),
-
     mesh_(thermo.Tt().mesh()),
     thermo_(thermo),
     turbulence_(turbulence)
-
 {
     const word dict2T(IOdictionary::name()), dictThermoPhy
     (
@@ -102,7 +99,7 @@ Foam::relaxationTimeModel::relaxationTimeModel
                     IOobject::NO_WRITE
                 ),
                 mesh_,
-                dimensionedScalar("QVT", dimensionSet(1,-1,-3,0,0), 0.0)
+                dimensionedScalar("QVT", dimensionSet(1, -1, -3, 0, 0), 0.0)
             )
         );
     }
@@ -112,40 +109,42 @@ Foam::relaxationTimeModel::relaxationTimeModel
         QVTmode_.set
         (
             speciei,
-            new PtrList<volScalarField>(thermo.composition().noVibrationalTemp(speciei))
+            new PtrList<volScalarField>
+            (
+                thermo.composition().noVibrationalTemp(speciei)
+            )
         );
     }
 
     forAll(QVTmode_, speciei)
     {
-      forAll(QVTmode_[speciei], vibMode)
-      {
-        QVTmode_[speciei].set
-        (
-            vibMode,
-            new volScalarField
+        forAll(QVTmode_[speciei], vibMode)
+        {
+            QVTmode_[speciei].set
             (
-                IOobject
+                vibMode,
+                new volScalarField
                 (
-                    "QVT_" + species()[speciei] + "." + word(vibMode+1),
-                    mesh_.time().timeName(),
+                    IOobject
+                    (
+                        "QVT_" + species()[speciei] + "." + word(vibMode+1),
+                        mesh_.time().timeName(),
+                        mesh_,
+                        IOobject::NO_READ,
+                        IOobject::NO_WRITE
+                    ),
                     mesh_,
-                    IOobject::NO_READ,
-                    IOobject::NO_WRITE
-                ),
-                mesh_,
-                dimensionedScalar("QVT", dimensionSet(1,-1,-3,0,0), 0.0)
-            )
-        );
-      }
+                    dimensionedScalar("QVT", dimensionSet(1, -1, -3, 0, 0), 0.0)
+                )
+            );
+        }
     }*/
 }
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-/*Foam::tmp<Foam::volScalarField>
-Foam::relaxationTimeModel::VTRelaxationSource()
+Foam::tmp<Foam::volScalarField> Foam::relaxationTimeModel::QVT()
 {
     tmp<volScalarField> tQVT
     (
@@ -153,19 +152,33 @@ Foam::relaxationTimeModel::VTRelaxationSource()
         (
             IOobject
             (
-                "VTRelaxationSource",
+                "QVT",
                 mesh_.time().timeName(),
                 mesh_,
                 IOobject::NO_READ,
-                IOobject::NO_WRITE
+                IOobject::NO_WRITE,
+                false
             ),
             mesh_,
             dimensionedScalar("QVT", dimensionSet(1, -1, -3, 0, 0), 0.0)
         )
     );
+    
+    scalarField& QVTCells = tQVT.ref();
+    
+    forAll(thermo_.composition().species(), speciei)
+    {
+        if (thermo_.composition().noVibrationalTemp(speciei) != 0)
+        {
+            forAll(QVTCells, celli)
+            {
+                QVTCells[celli] += QVT_[speciei][celli];
+            }
+        }
+    }
 
     return tQVT;
-}*/
+}
 
 
 bool Foam::relaxationTimeModel::read()

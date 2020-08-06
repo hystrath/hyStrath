@@ -31,7 +31,7 @@ Foam::relaxationTimeModel::tauVTij(label i, label j) const
 
 
 inline const Foam::volScalarField&
-Foam::relaxationTimeModel::QVT(label speciei) const
+Foam::relaxationTimeModel::QVT(const label speciei) const
 {
     return QVT_[speciei];
 }
@@ -44,8 +44,7 @@ Foam::relaxationTimeModel::QVT(const word& specieName) const
 }
 
 
-inline Foam::volScalarField&
-Foam::relaxationTimeModel::QVT(label speciei)
+inline Foam::volScalarField& Foam::relaxationTimeModel::QVT(const label speciei)
 {
     return QVT_[speciei];
 }
@@ -65,16 +64,17 @@ Foam::relaxationTimeModel::QVT_mode(label speciei, label vibMode) const
 }*/
 
 
-inline const Foam::speciesTable&
-Foam::relaxationTimeModel::species() const
+inline const Foam::speciesTable& Foam::relaxationTimeModel::species() const
 {
     return thermo_.composition().species();
 }
 
+
 inline const Foam::speciesTable&
-Foam::relaxationTimeModel::solvedVibEqSpecies() const // NEW VINCENT 05/08/2016
+Foam::relaxationTimeModel::solvedVibEqSpecies() const
 {
     return thermo_.composition().solvedVibEqSpecies();
 }
+
 
 // ************************************************************************* //

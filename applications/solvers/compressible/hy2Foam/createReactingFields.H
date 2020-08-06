@@ -6,10 +6,12 @@
 PtrList<volScalarField>& Y = composition.Y();
 PtrList<volScalarField>& pD = composition.pD();
 
-bool containsElectrons = false;
+Switch containsElectrons = false;
+label posElectrons = -1;
 if (composition.contains("e-"))
 {
     containsElectrons = true;
+    posElectrons = composition.species()["e-"];
 }
 
 /*Generic multi-variate discretisation scheme class which may be
@@ -52,5 +54,7 @@ autoPtr<multiSpeciesTransportModel> speciesDiffusion
     )
 );
 
-word speciesDiffusionName = thermo.transportDictionary().subDict("transportModels").lookup("multiSpeciesTransport");
+word speciesDiffusionName =
+    thermo.transportDictionary().subDict("transportModels")
+        .lookupOrDefault<word>("multiSpeciesTransport", "noSpeciesDiffusion");
 

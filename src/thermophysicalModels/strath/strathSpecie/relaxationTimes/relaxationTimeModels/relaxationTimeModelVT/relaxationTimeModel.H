@@ -153,7 +153,7 @@ public:
 
             //- Return the const source term in the corresponding vib. energy
             //  equation due to V-T energy transfer
-            inline const volScalarField& QVT(label speciei) const;
+            inline const volScalarField& QVT(const label speciei) const;
 
             //- Return the const source term in the corresponding vib. energy
             //  equation due to V-T energy transfer
@@ -161,7 +161,7 @@ public:
 
             //- Return the non-const source term in the corresponding vib.
             //  energy equation due to V-T energy transfer
-            inline volScalarField& QVT(label speciei);
+            inline volScalarField& QVT(const label speciei);
 
             //- Return the non-const source term in the corresponding vib.
             //  energy equation due to V-T energy transfer
@@ -183,8 +183,9 @@ public:
             virtual scalar W(label i) const = 0;
 
 
-        //- Source term in vib. energy equations due to V-T energy transfer
-        //tmp<volScalarField> VTRelaxationSource();
+        //- Source term in vibro-electronic energy equation due to V-T energy
+        //  transfer
+        tmp<volScalarField> QVT();
 
         //- Correct the V-T relaxation times and V-T energy transfer
         virtual void correct() = 0;
