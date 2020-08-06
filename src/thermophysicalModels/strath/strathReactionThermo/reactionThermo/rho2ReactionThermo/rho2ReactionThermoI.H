@@ -34,19 +34,30 @@ Foam::scalar Foam::rho2ReactionThermo::Temperature
     scalar p,
     scalar T0,
     const PtrList<scalar>& YList,
-    scalar (Foam::basic2MultiComponentMixture::*F)(const label, const scalar, const scalar) const,
-    scalar (Foam::basic2MultiComponentMixture::*dFdT)(const label, const scalar, const scalar) const,
+    scalar (Foam::basic2MultiComponentMixture::*F)
+    (
+        const label,
+        const scalar,
+        const scalar
+    ) const,
+    scalar (Foam::basic2MultiComponentMixture::*dFdT)
+    (
+        const label,
+        const scalar,
+        const scalar
+    ) const,
     scalar (Foam::rho2ReactionThermo::*limit)(const scalar) const
 )
 {
-    // The tolerance and maximum number of iterations are identical to the ones in multiThermo.C
+    // The tolerance and maximum number of iterations are identical to the ones
+    // in multiThermo.C
     scalar tol_ = 1e-4;
-    scalar maxIter_ = 100;
+    label maxIter_ = 100;
 
     scalar Test = T0;
     scalar Tnew = T0;
     scalar Ttol = T0*tol_;
-    int    iter = 0;
+    label iter = 0;
 
     do
     {
@@ -66,26 +77,11 @@ Foam::scalar Foam::rho2ReactionThermo::Temperature
 
         if (iter++ > maxIter_)
         {
-            //Info<< "The temperature cannot be recovered from the energy" << endl;
-            //Info<< "Temperature in the cell is reset to Tlow" << nl;
-            Tnew = Tlow_;
-            Test = Tlow_;
+            //Info<< "The temperature cannot be derived from the energy" << endl;
+            //Info<< "Temperature in the cell remains unchanged" << nl;
+            Tnew = T0;
+            Test = T0;
             Foam::rho2ReactionThermo::hasCrashedButRecovered = true;
-            /*Info<< "Initial cell temperature" << tab << T0 << " K" << nl
-                << "Last temperature guess before crash" << tab << Tnew
-                << " K" << endl;
-            FatalErrorIn
-            (
-                "rho2ReactionThermo::T(scalar f, scalar T0, "
-                "scalar (basic2MultiComponentMixture::*F)"
-                "(const scalar) const, "
-                "scalar (basic2MultiComponentMixture::*dFdT)"
-                "(const scalar) const, "
-                "scalar (rho2ReactionThermo::*limit)"
-                "(const scalar) const"
-                ") const"
-            )   << "Maximum number of iterations exceeded"
-                << abort(FatalError);*/
         }
 
     } while (mag(Tnew - Test) > Ttol);
@@ -100,19 +96,30 @@ Foam::scalar Foam::rho2ReactionThermo::Temperature
     scalar f,
     scalar p,
     scalar T0,
-    scalar (Foam::basic2MultiComponentMixture::*F)(const label, const scalar, const scalar) const,
-    scalar (Foam::basic2MultiComponentMixture::*dFdT)(const label, const scalar, const scalar) const,
+    scalar (Foam::basic2MultiComponentMixture::*F)
+    (
+        const label,
+        const scalar,
+        const scalar
+    ) const,
+    scalar (Foam::basic2MultiComponentMixture::*dFdT)
+    (
+        const label,
+        const scalar,
+        const scalar
+    ) const,
     scalar (Foam::rho2ReactionThermo::*limit)(const scalar) const
 )
 {
-    // The tolerance and maximum number of iterations are identical to the ones in multiThermo.C
+    // The tolerance and maximum number of iterations are identical to the ones
+    // in multiThermo.C
     scalar tol_ = 1e-4;
-    scalar maxIter_ = 100;
+    label maxIter_ = 100;
 
     scalar Test = T0;
     scalar Tnew = T0;
     scalar Ttol = T0*tol_;
-    int    iter = 0;
+    label iter = 0;
 
     do
     {
@@ -127,27 +134,11 @@ Foam::scalar Foam::rho2ReactionThermo::Temperature
 
         if (iter++ > maxIter_)
         {
-            //Info<< "The temperature cannot be recovered from the energy" << endl;
-            //Info<< "Temperature in the cell is reset to Tlow" << nl;
-            Tnew = Tlow_;
-            Test = Tlow_;
+            //Info<< "The temperature cannot be derived from the energy" << endl;
+            //Info<< "Temperature in the cell remains unchanged" << nl;
+            Tnew = T0;
+            Test = T0;
             Foam::rho2ReactionThermo::hasCrashedButRecovered = true;
-            /*Info<< "Species " << composition().species()[i] << nl
-                << "Initial cell temperature" << tab << T0 << " K" << nl
-                << "Last temperature guess before crash" << tab << Tnew
-                << " K" << endl;
-            FatalErrorIn
-            (
-                "rho2ReactionThermo::T(label i, scalar f, scalar T0, "
-                "scalar (basic2MultiComponentMixture::*F)"
-                "(const scalar) const, "
-                "scalar (basic2MultiComponentMixture::*dFdT)"
-                "(const scalar) const, "
-                "scalar (rho2ReactionThermo::*limit)"
-                "(const scalar) const"
-                ") const"
-            )   << "Maximum number of iterations exceeded"
-                << abort(FatalError);*/
         }
 
     } while (mag(Tnew - Test) > Ttol);

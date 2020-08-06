@@ -1,5 +1,14 @@
 
-if (Y.size() > 1 and (speciesDiffusionName != "noSpeciesDiffusion" or reaction->active() or injectors))
+if
+(
+    (
+        speciesDiffusionName != "noSpeciesDiffusion" 
+     or reaction->active()
+     or injectors
+    )
+  and
+    Y.size() > 1 
+)
 {
     tmp<fv::convectionScheme<scalar>> mvConvection
     (
@@ -43,24 +52,52 @@ if (Y.size() > 1 and (speciesDiffusionName != "noSpeciesDiffusion" or reaction->
 
         if (speciesDiffusionName != "noSpeciesDiffusion")
         {
-            YiEqn += fvm::laplacian(-speciesDiffusion().rhoD(speciei), Yi, "laplacian(rhoD,Yi)")
-                + fvc::div
-                  (
-                      speciesDiffusion().JGradp(speciei)
-                    + speciesDiffusion().JGradT(speciei),
-                      "div(diffusiveFluxes)"
-                  );
-
-            if (not speciesDiffusion().useNonCorrected())
+            if (containsElectrons and posElectrons == speciei)
             {
-                YiEqn -= fvc::div(speciesDiffusion().sumDiffusiveFluxes()*Yi, "div(diffusiveFluxes)");
-            }      
-                
-            if (speciesDiffusion().solvingForX())
+                YiEqn += 
+                    fvc::div
+                    (
+                        speciesDiffusion().J(posElectrons),
+                        "div(diffusiveFluxes)"
+                    );
+            }
+            else
             {
-                YiEqn -= fvc::div(speciesDiffusion().rhoD(speciei)
-                    *Yi/Wmix*fvc::grad(Wmix), "div(diffusiveFluxes)");
-            }   
+                YiEqn += 
+                    fvm::laplacian
+                    (
+                       -speciesDiffusion().rhoD(speciei),
+                        Yi,
+                        "laplacian(rhoD,Yi)"
+                    )
+                  + fvc::div
+                    (
+                        speciesDiffusion().JGradp(speciei)
+                      + speciesDiffusion().JGradT(speciei),
+                        "div(diffusiveFluxes)"
+                    );
+                    
+                if (not speciesDiffusion().useNonCorrected())
+                {
+                    YiEqn -=
+                        fvc::div
+                        (
+                            speciesDiffusion().sumDiffusiveFluxes()*Yi,
+                            "div(diffusiveFluxes)"
+                        );
+                }      
+                    
+                if (speciesDiffusion().solvingForX())
+                {
+                    YiEqn -=
+                        fvc::div
+                        (
+                            speciesDiffusion().rhoD(speciei)*Yi/Wmix
+                          * fvc::grad(Wmix),
+                            "div(diffusiveFluxes)"
+                        );
+                }
+            }
         }
         
         YiEqn.relax();
@@ -78,18 +115,19 @@ if (Y.size() > 1 and (speciesDiffusionName != "noSpeciesDiffusion" or reaction->
     forAll(Y, speciei)
     {
         Y[speciei].primitiveFieldRef() /= Ytot.primitiveField();
-    }
-
-    forAll(Y, speciei)
-    {
         Y[speciei].correctBoundaryConditions();
     }
 }
 
 thermo.correctFractions();
 
-if (hyLight) thermo.correct2T_Light();
-else thermo.correct2T();
+if (hyLight)
+{
+    thermo.correct2T_Light();
+}
+else
+{
+    thermo.correct2T();
+}
 
 transport().correct();
-

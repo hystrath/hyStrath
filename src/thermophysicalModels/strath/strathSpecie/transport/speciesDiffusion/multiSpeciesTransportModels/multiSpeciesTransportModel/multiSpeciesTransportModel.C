@@ -66,7 +66,7 @@ void Foam::multiSpeciesTransportModel::calculateJ
         volVectorField sum = JnonCorrected_[0]
             *thermo_.composition().particleCharge(0)/W(0);
 
-        for(label specier=1 ; specier < species().size(); specier++)
+        for(label specier=1; specier < species().size(); specier++)
         {
             if (thermo_.composition().particleType(specier) != 0)
             {
