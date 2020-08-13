@@ -15,7 +15,7 @@ fvScalarMatrix rhoEvInviscid
   + fvc::div(phiEvk[0])
   - QVT
   - reaction->Scv()
-  - reaction->Seiir()
+  - reaction->Siir()
 );
 
 if (containsElectrons)

@@ -1369,15 +1369,15 @@ Foam::chemistry2Model<CompType, ThermoType>::Scv(const label i) const
 
 template<class CompType, class ThermoType>
 Foam::tmp<Foam::volScalarField>
-Foam::chemistry2Model<CompType, ThermoType>::Seiir() const
+Foam::chemistry2Model<CompType, ThermoType>::Siir() const
 {
-    tmp<volScalarField> tSeiir
+    tmp<volScalarField> tSiir
     (
         new volScalarField
         (
             IOobject
             (
-                "Seiir",
+                "Siir",
                 this->mesh_.time().timeName(),
                 this->mesh_,
                 IOobject::NO_READ,
@@ -1392,7 +1392,7 @@ Foam::chemistry2Model<CompType, ThermoType>::Seiir() const
 
     if (iirIds_.size() != 0)
     {
-        scalarField& Seiir = tSeiir.ref();
+        scalarField& Siir = tSiir.ref();
         
         forAll(iirIds_, iir)
         {
@@ -1401,31 +1401,31 @@ Foam::chemistry2Model<CompType, ThermoType>::Seiir() const
             
             const scalar Wion = this->thermo().composition().W(speciei)*1.0e-3;
             
-            forAll(Seiir, celli)
+            forAll(Siir, celli)
             {
-                Seiir[celli] += -RRfiir_[iir][celli]*Wion
+                Siir[celli] += -RRfiir_[iir][celli]*Wion
                     *specieThermo_[specien].iHat();
             }
             
-//            Info<< "Seiir " << Seiir[0] << endl;
+//            Info<< "Siir " << Siir[0] << endl;
         }
     }
 
-    return tSeiir;
+    return tSiir;
 }
 
 
 template<class CompType, class ThermoType>
 Foam::tmp<Foam::volScalarField>
-Foam::chemistry2Model<CompType, ThermoType>::Seiir(const label i) const
+Foam::chemistry2Model<CompType, ThermoType>::Siir(const label i) const
 {
-    tmp<volScalarField> tSeiir
+    tmp<volScalarField> tSiir
     (
         new volScalarField
         (
             IOobject
             (
-                "Seiir_" + Y_[i].name(),
+                "Siir_" + Y_[i].name(),
                 this->mesh_.time().timeName(),
                 this->mesh_,
                 IOobject::NO_READ,
@@ -1440,7 +1440,7 @@ Foam::chemistry2Model<CompType, ThermoType>::Seiir(const label i) const
 
     if (iirIds_.size() != 0)
     {
-        scalarField& Seiir = tSeiir.ref();
+        scalarField& Siir = tSiir.ref();
         
         forAll(iirIds_, iir)
         {
@@ -1453,18 +1453,18 @@ Foam::chemistry2Model<CompType, ThermoType>::Seiir(const label i) const
                 const scalar Wion = 
                     this->thermo().composition().W(speciei)*1.0e-3;
                 
-                forAll(Seiir, celli)
+                forAll(Siir, celli)
                 {
-                    Seiir[celli] = RRfiir_[iir][celli]*Wion
+                    Siir[celli] = RRfiir_[iir][celli]*Wion
                         *specieThermo_[specien].iHat();
                 }
                 
-                return tSeiir;
+                return tSiir;
             }
         }
     }
 
-    return tSeiir;
+    return tSiir;
 }
 
 

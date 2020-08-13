@@ -11,7 +11,7 @@ label posElectrons = -1;
 if (composition.contains("e-"))
 {
     containsElectrons = true;
-    posElectrons = composition.species()["e-"];
+    posElectrons = composition.electronId();
 }
 
 /*Generic multi-variate discretisation scheme class which may be

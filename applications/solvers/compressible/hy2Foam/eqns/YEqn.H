@@ -7,7 +7,7 @@ if
      or injectors
     )
   and
-    Y.size() > 1 
+    Y.size() > 1
 )
 {
     tmp<fv::convectionScheme<scalar>> mvConvection

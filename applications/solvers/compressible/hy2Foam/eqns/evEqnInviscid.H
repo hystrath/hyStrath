@@ -49,7 +49,7 @@ forAll(rhoEvk, speciei)
     if(containsElectrons)
     {
         rhoEvkInviscid -= thermalRelaxModeleV().QeV(speciei)
-            + reaction->Seiir(speciei);
+            + reaction->Siir(speciei);
 
         if(composition.vibTempAssociativity("e-") == speciei)
         {

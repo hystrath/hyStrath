@@ -151,7 +151,7 @@ Foam::tmp<Foam::volScalarField> Foam::hTC2Model::Scv(const label i) const
 }
 
 
-Foam::tmp<Foam::volScalarField> Foam::hTC2Model::Seiir() const
+Foam::tmp<Foam::volScalarField> Foam::hTC2Model::Siir() const
 {
     return tmp<Foam::volScalarField>
     (
@@ -159,7 +159,7 @@ Foam::tmp<Foam::volScalarField> Foam::hTC2Model::Seiir() const
         (
             IOobject
             (
-                "Seiir",
+                "Siir",
                 mesh_.time().timeName(),
                 mesh_,
                 IOobject::NO_READ,
@@ -172,7 +172,7 @@ Foam::tmp<Foam::volScalarField> Foam::hTC2Model::Seiir() const
 }
 
 
-Foam::tmp<Foam::volScalarField> Foam::hTC2Model::Seiir(const label i) const
+Foam::tmp<Foam::volScalarField> Foam::hTC2Model::Siir(const label i) const
 {
     return tmp<Foam::volScalarField>
     (
@@ -180,7 +180,7 @@ Foam::tmp<Foam::volScalarField> Foam::hTC2Model::Seiir(const label i) const
         (
             IOobject
             (
-                "Seiir_" + word(i),
+                "Siir_" + word(i),
                 mesh_.time().timeName(),
                 mesh_,
                 IOobject::NO_READ,

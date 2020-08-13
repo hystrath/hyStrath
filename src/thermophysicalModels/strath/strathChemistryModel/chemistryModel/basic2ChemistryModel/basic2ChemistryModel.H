@@ -227,11 +227,11 @@ public:
 
                 //- Return energy removed from free-electrons during impact
                 //  ionisation reactions [kg/m/s3]
-                virtual tmp<volScalarField> Seiir() const = 0;
+                virtual tmp<volScalarField> Siir() const = 0;
                 
                 //- Return energy removed from free-electrons during impact
                 //  ionisation reactions for specie i [kg/m/s3]
-                virtual tmp<volScalarField> Seiir(const label i) const = 0;
+                virtual tmp<volScalarField> Siir(const label i) const = 0;
 
                 //- Return the heat release, i.e. enthalpy/sec [m2/s3]
                 virtual tmp<volScalarField> dQ() const = 0;
