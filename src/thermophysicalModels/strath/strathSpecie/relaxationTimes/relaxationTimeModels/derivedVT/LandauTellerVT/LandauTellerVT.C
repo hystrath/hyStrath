@@ -24,7 +24,6 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "LandauTellerVT.H"
-#include "fvm.H"
 
 // * * * * * * * * * * * * * Protected Member Functions  * * * * * * * * * * //
 
@@ -32,20 +31,24 @@ template<class ThermoType>
 void Foam::LandauTellerVT<ThermoType>::updateCoefficients()
 {
     tauVTijModel_().update();
+    
+    const label electronId = this->thermo_.composition().electronId();
 
     forAll(solvedVibEqSpecies(), speciei)
     {
         volScalarField sumMolarWeightedReciprocalRelaxationTimes = 0/tauVTij(0,0);
-        volScalarField tmpXe = 0*thermo_.composition().X(0);
+        volScalarField tmpXe = 0.0*thermo_.composition().X(0);
 
         forAll(species(), speciej)
         {
             const volScalarField& Xj = thermo_.composition().X(speciej);
 
-            // no electrons here (Candler 09), although (ScalabrinPhD 07) defined tauVTie
-            if(speciesThermo_[speciej].particleType() != 0)
+            // no electrons here (Candler 09), although (ScalabrinPhD 07)
+            // defined tauVTie
+            if (electronId != speciej)
             {
-                sumMolarWeightedReciprocalRelaxationTimes += Xj/tauVTij(speciei,speciej);
+                sumMolarWeightedReciprocalRelaxationTimes +=
+                    Xj/tauVTij(speciei,speciej);
             }
             else
             {
@@ -53,8 +56,12 @@ void Foam::LandauTellerVT<ThermoType>::updateCoefficients()
             }
         }
 
-        tauVT_[speciei] = (1.0-tmpXe) / (sumMolarWeightedReciprocalRelaxationTimes
-            + dimensionedScalar("SMALL", dimless/dimTime, Foam::SMALL));
+        tauVT_[speciei] =
+            (1.0 - tmpXe)
+          / (
+                sumMolarWeightedReciprocalRelaxationTimes
+              + dimensionedScalar("SMALL", dimless/dimTime, Foam::SMALL)
+            );
     }
 
 
@@ -82,7 +89,13 @@ void Foam::LandauTellerVT<ThermoType>::updateCoefficients()
                   }
               }
           }
-          tauVTmode_[i][mi] = (1.0-tmpXe) / (tmpRelTime + dimensionedScalar("SMALL", dimless/dimTime, Foam::SMALL));
+          
+          tauVTmode_[i][mi] =
+              (1.0-tmpXe)
+            / (
+                  tmpRelTime 
+                + dimensionedScalar("SMALL", dimless/dimTime, Foam::SMALL)
+              );
         }
     }*/
 }
@@ -134,7 +147,10 @@ Foam::LandauTellerVT<ThermoType>::LandauTellerVT
         tauVTmode_.set
         (
             speciei,
-            new PtrList<volScalarField>(thermo_.composition().noVibrationalTemp(speciei))
+            new PtrList<volScalarField>
+            (
+                thermo_.composition().noVibrationalTemp(speciei)
+            )
         );
     }
 
@@ -190,12 +206,20 @@ void Foam::LandauTellerVT<ThermoType>::correct()
         const scalarField& tauVTCells = tauVT.internalField();
         scalarField& QVTCells = QVT.primitiveFieldRef();
 
-        // Electrons are not included into the calculation. See private member function above.
+        // Electrons are not included into the calculation.
+        // See private member function above.
         forAll(QVTCells, celli)
         {
-            const scalar evZCelli = thermo_.composition().HEvel(speciei, pCells[celli], TtCells[celli]);
+            const scalar evZCelli =
+                thermo_.composition().HEvel
+                (
+                    speciei,
+                    pCells[celli],
+                    TtCells[celli]
+                );
 
-            QVTCells[celli] = pDCells[celli]/tauVTCells[celli]*(evZCelli - evCells[celli]);
+            QVTCells[celli] =
+                pDCells[celli]/tauVTCells[celli]*(evZCelli - evCells[celli]);
         }
 
         forAll(QVT.boundaryField(), patchi)
@@ -210,7 +234,8 @@ void Foam::LandauTellerVT<ThermoType>::correct()
 
             forAll(pQVT, facei)
             {
-                const scalar pevZFacei = thermo_.composition().HEvel(speciei, pp[facei], pTt[facei]);
+                const scalar pevZFacei =
+                    thermo_.composition().HEvel(speciei, pp[facei], pTt[facei]);
 
                 pQVT[facei] = ppD[facei]/ptauVT[facei]*(pevZFacei - pev[facei]);
             }
@@ -218,21 +243,31 @@ void Foam::LandauTellerVT<ThermoType>::correct()
 
         /*forAll(QVTmode_[speciei], vibMode) // TODO ABORTIVE WORK
         {
-            const volScalarField& hvmode = thermo_.composition().hevel_mode(speciei, vibMode);
+            const volScalarField& hvmode =
+                thermo_.composition().hevel_mode(speciei, vibMode);
             const scalarField& hvmodeCells = hvmode.internalField();
-            const scalarField& tauVTmodeCells = this->tauVTmode_[speciei][vibMode].internalField();
-            scalarField& QVTmodeCells = this->QVTmode_[speciei][vibMode].primitiveFieldRef();
+            const scalarField& tauVTmodeCells =
+                this->tauVTmode_[speciei][vibMode].internalField();
+            scalarField& QVTmodeCells =
+                this->QVTmode_[speciei][vibMode].primitiveFieldRef();
 
-            forAll(QVTmodeCells, celli) // electrons are not included into the calculations. See private member function above.
+            // electrons are not included into the calculations.
+            // See private member function above.
+            forAll(QVTmodeCells, celli) 
             {
-                scalar hvZmodeCells = thermo_.composition().HEvel_mode(speciei, vibMode, pCells[celli], TtCells[celli]);
-                QVTmodeCells[celli] = 1.0/(tauVTmodeCells[celli])*pDCells[celli]*(hvZmodeCells-hvmodeCells[celli]);
+                scalar hvZmodeCells =
+                    thermo_.composition().HEvel_mode
+                    (
+                        speciei,
+                        vibMode,
+                        pCells[celli],
+                        TtCells[celli]
+                    );
+                    
+                QVTmodeCells[celli] = pDCells[celli]
+                    *(hvZmodeCells - hvmodeCells[celli])/tauVTmodeCells[celli];
             }
-        }
-
-        + boundary field
-
-        */
+        }*/
     }
 }
 

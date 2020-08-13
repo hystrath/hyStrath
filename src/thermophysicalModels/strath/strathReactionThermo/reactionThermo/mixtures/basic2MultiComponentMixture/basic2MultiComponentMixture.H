@@ -60,6 +60,33 @@ protected:
 
         //- Table of specie names
         speciesTable species_;
+        
+        //- Table of molecular specie names
+        speciesTable molecules_;
+        
+        //- List of molecular specie indices
+        labelList moleculeIds_;
+        
+        //- Table of atomic specie names
+        speciesTable atoms_;
+        
+        //- List of atomic specie indices
+        labelList atomIds_;
+        
+        //- Table of ionic specie names
+        speciesTable ions_;
+        
+        //- List of ionic specie indices
+        labelList ionIds_;
+        
+        //- Table of specie names, excluding free-electrons
+        speciesTable heavySpecies_;
+        
+        //- List of specie indices, excluding free-electrons
+        labelList heavySpeciesIds_;
+        
+        //- Position of the free-electrons in the list of species, if present
+        label electronId_;
 
         //- List of specie active flags
         List<bool> active_;
@@ -108,7 +135,7 @@ protected:
 
         //- Species vib-electronic energies
         //  for the different modes
-        //PtrList<PtrList<volScalarField> > modehevel_; // NEW VINCENT 13/03/2016 TODO ONGOING WORK
+        //PtrList<PtrList<volScalarField> > modehevel_; // TODO ABORTIVE WORK
 
         //- Energy field [J/kg]
         volScalarField* e_;
@@ -198,6 +225,49 @@ public:
         const speciesTable& species() const
         {
             return species_;
+        }
+        
+        //- Return the table of molecular species
+        const speciesTable& molecules() const
+        {
+            return molecules_;
+        }
+        
+        //- Return the list of molecular species indices
+        const labelList& moleculeIds() const
+        {
+            return moleculeIds_;
+        }
+        
+        //- Return the table of atomic species
+        const speciesTable& atoms() const
+        {
+            return atoms_;
+        }
+        
+        //- Return the list of atomic species indices
+        const labelList& atomIds() const
+        {
+            return atomIds_;
+        }
+        
+        //- Return the table of ionic species
+        const speciesTable& ions() const
+        {
+            return ions_;
+        }
+        
+        //- Return the list of ionic species indices
+        const labelList& ionIds() const
+        {
+            return ionIds_;
+        }
+        
+        //- Return the position of the free-electrons in the list of species,
+        //  if present
+        const label& electronId() const
+        {
+            return electronId_;
         }
 
         //- Return the table of species
@@ -514,7 +584,7 @@ public:
         //  specie given by name
         inline const volScalarField& zetav(const word& specieName) const;
 
-      //- zetav  for a specific mode m TODO ONGOING WORK
+      //- zetav  for a specific mode m TODO ABORTIVE WORK
         /*//- Return the no of deg of freedom / vib energy mode fields
         inline PtrList<PtrList<volScalarField> >& zetav_mode();
 
@@ -527,14 +597,27 @@ public:
 
         //- Return the const no of deg of freedom / vib energy mode field for a
         //  specie given by index
-        inline const volScalarField& zetav_mode(const label i, const label m) const;
+        inline const volScalarField& zetav_mode
+        (
+            const label i,
+            const label m
+        ) const;
 
         //- Return the no of deg of freedom / vib energy mode field for a
         //  specie given by name
-        inline volScalarField& zetav_mode(const word& specieName, const label m);
+        inline volScalarField& zetav_mode
+        (
+            const word& specieName,
+            const label m
+        );
 
-        //- Return the const no of deg of freedom / vib energy mode field for a specie given by name
-        inline const volScalarField& zetav_mode(const word& specieName, const label m) const;*/
+        //- Return the const no of deg of freedom / vib energy mode field for a
+        //  specie given by name
+        inline const volScalarField& zetav_mode
+        (
+            const word& specieName,
+            const label m
+        ) const;*/
 
       //- zetael
         //- Return the no of deg of freedom / elec energy mode fields
@@ -567,6 +650,30 @@ public:
 
         //- Does the mixture include this specie?
         inline bool contains(const word& specieName) const;
+        
+        //- Is this species a molecular specie of the mixture?
+        inline bool isMolecule(const word& specieName) const;
+        
+        //- Does this species index point to a molecular specie of the mixture?
+        inline bool isMolecule(const label speciei) const;
+        
+        //- Is this species an atomic specie of the mixture?
+        inline bool isAtom(const word& specieName) const;
+        
+        //- Does this species index point to an atomic specie of the mixture?
+        inline bool isAtom(const label speciei) const;
+        
+        //- Is this species an ionic specie of the mixture?
+        inline bool isIon(const word& specieName) const;
+        
+        //- Does this species index point to an ionic specie of the mixture?
+        inline bool isIon(const label speciei) const;
+        
+        //- Is this species a neutral specie of the mixture?
+        inline bool isNeutral(const word& specieName) const;
+        
+        //- Does this species index point to a neutral specie of the mixture?
+        inline bool isNeutral(const label speciei) const;
 
         //- Does the species have a vibration rate equation?
         inline bool containsVib(const word& specieName) const;
@@ -1021,7 +1128,7 @@ public:
             ) const = 0;
 
             //- Vibro-electronic Enthalpy/Internal energy [J/kg]
-            //  for the vibrational mode m TODO ONGOING WORK
+            //  for the vibrational mode m TODO ABORTIVE WORK
             /*virtual scalar HEvel_mode
             (
                 const label speciei,
@@ -1147,7 +1254,7 @@ public:
             ) const = 0;
 
             //- Vib-electronic temperature from sensible internal energy given an
-            //  initial T0, for the vibrational mode m TODO ONGOING WORK
+            //  initial T0, for the vibrational mode m TODO ABORTIVE WORK
             /*virtual scalar TvelHEvel_mode
             (
                 const label speciei,
@@ -1175,7 +1282,7 @@ public:
             ) const = 0;
 
             //- Degrees of freedom associated with the vibrational mode [-]
-            //  for the vibrational mode m TODO ONGOING WORK
+            //  for the vibrational mode m TODO ABORTIVE WORK
             /*virtual scalar zetav_mode
             (
                 const label speciei,

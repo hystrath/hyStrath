@@ -48,7 +48,7 @@ void Foam::LarsenBorgnakkeVT<ThermoType>::updateCoefficients()
             const volScalarField& Xj = thermo_.composition().X(speciej);
 
             // no electrons here (Candler 09), although (ScalabrinPhD 07) defined tauVTie
-            if(speciesThermo_[speciej].particleType() != 0)
+            if (this->thermo_.composition().electronId() != speciej)
             {
                 sumMolarWeightedReciprocalRelaxationTimes += Xj/tauVTij(speciei,speciej);
             }

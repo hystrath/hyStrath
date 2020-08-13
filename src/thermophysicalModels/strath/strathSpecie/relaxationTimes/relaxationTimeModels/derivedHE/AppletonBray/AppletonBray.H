@@ -62,9 +62,6 @@ protected:
         //- Thermodynamic data of the species
         const PtrList<ThermoType>& speciesThermo_;
 
-        //- Position of the electrons in the species table
-        const label electronListPosition_;
-        
         //- Collision cross-section for electron / heavy-particle interactions
         const scalar sigma_er_;
 

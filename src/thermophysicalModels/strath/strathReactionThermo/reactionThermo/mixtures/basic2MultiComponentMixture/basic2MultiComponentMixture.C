@@ -235,8 +235,17 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
 )
 :
     species_(specieNames),
+    molecules_(),
+    moleculeIds_(),
+    atoms_(),
+    atomIds_(),
+    ions_(),
+    ionIds_(),
+    heavySpecies_(),
+    heavySpeciesIds_(),
+    electronId_(-1),
     active_(species_.size(), true),
-    solvedVibEqSpecies_(), // NEW VINCENT 05/08/2016
+    solvedVibEqSpecies_(),
     vibTempAssociativity_(species_.size()),
     Y_(species_.size()),
     X_(species_.size()),
@@ -244,15 +253,15 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
     pP_(species_.size()),
     pD_(species_.size()),
     spTv_(species_.size()),
-    //spmodeTv_(species_.size()), TODO ONGOING WORK
+    //spmodeTv_(species_.size()), TODO ABORTIVE WORK
     hev_(species_.size()),
     heel_(species_.size()),
     hevel_(species_.size()),
     h_(species_.size()),
-    //modehevel_(species_.size()), TODO ONGOING WORK
+    //modehevel_(species_.size()), TODO ABORTIVE WORK
     zetaRot_(species_.size()),
     zetaVib_(species_.size()),
-    //modezetaVib_(species_.size()), TODO ONGOING WORK
+    //modezetaVib_(species_.size()), TODO ABORTIVE WORK
     zetaElec_(species_.size()),
     Wmix_
     (
@@ -275,7 +284,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
             fileName(thermoDict.lookup("foamChemistryThermoFile")).expand()
         )()
     );
-
+    
     IOobject TtHeader
     (
         "Tt",
@@ -317,7 +326,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
         {
             headersOK = true;
 
-            vibTempAssociativity_.set // NEW VINCENT 05/03/2016
+            vibTempAssociativity_.set
             (
                 i,
                 new label(0)
@@ -532,10 +541,19 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                 );
             }
 
-            // NEW VINCENT 13/03/2016 ***************************************** TODO ONGOING WORK
-            /*const label noVibModes = readScalar(thermoDEM.subDict(species_[i]).subDict("specie").lookup("noVibTemp"));
+            // TODO ABORTIVE WORK
+            /*const label noVibModes =
+                readScalar
+                (
+                    thermoDEM.subDict(species_[i]).subDict("specie").lookup
+                    (
+                        "noVibTemp"
+                    )
+                );
 
-            PtrList<volScalarField> fillList1(noVibModes), fillList2(noVibModes), fillList3(noVibModes);
+            PtrList<volScalarField> fillList1(noVibModes);
+            PtrList<volScalarField> fillList2(noVibModes);
+            PtrList<volScalarField> fillList3(noVibModes);
 
             for(label vibMode = 0 ; vibMode < noVibModes ; vibMode++)
             {
@@ -553,7 +571,12 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                             IOobject::NO_WRITE
                         ),
                         mesh,
-                        dimensionedScalar("Tv_" + species_[i] + "." + name(vibMode+1), dimTemperature, 0.0)
+                        dimensionedScalar
+                        (
+                            "Tv_" + species_[i] + "." + name(vibMode+1),
+                            dimTemperature,
+                            0.0
+                        )
                     )
                 );
 
@@ -571,7 +594,12 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                             IOobject::NO_WRITE
                         ),
                         mesh,
-                        dimensionedScalar("hevel_" + species_[i] + "." + name(vibMode+1), dimEnergy/dimMass, 0.0),
+                        dimensionedScalar
+                        (
+                            "hevel_" + species_[i] + "." + name(vibMode+1),
+                            dimEnergy/dimMass,
+                            0.0
+                        ),
                         this->hev2BoundaryTypes(i, Tt.boundaryField()), // TODO wrong for now introduce mode in bdry cdt
                         this->hev2BoundaryBaseTypes(i, Tt.boundaryField()) // TODO wrong for now
                     )
@@ -591,7 +619,12 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                             IOobject::NO_WRITE
                         ),
                         mesh,
-                        dimensionedScalar("zetav_" + species_[i] + "." + name(vibMode+1), dimless, 0.0)
+                        dimensionedScalar
+                        (
+                            "zetav_" + species_[i] + "." + name(vibMode+1),
+                            dimless,
+                            0.0
+                        )
                     )
                 );
             }
@@ -628,7 +661,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                     mode, fillList3[mode]
                 );
             }*/
-            // END NEW VINCENT 13/03/2016 *************************************
+            // END ABORTIVE WORK
 
             hev_.set
             (
@@ -832,7 +865,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
         }
     }
 
-    /*forAll(spmodeTv_, speciei) // NEW VINCENT 13/03/2016 TODO ONGOING WORK
+    /*forAll(spmodeTv_, speciei) // TODO ABORTIVE WORK
     {
         forAll(spmodeTv_[speciei], vibMode)
         {
@@ -919,7 +952,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
 
 void Foam::basic2MultiComponentMixture::write()
 {
-    /*forAll(spmodeTv_, speciei) // TODO ONGOING WORK
+    /*forAll(spmodeTv_, speciei) // TODO ABORTIVE WORK
     {
         if (spmodeTv_[speciei].size() > 1)
         {

@@ -936,6 +936,24 @@ inline bool Foam::basic2MultiComponentMixture::isIon
 }
 
 
+inline bool Foam::basic2MultiComponentMixture::isNeutral
+(
+    const word& specieName
+) const
+{
+    return not(isIon(specieName) or specieName == "e-");
+}
+
+
+inline bool Foam::basic2MultiComponentMixture::isNeutral
+(
+    const label speciei
+) const
+{
+    return not(isIon(speciei) or speciei == electronId_);
+}
+
+
 inline bool Foam::basic2MultiComponentMixture::containsVib
 (
     const word& specieName

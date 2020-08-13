@@ -35,14 +35,13 @@ Foam::AppletonBray<ThermoType>::AppletonBray
 )
 :
     relaxationTimeModelHE(thermo, turbulence),
-
     speciesThermo_
     (
         dynamic_cast<const multi2ComponentMixture<ThermoType>&>
-            (this->thermo_).speciesData()
+        (
+            this->thermo_
+        ).speciesData()
     ),
-
-    electronListPosition_(species()["e-"]),
     sigma_er_(1.0e-20)
 {
     const scalar ec = constant::electromagnetic::e.value();
@@ -50,7 +49,7 @@ Foam::AppletonBray<ThermoType>::AppletonBray
     const scalar NA = constant::physicoChemical::NA.value();
     const scalar pi = constant::mathematical::pi;
     const scalar kB = RR/NA;
-    const scalar We = W(electronListPosition_);
+    const scalar We = W(this->thermo_.composition().electronId());
     
     sigma_eIon_factor1_ = 8.0*pi*pow4(ec)/(27.0*sqr(kB));
     
@@ -65,10 +64,11 @@ Foam::AppletonBray<ThermoType>::AppletonBray
 template<class ThermoType>
 void Foam::AppletonBray<ThermoType>::correct()
 {
+    const label electronId = this->thermo_.composition().electronId();
     const volScalarField& Tt = thermo_.Tt();
-    const volScalarField& Te = thermo_.composition().Tv(electronListPosition_);
-    const volScalarField& pDe = thermo_.composition().pD(electronListPosition_);
-    const volScalarField& nDe = thermo_.composition().nD(electronListPosition_);
+    const volScalarField& Te = thermo_.composition().Tv(electronId);
+    const volScalarField& pDe = thermo_.composition().pD(electronId);
+    const volScalarField& nDe = thermo_.composition().nD(electronId);
 
     const scalarField& TtCells = Tt.internalField();
     const scalarField& pDeCells = pDe.internalField();
@@ -86,12 +86,12 @@ void Foam::AppletonBray<ThermoType>::correct()
 
     forAll(species(), specier)
     {
-        if (specier != electronListPosition_)
+        if (specier != electronId)
         {
             const volScalarField& pDr = thermo_.composition().pD(specier);
             const scalarField& pDrCells = pDr.internalField();
 
-            if (speciesThermo_[specier].particleType() < 3)
+            if (this->thermo_.composition().isNeutral(specier))
             {
                 forAll(pDrCells, celli)
                 {

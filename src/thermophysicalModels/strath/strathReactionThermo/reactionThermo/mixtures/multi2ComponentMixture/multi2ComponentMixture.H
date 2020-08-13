@@ -76,6 +76,9 @@ class multi2ComponentMixture
 
         //- Correct the mass fractions to sum to 1
         void correctMassFractions();
+        
+        //- Fill species tables and lists (for molecules, atoms, ions, etc)
+        void fillSpeciesTablesAndLists(const label i);
 
         //- Correct the associativity vibrational temperature table
         void correctVibTempAssociativity(const dictionary& dict);

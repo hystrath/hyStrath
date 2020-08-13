@@ -113,7 +113,7 @@ void Foam::multi2ComponentMixture<ThermoType>::correctMassFractions()
         FatalErrorIn
         (
             "void Foam::multi2ComponentMixture<ThermoType>::"
-            "correctMassFractions()"
+                "correctMassFractions()"
         )
             << "Sum of mass fractions is zero for species " << this->species()
             << exit(FatalError);
@@ -122,6 +122,53 @@ void Foam::multi2ComponentMixture<ThermoType>::correctMassFractions()
     forAll(Y_, n)
     {
         Y_[n] /= Yt;
+    }
+}
+
+
+template<class ThermoType>
+void Foam::multi2ComponentMixture<ThermoType>::fillSpeciesTablesAndLists
+(
+    const label i
+)
+{
+    if (speciesData_[i].particleCharge() != -1)
+    {
+        // This species is a heavy species, i.e., not free-electrons
+        const label prv_size = heavySpeciesIds_.size();
+        heavySpeciesIds_.setSize(prv_size + 1);
+        heavySpecies_.append(species_[i]);
+        heavySpeciesIds_[prv_size] = i;
+        
+        if (speciesData_[i].noVibrationalTemp() != 0)
+        {
+            // This species is either a neutral or an ionised molecule
+            const label prv_size = moleculeIds_.size();
+            moleculeIds_.setSize(prv_size + 1);
+            molecules_.append(species_[i]);
+            moleculeIds_[prv_size] = i;
+        }
+        else
+        {
+            // This species is either a neutral or an ionised atom
+            const label prv_size = atomIds_.size();
+            atomIds_.setSize(prv_size + 1);
+            atoms_.append(species_[i]);
+            atomIds_[prv_size] = i;
+        }
+    }
+    else
+    {
+        electronId_ = i;
+    }
+    
+    if (speciesData_[i].particleCharge() == 1)
+    {
+        // This species is ionised
+        const label prv_size = ionIds_.size();
+        ionIds_.setSize(prv_size + 1);
+        ions_.append(species_[i]);
+        ionIds_[prv_size] = i;
     }
 }
 
@@ -209,7 +256,7 @@ Foam::multi2ComponentMixture<ThermoType>::fillHackOfSolvedVibEqSpeciesTable()
 {
     forAll(Y_, speciei)
     {
-        // The particle is either a molecule or an ionised molecule
+        // This species is either a neutral or a ionised molecule
         if (speciesData_[speciei].noVibrationalTemp() != 0)
         {
             solvedVibEqSpecies_.append(species_[speciei]);
@@ -240,8 +287,10 @@ Foam::multi2ComponentMixture<ThermoType>::multi2ComponentMixture
             i,
             new ThermoType(*thermoData[species_[i]])
         );
+        
+        fillSpeciesTablesAndLists(i);
     }
-
+    
     correctMassFractions();
 
     if
@@ -281,6 +330,11 @@ Foam::multi2ComponentMixture<ThermoType>::multi2ComponentMixture
     mixture_("mixture", constructSpeciesData(thermoDict)),
     mixtureVol_("volMixture", speciesData_[0])
 {
+    forAll(species_, i)
+    {
+        fillSpeciesTablesAndLists(i);
+    }
+    
     correctMassFractions();
 
     if
@@ -586,7 +640,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::patchFaceMixture_HEt
     {
         quantity +=
             Y_[speciei].boundaryField()[patchi][facei]
-           /speciesData_[speciei].W()*speciesData_[speciei].HEt(p, Tt);
+                /speciesData_[speciei].W()*speciesData_[speciei].HEt(p, Tt);
     }
 
     return quantity;
@@ -608,7 +662,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::patchFaceMixture_HEv
     {
         quantity +=
             Y_[speciei].boundaryField()[patchi][facei]
-           /speciesData_[speciei].W()*speciesData_[speciei].HEv(p, Tv);
+                /speciesData_[speciei].W()*speciesData_[speciei].HEv(p, Tv);
     }
 
     return quantity;
@@ -630,7 +684,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::patchFaceMixture_HEel
     {
         quantity +=
             Y_[speciei].boundaryField()[patchi][facei]
-           /speciesData_[speciei].W()*speciesData_[speciei].HEel(p, Tv);
+                /speciesData_[speciei].W()*speciesData_[speciei].HEel(p, Tv);
     }
 
     return quantity;
@@ -652,7 +706,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::patchFaceMixture_HEvel
     {
         quantity +=
             Y_[speciei].boundaryField()[patchi][facei]
-           /speciesData_[speciei].W()*speciesData_[speciei].HEvel(p, Tv);
+                /speciesData_[speciei].W()*speciesData_[speciei].HEvel(p, Tv);
     }
 
     return quantity;
@@ -674,7 +728,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::patchFaceMixture_Cv_t
     {
         quantity +=
             Y_[speciei].boundaryField()[patchi][facei]
-           /speciesData_[speciei].W()*speciesData_[speciei].Cv_t(p, Tt);
+                /speciesData_[speciei].W()*speciesData_[speciei].Cv_t(p, Tt);
     }
 
     return quantity;
@@ -696,7 +750,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::patchFaceMixture_Cp_t
     {
         quantity +=
             Y_[speciei].boundaryField()[patchi][facei]
-           /speciesData_[speciei].W()*speciesData_[speciei].Cp_t(p, Tt);
+                /speciesData_[speciei].W()*speciesData_[speciei].Cp_t(p, Tt);
     }
 
     return quantity;
@@ -719,7 +773,8 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::patchFaceMixture_gamma
     {
         quantity +=
             Y_[speciei].boundaryField()[patchi][facei]
-           /speciesData_[speciei].W()*speciesData_[speciei].gamma(p, Tt, Tv);
+               / speciesData_[speciei].W()
+               * speciesData_[speciei].gamma(p, Tt, Tv);
     }
 
     return quantity;
@@ -741,7 +796,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::patchFaceMixture_kappa_tr
     {
         quantity +=
             Y_[speciei].boundaryField()[patchi][facei]
-           /speciesData_[speciei].W()*speciesData_[speciei].kappatr(p, Tt);
+                /speciesData_[speciei].W()*speciesData_[speciei].kappatr(p, Tt);
     }
 
     return quantity;
@@ -764,7 +819,8 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::patchFaceMixture_kappa_ve
     {
         quantity +=
             Y_[speciei].boundaryField()[patchi][facei]
-           /speciesData_[speciei].W()*speciesData_[speciei].kappave(p, Tt, Tv);
+               / speciesData_[speciei].W()
+               * speciesData_[speciei].kappave(p, Tt, Tv);
     }
 
     return quantity;
@@ -786,7 +842,7 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::patchFaceMixture_alpha_tr
     {
         quantity +=
             Y_[speciei].boundaryField()[patchi][facei]
-           /speciesData_[speciei].W()*speciesData_[speciei].alphatr(p, Tt);
+                /speciesData_[speciei].W()*speciesData_[speciei].alphatr(p, Tt);
     }
 
     return quantity;
@@ -809,7 +865,8 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::patchFaceMixture_alpha_ve
     {
         quantity +=
             Y_[speciei].boundaryField()[patchi][facei]
-           /speciesData_[speciei].W()*speciesData_[speciei].alphave(p, Tt, Tv);
+              / speciesData_[speciei].W()
+              * speciesData_[speciei].alphave(p, Tt, Tv);
     }
 
     return quantity;
