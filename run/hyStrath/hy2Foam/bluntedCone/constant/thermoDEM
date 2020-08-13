@@ -32,7 +32,7 @@ N2
         charge          0;
         diameter        4.17e-10;
         dissocEnergy    3.36e7;
-        iHat            2.89e7;
+        iHat            1.78e7;
         omega           0.74;
         noVibTemp       1;
         noElecLevels    15; 
@@ -106,7 +106,7 @@ N2
         charge          0;
         diameter        4.07e-10;
         dissocEnergy    1.54e7;
-        iHat            2.69e7;
+        iHat            1.26e7;
         omega           0.77;
         noVibTemp       1;
         noElecLevels    7; 
@@ -171,7 +171,8 @@ NO
         particleType    2;
         charge          0;
         diameter        4.2e-10;
-        dissocEnergy    2.09e7; 
+        dissocEnergy    2.09e7;
+        iHat            1.02e7;
         omega           0.79;
         noVibTemp       1;
         noElecLevels    16; 
@@ -239,7 +240,8 @@ N
         particleType    1;
         charge          0;
         diameter        3.00e-10;
-        dissocEnergy    0; 
+        dissocEnergy    0;
+        iHat            3.34e7;
         omega           0.8;
         noVibTemp       0;
         noElecLevels    3; 
@@ -292,7 +294,8 @@ O
         particleType    1;
         charge          0;
         diameter        3.00e-10;
-        dissocEnergy    0; 
+        dissocEnergy    0;
+        iHat            2.73e7;
         omega           0.8;
         noVibTemp       0;
         noElecLevels    5; 
