@@ -1,1 +1,0 @@
-../SpitzerHarm/SpitzerHarm.C
