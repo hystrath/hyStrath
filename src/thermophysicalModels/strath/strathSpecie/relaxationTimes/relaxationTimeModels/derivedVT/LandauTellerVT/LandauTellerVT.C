@@ -58,7 +58,7 @@ void Foam::LandauTellerVT<ThermoType>::updateCoefficients()
     }
 
 
-    /*forAll(solvedVibEqSpecies(), i) // TODO ONGOING WORK
+    /*forAll(solvedVibEqSpecies(), i) // TODO ABORTIVE WORK
     {
         forAll(tauVTmode_[i], mi)
         {
@@ -106,7 +106,7 @@ Foam::LandauTellerVT<ThermoType>::LandauTellerVT
     )
 {
     tauVT_.setSize(solvedVibEqSpecies().size());
-    //tauVTmode_.setSize(species().size()); // TODO ONGOING WORK
+    //tauVTmode_.setSize(species().size()); // TODO ABORTIVE WORK
 
     forAll(tauVT_, speciei)
     {
@@ -129,7 +129,7 @@ Foam::LandauTellerVT<ThermoType>::LandauTellerVT
         );
     }
 
-    /*forAll(tauVTmode_, speciei)  // TODO ONGOING WORK
+    /*forAll(tauVTmode_, speciei)  // TODO ABORTIVE WORK
     {
         tauVTmode_.set
         (
@@ -216,7 +216,7 @@ void Foam::LandauTellerVT<ThermoType>::correct()
             }
         }
 
-        /*forAll(QVTmode_[speciei], vibMode) // TODO ONGOING WORK
+        /*forAll(QVTmode_[speciei], vibMode) // TODO ABORTIVE WORK
         {
             const volScalarField& hvmode = thermo_.composition().hevel_mode(speciei, vibMode);
             const scalarField& hvmodeCells = hvmode.internalField();

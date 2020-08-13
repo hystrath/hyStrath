@@ -653,9 +653,9 @@ void Foam::rho2ReactionThermo::initialise()
     PtrList<Foam::volScalarField>& Tv = composition().Tv();
     PtrList<Foam::volScalarField>& zetav = composition().zetav();
 
-    //PtrList<PtrList<Foam::volScalarField> >& hvel_mode = composition().hevel_mode(); // NEW VINCENT 23/03/2016 TODO ONGOING WORK
-    //PtrList<PtrList<Foam::volScalarField> >& Tv_mode = composition().Tv_mode(); // NEW VINCENT 14/03/2016 TODO ONGOING WORK
-    //PtrList<PtrList<Foam::volScalarField> >& zetav_mode = composition().zetav_mode(); // NEW VINCENT 14/03/2016 TODO ONGOING WORK
+    //PtrList<PtrList<Foam::volScalarField> >& hvel_mode = composition().hevel_mode(); // NEW VINCENT 23/03/2016 TODO ABORTIVE WORK
+    //PtrList<PtrList<Foam::volScalarField> >& Tv_mode = composition().Tv_mode(); // NEW VINCENT 14/03/2016 TODO ABORTIVE WORK
+    //PtrList<PtrList<Foam::volScalarField> >& zetav_mode = composition().zetav_mode(); // NEW VINCENT 14/03/2016 TODO ABORTIVE WORK
 
     scalarField& TvCellsMix = this->Tv_.primitiveFieldRef();
     scalarField& htCellsMix = this->het_.primitiveFieldRef();
@@ -719,7 +719,7 @@ void Foam::rho2ReactionThermo::initialise()
                 hvCells[celli] = composition().HEv(speciei, pCells[celli], TvCells[celli]);
                 helCells[celli] = composition().HEel(speciei, pCells[celli], TvCells[celli]);
                 hvelCells[celli] = composition().HEvel(speciei, pCells[celli], TvCells[celli]);
-                /*forAll(hvel_mode[speciei], vibMode) TODO ONGOING WORK
+                /*forAll(hvel_mode[speciei], vibMode) TODO ABORTIVE WORK
                 {
                     hvel_mode[speciei][vibMode].internalField()[celli] =
                         composition().HEvel_mode
@@ -1204,9 +1204,9 @@ void Foam::rho2ReactionThermo::calculate()
     PtrList<Foam::volScalarField>& hvel = composition().hevel();
     PtrList<Foam::volScalarField>& zetav = composition().zetav();
 
-    /*PtrList<PtrList<Foam::volScalarField> >& Tv_mode = composition().Tv_mode(); // NEW VINCENT 14/03/2016 TODO ONGOING WORK
-    PtrList<PtrList<Foam::volScalarField> >& hevel_mode = composition().hevel_mode(); // NEW VINCENT 23/03/2016 TODO ONGOING WORK
-    PtrList<PtrList<Foam::volScalarField> >& zetav_mode = composition().zetav_mode(); // NEW VINCENT 14/03/2016 TODO ONGOING WORK*/
+    /*PtrList<PtrList<Foam::volScalarField> >& Tv_mode = composition().Tv_mode(); // NEW VINCENT 14/03/2016 TODO ABORTIVE WORK
+    PtrList<PtrList<Foam::volScalarField> >& hevel_mode = composition().hevel_mode(); // NEW VINCENT 23/03/2016 TODO ABORTIVE WORK
+    PtrList<PtrList<Foam::volScalarField> >& zetav_mode = composition().zetav_mode(); // NEW VINCENT 14/03/2016 TODO ABORTIVE WORK*/
 
     scalarField& TtCells = this->Tt_.primitiveFieldRef();
     scalarField& TvCellsMix = this->Tv_.primitiveFieldRef();

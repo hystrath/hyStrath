@@ -81,7 +81,7 @@ Foam::relaxationTimeModel::relaxationTimeModel
     );
 
     QVT_.setSize(solvedVibEqSpecies().size()); //NEW VINCENT 05/08/2016
-    //QVTmode_.setSize(species().size()); // TODO ONGOING WORK
+    //QVTmode_.setSize(species().size()); // TODO ABORTIVE WORK
 
     forAll(solvedVibEqSpecies(), speciei) //NEW VINCENT 05/08/2016
     {
@@ -104,7 +104,7 @@ Foam::relaxationTimeModel::relaxationTimeModel
         );
     }
 
-    /*forAll(QVTmode_, speciei) // TODO ONGOING WORK
+    /*forAll(QVTmode_, speciei) // TODO ABORTIVE WORK
     {
         QVTmode_.set
         (

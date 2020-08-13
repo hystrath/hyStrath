@@ -496,7 +496,7 @@ inline const Foam::volScalarField& Foam::basic2MultiComponentMixture::enthalpy
 }
 
 
-//----                               hevel_mode                         -----// TODO ONGOING WORK
+//----                               hevel_mode                         -----// TODO ABORTIVE WORK
 /*inline Foam::PtrList<Foam::PtrList<Foam::volScalarField> >&
 Foam::basic2MultiComponentMixture::hevel_mode()
 {
@@ -593,7 +593,7 @@ inline const Foam::volScalarField& Foam::basic2MultiComponentMixture::Tv
 }
 
 
-//----                               Tv_mode                            -----// TODO ONGOING WORK
+//----                               Tv_mode                            -----// TODO ABORTIVE WORK
 /*inline Foam::PtrList<Foam::PtrList<Foam::volScalarField> >&
 Foam::basic2MultiComponentMixture::Tv_mode()
 {
@@ -739,7 +739,7 @@ inline const Foam::volScalarField& Foam::basic2MultiComponentMixture::zetav
 }
 
 
-//----                               zetav_mode                         -----// TODO ONGOING WORK
+//----                               zetav_mode                         -----// TODO ABORTIVE WORK
 /*inline Foam::PtrList<Foam::PtrList<Foam::volScalarField> >&
 Foam::basic2MultiComponentMixture::zetav_mode()
 {
@@ -855,6 +855,84 @@ inline bool Foam::basic2MultiComponentMixture::contains
 ) const
 {
     return species_.contains(specieName);
+}
+
+
+inline bool Foam::basic2MultiComponentMixture::isMolecule
+(
+    const word& specieName
+) const
+{
+    return molecules_.contains(specieName);
+}
+
+
+inline bool Foam::basic2MultiComponentMixture::isMolecule
+(
+    const label speciei
+) const
+{
+    forAll(moleculeIds_, i)
+    {
+        if (speciei == moleculeIds_[i])
+        {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+
+inline bool Foam::basic2MultiComponentMixture::isAtom
+(
+    const word& specieName
+) const
+{
+    return atoms_.contains(specieName);
+}
+
+
+inline bool Foam::basic2MultiComponentMixture::isAtom
+(
+    const label speciei
+) const
+{
+    forAll(atomIds_, i)
+    {
+        if (speciei == atomIds_[i])
+        {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+
+inline bool Foam::basic2MultiComponentMixture::isIon
+(
+    const word& specieName
+) const
+{
+    return ions_.contains(specieName);
+}
+
+
+inline bool Foam::basic2MultiComponentMixture::isIon
+(
+    const label speciei
+) const
+{
+    forAll(ionIds_, i)
+    {
+        if (speciei == ionIds_[i])
+        {
+            return true;
+        }
+    }
+    
+    return false;
 }
 
 

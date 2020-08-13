@@ -76,11 +76,11 @@ protected:
 
         //- V-T relaxation time [s]
         PtrList<volScalarField> tauVT_;
-        //PtrList<PtrList<volScalarField> > tauVTmode_; // TODO ONGOING WORK
+        //PtrList<PtrList<volScalarField> > tauVTmode_; // TODO ABORTIVE WORK
 
         //- V-T source term in the vib. energy equations [kg/m^3/s]
         PtrList<volScalarField> QVT_;
-        //PtrList<PtrList<volScalarField> > QVTmode_; // TODO ONGOING WORK
+        //PtrList<PtrList<volScalarField> > QVTmode_; // TODO ABORTIVE WORK
 
 
 private:
@@ -169,7 +169,7 @@ public:
 
             //- Return the const Source term in vib. energy equations
             //  due to V-T energy transfer, vibrational mode vibMode
-            //inline const volScalarField& QVT_mode(label speciei, label vibMode) const;  // TODO ONGOING WORK
+            //inline const volScalarField& QVT_mode(label speciei, label vibMode) const;  // TODO ABORTIVE WORK
 
             //- Return the table of species
             inline const speciesTable& species() const;

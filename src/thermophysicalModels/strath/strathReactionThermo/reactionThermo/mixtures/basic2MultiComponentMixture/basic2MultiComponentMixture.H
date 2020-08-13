@@ -66,11 +66,11 @@ protected:
 
         //- Table of vibrationally-excited specie names whose vib. eq. are
         //  being solved
-        speciesTable solvedVibEqSpecies_; // NEW VINCENT 05/08/2016
+        speciesTable solvedVibEqSpecies_;
 
         //- Table associating the vibro-electronic temperature of one specific
         //  molecule to atoms, ions, and electrons
-        PtrList<label> vibTempAssociativity_; // NEW VINCENT 05/03/2016
+        PtrList<label> vibTempAssociativity_;
 
         //- Species mass fractions
         PtrList<volScalarField> Y_;
@@ -92,7 +92,7 @@ protected:
 
         //- Species vibrational (or vibro-electronic) temperatures
         //  for the different modes
-        //PtrList<PtrList<volScalarField> > spmodeTv_; // NEW VINCENT 13/03/2016 TODO ONGOING WORK
+        //PtrList<PtrList<volScalarField> > spmodeTv_; // TODO ABORTIVE WORK
 
         //- Species vibrational energies
         PtrList<volScalarField> hev_;
@@ -121,7 +121,7 @@ protected:
 
         //- Degrees of freedom associated with the vibrational energy mode
         //  for the different modes
-        //PtrList<PtrList<volScalarField> > modezetaVib_; // NEW VINCENT 13/03/2016 TODO ONGOING WORK
+        //PtrList<PtrList<volScalarField> > modezetaVib_; // TODO ABORTIVE WORK
 
         //- Degrees of freedom associated with the vibrational energy mode
         PtrList<volScalarField> zetaElec_;
@@ -201,7 +201,7 @@ public:
         }
 
         //- Return the table of species
-        const speciesTable& solvedVibEqSpecies() const // NEW VINCENT 05/08/2016
+        const speciesTable& solvedVibEqSpecies() const
         {
             return solvedVibEqSpecies_;
         }
@@ -385,7 +385,7 @@ public:
         //- Return the const enthalpy field for a specie given by name
         inline const volScalarField& enthalpy(const word& specieName) const;
 
-      //- hevel for a specific mode m TODO ONGOING WORK
+      //- hevel for a specific mode m TODO ABORTIVE WORK
         /*//- Return the vib-electronic energy fields
         inline PtrList<PtrList<volScalarField> >& hevel_mode();
 
@@ -395,14 +395,28 @@ public:
         //- Return the vib-electronic energy field for a specie given by index
         inline volScalarField& hevel_mode(const label i, const label m);
 
-        //- Return the const vib-electronic energy field for a specie given by index
-        inline const volScalarField& hevel_mode(const label i, const label m) const;
+        //- Return the const vib-electronic energy field for a specie given by
+        //  index
+        inline const volScalarField& hevel_mode
+        (
+            const label i,
+            const label m
+        ) const;
 
         //- Return the electronic vib-energy field for a specie given by name
-        inline volScalarField& hevel_mode(const word& specieName, const label i);
+        inline volScalarField& hevel_mode
+        (
+            const word& specieName,
+            const label i
+        );
 
-        //- Return the const electronic vib-energy field for a specie given by name
-        inline const volScalarField& hevel_mode(const word& specieName, const label m) const;*/
+        //- Return the const electronic vib-energy field for a specie given by
+        //  name
+        inline const volScalarField& hevel_mode
+        (
+            const word& specieName,
+            const label m
+        ) const;*/
 
       //- Tv
         //- Return the vibrational temperature fields
@@ -425,7 +439,7 @@ public:
         //  by name
         inline const volScalarField& Tv(const word& specieName) const;
 
-      //- Tv for a specific mode m  TODO ONGOING WORK
+      //- Tv for a specific mode m  TODO ABORTIVE WORK
         /*//- Return the vibrational temperature fields
         inline PtrList<PtrList<volScalarField> >& Tv_mode();
 
@@ -435,14 +449,24 @@ public:
         //- Return the vibrational temperature field for a specie given by index
         inline volScalarField& Tv_mode(const label i, const label m);
 
-        //- Return the const vibrational temperature field for a specie given by index
-        inline const volScalarField& Tv_mode(const label i, const label m) const;
+        //- Return the const vibrational temperature field for a specie given by
+        //  index
+        inline const volScalarField& Tv_mode
+        (
+            const label i,
+            const label m
+        ) const;
 
         //- Return the vibrational temperature field for a specie given by name
         inline volScalarField& Tv_mode(const word& specieName, const label m);
 
-        //- Return the const vibrational temperature field for a specie given by name
-        inline const volScalarField& Tv_mode(const word& specieName, const label m) const;*/
+        //- Return the const vibrational temperature field for a specie given by
+        //  name
+        inline const volScalarField& Tv_mode
+        (
+            const word& specieName,
+            const label m
+        ) const;*/
 
       //- zetar
         //- Return the no of deg of freedom / rot energy mode fields

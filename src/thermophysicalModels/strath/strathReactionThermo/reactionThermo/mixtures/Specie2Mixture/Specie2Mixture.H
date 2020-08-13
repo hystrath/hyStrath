@@ -414,7 +414,7 @@ public:
             ) const;
 
             //- Vib-electronic Enthalpy/Internal energy [J/kg]
-            //  for the vibrational mode m TODO ONGOING WORK
+            //  for the vibrational mode m TODO ABORTIVE WORK
             /*virtual scalar HEvel_mode
             (
                 const label speciei,
@@ -482,7 +482,7 @@ public:
             ) const;
 
             //- Vib-electronic temperature from sensible internal energy given
-            //  an initial T0, for the vibrational mode m TODO ONGOING WORK
+            //  an initial T0, for the vibrational mode m TODO ABORTIVE WORK
             /*virtual scalar TvelHEvel_mode
             (
                 const label speciei,
@@ -510,7 +510,7 @@ public:
             ) const;
 
             //- Degrees of freedom associated with the vib mode [-]
-            //  for the vibrational mode m TODO ONGOING WORK
+            //  for the vibrational mode m TODO ABORTIVE WORK
             /*virtual scalar zetav_mode
             (
                 const label speciei,

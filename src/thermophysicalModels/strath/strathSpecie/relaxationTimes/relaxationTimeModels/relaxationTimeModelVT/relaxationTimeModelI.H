@@ -57,7 +57,7 @@ Foam::relaxationTimeModel::QVT(const word& specieName)
 }
 
 
-/*inline const Foam::volScalarField& // TODO ONGOING WORK
+/*inline const Foam::volScalarField& // TODO ABORTIVE WORK
 Foam::relaxationTimeModel::QVT_mode(label speciei, label vibMode) const
 {
     return QVTmode_[speciei][vibMode];

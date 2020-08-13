@@ -36,7 +36,7 @@ void Foam::noVTEnergyTransfer<ThermoType>::updateCoefficients()
         tauVT_[i] = dimensionedScalar("GREAT", dimTime, Foam::GREAT);
     }
 
-    /*forAll(species(), i) // TODO ONGOING WORK
+    /*forAll(species(), i) // TODO ABORTIVE WORK
     {
         forAll(tauVTmode_[i], m)
         {
@@ -64,7 +64,7 @@ Foam::noVTEnergyTransfer<ThermoType>::noVTEnergyTransfer
     )
 {
     tauVT_.setSize(solvedVibEqSpecies().size());
-    //tauVTmode_.setSize(species().size()); // TODO ONGOING WORK
+    //tauVTmode_.setSize(species().size()); // TODO ABORTIVE WORK
 
     forAll(tauVT_, speciei)
     {
@@ -87,7 +87,7 @@ Foam::noVTEnergyTransfer<ThermoType>::noVTEnergyTransfer
         );
     }
 
-    /*forAll(tauVTmode_, speciei) // TODO ONGOING WORK
+    /*forAll(tauVTmode_, speciei) // TODO ABORTIVE WORK
     {
         tauVTmode_.set
         (
