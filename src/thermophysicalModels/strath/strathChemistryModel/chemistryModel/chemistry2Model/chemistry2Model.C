@@ -56,9 +56,10 @@ Foam::chemistry2Model<CompType, ThermoType>::chemistry2Model
 
     RR_(nSpecie_),
     RRf_(),
-    containsIonisedAtoms_(false),
-    posIonisedAtoms_(-1),
-    posNeutralAtoms_(-1),
+    RRfiir_(),
+    iirIds_(),
+    posNeutralSpecies_(),
+    posIonisedSpecies_(),
 
     preferentialFactor_(nSpecie_),
     simpleHarmonicOscillatorVibCutOff_
@@ -87,7 +88,7 @@ Foam::chemistry2Model<CompType, ThermoType>::chemistry2Model
             )
         );
     }
-
+    
     // create the fields for the forward chemistry sources
     if (this->CVModel_ == "CVDV")
     {
@@ -116,33 +117,53 @@ Foam::chemistry2Model<CompType, ThermoType>::chemistry2Model
         }
     }
     
-    if (this->chemistry())
+    // record the indices of the impact ionisation reactions in the reaction
+    // list and mark the position of the neutral/ionised species involved
+    forAll(reactions_, r)
     {
-        if (this->thermo().composition().contains("N+"))
-        {
-            containsIonisedAtoms_ = true;
-            
-            posIonisedAtoms_[0] = this->thermo().composition().species()["N+"];
-            if (this->thermo().composition().contains("N"))
-            {
-                posNeutralAtoms_[0] =
-                    this->thermo().composition().species()["N"];
-            }
-        }
+        const Foam::ControllingTemperatureType controllingTemp = 
+            reactions_[r].controlT();
         
-        if (this->thermo().composition().contains("O+"))
+        if (controllingTemp == impactIonisation)
         {
-            containsIonisedAtoms_ = true;
+            const label prevSize = iirIds_.size();
+            iirIds_.resize(prevSize + 1);
+            iirIds_[prevSize] = r;
             
-            posIonisedAtoms_[1] = this->thermo().composition().species()["O+"];
-            if (this->thermo().composition().contains("O"))
-            {
-                posNeutralAtoms_[1] =
-                    this->thermo().composition().species()["O"];
-            }
+            posNeutralSpecies_.resize(prevSize + 1);
+            posIonisedSpecies_.resize(prevSize + 1);
+            posNeutralSpecies_[prevSize] = reactions_[r].lhs()[0].index;
+            posIonisedSpecies_[prevSize] = reactions_[r].rhs()[0].index;
         }
     }
-
+    
+    if (iirIds_.size() != 0)
+    {
+        RRfiir_.setSize(iirIds_.size());
+        
+        forAll(RRfiir_, fieldI)
+        {
+            RRfiir_.set
+            (
+                fieldI,
+                new DimensionedField<scalar, volMesh>
+                (
+                    IOobject
+                    (
+                        "RRfwdiir_" + Y_[fieldI].name(),
+                        mesh.time().timeName(),
+                        mesh,
+                        IOobject::NO_READ,
+                        IOobject::NO_WRITE,
+                        false
+                    ),
+                    mesh,
+                    dimensionedScalar("zero", dimMass/dimVolume/dimTime, 0.0)
+                )
+            );
+        }
+    }
+    
     if (this->CVModel_ == "ParkTTv")
     {
         FixedList<scalar, 2> initList(0.0);
@@ -1369,53 +1390,24 @@ Foam::chemistry2Model<CompType, ThermoType>::Seiir() const
         )
     );
 
-    //- The following condition implies that there is flow chemistry
-    //  (see class constructor)
-    if (containsIonisedAtoms_)
+    if (iirIds_.size() != 0)
     {
         scalarField& Seiir = tSeiir.ref();
         
-        if (posIonisedAtoms_[0] != -1 and posIonisedAtoms_[0] != -1)
+        forAll(iirIds_, iir)
         {
-            const scalar WNp = this->thermo().composition().W("N+")*1.0e-3;
-            const scalar WOp = this->thermo().composition().W("O+")*1.0e-3;
-            const label i = posIonisedAtoms_[0];
-            const label j = posNeutralAtoms_[0];
-            const label k = posIonisedAtoms_[1];
-            const label l = posNeutralAtoms_[1];
+            const label speciei = posIonisedSpecies_[iir];
+            const label specien = posNeutralSpecies_[iir];
+            
+            const scalar Wion = this->thermo().composition().W(speciei)*1.0e-3;
             
             forAll(Seiir, celli)
             {
-                Seiir[celli] +=
-                    RR_[i][celli]*WNp*specieThermo_[j].iHat()
-                  + RR_[k][celli]*WOp*specieThermo_[l].iHat();
+                Seiir[celli] += -RRfiir_[iir][celli]*Wion
+                    *specieThermo_[specien].iHat();
             }
-        }
-        else if (posIonisedAtoms_[0] != -1)
-        {
-            const scalar WionisedAtom =
-                this->thermo().composition().W("N+")*1.0e-3;
-            const label i = posIonisedAtoms_[0];
-            const label j = posNeutralAtoms_[0];
             
-            forAll(Seiir, celli)
-            {
-                Seiir[celli] += RR_[i][celli]*WionisedAtom
-                    *specieThermo_[j].iHat();
-            }
-        }
-        else
-        {
-            const scalar WionisedAtom =
-                this->thermo().composition().W("O+")*1.0e-3;
-            const label i = posIonisedAtoms_[1];
-            const label j = posNeutralAtoms_[1];
-            
-            forAll(Seiir, celli)
-            {
-                Seiir[celli] += RR_[i][celli]*WionisedAtom
-                    *specieThermo_[j].iHat();
-            }
+//            Info<< "Seiir " << Seiir[0] << endl;
         }
     }
 
@@ -1446,29 +1438,29 @@ Foam::chemistry2Model<CompType, ThermoType>::Seiir(const label i) const
         )
     );
 
-    //- The following condition implicitely implies that there is flow chemistry
-    //  (see class constructor)
-    if (containsIonisedAtoms_)
+    if (iirIds_.size() != 0)
     {
         scalarField& Seiir = tSeiir.ref();
         
-        label j = -1;
-        scalar WionisedAtom = 0.0;
-        
-        if (posIonisedAtoms_[0] == i)
+        forAll(iirIds_, iir)
         {
-            WionisedAtom = this->thermo().composition().W("N+")*1.0e-3;
-            j = posNeutralAtoms_[0];
-        }
-        else
-        {
-            WionisedAtom = this->thermo().composition().W("O+")*1.0e-3;
-            j = posNeutralAtoms_[1];
-        }
-        
-        forAll(Seiir, celli)
-        {
-            Seiir[celli] = RR_[i][celli]*WionisedAtom*specieThermo_[j].iHat();
+            const label speciei = posIonisedSpecies_[iir];
+            
+            if (speciei == i)
+            {
+                const label specien = posNeutralSpecies_[iir];
+            
+                const scalar Wion = 
+                    this->thermo().composition().W(speciei)*1.0e-3;
+                
+                forAll(Seiir, celli)
+                {
+                    Seiir[celli] = RRfiir_[iir][celli]*Wion
+                        *specieThermo_[specien].iHat();
+                }
+                
+                return tSeiir;
+            }
         }
     }
 
@@ -1702,9 +1694,10 @@ Foam::scalar Foam::chemistry2Model<CompType, ThermoType>::solve
     const scalarField& p = this->thermo().p();
 
     scalarField c(nSpecie_);
-    scalarField cfwd(nSpecie_);
     scalarField c0(nSpecie_);
-
+    scalarField cfwd(nSpecie_);
+    scalarField cfwdiir(nSpecie_);
+    
     forAll(rho, celli)
     {
         scalar Ti = T[celli];
@@ -1725,23 +1718,53 @@ Foam::scalar Foam::chemistry2Model<CompType, ThermoType>::solve
                 c[i] = rhoi*Y_[i][celli]/specieThermo_[i].W();
                 c0[i] = c[i];
             }
-
+            
+            cfwd = c;
+            cfwdiir = c;
+            
             // Initialise time progress
             scalar timeLeft = deltaT[celli];
 
             // Calculate the chemical source terms
-            cfwd = c;
-
             while (timeLeft > SMALL)
             {
                 scalar dt = timeLeft;
                 
-                if (this->CVModel_ == "CVDV")
+                if (this->CVModel_ == "CVDV" and iirIds_.size() != 0)
                 {
                     this->solve
                     (
                         c,
                         cfwd,
+                        cfwdiir,
+                        iirIds_,
+                        Ti,
+                        spTvi,
+                        pi,
+                        dt,
+                        this->deltaTChem_[celli]
+                    );
+                }
+                else if (this->CVModel_ == "CVDV")
+                {
+                    this->solve
+                    (
+                        c,
+                        cfwd,
+                        Ti,
+                        spTvi,
+                        pi,
+                        dt,
+                        this->deltaTChem_[celli]
+                    );
+                }
+                else if (iirIds_.size() != 0)
+                {
+                    this->solve
+                    (
+                        c,
+                        cfwdiir,
+                        iirIds_,
                         Ti,
                         spTvi,
                         pi,
@@ -1769,14 +1792,23 @@ Foam::scalar Foam::chemistry2Model<CompType, ThermoType>::solve
 
             for (label i=0; i<nSpecie_; i++)
             {
+                // units of RR_: [kg/m3/s]
                 RR_[i][celli] =
                     (c[i] - c0[i])*specieThermo_[i].W()/deltaT[celli];
                 
                 if (this->CVModel_ == "CVDV")
                 {
+                    // units of RRf_: [kg/m3/s]
                     RRf_[i][celli] = (cfwd[i] - c0[i])
                         *specieThermo_[i].W()/deltaT[celli];
                 }
+            }
+            
+            forAll(iirIds_, iir)
+            {
+                // units of RRfiir_: [mol/m3/s]
+                label i = posIonisedSpecies_[iir];
+                RRfiir_[iir][celli] = (cfwdiir[i] - c0[i])*1.0e3/deltaT[celli];
             }
         }
         else
@@ -1784,14 +1816,20 @@ Foam::scalar Foam::chemistry2Model<CompType, ThermoType>::solve
             for (label i=0; i<nSpecie_; i++)
             {
                 RR_[i][celli] = 0.0;
+                
                 if (this->CVModel_ == "CVDV")
                 {
                     RRf_[i][celli] = 0.0;
                 }
             }
+            
+            forAll(iirIds_, i)
+            {
+                RRfiir_[i][celli] = 0.0;
+            }
         }
     }
-
+    
     return deltaTMin;
 }
 
@@ -1839,12 +1877,12 @@ void Foam::chemistry2Model<CompType, ThermoType>::solve
     (
         "chemistry2Model::solve"
         "("
-            "scalarField&,"
-            "scalar&,"
-            "List<scalar>&,"
-            "scalar&,"
-            "scalar&,"
-            "scalar&"
+            "scalarField&, "
+            "scalar&, "
+            "List<scalar>&, "
+            "scalar&, "
+            "scalar&, "
+            "scalar& "
         ") const"
     );
 }
@@ -1866,13 +1904,75 @@ void Foam::chemistry2Model<CompType, ThermoType>::solve
     (
         "chemistry2Model::solve"
         "("
-            "scalarField&,"
-            "scalarField&,"
-            "scalar&,"
-            "List<scalar>&,"
-            "scalar&,"
-            "scalar&,"
-            "scalar&"
+            "scalarField&, "
+            "scalarField&, "
+            "scalar&, "
+            "List<scalar>&, "
+            "scalar&, "
+            "scalar&, "
+            "scalar& "
+        ") const"
+    );
+}
+
+
+template<class CompType, class ThermoType>
+void Foam::chemistry2Model<CompType, ThermoType>::solve
+(
+    scalarField& c,
+    scalarField& cfwdiir,
+    labelList& iirIds,
+    scalar& T,
+    List<scalar>& spTv,
+    scalar& p,
+    scalar& deltaT,
+    scalar& subDeltaT
+) const
+{
+    notImplemented
+    (
+        "chemistry2Model::solve"
+        "("
+            "scalarField&, "
+            "scalarField&, "
+            "labelList&, "
+            "scalar&, "
+            "List<scalar>&, "
+            "scalar&, "
+            "scalar&, "
+            "scalar& "
+        ") const"
+    );
+}
+
+
+template<class CompType, class ThermoType>
+void Foam::chemistry2Model<CompType, ThermoType>::solve
+(
+    scalarField& c,
+    scalarField& cfwd,
+    scalarField& cfwdiir,
+    labelList& iirIds,
+    scalar& T,
+    List<scalar>& spTv,
+    scalar& p,
+    scalar& deltaT,
+    scalar& subDeltaT
+) const
+{
+    notImplemented
+    (
+        "chemistry2Model::solve"
+        "("
+            "scalarField&, "
+            "scalarField&, "
+            "scalarField&, "
+            "labelList&, "
+            "scalar&, "
+            "List<scalar>&, "
+            "scalar&, "
+            "scalar&, "
+            "scalar& "
         ") const"
     );
 }

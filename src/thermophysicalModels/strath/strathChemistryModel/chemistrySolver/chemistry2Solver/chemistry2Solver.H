@@ -83,7 +83,34 @@ public:
         virtual void solve
         (
             scalarField& c,
-            scalarField& cwfd,
+            scalarField& cfwd,
+            scalar& T,
+            List<scalar>& spTv,
+            scalar& p,
+            scalar& deltaT,
+            scalar& subDeltaT
+        ) const = 0;
+        
+        //- Update the concentrations and return the chemical time
+        virtual void solve
+        (
+            scalarField& c,
+            scalarField& cfwdiir,
+            labelList& iirIds,
+            scalar& T,
+            List<scalar>& spTv,
+            scalar& p,
+            scalar& deltaT,
+            scalar& subDeltaT
+        ) const = 0;
+        
+        //- Update the concentrations and return the chemical time
+        virtual void solve
+        (
+            scalarField& c,
+            scalarField& cfwd,
+            scalarField& cfwdiir,
+            labelList& iirIds,
             scalar& T,
             List<scalar>& spTv,
             scalar& p,

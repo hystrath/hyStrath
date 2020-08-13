@@ -43,7 +43,6 @@ SourceFiles
 #include "volFieldsFwd.H"
 #include "simpleMatrix.H"
 #include "DimensionedField.H"
-#include "Switch.H"
 
 #include "constants.H"
 
@@ -105,7 +104,7 @@ protected:
 
         //- Number of reactions
         label nReaction_;
-
+        
         //- Temperature below which the reaction rates are assumed 0
         scalar Treact_;
 
@@ -113,20 +112,26 @@ protected:
         PtrList<DimensionedField<scalar, volMesh> > RR_;
 
         //- List of forward reaction rate per specie [kg/m3/s]
+        //  Their computations is necessary if the chemistry-vibration model is
+        //  CVDV
         PtrList<DimensionedField<scalar, volMesh> > RRf_;
-
-        //- Flag to indicate whether any of the ionised atoms N+ and O+ species
-        //  are present in the mixture
-        Switch containsIonisedAtoms_;
         
-        //- Position of the ionised atoms N+ and O+ in the species list,
-        //  respectively, if present
-        FixedList<label, 2> posIonisedAtoms_;
+        //- List of forward reaction rate per ionised specie [mol/m3/s], impact
+        //  ionisation reactions only. Please note the units of RRfiir_
+        PtrList<DimensionedField<scalar, volMesh> > RRfiir_;
         
-        //- Position of the neutral atoms N and O in the species list,
-        //  respectively, if needed (that is, if there are ionised atoms in the
-        //  mixture)
-        FixedList<label, 2> posNeutralAtoms_;
+        //- Positions of the impact ionisation reactions in the list of
+        //  reactions, if any
+        labelList iirIds_;
+        
+        //- For impact ionisation reactions, position of the neutral species
+        //  involved in the species list
+        labelList posNeutralSpecies_;
+        
+        //- For impact ionisation reactions, position of the ionised species
+        //  involved in the species list
+        labelList posIonisedSpecies_;
+        
 
         // Park TTv model
         
@@ -352,10 +357,38 @@ public:
                 scalar& subDeltaT
             ) const;
 
+            //- Update the concentrations and return the chemical time
             virtual void solve
             (
                 scalarField& c,
-                scalarField& cwfd,
+                scalarField& cfwd,
+                scalar& T,
+                scalarList& spTv,
+                scalar& p,
+                scalar& deltaT,
+                scalar& subDeltaT
+            ) const;
+            
+            //- Update the concentrations and return the chemical time
+            virtual void solve
+            (
+                scalarField& c,
+                scalarField& cfwdiir,
+                labelList& iirIds,
+                scalar& T,
+                scalarList& spTv,
+                scalar& p,
+                scalar& deltaT,
+                scalar& subDeltaT
+            ) const;
+            
+            //- Update the concentrations and return the chemical time
+            virtual void solve
+            (
+                scalarField& c,
+                scalarField& cfwd,
+                scalarField& cfwdiir,
+                labelList& iirIds,
                 scalar& T,
                 scalarList& spTv,
                 scalar& p,

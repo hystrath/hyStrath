@@ -86,40 +86,67 @@ public:
 
     // Member Functions
 
-    void updateRRInReactionI
-    (
-        const label index,
-        const scalar pr,
-        const scalar pf,
-        const scalar corr,
-        const label lRef,
-        const label rRef,
-        const scalar p,
-        simpleMatrix<scalar>& RR
-    ) const;
+        void updateRRInReactionI
+        (
+            const label index,
+            const scalar pr,
+            const scalar pf,
+            const scalar corr,
+            const label lRef,
+            const label rRef,
+            const scalar p,
+            simpleMatrix<scalar>& RR
+        ) const;
 
-    //- Update the concentrations and return the chemical time
-    virtual void solve
-    (
-        scalarField& c,
-        scalar& T,
-        List<scalar>& spTv,
-        scalar& p,
-        scalar& deltaT,
-        scalar& subDeltaT
-    ) const;
+        //- Update the concentrations and return the chemical time
+        virtual void solve
+        (
+            scalarField& c,
+            scalar& T,
+            List<scalar>& spTv,
+            scalar& p,
+            scalar& deltaT,
+            scalar& subDeltaT
+        ) const;
 
-    //- Update the concentrations and return the chemical time
-    virtual void solve
-    (
-        scalarField& c,
-        scalarField& cfwd,
-        scalar& T,
-        List<scalar>& spTv,
-        scalar& p,
-        scalar& deltaT,
-        scalar& subDeltaT
-    ) const;
+        //- Update the concentrations and return the chemical time
+        virtual void solve
+        (
+            scalarField& c,
+            scalarField& cfwd,
+            scalar& T,
+            List<scalar>& spTv,
+            scalar& p,
+            scalar& deltaT,
+            scalar& subDeltaT
+        ) const;
+        
+        //- Update the concentrations and return the chemical time
+        virtual void solve
+        (
+            scalarField& c,
+            scalarField& cfwdiir,
+            labelList& iirIds,
+            scalar& T,
+            scalarList& spTv,
+            scalar& p,
+            scalar& deltaT,
+            scalar& subDeltaT
+        ) const;
+            
+        //- Update the concentrations and return the chemical time
+        virtual void solve
+        (
+            scalarField& c,
+            scalarField& cfwd,
+            scalarField& cfwdiir,
+            labelList& iirIds,
+            scalar& T,
+            scalarList& spTv,
+            scalar& p,
+            scalar& deltaT,
+            scalar& subDeltaT
+        ) const;
 };
 
 

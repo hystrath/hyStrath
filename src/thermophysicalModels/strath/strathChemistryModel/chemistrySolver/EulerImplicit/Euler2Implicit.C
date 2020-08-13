@@ -200,6 +200,7 @@ void Foam::Euler2Implicit<Chemistry2Model>::solve
     for (label i=0; i<nSpecie; i++)
     {
         c[i] = max(0.0, c[i]);
+        cfwd[i] = max(0.0, cfwd[i]);
     }
 
     scalar cTot = sum(c);
@@ -278,4 +279,231 @@ void Foam::Euler2Implicit<Chemistry2Model>::solve
         cfwd[i] = max(0.0, cfwd[i]);
     }
 }
+
+
+template<class Chemistry2Model>
+void Foam::Euler2Implicit<Chemistry2Model>::solve
+(
+    scalarField& c,
+    scalarField& cfwdiir,
+    labelList& iirIds,
+    scalar& T,
+    scalarList& spTv,
+    scalar& p,
+    scalar& deltaT,
+    scalar& subDeltaT
+) const
+{
+    const label nSpecie = this->nSpecie();
+    simpleMatrix<scalar> RR(nSpecie, 0, 0);
+    simpleMatrix<scalar> RRfwdiir(nSpecie, 0, 0);
+
+    for (label i=0; i<nSpecie; i++)
+    {
+        c[i] = max(0.0, c[i]);
+        cfwdiir[i] = max(0.0, cfwdiir[i]);
+    }
+
+    scalar cTot = sum(c);
+
+    scalar deltaTEst = min(deltaT, subDeltaT);
+
+    forAll(this->reactions(), i)
+    {
+        scalar pf, cf, pr, cr;
+        label lRef, rRef;
+
+        scalar omegai =
+            this->omegaI(i, c, T, spTv, p, pf, cf, lRef, pr, cr, rRef);
+
+        scalar corr = 1.0;
+        if (eqRateLimiter_)
+        {
+            if (omegai < 0.0)
+            {
+                corr = 1.0/(1.0 + pr*deltaTEst);
+            }
+            else
+            {
+                corr = 1.0/(1.0 + pf*deltaTEst);
+            }
+        }
+
+        updateRRInReactionI(i, pr, pf, corr, lRef, rRef, p, RR);
+        forAll(iirIds, iir)
+        {
+            if (iirIds[iir] == i)
+            {
+                updateRRInReactionI(i, 0, pf, corr, lRef, rRef, p, RRfwdiir);
+                break;
+            }
+        }
+    }
+
+    // Calculate the stable/accurate time-step
+    scalar tMin = GREAT;
+
+    for (label i=0; i<nSpecie; i++)
+    {
+        scalar d = 0;
+        for (label j=0; j<nSpecie; j++)
+        {
+            d -= RR[i][j]*c[j];
+        }
+
+        if (d < -SMALL)
+        {
+            tMin = min(tMin, -(c[i] + SMALL)/d);
+        }
+        else
+        {
+            d = max(d, SMALL);
+            scalar cm = max(cTot - c[i], 1.0e-5);
+            tMin = min(tMin, cm/d);
+        }
+    }
+
+    subDeltaT = cTauChem_*tMin;
+    deltaT = min(deltaT, subDeltaT);
+    
+    // Add the diagonal and source contributions from the time-derivative
+    for (label i=0; i<nSpecie; i++)
+    {
+        RR[i][i] += 1.0/deltaT;
+        RR.source()[i] = c[i]/deltaT;
+
+        RRfwdiir[i][i] += 1.0/deltaT;
+        RRfwdiir.source()[i] = cfwdiir[i]/deltaT;
+    }
+
+    // Solve for the new composition
+    c = RR.LUsolve();
+    cfwdiir = RRfwdiir.LUsolve();
+
+    // Limit the composition
+    for (label i=0; i<nSpecie; i++)
+    {
+        c[i] = max(0.0, c[i]);
+        cfwdiir[i] = max(0.0, cfwdiir[i]);
+    }
+}
+
+
+template<class Chemistry2Model>
+void Foam::Euler2Implicit<Chemistry2Model>::solve
+(
+    scalarField& c,
+    scalarField& cfwd,
+    scalarField& cfwdiir,
+    labelList& iirIds,
+    scalar& T,
+    scalarList& spTv,
+    scalar& p,
+    scalar& deltaT,
+    scalar& subDeltaT
+) const
+{
+    const label nSpecie = this->nSpecie();
+    simpleMatrix<scalar> RR(nSpecie, 0, 0);
+    simpleMatrix<scalar> RRfwd(nSpecie, 0, 0);
+    simpleMatrix<scalar> RRfwdiir(nSpecie, 0, 0);
+
+    for (label i=0; i<nSpecie; i++)
+    {
+        c[i] = max(0.0, c[i]);
+        cfwd[i] = max(0.0, cfwd[i]);
+        cfwdiir[i] = max(0.0, cfwdiir[i]);
+    }
+
+    scalar cTot = sum(c);
+
+    scalar deltaTEst = min(deltaT, subDeltaT);
+
+    forAll(this->reactions(), i)
+    {
+        scalar pf, cf, pr, cr;
+        label lRef, rRef;
+
+        scalar omegai =
+            this->omegaI(i, c, T, spTv, p, pf, cf, lRef, pr, cr, rRef);
+
+        scalar corr = 1.0;
+        if (eqRateLimiter_)
+        {
+            if (omegai < 0.0)
+            {
+                corr = 1.0/(1.0 + pr*deltaTEst);
+            }
+            else
+            {
+                corr = 1.0/(1.0 + pf*deltaTEst);
+            }
+        }
+
+        updateRRInReactionI(i, pr, pf, corr, lRef, rRef, p, RR);
+        updateRRInReactionI(i, 0, pf, corr, lRef, rRef, p, RRfwd);
+        forAll(iirIds, iir)
+        {
+            if (iirIds[iir] == i)
+            {
+                updateRRInReactionI(i, 0, pf, corr, lRef, rRef, p, RRfwdiir);
+                break;
+            }
+        }
+    }
+
+    // Calculate the stable/accurate time-step
+    scalar tMin = GREAT;
+
+    for (label i=0; i<nSpecie; i++)
+    {
+        scalar d = 0;
+        for (label j=0; j<nSpecie; j++)
+        {
+            d -= RR[i][j]*c[j];
+        }
+
+        if (d < -SMALL)
+        {
+            tMin = min(tMin, -(c[i] + SMALL)/d);
+        }
+        else
+        {
+            d = max(d, SMALL);
+            scalar cm = max(cTot - c[i], 1.0e-5);
+            tMin = min(tMin, cm/d);
+        }
+    }
+
+    subDeltaT = cTauChem_*tMin;
+    deltaT = min(deltaT, subDeltaT);
+    
+    // Add the diagonal and source contributions from the time-derivative
+    for (label i=0; i<nSpecie; i++)
+    {
+        RR[i][i] += 1.0/deltaT;
+        RR.source()[i] = c[i]/deltaT;
+
+        RRfwd[i][i] += 1.0/deltaT;
+        RRfwd.source()[i] = cfwd[i]/deltaT;
+        
+        RRfwdiir[i][i] += 1.0/deltaT;
+        RRfwdiir.source()[i] = cfwdiir[i]/deltaT;
+    }
+
+    // Solve for the new composition
+    c = RR.LUsolve();
+    cfwd = RRfwd.LUsolve();
+    cfwdiir = RRfwdiir.LUsolve();
+
+    // Limit the composition
+    for (label i=0; i<nSpecie; i++)
+    {
+        c[i] = max(0.0, c[i]);
+        cfwd[i] = max(0.0, cfwd[i]);
+        cfwdiir[i] = max(0.0, cfwdiir[i]);
+    }
+}
+
+
 // ************************************************************************* //

@@ -93,6 +93,33 @@ public:
             scalar& deltaT,
             scalar& subDeltaT
         ) const;
+        
+        //- Update the concentrations and return the chemical time
+        virtual void solve
+        (
+            scalarField& c,
+            scalarField& cfwdiir,
+            labelList& iirIds,
+            scalar& T,
+            scalarList& spTv,
+            scalar& p,
+            scalar& deltaT,
+            scalar& subDeltaT
+        ) const;
+            
+        //- Update the concentrations and return the chemical time
+        virtual void solve
+        (
+            scalarField& c,
+            scalarField& cfwd,
+            scalarField& cfwdiir,
+            labelList& iirIds,
+            scalar& T,
+            scalarList& spTv,
+            scalar& p,
+            scalar& deltaT,
+            scalar& subDeltaT
+        ) const;
 };
 
 

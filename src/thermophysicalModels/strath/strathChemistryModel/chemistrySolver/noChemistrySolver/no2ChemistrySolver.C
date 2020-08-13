@@ -73,4 +73,35 @@ void Foam::no2ChemistrySolver<Chemistry2Model>::solve
 {}
 
 
+template<class Chemistry2Model>
+void Foam::no2ChemistrySolver<Chemistry2Model>::solve
+(
+    scalarField&,
+    scalarField&,
+    labelList&,
+    scalar&,
+    scalarList&,
+    scalar&,
+    scalar&,
+    scalar&
+) const
+{}
+
+
+template<class Chemistry2Model>
+void Foam::no2ChemistrySolver<Chemistry2Model>::solve
+(
+    scalarField&,
+    scalarField&,
+    scalarField&,
+    labelList&,
+    scalar&,
+    scalarList&,
+    scalar&,
+    scalar&,
+    scalar&
+) const
+{}
+
+
 // ************************************************************************* //
