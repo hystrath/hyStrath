@@ -64,6 +64,7 @@ N2
         constant
         {
             mu          0;
+            kappa       0;
         }
         
         SutherlandEucken
@@ -130,6 +131,7 @@ O2
         constant
         {
             mu          0;
+            kappa       0;
         }
         
         SutherlandEucken
@@ -205,6 +207,7 @@ NO
         constant
         {
             mu          0;
+            kappa       0;
         }
         
         BlottnerEucken
@@ -261,6 +264,7 @@ N
         constant
         {
             mu          0;
+            kappa       0;
         }
         
         BlottnerEucken
@@ -317,6 +321,7 @@ O
         constant
         {
             mu          0;
+            kappa       0;
         }
         
         BlottnerEucken
@@ -386,6 +391,7 @@ N2+
         constant
         {
             mu          0;
+            kappa       0;
         }
         
         BlottnerEucken
@@ -452,6 +458,7 @@ O2+
         constant
         {
             mu          0;
+            kappa       0;
         }
         
         BlottnerEucken
@@ -511,6 +518,7 @@ NO+
         constant
         {
             mu          0;
+            kappa       0;
         }
         
         BlottnerEucken
@@ -570,6 +578,7 @@ N+
         constant
         {
             mu          0;
+            kappa       0;
         }
         
         BlottnerEucken
@@ -625,6 +634,7 @@ O+
         constant
         {
             mu          0;
+            kappa       0;
         }
         
         BlottnerEucken
@@ -676,6 +686,7 @@ e-
         constant
         {
             mu          0;
+            kappa       0;
         }
         
         BlottnerEucken
@@ -728,6 +739,7 @@ e-
         constant
         {
             mu          0;
+            kappa       0;
         }
         
         SutherlandEucken
@@ -784,6 +796,7 @@ CO2
         constant
         {
             mu          0;
+            kappa       0;
         }
         
         BlottnerEucken
@@ -828,6 +841,7 @@ CO
         constant
         {
             mu          0;
+            kappa       0;
         }
         
         BlottnerEucken
@@ -864,6 +878,7 @@ C
         constant
         {
             mu          0;
+            kappa       0;
         }
         
         BlottnerEucken
@@ -902,6 +917,7 @@ H
         constant
         {
             mu          0;
+            kappa       0;
         }
         
         CEA
@@ -944,6 +960,7 @@ H2
         constant
         {
             mu          0;
+            kappa       0;
         }
         
         CEA
@@ -992,6 +1009,7 @@ H2O
         constant
         {
             mu          0;
+            kappa       0;
         }
         
         CEA
@@ -1036,6 +1054,7 @@ OH
         constant
         {
             mu          0;
+            kappa       0;
         }
         
         CEA
@@ -1081,6 +1100,7 @@ HO2
         constant
         {
             mu          0;
+            kappa       0;
         }
     }
 }
@@ -1114,6 +1134,7 @@ NO2
         constant
         {
             mu          0;
+            kappa       0;
         }
         
         CEA
@@ -1163,6 +1184,7 @@ H2O2
         constant
         {
             mu          0;
+            kappa       0;
         }
     }
 }
@@ -1192,6 +1214,7 @@ HNO
         constant
         {
             mu          0;
+            kappa       0;
         }
     }
 }*/

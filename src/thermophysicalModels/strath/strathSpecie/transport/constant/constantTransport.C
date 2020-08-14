@@ -33,7 +33,8 @@ Foam::constantTransport<Thermo>::constantTransport(Istream& is)
 :
     Thermo(is),
     mu_(readScalar(is)),
-    eta_s_(readScalar(is))
+    kappa_(readScalar(is)),
+    kappave_(readScalar(is))
 {
     is.check("constantTransport::constantTransport(Istream& is)");
 }
@@ -43,15 +44,31 @@ template<class Thermo>
 Foam::constantTransport<Thermo>::constantTransport(const dictionary& dict)
 :
     Thermo(dict),
-    mu_(readScalar(dict.subDict("transport").subDict("constant").lookup("mu"))),
-    eta_s_(dict.subDict("specie").lookupOrDefault<scalar>("eta_s", 1.2))
+    mu_
+    (
+        dict.subDict("transport").subDict("constant")
+            .lookupOrDefault<scalar>("mu", 0.0)
+    ),
+    kappa_
+    (
+        dict.subDict("transport").subDict("constant")
+            .lookupOrDefault<scalar>("kappa", 0.0)
+    ),
+    kappave_
+    (
+        dict.subDict("transport").subDict("constant")
+            .lookupOrDefault<scalar>("kappave", 0.0)
+    )
 {}
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 template<class Thermo>
-void Foam::constantTransport<Thermo>::constantTransport::write(Ostream& os) const
+void Foam::constantTransport<Thermo>::constantTransport::write
+(
+    Ostream& os
+) const
 {
     os  << this->name() << endl;
     os  << token::BEGIN_BLOCK  << incrIndent << nl;
@@ -60,11 +77,9 @@ void Foam::constantTransport<Thermo>::constantTransport::write(Ostream& os) cons
 
     dictionary dictTransport("transport");
     dictTransport.subDict("constant").add("mu", mu_);
+    dictTransport.subDict("constant").add("kappa", kappa_);
+    dictTransport.subDict("constant").add("kappave", kappave_);
     os  << indent << dictTransport.dictName() << dictTransport;
-
-    dictionary dictSpecies("specie");
-    dictSpecies.add("eta_s", eta_s_);
-    os  << indent << dictSpecies.dictName() << dictSpecies;
 
     os  << decrIndent << token::END_BLOCK << nl;
 }
@@ -73,10 +88,11 @@ void Foam::constantTransport<Thermo>::constantTransport::write(Ostream& os) cons
 // * * * * * * * * * * * * * * * IOstream Operators  * * * * * * * * * * * * //
 
 template<class Thermo>
-Foam::Ostream& Foam::operator<<(Ostream& os, const constantTransport<Thermo>& ct)
+Foam::Ostream&
+Foam::operator<<(Ostream& os, const constantTransport<Thermo>& ct)
 {
     operator<<(os, static_cast<const Thermo&>(ct));
-    os << tab << ct.mu_ << tab << ct.eta_s_;
+    os << tab << ct.mu_ << tab << ct.kappa_ << tab << ct.kappave_;
 
     os.check("Ostream& operator<<(Ostream&, const constantTransport&)");
 

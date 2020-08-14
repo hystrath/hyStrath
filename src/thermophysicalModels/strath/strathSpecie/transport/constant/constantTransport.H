@@ -97,10 +97,11 @@ class constantTransport
         //- Constant dynamic viscosity [Pa.s]
         scalar mu_;
 
-        //- Factor in vibrational thermal conductivity kappave
-        // Hard-sphere: (7-2*omega_m)/5 with omega_m = 0.5
-        // Default value: 1.2
-        scalar eta_s_;
+        //- Constant thermal conductivity, trans-rotational mode [W/mK]
+        scalar kappa_;
+        
+        //- Constant thermal conductivity, vibro-electronic mode [W/mK]
+        scalar kappave_;
 
 
     // Private Member Functions
@@ -110,7 +111,8 @@ class constantTransport
         (
             const Thermo& t,
             const scalar mu,
-            const scalar eta_s
+            const scalar kappa,
+            const scalar kappave
         );
 
 
@@ -157,14 +159,24 @@ public:
         //- Thermal conductivity, trans-rotational mode [W/mK]
         inline scalar kappatr(const scalar p, const scalar Tt) const;
 
-        //- Thermal conductivity, vib-electronic mode [W/mK]
-        inline scalar kappave(const scalar p, const scalar Tt, const scalar Tve) const;
+        //- Thermal conductivity, vibro-electronic mode [W/mK]
+        inline scalar kappave
+        (
+            const scalar p,
+            const scalar Tt,
+            const scalar Tve
+        ) const;
 
         //- Thermal diffusivity, trans-rotational mode [kg/ms]
         inline scalar alphatr(const scalar p, const scalar Tt) const;
 
         //- Thermal diffusivity, vib-electronic mode [kg/ms]
-        inline scalar alphave(const scalar p, const scalar Tt, const scalar Tve) const;
+        inline scalar alphave
+        (
+            const scalar p,
+            const scalar Tt,
+            const scalar Tve
+        ) const;
 
         //- Write to Ostream
         void write(Ostream& os) const;

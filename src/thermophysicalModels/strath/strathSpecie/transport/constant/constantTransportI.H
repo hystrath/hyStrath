@@ -30,12 +30,14 @@ inline Foam::constantTransport<Thermo>::constantTransport
 (
     const Thermo& t,
     const scalar mu,
-    const scalar eta_s
+    const scalar kappa,
+    const scalar kappave
 )
 :
     Thermo(t),
     mu_(mu),
-    eta_s_(eta_s)
+    kappa_(kappa),
+    kappave_(kappave)
 {}
 
 
@@ -48,7 +50,8 @@ inline Foam::constantTransport<Thermo>::constantTransport
 :
     Thermo(name, ct),
     mu_(ct.mu_),
-    eta_s_(ct.eta_s_)
+    kappa_(ct.kappa_),
+    kappave_(ct.kappave_)
 {}
 
 
@@ -100,8 +103,6 @@ inline Foam::scalar Foam::constantTransport<Thermo>::mu
     const scalar T
 ) const
 {
-    //Info << this->Cv_t(p, T) << tab << this->Cv_v(p, T) << tab << this->Cv_el(p, T) << endl;
-    //Info << this->Cv_t(p, T) + this->Cv_v(p, T) + this->Cv_el(p, T) << endl;
     return mu_;
 }
 
@@ -112,7 +113,7 @@ inline Foam::scalar Foam::constantTransport<Thermo>::kappatrans
     const scalar p, const scalar Tt
 ) const
 {
-    return 5.0/2.0*mu(p, Tt)*this->Cv_trans(p, Tt);
+    return kappa_;
 }
 
 
@@ -122,7 +123,7 @@ inline Foam::scalar Foam::constantTransport<Thermo>::kappar
     const scalar p, const scalar Tt
 ) const
 {
-    return mu(p, Tt)*this->Cv_r(p, Tt);
+    return 0.0;
 }
 
 
@@ -142,7 +143,7 @@ inline Foam::scalar Foam::constantTransport<Thermo>::kappave
     const scalar p, const scalar Tt, const scalar Tve
 ) const
 {
-    return eta_s_*mu(p, Tt)*this->Cv_vel(p, Tve);
+    return kappave_;
 }
 
 
@@ -183,7 +184,8 @@ inline Foam::scalar Foam::constantTransport<Thermo>::alphave
 // * * * * * * * * * * * * * * * Member Operators  * * * * * * * * * * * * * //
 
 template<class Thermo>
-inline Foam::constantTransport<Thermo>& Foam::constantTransport<Thermo>::operator=
+inline Foam::constantTransport<Thermo>&
+Foam::constantTransport<Thermo>::operator=
 (
     const constantTransport<Thermo>& ct
 )
@@ -191,7 +193,8 @@ inline Foam::constantTransport<Thermo>& Foam::constantTransport<Thermo>::operato
     Thermo::operator=(ct);
 
     mu_ = ct.mu_;
-    eta_s_ = ct.eta_s_;
+    kappa_ = ct.kappa_;
+    kappave_ = ct.kappave_;
 
     return *this;
 }
@@ -211,7 +214,8 @@ inline void Foam::constantTransport<Thermo>::operator+=
     scalar molr2 = st.nMoles()/this->nMoles();
 
     mu_ = molr1*mu_ + molr2*st.mu_;
-    eta_s_ = molr1*eta_s_ + molr2*st.eta_s_;
+    kappa_ = molr1*kappa_ + molr2*st.kappa_;
+    kappave_ = molr1*kappave_ + molr2*st.kappave_;
 }
 
 
@@ -229,7 +233,8 @@ inline void Foam::constantTransport<Thermo>::operator-=
     scalar molr2 = st.nMoles()/this->nMoles();
 
     mu_ = molr1*mu_ - molr2*st.mu_;
-    eta_s_ = molr1*eta_s_ - molr2*st.eta_s_;
+    kappa_ = molr1*kappa_ - molr2*st.kappa_;
+    kappave_ = molr1*kappave_ - molr2*st.kappave_;
 }
 
 
@@ -264,7 +269,8 @@ inline Foam::constantTransport<Thermo> Foam::operator+
     (
         t,
         molr1*ct1.mu_ + molr2*ct2.mu_,
-        molr1*ct1.eta_s_ + molr2*ct2.eta_s_
+        molr1*ct1.kappa_ + molr2*ct2.kappa_,
+        molr1*ct1.kappave_ + molr2*ct2.kappave_
     );
 }
 
@@ -288,7 +294,8 @@ inline Foam::constantTransport<Thermo> Foam::operator-
     (
         t,
         molr1*ct1.mu_ - molr2*ct2.mu_,
-        molr1*ct1.eta_s_ - molr2*ct2.eta_s_
+        molr1*ct1.kappa_ - molr2*ct2.kappa_,
+        molr1*ct1.kappave_ - molr2*ct2.kappave_
     );
 }
 
@@ -304,7 +311,8 @@ inline Foam::constantTransport<Thermo> Foam::operator*
     (
         s*static_cast<const Thermo&>(ct),
         ct.mu_,
-        ct.eta_s_
+        ct.kappa_,
+        ct.kappave_
     );
 }
 
