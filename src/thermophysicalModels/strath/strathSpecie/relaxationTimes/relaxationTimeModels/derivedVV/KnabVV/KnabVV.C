@@ -86,7 +86,7 @@ void Foam::KnabVV<ThermoType>::correct()
 
     forAll(solvedVibEqSpecies(), speciei)
     {
-        const volScalarField& Tt = thermo_.Tt();
+        const volScalarField& Tt = thermo_.T();
         const volScalarField& p = thermo_.p();
         const volScalarField& pD = thermo_.composition().pD(speciei);
         const volScalarField& ev = thermo_.composition().hevel(speciei);

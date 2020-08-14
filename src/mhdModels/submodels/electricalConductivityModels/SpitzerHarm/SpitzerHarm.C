@@ -70,12 +70,12 @@ void SpitzerHarm::update()
 {
     forAll(sigma_, cellI)
     {
-        const scalar nDe = pe_[cellI]/(localkB_*Tt_[cellI]);
-        const scalar Ttpow15 = pow(Tt_[cellI], 1.5);
+        const scalar nDe = pe_[cellI]/(localkB_*T_[cellI]);
+        const scalar Tpow15 = pow(T_[cellI], 1.5);
         
         if (nDe > SMALL)
         {
-            sigma_[cellI] = 1.56e-4*Ttpow15/log(1.23e4*Ttpow15*pow(nDe, -0.5));
+            sigma_[cellI] = 1.56e-4*Tpow15/log(1.23e4*Tpow15*pow(nDe, -0.5));
         }
         else
         {

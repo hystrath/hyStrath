@@ -55,7 +55,7 @@ Foam::mixingRule::mixingRule
         thermo.transportDictionary()
     ),
 
-    mesh_(thermo.Tt().mesh()),
+    mesh_(thermo.T().mesh()),
     thermo_(thermo),
     turbulence_(turbulence),
 

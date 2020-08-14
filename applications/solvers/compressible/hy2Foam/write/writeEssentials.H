@@ -4,7 +4,7 @@
 
 p.write();
 U.write();
-thermo.Tt().write();
+thermo.T().write();
 
 forAll(Y, speciei)
 {

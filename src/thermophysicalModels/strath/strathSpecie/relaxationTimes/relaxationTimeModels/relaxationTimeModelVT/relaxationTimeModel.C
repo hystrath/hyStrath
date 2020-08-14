@@ -55,7 +55,7 @@ Foam::relaxationTimeModel::relaxationTimeModel
     (
         thermo.twoTemperatureDictionary()
     ),
-    mesh_(thermo.Tt().mesh()),
+    mesh_(thermo.T().mesh()),
     thermo_(thermo),
     turbulence_(turbulence)
 {
@@ -74,7 +74,7 @@ Foam::relaxationTimeModel::relaxationTimeModel
             solvedVibEqSpecies(),
             species(),
             thermo.p(),
-            thermo.Tt(),
+            thermo.T(),
             thermo.composition().Tv(),
             thermo.composition().nD()
         )

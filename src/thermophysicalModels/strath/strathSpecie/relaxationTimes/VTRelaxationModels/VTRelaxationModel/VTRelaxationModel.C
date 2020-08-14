@@ -58,7 +58,7 @@ Foam::VTRelaxationModel::VTRelaxationModel
     lname1_(lname1),
     lname2_(lname2),
     p_(p),
-    Tt_(Tt),
+    T_(Tt),
     Tv_(Tv),
     nD_(nD),
     VTFullCoeffsForm_(readBool(dict1_.subDict("thermalRelaxationModels").subDict("VT").lookup("fullCoeffsForm"))),

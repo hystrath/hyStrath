@@ -105,7 +105,7 @@ void Foam::fixed2TREnergyFvPatchScalarField::updateCoeffs()
     const scalarField& pw = thermo.p().boundaryField()[patchi];
 
     fvPatchScalarField& Ttw =
-        const_cast<fvPatchScalarField&>(thermo.Tt().boundaryField()[patchi]);
+        const_cast<fvPatchScalarField&>(thermo.T().boundaryField()[patchi]);
     Ttw.evaluate();
 
     operator==(thermo.het(pw, Ttw, patchi)); // Force an assignment, overriding fixedValue status

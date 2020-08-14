@@ -113,7 +113,7 @@ void Foam::mixed2EnergyFvPatchScalarField::updateCoeffs()
 
     mixedFvPatchScalarField& Ttw = refCast<mixedFvPatchScalarField>
     (
-        const_cast<fvPatchScalarField&>(multiThermo.Tt().boundaryField()[patchi])
+        const_cast<fvPatchScalarField&>(multiThermo.T().boundaryField()[patchi])
     );
     Ttw.evaluate();
 

@@ -71,7 +71,7 @@ Foam::VVModel::VVModel
 
     species_(species),
     p_(p),
-    Tt_(Tt),
+    T_(Tt),
     Tv_(Tv),
     nD_(nD)
 

@@ -56,7 +56,7 @@ namespace Foam
 Foam::wordList Foam::multi2Thermo::het2BoundaryBaseTypes()
 {
     const volScalarField::Boundary& tbf =
-        this->Tt_.boundaryField();
+        this->T_.boundaryField();
 
     wordList hbt(tbf.size(), word::null);
 
@@ -88,7 +88,7 @@ Foam::wordList Foam::multi2Thermo::het2BoundaryBaseTypes()
 Foam::wordList Foam::multi2Thermo::het2BoundaryTypes()
 {
     const volScalarField::Boundary& tbf =
-        this->Tt_.boundaryField();
+        this->T_.boundaryField();
 
     wordList hbt = tbf.types();
 
@@ -224,15 +224,15 @@ Foam::multi2Thermo::multi2Thermo(const fvMesh& mesh, const word& phaseName)
         )
     ),
 
-    Tt_
+    Tov_
     (
         IOobject
         (
-            phasePropertyName("Tt"),
+            phasePropertyName("Tov"),
             mesh.time().timeName(),
             mesh,
-            IOobject::READ_IF_PRESENT,
-            IOobject::AUTO_WRITE
+            IOobject::NO_READ,
+            IOobject::NO_WRITE
         ),
         mesh,
         dimTemperature
@@ -414,15 +414,15 @@ Foam::multi2Thermo::multi2Thermo
         )
     ),
 
-    Tt_
+    Tov_
     (
         IOobject
         (
-            phasePropertyName("Tt"),
+            phasePropertyName("Tov"),
             mesh.time().timeName(),
             mesh,
-            IOobject::READ_IF_PRESENT,
-            IOobject::AUTO_WRITE
+            IOobject::NO_READ,
+            IOobject::NO_WRITE
         ),
         mesh,
         dimTemperature
@@ -601,20 +601,19 @@ const Foam::multi2Thermo& Foam::multi2Thermo::lookup2Thermo
     const fvPatchScalarField& pf
 )
 {
-    // NOTE VINCENT 20/02/2016: adapted from basicThermo.C
     return pf.db().lookupObject<multi2Thermo>(dictName);
 }
 
 
-const Foam::volScalarField& Foam::multi2Thermo::Tt() const
+const Foam::volScalarField& Foam::multi2Thermo::Tov() const
 {
-    return Tt_;
+    return Tov_;
 }
 
 
-const Foam::scalarField& Foam::multi2Thermo::Tt(const label patchi) const
+const Foam::scalarField& Foam::multi2Thermo::Tov(const label patchi) const
 {
-    return Tt_.boundaryField()[patchi];
+    return Tov_.boundaryField()[patchi];
 }
 
 

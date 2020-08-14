@@ -60,7 +60,7 @@ class nonEqPattersonJumpTFvPatchScalarField
         word rhoName_;
 
         //- Trans-rotational temperature, default = "Tt"
-        word TtName_;
+        word TName_;
 
         //- Dynamic viscosity field name, default = "mu"
         word muName_;

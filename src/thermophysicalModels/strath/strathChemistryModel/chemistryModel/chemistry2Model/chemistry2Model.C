@@ -1026,7 +1026,7 @@ Foam::chemistry2Model<CompType, ThermoType>::tc() const
     );
 
     scalarField& tc = ttc.ref();
-    const scalarField& T = this->thermo().Tt();
+    const scalarField& T = this->thermo().T();
     const scalarField& Tv = this->thermo().Tv();
     const scalarField& p = this->thermo().p();
 
@@ -1141,7 +1141,7 @@ Foam::chemistry2Model<CompType, ThermoType>::Scv() const
     {
         scalarField& Scv = tScv.ref();
 
-        const scalarField& TtCells = this->thermo().Tt();
+        const scalarField& TtCells = this->thermo().T();
         const scalarField& pCells = this->thermo().p();
         
         if (this->CVModel_ == "ParkTTv")
@@ -1291,7 +1291,7 @@ Foam::chemistry2Model<CompType, ThermoType>::Scv(const label i) const
     {
         scalarField& Scv = tScv.ref();
 
-        const scalarField& TtCells = this->thermo().Tt();
+        const scalarField& TtCells = this->thermo().T();
         const scalarField& TvCells = this->thermo().composition().Tv()[i];
         const scalarField& pCells = this->thermo().p();
 
@@ -1555,7 +1555,7 @@ Foam::chemistry2Model<CompType, ThermoType>::calculateRR
 
     DimensionedField<scalar, volMesh>& RR = tRR.ref();
 
-    const scalarField& T = this->thermo().Tt();
+    const scalarField& T = this->thermo().T();
     List<scalarField> spTv(nSpecie_);
     forAll (spTv, speciei)
     {
@@ -1627,7 +1627,7 @@ void Foam::chemistry2Model<CompType, ThermoType>::calculate()
         this->thermo().rho()
     );
 
-    const scalarField& T = this->thermo().Tt();
+    const scalarField& T = this->thermo().T();
     const scalarField& Tv = this->thermo().Tv(); // NOT ALWAYS UPDATED - CAREFUL
     const scalarField& p = this->thermo().p();
 
@@ -1685,7 +1685,7 @@ Foam::scalar Foam::chemistry2Model<CompType, ThermoType>::solve
         this->thermo().rho()
     );
 
-    const scalarField& T = this->thermo().Tt();
+    const scalarField& T = this->thermo().T();
     List<scalarField> spTv(nSpecie_);
     forAll (spTv, speciei)
     {

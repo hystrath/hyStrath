@@ -41,7 +41,7 @@ namespace Foam
 
 Foam::wordList Foam::rho2Thermo::rhoBoundaryTypes() // NEW VINCENT 13/04/2016
 {
-    const volScalarField::Boundary& pbf = this->Tt_.boundaryField();
+    const volScalarField::Boundary& pbf = this->T_.boundaryField();
     wordList rhoBoundaryTypes = pbf.types();
 
     forAll(rhoBoundaryTypes, patchi)
@@ -453,7 +453,7 @@ Foam::tmp<Foam::scalarField> Foam::rho2Thermo::kappaEff
         this->Cv
         (
             this->p_.boundaryField()[patchi],
-            this->Tt_.boundaryField()[patchi],
+            this->T_.boundaryField()[patchi],
             patchi
         )*alphaEff(alphat, patchi);*/
 
@@ -464,7 +464,7 @@ Foam::tmp<Foam::scalarField> Foam::rho2Thermo::kappaEff
       + this->Cp_t
         (
             this->p_.boundaryField()[patchi],
-            this->Tt_.boundaryField()[patchi],
+            this->T_.boundaryField()[patchi],
             patchi
         )*alphat
     );

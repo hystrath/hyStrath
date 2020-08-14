@@ -70,8 +70,8 @@ void ChapmanCowling::update()
 {
     forAll(sigma_, cellI)
     {
-        const scalar nDe = pe_[cellI]/(localkB_*Tt_[cellI]);
-        sigma_[cellI] = 4.0227904e-18*nDe/sqrt(Tt_[cellI]);
+        const scalar nDe = pe_[cellI]/(localkB_*T_[cellI]);
+        sigma_[cellI] = 4.0227904e-18*nDe/sqrt(T_[cellI]);
     }
 }
 

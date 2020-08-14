@@ -73,7 +73,7 @@ Foam::VTModel::VTModel
     solvedVibEqSpecies_(solvedVibEqSpecies),
     species_(species),
     p_(p),
-    Tt_(Tt),
+    T_(Tt),
     Tv_(Tv),
     nD_(nD)
 

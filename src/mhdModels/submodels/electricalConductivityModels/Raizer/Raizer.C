@@ -68,7 +68,7 @@ void Raizer::update()
 {
     forAll(sigma_, cellI)
     {
-        sigma_[cellI] = 83.0*exp(-3.6e4/Tt_[cellI]);
+        sigma_[cellI] = 83.0*exp(-3.6e4/T_[cellI]);
     }
 }
 

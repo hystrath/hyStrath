@@ -154,7 +154,7 @@ Foam::multiSpeciesTransportModel::multiSpeciesTransportModel
         thermo.transportDictionary()
     ),
 
-    mesh_(thermo.Tt().mesh()),
+    mesh_(thermo.T().mesh()),
     thermo_(thermo),
     turbulence_(turbulence),
 
@@ -225,7 +225,7 @@ Foam::multiSpeciesTransportModel::multiSpeciesTransportModel
             dictThermoPhy,
             thermo.p(),
             thermo.pe(),
-            thermo.Tt(),
+            thermo.T(),
             species()
          )
     );
@@ -351,7 +351,7 @@ Foam::multiSpeciesTransportModel::multiSpeciesHeatSource() const
         if (thermo_.composition().particleType(speciej) != 0)
         {
             const volScalarField pCells = thermo_.p();
-            const volScalarField TtCells = thermo_.Tt();
+            const volScalarField TtCells = thermo_.T();
             const volScalarField TvCells = thermo_.composition().Tv(speciej);
 
             volScalarField haj
@@ -385,7 +385,7 @@ Foam::multiSpeciesTransportModel::multiSpeciesHeatSource() const
                 const fvPatchScalarField& pp =
                     thermo_.p().boundaryField()[patchi];
                 const fvPatchScalarField& pTt =
-                    thermo_.Tt().boundaryField()[patchi];
+                    thermo_.T().boundaryField()[patchi];
                 const fvPatchScalarField& pTv =
                     thermo_.composition().Tv(speciej).boundaryField()[patchi];
 
@@ -428,7 +428,7 @@ Foam::surfaceScalarField
 Foam::multiSpeciesTransportModel::getDiffusiveWallHeatFlux() const
 {
     const volScalarField& p = thermo_.p();
-    const volScalarField& Tt = thermo_.Tt();
+    const volScalarField& Tt = thermo_.T();
     const PtrList<volScalarField>& Tv = thermo_.composition().Tv();
     const PtrList<volScalarField>& Y = thermo_.composition().Y();
     

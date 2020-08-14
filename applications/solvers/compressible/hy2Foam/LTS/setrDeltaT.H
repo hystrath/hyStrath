@@ -26,7 +26,7 @@ if (alphaTemp < 1.0)
 {
     volScalarField::DimensionedInternalField rDeltaTT
     (
-        mag(reaction->Sh())/(alphaTemp*rho*thermo.Cv_t()*thermo.Tt()) // NEW VINCENT: was Cp*T
+        mag(reaction->Sh())/(alphaTemp*rho*thermo.Cv_t()*thermo.T()) // NEW VINCENT: was Cp*T
     );
 
 

@@ -207,7 +207,7 @@ Foam::GuptaMR<ThermoType>::GuptaMR
 template<class ThermoType>
 void Foam::GuptaMR<ThermoType>::correct()
 {
-    const volScalarField& Tt = thermo_.Tt();
+    const volScalarField& Tt = thermo_.T();
     const volScalarField& p = thermo_.p();
     const volScalarField& rho = thermo_.rho();
 

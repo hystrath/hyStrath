@@ -188,7 +188,7 @@ void Foam::LandauTellerVT<ThermoType>::correct()
     updateCoefficients();
 
     const volScalarField& p = thermo_.p();
-    const volScalarField& Tt = thermo_.Tt();
+    const volScalarField& Tt = thermo_.T();
 
     const scalarField& pCells = p.internalField();
     const scalarField& TtCells = Tt.internalField();

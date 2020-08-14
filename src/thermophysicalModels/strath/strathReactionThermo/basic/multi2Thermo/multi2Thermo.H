@@ -59,13 +59,13 @@ protected:
         //- Two-temperature dictionary
         IOdictionary twoTemperatureDictionary_;
 
-        //- Trans-rotational temperature [K]
-        volScalarField Tt_;
+        //- Overall temperature [K]
+        volScalarField Tov_;
 
         //- Vibro-electronic temperature of the mixture [K]
         volScalarField Tv_;
 
-        //- Energy field associated with the trans-rotational mode [J/kg]
+        //- Energy field associated with the Overall mode [J/kg]
         volScalarField het_;
 
         //- Energy field associated with the vibrational mode [J/kg]
@@ -499,11 +499,11 @@ public:
 
         // Fields derived from thermodynamic state variables
 
-            //- Trans-rotational temperature of mixture [K]
-            virtual const volScalarField& Tt() const;
+            //- Overall temperature of mixture [K]
+            virtual const volScalarField& Tov() const;
 
-            //- Trans-rotational temperature of mixture for patch [K]
-            virtual const scalarField& Tt(const label patchi) const;
+            //- Overall temperature of mixture for patch [K]
+            virtual const scalarField& Tov(const label patchi) const;
 
             //- Vibrational temperature of mixture [K]
             virtual const volScalarField& Tv() const;

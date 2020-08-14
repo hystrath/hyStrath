@@ -2,7 +2,7 @@
 if(hyDev)
 {
     /*
-    *heatFluxVector = -turbulence->kappaEff()*fvc::grad(thermo.Tt());
+    *heatFluxVector = -turbulence->kappaEff()*fvc::grad(thermo.T());
 
     scalarField Ycoord = mesh.C().component(1);
     vectorField& myHFV = heatFluxVector->internalField();
@@ -51,7 +51,7 @@ if(hyDev)
         }
     }
 
-    *heatFluxVector += turbulence->kappaEff()*fvc::grad(thermo.Tt());
+    *heatFluxVector += turbulence->kappaEff()*fvc::grad(thermo.T());
     forAll(Y, speciei)
     {
         *heatFluxVector += transport().kappave(speciei)*fvc::grad(composition.Tv()[speciei]);

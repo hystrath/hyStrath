@@ -66,7 +66,7 @@ Foam::basicMfpModels::hardSphere::hardSphere
 Foam::tmp<Foam::volScalarField>
 Foam::basicMfpModels::hardSphere::mfp() const
 {
-    const fvMesh& mesh = this->Tt_.mesh();
+    const fvMesh& mesh = this->T_.mesh();
 
     tmp<volScalarField> tmfp
     (
@@ -87,15 +87,15 @@ Foam::basicMfpModels::hardSphere::mfp() const
 
     volScalarField& mfp = tmfp.ref();
 
-    forAll(this->Tt_, celli)
+    forAll(this->T_, celli)
     {
-        mfp[celli] = 16.0/5.0*sqrt(molW_/(constant::mathematical::twoPi*constant::physicoChemical::R.value()*this->Tt_[celli]));
+        mfp[celli] = 16.0/5.0*sqrt(molW_/(constant::mathematical::twoPi*constant::physicoChemical::R.value()*this->T_[celli]));
     }
 
 
-    forAll(this->Tt_.boundaryField(), patchi)
+    forAll(this->T_.boundaryField(), patchi)
     {
-        const fvPatchScalarField& pTt = this->Tt_.boundaryField()[patchi];
+        const fvPatchScalarField& pTt = this->T_.boundaryField()[patchi];
         fvPatchScalarField& pmfp = mfp.boundaryFieldRef()[patchi];
 
         forAll(pTt, facei)

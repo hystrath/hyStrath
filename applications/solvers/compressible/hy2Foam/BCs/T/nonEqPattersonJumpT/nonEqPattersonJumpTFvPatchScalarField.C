@@ -40,7 +40,7 @@ Foam::nonEqPattersonJumpTFvPatchScalarField::nonEqPattersonJumpTFvPatchScalarFie
     mixedFvPatchScalarField(p, iF),
     UName_("U"),
     rhoName_("rho"),
-    TtName_("Tt"),
+    TName_("Tt"),
     muName_("mu"),
     alphaName_("alphatr"), // NEW VINCENT 03/03/2016
     gammatrName_("gammatr"), // NEW VINCENT 03/03/2016
@@ -66,7 +66,7 @@ Foam::nonEqPattersonJumpTFvPatchScalarField::nonEqPattersonJumpTFvPatchScalarFie
     mixedFvPatchScalarField(ptf, p, iF, mapper),
     UName_(ptf.UName_),
     rhoName_(ptf.rhoName_),
-    TtName_(ptf.TtName_),
+    TName_(ptf.TName_),
     muName_(ptf.muName_),
     alphaName_(ptf.alphaName_), // NEW VINCENT 03/03/2016
     gammatrName_(ptf.gammatrName_), // NEW VINCENT 03/03/2016
@@ -87,7 +87,7 @@ Foam::nonEqPattersonJumpTFvPatchScalarField::nonEqPattersonJumpTFvPatchScalarFie
     mixedFvPatchScalarField(p, iF),
     UName_(dict.lookupOrDefault<word>("U", "U")),
     rhoName_(dict.lookupOrDefault<word>("rho", "rho")),
-    TtName_(dict.lookupOrDefault<word>("Tt", "Tt")),
+    TName_(dict.lookupOrDefault<word>("Tt", "Tt")),
     muName_(dict.lookupOrDefault<word>("mu", "mu")),
     alphaName_(dict.lookupOrDefault<word>("alphatr", "alphatr")), // NEW VINCENT 03/03/2016
     gammatrName_(dict.lookupOrDefault<word>("gammatr", "gammatr")), // NEW VINCENT 03/03/2016
@@ -181,8 +181,8 @@ void Foam::nonEqPattersonJumpTFvPatchScalarField::updateCoeffs()
 
     const fvPatchScalarField& pmu =
         patch().lookupPatchField<volScalarField, scalar>(muName_);
-    const fvPatchScalarField& pTt =
-        patch().lookupPatchField<volScalarField, scalar>(TtName_);
+    const fvPatchScalarField& pT =
+        patch().lookupPatchField<volScalarField, scalar>(TName_);
     const fvPatchScalarField& palpha =
         patch().lookupPatchField<volScalarField, scalar>(alphaName_); // NEW VINCENT 03/03/2016
     const fvPatchScalarField& pgammatr =
@@ -197,7 +197,7 @@ void Foam::nonEqPattersonJumpTFvPatchScalarField::updateCoeffs()
     Field<scalar> C2
     (
         pmfp*2.0/(pgammatr + 1.0)/(pmu/palpha) // Pr = mu*Cp/k = mu/alpha * Cp/Cv = mu/alpha * gamma
-        *(2.0 - accommodationCoeff_)/accommodationCoeff_ *Twall_/pTt
+        *(2.0 - accommodationCoeff_)/accommodationCoeff_ *Twall_/pT
     ); // NEW VINCENT 03/03/2016
 
     Field<scalar> aCoeff(prho.snGrad() - prho/C2);

@@ -52,7 +52,7 @@ Foam::basicMfpModel::basicMfpModel
     name_(name),
     speciesIndex_(speciesIndex),
     p_(p),
-    Tt_(Tt)
+    T_(Tt)
 {}
 
 

@@ -34,7 +34,7 @@ template<class ThermoType>
 void Foam::WilkeMR<ThermoType>::updatePhi()
 {
     const volScalarField& p = thermo_.p();
-    const volScalarField& Tt = thermo_.Tt();
+    const volScalarField& Tt = thermo_.T();
     const scalarField& pCells = p.internalField();
     const scalarField& TtCells = Tt.internalField();
 
@@ -148,7 +148,7 @@ void Foam::WilkeMR<ThermoType>::correct()
     Info << "timer updatePhi() load: " << duration << endl;*/
 
     const volScalarField& p = thermo_.p();
-    const volScalarField& Tt = thermo_.Tt();
+    const volScalarField& Tt = thermo_.T();
     const scalarField& pCells = p.internalField();
     const scalarField& TtCells = Tt.internalField();
 

@@ -65,7 +65,7 @@ void Foam::rarefied<ThermoType>::correct(const volVectorField& U)
     {
         updateCoefficients();
 
-        const volScalarField& T = thermo_.Tt();
+        const volScalarField& T = thermo_.T();
         const volScalarField& Tv = thermo_.Tv();
         const volScalarField magU (mag(U));
         volScalarField c(sqrt(thermo_.Cp_t()/thermo_.Cv_t()/thermo_.psi()));
@@ -231,7 +231,7 @@ void Foam::rarefied<ThermoType>::correct(const volVectorField& U)
 
         const volScalarField gradRho = mag(fvc::grad(thermo_.rho()));
         const scalarField& gradRhoCells = gradRho.internalField();
-        const volScalarField gradT = mag(fvc::grad(thermo_.Tt()));
+        const volScalarField gradT = mag(fvc::grad(thermo_.T()));
         const volScalarField gradTv = mag(fvc::grad(thermo_.Tv()));
         const scalarField& gradTCells = gradT.internalField();
         const scalarField& gradTvCells = gradTv.internalField();
@@ -335,7 +335,7 @@ void Foam::rarefied<ThermoType>::correct(const volVectorField& U)
         {
             updateCoefficients();
 
-            const volScalarField& T = thermo_.Tt();
+            const volScalarField& T = thermo_.T();
             const volScalarField& p = thermo_.p();
             const volScalarField& rho = thermo_.rho();
             const volScalarField& muMix = thermo_.mu();
@@ -388,7 +388,7 @@ void Foam::rarefied<ThermoType>::correct(const volVectorField& U)
         }
         else
         {
-            const volScalarField& Tt = thermo_.Tt();
+            const volScalarField& Tt = thermo_.T();
             const scalarField& TtCells = Tt.internalField();
 
             volScalarField innerSum = mfpMix_, outerSum = mfpMix_;

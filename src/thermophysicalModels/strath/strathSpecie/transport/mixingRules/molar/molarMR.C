@@ -55,7 +55,7 @@ Foam::molarMR<ThermoType>::molarMR
 template<class ThermoType>
 void Foam::molarMR<ThermoType>::correct()
 {
-    const volScalarField& Tt = thermo_.Tt();
+    const volScalarField& Tt = thermo_.T();
     const volScalarField& p = thermo_.p();
 
     const scalarField& TtCells = Tt.internalField();

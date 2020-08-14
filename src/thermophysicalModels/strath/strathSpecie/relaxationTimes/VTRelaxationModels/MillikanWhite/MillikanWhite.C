@@ -165,7 +165,7 @@ Foam::VTRelaxationModels::MillikanWhite::MillikanWhite
 Foam::tmp<Foam::volScalarField>
 Foam::VTRelaxationModels::MillikanWhite::tauVT() const
 {
-    const fvMesh& mesh = this->Tt_.mesh();
+    const fvMesh& mesh = this->T_.mesh();
 
     tmp<volScalarField> ttauVT
     (
@@ -186,17 +186,17 @@ Foam::VTRelaxationModels::MillikanWhite::tauVT() const
 
     volScalarField& tauVT = ttauVT.ref();
 
-    forAll(this->Tt_, celli)
+    forAll(this->T_, celli)
     {
         tauVT[celli] =
-            1.01325e5 / this->p_[celli] * exp(A12_*(pow(this->Tt_[celli], -1.0/3.0)
+            1.01325e5 / this->p_[celli] * exp(A12_*(pow(this->T_[celli], -1.0/3.0)
                 - B12_) - offset_);
     }
 
 
-    forAll(this->Tt_.boundaryField(), patchi)
+    forAll(this->T_.boundaryField(), patchi)
     {
-        const fvPatchScalarField& pTt = this->Tt_.boundaryField()[patchi];
+        const fvPatchScalarField& pTt = this->T_.boundaryField()[patchi];
         const fvPatchScalarField& pp = this->p_.boundaryField()[patchi];
         fvPatchScalarField& ptauVT = tauVT.boundaryFieldRef()[patchi];
 

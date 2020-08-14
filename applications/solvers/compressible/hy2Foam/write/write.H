@@ -34,7 +34,7 @@ if (not downgradeSingleT)
 {
     if (not hyLight)
     {
-        thermo.T().write();
+        thermo.Tov().write();
 
         if (noSolvedVibEq > 1)
         {

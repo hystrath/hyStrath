@@ -114,11 +114,11 @@ Foam::basic2Thermo::basic2Thermo
     (
         IOobject
         (
-            phasePropertyName("Tov"),
+            phasePropertyName("Tt"),
             mesh.time().timeName(),
             mesh,
-            IOobject::NO_READ,
-            IOobject::NO_WRITE
+            IOobject::READ_IF_PRESENT,
+            IOobject::AUTO_WRITE
         ),
         mesh,
         dimTemperature
@@ -168,11 +168,11 @@ Foam::basic2Thermo::basic2Thermo
     (
         IOobject
         (
-            phasePropertyName("Tov"),
+            phasePropertyName("Tt"),
             mesh.time().timeName(),
             mesh,
-            IOobject::NO_READ,
-            IOobject::NO_WRITE
+            IOobject::READ_IF_PRESENT,
+            IOobject::AUTO_WRITE
         ),
         mesh,
         dimTemperature

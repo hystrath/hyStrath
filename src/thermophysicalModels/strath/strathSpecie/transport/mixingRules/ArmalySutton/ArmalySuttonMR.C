@@ -31,7 +31,7 @@ License
 template<class ThermoType>
 void Foam::ArmalySuttonMR<ThermoType>::updatePhi()
 {
-    const volScalarField& Tt = thermo_.Tt();
+    const volScalarField& Tt = thermo_.T();
     const volScalarField& p = thermo_.p();
     const scalarField& TtCells = Tt.internalField();
     const scalarField& pCells = p.internalField();
@@ -216,7 +216,7 @@ void Foam::ArmalySuttonMR<ThermoType>::correct()
 {
     updatePhi();
 
-    const volScalarField& Tt = thermo_.Tt();
+    const volScalarField& Tt = thermo_.T();
     const volScalarField& p = thermo_.p();
     const scalarField& TtCells = Tt.internalField();
     const scalarField& pCells = p.internalField();

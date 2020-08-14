@@ -69,7 +69,7 @@ Foam::mfpModel::mfpModel
 
     species_(species),
     p_(p),
-    Tt_(Tt)
+    T_(Tt)
 
 {
     mfpModels_.setSize(species.size());

@@ -66,7 +66,7 @@ Foam::basicMfpModels::maxwellianmfp::maxwellianmfp
 Foam::tmp<Foam::volScalarField>
 Foam::basicMfpModels::maxwellianmfp::mfp() const
 {
-    const fvMesh& mesh = this->Tt_.mesh();
+    const fvMesh& mesh = this->T_.mesh();
 
     tmp<volScalarField> tmfp
     (
@@ -87,15 +87,15 @@ Foam::basicMfpModels::maxwellianmfp::mfp() const
 
     volScalarField& mfp = tmfp.ref();
 
-    forAll(this->Tt_, celli)
+    forAll(this->T_, celli)
     {
-        mfp[celli] = sqrt(constant::mathematical::pi*molW_/(2.0*constant::physicoChemical::R.value()*this->Tt_[celli]));
+        mfp[celli] = sqrt(constant::mathematical::pi*molW_/(2.0*constant::physicoChemical::R.value()*this->T_[celli]));
     }
 
 
-    forAll(this->Tt_.boundaryField(), patchi)
+    forAll(this->T_.boundaryField(), patchi)
     {
-        const fvPatchScalarField& pTt = this->Tt_.boundaryField()[patchi];
+        const fvPatchScalarField& pTt = this->T_.boundaryField()[patchi];
         fvPatchScalarField& pmfp = mfp.boundaryFieldRef()[patchi];
 
         forAll(pTt, facei)

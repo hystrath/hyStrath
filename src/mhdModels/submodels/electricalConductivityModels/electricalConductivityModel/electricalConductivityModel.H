@@ -63,7 +63,7 @@ protected:
         const fvMesh& mesh_;
         
         //- Const reference to the trans-rotational temperature field
-        const volScalarField& Tt_;
+        const volScalarField& T_;
         
         //- Electrical conductivity field [S/m]
         volScalarField sigma_;

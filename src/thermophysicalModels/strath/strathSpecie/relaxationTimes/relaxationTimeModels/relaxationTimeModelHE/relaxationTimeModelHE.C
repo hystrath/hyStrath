@@ -54,7 +54,7 @@ Foam::relaxationTimeModelHE::relaxationTimeModelHE
         thermo.twoTemperatureDictionary()
     ),
 
-    mesh_(thermo.Tt().mesh()),
+    mesh_(thermo.T().mesh()),
     thermo_(thermo),
     turbulence_(turbulence),
 

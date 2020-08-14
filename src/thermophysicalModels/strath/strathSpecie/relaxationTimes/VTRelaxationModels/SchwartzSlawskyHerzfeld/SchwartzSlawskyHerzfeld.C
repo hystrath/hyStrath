@@ -262,7 +262,7 @@ Foam::VTRelaxationModels::SchwartzSlawskyHerzfeld::SchwartzSlawskyHerzfeld
 Foam::tmp<Foam::volScalarField>
 Foam::VTRelaxationModels::SchwartzSlawskyHerzfeld::tauVT() const
 {
-    const fvMesh& mesh = this->Tt_.mesh();
+    const fvMesh& mesh = this->T_.mesh();
 
     tmp<volScalarField> ttauVT
     (
@@ -285,20 +285,20 @@ Foam::VTRelaxationModels::SchwartzSlawskyHerzfeld::tauVT() const
 
     if(SHHon_)
     {
-        forAll(this->Tt_, celli)
+        forAll(this->T_, celli)
         {
             tauVT[celli] = 1.0 /
                 (
-                    (1.0-exp(-TH1_/this->Tt_[celli]))
-                  * P10sr(this->Tt_[celli])
-                  * Zcollsr(this->Tt_[celli], this->nD_[species1_][celli], this->nD_[species2_][celli])
+                    (1.0-exp(-TH1_/this->T_[celli]))
+                  * P10sr(this->T_[celli])
+                  * Zcollsr(this->T_[celli], this->nD_[species1_][celli], this->nD_[species2_][celli])
                 );
         }
 
 
-        forAll(this->Tt_.boundaryField(), patchi)
+        forAll(this->T_.boundaryField(), patchi)
         {
-            const fvPatchScalarField& pTt = this->Tt_.boundaryField()[patchi];
+            const fvPatchScalarField& pTt = this->T_.boundaryField()[patchi];
             const fvPatchScalarField& pnD1 = this->nD_[species1_].boundaryField()[patchi];
             const fvPatchScalarField& pnD2 = this->nD_[species2_].boundaryField()[patchi];
             fvPatchScalarField& ptauVT = tauVT.boundaryFieldRef()[patchi];
@@ -322,18 +322,18 @@ Foam::VTRelaxationModels::SchwartzSlawskyHerzfeld::tauVT() const
             nDcol += this->nD_[species2_];
         }
 
-        forAll(this->Tt_, celli)
+        forAll(this->T_, celli)
         {
             tauVT[celli] =
-                1.01325e5 / this->p_[celli] * exp(A12_*(pow(this->Tt_[celli], -1.0/3.0) - B12_) - offset_)
-              + 1.0/(sqrt(8.0*constant::physicoChemical::R.value()*1000.0*this->Tt_[celli]/
-                  (pi*W1_)) * sigma1_*sqr(sigma2_/this->Tt_[celli]) *max(nDcol[celli], Foam::SMALL));
+                1.01325e5 / this->p_[celli] * exp(A12_*(pow(this->T_[celli], -1.0/3.0) - B12_) - offset_)
+              + 1.0/(sqrt(8.0*constant::physicoChemical::R.value()*1000.0*this->T_[celli]/
+                  (pi*W1_)) * sigma1_*sqr(sigma2_/this->T_[celli]) *max(nDcol[celli], Foam::SMALL));
         }
 
 
-        forAll(this->Tt_.boundaryField(), patchi)
+        forAll(this->T_.boundaryField(), patchi)
         {
-            const fvPatchScalarField& pTt = this->Tt_.boundaryField()[patchi];
+            const fvPatchScalarField& pTt = this->T_.boundaryField()[patchi];
             const fvPatchScalarField& pp = this->p_.boundaryField()[patchi];
             const fvPatchScalarField& pnDcol = nDcol.boundaryField()[patchi];
             fvPatchScalarField& ptauVT = tauVT.boundaryFieldRef()[patchi];

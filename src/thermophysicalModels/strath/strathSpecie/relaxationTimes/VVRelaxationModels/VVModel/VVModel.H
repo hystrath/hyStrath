@@ -67,7 +67,7 @@ protected:
         const volScalarField& p_;
 
         //- Translational temperature [K]
-        const volScalarField& Tt_;
+        const volScalarField& T_;
 
         //- Vibrational temperature [K]
         const PtrList<volScalarField>& Tv_;

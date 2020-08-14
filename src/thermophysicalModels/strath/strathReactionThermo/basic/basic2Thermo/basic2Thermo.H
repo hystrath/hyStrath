@@ -71,7 +71,7 @@ protected:
             //- Electron pressure [Pa]
             volScalarField pe_;
 
-            //- Overall temperature [K]
+            //- Trans-rotational temperature [K]
             volScalarField T_;
 
 
@@ -257,17 +257,18 @@ public:
 
         // Fields derived from thermodynamic state variables
 
-            //- Overall temperature [K]
+            //- Trans-rotational temperature [K]
             virtual const volScalarField& T() const;
 
-            //- Overall temperature [K]
+            //- Trans-rotational temperature [K]
             //  Non-const access allowed for transport equations
             virtual volScalarField& T();
 
             //- Equilibrium heat capacity at constant pressure [J/kg/K]
             virtual tmp<volScalarField> Cp() const = 0;
 
-            //- Equilibrium heat capacity at constant pressure for patch [J/kg/K]
+            //- Equilibrium heat capacity at constant pressure for patch
+            //  [J/kg/K]
             virtual tmp<scalarField> Cp
             (
                 const scalarField& p,

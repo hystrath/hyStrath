@@ -33,7 +33,7 @@ void Foam::LarsenBorgnakkeVT<ThermoType>::updateCoefficients()
 {
     //tauVTijModel_().update();
 
-    const volScalarField& Tt = thermo_.Tt();
+    const volScalarField& Tt = thermo_.T();
     const volScalarField& et = thermo_.het();
     const scalarField& TtCells = Tt.internalField();
     const scalarField& etCells = et.internalField();
@@ -171,7 +171,7 @@ void Foam::LarsenBorgnakkeVT<ThermoType>::correct()
     updateCoefficients();
 
     const volScalarField& p = thermo_.p();
-    const volScalarField& Tt = thermo_.Tt();
+    const volScalarField& Tt = thermo_.T();
 
     const scalarField& pCells = p.internalField();
     const scalarField& TtCells = Tt.internalField();

@@ -71,7 +71,7 @@ void Bush::update()
 {
     forAll(sigma_, cellI)
     {
-        sigma_[cellI] = sigma0_*pow(Tt_[cellI]/T0_, n_);
+        sigma_[cellI] = sigma0_*pow(T_[cellI]/T0_, n_);
     }
 }
 

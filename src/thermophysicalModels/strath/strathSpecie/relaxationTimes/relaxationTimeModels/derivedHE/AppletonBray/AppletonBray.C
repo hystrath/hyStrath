@@ -65,7 +65,7 @@ template<class ThermoType>
 void Foam::AppletonBray<ThermoType>::correct()
 {
     const label electronId = this->thermo_.composition().electronId();
-    const volScalarField& Tt = thermo_.Tt();
+    const volScalarField& Tt = thermo_.T();
     const volScalarField& Te = thermo_.composition().Tv(electronId);
     const volScalarField& pDe = thermo_.composition().pD(electronId);
     const volScalarField& nDe = thermo_.composition().nD(electronId);

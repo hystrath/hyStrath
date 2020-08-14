@@ -111,7 +111,7 @@ void Foam::fixed2EnergyFvPatchScalarField::updateCoeffs()
     const scalarField& pw = multiThermo.p().boundaryField()[patchi];
 
     fvPatchScalarField& Ttw =
-        const_cast<fvPatchScalarField&>(multiThermo.Tt().boundaryField()[patchi]);
+        const_cast<fvPatchScalarField&>(multiThermo.T().boundaryField()[patchi]);
     Ttw.evaluate();
 
     tmp<Field<scalar> > thevel(new Field<scalar>(multiThermo.p().boundaryField()[patchi].size()));

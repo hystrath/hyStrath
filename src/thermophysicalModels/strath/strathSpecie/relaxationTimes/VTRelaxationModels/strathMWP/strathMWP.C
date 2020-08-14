@@ -193,7 +193,7 @@ Foam::VTRelaxationModels::strathMWP::strathMWP
 Foam::tmp<Foam::volScalarField>
 Foam::VTRelaxationModels::strathMWP::tauVT() const
 {
-    const fvMesh& mesh = this->Tt_.mesh();
+    const fvMesh& mesh = this->T_.mesh();
 
     tmp<volScalarField> ttauVT
     (
@@ -222,14 +222,14 @@ Foam::VTRelaxationModels::strathMWP::tauVT() const
 
     volScalarField myT = this->Tv_[species1_]*0;
 
-    forAll(this->Tt_, celli)
+    forAll(this->T_, celli)
     {
-        myT[celli] = max(this->Tv_[species1_][celli], this->Tt_[celli]);
+        myT[celli] = max(this->Tv_[species1_][celli], this->T_[celli]);
         scalar Park = 0.0;
-        if(this->Tt_[celli] >= this->Tv_[species1_][celli])
+        if(this->T_[celli] >= this->Tv_[species1_][celli])
         {
-            Park = 1.0/(sqrt(8.0*constant::physicoChemical::R.value()*1000.0*this->Tt_[celli]/
-              (constant::mathematical::pi*W1_)) * sigma1_*pow(sigma2_/this->Tt_[celli], 2.0) *max(nDcol[celli], Foam::SMALL));
+            Park = 1.0/(sqrt(8.0*constant::physicoChemical::R.value()*1000.0*this->T_[celli]/
+              (constant::mathematical::pi*W1_)) * sigma1_*pow(sigma2_/this->T_[celli], 2.0) *max(nDcol[celli], Foam::SMALL));
         }
         else
         {
@@ -243,9 +243,9 @@ Foam::VTRelaxationModels::strathMWP::tauVT() const
     }
 
 
-    forAll(this->Tt_.boundaryField(), patchi)
+    forAll(this->T_.boundaryField(), patchi)
     {
-        const fvPatchScalarField& pTt = this->Tt_.boundaryField()[patchi];
+        const fvPatchScalarField& pTt = this->T_.boundaryField()[patchi];
         const fvPatchScalarField& pmyTv = this->Tv_[species1_].boundaryField()[patchi];
         const fvPatchScalarField& pp = this->p_.boundaryField()[patchi];
         const fvPatchScalarField& pnDcol = nDcol.boundaryField()[patchi];

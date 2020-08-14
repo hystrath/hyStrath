@@ -42,7 +42,7 @@ namespace Foam
 lowReMag::lowReMag(const rho2ReactionThermo& thermo)
 :
     mhdModel(thermo),
-    Tt_(thermo.Tt()),
+    T_(thermo.T()),
     pe_(thermo.pe()),
     localkB_(constant::physicoChemical::k.value()),
     localElecCharge_(constant::electromagnetic::e.value()),
@@ -87,7 +87,7 @@ lowReMag::lowReMag
 )
 :
     mhdModel(thermo),
-    Tt_(thermo.Tt()),
+    T_(thermo.T()),
     pe_(thermo.pe()),
     localkB_(constant::physicoChemical::k.value()),
     localElecCharge_(constant::electromagnetic::e.value()),
@@ -186,7 +186,7 @@ tmp<volVectorField> lowReMag::j(const volVectorField& U) const
     
     forAll(betaHall, cellI)
     {
-        const scalar nDe = pe_[cellI]/(localkB_*Tt_[cellI]);
+        const scalar nDe = pe_[cellI]/(localkB_*T_[cellI]);
         
         if (nDe > SMALL)
         {
@@ -346,7 +346,7 @@ tmp<volTensorField> lowReMag::hallCorrection() const
     
     forAll(betaHall, cellI)
     {
-        const scalar nDe = pe_[cellI]/(localkB_*Tt_[cellI]);
+        const scalar nDe = pe_[cellI]/(localkB_*T_[cellI]);
         
         if (nDe > SMALL)
         {

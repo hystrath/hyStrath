@@ -55,7 +55,7 @@ class lowReMag
     // Private Member Functions
     
         //- Const reference to the trans-rotational temperature field
-        const volScalarField& Tt_;
+        const volScalarField& T_;
         
         //- Const reference to the electron pressure field
         const volScalarField& pe_;

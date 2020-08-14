@@ -161,7 +161,7 @@ const volScalarField& mu = thermo.mu();
 /*const scalar pi = constant::mathematical::pi;
 const scalar ZrotInf = 18.0;
 const dimensionedScalar TZ ("TZ", dimTemperature, 91.5);
-volScalarField Zrot = ZrotInf/(1.0 + sqr(pi)/2.0*sqrt(TZ/thermo.Tt()) + (sqr(pi)/4.0 + pi)*TZ/thermo.Tt());
+volScalarField Zrot = ZrotInf/(1.0 + sqr(pi)/2.0*sqrt(TZ/thermo.T()) + (sqr(pi)/4.0 + pi)*TZ/thermo.T());
 volScalarField Z = 3.0*pi/(4.0*(thermo.zetar()+3.0))*Zrot;
 
 volScalarField mub = mu*(2.0*thermo.zetar()*Z)/(3.0*(thermo.zetar()+3.0));

@@ -73,7 +73,7 @@ void Boltzmann::update()
     const volScalarField& nDe = dict_.thermo().composition().nD("e-");
     Info << max(nDe) << endl;
     Info << min(nDe) << endl;
-    const volScalarField& T = dict_.thermo().Tt();
+    const volScalarField& T = dict_.thermo().T();
     
     const dimensionedScalar electron_mass =
         dimensionedScalar

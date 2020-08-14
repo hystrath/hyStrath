@@ -45,7 +45,7 @@ electricalConductivityModel::electricalConductivityModel
 :
     dict_(dict),
     mesh_(mesh),
-    Tt_(dict.thermo().Tt()),
+    T_(dict.thermo().T()),
     sigma_
     (
         IOobject

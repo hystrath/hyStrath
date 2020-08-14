@@ -105,7 +105,7 @@ void Foam::gradient2TREnergyFvPatchScalarField::updateCoeffs()
     const scalarField& pw = thermo.p().boundaryField()[patchi];
 
     fvPatchScalarField& Ttw =
-        const_cast<fvPatchScalarField&>(thermo.Tt().boundaryField()[patchi]);
+        const_cast<fvPatchScalarField&>(thermo.T().boundaryField()[patchi]);
     Ttw.evaluate();
 
     gradient() = thermo.Cv_t(pw, Ttw, patchi)*Ttw.snGrad()

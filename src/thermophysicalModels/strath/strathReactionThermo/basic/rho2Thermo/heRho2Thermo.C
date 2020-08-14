@@ -34,7 +34,7 @@ void Foam::heRho2Thermo<BasicPsi2Thermo, MixtureType>::init2()
     // rho2ReactionThermo. The minimum is done here to calculate
     // the chemical fractions.
     const scalarField& pCells = this->p_.internalField();
-    const scalarField& TtCells = this->Tt_.internalField();
+    const scalarField& TtCells = this->T_.internalField();
 
     scalarField& psiCells = this->psi_.primitiveFieldRef();
     scalarField& rhoCells = this->rho_.primitiveFieldRef();
@@ -48,10 +48,10 @@ void Foam::heRho2Thermo<BasicPsi2Thermo, MixtureType>::init2()
         rhoCells[celli] = mixture_.rho(pCells[celli], TtCells[celli]);
     }
 
-    forAll(this->Tt_.boundaryField(), patchi)
+    forAll(this->T_.boundaryField(), patchi)
     {
         const fvPatchScalarField& pp = this->p_.boundaryField()[patchi];
-        fvPatchScalarField& pTt = this->Tt_.boundaryFieldRef()[patchi];
+        fvPatchScalarField& pTt = this->T_.boundaryFieldRef()[patchi];
         fvPatchScalarField& ppsi = this->psi_.boundaryFieldRef()[patchi];
         fvPatchScalarField& prho = this->rho_.boundaryFieldRef()[patchi];
 

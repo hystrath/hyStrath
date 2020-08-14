@@ -113,7 +113,7 @@ Foam::VVRelaxationModels::Knab::Knab
 Foam::tmp<Foam::volScalarField>
 Foam::VVRelaxationModels::Knab::tauVV() const
 {
-    const fvMesh& mesh = this->Tt_.mesh();
+    const fvMesh& mesh = this->T_.mesh();
 
     tmp<volScalarField> ttauVV
     (
@@ -134,13 +134,13 @@ Foam::VVRelaxationModels::Knab::tauVV() const
 
     volScalarField& tauVV = ttauVV.ref();
 
-    forAll(this->Tt_, celli)
+    forAll(this->T_, celli)
     {
         tauVV[celli] = P21_*sigma12_/sqrt(W12_);
     }
 
 
-    forAll(this->Tt_.boundaryField(), patchi)
+    forAll(this->T_.boundaryField(), patchi)
     {
         fvPatchScalarField& ptauVV = tauVV.boundaryFieldRef()[patchi];
 

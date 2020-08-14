@@ -80,7 +80,7 @@ volTensorField tauMC("tauMC", muEff*dev2(Foam::T(fvc::grad(U))));
 
 if(hyDev)
 {
-    Zrot = ZrotInf/(1.0 + sqr(pi)/2.0*sqrt(TZ/thermo.Tt()) + (sqr(pi)/4.0 + pi)*TZ/thermo.Tt());
+    Zrot = ZrotInf/(1.0 + sqr(pi)/2.0*sqrt(TZ/thermo.T()) + (sqr(pi)/4.0 + pi)*TZ/thermo.T());
     Z = 3.0*pi/(4.0*(thermo.zetar()+3.0))*Zrot;
 
     mub = mu*(2.0*thermo.zetar()*Z)/(3.0*(thermo.zetar()+3.0));
