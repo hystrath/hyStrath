@@ -7,27 +7,27 @@ composition.write();
 //- Write diffusion fluxes
 if (not hyLight)
 {
-    volVectorField sumDiffusiveFluxes = speciesDiffusion().sumDiffusiveFluxes();
-    sumDiffusiveFluxes.write();
-    forAll(Y, speciei)
-    {
-        volVectorField Jnc = speciesDiffusion().J(speciei);
-        Jnc.write();
+/*    volVectorField sumDiffusiveFluxes = speciesDiffusion().sumDiffusiveFluxes();*/
+/*    sumDiffusiveFluxes.write();*/
+/*    forAll(Y, speciei)*/
+/*    {*/
+/*        volVectorField Jnc = speciesDiffusion().J(speciei);*/
+/*        Jnc.write();*/
 
-        volVectorField Jc
-        (
-            IOobject
-            (
-                "J_" + composition.species()[speciei],
-                runTime.timeName(),
-                mesh,
-                IOobject::NO_READ,
-                IOobject::NO_WRITE
-            ),
-            speciesDiffusion().Jcorr(speciei)
-        );
-        Jc.write();
-    }
+/*        volVectorField Jc*/
+/*        (*/
+/*            IOobject*/
+/*            (*/
+/*                "J_" + composition.species()[speciei],*/
+/*                runTime.timeName(),*/
+/*                mesh,*/
+/*                IOobject::NO_READ,*/
+/*                IOobject::NO_WRITE*/
+/*            ),*/
+/*            speciesDiffusion().Jcorr(speciei)*/
+/*        );*/
+/*        Jc.write();*/
+/*    }*/
 }
 
 if (not downgradeSingleT)
