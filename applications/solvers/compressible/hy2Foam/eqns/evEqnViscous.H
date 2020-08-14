@@ -1,16 +1,19 @@
 
 // --- Solve vibrational energy equations, VISCOUS
-if(!inviscid)
+if (!inviscid)
 {
     forAll(rhoEvk, speciei)
     {
-        // NEW VINCENT 29/12/2016 *********************************************
         DynamicList<label> removedCellsFromMatrix;
         DynamicList<scalar> valuesToImpose;
 
         forAll(Y[speciei], celli)
         {
-            if(Y[speciei][celli] < Foam::rho2ReactionThermo::miniYforSolvingEvEqn)
+            if
+            (
+                Y[speciei][celli]
+                    < Foam::rho2ReactionThermo::miniYforSolvingEvEqn
+            )
             {
                 removedCellsFromMatrix.append(celli);
             }
@@ -20,15 +23,15 @@ if(!inviscid)
         {
             valuesToImpose.append(0.0);
         }
-        // END NEW VINCENT 29/12/2016 *****************************************
 
         fvScalarMatrix evEqnViscous
         (
-            fvm::ddt(pD[speciei], hevk[speciei]) - fvc::ddt(pD[speciei], hevk[speciei])
+            fvm::ddt(pD[speciei], hevk[speciei])
+          - fvc::ddt(pD[speciei], hevk[speciei])
           - fvm::laplacian(transport().alphave(speciei), hevk[speciei])
         );
 
-        if(speciesDiffusionName != "noSpeciesDiffusion")
+        if (speciesDiffusionName != "noSpeciesDiffusion")
         {
             evEqnViscous +=
                 fvc::div
@@ -38,14 +41,14 @@ if(!inviscid)
                 );
         }
 
-        evEqnViscous.setValues(removedCellsFromMatrix, valuesToImpose); // NEW VINCENT 29/12/2016
+        evEqnViscous.setValues(removedCellsFromMatrix, valuesToImpose);
 
         evEqnViscous.solve();
 
         rhoEvk[speciei] = pD[speciei]*hevk[speciei];
     }
 
-    thermo.correctHEVK(); // NEW VINCENT 11/08/2016
+    thermo.correctHEVK();
 
     rhoEv *= 0.0;
     forAll(hevk, speciei)

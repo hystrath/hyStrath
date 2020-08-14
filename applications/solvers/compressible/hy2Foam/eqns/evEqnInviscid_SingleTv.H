@@ -15,12 +15,11 @@ fvScalarMatrix rhoEvInviscid
   + fvc::div(phiEvk[0])
   - QVT
   - reaction->Scv()
-  - reaction->Siir()
 );
 
 if (containsElectrons)
 {
-    rhoEvInviscid += thermo.pe()*fvc::div(U);
+    rhoEvInviscid += thermo.pe()*fvc::div(U) - reaction->Siir();
 }
 
 rhoEvInviscid.solve

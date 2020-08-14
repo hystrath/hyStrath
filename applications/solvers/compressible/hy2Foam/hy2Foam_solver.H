@@ -13,14 +13,6 @@
 #include "LTS/readLTSTimeControls.H"
 #include "setDeltaT.H"
 
-if (adjustTimeStep)
-{
-    //scalar dtChem = chemistry.solve(runTime.deltaT().value());
-    //Info<< "dtChem = " << dtChem << endl;
-    //runTime.setDeltaT(min(dtChem, runTime.deltaT().value()));
-    //Info<< "Dt = " << runTime.deltaT().value() << endl;
-}
-
 runTime++;
 Info<< "Time = " << runTime.timeName() << nl << endl;
 
@@ -29,7 +21,8 @@ volTensorField tauMC("tauMC", muEff*dev2(Foam::T(fvc::grad(U))));
 
 /*if (hyDev)
 {
-    Zrot = ZrotInf/(1.0 + sqr(pi)/2.0*sqrt(TZ/thermo.T()) + (sqr(pi)/4.0 + pi)*TZ/thermo.T());
+    Zrot = ZrotInf/(1.0 + sqr(pi)/2.0*sqrt(TZ/thermo.T())
+        + (sqr(pi)/4.0 + pi)*TZ/thermo.T());
     Z = 3.0*pi/(4.0*(thermo.zetar()+3.0))*Zrot;
 
     mub = mu*(2.0*thermo.zetar()*Z)/(3.0*(thermo.zetar()+3.0));
@@ -91,6 +84,7 @@ else if (downgradeSingleVibMode)
 }
 else
 {
+    // ABORTIVE WORK
     // --- Solve the vibrational energy equations (one per vib. mode)
     // --- Solve the total energy equation
     //- inviscid

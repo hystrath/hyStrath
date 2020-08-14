@@ -50,7 +50,7 @@ forAll (rhoEvk_mode, speciei)
         {
             forAll(pD[speciei], celli)
             {
-                if(Y[speciei][celli] > 1e-21)
+                if (Y[speciei][celli] > 1e-21)
                 {
                     hevk_mode[speciei][vibMode][celli] = rhoEvk_mode[speciei][vibMode][celli]/pD[speciei][celli];
                 }

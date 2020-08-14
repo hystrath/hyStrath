@@ -4,12 +4,12 @@
 
 // Definition of the relaxation models
 
-label noSolvedVibEq = composition.solvedVibEqSpecies().size(); // NEW VINCENT 05/08/2016
+const label noSolvedVibEq = composition.solvedVibEqSpecies().size();
 
 // Vibrational-Translational (V-T) energy transfer
 autoPtr<relaxationTimeModel> thermalRelaxModelVT;
 
-if(downgradeSingleT)
+if (downgradeSingleT)
 {
     thermalRelaxModelVT.clear();
 }
@@ -25,7 +25,7 @@ else
 // Vibrational-Vibrational (V-V) energy transfer
 autoPtr<relaxationTimeModelVV> thermalRelaxModelVV;
 
-if(downgradeSingleT or downgradeSingleTv or noSolvedVibEq < 2)
+if (downgradeSingleT or downgradeSingleTv or noSolvedVibEq < 2)
 {
     thermalRelaxModelVV.clear();
 }
@@ -41,7 +41,7 @@ else
 // Heavy-particles - free electrons (h-e) energy transfer
 autoPtr<relaxationTimeModelHE> thermalRelaxModelHE;
 
-if(downgradeSingleT or not containsElectrons)
+if (downgradeSingleT or not containsElectrons)
 {
     thermalRelaxModelHE.clear();
 }
@@ -57,7 +57,7 @@ else
 // Free-electrons - vibrational energy transfer
 autoPtr<relaxationTimeModeleV> thermalRelaxModeleV;
 
-if(downgradeSingleT or downgradeSingleTv or not containsElectrons)
+if (downgradeSingleT or downgradeSingleTv or not containsElectrons)
 {
     thermalRelaxModeleV.clear();
 }
@@ -127,41 +127,38 @@ else
 }
 
 
-// NEW VINCENT 22/03/2016 *****************************************************
-// TODO ongoing coding concerning multiple vibrational temperatures for
-// triatomic molecules
+// ABORTIVE WORK ( multiple vibrational temperatures for triatomic molecules)
 /*PtrList<PtrList<volScalarField> >& hevk_mode = composition.hevel_mode();
 
 PtrList<PtrList<volScalarField> > rhoEvk_mode(Y.size());
 forAll (rhoEvk_mode, speciei)
 {
-  rhoEvk_mode.set
-  (
-      speciei,
-      new PtrList<volScalarField>(composition.noVibrationalTemp(speciei))
-  );
+    rhoEvk_mode.set
+    (
+        speciei,
+        new PtrList<volScalarField>(composition.noVibrationalTemp(speciei))
+    );
 }
 
 forAll (rhoEvk_mode, speciei)
 {
-  forAll (rhoEvk_mode[speciei], vibMode)
-  {
-    rhoEvk_mode[speciei].set
-    (
-        vibMode,
-        new volScalarField
+    forAll (rhoEvk_mode[speciei], vibMode)
+    {
+        rhoEvk_mode[speciei].set
         (
-            IOobject
+            vibMode,
+            new volScalarField
             (
-                "rhoEv_" + Y[speciei].name() + "." + name(vibMode+1),
-                runTime.timeName(),
-                mesh,
-                IOobject::NO_READ,
-                IOobject::NO_WRITE
-            ),
-            pD[speciei]*hevk_mode[speciei][vibMode]
-        )
-    );
-  }
+                IOobject
+                (
+                    "rhoEv_" + Y[speciei].name() + "." + name(vibMode+1),
+                    runTime.timeName(),
+                    mesh,
+                    IOobject::NO_READ,
+                    IOobject::NO_WRITE
+                ),
+                pD[speciei]*hevk_mode[speciei][vibMode]
+            )
+        );
+    }
 }*/
-// END NEW VINCENT 22/03/2016 *************************************************

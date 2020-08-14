@@ -8,11 +8,11 @@ if (!inviscid)
       - fvm::laplacian(transport().alphave(), ev)
     );
 
-    if(speciesDiffusionName != "noSpeciesDiffusion")
+    if (speciesDiffusionName != "noSpeciesDiffusion")
     {
         volVectorField sumJsByevs = speciesDiffusion().Jcorr(0)*hevk[0];
 
-        for(int speciei = 1; speciei < Y.size(); speciei++)
+        for(label speciei = 1; speciei < Y.size(); speciei++)
         {
             sumJsByevs += speciesDiffusion().Jcorr(speciei)*hevk[speciei];
         }

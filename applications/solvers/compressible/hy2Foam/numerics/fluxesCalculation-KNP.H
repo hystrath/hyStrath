@@ -27,11 +27,11 @@ if (mesh.moving())
 
 PtrList<surfaceScalarField> phiEvk(noSolvedVibEq);
 
-if(downgradeSingleT) // NEW VINCENT 05-16/08/2016
+if (downgradeSingleT)
 {
     phiEvk.clear();
 }
-else if(downgradeSingleTv)
+else if (downgradeSingleTv)
 {
     phiEvk.resize(1);
 

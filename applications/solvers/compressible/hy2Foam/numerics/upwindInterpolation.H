@@ -6,7 +6,7 @@ surfaceScalarField rho_neg(interpolate(rho, neg));
 PtrList<surfaceScalarField> pD_pos(noSolvedVibEq);
 PtrList<surfaceScalarField> pD_neg(noSolvedVibEq);
 
-if(downgradeSingleT or downgradeSingleTv)
+if (downgradeSingleT or downgradeSingleTv)
 {
     pD_pos.clear();
     pD_neg.clear();
@@ -54,12 +54,12 @@ surfaceScalarField e_neg(interpolate(e, neg, "T"));
 PtrList<surfaceScalarField> evk_pos(noSolvedVibEq);
 PtrList<surfaceScalarField> evk_neg(noSolvedVibEq);
 
-if(downgradeSingleT)
+if (downgradeSingleT)
 {
     evk_pos.clear();
     evk_neg.clear();
 }
-else if(downgradeSingleTv)
+else if (downgradeSingleTv)
 {
     evk_pos.resize(1);
     evk_neg.resize(1);
@@ -114,7 +114,7 @@ else
 }
 
 volScalarField gammatr("gammatr", thermo.Cp_t()/thermo.Cv_t()); // NEW VINCENT (also useful for bdry cdts)
-volScalarField c(sqrt(gammatr*rPsi)); // NEW VINCENT (see Candler 2009)
+volScalarField c(sqrt(gammatr*rPsi)); // See Candler 2009
 Mach = mag(U)/c;
 
 surfaceVectorField U_pos("U_pos", rhoU_pos/rho_pos);

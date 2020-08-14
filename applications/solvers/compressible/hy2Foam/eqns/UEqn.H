@@ -4,7 +4,10 @@ solve(fvm::ddt(rhoU) + fvc::div(phiUp));
 
 U.ref() = rhoU()/rho();
 U.correctBoundaryConditions();
-if(hyDev) thermo.limitVelocityAtWallBoundary(U.boundaryFieldRef());
+if (hyDev)
+{
+    thermo.limitVelocityAtWallBoundary(U.boundaryFieldRef());
+}
 
 rhoU.boundaryFieldRef() = rho.boundaryField()*U.boundaryField();
 
