@@ -354,24 +354,24 @@ Foam::multiSpeciesTransportModel::multiSpeciesHeatSource() const
             const volScalarField TtCells = thermo_.T();
             const volScalarField TvCells = thermo_.composition().Tv(speciej);
 
-            volScalarField haj
+            volScalarField hsj
             (
                 IOobject
                 (
-                    "haj",
+                    "hsj",
                     mesh_.time().timeName(),
                     mesh_,
                     IOobject::NO_READ,
                     IOobject::NO_WRITE
                 ),
                 mesh_,
-                dimensionedScalar("haj", dimEnergy/dimMass, 0.0)
+                dimensionedScalar("hsj", dimEnergy/dimMass, 0.0)
             );
 
-            forAll(haj, celli)
+            forAll(hsj, celli)
             {
-                haj[celli] =
-                    ha
+                hsj[celli] =
+                    hs
                     (
                         speciej,
                         pCells[celli],
@@ -380,7 +380,7 @@ Foam::multiSpeciesTransportModel::multiSpeciesHeatSource() const
                     );
             }
 
-            forAll(haj.boundaryField(), patchi)
+            forAll(hsj.boundaryField(), patchi)
             {
                 const fvPatchScalarField& pp =
                     thermo_.p().boundaryField()[patchi];
@@ -389,12 +389,12 @@ Foam::multiSpeciesTransportModel::multiSpeciesHeatSource() const
                 const fvPatchScalarField& pTv =
                     thermo_.composition().Tv(speciej).boundaryField()[patchi];
 
-                fvPatchScalarField& phaj = haj.boundaryFieldRef()[patchi];
+                fvPatchScalarField& phsj = hsj.boundaryFieldRef()[patchi];
 
                 forAll(pTt, facei)
                 {
-                    phaj[facei] =
-                        ha
+                    phsj[facei] =
+                        hs
                         (
                             speciej,
                             pp[facei],
@@ -406,7 +406,7 @@ Foam::multiSpeciesTransportModel::multiSpeciesHeatSource() const
 
             // The following works whether the corrected or non-corrected form
             // is employed.
-            multiSpeciesHeatSource += Jcorrected(speciej)*haj;
+            multiSpeciesHeatSource += Jcorrected(speciej)*hsj;
         }
     }
 

@@ -241,7 +241,10 @@ public:
             inline const speciesTable& species() const;
 
             //- Return the const mass flux field for species i
-            inline const surfaceScalarField& speciesMassFlux(const label i) const;
+            inline const surfaceScalarField& speciesMassFlux
+            (
+                const label i
+            ) const;
 
             //- Return the constant non-corrected diffusion mass flux field for
             //  a specie given by index
@@ -266,11 +269,28 @@ public:
             //  given by index
             inline const volVectorField& diffusionVelocity(const label i) const;
 
-            //- Molar weight for a specie given by index
+            //- Molar weight [kg/mol] for a specie given by index
             virtual scalar W(label i) const = 0;
 
-            //- Absolute enthalpy for a specie given by index and temperature
-            virtual scalar ha(label i, scalar p, scalar Tt, scalar Tv) const = 0;
+            //- Absolute enthalpy [J/kg] for a specie given by index and
+            //  temperature
+            virtual scalar ha
+            (
+                label i,
+                scalar p,
+                scalar Tt,
+                scalar Tv
+            ) const = 0;
+            
+            //- Sensible enthalpy [J/kg] for a specie given by index and
+            //  temperature
+            virtual scalar hs
+            (
+                label i,
+                scalar p,
+                scalar Tt,
+                scalar Tv
+            ) const = 0;
 };
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
