@@ -29,7 +29,8 @@ License
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
 template<class EquationOfState>
-inline Foam::decoupledEnergyModesThermo<EquationOfState>::decoupledEnergyModesThermo
+inline
+Foam::decoupledEnergyModesThermo<EquationOfState>::decoupledEnergyModesThermo
 (
     const EquationOfState& st,
     const scalar Tlow,
@@ -236,14 +237,16 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::limit
 
 
 template<class EquationOfState>
-inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::Tlow() const
+inline Foam::scalar
+Foam::decoupledEnergyModesThermo<EquationOfState>::Tlow() const
 {
     return Tlow_;
 }
 
 
 template<class EquationOfState>
-inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::Thigh() const
+inline Foam::scalar
+Foam::decoupledEnergyModesThermo<EquationOfState>::Thigh() const
 {
     return Thigh_;
 }
@@ -622,7 +625,8 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::zetar
 
 
 template<class EquationOfState>
-inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::zetav_mode
+inline Foam::scalar
+Foam::decoupledEnergyModesThermo<EquationOfState>::zetav_mode
 (
     const label vibMode,
     const scalar p,

@@ -37,19 +37,44 @@ Foam::BlottnerEuckenTransport<Thermo>::BlottnerEuckenTransport(Istream& is)
     Ck_(readScalar(is)),
     eta_s_(readScalar(is))
 {
-    is.check("BlottnerEuckenTransport<Thermo>::BlottnerEuckenTransport(Istream&)");
+    is.check
+    (
+        "BlottnerEuckenTransport<Thermo>::BlottnerEuckenTransport(Istream&)"
+    );
 }
 
 
 template<class Thermo>
-Foam::BlottnerEuckenTransport<Thermo>::BlottnerEuckenTransport(const dictionary& dict)
+Foam::BlottnerEuckenTransport<Thermo>::BlottnerEuckenTransport
+(
+    const dictionary& dict
+)
 :
     Thermo(dict),
-    Ak_(readScalar(dict.subDict("transport").subDict("BlottnerEucken").lookup("A"))),
-    Bk_(readScalar(dict.subDict("transport").subDict("BlottnerEucken").lookup("B"))),
-    Ck_(readScalar(dict.subDict("transport").subDict("BlottnerEucken").lookup("C"))),
+    Ak_(2.68e-2),
+    Bk_(3.18e-1),
+    Ck_(-1.13e1),
     eta_s_(dict.subDict("specie").lookupOrDefault<scalar>("eta_s", 1.2))
-{}
+{
+    if (dict.subDict("transport").isDict("BlottnerEucken"))
+    {
+        Ak_ = dict.subDict("transport").subDict("BlottnerEucken")
+            .lookupOrDefault<scalar>("A", 2.68e-2);
+        Bk_ = dict.subDict("transport").subDict("BlottnerEucken")
+            .lookupOrDefault<scalar>("B", 3.18e-1);
+        Ck_ = dict.subDict("transport").subDict("BlottnerEucken")
+            .lookupOrDefault<scalar>("C", -1.13e1);    
+    }
+    else
+    {
+        WarningInFunction
+            << "Species: " << dict.dictName() << nl
+            << "    transport/BlottnerEucken subdictionary missing" << nl
+            << "    BlottnerEucken coefficients A, B and C set to that of N2"
+            << nl << "    A = 2.68e-2, B = 3.18e-1, C = -1.13e1"
+            << endl;
+    }
+}
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //

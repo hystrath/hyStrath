@@ -192,7 +192,6 @@ Foam::wordList Foam::basic2MultiComponentMixture::he2BoundaryTypes
          || isA<fixedGradientFvPatchScalarField>(tbf[patchi])
         )
         {
-            //hbt[patchi] = fixed2EnergyFvPatchScalarField::typeName;
             hbt[patchi] = gradient2EnergyFvPatchScalarField::typeName;
         }
         else if (isA<mixedFvPatchScalarField>(tbf[patchi]))
@@ -253,15 +252,15 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
     pP_(species_.size()),
     pD_(species_.size()),
     spTv_(species_.size()),
-    //spmodeTv_(species_.size()), TODO ABORTIVE WORK
+    //spmodeTv_(species_.size()), ABORTIVE WORK
     hev_(species_.size()),
     heel_(species_.size()),
     hevel_(species_.size()),
     h_(species_.size()),
-    //modehevel_(species_.size()), TODO ABORTIVE WORK
+    //modehevel_(species_.size()), ABORTIVE WORK
     zetaRot_(species_.size()),
     zetaVib_(species_.size()),
-    //modezetaVib_(species_.size()), TODO ABORTIVE WORK
+    //modezetaVib_(species_.size()), ABORTIVE WORK
     zetaElec_(species_.size()),
     Wmix_
     (
@@ -277,15 +276,15 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
         dimensionedScalar("Wmix", dimMass/dimMoles, 0.0)
     )
 {
-    const dictionary thermoDEM =
-    (
-        IFstream
-        (
-            fileName(thermoDict.lookup("foamChemistryThermoFile")).expand()
-        )()
-    );
+//    const dictionary thermoDEM =
+//    (
+//        IFstream
+//        (
+//            fileName(thermoDict.lookup("foamChemistryThermoFile")).expand()
+//        )()
+//    ); // ABORTIVE WORK
     
-    IOobject TtHeader
+    IOobject THeader
     (
         "Tt",
         mesh.time().timeName(),
@@ -293,7 +292,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
         IOobject::MUST_READ
     );
 
-    volScalarField Tt(TtHeader, mesh);
+    volScalarField T(THeader, mesh);
     bool downgradeToSingleTemperature = false;
     bool downgradeToSingleTv = true;
 
@@ -321,7 +320,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
         if
         (
             YHeader.typeHeaderOk<volScalarField>(false)
-         && TtHeader.typeHeaderOk<volScalarField>(false)
+         && THeader.typeHeaderOk<volScalarField>(false)
         )
         {
             headersOK = true;
@@ -370,7 +369,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
         else if
         (
             XHeader.typeHeaderOk<volScalarField>(false)
-         && TtHeader.typeHeaderOk<volScalarField>(false)
+         && THeader.typeHeaderOk<volScalarField>(false)
         )
         {
             headersOK = true;
@@ -519,7 +518,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                     )
                 );
 
-                spTv_[i] = Tt;
+                spTv_[i] = T;
             }
             else
             {
@@ -541,7 +540,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                 );
             }
 
-            // TODO ABORTIVE WORK
+            // ABORTIVE WORK
             /*const label noVibModes =
                 readScalar
                 (
@@ -600,8 +599,8 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                             dimEnergy/dimMass,
                             0.0
                         ),
-                        this->hev2BoundaryTypes(i, Tt.boundaryField()), // TODO wrong for now introduce mode in bdry cdt
-                        this->hev2BoundaryBaseTypes(i, Tt.boundaryField()) // TODO wrong for now
+                        this->hev2BoundaryTypes(i, T.boundaryField()), // TODO wrong for now introduce mode in bdry cdt
+                        this->hev2BoundaryBaseTypes(i, T.boundaryField()) // TODO wrong for now
                     )
                 );
 
@@ -756,8 +755,8 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                             dimEnergy/dimMass,
                             0.0
                         ),
-                        this->hev2BoundaryTypes(i, Tt.boundaryField()),
-                        this->hev2BoundaryBaseTypes(i, Tt.boundaryField())
+                        this->hev2BoundaryTypes(i, T.boundaryField()),
+                        this->hev2BoundaryBaseTypes(i, T.boundaryField())
                     )
                 );
             }
@@ -853,7 +852,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                 )   << "Mass-fractions or molar-fractions header missing in "
                     << "the 0 folder" << nl;
             }
-            if (not TtHeader.typeHeaderOk<volScalarField>(false))
+            if (not THeader.typeHeaderOk<volScalarField>(false))
             {
                 FatalErrorIn
                 (
@@ -865,7 +864,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
         }
     }
 
-    /*forAll(spmodeTv_, speciei) // TODO ABORTIVE WORK
+    /*forAll(spmodeTv_, speciei) // ABORTIVE WORK
     {
         forAll(spmodeTv_[speciei], vibMode)
         {
@@ -887,10 +886,10 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
         dimensionedScalar("e", dimEnergy/dimMass, 0.0),
         this->he2BoundaryTypes
         (
-            Tt.boundaryField(),
+            T.boundaryField(),
             downgradeToSingleTemperature
         ),
-        this->he2BoundaryBaseTypes(Tt.boundaryField())
+        this->he2BoundaryBaseTypes(T.boundaryField())
     );
 
     // Do not enforce constraint of sum of mass fractions to equal 1 here
@@ -952,7 +951,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
 
 void Foam::basic2MultiComponentMixture::write()
 {
-    /*forAll(spmodeTv_, speciei) // TODO ABORTIVE WORK
+    /*forAll(spmodeTv_, speciei) // ABORTIVE WORK
     {
         if (spmodeTv_[speciei].size() > 1)
         {

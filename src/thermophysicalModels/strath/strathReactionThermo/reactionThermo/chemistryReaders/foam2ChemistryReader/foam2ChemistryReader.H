@@ -63,11 +63,11 @@ class foam2ChemistryReader
         //- Thermo properties dictionary
         dictionary thermoDict_;
 
-        //- Table of the thermodynamic data given in the foamChemistry file
-        HashPtrTable<ThermoType> speciesThermo_;
-
         //- Table of species
         speciesTable& speciesTable_;
+        
+        //- Table of the thermodynamic data given in the foamChemistry file
+        HashPtrTable<ThermoType> speciesThermo_;
 
         //- List of the reactions
         Reaction2List<ThermoType> reactions_;
@@ -83,6 +83,10 @@ class foam2ChemistryReader
 
         //- Disallow default bitwise assignment
         void operator=(const foam2ChemistryReader&);
+        
+        //- Remove species present in the thermo dictionary and that are not
+        //  listed in the table of species
+        void removeAbsentSpecies();
 
 
 public:

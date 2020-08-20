@@ -44,22 +44,28 @@ template<class Thermo>
 Foam::constantTransport<Thermo>::constantTransport(const dictionary& dict)
 :
     Thermo(dict),
-    mu_
-    (
-        dict.subDict("transport").subDict("constant")
-            .lookupOrDefault<scalar>("mu", 0.0)
-    ),
-    kappa_
-    (
-        dict.subDict("transport").subDict("constant")
-            .lookupOrDefault<scalar>("kappa", 0.0)
-    ),
-    kappave_
-    (
-        dict.subDict("transport").subDict("constant")
-            .lookupOrDefault<scalar>("kappave", 0.0)
-    )
-{}
+    mu_(0.0),
+    kappa_(0.0),
+    kappave_(0.0)
+{
+    if (dict.subDict("transport").isDict("constant"))
+    {
+        mu_ = dict.subDict("transport").subDict("constant")
+            .lookupOrDefault<scalar>("mu", 0.0);
+        kappa_ = dict.subDict("transport").subDict("constant")
+            .lookupOrDefault<scalar>("kappa", 0.0);
+        kappave_ = dict.subDict("transport").subDict("constant")
+            .lookupOrDefault<scalar>("kappave", 0.0);
+    }
+    else
+    {
+        WarningInFunction
+            << "Species: " << dict.dictName() << nl
+            << "    transport/constant subdictionary missing" << nl
+            << "    species shear viscosity and thermal conductivity set to 0"
+            << endl;
+    }
+}
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //

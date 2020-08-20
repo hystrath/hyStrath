@@ -36,18 +36,41 @@ Foam::SutherlandEuckenTransport<Thermo>::SutherlandEuckenTransport(Istream& is)
     Ts_(readScalar(is)),
     eta_s_(readScalar(is))
 {
-    is.check("SutherlandEuckenTransport<Thermo>::SutherlandEuckenTransport(Istream&)");
+    is.check
+    (
+        "SutherlandEuckenTransport<Thermo>::SutherlandEuckenTransport(Istream&)"
+    );
 }
 
 
 template<class Thermo>
-Foam::SutherlandEuckenTransport<Thermo>::SutherlandEuckenTransport(const dictionary& dict)
+Foam::SutherlandEuckenTransport<Thermo>::SutherlandEuckenTransport
+(
+    const dictionary& dict
+)
 :
     Thermo(dict),
-    As_(readScalar(dict.subDict("transport").subDict("SutherlandEucken").lookup("As"))),
-    Ts_(readScalar(dict.subDict("transport").subDict("SutherlandEucken").lookup("Ts"))),
+    As_(1.458e-6),
+    Ts_(110.4),
     eta_s_(dict.subDict("specie").lookupOrDefault<scalar>("eta_s", 1.2))
-{}
+{
+    if (dict.subDict("transport").isDict("SutherlandEucken"))
+    {
+        As_ = dict.subDict("transport").subDict("SutherlandEucken")
+            .lookupOrDefault<scalar>("As", 1.458e-6);
+        Ts_ = dict.subDict("transport").subDict("SutherlandEucken")
+            .lookupOrDefault<scalar>("Ts", 110.4);
+    }
+    else
+    {
+        WarningInFunction
+            << "Species: " << dict.dictName() << nl
+            << "    transport/SutherlandEucken subdictionary missing" << nl
+            << "    Sutherland coefficients As and Ts set to that of Air" << nl
+            << "    As = 1.458e-6, Ts = 110.4"
+            << endl;
+    }
+}
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
@@ -86,7 +109,8 @@ Foam::Ostream& Foam::operator<<
 
     os.check
     (
-        "Ostream& operator<<(Ostream&, const SutherlandEuckenTransport<Thermo>&)"
+        "Ostream& operator<<(Ostream&, "
+            "const SutherlandEuckenTransport<Thermo>&)"
     );
 
     return os;

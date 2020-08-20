@@ -176,7 +176,10 @@ public:
         inline const CEATransportArray& viscosityCoeffs(const scalar T) const;
 
         //- Return the thermal conductivity coefficients for a given temperature
-        inline const CEATransportArray& thermalConductivityCoeffs(const scalar T) const;
+        inline const CEATransportArray& thermalConductivityCoeffs
+        (
+            const scalar T
+        ) const;
 
         //- Dynamic viscosity [kg/ms]
         inline scalar mu(const scalar p, const scalar Tt) const;
@@ -185,13 +188,23 @@ public:
         inline scalar kappatr(const scalar p, const scalar Tt) const;
 
         //- Thermal conductivity, vib-electronic mode [W/mK]
-        inline scalar kappave(const scalar p, const scalar Tt, const scalar Tve) const;
+        inline scalar kappave
+        (
+            const scalar p,
+            const scalar Tt,
+            const scalar Tve
+        ) const;
 
         //- Thermal diffusivity, trans-rotational mode [kg/ms]
         inline scalar alphatr(const scalar p, const scalar Tt) const;
 
         //- Thermal diffusivity, vib-electronic mode [kg/ms]
-        inline scalar alphave(const scalar p, const scalar Tt, const scalar Tve) const;
+        inline scalar alphave
+        (
+            const scalar p,
+            const scalar Tt,
+            const scalar Tve
+        ) const;
 
         //- Write to Ostream
         void write(Ostream& os) const;

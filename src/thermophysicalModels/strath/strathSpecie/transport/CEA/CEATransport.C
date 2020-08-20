@@ -64,11 +64,71 @@ template<class Thermo>
 Foam::CEATransport<Thermo>::CEATransport(const dictionary& dict)
 :
     Thermo(dict),
-    temp_(dict.subDict("transport").subDict("CEA").lookup("temp")),
-    mu_(dict.subDict("transport").subDict("CEA").lookup("visco")),
-    kappa_(dict.subDict("transport").subDict("CEA").lookup("kappa")),
+    temp_
+    (
+        dict.subDict("transport").isDict("CEA")
+      ? dict.subDict("transport").subDict("CEA").lookup("temp") 
+      : scalarList(4)
+    ),
+    mu_
+    (
+        dict.subDict("transport").isDict("CEA")
+      ? dict.subDict("transport").subDict("CEA").lookup("visco")
+      : List<CEATransportArray>(3)
+    ),
+    kappa_
+    (
+        dict.subDict("transport").isDict("CEA")
+      ? dict.subDict("transport").subDict("CEA").lookup("kappa")
+      : List<CEATransportArray>(3)
+    ),
     eta_s_(dict.subDict("specie").lookupOrDefault<scalar>("eta_s", 1.2))
-{}
+{
+    if (not dict.subDict("transport").isDict("CEA"))
+    {
+        WarningInFunction
+            << "Species: " << dict.dictName() << nl
+            << "    transport/CEA subdictionary missing" << nl
+            << "    CEA arrays temp, visco and kappa set to that of N2"
+            << endl;
+            
+        temp_[0] = 200.0;
+        temp_[1] = 1000.0;
+        temp_[2] = 5000.0;
+        temp_[3] = 15000.0;
+        
+        mu_[0][0] = 0.62526577;
+        mu_[0][1] = -31.779652;
+        mu_[0][2] = -1640.7983;
+        mu_[0][3] = 1.7454992;
+        
+        mu_[1][0] = 0.87395209;
+        mu_[1][1] = 561.52222;
+        mu_[1][2] = -173948.09;
+        mu_[1][3] = -0.39335958;
+        
+        mu_[2][0] = 0.88503551;
+        mu_[2][1] = 909.02171;
+        mu_[2][2] = -731290.61;
+        mu_[2][3] = -0.53503838;
+        
+        kappa_[0][0] = 0.85439436;
+        kappa_[0][1] = 105.73224;
+        kappa_[0][2] = -12347.848;
+        kappa_[0][3] = 0.47793128;
+        
+        kappa_[1][0] = 0.88407146;
+        kappa_[1][1] = 133.57293;
+        kappa_[1][2] = -11429.64;
+        kappa_[1][3] = 0.24417019;
+        
+        kappa_[2][0] = 2.4176185;
+        kappa_[2][1] = 8047.7749;
+        kappa_[2][2] = 3105580.2;
+        kappa_[2][3] = -14.517761;
+    }
+
+}
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
