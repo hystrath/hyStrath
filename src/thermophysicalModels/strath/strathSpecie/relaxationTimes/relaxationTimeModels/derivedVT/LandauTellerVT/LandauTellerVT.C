@@ -188,10 +188,10 @@ void Foam::LandauTellerVT<ThermoType>::correct()
     updateCoefficients();
 
     const volScalarField& p = thermo_.p();
-    const volScalarField& Tt = thermo_.T();
+    const volScalarField& T = thermo_.T();
 
     const scalarField& pCells = p.internalField();
-    const scalarField& TtCells = Tt.internalField();
+    const scalarField& TCells = T.internalField();
 
     forAll(solvedVibEqSpecies(), speciei)
     {
@@ -215,30 +215,11 @@ void Foam::LandauTellerVT<ThermoType>::correct()
                 (
                     speciei,
                     pCells[celli],
-                    TtCells[celli]
+                    TCells[celli]
                 );
 
             QVTCells[celli] =
                 pDCells[celli]/tauVTCells[celli]*(evZCelli - evCells[celli]);
-        }
-
-        forAll(QVT.boundaryField(), patchi)
-        {
-            const fvPatchScalarField& pp = p.boundaryField()[patchi];
-            const fvPatchScalarField& pTt = Tt.boundaryField()[patchi];
-            const fvPatchScalarField& ppD = pD.boundaryField()[patchi];
-            const fvPatchScalarField& pev = ev.boundaryField()[patchi];
-            const fvPatchScalarField& ptauVT = tauVT.boundaryField()[patchi];
-
-            fvPatchScalarField& pQVT = QVT.boundaryFieldRef()[patchi];
-
-            forAll(pQVT, facei)
-            {
-                const scalar pevZFacei =
-                    thermo_.composition().HEvel(speciei, pp[facei], pTt[facei]);
-
-                pQVT[facei] = ppD[facei]/ptauVT[facei]*(pevZFacei - pev[facei]);
-            }
         }
 
         /*forAll(QVTmode_[speciei], vibMode) // TODO ABORTIVE WORK
@@ -261,7 +242,7 @@ void Foam::LandauTellerVT<ThermoType>::correct()
                         speciei,
                         vibMode,
                         pCells[celli],
-                        TtCells[celli]
+                        TCells[celli]
                     );
                     
                 QVTmodeCells[celli] = pDCells[celli]

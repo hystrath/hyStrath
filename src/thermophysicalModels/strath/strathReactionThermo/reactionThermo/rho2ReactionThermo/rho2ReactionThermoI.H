@@ -73,12 +73,11 @@ Foam::scalar Foam::rho2ReactionThermo::Temperature
         Tnew =
             (this->*limit)
             (Test - (Fipt - f)/dFipt);
-        //Info << "iter no" << tab << iter << ", Tnew" << tab << Tnew << endl;
 
         if (iter++ > maxIter_)
         {
-            //Info<< "The temperature cannot be derived from the energy" << endl;
-            //Info<< "Temperature in the cell remains unchanged" << nl;
+            // the temperature cannot be derived from the energy
+            // it remains unchanged
             Tnew = T0;
             Test = T0;
             Foam::rho2ReactionThermo::hasCrashedButRecovered = true;
@@ -134,8 +133,8 @@ Foam::scalar Foam::rho2ReactionThermo::Temperature
 
         if (iter++ > maxIter_)
         {
-            //Info<< "The temperature cannot be derived from the energy" << endl;
-            //Info<< "Temperature in the cell remains unchanged" << nl;
+            // the temperature cannot be derived from the energy
+            // it remains unchanged
             Tnew = T0;
             Test = T0;
             Foam::rho2ReactionThermo::hasCrashedButRecovered = true;
