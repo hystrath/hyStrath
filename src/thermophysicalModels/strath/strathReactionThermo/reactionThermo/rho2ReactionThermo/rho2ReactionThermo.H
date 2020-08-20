@@ -81,8 +81,8 @@ protected:
         word transportToTypedef(const word transportModel);
 
         //- Determines the temperature from an energy field F, its derivate dF,
-        //  and the mass fractions YList
-        inline scalar Temperature
+        //  and the species mass fractions, using the Newton-Raphson's method
+        inline scalar Temperature_NewtonRaphson
         (
             scalar f,
             scalar p,
@@ -102,9 +102,27 @@ protected:
             ) const,
             scalar (Foam::rho2ReactionThermo::*limit)(const scalar) const
         );
+        
+        //- Determines the temperature from an energy field F and the species
+        //  mass fractions, using the secant method
+        inline scalar Temperature_Secant
+        (
+            scalar f,
+            scalar p,
+            scalar T0,
+            const scalar Tt,
+            const PtrList<scalar>& YList,
+            scalar (Foam::basic2MultiComponentMixture::*F)
+            (
+                const label,
+                const scalar,
+                const scalar
+            ) const,
+            scalar (Foam::rho2ReactionThermo::*limit)(const scalar) const
+        );
 
         //- Determines the temperature from an energy field F, its derivate dF
-        //  for a given specie i
+        //  for a given specie i, using the Newton-Raphson's method
         inline scalar Temperature
         (
             label i,
@@ -152,6 +170,15 @@ protected:
             const scalar e,
             const scalar p,
             const scalar T0,
+            const PtrList<scalar>& YList
+        );
+        
+        inline scalar TvelEvels
+        (
+            const scalar e,
+            const scalar p,
+            const scalar T0,
+            const scalar Tt,
             const PtrList<scalar>& YList
         );
 
