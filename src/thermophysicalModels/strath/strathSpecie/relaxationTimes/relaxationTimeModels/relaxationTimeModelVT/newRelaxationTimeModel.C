@@ -24,7 +24,7 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "relaxationTimeModel.H"
-#include "IFstream.H" // NEW VINCENT 10/08/2016
+#include "IFstream.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -37,9 +37,9 @@ Foam::relaxationTimeModel::New
 {
     word VTModelName;
 
-    // Enclose the creation of the dictionary to ensure it is deleted
-    // before the relaxationTimeModel is created otherwise the
-    // dictionary is entered in the database twice
+    // Enclose the creation of the dictionary to ensure it is deleted before
+    // the relaxationTimeModel is created otherwise the dictionary is entered
+    // in the database twice
     {
         const dictionary& thermo2TModel =
         (
@@ -49,12 +49,18 @@ Foam::relaxationTimeModel::New
             )()
         );
 
-        const word partialVTName = word(thermo2TModel.subDict("thermalRelaxationModels").subDict("VT")
-            .lookup("relaxationType"));
+        const word partialVTName =
+            word
+            (
+                thermo2TModel.subDict("thermalRelaxationModels").subDict("VT")
+                    .lookup("relaxationType")
+            );
 
         VTModelName = partialVTName +'<' + thermo.partialThermoName() + '>';
 
-        Info<< "Loading the V-T relaxation time model:" << tab << partialVTName << "\n" << endl;
+        Info<< "Loading the V-T relaxation time model:" << tab
+            << partialVTName << "\n"
+            << endl;
     }
 
     fvMeshConstructorTable::iterator cstrIter =

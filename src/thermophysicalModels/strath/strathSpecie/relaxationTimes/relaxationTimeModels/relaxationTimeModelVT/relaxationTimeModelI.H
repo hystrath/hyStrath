@@ -57,7 +57,7 @@ Foam::relaxationTimeModel::QVT(const word& specieName)
 }
 
 
-/*inline const Foam::volScalarField& // TODO ABORTIVE WORK
+/*inline const Foam::volScalarField& // ABORTIVE WORK
 Foam::relaxationTimeModel::QVT_mode(label speciei, label vibMode) const
 {
     return QVTmode_[speciei][vibMode];
@@ -67,6 +67,12 @@ Foam::relaxationTimeModel::QVT_mode(label speciei, label vibMode) const
 inline const Foam::speciesTable& Foam::relaxationTimeModel::species() const
 {
     return thermo_.composition().species();
+}
+
+
+inline const Foam::speciesTable& Foam::relaxationTimeModel::molecules() const
+{
+    return thermo_.composition().molecules();
 }
 
 

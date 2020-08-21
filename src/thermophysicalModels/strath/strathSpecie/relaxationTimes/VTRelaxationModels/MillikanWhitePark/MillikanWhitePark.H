@@ -25,7 +25,7 @@ Class
     Foam::VTRelaxationModels::MillikanWhitePark
 
 Description
-    MillikanWhitePark V-T Relaxation model.
+    Millikan-White-Park V-T Relaxation model.
 
 SourceFiles
     MillikanWhitePark.C
@@ -39,8 +39,7 @@ SourceFiles
 #include "dimensionedScalar.H"
 #include "volFields.H"
 
-#include "fundamentalConstants.H"
-#include "physicoChemicalConstants.H"
+#include "constants.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -50,7 +49,7 @@ namespace VTRelaxationModels
 {
 
 /*---------------------------------------------------------------------------*\
-                           Class MillikanWhitePark Declaration
+                      Class MillikanWhitePark Declaration
 \*---------------------------------------------------------------------------*/
 
 class MillikanWhitePark
@@ -59,19 +58,19 @@ class MillikanWhitePark
 {
     // Private data
 
-        // Coefficient
+        //- Species indices
         scalar species1_, species2_;
 
-        // Coefficients
+        //- Millikan and White coefficients
         scalar A12_, B12_;
 
-        // Molecular weight, species i [g/mol]
+        //- Molecular weight [g/mol] of the molecular species
         scalar W1_;
 
-        // Offset term in the exponential
+        //- Offset term in the exponential
         scalar offset_;
 
-        // Coefficients related to Park's correction
+        //- Coefficients related to Park's correction
         scalar sigma1_, sigma2_;
 
 
@@ -93,7 +92,7 @@ public:
             const dictionary& dict2T,
             const dictionary& dictThermoPhy,
             const volScalarField& p,
-            const volScalarField& Tt,
+            const volScalarField& T,
             const PtrList<volScalarField>& Tv,
             const PtrList<volScalarField>& nD
         );
@@ -115,7 +114,7 @@ public:
         (
             const label patchi,
             const scalarField& p,
-            const scalarField& Tt,
+            const scalarField& T,
             const PtrList<scalarField>& Tv,
             const PtrList<scalarField>& nD
         ) const;

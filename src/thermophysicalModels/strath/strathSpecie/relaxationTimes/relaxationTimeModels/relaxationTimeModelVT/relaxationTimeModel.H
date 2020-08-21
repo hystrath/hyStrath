@@ -36,8 +36,6 @@ SourceFiles
 #ifndef relaxationTimeModel_H
 #define relaxationTimeModel_H
 
-#include "fvc.H"
-
 #include "rho2ChemistryModel.H"
 #include "turbulentFluidThermoModel.H"
 #include "VTModel.H"
@@ -76,11 +74,12 @@ protected:
 
         //- V-T relaxation time [s]
         PtrList<volScalarField> tauVT_;
-        //PtrList<PtrList<volScalarField> > tauVTmode_; // TODO ABORTIVE WORK
+        //PtrList<PtrList<volScalarField> > tauVTmode_; // ABORTIVE WORK
 
-        //- V-T source term in the vib. energy equations [kg/m^3/s]
+        //- V-T source term [kg/m^3/s] in the vibro-electronic energy
+        //  equation(s) 
         PtrList<volScalarField> QVT_;
-        //PtrList<PtrList<volScalarField> > QVTmode_; // TODO ABORTIVE WORK
+        //PtrList<PtrList<volScalarField> > QVTmode_; // ABORTIVE WORK
 
 
 private:
@@ -169,10 +168,17 @@ public:
 
             //- Return the const Source term in vib. energy equations
             //  due to V-T energy transfer, vibrational mode vibMode
-            //inline const volScalarField& QVT_mode(label speciei, label vibMode) const;  // TODO ABORTIVE WORK
+/*            inline const volScalarField& QVT_mode*/
+/*            (*/
+/*                label speciei, */
+/*                label vibMode*/
+/*            ) const;  // ABORTIVE WORK*/
 
             //- Return the table of species
             inline const speciesTable& species() const;
+            
+            //- Return the table of molecular species
+            inline const speciesTable& molecules() const;
 
             //- Return the table of species having a vib. eq. being solved
             //  or a hack of this table for the single-vibrational pool model

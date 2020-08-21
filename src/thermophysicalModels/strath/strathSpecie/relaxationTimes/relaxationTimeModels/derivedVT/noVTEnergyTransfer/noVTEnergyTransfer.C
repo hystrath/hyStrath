@@ -28,22 +28,6 @@ License
 
 // * * * * * * * * * * * * * Protected Member Functions  * * * * * * * * * * //
 
-template<class ThermoType>
-void Foam::noVTEnergyTransfer<ThermoType>::updateCoefficients()
-{
-    forAll(species(), i)
-    {
-        tauVT_[i] = dimensionedScalar("GREAT", dimTime, Foam::GREAT);
-    }
-
-    /*forAll(species(), i) // TODO ABORTIVE WORK
-    {
-        forAll(tauVTmode_[i], m)
-        {
-            tauVTmode_[i][m] = dimensionedScalar("GREAT", dimTime, Foam::GREAT);
-        }
-    }*/
-}
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
@@ -62,64 +46,7 @@ Foam::noVTEnergyTransfer<ThermoType>::noVTEnergyTransfer
         dynamic_cast<const multi2ComponentMixture<ThermoType>&>
             (this->thermo_).speciesData()
     )
-{
-    tauVT_.setSize(solvedVibEqSpecies().size());
-    //tauVTmode_.setSize(species().size()); // TODO ABORTIVE WORK
-
-    forAll(tauVT_, speciei)
-    {
-        tauVT_.set
-        (
-            speciei,
-            new volScalarField
-            (
-                IOobject
-                (
-                    "tauVT_" + species()[speciei],
-                    mesh_.time().timeName(),
-                    mesh_,
-                    IOobject::NO_READ,
-                    IOobject::NO_WRITE
-                ),
-                mesh_,
-                dimensionedScalar("tauVT", dimTime, 0.0)
-            )
-        );
-    }
-
-    /*forAll(tauVTmode_, speciei) // TODO ABORTIVE WORK
-    {
-        tauVTmode_.set
-        (
-            speciei,
-            new PtrList<volScalarField>(thermo_.composition().noVibrationalTemp(speciei))
-        );
-    }
-
-    forAll(tauVTmode_, speciei)
-    {
-      forAll(tauVTmode_[speciei], vibMode)
-      {
-        tauVTmode_[speciei].set
-        (
-            vibMode,
-            new volScalarField
-            (
-                IOobject
-                (
-                    "tauVT_" + species()[speciei] + "." + word(vibMode+1),
-                    mesh_.time().timeName(),
-                    mesh_,
-                    IOobject::NO_READ,
-                    IOobject::NO_WRITE
-                ),
-                mesh_,
-                dimensionedScalar("tauVT", dimTime, 0.0)
-            )
-        );
-      }
-    }*/
-}
+{}
 
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //

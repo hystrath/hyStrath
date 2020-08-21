@@ -26,6 +26,8 @@ License
 #include "VTModel.H"
 #include "volFields.H"
 
+// * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
+
 namespace Foam
 {
     defineTypeNameAndDebug(VTModel, 0);
@@ -38,10 +40,10 @@ Foam::VTModel::VTModel
 (
     const word& dict2T,
     const word& dictThermoPhy,
-    const wordList& solvedVibEqSpecies,
+    const wordList& molecules,
     const wordList& species,
     const volScalarField& p,
-    const volScalarField& Tt,
+    const volScalarField& T,
     const PtrList<volScalarField>& Tv,
     const PtrList<volScalarField>& nD
 )
@@ -51,8 +53,8 @@ Foam::VTModel::VTModel
         IOobject
         (
             dict2T,
-            Tt.mesh().time().constant(),
-            Tt.mesh(),
+            T.mesh().time().constant(),
+            T.mesh(),
             IOobject::MUST_READ,
             IOobject::NO_WRITE
         )
@@ -63,43 +65,43 @@ Foam::VTModel::VTModel
         IOobject
         (
             dictThermoPhy,
-            Tt.mesh().time().constant(),
-            Tt.mesh(),
+            T.mesh().time().constant(),
+            T.mesh(),
             IOobject::MUST_READ,
             IOobject::NO_WRITE
         )
     ),
 
-    solvedVibEqSpecies_(solvedVibEqSpecies),
+    molecules_(molecules),
     species_(species),
     p_(p),
-    T_(Tt),
+    T_(T),
     Tv_(Tv),
     nD_(nD)
 
 {
-    tauVTijModels_.setSize(species.size()*species.size());
+    tauVTijModels_.setSize(molecules.size()*species.size());
     tauVTij_.setSize(tauVTijModels_.size());
 
-    forAll(solvedVibEqSpecies_, i)
+    forAll(molecules_, i)
     {
         forAll(species_, j)
         {
-            label k = solvedVibEqSpecies_.size()*i+j;
-
+            const label k = species_.size()*i + j;
+            
             tauVTijModels_.set
             (
                 k,
                 VTRelaxationModel::New
                 (
-                    solvedVibEqSpecies[i],
+                    molecules[i],
                     species[j],
                     i,
                     j,
                     dict2T_,
                     dictThermoPhy_,
                     p,
-                    Tt,
+                    T,
                     Tv,
                     nD
                 )
@@ -122,11 +124,11 @@ Foam::VTModel::VTModel
 
 void Foam::VTModel::update()
 {
-    for(label i=0; i < solvedVibEqSpecies_.size(); i++)
+    forAll(molecules_, i)
     {
-        for(label j=0; j < species_.size(); j++)
+        for(label j=i; j<species_.size(); j++)
         {
-            label k = solvedVibEqSpecies_.size()*i+j;
+            const label k = species_.size()*i + j;
             tauVTij_[k] = tauVTijModels_[k].tauVT();
         }
     }

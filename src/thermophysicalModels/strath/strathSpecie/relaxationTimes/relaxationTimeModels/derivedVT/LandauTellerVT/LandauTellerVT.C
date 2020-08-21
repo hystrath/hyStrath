@@ -30,72 +30,102 @@ License
 template<class ThermoType>
 void Foam::LandauTellerVT<ThermoType>::updateCoefficients()
 {
-    tauVTijModel_().update();
+    const dimensionedScalar zero =
+        dimensionedScalar("zero", dimless/dimTime, 0.0);
+        
+    const dimensionedScalar invtSMALL =
+        dimensionedScalar("SMALL", dimless/dimTime, Foam::SMALL);
     
     const label electronId = this->thermo_.composition().electronId();
-
-    forAll(solvedVibEqSpecies(), speciei)
+    
+    tmp<volScalarField> tXe
+    (
+        new volScalarField
+        (
+            IOobject
+            (
+                "Xe",
+                mesh_.time().timeName(),
+                mesh_,
+                IOobject::NO_READ,
+                IOobject::NO_WRITE,
+                false
+            ),
+            mesh_,
+            dimensionedScalar("zero", dimless, 0.0)
+        )
+    );
+    
+    if (electronId != -1)
     {
-        volScalarField sumMolarWeightedReciprocalRelaxationTimes = 0/tauVTij(0,0);
-        volScalarField tmpXe = 0.0*thermo_.composition().X(0);
-
-        forAll(species(), speciej)
+        volScalarField& XeCells = tXe.ref();
+        XeCells = thermo_.composition().X(electronId);
+    }
+    
+    tmp<volScalarField> tSumWeightedReciprocalRelaxTimes
+    (
+        new volScalarField
+        (
+            IOobject
+            (
+                "sumWeightedReciprocalRelaxTimes",
+                mesh_.time().timeName(),
+                mesh_,
+                IOobject::NO_READ,
+                IOobject::NO_WRITE,
+                false
+            ),
+            mesh_,
+            dimensionedScalar("zero", dimless/dimTime, 0.0)
+        )
+    );
+    
+    volScalarField& sumWeightedReciprocalRelaxTimes =
+        tSumWeightedReciprocalRelaxTimes.ref();
+    
+    tauVTijModel_().update();
+    
+    forAll(molecules(), moli)
+    {
+        sumWeightedReciprocalRelaxTimes = zero;
+        
+        // no electrons here (Candler 09), although (ScalabrinPhD 07)
+        // defined tauVTie
+        forAll(thermo_.composition().heavySpecies(), j)
         {
+            const label speciej = thermo_.composition().heavySpeciesIds(j);
+            
             const volScalarField& Xj = thermo_.composition().X(speciej);
 
-            // no electrons here (Candler 09), although (ScalabrinPhD 07)
-            // defined tauVTie
-            if (electronId != speciej)
-            {
-                sumMolarWeightedReciprocalRelaxationTimes +=
-                    Xj/tauVTij(speciei,speciej);
-            }
-            else
-            {
-                tmpXe = Xj;
-            }
+            sumWeightedReciprocalRelaxTimes += Xj / tauVTij(moli,speciej);
         }
 
-        tauVT_[speciei] =
-            (1.0 - tmpXe)
-          / (
-                sumMolarWeightedReciprocalRelaxationTimes
-              + dimensionedScalar("SMALL", dimless/dimTime, Foam::SMALL)
-            );
+        tauVT_[moli] = (1.0 - tXe.ref())
+            / (sumWeightedReciprocalRelaxTimes + invtSMALL);
     }
 
 
-    /*forAll(solvedVibEqSpecies(), i) // TODO ABORTIVE WORK
+    /*forAll(molecules(), moli) // ABORTIVE WORK
     {
-        forAll(tauVTmode_[i], mi)
+        forAll(tauVTmode_[moli], mi)
         {
-          volScalarField tmpRelTime = 0 / tauVTij(0,0);
-          volScalarField tmpXe = 0 * thermo_.composition().X(0);
-          if(speciesThermo_[i].particleType() > 1)
-          {
-              forAll(species(), j)
-              {
-                  const volScalarField& Xj = thermo_.composition().X(j);
-                  forAll(tauVTmode_[j], mj)
-                  {
-                      if(speciesThermo_[j].particleType() > 0)
-                      {
-                          tmpRelTime += Xj / tauVTij(i,j);
-                      }
-                      else
-                      {
-                          tmpXe = Xj;
-                      }
-                  }
-              }
-          }
-          
-          tauVTmode_[i][mi] =
-              (1.0-tmpXe)
-            / (
-                  tmpRelTime 
-                + dimensionedScalar("SMALL", dimless/dimTime, Foam::SMALL)
-              );
+            sumWeightedReciprocalRelaxTimes = zero;
+            
+            forAll(thermo_.composition().heavySpecies(), j)
+            {
+                const label speciej = thermo_.composition().heavySpeciesIds(j);
+                
+                const volScalarField& Xj = thermo_.composition().X(speciej);
+                
+                forAll(tauVTmode_[speciej], mj)
+                {
+                    sumWeightedReciprocalRelaxTimes +=
+                        Xj / tauVTij(moli,speciej); // EDIT
+                }
+            }
+            
+            tauVTmode_[moli][mi] = (1.0 - tXe.ref())
+                / (sumWeightedReciprocalRelaxTimes + invtSMALL);
         }
     }*/
 }
@@ -118,19 +148,19 @@ Foam::LandauTellerVT<ThermoType>::LandauTellerVT
             (this->thermo_).speciesData()
     )
 {
-    tauVT_.setSize(solvedVibEqSpecies().size());
-    //tauVTmode_.setSize(species().size()); // TODO ABORTIVE WORK
+    tauVT_.setSize(molecules().size());
+    //tauVTmode_.setSize(molecules().size()); // ABORTIVE WORK
 
-    forAll(tauVT_, speciei)
+    forAll(tauVT_, moli)
     {
         tauVT_.set
         (
-            speciei,
+            moli,
             new volScalarField
             (
                 IOobject
                 (
-                    "tauVT_" + solvedVibEqSpecies()[speciei],
+                    "tauVT_" + molecules()[moli],
                     mesh_.time().timeName(),
                     mesh_,
                     IOobject::NO_READ,
@@ -142,40 +172,40 @@ Foam::LandauTellerVT<ThermoType>::LandauTellerVT
         );
     }
 
-    /*forAll(tauVTmode_, speciei)  // TODO ABORTIVE WORK
+    /*forAll(tauVTmode_, moli)  // ABORTIVE WORK
     {
         tauVTmode_.set
         (
-            speciei,
+            moli,
             new PtrList<volScalarField>
             (
-                thermo_.composition().noVibrationalTemp(speciei)
+                thermo_.composition().noVibrationalTemp(moli)
             )
         );
     }
 
-    forAll(tauVTmode_, speciei)
+    forAll(tauVTmode_, moli)
     {
-      forAll(tauVTmode_[speciei], vibMode)
-      {
-        tauVTmode_[speciei].set
-        (
-            vibMode,
-            new volScalarField
+        forAll(tauVTmode_[moli], vibMode)
+        {
+            tauVTmode_[moli].set
             (
-                IOobject
+                vibMode,
+                new volScalarField
                 (
-                    "tauVT_" + species()[speciei] + "." + word(vibMode+1),
-                    mesh_.time().timeName(),
+                    IOobject
+                    (
+                        "tauVT_" + molecules()[moli] + "." + word(vibMode+1),
+                        mesh_.time().timeName(),
+                        mesh_,
+                        IOobject::NO_READ,
+                        IOobject::NO_WRITE
+                    ),
                     mesh_,
-                    IOobject::NO_READ,
-                    IOobject::NO_WRITE
-                ),
-                mesh_,
-                dimensionedScalar("tauVT", dimTime, 0.0)
-            )
-        );
-      }
+                    dimensionedScalar("tauVT", dimTime, 0.0)
+                )
+            );
+        }
     }*/
 }
 
@@ -193,21 +223,20 @@ void Foam::LandauTellerVT<ThermoType>::correct()
     const scalarField& pCells = p.internalField();
     const scalarField& TCells = T.internalField();
 
-    forAll(solvedVibEqSpecies(), speciei)
+    forAll(molecules(), moli)
     {
+        const label speciei = thermo_.composition().moleculeIds(moli);
+        
         const volScalarField& pD = thermo_.composition().pD(speciei);
         const volScalarField& ev = thermo_.composition().hevel(speciei);
-        const volScalarField& tauVT = this->tauVT_[speciei];
-        volScalarField& QVT = this->QVT_[speciei];
-
+        const volScalarField& tauVT = this->tauVT_[moli];
+        volScalarField& QVT = this->QVT_[moli];
 
         const scalarField& pDCells = pD.internalField();
         const scalarField& evCells = ev.internalField();
         const scalarField& tauVTCells = tauVT.internalField();
         scalarField& QVTCells = QVT.primitiveFieldRef();
 
-        // Electrons are not included into the calculation.
-        // See private member function above.
         forAll(QVTCells, celli)
         {
             const scalar evZCelli =
@@ -218,22 +247,20 @@ void Foam::LandauTellerVT<ThermoType>::correct()
                     TCells[celli]
                 );
 
-            QVTCells[celli] =
-                pDCells[celli]/tauVTCells[celli]*(evZCelli - evCells[celli]);
+            QVTCells[celli] = pDCells[celli] / tauVTCells[celli]
+                *(evZCelli - evCells[celli]);
         }
 
-        /*forAll(QVTmode_[speciei], vibMode) // TODO ABORTIVE WORK
+        /*forAll(QVTmode_[moli], vibMode) // ABORTIVE WORK
         {
             const volScalarField& hvmode =
                 thermo_.composition().hevel_mode(speciei, vibMode);
             const scalarField& hvmodeCells = hvmode.internalField();
             const scalarField& tauVTmodeCells =
-                this->tauVTmode_[speciei][vibMode].internalField();
+                this->tauVTmode_[moli][vibMode].internalField();
             scalarField& QVTmodeCells =
-                this->QVTmode_[speciei][vibMode].primitiveFieldRef();
+                this->QVTmode_[moli][vibMode].primitiveFieldRef();
 
-            // electrons are not included into the calculations.
-            // See private member function above.
             forAll(QVTmodeCells, celli) 
             {
                 scalar hvZmodeCells =
@@ -245,8 +272,8 @@ void Foam::LandauTellerVT<ThermoType>::correct()
                         TCells[celli]
                     );
                     
-                QVTmodeCells[celli] = pDCells[celli]
-                    *(hvZmodeCells - hvmodeCells[celli])/tauVTmodeCells[celli];
+                QVTmodeCells[celli] = pDCells[celli] / tauVTmodeCells[celli]
+                    *(hvZmodeCells - hvmodeCells[celli]);
             }
         }*/
     }

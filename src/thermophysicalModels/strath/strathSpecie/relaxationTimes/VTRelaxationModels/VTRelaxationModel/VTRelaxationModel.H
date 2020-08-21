@@ -41,15 +41,9 @@ SourceFiles
 #ifndef VTRelaxationModel_H
 #define VTRelaxationModel_H
 
-#include "advancedSpecie.H"
-#include "IOdictionary.H"
-#include "typeInfo.H"
 #include "runTimeSelectionTables.H"
-#include "scalarField.H"
 #include "volFieldsFwd.H"
-#include "surfaceFieldsFwd.H"
 #include "dimensionedScalar.H"
-#include "tmp.H"
 #include "autoPtr.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -58,7 +52,7 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                Class VTRelaxationModel Declaration
+                     Class VTRelaxationModel Declaration
 \*---------------------------------------------------------------------------*/
 
 class VTRelaxationModel
@@ -101,7 +95,7 @@ protected:
         //- If overwrite is on, are the coefficients species dependent
         bool VTSpeciesDependent_;
 
-        //- If overwrite is on, does the colliding pair matters
+        //- If overwrite is on, does the colliding pair matter
         bool VTCollidingPartner_;
 
 
@@ -135,11 +129,11 @@ public:
               const dictionary& dict1,
               const dictionary& dict2,
               const volScalarField& p,
-              const volScalarField& Tt,
+              const volScalarField& T,
               const PtrList<volScalarField>& Tv,
               const PtrList<volScalarField>& nD
           ),
-          (name1, name2, lname1, lname2, dict1, dict2, p, Tt, Tv, nD)
+          (name1, name2, lname1, lname2, dict1, dict2, p, T, Tv, nD)
       );
 
 
@@ -155,7 +149,7 @@ public:
             const dictionary& dict1,
             const dictionary& dict2,
             const volScalarField& p,
-            const volScalarField& Tt,
+            const volScalarField& T,
             const PtrList<volScalarField>& Tv,
             const PtrList<volScalarField>& nD
         );
@@ -173,7 +167,7 @@ public:
             const dictionary& dict1,
             const dictionary& dict2,
             const volScalarField& p,
-            const volScalarField& Tt,
+            const volScalarField& T,
             const PtrList<volScalarField>& Tv,
             const PtrList<volScalarField>& nD
         );
@@ -195,7 +189,7 @@ public:
         (
             const label patchi,
             const scalarField& p,
-            const scalarField& Tt,
+            const scalarField& T,
             const PtrList<scalarField>& Tv,
             const PtrList<scalarField>& nD
         ) const = 0;

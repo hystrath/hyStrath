@@ -25,7 +25,7 @@ Class
     Foam::VTModel
 
 Description
-    V-T relaxation model for multispecies binary diffusion coefficients
+    V-T relaxation model
 
 SourceFiles
     VTModel.C
@@ -44,7 +44,7 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                    Class VTModel Declaration
+                          Class VTModel Declaration
 \*---------------------------------------------------------------------------*/
 
 class VTModel
@@ -60,29 +60,28 @@ protected:
         //- Thermophysical properties dictionary
         const IOdictionary dictThermoPhy_;
 
-        //- Species having a vib. eq. being solved
-        const wordList& solvedVibEqSpecies_;
+        //- List of molecules
+        const wordList& molecules_;
 
-        //- Species
+        //- List of Species
         const wordList& species_;
 
         //- Pressure [Pa]
         const volScalarField& p_;
 
-        //- Translational temperature [K]
+        //- Trans-rotational temperature [K]
         const volScalarField& T_;
 
-        //- Vibrational temperatures [K]
+        //- Vibro-electronic temperatures [K]
         const PtrList<volScalarField>& Tv_;
 
         //- Number densities [m^-3]
         const PtrList<volScalarField>& nD_;
 
-
         //- V-T relaxation models
         PtrList<VTRelaxationModel> tauVTijModels_;
 
-        //- Interspecies V-T relaxation time
+        //- Interspecies V-T relaxation time [s]
         PtrList<volScalarField> tauVTij_;
 
 
@@ -107,10 +106,10 @@ public:
         (
             const word& dict2T,
             const word& dictThermoPhy,
-            const wordList& solvedVibEqSpecies,
+            const wordList& molecules,
             const wordList& species,
             const volScalarField& p,
-            const volScalarField& Tt,
+            const volScalarField& T,
             const PtrList<volScalarField>& Tv,
             const PtrList<volScalarField>& nD
         );
@@ -126,11 +125,21 @@ public:
 
         inline const volScalarField& tauVT(label i, label j) const
         {
-            label k = solvedVibEqSpecies_.size()*i+j;
+            label k = 0;
+            
+            if (i > j)
+            {
+                k = species_.size()*j + i;
+            }
+            else
+            {
+                k = species_.size()*i + j;
+            }
+            
             return tauVTij_[k];
         }
 
-        //- Update the inter-species V-T relaxation times
+        //- Update the interspecies V-T relaxation times
         virtual void update();
 };
 

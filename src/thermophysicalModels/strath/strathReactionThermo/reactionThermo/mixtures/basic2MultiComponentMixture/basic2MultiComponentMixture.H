@@ -239,6 +239,12 @@ public:
             return moleculeIds_;
         }
         
+        //- Return the moli^th molecule species index in species()
+        const label& moleculeIds(const label moli) const
+        {
+            return moleculeIds_[moli];
+        }
+        
         //- Return the table of atomic species
         const speciesTable& atoms() const
         {
@@ -261,6 +267,24 @@ public:
         const labelList& ionIds() const
         {
             return ionIds_;
+        }
+        
+        //- Return the table of heavy species
+        const speciesTable& heavySpecies() const
+        {
+            return heavySpecies_;
+        }
+        
+        //- Return the list of heavy species indices
+        const labelList& heavySpeciesIds() const
+        {
+            return heavySpeciesIds_;
+        }
+        
+        //- Return the the speciei^th heavy species index in species()
+        const label& heavySpeciesIds(const label speciei) const
+        {
+            return heavySpeciesIds_[speciei];
         }
         
         //- Return the position of the free-electrons in the list of species,

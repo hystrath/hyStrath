@@ -26,7 +26,9 @@ et.ref() = e() - ev();
 et.correctBoundaryConditions();
 e.boundaryFieldRef() = et.boundaryField() + ev.boundaryField();
 
-rhoE.boundaryFieldRef() =
-    rho.boundaryField()*(e.boundaryField()
-  + 0.5*magSqr(U.boundaryField()));
+rhoE.boundaryFieldRef() = 
+    rho.boundaryField()
+  * (
+        e.boundaryField() + 0.5*magSqr(U.boundaryField())
+    );
 

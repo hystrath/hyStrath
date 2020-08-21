@@ -46,7 +46,7 @@ Foam::VTRelaxationModel::VTRelaxationModel
     const dictionary& dict1,
     const dictionary& dict2,
     const volScalarField& p,
-    const volScalarField& Tt,
+    const volScalarField& T,
     const PtrList<volScalarField>& Tv,
     const PtrList<volScalarField>& nD
 )
@@ -58,13 +58,41 @@ Foam::VTRelaxationModel::VTRelaxationModel
     lname1_(lname1),
     lname2_(lname2),
     p_(p),
-    T_(Tt),
+    T_(T),
     Tv_(Tv),
     nD_(nD),
-    VTFullCoeffsForm_(readBool(dict1_.subDict("thermalRelaxationModels").subDict("VT").lookup("fullCoeffsForm"))),
-    VTOverwriteDefault_(readBool(dict1_.subDict("thermalRelaxationModels").subDict("VT").lookup("overwriteDefault"))),
-    VTSpeciesDependent_(readBool(dict1_.subDict("thermalRelaxationModels").subDict("VT").lookup("speciesDependent"))),
-    VTCollidingPartner_(readBool(dict1_.subDict("thermalRelaxationModels").subDict("VT").lookup("collidingPair")))
+    VTFullCoeffsForm_
+    (
+        readBool
+        (
+            dict1_.subDict("thermalRelaxationModels").subDict("VT")
+                .lookup("fullCoeffsForm")
+        )
+    ),
+    VTOverwriteDefault_
+    (
+        readBool
+        (
+            dict1_.subDict("thermalRelaxationModels").subDict("VT")
+                .lookup("overwriteDefault")
+        )
+    ),
+    VTSpeciesDependent_
+    (
+        readBool
+        (
+            dict1_.subDict("thermalRelaxationModels").subDict("VT")
+                .lookup("speciesDependent")
+        )
+    ),
+    VTCollidingPartner_
+    (
+        readBool
+        (
+            dict1_.subDict("thermalRelaxationModels").subDict("VT")
+                .lookup("collidingPair")
+        )
+    )
 {}
 
 
@@ -79,12 +107,15 @@ Foam::autoPtr<Foam::VTRelaxationModel> Foam::VTRelaxationModel::New
     const dictionary& dict1,
     const dictionary& dict2,
     const volScalarField& p,
-    const volScalarField& Tt,
+    const volScalarField& T,
     const PtrList<volScalarField>& Tv,
     const PtrList<volScalarField>& nD
 )
 {
-    word VTRelaxationModelTypeName(dict1.subDict("thermalRelaxationModels").subDict("VT").lookup("model"));
+    word VTRelaxationModelTypeName
+    (
+        dict1.subDict("thermalRelaxationModels").subDict("VT").lookup("model")
+    );
 
     dictionaryConstructorTable::iterator cstrIter =
         dictionaryConstructorTablePtr_->find(VTRelaxationModelTypeName);
@@ -97,18 +128,14 @@ Foam::autoPtr<Foam::VTRelaxationModel> Foam::VTRelaxationModel::New
             "const surfaceScalarField&)"
         )   << "Unknown VTRelaxationModel type "
             << VTRelaxationModelTypeName << endl << endl
-            << "Valid  VTRelaxationModels are : " << endl
+            << "Valid VTRelaxationModels are: " << endl
             << dictionaryConstructorTablePtr_->toc()
             << exit(FatalError);
     }
 
     return autoPtr<VTRelaxationModel>
-        (cstrIter()(name1, name2, lname1, lname2, dict1, dict2, p, Tt, Tv, nD));
+        (cstrIter()(name1, name2, lname1, lname2, dict1, dict2, p, T, Tv, nD));
 }
-
-
-// * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
-
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

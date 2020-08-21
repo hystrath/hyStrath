@@ -63,7 +63,7 @@ protected:
     // Protected member functions
 
         //- Update the coefficients of the species equations
-        virtual void updateCoefficients();
+        void updateCoefficients();
 
 
 public:
@@ -89,7 +89,7 @@ public:
 
     // Member Functions
 
-        //- Molar weight for a specie given by index. Defined here
+        //- Molar weight [kg/mol] for a specie given by index. Defined here
         //  becouse depend on thermoType template
         scalar W(label i) const
         {

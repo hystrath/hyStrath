@@ -64,14 +64,14 @@ Foam::relaxationTimeModel::relaxationTimeModel
         fileName(thermo.lookup("foamChemistryThermoFile")).name()
     );
 
-    // Construct the relaxation time model
+    // Construct the V-T relaxation time model
     tauVTijModel_.set
     (
         new VTModel
         (
             dict2T,
             dictThermoPhy,
-            solvedVibEqSpecies(),
+            molecules(),
             species(),
             thermo.p(),
             thermo.T(),
@@ -80,19 +80,19 @@ Foam::relaxationTimeModel::relaxationTimeModel
         )
     );
 
-    QVT_.setSize(solvedVibEqSpecies().size()); //NEW VINCENT 05/08/2016
-    //QVTmode_.setSize(species().size()); // TODO ABORTIVE WORK
+    QVT_.setSize(molecules().size());
+    //QVTmode_.setSize(molecules().size()); // ABORTIVE WORK
 
-    forAll(solvedVibEqSpecies(), speciei) //NEW VINCENT 05/08/2016
+    forAll(molecules(), moli)
     {
         QVT_.set
         (
-            speciei,
+            moli,
             new volScalarField
             (
                 IOobject
                 (
-                    "QVT_" + solvedVibEqSpecies()[speciei],
+                    "QVT_" + molecules()[moli],
                     mesh_.time().timeName(),
                     mesh_,
                     IOobject::NO_READ,
@@ -104,30 +104,30 @@ Foam::relaxationTimeModel::relaxationTimeModel
         );
     }
 
-    /*forAll(QVTmode_, speciei) // TODO ABORTIVE WORK
+    /*forAll(QVTmode_, moli) // ABORTIVE WORK
     {
         QVTmode_.set
         (
-            speciei,
+            moli,
             new PtrList<volScalarField>
             (
-                thermo.composition().noVibrationalTemp(speciei)
+                thermo.composition().noVibrationalTemp(moli)
             )
         );
     }
 
-    forAll(QVTmode_, speciei)
+    forAll(QVTmode_, moli)
     {
-        forAll(QVTmode_[speciei], vibMode)
+        forAll(QVTmode_[moli], vibMode)
         {
-            QVTmode_[speciei].set
+            QVTmode_[moli].set
             (
                 vibMode,
                 new volScalarField
                 (
                     IOobject
                     (
-                        "QVT_" + species()[speciei] + "." + word(vibMode+1),
+                        "QVT_" + molecules()[moli] + "." + word(vibMode+1),
                         mesh_.time().timeName(),
                         mesh_,
                         IOobject::NO_READ,
@@ -166,14 +166,11 @@ Foam::tmp<Foam::volScalarField> Foam::relaxationTimeModel::QVT()
     
     scalarField& QVTCells = tQVT.ref().primitiveFieldRef();
     
-    forAll(thermo_.composition().species(), speciei)
+    forAll(molecules(), moli)
     {
-        if (thermo_.composition().noVibrationalTemp(speciei) != 0)
+        forAll(QVTCells, celli)
         {
-            forAll(QVTCells, celli)
-            {
-                QVTCells[celli] += QVT_[speciei][celli];
-            }
+            QVTCells[celli] += QVT_[moli][celli];
         }
     }
 

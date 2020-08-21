@@ -43,7 +43,7 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                             Class noVTEnergyTransfer Declaration
+                     Class noVTEnergyTransfer Declaration
 \*---------------------------------------------------------------------------*/
 
 template<class ThermoType>
@@ -62,8 +62,6 @@ protected:
 
     // Protected member functions
 
-        //- Update the coefficients of the species equations
-        virtual void updateCoefficients();
 
 
 public:
@@ -89,11 +87,11 @@ public:
 
     // Member Functions
 
-        //- Molar weight for a specie given by index. Defined here
+        //- Molar weight [kg/mol] for a specie given by index. Defined here
         //  becouse depend on thermoType template
-        scalar W(label i) const
+        virtual scalar W(label i) const
         {
-            return speciesThermo_[i].W();
+            return speciesThermo_[i].W()*1.0e-3;
         }
 
         // Correct the V-T relaxation times and V-T energy transfer
