@@ -65,8 +65,8 @@ protected:
         label sampleCounter_;
         scalar mfpReferenceTemperature_;
         word fieldName_;
-        volScalarField dsmcRhoN_;
-        volScalarField dsmcRhoNMean_;
+        volScalarField dsmcN_;
+        volScalarField dsmcNMean_;
         volScalarField rhoN_;
         volScalarField rhoM_;
         volScalarField p_;
