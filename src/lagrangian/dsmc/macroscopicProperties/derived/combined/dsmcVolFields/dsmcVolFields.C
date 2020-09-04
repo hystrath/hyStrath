@@ -662,17 +662,50 @@ void dsmcVolFields::readIn()
         )
     );
 
+    dict.readIfPresent("nTimeSteps", nTimeSteps_);
+
+    // DSMC parcel related cumulative values
     dict.readIfPresent("dsmcNCum", dsmcNCum_);
     dict.readIfPresent("dsmcMCum", dsmcMCum_);
+
     dict.readIfPresent("dsmcLinKinEnCum", dsmcLinKinEnCum_);
     dict.readIfPresent("dsmcMomentumCum", dsmcMomentumCum_);
     dict.readIfPresent("dsmcRotEnCum", dsmcRotEnCum_);
     dict.readIfPresent("dsmcRotDofCum", dsmcRotDofCum_);
-    dict.readIfPresent("dsmcVibEnSpeciesModeCum", dsmcVibEnSpeciesModeCum_);
+    dict.readIfPresent("dsmcEleEnSpeciesCum", dsmcEleEnSpeciesCum_);
     dict.readIfPresent("dsmcNSpeciesCum", dsmcNSpeciesCum_);
+    dict.readIfPresent("dsmcMccSpeciesCum", dsmcMccSpeciesCum_);
+    dict.readIfPresent("dsmcMuuCum", dsmcMuuCum_);
+    dict.readIfPresent("dsmcMuvCum", dsmcMuvCum_);
+    dict.readIfPresent("dsmcMuwCum", dsmcMuwCum_);
+    dict.readIfPresent("dsmcMvvCum", dsmcMvvCum_);
+    dict.readIfPresent("dsmcMvwCum", dsmcMvwCum_);
+    dict.readIfPresent("dsmcMwwCum", dsmcMwwCum_);
+    dict.readIfPresent("dsmcMccCum", dsmcMccCum_);
+    dict.readIfPresent("dsmcMccuCum", dsmcMccuCum_);
+    dict.readIfPresent("dsmcMccvCum", dsmcMccvCum_);
+    dict.readIfPresent("dsmcMccwCum", dsmcMccwCum_);
+    dict.readIfPresent("dsmcEuCum", dsmcEuCum_);
+    dict.readIfPresent("dsmcEvCum", dsmcEvCum_);
+    dict.readIfPresent("dsmcEwCum", dsmcEwCum_);
+    dict.readIfPresent("dsmcECum", dsmcECum_);
     dict.readIfPresent("dsmcNWithRotDofCum", dsmcNWithRotDofCum_);
+    dict.readIfPresent("dsmcNEleCum", dsmcNEleCum_);
+    dict.readIfPresent("dsmcNGroundEleLvlSpeciesCum", dsmcNGroundEleLvlSpeciesCum_);
+    dict.readIfPresent("dsmcNFirstEleLvlSpeciesCum", dsmcNFirstEleLvlSpeciesCum_);
+    dict.readIfPresent("dsmcNClassICum", dsmcNClassICum_);
+    dict.readIfPresent("dsmcNClassIICum", dsmcNClassIICum_);
+    dict.readIfPresent("dsmcNClassIIICum", dsmcNClassIIICum_);
+    dict.readIfPresent("dsmcVibEnSpeciesModeCum", dsmcVibEnSpeciesModeCum_);
+    dict.readIfPresent("dsmcNCollsCum", dsmcNCollsCum_);
 
-    dict.readIfPresent("nTimeSteps", nTimeSteps_);
+    // cumulative values
+    dict.readIfPresent("nCum", nCum_);
+    dict.readIfPresent("mCum", mCum_);
+    dict.readIfPresent("nSpeciesCum", nSpeciesCum_);
+    dict.readIfPresent("momentumCum", momentumCum_);
+    dict.readIfPresent("linKinEnCum", linKinEnCum_);
+    dict.readIfPresent("totalvDof", totalvDof_);
 }
 
 
@@ -694,17 +727,50 @@ void dsmcVolFields::writeOut()
             )
         );
 
+        dict.add("nTimeSteps", nTimeSteps_);
+
+        // DSMC parcel related cumulative values
         dict.add("dsmcNCum", dsmcNCum_);
         dict.add("dsmcMCum", dsmcMCum_);
+
         dict.add("dsmcLinKinEnCum", dsmcLinKinEnCum_);
         dict.add("dsmcMomentumCum", dsmcMomentumCum_);
         dict.add("dsmcRotEnCum", dsmcRotEnCum_);
         dict.add("dsmcRotDofCum", dsmcRotDofCum_);
-        dict.add("dsmcVibEnSpeciesModeCum", dsmcVibEnSpeciesModeCum_);
+        dict.add("dsmcEleEnSpeciesCum", dsmcEleEnSpeciesCum_);
         dict.add("dsmcNSpeciesCum", dsmcNSpeciesCum_);
+        dict.add("dsmcMccSpeciesCum", dsmcMccSpeciesCum_);
+        dict.add("dsmcMuuCum", dsmcMuuCum_);
+        dict.add("dsmcMuvCum", dsmcMuvCum_);
+        dict.add("dsmcMuwCum", dsmcMuwCum_);
+        dict.add("dsmcMvvCum", dsmcMvvCum_);
+        dict.add("dsmcMvwCum", dsmcMvwCum_);
+        dict.add("dsmcMwwCum", dsmcMwwCum_);
+        dict.add("dsmcMccCum", dsmcMccCum_);
+        dict.add("dsmcMccuCum", dsmcMccuCum_);
+        dict.add("dsmcMccvCum", dsmcMccvCum_);
+        dict.add("dsmcMccwCum", dsmcMccwCum_);
+        dict.add("dsmcEuCum", dsmcEuCum_);
+        dict.add("dsmcEvCum", dsmcEvCum_);
+        dict.add("dsmcEwCum", dsmcEwCum_);
+        dict.add("dsmcECum", dsmcECum_);
         dict.add("dsmcNWithRotDofCum", dsmcNWithRotDofCum_);
+        dict.add("dsmcNEleCum", dsmcNEleCum_);
+        dict.add("dsmcNGroundEleLvlSpeciesCum", dsmcNGroundEleLvlSpeciesCum_);
+        dict.add("dsmcNFirstEleLvlSpeciesCum", dsmcNFirstEleLvlSpeciesCum_);
+        dict.add("dsmcNClassICum", dsmcNClassICum_);
+        dict.add("dsmcNClassIICum", dsmcNClassIICum_);
+        dict.add("dsmcNClassIIICum", dsmcNClassIIICum_);
+        dict.add("dsmcVibEnSpeciesModeCum", dsmcVibEnSpeciesModeCum_);
+        dict.add("dsmcNCollsCum", dsmcNCollsCum_);
 
-        dict.add("nTimeSteps", nTimeSteps_);
+        // cumulative values
+        dict.add("nCum", nCum_);
+        dict.add("mCum", mCum_);
+        dict.add("nSpeciesCum", nSpeciesCum_);
+        dict.add("momentumCum", momentumCum_);
+        dict.add("linKinEnCum", linKinEnCum_);
+        dict.add("totalvDof", totalvDof_);
 
         IOstream::streamFormat fmt = time_.time().writeFormat();
         IOstream::versionNumber ver = time_.time().writeVersion();
