@@ -120,6 +120,36 @@ void dsmcField::updateBasicFieldProperties
     {
         time_.resetFieldsAtOutput() = Switch(timeDict_.lookup("resetAtOutput"));
     }
+
+    // this additional option will work in conjunction with resetAtOutput in the
+    // following way:
+    //   1. resetAtOutput = true:
+    //     1. if time <= resetAtOutputUntilTime -> reset at output
+    //     2. if time > resetAtOutputUntilTime -> do not reset at output
+    //   2. resetAtOutput = false -> no effect
+
+    if
+    (
+           time_.resetFieldsAtOutput()
+        && timeDict_.found("resetAtOutputUntilTime")
+    )
+    {
+        const scalar resetAtOutputUntilTime =
+            readScalar(timeDict_.lookup("resetAtOutputUntilTime"));
+
+        // the fields of the current time step have already been written,
+        // therefore the following belongs to the _next_ period (until next
+        // output time is reached)
+        if
+        (
+              time_.time().value()
+            + time_.time().deltaT().value()
+            > resetAtOutputUntilTime
+        )
+        {
+            time_.resetFieldsAtOutput() = false;
+        }
+    }
 }
 
 const fileName& dsmcField::casePath() const
