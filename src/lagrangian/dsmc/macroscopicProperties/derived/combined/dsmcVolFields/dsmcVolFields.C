@@ -912,10 +912,19 @@ void dsmcVolFields::createField()
     //- read in stored data from dictionary
     if (averagingAcrossManyRuns_)
     {
-        Info<< "Averaging across many runs enabled." << nl
-            << endl;
-
-        readIn();
+        if (!time_.resetFieldsAtOutput())
+        {
+            Info<< "Averaging across many runs for field " << fieldName_
+                << " is enabled. Averaging data will be read from file."
+                << endl;
+            readIn();
+        }
+        else
+        {
+            Info<< "Averaging across many runs for field " << fieldName_
+                << " will be enabled as soon as resetAtOutput is turned off."
+                << endl;
+        }
     }
 }
 
@@ -2492,7 +2501,7 @@ void dsmcVolFields::calculateField()
             }
         }
 
-        if (averagingAcrossManyRuns_)
+        if (averagingAcrossManyRuns_ && !time_.resetFieldsAtOutput())
         {
             writeOut();
         }
