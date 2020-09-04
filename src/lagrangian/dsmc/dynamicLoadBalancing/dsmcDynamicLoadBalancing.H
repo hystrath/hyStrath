@@ -68,6 +68,8 @@ class dsmcDynamicLoadBalancing
 
         bool enableBalancing_;
 
+        scalar balanceUntilTime_;
+
         scalar originalEndTime_;
 
         scalar maxImbalance_;

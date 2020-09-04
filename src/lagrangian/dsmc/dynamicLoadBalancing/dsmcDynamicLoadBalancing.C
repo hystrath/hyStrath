@@ -69,6 +69,14 @@ dsmcDynamicLoadBalancing::dsmcDynamicLoadBalancing
     ),
     performBalance_(false),
     enableBalancing_(Switch(dsmcLoadBalanceDict_.lookup("enableBalancing"))),
+    balanceUntilTime_
+    (
+        dsmcLoadBalanceDict_.lookupOrDefault<scalar>
+        (
+            "balanceUntilTime",
+            VGREAT
+        )
+    ),
     originalEndTime_(time_.time().endTime().value()),
     maxImbalance_(readScalar
     (
@@ -123,7 +131,17 @@ void dsmcDynamicLoadBalancing::update()
             Info<< "    Maximum imbalance = " << 100*maxImbalance << "%"
                 << endl;
 
-            if( maxImbalance > allowableImbalance && enableBalancing_)
+            // explanation of modes:
+            // 1. enableBalancing = true:
+            //   1. if time < balanceUntilTime -> load balance
+            //   2. if time >= balanceUntilTime -> do not load balance
+            // 2. enableBalancing = false -> do not load balance
+            if
+            (
+                   enableBalancing_
+                && time_.time().value() < balanceUntilTime_
+                && maxImbalance > allowableImbalance
+            )
             {
                 performBalance_ = true;
 
@@ -251,6 +269,15 @@ void dsmcDynamicLoadBalancing::perform(const int noRefinement)
 void dsmcDynamicLoadBalancing::updateProperties()
 {
     enableBalancing_ = Switch(dsmcLoadBalanceDict_.lookup("enableBalancing"));
+    // if balancing is active this additional option allows to specify a time
+    // after which balancing is deactivated (this is useful in conjunction with
+    // resetAtOutput / resetAtOutputUntilTime and averaging across solver
+    // restarts)
+    balanceUntilTime_ = dsmcLoadBalanceDict_.lookupOrDefault<scalar>
+    (
+        "balanceUntilTime",
+        VGREAT
+    );
     maxImbalance_ = readScalar
     (
         dsmcLoadBalanceDict_.lookup("maximumAllowableImbalance")
