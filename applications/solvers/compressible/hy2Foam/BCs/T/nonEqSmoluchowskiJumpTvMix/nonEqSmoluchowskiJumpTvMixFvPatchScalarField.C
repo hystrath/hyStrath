@@ -94,7 +94,7 @@ Foam::nonEqSmoluchowskiJumpTvMixFvPatchScalarField::nonEqSmoluchowskiJumpTvMixFv
     if
     (
         mag(accommodationCoeff_) < SMALL
-     || mag(accommodationCoeff_) > 2.0
+     || mag(accommodationCoeff_) > 1.0
     )
     {
         FatalIOErrorIn
