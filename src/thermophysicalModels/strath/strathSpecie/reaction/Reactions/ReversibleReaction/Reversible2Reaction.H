@@ -65,6 +65,8 @@ class Reversible2Reaction
 
         ReactionRate k_;
 
+        scalar KeqMKS_; // A.Nekris 06/11/2020
+
         // NEW VINCENT 09/02/2016 *********************************************
         //- Mixture number density table entries
         DynamicList<scalar> ni_;
@@ -105,6 +107,7 @@ public:
         (
             const ReactionType<ReactionThermo>& reaction,
             const ReactionRate& k,
+            const scalar KeqMKS, // NEW A.Nekris 06/11/2020
             const DynamicList<scalar> ni, // NEW VINCENT 09/02/2016
             const DynamicList<scalar> A0,
             const DynamicList<scalar> A1,

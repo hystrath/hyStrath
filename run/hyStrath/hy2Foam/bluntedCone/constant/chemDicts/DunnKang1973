@@ -1,0 +1,680 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.3.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      DunnKang1973;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+species
+(
+    N2
+    O2
+    //NO
+    //N2+
+    //O2+
+    //NO+
+    //N
+    //O
+    //N+
+    //O+
+    //e-
+);
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Units
+// A: m^3 kmol^-1 s^-1  or  m^6 kmol^-2 s^-1
+// Ta: K
+
+reactions
+{
+    /*reaction1_N
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "O2 + N = 2O + N";
+       controlT transrotational;
+	   
+		forward
+		{
+			A        3.60e15;
+			beta     -1.0;
+			Ta       59500;
+		}
+		reverse
+		{
+			A        3.00e09;
+			beta     -0.5;
+			Ta       0.0;
+		}
+    }*/
+
+    /*reaction1_NO
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "O2 + NO = 2O + NO";
+       controlT transrotational;
+	   
+		forward
+		{
+			A        3.60e15;
+			beta     -1.0;
+			Ta       59500;
+		}
+		reverse
+		{
+			A        3.00e09;
+			beta     -0.5;
+			Ta       0.0;
+		}
+    }*/
+    
+    /*reaction2_O
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "N2 + O = 2N + O";
+        controlT transrotational;
+		
+		forward
+		{
+			A        1.90e14;
+			beta     -0.5;
+			Ta       113000;
+		}
+		reverse
+		{
+			A        1.10e10;
+			beta     -0.5;
+			Ta       0.0;
+		}
+    }*/
+
+    /*reaction2_NO
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "N2 + NO = 2N + NO";
+        controlT transrotational;
+		
+		forward
+		{
+			A        1.90e14;
+			beta     -0.5;
+			Ta       113000;
+		}
+		reverse
+		{
+			A        1.10e10;
+			beta     -0.5;
+			Ta       0.0;
+		}
+    }*/
+
+    /*reaction2_O2
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "N2 + O2 = 2N + O2";
+        controlT transrotational;
+		
+		forward
+		{
+			A        1.90e14;
+			beta     -0.5;
+			Ta       113000;
+		}
+		reverse
+		{
+			A        1.10e10;
+			beta     -0.5;
+			Ta       0.0;
+		}
+    }*/
+
+    /*reaction3_O2
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "NO + O2 = N + O + O2";
+        controlT transrotational;
+		
+		forward
+		{
+			A        3.90e17;
+			beta     -1.5;
+			Ta       75500;
+		}
+		reverse
+		{
+			A        1.0e14;
+			beta     -1.5;
+			Ta       0.0;
+		}
+    }*/
+
+    /*reaction3_N2
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "NO + N2 = N + O + N2";
+        controlT transrotational;
+		
+		forward
+		{
+			A        3.90e17;
+			beta     -1.5;
+			Ta       75500;
+		}
+		reverse
+		{
+			A        1.0e14;
+			beta     -1.5;
+			Ta       0.0;
+		}
+    }*/
+
+    /*reaction4
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "O + NO = N + O2";
+        controlT transrotational;
+		
+		forward
+		{
+			A        3.20e06;
+			beta     1.0;
+			Ta       19700;
+		}
+		reverse
+		{
+			A        1.3e07;
+			beta     1.0;
+			Ta       3580;
+		}
+    }*/
+
+    /*reaction5
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "O + N2 = N + NO";
+        controlT transrotational;
+		
+		forward
+		{
+			A        7.0e10;
+			beta     0.0;
+			Ta       38000;
+		}
+		reverse
+		{
+			A        1.56e10;
+			beta     0.0;
+			Ta       0.0;
+		}
+    }*/
+
+    /*reaction6
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "N2 + N = 2N + N";
+        controlT transrotational;
+		
+		forward
+		{
+			A        4.085e19;
+			beta     -1.5;
+			Ta       113000;
+		}
+		reverse
+		{
+			A        2.27e15;
+			beta     -1.5;
+			Ta       0.0;
+		}
+    }*/
+
+    /*reaction7
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "O + N = NO+ + e-";
+        controlT transrotational;
+		
+		forward
+		{
+			A        1.40e03;
+			beta     1.5;
+			Ta       31900;
+		}
+		reverse
+		{
+			A        6.70e18;
+			beta     -1.5;
+			Ta       0.0;
+		}
+    }*/
+
+    /*reaction8
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "O + e- = O+ + e- + e-";
+        controlT transrotational;
+		
+		forward
+		{
+			A        3.60e28;
+			beta     -2.91;
+			Ta       158000;
+		}
+		reverse
+		{
+			A        2.20e34;
+			beta     -4.5;
+			Ta       0.0;
+		}
+    }*/
+
+    /*reaction9
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "N + e- = N+ + e- + e-";
+        controlT transrotational;
+		
+		forward
+		{
+			A        1.10e29;
+			beta     -3.14;
+			Ta       169000;
+		}
+		reverse
+		{
+			A        2.20e34;
+			beta     -4.5;
+			Ta       0.0;
+		}
+    }*/
+
+    /*reaction10
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "O + O = O2+ + e-";
+        controlT transrotational;
+		
+		forward
+		{
+			A        1.60e14;
+			beta     -0.98;
+			Ta       80800;
+		}
+		reverse
+		{
+			A        8.00e18;
+			beta     -1.5;
+			Ta       0.0;
+		}
+    }*/
+
+    /*reaction11
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "O + O2+ = O2 + O+";
+        controlT transrotational;
+		
+		forward
+		{
+			A        2.92e15;
+			beta     -1.11;
+			Ta       28000;
+		}
+		reverse
+		{
+			A        7.80e08;
+			beta     0.5;
+			Ta       0.0;
+		}
+    }*/
+
+    /*reaction12
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "N2 + N+ = N + N2+";
+        controlT transrotational;
+		
+		forward
+		{
+			A        2.02e08;
+			beta     0.81;
+			Ta       13000;
+		}
+		reverse
+		{
+			A        7.80e08;
+			beta     0.5;
+			Ta       0.0;
+		}
+    }*/
+
+    /*reaction13
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "N + N = N2+ + e-";
+        controlT transrotational;
+		
+		forward
+		{
+			A        1.40e10;
+			beta     0.81;
+			Ta       67800;
+		}
+		reverse
+		{
+			A        1.50e19;
+			beta     -1.5;
+			Ta       0.0;
+		}
+    }*/
+
+    /*reaction14
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "O2 + N2 = NO + NO+ + e-";
+        controlT transrotational;
+		
+		forward
+		{
+			A        1.38e17;
+			beta     -1.84;
+			Ta       141000;
+		}
+		reverse
+		{
+			A        1.00e18;
+			beta     -2.5;
+			Ta       0.0;
+		}
+    }*/
+
+    /*reaction15
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "NO + N2 = NO+ + e- + N2";
+        controlT transrotational;
+		
+		forward
+		{
+			A        2.2e12;
+			beta     -0.35;
+			Ta       108000;
+		}
+		reverse
+		{
+			A        2.20e20;
+			beta     -2.5;
+			Ta       0.0;
+		}
+    }*/
+
+    /*reaction16
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "O + NO+ = NO + O+";
+        controlT transrotational;
+		
+		forward
+		{
+			A        3.63e12;
+			beta     -0.6;
+			Ta       50800;
+		}
+		reverse
+		{
+			A        1.50e10;
+			beta     0.0;
+			Ta       0.0;
+		}
+    }*/
+
+    /*reaction17
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "N2 + O+ = O + N2+";
+        controlT transrotational;
+		
+		forward
+		{
+			A        3.40e16;
+			beta     -2.0;
+			Ta       23000;
+		}
+		reverse
+		{
+			A        2.48e16;
+			beta     -2.2;
+			Ta       0.0;
+		}
+    }*/
+
+    /*reaction18
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "N + NO+ = NO + N+";
+        controlT transrotational;
+		
+		forward
+		{
+			A        1.00e16;
+			beta     -0.93;
+			Ta       61000;
+		}
+		reverse
+		{
+			A        4.80e11;
+			beta     0.0;
+			Ta       0.0;
+		}
+    }*/
+
+    /*reaction19
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "O2 + NO+ = NO + O2+";
+        controlT transrotational;
+		
+		forward
+		{
+			A        1.80e15;
+			beta     0.17;
+			Ta       33000;
+		}
+		reverse
+		{
+			A        1.80e10;
+			beta     0.5;
+			Ta       0.0;
+		}
+    }*/
+
+    /*reaction20
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "O + NO+ = O2 + N+";
+        controlT transrotational;
+		
+		forward
+		{
+			A        1.34e10;
+			beta     0.31;
+			Ta       77270;
+		}
+		reverse
+		{
+			A        1.00e11;
+			beta     0.0;
+			Ta       0.0;
+		}
+    }*/
+
+    /*reaction21
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "NO + O2 = NO+ + e- + O2";
+        controlT transrotational;
+		
+		forward
+		{
+			A        8.80e12;
+			beta     -0.35;
+			Ta       108000;
+		}
+		reverse
+		{
+			A        8.80e20;
+			beta     -2.5;
+			Ta       0.0;
+		}
+    }*/
+
+    /*reaction22
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "O2 + O = 2O + O";
+        controlT transrotational;
+		
+		forward
+		{
+			A        9.00e16;
+			beta     -1.0;
+			Ta       59500;
+		}
+		reverse
+		{
+			A        7.50e10;
+			beta     -0.5;
+			Ta       0.0;
+		}
+    }*/
+    
+    /*reaction23
+    {
+        type      nonEquilibriumReversibleArrheniusReaction;
+        reaction "O2 + O2 = 2O + O2";
+        controlT transrotational;
+		
+		forward
+		{
+			A        3.24e16;
+			beta     -1.0;
+			Ta       59500;
+		}
+		reverse
+		{
+			A        2.70e10;
+			beta     -0.5;
+			Ta       0.0;
+		}
+    }*/
+    
+    /*reaction24
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "O2 + N2 = 2O + N2";
+        controlT transrotational;
+		
+		forward
+		{
+			A        7.20e15;
+			beta     -1.0;
+			Ta       59500;
+		}
+		reverse
+		{
+			A        6.00e09;
+			beta     -0.5;
+			Ta       0.0;
+		}
+    }*/
+
+    /*reaction25
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "N2 + N2 = 2N + N2";
+        controlT transrotational;
+		
+		forward
+		{
+			A        4.70e14;
+			beta     -0.5;
+			Ta       113000;
+		}
+		reverse
+		{
+			A        2.72e10;
+			beta     -0.5;
+			Ta       0.0;
+		}
+    }*/
+
+    /*reaction26_O
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "NO + O = N + O + O";
+        controlT transrotational;
+		
+		forward
+		{
+			A        7.80e17;
+			beta     -1.5;
+			Ta       75500;
+		}
+		reverse
+		{
+			A        2.0e14;
+			beta     -1.5;
+			Ta       0.0;
+		}
+    }*/
+
+    /*reaction26_N
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "NO + N = N + O + N";
+        controlT transrotational;
+		
+		forward
+		{
+			A        7.80e17;
+			beta     -1.5;
+			Ta       75500;
+		}
+		reverse
+		{
+			A        2.0e14;
+			beta     -1.5;
+			Ta       0.0;
+		}
+    }*/
+
+    /*reaction26_NO
+    {
+        type     nonEquilibriumReversibleArrheniusReaction;
+        reaction "NO + NO = N + O + NO";
+        controlT transrotational;
+		
+		forward
+		{
+			A        7.80e17;
+			beta     -1.5;
+			Ta       75500;
+		}
+		reverse
+		{
+			A        2.0e14;
+			beta     -1.5;
+			Ta       0.0;
+		}
+    }*/
+}

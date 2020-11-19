@@ -38,6 +38,7 @@ Reversible2Reaction
 (
     const ReactionType<ReactionThermo>& reaction,
     const ReactionRate& k,
+    const scalar KeqMKS, // NEW A.Nekris 06/11/2020
     const DynamicList<scalar> ni,
     const DynamicList<scalar> A0,
     const DynamicList<scalar> A1,
@@ -48,6 +49,7 @@ Reversible2Reaction
 :
     ReactionType<ReactionThermo>(reaction),
     k_(k),
+    KeqMKS_(KeqMKS), // NEW A.Nekris 06/11/2020
     ni_(ni),
     A0_(A0),
     A1_(A1),
@@ -72,7 +74,8 @@ Reversible2Reaction
 )
 :
     ReactionType<ReactionThermo>(species, thermoDatabase, is),
-    k_(species, is)
+    k_(species, is),
+    KeqMKS_(readScalar(is)) // NEW A.Nekris 06/11/2020
 {
     forAll(ni_, i)
     {
@@ -122,6 +125,7 @@ Reversible2Reaction
 :
     ReactionType<ReactionThermo>(species, thermoDatabase, dict),
     k_(species, dict),
+    KeqMKS_(readScalar(dict.lookup("KeqMKS"))), // NEW A.Nekris 06/11/2020
     ni_(dict.lookup("ni")),
     A0_(dict.lookup("A0")),
     A1_(dict.lookup("A1")),
@@ -146,6 +150,7 @@ Reversible2Reaction
 :
     ReactionType<ReactionThermo>(rr, species),
     k_(rr.k_),
+    KeqMKS_(rr.KeqMKS_), // NEW A.Nekris 06/11/2020
     ni_(rr.ni_),
     A0_(rr.A0_),
     A1_(rr.A1_),
@@ -253,7 +258,7 @@ Foam::scalar Foam::Reversible2Reaction
     const scalar A3Mix = boundedLinearInterpolation(nDMix, ni_[nLow], ni_[nHigh], A3_[nLow], A3_[nHigh]);
     const scalar A4Mix = boundedLinearInterpolation(nDMix, ni_[nLow], ni_[nHigh], A4_[nLow], A4_[nHigh]);
 
-    return exp(A0Mix/Z + A1Mix + A2Mix*log(Z) + A3Mix*Z + A4Mix*sqr(Z));
+    return exp(A0Mix/Z + A1Mix + A2Mix*log(Z) + A3Mix*Z + A4Mix*sqr(Z))*KeqMKS_; // NEW A.Nekris 06/11/2020
 }
 
 
