@@ -13,9 +13,15 @@ DIFF_FOUND=false
 
 for FILE in $FILES_TO_TEST
 do
-  if [ `diff $RES_PATH/$FILE $SOL_PATH/$FILE | wc -l` -ne 0 ];
+  if [ -f $RES_PATH/$FILE ];
   then
-      echo "  > TEST FAILED: $FILE";
+      if [ `diff $RES_PATH/$FILE $SOL_PATH/$FILE | wc -l` -ne 0 ];
+      then
+          echo "  > TEST FAILED: $FILE";
+          DIFF_FOUND=true;
+      fi
+  else
+      echo "  > RESULTS FILE MISSING: $RES_PATH/$FILE";
       DIFF_FOUND=true;
   fi
 done
@@ -23,4 +29,6 @@ done
 if [ "$DIFF_FOUND" = false ];
 then
     echo "  > TESTS PASSED";
+else
+    echo "  > TESTS FAILED";
 fi

@@ -1,8 +1,8 @@
 /*--------------------------------*- C++ -*----------------------------------*\
 | =========                 |                                                 |
 | \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  2.3.0                                 |
-|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|  \\    /   O peration     |                                                 |
+|   \\  /    A nd           | Copyright (C) 2016-2020 hyStrath                |
 |    \\/     M anipulation  |                                                 |
 \*---------------------------------------------------------------------------*/
 FoamFile
@@ -11,14 +11,9 @@ FoamFile
     format      ascii;
     class       dictionary;
     location    "constant";
-    object      thermoDEM;
+    object      thermoDEM_TRV;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
-/* Hf data extracted from http://www.update.uu.se/~jolkkonen/pdf/CRC_TD.pdf
-      Sutherland data: http://www.lmnoeng.com/Flow/GasViscosity.php
-             CEA data: Eilmer-3, gas-model.lua (Boushehri et al. (1987) and Svehla (1994))
-       unused:  http://encyclopedia.airliquide.com/Encyclopedia.asp?GasID=3 */
 
 // Atoms and molecules data
 
@@ -26,7 +21,6 @@ N2
 {
     specie
     {
-        nMoles          1;
         molWeight       28.0134;
         particleType    2;
         charge          0;
@@ -65,6 +59,7 @@ N2
         {
             mu          0;
             kappa       0;
+            kappave     0;
         }
         
         SutherlandEucken
@@ -97,11 +92,10 @@ N2
     }
 }
 
-/*O2
+O2
 {
     specie
     {
-        nMoles          1;
         molWeight       31.9988;
         particleType    2;
         charge          0;
@@ -132,6 +126,7 @@ N2
         {
             mu          0;
             kappa       0;
+            kappave     0;
         }
         
         SutherlandEucken
@@ -168,7 +163,6 @@ NO
 {
     specie
     {
-        nMoles          1;
         molWeight       30.0061;
         particleType    2;
         charge          0;
@@ -208,6 +202,7 @@ NO
         {
             mu          0;
             kappa       0;
+            kappave     0;
         }
         
         BlottnerEucken
@@ -232,13 +227,12 @@ NO
                   );
         }
     }
-}*/
+}
 
 N
 {
     specie
     {
-        nMoles          1;
         molWeight       14.0067;
         particleType    1;
         charge          0;
@@ -265,6 +259,7 @@ N
         {
             mu          0;
             kappa       0;
+            kappave     0;
         }
         
         BlottnerEucken
@@ -289,11 +284,10 @@ N
     }
 }
     
-/*O
+O
 {
     specie
     {
-        nMoles          1;
         molWeight       15.9994;
         particleType    1;
         charge          0;
@@ -322,6 +316,7 @@ N
         {
             mu          0;
             kappa       0;
+            kappave     0;
         }
         
         BlottnerEucken
@@ -346,13 +341,12 @@ N
     }
 }
     
-// Ions and electron data
+// Ions and free-electron data
  
 N2+
 {
     specie
     {
-        nMoles          1;
         molWeight       28.0128514;
         particleType    3;
         charge          1;
@@ -392,6 +386,7 @@ N2+
         {
             mu          0;
             kappa       0;
+            kappave     0;
         }
         
         BlottnerEucken
@@ -407,7 +402,6 @@ O2+
 {
     specie
     {
-        nMoles          1;
         molWeight       31.9982514;
         particleType    3;
         charge          1;
@@ -445,6 +439,7 @@ O2+
         {
             mu          0;
             kappa       0;
+            kappave     0;
         }
         
         BlottnerEucken
@@ -460,7 +455,6 @@ NO+
 {
     specie
     {
-        nMoles          1;
         molWeight       30.0055514;
         particleType    3;
         charge          1;
@@ -491,6 +485,7 @@ NO+
         {
             mu          0;
             kappa       0;
+            kappave     0;
         }
         
         BlottnerEucken
@@ -506,7 +501,6 @@ N+
 {
     specie
     {
-        nMoles          1;
         molWeight       14.0061514;
         particleType    3;
         charge          1;
@@ -537,6 +531,7 @@ N+
         {
             mu          0;
             kappa       0;
+            kappave     0;
         }
         
         BlottnerEucken
@@ -552,7 +547,6 @@ O+
 {
     specie
     {
-        nMoles          1;
         molWeight       15.9988514;
         particleType    3;
         charge          1;
@@ -579,6 +573,7 @@ O+
         {
             mu          0;
             kappa       0;
+            kappave     0;
         }
         
         BlottnerEucken
@@ -594,11 +589,10 @@ e-
 {
     specie
     {
-        nMoles          1;
         molWeight       5.4858e-4;
         particleType    0;
         charge          -1;
-        diameter        5.6e-15; //1.0e-10;
+        diameter        1.0e-10; // 5.6e-15;
         dissocEnergy    0; 
         omega           0.7;
         noVibTemp       0;
@@ -616,6 +610,7 @@ e-
         {
             mu          0;
             kappa       0;
+            kappave     0;
         }
         
         BlottnerEucken
@@ -633,7 +628,6 @@ Ar
 {
     specie
     {
-        nMoles          1;
         molWeight       39.948;
         particleType    1;
         charge          0;
@@ -655,6 +649,7 @@ Ar
         {
             mu          0;
             kappa       0;
+            kappave     0;
         }
         
         SutherlandEucken
@@ -686,7 +681,6 @@ CO2
 {
     specie
     {
-        nMoles          1;
         molWeight       44.0095;
         particleType    2;
         charge          0;
@@ -712,6 +706,7 @@ CO2
         {
             mu          0;
             kappa       0;
+            kappave     0;
         }
         
         BlottnerEucken
@@ -733,7 +728,6 @@ CO
 {
     specie
     {
-        nMoles          1;
         molWeight       28.0101;
         particleType    2;
         charge          0;
@@ -757,6 +751,7 @@ CO
         {
             mu          0;
             kappa       0;
+            kappave     0;
         }
         
         BlottnerEucken
@@ -772,7 +767,6 @@ C
 {
     specie
     {
-        nMoles          1;
         molWeight       12.0107;
         particleType    1;
         charge          0;
@@ -794,6 +788,7 @@ C
         {
             mu          0;
             kappa       0;
+            kappave     0;
         }
         
         BlottnerEucken
@@ -805,13 +800,12 @@ C
     }
 }
 
-// Hydrogen compounds, from gas-model.lua
+// Hydrogen compounds
 
 H
 {
     specie
     {
-        nMoles          1;
         molWeight       1.00794;
         particleType    1;
         charge          0;
@@ -833,6 +827,7 @@ H
         {
             mu          0;
             kappa       0;
+            kappave     0;
         }
         
         CEA
@@ -854,7 +849,6 @@ H2
 {
     specie
     {
-        nMoles          1;
         molWeight       2.01588;
         particleType    2;
         charge          0;
@@ -876,6 +870,7 @@ H2
         {
             mu          0;
             kappa       0;
+            kappave     0;
         }
         
         CEA
@@ -899,7 +894,6 @@ H2O
 {
     specie
     {
-        nMoles          1;
         molWeight       18.01528;
         particleType    2;
         charge          0;
@@ -925,6 +919,7 @@ H2O
         {
             mu          0;
             kappa       0;
+            kappave     0;
         }
         
         CEA
@@ -948,7 +943,6 @@ OH
 {
     specie
     {
-        nMoles          1;
         molWeight       17.00734;
         particleType    2;
         charge          0;
@@ -970,6 +964,7 @@ OH
         {
             mu          0;
             kappa       0;
+            kappave     0;
         }
         
         CEA
@@ -991,7 +986,6 @@ HO2
 {
     specie
     {
-        nMoles          1;
         molWeight       33.00674;
         particleType    2;
         charge          0;
@@ -1016,6 +1010,7 @@ HO2
         {
             mu          0;
             kappa       0;
+            kappave     0;
         }
     }
 }
@@ -1024,7 +1019,6 @@ NO2
 {
     specie
     {
-        nMoles          1;
         molWeight       46.0055;
         particleType    2;
         charge          0;
@@ -1050,6 +1044,7 @@ NO2
         {
             mu          0;
             kappa       0;
+            kappave     0;
         }
         
         CEA
@@ -1071,7 +1066,6 @@ H2O2
 {
     specie
     {
-        nMoles          1;
         molWeight       34.01468;
         particleType    2;
         charge          0;
@@ -1100,6 +1094,7 @@ H2O2
         {
             mu          0;
             kappa       0;
+            kappave     0;
         }
     }
 }
@@ -1108,7 +1103,6 @@ HNO
 {
     specie
     {
-        nMoles          1;
         molWeight       31.01404;
         particleType    2;
         charge          0;
@@ -1130,8 +1124,9 @@ HNO
         {
             mu          0;
             kappa       0;
+            kappave     0;
         }
     }
-}*/
+}
 
 // ************************************************************************* //

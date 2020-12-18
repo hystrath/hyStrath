@@ -64,9 +64,12 @@ chemistryVibrationCoupling
         reciprocalU     3;
         simpleHarmonicOscillatorVibCutOff
         {
-            N2  34;
-            O2  27;
-            NO  28;
+            N2   34;
+            O2   27;
+            NO   28;
+            N2+  34;
+            O2+  27;
+            NO+  28;
         }
     }
 }

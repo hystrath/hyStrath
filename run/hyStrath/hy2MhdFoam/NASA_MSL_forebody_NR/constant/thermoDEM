@@ -669,7 +669,7 @@ e-
         molWeight       5.4858e-4;
         particleType    0;
         charge          -1;
-        diameter        5.6e-15; //1.0e-10;
+        diameter        1.0e-10; // 5.6e-15;
         dissocEnergy    0; 
         omega           0.7;
         noVibTemp       0;

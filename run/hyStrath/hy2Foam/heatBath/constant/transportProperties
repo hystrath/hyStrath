@@ -18,7 +18,7 @@ FoamFile
 rarefiedParameters
 {
     computeFieldAndBoundaries      false;
-    computeMfpBoundaries           true;
+    computeMfpBoundaries           false;
     
     mfpModel                       variableHardSphere;
     writeMfpSpecies                off;
@@ -44,7 +44,7 @@ transportModels
     writeWallHeatFlux              off;
     
     multiSpeciesTransport          noSpeciesDiffusion;
-    binaryDiffusionModel         noBinaryDiffusionModel;
+    binaryDiffusionModel           noBinaryDiffusionModel;
     
     
     //- Parameters for transport modelling

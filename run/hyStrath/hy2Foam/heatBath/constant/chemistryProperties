@@ -25,13 +25,18 @@ chemistry           on;
 
 initialChemicalTimeStep 1.0e-9;
 
+Euler2ImplicitCoeffs
+{
+    cTauChem        1.0;
+    equilibriumRateLimiter off;
+}
+
 modifiedTemperature off;
 modifiedTemperatureCoeffs
 {
     Tmin      800.0;
     epsilon   80.0;
 }
-
 
 chemistryVibrationCoupling
 {
@@ -64,17 +69,15 @@ chemistryVibrationCoupling
         reciprocalU     3;
         simpleHarmonicOscillatorVibCutOff
         {
-            N2  34;
-            O2  27;
-            NO  28;
+            N2   34;
+            O2   27;
+            NO   28;
+            N2+  34;
+            O2+  27;
+            NO+  28;
         }
     }
 }
 
-Euler2ImplicitCoeffs
-{
-    cTauChem        1.0;
-    equilibriumRateLimiter off;
-}
 
 // ************************************************************************* //

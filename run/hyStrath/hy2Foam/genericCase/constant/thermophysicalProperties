@@ -35,7 +35,7 @@ chemistryReader foam2ChemistryReader;
 
 foamChemistryFile "$FOAM_CASE/constant/chemDicts/hTCReactionsDPLR";
 
-foamChemistryThermoFile "$FOAM_CASE/constant/thermoDEM";
+foamChemistryThermoFile "$FOAM_CASE/constant/thermoDEM_TRV";
 
 twoTemperatureDictFile "$FOAM_CASE/constant/thermo2TModel";
 

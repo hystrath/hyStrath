@@ -19,22 +19,30 @@ DIFF_FOUND=false
 
 for FILE in $FILES_TO_TEST
 do
-  NLINES=`wc -l $RES_PATH/$FILE | awk '{print $1}'`
+  if [ -f $RES_PATH/$FILE ];
+  then
 
-  for LINE in `seq 1 $NLINES`
-  do
-    RES_LINEVALUE=`sed "${LINE}q;d" $RES_PATH/$FILE | awk '{print $2}'`
-    SOL_LINEVALUE=`sed "${LINE}q;d" $SOL_PATH/$FILE | awk '{print $2}'`
+    NLINES=`wc -l $RES_PATH/$FILE | awk '{print $1}'`
 
-    RES_LINEVALUE=`awk '{ print +$1 }' <<< $RES_LINEVALUE`
-    SOL_LINEVALUE=`awk '{ print +$1 }' <<< $SOL_LINEVALUE`
+    for LINE in `seq 1 $NLINES`
+    do
+      RES_LINEVALUE=`sed "${LINE}q;d" $RES_PATH/$FILE | awk '{print $2}'`
+      SOL_LINEVALUE=`sed "${LINE}q;d" $SOL_PATH/$FILE | awk '{print $2}'`
 
-    if [ `echo "a = ($RES_LINEVALUE - $SOL_LINEVALUE)/$SOL_LINEVALUE; sqrt(a*a) > $TOLERANCE" | bc -l` -eq 1 ];
-    then
-        echo "  > TEST FAILED: $FILE, line $LINE";
-        DIFF_FOUND=true;
-    fi
-  done
+      RES_LINEVALUE=`awk '{ print +$1 }' <<< $RES_LINEVALUE`
+      SOL_LINEVALUE=`awk '{ print +$1 }' <<< $SOL_LINEVALUE`
+
+      if [ `echo "a = ($RES_LINEVALUE - $SOL_LINEVALUE)/$SOL_LINEVALUE; sqrt(a*a) > $TOLERANCE" | bc -l` -eq 1 ];
+      then
+          echo "  > TEST FAILED: $FILE, line $LINE";
+          DIFF_FOUND=true;
+      fi
+    done
+
+  else
+    echo "  > RESULTS FILE MISSING: $RES_PATH/$FILE";
+    DIFF_FOUND=true;
+  fi
 done
 
 
@@ -44,40 +52,58 @@ RES_PATH="postProcessing/forceCoeffs/0"
 SOL_PATH="gnuplot/solution/forceCoeffs/0"
 FILE_TO_TEST="coefficient.dat"
 
-RES_LASTVALUE=`tail -1 $RES_PATH/$FILE_TO_TEST | awk '{print $3}'`
-SOL_LASTVALUE=`tail -1 $SOL_PATH/$FILE_TO_TEST | awk '{print $3}'`
-
-RES_LASTVALUE=`awk '{ print +$1 }' <<< $RES_LASTVALUE`
-SOL_LASTVALUE=`awk '{ print +$1 }' <<< $SOL_LASTVALUE`
-
-if [ `echo "$SOL_LASTVALUE*(1.0+$TOLERANCE) < $RES_LASTVALUE" | bc -l` -eq 1 ] || [ `echo "$SOL_LASTVALUE*(1.0-$TOLERANCE) > $RES_LASTVALUE" | bc -l` -eq 1 ];
+if [ -f $RES_PATH/$FILE_TO_TEST ];
 then
-    echo "  > TEST FAILED: $FILE_TO_TEST";
-    DIFF_FOUND=true;
+
+  RES_LASTVALUE=`tail -1 $RES_PATH/$FILE_TO_TEST | awk '{print $3}'`
+  SOL_LASTVALUE=`tail -1 $SOL_PATH/$FILE_TO_TEST | awk '{print $3}'`
+
+  RES_LASTVALUE=`awk '{ print +$1 }' <<< $RES_LASTVALUE`
+  SOL_LASTVALUE=`awk '{ print +$1 }' <<< $SOL_LASTVALUE`
+
+  if [ `echo "$SOL_LASTVALUE*(1.0+$TOLERANCE) < $RES_LASTVALUE" | bc -l` -eq 1 ] || [ `echo "$SOL_LASTVALUE*(1.0-$TOLERANCE) > $RES_LASTVALUE" | bc -l` -eq 1 ];
+  then
+      echo "  > TEST FAILED: $FILE_TO_TEST";
+      DIFF_FOUND=true;
+  fi
+  
+else
+  echo "  > RESULTS FILE MISSING: $RES_PATH/$FILE_TO_TEST";
+  DIFF_FOUND=true;
 fi
 
 
 # Integrated wall heat flux
 
-RES_PATH="postProcessing/"
+RES_PATH="postProcessing"
 SOL_PATH="gnuplot/solution/"
 FILE_TO_TEST="logIntegratedWallHeatFlux"
 
-cat log.hy2Foam | grep -e 'named cone:' -e '^Time =' | awk '/^Time =/,/^Time =/ {lastc = $0; next}{ if ( lastc != "") { print lastc; lastc = ""; } print }' $1 | cut -d ':' -f 2 | cut -d '=' -f 2 | paste -d ' ' - - > $RES_PATH/$FILE_TO_TEST
-
-RES_LASTVALUE=`tail -1 $RES_PATH/$FILE_TO_TEST | awk '{print $2}'`
-SOL_LASTVALUE=`tail -1 $SOL_PATH/$FILE_TO_TEST | awk '{print $2}'`
-
-RES_LASTVALUE=`awk '{ print +$1 }' <<< $RES_LASTVALUE`
-SOL_LASTVALUE=`awk '{ print +$1 }' <<< $SOL_LASTVALUE`
-
-if [ `echo "$SOL_LASTVALUE*(1.0+$TOLERANCE) < $RES_LASTVALUE" | bc -l` -eq 1 ] || [ `echo "$SOL_LASTVALUE*(1.0-$TOLERANCE) > $RES_LASTVALUE" | bc -l` -eq 1 ];
+if [[ ( -f $RES_PATH/$FILE_TO_TEST ) && ( -f log.hy2Foam ) ]];
 then
-    echo "  > TEST FAILED: $FILE_TO_TEST";
-    DIFF_FOUND=true;
+
+  cat log.hy2Foam | grep -e 'named cone:' -e '^Time =' | awk '/^Time =/,/^Time =/ {lastc = $0; next}{ if ( lastc != "") { print lastc; lastc = ""; } print }' $1 | cut -d ':' -f 2 | cut -d '=' -f 2 | paste -d ' ' - - > $RES_PATH/$FILE_TO_TEST
+
+  RES_LASTVALUE=`tail -1 $RES_PATH/$FILE_TO_TEST | awk '{print $2}'`
+  SOL_LASTVALUE=`tail -1 $SOL_PATH/$FILE_TO_TEST | awk '{print $2}'`
+
+  RES_LASTVALUE=`awk '{ print +$1 }' <<< $RES_LASTVALUE`
+  SOL_LASTVALUE=`awk '{ print +$1 }' <<< $SOL_LASTVALUE`
+
+  if [ `echo "$SOL_LASTVALUE*(1.0+$TOLERANCE) < $RES_LASTVALUE" | bc -l` -eq 1 ] || [ `echo "$SOL_LASTVALUE*(1.0-$TOLERANCE) > $RES_LASTVALUE" | bc -l` -eq 1 ];
+  then
+      echo "  > TEST FAILED: $FILE_TO_TEST";
+      DIFF_FOUND=true;
+  fi
+
+else
+  echo "  > RESULTS FILE MISSING: $RES_PATH/$FILE_TO_TEST OR log.hy2Foam";
+  DIFF_FOUND=true;
 fi
 
 if [ "$DIFF_FOUND" = false ];
 then
     echo "  > TESTS PASSED";
+else
+    echo "  > TESTS FAILED";  
 fi
