@@ -572,7 +572,7 @@ Foam::multiSpeciesTransportModel::getDiffusiveWallHeatFlux() const
                 }
             }  
             
-            heatFlux_diff -= Js[speciei]*fvc::interpolate(hai);
+            heatFlux_diff = Js[speciei]*fvc::interpolate(hai);
         }
     }
     
