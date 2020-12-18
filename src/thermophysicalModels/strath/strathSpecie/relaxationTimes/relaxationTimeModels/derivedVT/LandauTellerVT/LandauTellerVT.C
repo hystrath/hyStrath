@@ -223,12 +223,19 @@ void Foam::LandauTellerVT<ThermoType>::correct()
     const scalarField& pCells = p.internalField();
     const scalarField& TCells = T.internalField();
 
+    // Term #6 in Eq. (16)
+    // In: NASA-TM-101528 (Gupta, Yos, Thompson: Feb. 1989)
+    // Document ID: 19890011822
+    // A review of reaction rates and thermodynamic and transport 
+    // properties for the 11-species air model for chemical and thermal
+    // nonequilibrium calculations to 30000 K
+    
     forAll(molecules(), moli)
     {
         const label speciei = thermo_.composition().moleculeIds(moli);
         
         const volScalarField& pD = thermo_.composition().pD(speciei);
-        const volScalarField& ev = thermo_.composition().hevel(speciei);
+        const volScalarField& ev = thermo_.composition().hev(speciei);
         const volScalarField& tauVT = this->tauVT_[moli];
         volScalarField& QVT = this->QVT_[moli];
 
@@ -240,7 +247,7 @@ void Foam::LandauTellerVT<ThermoType>::correct()
         forAll(QVTCells, celli)
         {
             const scalar evZCelli =
-                thermo_.composition().HEvel
+                thermo_.composition().HEv
                 (
                     speciei,
                     pCells[celli],
@@ -254,7 +261,7 @@ void Foam::LandauTellerVT<ThermoType>::correct()
         /*forAll(QVTmode_[moli], vibMode) // ABORTIVE WORK
         {
             const volScalarField& hvmode =
-                thermo_.composition().hevel_mode(speciei, vibMode);
+                thermo_.composition().hev_mode(speciei, vibMode);
             const scalarField& hvmodeCells = hvmode.internalField();
             const scalarField& tauVTmodeCells =
                 this->tauVTmode_[moli][vibMode].internalField();
@@ -264,7 +271,7 @@ void Foam::LandauTellerVT<ThermoType>::correct()
             forAll(QVTmodeCells, celli) 
             {
                 scalar hvZmodeCells =
-                    thermo_.composition().HEvel_mode
+                    thermo_.composition().HEv_mode
                     (
                         speciei,
                         vibMode,
