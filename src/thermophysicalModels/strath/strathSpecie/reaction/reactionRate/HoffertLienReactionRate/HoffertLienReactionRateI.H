@@ -23,9 +23,12 @@ License
 
 \*---------------------------------------------------------------------------*/
 
+namespace Foam
+{
+
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-inline Foam::HoffertLienReactionRate::HoffertLienReactionRate
+inline HoffertLienReactionRate::HoffertLienReactionRate
 (
     const scalar A,
     const scalar beta,
@@ -38,7 +41,7 @@ inline Foam::HoffertLienReactionRate::HoffertLienReactionRate
 {}
 
 
-inline Foam::HoffertLienReactionRate::HoffertLienReactionRate
+inline HoffertLienReactionRate::HoffertLienReactionRate
 (
     const speciesTable&,
     Istream& is
@@ -52,7 +55,7 @@ inline Foam::HoffertLienReactionRate::HoffertLienReactionRate
 }
 
 
-inline Foam::HoffertLienReactionRate::HoffertLienReactionRate
+inline HoffertLienReactionRate::HoffertLienReactionRate
 (
     const speciesTable&,
     const dictionary& dict
@@ -66,7 +69,7 @@ inline Foam::HoffertLienReactionRate::HoffertLienReactionRate
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-inline Foam::scalar Foam::HoffertLienReactionRate::operator()
+inline scalar HoffertLienReactionRate::operator()
 (
     const scalar p,
     const scalar T,
@@ -88,7 +91,7 @@ inline Foam::scalar Foam::HoffertLienReactionRate::operator()
 }
 
 
-inline void Foam::HoffertLienReactionRate::write(Ostream& os) const
+inline void HoffertLienReactionRate::write(Ostream& os) const
 {
     os.writeKeyword("A") << A_ << token::END_STATEMENT << nl;
     os.writeKeyword("beta") << beta_ << token::END_STATEMENT << nl;
@@ -96,7 +99,7 @@ inline void Foam::HoffertLienReactionRate::write(Ostream& os) const
 }
 
 
-inline Foam::Ostream& Foam::operator<<
+inline Ostream& operator<<
 (
     Ostream& os,
     const HoffertLienReactionRate& arr
@@ -108,5 +111,9 @@ inline Foam::Ostream& Foam::operator<<
     return os;
 }
 
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+} // End namespace Foam
 
 // ************************************************************************* //

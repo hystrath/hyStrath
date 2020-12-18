@@ -187,7 +187,7 @@ void Foam::multi2ComponentMixture<ThermoType>::correctVibTempAssociativity
         )()
     );
 
-    List<label> vTA(chemDict.lookup("vibTempAssociativity"));
+    labelList vTA(chemDict.lookup("vibTempAssociativity"));
     label solvedVibEqCounter = 0;
 
     forAll(Y_, speciei)
@@ -256,7 +256,7 @@ Foam::multi2ComponentMixture<ThermoType>::fillHackOfSolvedVibEqSpeciesTable()
 {
     forAll(Y_, speciei)
     {
-        // This species is either a neutral or a ionised molecule
+        // This species is either a neutral or an ionised molecule
         if (speciesData_[speciei].noVibrationalTemp() != 0)
         {
             solvedVibEqSpecies_.append(species_[speciei]);

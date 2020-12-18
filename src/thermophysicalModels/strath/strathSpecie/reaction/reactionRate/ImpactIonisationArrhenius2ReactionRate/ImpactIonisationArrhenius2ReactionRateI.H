@@ -23,9 +23,13 @@ License
 
 \*---------------------------------------------------------------------------*/
 
+namespace Foam
+{
+
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-inline Foam::ImpactIonisationArrhenius2ReactionRate::ImpactIonisationArrhenius2ReactionRate
+inline
+ImpactIonisationArrhenius2ReactionRate::ImpactIonisationArrhenius2ReactionRate
 (
     const DynamicList<scalar> Tbound,
     const DynamicList<scalar> A,
@@ -44,7 +48,8 @@ inline Foam::ImpactIonisationArrhenius2ReactionRate::ImpactIonisationArrhenius2R
 {}
 
 
-inline Foam::ImpactIonisationArrhenius2ReactionRate::ImpactIonisationArrhenius2ReactionRate
+inline
+ImpactIonisationArrhenius2ReactionRate::ImpactIonisationArrhenius2ReactionRate
 (
     const speciesTable&,
     Istream& is
@@ -81,7 +86,8 @@ inline Foam::ImpactIonisationArrhenius2ReactionRate::ImpactIonisationArrhenius2R
 }
 
 
-inline Foam::ImpactIonisationArrhenius2ReactionRate::ImpactIonisationArrhenius2ReactionRate
+inline
+ImpactIonisationArrhenius2ReactionRate::ImpactIonisationArrhenius2ReactionRate
 (
     const speciesTable&,
     const dictionary& dict
@@ -92,20 +98,22 @@ inline Foam::ImpactIonisationArrhenius2ReactionRate::ImpactIonisationArrhenius2R
     beta_(dict.lookup("beta")),
     Ta_(dict.lookup("Ta")),
     C_(dict.lookup("C")),
-    smoothingTemperatureRange_(readScalar(dict.lookup("smoothingTemperatureRange")))
+    smoothingTemperatureRange_
+    (
+        readScalar(dict.lookup("smoothingTemperatureRange"))
+    )
 {}
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-inline Foam::scalar Foam::ImpactIonisationArrhenius2ReactionRate::operator()
+inline scalar ImpactIonisationArrhenius2ReactionRate::operator()
 (
     const scalar p,
     const scalar T,
     const scalarField&
 ) const
 {
-    // NEW VINCENT 03/06/2016 *************************************************
     const label temperatureRange(findBounds(T));
 
     scalar A_range = A_[temperatureRange];
@@ -127,9 +135,13 @@ inline Foam::scalar Foam::ImpactIonisationArrhenius2ReactionRate::operator()
 
     ak *= Ta_range/T + C_range;
 
-    if(Tbound_.size() != 0)
+    if (Tbound_.size() != 0)
     {
-        if(T-Tbound_[temperatureRange-1] < smoothingTemperatureRange_ and T-Tbound_[temperatureRange-1] > 0)
+        if
+        (
+            T-Tbound_[temperatureRange-1] < smoothingTemperatureRange_
+         && T-Tbound_[temperatureRange-1] > 0
+        )
         {
             A_range = A_[temperatureRange-1];
             beta_range = beta_[temperatureRange-1];
@@ -150,10 +162,18 @@ inline Foam::scalar Foam::ImpactIonisationArrhenius2ReactionRate::operator()
 
             ak2 *= Ta_range/T + C_range;
 
-            const scalar alpha = (Tbound_[temperatureRange-1]+smoothingTemperatureRange_ - T)/(2.0*smoothingTemperatureRange_);
+            const scalar alpha =
+                (
+                    Tbound_[temperatureRange-1] + smoothingTemperatureRange_ - T
+                )
+              / (2.0*smoothingTemperatureRange_);
+              
             return ak*(1.0-alpha) + ak2*alpha;
         }
-        else if(T-Tbound_[temperatureRange] > -smoothingTemperatureRange_ and T-Tbound_[temperatureRange] < 0)
+        else if
+        (
+            T-Tbound_[temperatureRange] > -smoothingTemperatureRange_
+         && T-Tbound_[temperatureRange] < 0)
         {
             A_range = A_[temperatureRange+1];
             beta_range = beta_[temperatureRange+1];
@@ -174,7 +194,12 @@ inline Foam::scalar Foam::ImpactIonisationArrhenius2ReactionRate::operator()
 
             ak2 *= Ta_range/T + C_range;
 
-            const scalar alpha = (Tbound_[temperatureRange]+smoothingTemperatureRange_ - T)/(2.0*smoothingTemperatureRange_);
+            const scalar alpha =
+                (
+                    Tbound_[temperatureRange] + smoothingTemperatureRange_ - T
+                )
+              / (2.0*smoothingTemperatureRange_);
+              
             return ak*alpha + ak2*(1.0-alpha);
         }
         else
@@ -186,22 +211,22 @@ inline Foam::scalar Foam::ImpactIonisationArrhenius2ReactionRate::operator()
     {
         return ak;
     }
-    // END NEW VINCENT 03/06/2016 *********************************************
 }
 
 
-inline void Foam::ImpactIonisationArrhenius2ReactionRate::write(Ostream& os) const
+inline void ImpactIonisationArrhenius2ReactionRate::write(Ostream& os) const
 {
     os.writeKeyword("Tbound") << Tbound_ << token::END_STATEMENT << nl;
     os.writeKeyword("A") << A_ << token::END_STATEMENT << nl;
     os.writeKeyword("beta") << beta_ << token::END_STATEMENT << nl;
     os.writeKeyword("Ta") << Ta_ << token::END_STATEMENT << nl;
     os.writeKeyword("C") << C_ << token::END_STATEMENT << nl;
-    os.writeKeyword("smoothingTemperatureRange") << smoothingTemperatureRange_ << token::END_STATEMENT << nl;
+    os.writeKeyword("smoothingTemperatureRange") << smoothingTemperatureRange_
+        << token::END_STATEMENT << nl;
 }
 
 
-inline Foam::Ostream& Foam::operator<<
+inline Ostream& operator<<
 (
     Ostream& os,
     const ImpactIonisationArrhenius2ReactionRate& arr
@@ -213,5 +238,9 @@ inline Foam::Ostream& Foam::operator<<
     return os;
 }
 
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+} // End namespace Foam
 
 // ************************************************************************* //

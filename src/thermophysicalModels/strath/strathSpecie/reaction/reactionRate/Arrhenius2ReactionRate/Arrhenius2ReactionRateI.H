@@ -23,9 +23,12 @@ License
 
 \*---------------------------------------------------------------------------*/
 
+namespace Foam
+{
+
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-inline Foam::Arrhenius2ReactionRate::Arrhenius2ReactionRate
+inline Arrhenius2ReactionRate::Arrhenius2ReactionRate
 (
     const scalar A,
     const scalar beta,
@@ -38,7 +41,7 @@ inline Foam::Arrhenius2ReactionRate::Arrhenius2ReactionRate
 {}
 
 
-inline Foam::Arrhenius2ReactionRate::Arrhenius2ReactionRate
+inline Arrhenius2ReactionRate::Arrhenius2ReactionRate
 (
     const speciesTable&,
     Istream& is
@@ -52,7 +55,7 @@ inline Foam::Arrhenius2ReactionRate::Arrhenius2ReactionRate
 }
 
 
-inline Foam::Arrhenius2ReactionRate::Arrhenius2ReactionRate
+inline Arrhenius2ReactionRate::Arrhenius2ReactionRate
 (
     const speciesTable&,
     const dictionary& dict
@@ -66,7 +69,7 @@ inline Foam::Arrhenius2ReactionRate::Arrhenius2ReactionRate
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-inline Foam::scalar Foam::Arrhenius2ReactionRate::operator()
+inline scalar Arrhenius2ReactionRate::operator()
 (
     const scalar p,
     const scalar T,
@@ -88,7 +91,7 @@ inline Foam::scalar Foam::Arrhenius2ReactionRate::operator()
 }
 
 
-inline void Foam::Arrhenius2ReactionRate::write(Ostream& os) const
+inline void Arrhenius2ReactionRate::write(Ostream& os) const
 {
     os.writeKeyword("A") << A_ << token::END_STATEMENT << nl;
     os.writeKeyword("beta") << beta_ << token::END_STATEMENT << nl;
@@ -96,7 +99,7 @@ inline void Foam::Arrhenius2ReactionRate::write(Ostream& os) const
 }
 
 
-inline Foam::Ostream& Foam::operator<<
+inline Ostream& operator<<
 (
     Ostream& os,
     const Arrhenius2ReactionRate& arr
@@ -108,5 +111,9 @@ inline Foam::Ostream& Foam::operator<<
     return os;
 }
 
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+} // End namespace Foam
 
 // ************************************************************************* //

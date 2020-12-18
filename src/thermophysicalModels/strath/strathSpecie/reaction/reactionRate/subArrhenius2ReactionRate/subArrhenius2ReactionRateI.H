@@ -23,9 +23,12 @@ License
 
 \*---------------------------------------------------------------------------*/
 
+namespace Foam
+{
+
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-inline Foam::subArrhenius2ReactionRate::subArrhenius2ReactionRate
+inline subArrhenius2ReactionRate::subArrhenius2ReactionRate
 (
     const DynamicList<scalar> Tbound,
     const DynamicList<scalar> A,
@@ -41,7 +44,7 @@ inline Foam::subArrhenius2ReactionRate::subArrhenius2ReactionRate
     smoothingTemperatureRange_(smoothingTemperatureRange)
 {}
 
-inline Foam::subArrhenius2ReactionRate::subArrhenius2ReactionRate
+inline subArrhenius2ReactionRate::subArrhenius2ReactionRate
 (
     const speciesTable&,
     Istream& is
@@ -73,7 +76,7 @@ inline Foam::subArrhenius2ReactionRate::subArrhenius2ReactionRate
 }
 
 
-inline Foam::subArrhenius2ReactionRate::subArrhenius2ReactionRate
+inline subArrhenius2ReactionRate::subArrhenius2ReactionRate
 (
     const speciesTable&,
     const dictionary& dict
@@ -83,13 +86,16 @@ inline Foam::subArrhenius2ReactionRate::subArrhenius2ReactionRate
     A_(dict.lookup("A")),
     beta_(dict.lookup("beta")),
     Ta_(dict.lookup("Ta")),
-    smoothingTemperatureRange_(readScalar(dict.lookup("smoothingTemperatureRange")))
+    smoothingTemperatureRange_
+    (
+        readScalar(dict.lookup("smoothingTemperatureRange"))
+    )
 {}
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-inline Foam::scalar Foam::subArrhenius2ReactionRate::operator()
+inline scalar subArrhenius2ReactionRate::operator()
 (
     const scalar p,
     const scalar T,
@@ -114,9 +120,13 @@ inline Foam::scalar Foam::subArrhenius2ReactionRate::operator()
         ak *= exp(-Ta_range/T);
     }
 
-    if(Tbound_.size() != 0)
+    if (Tbound_.size() != 0)
     {
-        if(T-Tbound_[temperatureRange-1] < smoothingTemperatureRange_ and T-Tbound_[temperatureRange-1] > 0)
+        if
+        (
+            T-Tbound_[temperatureRange-1] < smoothingTemperatureRange_
+         && T-Tbound_[temperatureRange-1] > 0
+        )
         {
             A_range = A_[temperatureRange-1];
             beta_range = beta_[temperatureRange-1];
@@ -134,10 +144,19 @@ inline Foam::scalar Foam::subArrhenius2ReactionRate::operator()
                 ak2 *= exp(-Ta_range/T);
             }
 
-            const scalar alpha = (Tbound_[temperatureRange-1]+smoothingTemperatureRange_ - T)/(2.0*smoothingTemperatureRange_);
+            const scalar alpha =
+                (
+                    Tbound_[temperatureRange-1] + smoothingTemperatureRange_ - T
+                )
+              / (2.0*smoothingTemperatureRange_);
+              
             return ak*(1.0-alpha) + ak2*alpha;
         }
-        else if(T-Tbound_[temperatureRange] > -smoothingTemperatureRange_ and T-Tbound_[temperatureRange] < 0)
+        else if
+        (
+            T-Tbound_[temperatureRange] > -smoothingTemperatureRange_
+         && T-Tbound_[temperatureRange] < 0
+        )
         {
             A_range = A_[temperatureRange+1];
             beta_range = beta_[temperatureRange+1];
@@ -155,7 +174,12 @@ inline Foam::scalar Foam::subArrhenius2ReactionRate::operator()
                 ak2 *= exp(-Ta_range/T);
             }
 
-            const scalar alpha = (Tbound_[temperatureRange]+smoothingTemperatureRange_ - T)/(2.0*smoothingTemperatureRange_);
+            const scalar alpha =
+                (
+                    Tbound_[temperatureRange] + smoothingTemperatureRange_ - T
+                )
+              / (2.0*smoothingTemperatureRange_);
+            
             return ak*alpha + ak2*(1.0-alpha);
         }
         else
@@ -170,17 +194,18 @@ inline Foam::scalar Foam::subArrhenius2ReactionRate::operator()
 }
 
 
-inline void Foam::subArrhenius2ReactionRate::write(Ostream& os) const
+inline void subArrhenius2ReactionRate::write(Ostream& os) const
 {
     os.writeKeyword("Tbound") << Tbound_ << token::END_STATEMENT << nl;
     os.writeKeyword("A") << A_ << token::END_STATEMENT << nl;
     os.writeKeyword("beta") << beta_ << token::END_STATEMENT << nl;
     os.writeKeyword("Ta") << Ta_ << token::END_STATEMENT << nl;
-    os.writeKeyword("smoothingTemperatureRange") << smoothingTemperatureRange_ << token::END_STATEMENT << nl;
+    os.writeKeyword("smoothingTemperatureRange") << smoothingTemperatureRange_
+        << token::END_STATEMENT << nl;
 }
 
 
-inline Foam::Ostream& Foam::operator<<
+inline Ostream& operator<<
 (
     Ostream& os,
     const subArrhenius2ReactionRate& arr
@@ -192,5 +217,9 @@ inline Foam::Ostream& Foam::operator<<
     return os;
 }
 
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+} // End namespace Foam
 
 // ************************************************************************* //

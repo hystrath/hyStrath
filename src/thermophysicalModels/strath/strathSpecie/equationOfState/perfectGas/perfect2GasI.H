@@ -78,7 +78,6 @@ inline Foam::autoPtr<Foam::perfect2Gas<Specie> > Foam::perfect2Gas<Specie>::New
 template<class Specie>
 inline Foam::scalar Foam::perfect2Gas<Specie>::rho(scalar p, scalar T) const
 {
-    //Info << "rho: "<< p/(this->R()*T) << endl;
     return p/(this->R()*T);
 }
 
