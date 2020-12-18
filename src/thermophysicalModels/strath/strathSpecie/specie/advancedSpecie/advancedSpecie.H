@@ -39,8 +39,7 @@ SourceFiles
 #include "word.H"
 #include "scalar.H"
 #include "dictionary.H"
-
-#include "DynamicList.H" // NEW VINCENT 24/02/2016
+#include "DynamicList.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -61,13 +60,13 @@ class advancedSpecie
         //- Name of specie
         word name_;
 
-        //- Number of moles of this component in the mixture
+        //- Number of moles of this component in the mixture (deprecated)
         scalar nMoles_;
 
         //- Molecular weight of specie [kg/kmol]
         scalar molWeight_;
 
-        //- Type of particle
+        //- Type of particle (electron, atom, molecule, ion)
         label particleType_;
 
         //- Charge of the particle
@@ -79,19 +78,20 @@ class advancedSpecie
         //- Temperature-viscosity coefficient
         scalar omega_;
 
-        //- Vibrational list with degeneracy and characteristic vibrational temperature [K] for each vib. mode
+        //- Degeneracy and characteristic vibrational temperature [K] for each
+        //  vibrational energy mode
         DynamicList<scalar> vibrationalList_;
 
         //- Dissociation potential of the particle [J/kg]
         scalar dissociationPotential_;
 
-        //- Number of characteristic vibrational temperatures
+        //- Number of vibrational energy modes
         label noVibrationalTemp_;
 
         //- Number of electronic levels
         label noElectronicLevels_;
 
-        //- Fraction of the first ionisation energy of a given species [J/kg]
+        //- Fraction (about 1/3) of the first ionisation energy [J/kg]
         scalar iHat_;
 
 
@@ -192,19 +192,22 @@ public:
             //- Return const access to the temperature-viscosity coefficient
             inline scalar omega() const;
 
-            //- Return const access to the vibrational list
+            //- Return const access to the degeneracy / characteristic
+            //  vibrational temperature list
             inline DynamicList<scalar> vibrationalList() const;
 
-            //- Return const access to the dissociation potential of the particle [K]
+            //- Return const access to the dissociation potential of the
+            //  particle [J/kg]
             inline scalar dissociationPotential() const;
 
-            //- Return const access to the number of characteristic vibrational temperatures
+            //- Return const access to the number of vibrational energy modes
             inline label noVibrationalTemp() const;
 
             //- Return const access to the number of electronic energy levels
             inline label noElectronicLevels() const;
 
-            //- Return const access to the fraction of the first ionisation energy
+            //- Return const access to the fraction of the first ionisation
+            //  energy [J/kg]
             inline scalar iHat() const;
 
 
@@ -226,12 +229,29 @@ public:
 
     // Friend operators
 
-        inline friend advancedSpecie operator+(const advancedSpecie&, const advancedSpecie&);
-        inline friend advancedSpecie operator-(const advancedSpecie&, const advancedSpecie&);
+        inline friend advancedSpecie operator+
+        (
+            const advancedSpecie&,
+            const advancedSpecie&
+        );
+        
+        inline friend advancedSpecie operator-
+        (
+            const advancedSpecie&,
+            const advancedSpecie&
+        );
 
-        inline friend advancedSpecie operator*(const scalar, const advancedSpecie&);
+        inline friend advancedSpecie operator*
+        (
+            const scalar,
+            const advancedSpecie&
+        );
 
-        inline friend advancedSpecie operator==(const advancedSpecie&, const advancedSpecie&);
+        inline friend advancedSpecie operator==
+        (
+            const advancedSpecie&,
+            const advancedSpecie&
+        );
 
 
     // Ostream Operator

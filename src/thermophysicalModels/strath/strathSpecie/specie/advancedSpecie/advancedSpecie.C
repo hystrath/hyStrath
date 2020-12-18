@@ -30,23 +30,26 @@ License
 /* * * * * * * * * * * * * * * public constants  * * * * * * * * * * * * * * */
 
 //- Universal gas constant (default in [J/(kmol K)])
-const Foam::scalar Foam::advancedSpecie::RR = constant::physicoChemical::R.value()*1000;
+const Foam::scalar
+Foam::advancedSpecie::RR = constant::physicoChemical::R.value()*1000;
 
 //- Standard pressure (default in [Pa])
-const Foam::scalar Foam::advancedSpecie::Pstd = constant::standard::Pstd.value();
+const Foam::scalar
+Foam::advancedSpecie::Pstd = constant::standard::Pstd.value();
 
 //- Standard temperature (default in [K])
-const Foam::scalar Foam::advancedSpecie::Tstd = constant::standard::Tstd.value();
+const Foam::scalar
+Foam::advancedSpecie::Tstd = constant::standard::Tstd.value();
 
 
 namespace Foam
 {
     defineTypeNameAndDebug(advancedSpecie, 0);
-}
+    
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::advancedSpecie::advancedSpecie(Istream& is)
+advancedSpecie::advancedSpecie(Istream& is)
 :
     name_(is),
     nMoles_(readScalar(is)),
@@ -69,25 +72,34 @@ Foam::advancedSpecie::advancedSpecie(Istream& is)
 }
 
 
-Foam::advancedSpecie::advancedSpecie(const dictionary& dict)
+advancedSpecie::advancedSpecie(const dictionary& dict)
 :
     name_(dict.dictName()),
-    nMoles_(readScalar(dict.subDict("specie").lookup("nMoles"))),
+    nMoles_(1.0),
     molWeight_(readScalar(dict.subDict("specie").lookup("molWeight"))),
     particleType_(readScalar(dict.subDict("specie").lookup("particleType"))),
-    particleCharge_(dict.subDict("specie").lookupOrDefault<scalar>("charge", 0)),
+    particleCharge_
+    (
+        dict.subDict("specie").lookupOrDefault<label>("charge", 0)
+    ),
     diameter_(readScalar(dict.subDict("specie").lookup("diameter"))),
     omega_(readScalar(dict.subDict("specie").lookup("omega"))),
     vibrationalList_(dict.subDict("thermodynamics").lookup("vibrationalList")),
-    dissociationPotential_(readScalar(dict.subDict("specie").lookup("dissocEnergy"))),
-    noVibrationalTemp_(readScalar(dict.subDict("specie").lookup("noVibTemp"))),
-    noElectronicLevels_(readScalar(dict.subDict("specie").lookup("noElecLevels"))),
-    iHat_(dict.subDict("specie").lookupOrDefault<scalar>("iHat", 0))
+    dissociationPotential_
+    (
+        dict.subDict("specie").lookupOrDefault<scalar>("dissocEnergy", 0.0)
+    ),
+    noVibrationalTemp_(readLabel(dict.subDict("specie").lookup("noVibTemp"))),
+    noElectronicLevels_
+    (
+        dict.subDict("specie").lookupOrDefault<label>("noElecLevels", 1)
+    ),
+    iHat_(dict.subDict("specie").lookupOrDefault<scalar>("iHat", 0.0))
 {}
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-void Foam::advancedSpecie::write(Ostream& os) const
+void advancedSpecie::write(Ostream& os) const
 {
     dictionary dict("specie");
     dictionary dict2("thermodynamics");
@@ -109,7 +121,7 @@ void Foam::advancedSpecie::write(Ostream& os) const
 
 // * * * * * * * * * * * * * * * Ostream Operator  * * * * * * * * * * * * * //
 
-Foam::Ostream& Foam::operator<<(Ostream& os, const advancedSpecie& as)
+Ostream& operator<<(Ostream& os, const advancedSpecie& as)
 {
     os  << as.name_ << tab
         << as.nMoles_ << tab
@@ -133,5 +145,9 @@ Foam::Ostream& Foam::operator<<(Ostream& os, const advancedSpecie& as)
     return os;
 }
 
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+} // End namespace Foam
 
 // ************************************************************************* //

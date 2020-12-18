@@ -373,6 +373,12 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
         )
         {
             headersOK = true;
+            
+            vibTempAssociativity_.set
+            (
+                i,
+                new label(0)
+            );
 
             X_.set
             (

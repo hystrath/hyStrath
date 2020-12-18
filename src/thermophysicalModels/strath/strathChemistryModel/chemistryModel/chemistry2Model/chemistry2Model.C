@@ -61,6 +61,7 @@ Foam::chemistry2Model<CompType, ThermoType>::chemistry2Model
     posNeutralSpecies_(),
     posIonisedSpecies_(),
 
+    computeVESourceTerm_(false),
     preferentialFactor_(nSpecie_),
     simpleHarmonicOscillatorVibCutOff_
     (
@@ -164,6 +165,13 @@ Foam::chemistry2Model<CompType, ThermoType>::chemistry2Model
         }
     }
     
+    if (this->CVModel_ != "none")
+    {
+        computeVESourceTerm_ =
+            this->subDict("chemistryVibrationCoupling")
+                .lookupOrDefault("computeSourceTerm", true);
+    }
+    
     if (this->CVModel_ == "ParkTTv")
     {
         FixedList<scalar, 2> initList(0.0);
@@ -209,7 +217,8 @@ Foam::chemistry2Model<CompType, ThermoType>::chemistry2Model
             / readScalar
               (
                   this->subDict("chemistryVibrationCoupling")
-                      .subDict(this->CVModel_ + "Coeffs").lookup("reciprocalU")
+                      .subDict(this->CVModel_ + "Coeffs")
+                      .lookup("reciprocalU")
               );
 
         forAll(simpleHarmonicOscillatorVibCutOff_, mol)
@@ -1137,7 +1146,7 @@ Foam::chemistry2Model<CompType, ThermoType>::Scv() const
         )
     );
 
-    if (this->chemistry() and this->CVModel_ != "none")
+    if (this->chemistry() and computeVESourceTerm_)
     {
         scalarField& Scv = tScv.ref();
 
@@ -1146,109 +1155,113 @@ Foam::chemistry2Model<CompType, ThermoType>::Scv() const
         
         if (this->CVModel_ == "ParkTTv")
         {
+            // Term #9 in Eq. (16)
+            // In: NASA-TM-101528 (Gupta, Yos, Thompson: Feb. 1989)
+            // Document ID: 19890011822
+            // A review of reaction rates and thermodynamic and transport 
+            // properties for the 11-species air model for chemical and
+            // thermal nonequilibrium calculations to 30000 K
+                
             if (this->ScvModel_ == "preferential")
             {
-                forAll(this->thermo().composition().species(), i)
+                forAll(this->thermo().composition().molecules(), moli)
                 {
-                    if (this->thermo().composition().particleType(i) == 2)
-                    {
-                        const scalarField& TvCells =
-                            this->thermo().composition().Tv()[i];
-                        
-                        const scalar dissociationPotential =
-                            specieThermo_[i].dissociationPotential();
+                    const label i =
+                        this->thermo().composition().moleculeIds(moli);
+                    
+                    const scalarField& TvCells =
+                        this->thermo().composition().Tv()[i];
+                    
+                    const scalar dissociationPotential =
+                        specieThermo_[i].dissociationPotential();
 
-                        forAll(Scv, cellI)
-                        {
-                            Scv[cellI] += 
+                    forAll(Scv, cellI)
+                    {
+                        Scv[cellI] +=
+                            (
+                                dissociationPotential
+                              * (
+                                    preferentialFactor_[i][0]*TtCells[cellI]
+                                  + preferentialFactor_[i][1]
+                                )
+                              + specieThermo_[i].HEel
                                 (
-                                    dissociationPotential
-                                  * (
-                                        preferentialFactor_[i][0]*TtCells[cellI]
-                                      + preferentialFactor_[i][1]
-                                    )
-                                  + specieThermo_[i].HEel
-                                    (
-                                        pCells[cellI],
-                                        TvCells[cellI]
-                                    )
-                                ) * RR_[i][cellI];
-                        }
+                                    pCells[cellI],
+                                    TvCells[cellI]
+                                )
+                            ) * RR_[i][cellI];
                     }
                 }
             }
             else if (this->ScvModel_ == "nonPreferential")
             {
-                forAll(this->thermo().composition().species(), i)
+                forAll(this->thermo().composition().molecules(), moli)
                 {
-                    if (this->thermo().composition().particleType(i) == 2)
+                    const label i =
+                        this->thermo().composition().moleculeIds(moli);
+                        
+                    forAll(Scv, cellI)
                     {
-                        forAll(Scv, cellI)
-                        {
-                            const scalarField& TvCells =
-                                this->thermo().composition().Tv()[i];
-                            
-                            const scalar Dprime =
-                                specieThermo_[i].HEvel
-                                (
-                                    pCells[cellI],
-                                    TvCells[cellI]
-                                );
-                            Scv[cellI] += Dprime*RR_[i][cellI];
-                        }
+                        const scalarField& TvCells =
+                            this->thermo().composition().Tv()[i];
+                        
+                        const scalar Dprime =
+                            specieThermo_[i].HEvel
+                            (
+                                pCells[cellI],
+                                TvCells[cellI]
+                            );
+                        Scv[cellI] += Dprime*RR_[i][cellI];
                     }
                 }
             }
         }
         else if (this->CVModel_ == "CVDV")
         {
-            forAll(this->thermo().composition().species(), i)
+            forAll(this->thermo().composition().molecules(), moli)
             {
-                if (this->thermo().composition().particleType(i) == 2)
+                const label i =
+                    this->thermo().composition().moleculeIds(moli);
+                
+                const scalarField& TvCells =
+                    this->thermo().composition().Tv()[i];
+                        
+                const scalar speciesR = specieThermo_[i].R();
+                const scalar charVibTemp =
+                    specieThermo_[i].vibrationalList()[1];
+                const label cutoffValue = simpleHarmonicOscillatorVibCutOff_[i];
+                const scalar reciprocalU = reciprocalUFactor_*speciesR
+                    /specieThermo_[i].dissociationPotential();
+
+                forAll(Scv, cellI)
                 {
-                    const scalarField& TvCells =
-                        this->thermo().composition().Tv()[i];
-                            
-                    const scalar speciesR = specieThermo_[i].R();
-                    const scalar charVibTemp =
-                        specieThermo_[i].vibrationalList()[1];
-                    const label cutoffValue =
-                        simpleHarmonicOscillatorVibCutOff_[i];
-                    const scalar reciprocalU = reciprocalUFactor_*speciesR
-                        /specieThermo_[i].dissociationPotential();
+                    scalar sumEnergyEnergyLevelsTf = 0.0;
+                    scalar sumEnergyEnergyLevelsU = 0.0;
+                    scalar sumEnergyLevelsTf = 0.0;
+                    scalar sumEnergyLevelsU = 0.0;
 
-                    forAll(Scv, cellI)
+                    const scalar reciprocalTf = 1.0/TvCells[cellI]
+                        - 1.0/TtCells[cellI] - reciprocalU;
+
+                    for(label level=0 ; level<cutoffValue; level++)
                     {
-                        scalar sumEnergyEnergyLevelsTf = 0.0;
-                        scalar sumEnergyEnergyLevelsU = 0.0;
-                        scalar sumEnergyLevelsTf = 0.0;
-                        scalar sumEnergyLevelsU = 0.0;
+                        sumEnergyEnergyLevelsTf +=
+                            level*speciesR*charVibTemp
+                          * exp(-level*charVibTemp*reciprocalTf);
 
-                        const scalar reciprocalTf = 1.0/TvCells[cellI]
-                            - 1.0/TtCells[cellI] - reciprocalU;
+                        sumEnergyEnergyLevelsU +=
+                            level*speciesR*charVibTemp
+                          * exp(level*charVibTemp*reciprocalU);
 
-                        for(label level=0 ; level<cutoffValue; level++)
-                        {
-                            sumEnergyEnergyLevelsTf +=
-                                level*speciesR*charVibTemp
-                              * exp(-level*charVibTemp*reciprocalTf);
-
-                            sumEnergyEnergyLevelsU +=
-                                level*speciesR*charVibTemp
-                              * exp(level*charVibTemp*reciprocalU);
-
-                            sumEnergyLevelsTf +=
-                                exp(-level*charVibTemp*reciprocalTf);
-                            sumEnergyLevelsU +=
-                                exp(level*charVibTemp*reciprocalU);
-                        }
-
-                        Scv[cellI] +=
-                            sumEnergyEnergyLevelsTf/sumEnergyLevelsTf
-                                *RRf_[i][cellI]
-                          + sumEnergyEnergyLevelsU/sumEnergyLevelsU
-                                *(RR_[i][cellI] - RRf_[i][cellI]);
+                        sumEnergyLevelsTf +=
+                            exp(-level*charVibTemp*reciprocalTf);
+                        sumEnergyLevelsU += exp(level*charVibTemp*reciprocalU);
                     }
+
+                    Scv[cellI] +=
+                        sumEnergyEnergyLevelsTf/sumEnergyLevelsTf*RRf_[i][cellI]
+                      + sumEnergyEnergyLevelsU/sumEnergyLevelsU
+                            *(RR_[i][cellI] - RRf_[i][cellI]);
                 }
             }
         }
@@ -1281,12 +1294,11 @@ Foam::chemistry2Model<CompType, ThermoType>::Scv(const label i) const
         )
     );
 
-    // This source term only exists for molecules
     if
     (
         this->chemistry()
-    and this->thermo().composition().particleType(i) == 2
-    and this->CVModel_ != "none"
+    and computeVESourceTerm_
+    and this->thermo().composition().isMolecule(i)
     )
     {
         scalarField& Scv = tScv.ref();
@@ -1305,14 +1317,15 @@ Foam::chemistry2Model<CompType, ThermoType>::Scv(const label i) const
                 forAll(Scv, cellI)
                 {
                     Scv[cellI] =
-                    (
-                        dissociationPotential
-                      * (
-                            preferentialFactor_[i][0]*TtCells[cellI]
-                          + preferentialFactor_[i][1]
+                        (
+                            dissociationPotential
+                          * (
+                                preferentialFactor_[i][0]*TtCells[cellI]
+                              + preferentialFactor_[i][1]
+                            )
+                          + specieThermo_[i].HEel(pCells[cellI], TvCells[cellI])
                         )
-                      + specieThermo_[i].HEel(pCells[cellI], TvCells[cellI]))
-                           * RR_[i][cellI];
+                        * RR_[i][cellI];
                 }
             }
             else if (this->ScvModel_ == "nonPreferential")
@@ -1406,8 +1419,6 @@ Foam::chemistry2Model<CompType, ThermoType>::Siir() const
                 Siir[celli] += -RRfiir_[iir][celli]*Wion
                     *specieThermo_[specien].iHat();
             }
-            
-//            Info<< "Siir " << Siir[0] << endl;
         }
     }
 

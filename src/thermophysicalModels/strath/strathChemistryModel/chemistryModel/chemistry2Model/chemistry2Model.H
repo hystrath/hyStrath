@@ -43,6 +43,7 @@ SourceFiles
 #include "volFieldsFwd.H"
 #include "simpleMatrix.H"
 #include "DimensionedField.H"
+#include "Switch.H"
 
 #include "constants.H"
 
@@ -133,6 +134,10 @@ protected:
         labelList posIonisedSpecies_;
         
 
+        // Chemistry-vibration coupling
+        //- Compute source term in the vibro-electronic energy equation
+        Switch computeVESourceTerm_;
+        
         // Park TTv model
         
           //- Factor in the preferential model, default value: 0.3

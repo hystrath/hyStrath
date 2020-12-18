@@ -111,7 +111,11 @@ inline advancedSpecie::advancedSpecie(const advancedSpecie& as)
 {}
 
 
-inline advancedSpecie::advancedSpecie(const word& name, const advancedSpecie& as)
+inline advancedSpecie::advancedSpecie
+(
+    const word& name,
+    const advancedSpecie& as
+)
 :
     name_(name),
     nMoles_(as.nMoles_),
@@ -261,7 +265,11 @@ inline void advancedSpecie::operator*=(const scalar s)
 
 // * * * * * * * * * * * * * * * Friend Operators  * * * * * * * * * * * * * //
 
-inline advancedSpecie operator+(const advancedSpecie& as1, const advancedSpecie& as2)
+inline advancedSpecie operator+
+(
+    const advancedSpecie& as1,
+    const advancedSpecie& as2
+)
 {
     scalar sumNmoles = max(as1.nMoles_ + as2.nMoles_, SMALL);
 
@@ -287,7 +295,11 @@ inline advancedSpecie operator+(const advancedSpecie& as1, const advancedSpecie&
 }
 
 
-inline advancedSpecie operator-(const advancedSpecie& as1, const advancedSpecie& as2)
+inline advancedSpecie operator-
+(
+    const advancedSpecie& as1,
+    const advancedSpecie& as2
+)
 {
     scalar diffNmoles = as1.nMoles_ - as2.nMoles_;
     if (mag(diffNmoles) < SMALL)
@@ -336,7 +348,11 @@ inline advancedSpecie operator*(const scalar s, const advancedSpecie& as)
 }
 
 
-inline advancedSpecie operator==(const advancedSpecie& as1, const advancedSpecie& as2)
+inline advancedSpecie operator==
+(
+    const advancedSpecie& as1,
+    const advancedSpecie& as2
+)
 {
     return as2 - as1;
 }
