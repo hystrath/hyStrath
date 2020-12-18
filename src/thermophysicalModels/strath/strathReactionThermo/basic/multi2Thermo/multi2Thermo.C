@@ -344,7 +344,7 @@ Foam::multi2Thermo::multi2Thermo(const fvMesh& mesh, const word& phaseName)
 
     downgradeSingleVibMode_(lookupOrDefault<Switch>("downgradeToSingleVibMode", true)),
 
-    hyLight_(lookupOrDefault<Switch>("hyLight", true))
+    hyLight_(false) // TODO 2020 lookupOrDefault<Switch>("hyLight", true))
 {
     if(downgradeSingleTv_)
     {
