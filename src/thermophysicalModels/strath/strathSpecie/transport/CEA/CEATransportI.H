@@ -108,15 +108,15 @@ Foam::CEATransport<Thermo>::viscosityCoeffs
     const scalar T
 ) const
 {
-    for(int Ti=0; Ti < temp_.size(); Ti++)
+    for(label Ti=0; Ti < mu_.size()-1; Ti++)
     {
-        if(T < temp_[Ti+1])
+        if (T < temp_[Ti+1])
         {
             return mu_[Ti];
         }
     }
 
-    return mu_[temp_.size()-1];
+    return mu_[mu_.size()-1];
 }
 
 
@@ -127,15 +127,15 @@ Foam::CEATransport<Thermo>::thermalConductivityCoeffs
     const scalar T
 ) const
 {
-    for(int Ti=0; Ti < temp_.size(); Ti++)
+    for(label Ti=0; Ti < mu_.size()-1; Ti++)
     {
-        if(T < temp_[Ti+1])
+        if (T < temp_[Ti+1])
         {
             return kappa_[Ti];
         }
     }
 
-    return kappa_[temp_.size()-1];
+    return kappa_[kappa_.size()-1];
 }
 
 
@@ -148,29 +148,48 @@ inline Foam::scalar Foam::CEATransport<Thermo>::mu
 ) const
 {
     const CEATransportArray& muCoeffs = viscosityCoeffs(Tt);
-
-    //NB: The coefficients in the dictionary tables are given in microPoise (cf Eilmer3, CEA-viscosity.cxx)
-    return 1.0e-7*Foam::exp(muCoeffs[0]*::log(Tt) + muCoeffs[1]/Tt + muCoeffs[2]/Foam::sqr(Tt) + muCoeffs[3]);
+    
+    // Bound the temperature
+    const scalar T = min(max(Tt, temp_[0]), temp_[temp_.size()-1]);
+    
+    // NB: The coefficients in the dictionary tables are given in microPoise
+    // (cf Eilmer3, CEA-viscosity.cxx)
+    return 1.0e-7*Foam::exp
+        (
+            muCoeffs[0]*Foam::log(T) + muCoeffs[1]/T
+          + muCoeffs[2]/Foam::sqr(T) + muCoeffs[3]
+        );
 }
 
 
 template<class Thermo>
 inline Foam::scalar Foam::CEATransport<Thermo>::kappatr
 (
-    const scalar p, const scalar Tt
+    const scalar p,
+    const scalar Tt
 ) const
 {
     const CEATransportArray& kappaCoeffs = thermalConductivityCoeffs(Tt);
 
-    //NB: The coefficients in the dictionary tables are given in microWatts/(cm.K) (cf Eilmer3, CEA-thermal-conductivity.cxx)
-    return 1.0e-4*Foam::exp(kappaCoeffs[0]*::log(Tt) + kappaCoeffs[1]/Tt + kappaCoeffs[2]/Foam::sqr(Tt) + kappaCoeffs[3]);
+    // Bound the temperature
+    const scalar T = min(max(Tt, temp_[0]), temp_[temp_.size()-1]);
+    
+    // NB: The coefficients in the dictionary tables are given in
+    // microWatts/(cm.K) (cf Eilmer3, CEA-thermal-conductivity.cxx)
+    return 1.0e-4*Foam::exp
+        (
+            kappaCoeffs[0]*Foam::log(T) + kappaCoeffs[1]/T
+          + kappaCoeffs[2]/Foam::sqr(T) + kappaCoeffs[3]
+        );
 }
 
 
 template<class Thermo>
 inline Foam::scalar Foam::CEATransport<Thermo>::kappave
 (
-    const scalar p, const scalar Tt, const scalar Tve
+    const scalar p,
+    const scalar Tt,
+    const scalar Tve
 ) const
 {
     return eta_s_*mu(p, Tt)*this->Cv_vel(p, Tve);
@@ -180,13 +199,12 @@ inline Foam::scalar Foam::CEATransport<Thermo>::kappave
 template<class Thermo>
 inline Foam::scalar Foam::CEATransport<Thermo>::alphatr
 (
-    const scalar p, const scalar Tt
+    const scalar p,
+    const scalar Tt
 ) const
 {
     if (this->Cv_t(p, Tt) != 0.0)
     {
-        //Info << "kappatr(p, Tt): " << kappatr(p, Tt) << endl;
-        //Info << "this->Cv_t(p, Tt): " << this->Cv_t(p, Tt) << endl;
         return kappatr(p, Tt)/this->Cv_t(p, Tt);
     }
     else
@@ -199,7 +217,9 @@ inline Foam::scalar Foam::CEATransport<Thermo>::alphatr
 template<class Thermo>
 inline Foam::scalar Foam::CEATransport<Thermo>::alphave
 (
-    const scalar p, const scalar Tt, const scalar Tve
+    const scalar p,
+    const scalar Tt,
+    const scalar Tve
 ) const
 {
     if (this->Cv_vel(p, Tve) != 0.0)
@@ -279,7 +299,8 @@ inline Foam::CEATransport<Thermo> Foam::operator+
     scalar molr1 = ceat1.nMoles()/t.nMoles();
     scalar molr2 = ceat2.nMoles()/t.nMoles();
 
-    DynamicList<FixedList<scalar, Foam::CEATransport<Thermo>::nCoeffs_>> mu, kappa;
+    DynamicList<FixedList<scalar, Foam::CEATransport<Thermo>::nCoeffs_>> mu,
+        kappa;
 
     return CEATransport<Thermo>
     (
@@ -307,7 +328,8 @@ inline Foam::CEATransport<Thermo> Foam::operator-
     scalar molr1 = ceat1.nMoles()/t.nMoles();
     scalar molr2 = ceat2.nMoles()/t.nMoles();
 
-    DynamicList<FixedList<scalar, Foam::CEATransport<Thermo>::nCoeffs_>> mu, kappa;
+    DynamicList<FixedList<scalar, Foam::CEATransport<Thermo>::nCoeffs_>> mu,
+        kappa;
 
     return CEATransport<Thermo>
     (

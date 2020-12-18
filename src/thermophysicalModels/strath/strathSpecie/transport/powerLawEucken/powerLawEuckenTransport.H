@@ -25,23 +25,11 @@ Class
     Foam::powerLawEuckenTransport
 
 Description
-    Transport package using Blottner and Eucken's formulas.
+    Transport package using the power law and Eucken's formulas.
 
     Templated into a given thermodynamics package (needed for thermal
     conductivity).
 
-    Dynamic viscosity [kg/m.s] - powerLaw
-    \f[
-        \mu_k = mu_ref_k*(Tt/T_ref)^omega_k
-    \f]
-
-    Thermal conductivity [W/m.K] - Eucken
-    \f[
-        \kappa_tr_k = 5/2*mu_k*Cv_tr_k
-        \kappa_ve_k = mu_k*Cv_ve_k
-    \f]
-
-    \kappa_ve_k amended to be eta_s_k*mu_k*Cv_ve_k
 
 SourceFiles
     powerLawEuckenTransportI.H
@@ -108,8 +96,8 @@ class powerLawEuckenTransport
 {
     // Private data
 
-        // Blottner's coefficients
-        scalar dref_, omega_;
+        // Power law's coefficients
+        scalar Tref_, dref_, omega_, muref_;
 
         //- Factor in vibrational thermal conductivity kappave
         // Hard-sphere: (7-2*omega_m)/5 with omega_m = 0.5
@@ -125,13 +113,19 @@ public:
         inline powerLawEuckenTransport
         (
             const Thermo& t,
+            const scalar Tref,
             const scalar dref,
             const scalar omega,
+            const scalar muref,
             const scalar eta_s
         );
 
         //- Construct as named copy
-        inline powerLawEuckenTransport(const word&, const powerLawEuckenTransport&);
+        inline powerLawEuckenTransport
+        (
+            const word&,
+            const powerLawEuckenTransport&
+        );
 
         //- Construct from Istream
         powerLawEuckenTransport(Istream&);
@@ -146,7 +140,10 @@ public:
         inline static autoPtr<powerLawEuckenTransport> New(Istream& is);
 
         // Selector from dictionary
-        inline static autoPtr<powerLawEuckenTransport> New(const dictionary& dict);
+        inline static autoPtr<powerLawEuckenTransport> New
+        (
+            const dictionary& dict
+        );
 
 
     // Member functions
@@ -170,13 +167,23 @@ public:
         inline scalar kappatr(const scalar p, const scalar Tt) const;
 
         //- Thermal conductivity, vib-electronic mode [W/mK]
-        inline scalar kappave(const scalar p, const scalar Tt, const scalar Tve) const;
+        inline scalar kappave
+        (
+            const scalar p,
+            const scalar Tt,
+            const scalar Tve
+        ) const;
 
         //- Thermal diffusivity, trans-rotational mode [kg/ms]
         inline scalar alphatr(const scalar p, const scalar Tt) const;
 
         //- Thermal diffusivity, vib-electronic mode [kg/ms]
-        inline scalar alphave(const scalar p, const scalar Tt, const scalar Tve) const;
+        inline scalar alphave
+        (
+            const scalar p,
+            const scalar Tt,
+            const scalar Tve
+        ) const;
 
         //- Write to Ostream
         void write(Ostream& os) const;
@@ -184,7 +191,10 @@ public:
 
     // Member operators
 
-        inline powerLawEuckenTransport& operator=(const powerLawEuckenTransport&);
+        inline powerLawEuckenTransport& operator=
+        (
+            const powerLawEuckenTransport&
+        );
 
         inline void operator+=(const powerLawEuckenTransport&);
 

@@ -127,7 +127,16 @@ Foam::CEATransport<Thermo>::CEATransport(const dictionary& dict)
         kappa_[2][2] = 3105580.2;
         kappa_[2][3] = -14.517761;
     }
-
+    
+    if ((mu_.size() + 1 != temp_.size()) or (kappa_.size() + 1 != temp_.size()))
+    {
+        FatalErrorIn
+        (
+            "CEATransport<Thermo>::CEATransport(const dictionary&)"
+        )   << "Incorrect array size for either temp, visco, and/or kappa"
+            << nl;
+        FatalError<< exit(FatalError);
+    }
 }
 
 

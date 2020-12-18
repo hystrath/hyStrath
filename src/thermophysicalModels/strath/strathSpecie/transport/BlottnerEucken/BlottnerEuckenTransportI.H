@@ -108,14 +108,16 @@ inline Foam::scalar Foam::BlottnerEuckenTransport<Thermo>::mu
     const scalar Tt
 ) const
 {
-    return 0.1*::exp((Ak_*::log(Tt) + Bk_)*::log(Tt) + Ck_);
+    const scalar logT = Foam::log(Tt);
+    return 0.1*Foam::exp((Ak_*logT + Bk_)*logT + Ck_);
 }
 
 
 template<class Thermo>
 inline Foam::scalar Foam::BlottnerEuckenTransport<Thermo>::kappatrans
 (
-    const scalar p, const scalar Tt
+    const scalar p,
+    const scalar Tt
 ) const
 {
     return 5.0/2.0*mu(p, Tt)*this->Cv_trans(p, Tt);
@@ -125,7 +127,8 @@ inline Foam::scalar Foam::BlottnerEuckenTransport<Thermo>::kappatrans
 template<class Thermo>
 inline Foam::scalar Foam::BlottnerEuckenTransport<Thermo>::kappar
 (
-    const scalar p, const scalar Tt
+    const scalar p,
+    const scalar Tt
 ) const
 {
     return mu(p, Tt)*this->Cv_r(p, Tt);
@@ -135,7 +138,8 @@ inline Foam::scalar Foam::BlottnerEuckenTransport<Thermo>::kappar
 template<class Thermo>
 inline Foam::scalar Foam::BlottnerEuckenTransport<Thermo>::kappatr
 (
-    const scalar p, const scalar Tt
+    const scalar p,
+    const scalar Tt
 ) const
 {
     return kappatrans(p, Tt) + kappar(p, Tt);
@@ -145,7 +149,9 @@ inline Foam::scalar Foam::BlottnerEuckenTransport<Thermo>::kappatr
 template<class Thermo>
 inline Foam::scalar Foam::BlottnerEuckenTransport<Thermo>::kappave
 (
-    const scalar p, const scalar Tt, const scalar Tve
+    const scalar p,
+    const scalar Tt,
+    const scalar Tve
 ) const
 {
     return eta_s_*mu(p, Tt)*this->Cv_vel(p, Tve);
@@ -155,7 +161,8 @@ inline Foam::scalar Foam::BlottnerEuckenTransport<Thermo>::kappave
 template<class Thermo>
 inline Foam::scalar Foam::BlottnerEuckenTransport<Thermo>::alphatr
 (
-    const scalar p, const scalar Tt
+    const scalar p,
+    const scalar Tt
 ) const
 {
     if (this->Cv_t(p, Tt) != 0.0)
@@ -172,7 +179,9 @@ inline Foam::scalar Foam::BlottnerEuckenTransport<Thermo>::alphatr
 template<class Thermo>
 inline Foam::scalar Foam::BlottnerEuckenTransport<Thermo>::alphave
 (
-    const scalar p, const scalar Tt, const scalar Tve
+    const scalar p,
+    const scalar Tt,
+    const scalar Tve
 ) const
 {
     if (this->Cv_vel(p, Tve) != 0.0)

@@ -412,9 +412,11 @@ inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::cv_el
             coefLabel+=2
         )
         {
-            num1Cvel += b[coefLabel]*sqr(b[coefLabel+1]/Tel)*exp(-b[coefLabel+1]/Tel);
-            num2Cvel += b[coefLabel]*b[coefLabel+1]*exp(-b[coefLabel+1]/Tel);
-            num3Cvel += b[coefLabel]*b[coefLabel+1]/sqr(Tel)*exp(-b[coefLabel+1]/Tel);
+            const scalar coeff1 = exp(-b[coefLabel+1]/Tel);
+            
+            num1Cvel += b[coefLabel]*sqr(b[coefLabel+1]/Tel)*coeff1;
+            num2Cvel += b[coefLabel]*b[coefLabel+1]*coeff1;
+            num3Cvel += b[coefLabel]*b[coefLabel+1]/sqr(Tel)*coeff1;
         }
 
         for

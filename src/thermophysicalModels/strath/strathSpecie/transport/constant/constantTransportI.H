@@ -110,7 +110,8 @@ inline Foam::scalar Foam::constantTransport<Thermo>::mu
 template<class Thermo>
 inline Foam::scalar Foam::constantTransport<Thermo>::kappatrans
 (
-    const scalar p, const scalar Tt
+    const scalar p,
+    const scalar Tt
 ) const
 {
     return kappa_;
@@ -120,7 +121,8 @@ inline Foam::scalar Foam::constantTransport<Thermo>::kappatrans
 template<class Thermo>
 inline Foam::scalar Foam::constantTransport<Thermo>::kappar
 (
-    const scalar p, const scalar Tt
+    const scalar p,
+    const scalar Tt
 ) const
 {
     return 0.0;
@@ -140,7 +142,9 @@ inline Foam::scalar Foam::constantTransport<Thermo>::kappatr
 template<class Thermo>
 inline Foam::scalar Foam::constantTransport<Thermo>::kappave
 (
-    const scalar p, const scalar Tt, const scalar Tve
+    const scalar p,
+    const scalar Tt,
+    const scalar Tve
 ) const
 {
     return kappave_;
@@ -150,7 +154,8 @@ inline Foam::scalar Foam::constantTransport<Thermo>::kappave
 template<class Thermo>
 inline Foam::scalar Foam::constantTransport<Thermo>::alphatr
 (
-    const scalar p, const scalar Tt
+    const scalar p,
+    const scalar Tt
 ) const
 {
     if (this->Cv_t(p, Tt) != 0.0)
@@ -167,7 +172,9 @@ inline Foam::scalar Foam::constantTransport<Thermo>::alphatr
 template<class Thermo>
 inline Foam::scalar Foam::constantTransport<Thermo>::alphave
 (
-    const scalar p, const scalar Tt, const scalar Tve
+    const scalar p,
+    const scalar Tt,
+    const scalar Tve
 ) const
 {
     if (this->Cv_vel(p, Tve) != 0.0)

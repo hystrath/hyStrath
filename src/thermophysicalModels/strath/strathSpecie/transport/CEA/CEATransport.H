@@ -32,14 +32,12 @@ Description
 
     Dynamic viscosity [kg/m.s]
     \f[
-        \mu_k = exp((A_k*ln(Tt)+B_k)*ln(Tt)+C_k)
+        \mu_k = exp(Amu_k*ln(T) + Bmu_k/T + Cmu_k/T^2 + Dmu_k)
     \f]
 
     Thermal conductivity [W/mK]
     \f[
-        \kappa_t_k = 3/2*mu_k*Cv_t_k
-        \kappa_r_k = mu_k*Cv_r_k
-        \kappa_ve_k = mu_k*Cv_ve_k
+        \kappa_tr_k = exp(Akp_k*ln(T) + Bkp_k/T + Ckp_k/T^2 + Dkp_k)
     \f]
 
     \kappa_ve_k amended to be eta_s_k*mu_k*Cv_ve_k

@@ -24,16 +24,15 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "ArmalySuttonMR.H"
-#include "fvm.H"
 
 // * * * * * * * * * * * * * Protected Member Functions  * * * * * * * * * * //
 
 template<class ThermoType>
 void Foam::ArmalySuttonMR<ThermoType>::updatePhi()
 {
-    const volScalarField& Tt = thermo_.T();
+    const volScalarField& T = thermo_.T();
     const volScalarField& p = thermo_.p();
-    const scalarField& TtCells = Tt.internalField();
+    const scalarField& TCells = T.internalField();
     const scalarField& pCells = p.internalField();
 
     forAll(species(), speciei)
@@ -46,54 +45,64 @@ void Foam::ArmalySuttonMR<ThermoType>::updatePhi()
 
         phiCells = XiCells;
 
-        forAll(Tt.boundaryField(), patchi)
+        forAll(T.boundaryField(), patchi)
         {
             phi.boundaryFieldRef()[patchi] = Xi.boundaryField()[patchi];
         }
 
         forAll(species(), speciej)
         {
-            if(speciej != speciei)
+            if (speciej != speciei)
             {
                 const volScalarField& Xj = thermo_.composition().X(speciej);
                 const scalarField& XjCells = Xj.internalField();
 
                 forAll(phiCells, celli)
                 {
-                    if(miniXs_ < XjCells[celli])
+                    if (miniXs_ < XjCells[celli])
                     {
-                        phiCells[celli] += XjCells[celli]*sqr
-                        (
-                            Fij(speciei,speciej) + Bij(speciei, speciej)
-                          * sqrt(mu(speciei, pCells[celli], TtCells[celli])/mu(speciej, pCells[celli], TtCells[celli]))
-                          * pow025(W(speciej)/W(speciei))
-                        )
-                         / sqrt(8.0*(1.0 + W(speciei)/W(speciej)))
-                         / (1.0 + W(speciej)/W(speciei))
-                         * (5.0/(3.0*AijZ(speciei, speciej)) + W(speciej)/W(speciei));
+                        phiCells[celli] += XjCells[celli]
+                          * sqr
+                            (
+                                Fij(speciei,speciej) + Bij(speciei, speciej)
+                              * sqrt(mu(speciei, pCells[celli], TCells[celli])
+                              / mu(speciej, pCells[celli], TCells[celli]))
+                              * pow025(W(speciej)/W(speciei))
+                            )
+                          / sqrt(8.0*(1.0 + W(speciei)/W(speciej)))
+                          / (1.0 + W(speciej)/W(speciei))
+                          * (
+                                5.0/(3.0*AijZ(speciei, speciej))
+                            + W(speciej)/W(speciei)
+                            );
                      }
                 }
 
-                forAll(Tt.boundaryField(), patchi)
+                forAll(T.boundaryField(), patchi)
                 {
                     const fvPatchScalarField& pXj = Xj.boundaryField()[patchi];
                     const fvPatchScalarField& pp = p.boundaryField()[patchi];
-                    const fvPatchScalarField& pTt = Tt.boundaryField()[patchi];
+                    const fvPatchScalarField& pT = T.boundaryField()[patchi];
                     fvPatchScalarField& pphi = phi.boundaryFieldRef()[patchi];
 
-                    forAll(pTt, facei)
+                    forAll(pT, facei)
                     {
-                        if(miniXs_ < pXj[facei])
+                        if (miniXs_ < pXj[facei])
                         {
-                            pphi[facei] += pXj[facei]*sqr
-                            (
-                                Fij(speciei,speciej) + Bij(speciei, speciej)
-                              * sqrt(mu(speciei, pp[facei], pTt[facei])/mu(speciej, pp[facei], pTt[facei]))
-                              * pow025(W(speciej)/W(speciei))
-                            )
-                              / sqrt(8.0*(1.0 + W(speciei)/W(speciej)))
-                              / (1.0 + W(speciej)/W(speciei))
-                              * (5.0/(3.0*AijZ(speciei, speciej)) + W(speciej)/W(speciei));
+                            pphi[facei] += pXj[facei]
+                              * sqr
+                                (
+                                    Fij(speciei,speciej) + Bij(speciei, speciej)
+                                  * sqrt(mu(speciei, pp[facei], pT[facei])
+                                  / mu(speciej, pp[facei], pT[facei]))
+                                  * pow025(W(speciej)/W(speciei))
+                                )
+                                / sqrt(8.0*(1.0 + W(speciei)/W(speciej)))
+                                / (1.0 + W(speciej)/W(speciei))
+                                * (
+                                      5.0/(3.0*AijZ(speciei, speciej))
+                                    + W(speciej)/W(speciei)
+                                  );
                         }
                     }
                 }//end patches loop
@@ -124,7 +133,6 @@ Foam::ArmalySuttonMR<ThermoType>::ArmalySuttonMR
     Bij_(species().size()),
     correctedArmalySutton_(subDict("transportModels")
         .lookupOrDefault<bool>("correctedArmalySutton", true)),
-
     miniXs_(1.0e-8)
 {
     phi_.setSize(species().size());
@@ -151,12 +159,17 @@ Foam::ArmalySuttonMR<ThermoType>::ArmalySuttonMR
 
     forAll(species(), speciei)
     {
-        for(int speciej=0; speciej<=speciei; speciej++)
+        forAll(species(), speciej)
         {
-            if((species()[speciei] == "O" and species()[speciej] == "O+")
-                 or (species()[speciei] == "N" and species()[speciej] == "N+"))
+            if
+            (
+                (species()[speciei] == "O" and species()[speciej] == "O+")
+             or (species()[speciei] == "O+" and species()[speciej] == "O")
+             or (species()[speciei] == "N" and species()[speciej] == "N+")
+             or (species()[speciei] == "N+" and species()[speciej] == "N")
+            )
             {
-                if(correctedArmalySutton_)
+                if (correctedArmalySutton_)
                 {
                     AijZ_[speciei][speciej] = 0.21;
                 }
@@ -173,27 +186,35 @@ Foam::ArmalySuttonMR<ThermoType>::ArmalySuttonMR
             if
             (
                 speciesThermo_[speciei].particleCharge() == 0
-                    and speciesThermo_[speciej].particleCharge() == 0
+             && speciesThermo_[speciej].particleCharge() == 0
             )
             {
                 Bij_[speciei][speciej] = 0.78;
             }
             else if
             (
-                (speciesThermo_[speciei].particleCharge() == 1
-                    and speciesThermo_[speciej].particleCharge() == 0)
-             or (speciesThermo_[speciei].particleCharge() == 0
-                    and speciesThermo_[speciej].particleCharge() == 1)
+                (
+                    speciesThermo_[speciei].particleCharge() == 1
+                 && speciesThermo_[speciej].particleCharge() == 0
+                )
+             or (
+                    speciesThermo_[speciei].particleCharge() == 0
+                 && speciesThermo_[speciej].particleCharge() == 1
+                )
             )
             {
                 Bij_[speciei][speciej] = 0.15;
             }
             else if
             (
-                (speciesThermo_[speciei].particleCharge() == 0
-                    and speciesThermo_[speciej].particleCharge() == -1)
-             or (speciesThermo_[speciei].particleCharge() == -1
-                    and speciesThermo_[speciej].particleCharge() == 0)
+                (
+                    speciesThermo_[speciei].particleCharge() == 0
+                 && speciesThermo_[speciej].particleCharge() == -1
+                )
+             or (
+                    speciesThermo_[speciei].particleCharge() == -1
+                 && speciesThermo_[speciej].particleCharge() == 0
+                )
             )
             {
                 Bij_[speciei][speciej] = 0.2;
@@ -202,6 +223,22 @@ Foam::ArmalySuttonMR<ThermoType>::ArmalySuttonMR
             {
                 Bij_[speciei][speciej] = 1.0;
             }
+        }
+    }
+    
+    Info << tab;
+    
+    forAll(species(), s)
+    {
+        Info << species()[s] << tab;
+    }
+    
+    forAll(species(), s)
+    {
+        Info << nl << species()[s] << tab;
+        forAll(species(), r)
+        {
+            Info << Bij(s,r) << tab;
         }
     }
 
@@ -216,9 +253,9 @@ void Foam::ArmalySuttonMR<ThermoType>::correct()
 {
     updatePhi();
 
-    const volScalarField& Tt = thermo_.T();
+    const volScalarField& T = thermo_.T();
     const volScalarField& p = thermo_.p();
-    const scalarField& TtCells = Tt.internalField();
+    const scalarField& TCells = T.internalField();
     const scalarField& pCells = p.internalField();
 
     volScalarField& muMix = thermo_.mu();
@@ -240,7 +277,7 @@ void Foam::ArmalySuttonMR<ThermoType>::correct()
     scalarField& alphatrCells = tempoAlphatr.primitiveFieldRef();
     scalarField& alphaveCells = tempoAlphave.primitiveFieldRef();
 
-    //- Initialisations
+    //- Initialisation
     muCells = 0.0;
     kappatrCells = 0.0;
     kappaveCells = 0.0;
@@ -260,7 +297,6 @@ void Foam::ArmalySuttonMR<ThermoType>::correct()
         pkappave = 0.0;
         palphatr = 0.0;
         palphave = 0.0;
-
     }
 
     //- Cell values
@@ -280,20 +316,28 @@ void Foam::ArmalySuttonMR<ThermoType>::correct()
 
         forAll(XCells, celli)
         {
-            spmuCells[celli] = mu(speciei, pCells[celli], TtCells[celli]);
+            spmuCells[celli] = mu(speciei, pCells[celli], TCells[celli]);
             muCells[celli] += XCells[celli]*spmuCells[celli]/phiCells[celli];
 
-            spkappatrCells[celli] = kappatr(speciei, pCells[celli], TtCells[celli]);
-            kappatrCells[celli] += XCells[celli]*spkappatrCells[celli]/phiCells[celli];
+            spkappatrCells[celli] =
+                kappatr(speciei, pCells[celli], TCells[celli]);
+            kappatrCells[celli] +=
+                XCells[celli]*spkappatrCells[celli]/phiCells[celli];
 
-            spkappaveCells[celli] = kappave(speciei, pCells[celli], TtCells[celli], TveCells[celli]);
-            kappaveCells[celli] += XCells[celli]*spkappaveCells[celli]/phiCells[celli];
+            spkappaveCells[celli] =
+                kappave(speciei, pCells[celli], TCells[celli], TveCells[celli]);
+            kappaveCells[celli] +=
+                XCells[celli]*spkappaveCells[celli]/phiCells[celli];
 
-            spalphatrCells[celli] = alphatr(speciei, pCells[celli], TtCells[celli]);
-            alphatrCells[celli] += XCells[celli]*spalphatrCells[celli]/phiCells[celli];
+            spalphatrCells[celli] =
+                alphatr(speciei, pCells[celli], TCells[celli]);
+            alphatrCells[celli] +=
+                XCells[celli]*spalphatrCells[celli]/phiCells[celli];
 
-            spalphaveCells[celli] = alphave(speciei, pCells[celli], TtCells[celli], TveCells[celli]);
-            alphaveCells[celli] += XCells[celli]*spalphaveCells[celli]/phiCells[celli];
+            spalphaveCells[celli] =
+                alphave(speciei, pCells[celli], TCells[celli], TveCells[celli]);
+            alphaveCells[celli] +=
+                XCells[celli]*spalphaveCells[celli]/phiCells[celli];
         }
 
         //- Patch values
@@ -302,36 +346,48 @@ void Foam::ArmalySuttonMR<ThermoType>::correct()
             const fvPatchScalarField& pTve = Tve.boundaryField()[patchi];
             const fvPatchScalarField& pX = X.boundaryField()[patchi];
 
-            const fvPatchScalarField& pTt = Tt.boundaryField()[patchi];
+            const fvPatchScalarField& pT = T.boundaryField()[patchi];
             const fvPatchScalarField& pp = p.boundaryField()[patchi];
-            const fvPatchScalarField& pphi = phi_[speciei].boundaryField()[patchi];
+            const fvPatchScalarField& pphi =
+                phi_[speciei].boundaryField()[patchi];
 
-            fvPatchScalarField& pspmu = spmu_[speciei].boundaryFieldRef()[patchi];
+            fvPatchScalarField& pspmu =
+                spmu_[speciei].boundaryFieldRef()[patchi];
             fvPatchScalarField& pmu = tempoMu.boundaryFieldRef()[patchi];
-            fvPatchScalarField& pspkappatr = spkappatr_[speciei].boundaryFieldRef()[patchi];
-            fvPatchScalarField& pkappatr = tempoKappatr.boundaryFieldRef()[patchi];
-            fvPatchScalarField& pspkappave = spkappave_[speciei].boundaryFieldRef()[patchi];
-            fvPatchScalarField& pkappave = tempoKappave.boundaryFieldRef()[patchi];
-            fvPatchScalarField& pspalphatr = spalphatr_[speciei].boundaryFieldRef()[patchi];
-            fvPatchScalarField& palphatr = tempoAlphatr.boundaryFieldRef()[patchi];
-            fvPatchScalarField& pspalphave = spalphave_[speciei].boundaryFieldRef()[patchi];
-            fvPatchScalarField& palphave = tempoAlphave.boundaryFieldRef()[patchi];
+            fvPatchScalarField& pspkappatr =
+                spkappatr_[speciei].boundaryFieldRef()[patchi];
+            fvPatchScalarField& pkappatr =
+                tempoKappatr.boundaryFieldRef()[patchi];
+            fvPatchScalarField& pspkappave =
+                spkappave_[speciei].boundaryFieldRef()[patchi];
+            fvPatchScalarField& pkappave =
+                tempoKappave.boundaryFieldRef()[patchi];
+            fvPatchScalarField& pspalphatr =
+                spalphatr_[speciei].boundaryFieldRef()[patchi];
+            fvPatchScalarField& palphatr =
+                tempoAlphatr.boundaryFieldRef()[patchi];
+            fvPatchScalarField& pspalphave =
+                spalphave_[speciei].boundaryFieldRef()[patchi];
+            fvPatchScalarField& palphave =
+                tempoAlphave.boundaryFieldRef()[patchi];
 
             forAll(pX, facei)
             {
-                pspmu[facei] = mu(speciei, pp[facei], pTt[facei]);
+                pspmu[facei] = mu(speciei, pp[facei], pT[facei]);
                 pmu[facei] += pX[facei]*pspmu[facei]/pphi[facei];
 
-                pspkappatr[facei] = kappatr(speciei, pp[facei], pTt[facei]);
+                pspkappatr[facei] = kappatr(speciei, pp[facei], pT[facei]);
                 pkappatr[facei] += pX[facei]*pspkappatr[facei]/pphi[facei];
 
-                pspkappave[facei] = kappave(speciei, pp[facei], pTt[facei], pTve[facei]);
+                pspkappave[facei] =
+                    kappave(speciei, pp[facei], pT[facei], pTve[facei]);
                 pkappave[facei] += pX[facei]*pspkappave[facei]/pphi[facei];
 
-                pspalphatr[facei] = alphatr(speciei, pp[facei], pTt[facei]);
+                pspalphatr[facei] = alphatr(speciei, pp[facei], pT[facei]);
                 palphatr[facei] += pX[facei]*pspalphatr[facei]/pphi[facei];
 
-                pspalphave[facei] = alphave(speciei, pp[facei], pTt[facei], pTve[facei]);
+                pspalphave[facei] =
+                    alphave(speciei, pp[facei], pT[facei], pTve[facei]);
                 palphave[facei] += pX[facei]*pspalphave[facei]/pphi[facei];
             }
         }//end patches loop

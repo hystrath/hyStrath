@@ -25,7 +25,7 @@ Class
     Foam::ArmalySuttonMR
 
 Description
-    ArmalySuttonMR model.
+    Armaly-Sutton mixing rule.
 
 SourceFiles
     ArmalySuttonMR.C
@@ -44,7 +44,7 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                             Class ArmalySuttonMR Declaration
+                       Class ArmalySuttonMR Declaration
 \*---------------------------------------------------------------------------*/
 
 template<class ThermoType>
@@ -60,16 +60,17 @@ protected:
         //- Thermodynamic data of the species
         const PtrList<ThermoType>& speciesThermo_;
 
-        // Scaling parameter in the Armaly-Sutton mixing rule
+        //- Scaling parameter in the Armaly-Sutton mixing rule
         PtrList<volScalarField> phi_;
 
-        // Additional quantities in Armaly-Sutton mixing rule
+        //- Additional quantities in Armaly-Sutton mixing rule
         scalarSymmetricSquareMatrix AijZ_, Bij_;
 
-        // Original or corrected Armaly-Sutton formulation?
+        //- Switch between the original or corrected Armaly-Sutton mixing rule
         bool correctedArmalySutton_;
 
-        // Mole-fraction below which the contribution of the species is ignored
+        //- Molar-fraction below which the species contribution to the scaling
+        //  parameter is ignored
         const scalar miniXs_;
 
 
@@ -103,66 +104,93 @@ public:
     // Member Functions
 
         //- Molar weight for a specie given by index. Defined here
-        //  becouse depends on thermoType template
+        //  because depends on thermoType template
         inline virtual scalar W(const label i) const
         {
             return speciesThermo_[i].W();
         }
 
         //- Viscosity for a specie given by index. Defined here
-        //  becouse depends on thermoType template
-        inline virtual scalar mu(const label i, const scalar p, const scalar Tt) const
+        //  because depends on thermoType template
+        inline virtual scalar mu
+        (
+            const label i,
+            const scalar p,
+            const scalar Tt
+        ) const
         {
             return speciesThermo_[i].mu(p, Tt);
         }
 
-        //- Thermal conductivity, trans-rotational mode,
-        //  for a specie given by index.
-        inline virtual scalar kappatr(const label i, const scalar p, const scalar Tt) const
+        //- Thermal conductivity, trans-rotational mode, for a specie given by
+        //  index.
+        inline virtual scalar kappatr
+        (
+            const label i,
+            const scalar p,
+            const scalar Tt
+        ) const
         {
             return speciesThermo_[i].kappatr(p, Tt);
         }
 
-        //- Thermal conductivity, vib-electronic mode,
-        //  for a specie given by index.
-        inline virtual scalar kappave(const label i, const scalar p, const scalar Tt, const scalar Tve) const
+        //- Thermal conductivity, vibro-electronic mode, for a specie given by
+        //  index.
+        inline virtual scalar kappave
+        (
+            const label i,
+            const scalar p,
+            const scalar Tt,
+            const scalar Tve
+        ) const
         {
             return speciesThermo_[i].kappave(p, Tt, Tve);
         }
 
-        //- Thermal diffusivity [kg/ms], trans-rotational mode,
-        //  for a specie given by index.
-        inline virtual scalar alphatr(const label i, const scalar p, const scalar Tt) const
+        //- Thermal diffusivity [kg/ms], trans-rotational mode, for a specie
+        //  given by index.
+        inline virtual scalar alphatr
+        (
+            const label i,
+            const scalar p,
+            const scalar Tt
+        ) const
         {
             return speciesThermo_[i].alphatr(p, Tt);
         }
 
-        //- Thermal diffusivity [kg/ms], vib-electronic mode,
-        //  for a specie given by index.
-        inline virtual scalar alphave(const label i, const scalar p, const scalar Tt, const scalar Tve) const
+        //- Thermal diffusivity [kg/ms], vib-electronic mode, for a specie given
+        //  by index.
+        inline virtual scalar alphave
+        (
+            const label i,
+            const scalar p,
+            const scalar Tt,
+            const scalar Tve
+        ) const
         {
             return speciesThermo_[i].alphave(p, Tt, Tve);
         }
 
 
-        //Quantities in Armaly-Sutton mixing rule scaling parameter
+        //- Quantities in the Armaly-Sutton mixing rule scaling parameter
         inline scalar AijZ(const label i, const label j)
         {
-            return AijZ_[max(i,j)][min(i,j)];
+            return AijZ_[i][j];
         }
 
         inline scalar Fij(const label i, const label j)
         {
-            // Assumed equal to 1 for all interactions
+            // Equal to 1 for all interactions
             return 1.0;
         }
 
         inline scalar Bij(const label i, const label j)
         {
-            return Bij_[max(i,j)][min(i,j)];
+            return Bij_[i][j];
         }
 
-        // Calculations and updates of the different fields
+        //- Calculations and updates of the different fields
         virtual void correct();
 
         //- Write the user-defined ArmalySuttonMR quantities

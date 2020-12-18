@@ -25,6 +25,7 @@ License
 
 #include "powerLawEuckenTransport.H"
 #include "IOstreams.H"
+#include "constants.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
@@ -32,20 +33,56 @@ template<class Thermo>
 Foam::powerLawEuckenTransport<Thermo>::powerLawEuckenTransport(Istream& is)
 :
     Thermo(is),
+    Tref_(273.0),
     dref_(readScalar(is)),
     omega_(readScalar(is)),
+    muref_
+    (
+        15.0
+      * sqrt
+        (
+            constant::mathematical::pi*constant::physicoChemical::k.value()
+          * (this->W()*1.0e-3/constant::physicoChemical::NA.value())*Tref_
+        )
+       /
+        (
+            constant::mathematical::twoPi*sqr(dref_)
+          * (5.0-2.0*omega_)*(7.0-2.0*omega_)
+        )
+    ),
     eta_s_(readScalar(is))
 {
-    is.check("powerLawEuckenTransport<Thermo>::powerLawEuckenTransport(Istream&)");
+    is.check
+    (
+        "powerLawEuckenTransport<Thermo>::powerLawEuckenTransport(Istream&)"
+    );
 }
 
 
 template<class Thermo>
-Foam::powerLawEuckenTransport<Thermo>::powerLawEuckenTransport(const dictionary& dict)
+Foam::powerLawEuckenTransport<Thermo>::powerLawEuckenTransport
+(
+    const dictionary& dict
+)
 :
     Thermo(dict),
+    Tref_(273.0),
     dref_(readScalar(dict.subDict("specie").lookup("diameter"))),
     omega_(readScalar(dict.subDict("specie").lookup("omega"))),
+    muref_
+    (
+        15.0
+      * sqrt
+        (
+            constant::mathematical::pi*constant::physicoChemical::k.value()
+          * (this->W()*1.0e-3/constant::physicoChemical::NA.value())*Tref_
+        )
+       /
+        (
+            constant::mathematical::twoPi*sqr(dref_)
+          * (5.0-2.0*omega_)*(7.0-2.0*omega_)
+        )
+    ),
     eta_s_(dict.subDict("specie").lookupOrDefault<scalar>("eta_s", 1.2))
 {}
 
@@ -78,8 +115,9 @@ Foam::Ostream& Foam::operator<<
     const powerLawEuckenTransport<Thermo>& pet
 )
 {
-    os << static_cast<const Thermo&>(pet) << tab << pet.dref_ << tab
-       << pet.omega_ << tab << pet.eta_s_;
+    os << static_cast<const Thermo&>(pet) << tab << pet.Tref_ << tab
+       << pet.dref_ << tab << pet.omega_ << tab << pet.muref_ << tab
+       << pet.eta_s_;
 
     os.check
     (

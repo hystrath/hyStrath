@@ -25,24 +25,24 @@ License
 
 #include "advancedSpecie.H"
 
-#include "fundamentalConstants.H"
-#include "mathematicalConstants.H"
-#include "physicoChemicalConstants.H"
-
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 template<class Thermo>
 inline Foam::powerLawEuckenTransport<Thermo>::powerLawEuckenTransport
 (
     const Thermo& t,
+    const scalar Tref,
     const scalar dref,
     const scalar omega,
+    const scalar muref,
     const scalar eta_s
 )
 :
     Thermo(t),
+    Tref_(Tref),
     dref_(dref),
     omega_(omega),
+    muref_(muref),
     eta_s_(eta_s)
 {}
 
@@ -55,8 +55,10 @@ inline Foam::powerLawEuckenTransport<Thermo>::powerLawEuckenTransport
 )
 :
     Thermo(name, pet),
+    Tref_(pet.Tref_),
     dref_(pet.dref_),
     omega_(pet.omega_),
+    muref_(pet.muref_),
     eta_s_(pet.eta_s_)
 {}
 
@@ -109,21 +111,15 @@ inline Foam::scalar Foam::powerLawEuckenTransport<Thermo>::mu
     const scalar Tt
 ) const
 {
-    scalar Tref = 273.0;
-    scalar mu_ref = 15.0
-        *sqrt(constant::mathematical::pi*constant::physicoChemical::k.value()
-        *(this->W()*1.0e-3/constant::physicoChemical::NA.value())*Tref)
-        /(constant::mathematical::twoPi*pow(dref_, 2.0)*(5.0-2.0*omega_)
-            *(7.0-2.0*omega_));
-
-    return mu_ref*pow(Tt/Tref, omega_);
+    return muref_*pow(Tt/Tref_, omega_);
 }
 
 
 template<class Thermo>
 inline Foam::scalar Foam::powerLawEuckenTransport<Thermo>::kappatrans
 (
-    const scalar p, const scalar Tt
+    const scalar p,
+    const scalar Tt
 ) const
 {
     return 5.0/2.0*mu(p, Tt)*this->Cv_trans(p, Tt);
@@ -133,7 +129,8 @@ inline Foam::scalar Foam::powerLawEuckenTransport<Thermo>::kappatrans
 template<class Thermo>
 inline Foam::scalar Foam::powerLawEuckenTransport<Thermo>::kappar
 (
-    const scalar p, const scalar Tt
+    const scalar p,
+    const scalar Tt
 ) const
 {
     return mu(p, Tt)*this->Cv_r(p, Tt);
@@ -143,7 +140,8 @@ inline Foam::scalar Foam::powerLawEuckenTransport<Thermo>::kappar
 template<class Thermo>
 inline Foam::scalar Foam::powerLawEuckenTransport<Thermo>::kappatr
 (
-    const scalar p, const scalar Tt
+    const scalar p,
+    const scalar Tt
 ) const
 {
     return kappatrans(p, Tt) + kappar(p, Tt);
@@ -153,7 +151,9 @@ inline Foam::scalar Foam::powerLawEuckenTransport<Thermo>::kappatr
 template<class Thermo>
 inline Foam::scalar Foam::powerLawEuckenTransport<Thermo>::kappave
 (
-    const scalar p, const scalar Tt, const scalar Tve
+    const scalar p,
+    const scalar Tt,
+    const scalar Tve
 ) const
 {
     return eta_s_*mu(p, Tt)*this->Cv_vel(p, Tve);
@@ -163,7 +163,8 @@ inline Foam::scalar Foam::powerLawEuckenTransport<Thermo>::kappave
 template<class Thermo>
 inline Foam::scalar Foam::powerLawEuckenTransport<Thermo>::alphatr
 (
-    const scalar p, const scalar Tt
+    const scalar p,
+    const scalar Tt
 ) const
 {
     if (this->Cv_t(p, Tt) != 0.0)
@@ -180,7 +181,9 @@ inline Foam::scalar Foam::powerLawEuckenTransport<Thermo>::alphatr
 template<class Thermo>
 inline Foam::scalar Foam::powerLawEuckenTransport<Thermo>::alphave
 (
-    const scalar p, const scalar Tt, const scalar Tve
+    const scalar p,
+    const scalar Tt,
+    const scalar Tve
 ) const
 {
     if (this->Cv_vel(p, Tve) != 0.0)
@@ -204,8 +207,10 @@ Foam::powerLawEuckenTransport<Thermo>::operator=
 {
     Thermo::operator=(pet);
 
+    Tref_ = pet.Tref_;
     dref_ = pet.dref_;
     omega_ = pet.omega_;
+    muref_ = pet.muref_;
     eta_s_ = pet.eta_s_;
 
     return *this;
@@ -225,8 +230,10 @@ inline void Foam::powerLawEuckenTransport<Thermo>::operator+=
     molr1 /= this->nMoles();
     scalar molr2 = pet.nMoles()/this->nMoles();
 
+    Tref_ = molr1*Tref_ + molr2*pet.Tref_;
     dref_ = molr1*dref_ + molr2*pet.dref_;
     omega_ = molr1*omega_ + molr2*pet.omega_;
+    muref_ = molr1*muref_ + molr2*pet.muref_;
     eta_s_ = molr1*eta_s_ + molr2*pet.eta_s_;
 }
 
@@ -244,8 +251,10 @@ inline void Foam::powerLawEuckenTransport<Thermo>::operator-=
     molr1 /= this->nMoles();
     scalar molr2 = pet.nMoles()/this->nMoles();
 
+    Tref_ = molr1*Tref_ - molr2*pet.Tref_;
     dref_ = molr1*dref_ - molr2*pet.dref_;
     omega_ = molr1*omega_ - molr2*pet.omega_;
+    muref_ = molr1*muref_ - molr2*pet.muref_;
     eta_s_ = molr1*eta_s_ - molr2*pet.eta_s_;
 }
 
@@ -280,8 +289,10 @@ inline Foam::powerLawEuckenTransport<Thermo> Foam::operator+
     return powerLawEuckenTransport<Thermo>
     (
         t,
+        molr1*pet1.Tref_ + molr2*pet2.Tref_,
         molr1*pet1.dref_ + molr2*pet2.dref_,
         molr1*pet1.omega_ + molr2*pet2.omega_,
+        molr1*pet1.muref_ + molr2*pet2.muref_,
         molr1*pet1.eta_s_ + molr2*pet2.eta_s_
     );
 }
@@ -305,8 +316,10 @@ inline Foam::powerLawEuckenTransport<Thermo> Foam::operator-
     return powerLawEuckenTransport<Thermo>
     (
         t,
+        molr1*pet1.Tref_ - molr2*pet2.Tref_,
         molr1*pet1.dref_ - molr2*pet2.dref_,
         molr1*pet1.omega_ - molr2*pet2.omega_,
+        molr1*pet1.muref_ - molr2*pet2.muref_,
         molr1*pet1.eta_s_ - molr2*pet2.eta_s_
     );
 }
@@ -322,8 +335,10 @@ inline Foam::powerLawEuckenTransport<Thermo> Foam::operator*
     return powerLawEuckenTransport<Thermo>
     (
         s*static_cast<const Thermo&>(pet),
+        pet.Tref_,
         pet.dref_,
         pet.omega_,
+        pet.muref_,
         pet.eta_s_
     );
 }

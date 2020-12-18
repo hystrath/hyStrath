@@ -24,7 +24,6 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "molarMR.H"
-#include "fvm.H"
 
 // * * * * * * * * * * * * * Protected Member Functions  * * * * * * * * * * //
 
@@ -55,10 +54,10 @@ Foam::molarMR<ThermoType>::molarMR
 template<class ThermoType>
 void Foam::molarMR<ThermoType>::correct()
 {
-    const volScalarField& Tt = thermo_.T();
+    const volScalarField& T = thermo_.T();
     const volScalarField& p = thermo_.p();
 
-    const scalarField& TtCells = Tt.internalField();
+    const scalarField& TCells = T.internalField();
     const scalarField& pCells = p.internalField();
 
     volScalarField& muMix = thermo_.mu();
@@ -100,7 +99,6 @@ void Foam::molarMR<ThermoType>::correct()
         pkappave = 0.0;
         palphatr = 0.0;
         palphave = 0.0;
-
     }
 
     //- Cell values
@@ -119,16 +117,16 @@ void Foam::molarMR<ThermoType>::correct()
 
         forAll(XCells, celli)
         {
-            spmuCells[celli] = mu(speciei, pCells[celli], TtCells[celli]);
+            spmuCells[celli] = mu(speciei, pCells[celli], TCells[celli]);
             muCells[celli] += XCells[celli]*spmuCells[celli];
-            spkappatrCells[celli] = kappatr(speciei, pCells[celli], TtCells[celli]);
+            spkappatrCells[celli] = kappatr(speciei, pCells[celli], TCells[celli]);
             kappatrCells[celli] += XCells[celli]*spkappatrCells[celli];
 
-            spkappaveCells[celli] = kappave(speciei, pCells[celli], TtCells[celli], TveCells[celli]);
+            spkappaveCells[celli] = kappave(speciei, pCells[celli], TCells[celli], TveCells[celli]);
             kappaveCells[celli] += XCells[celli]*spkappaveCells[celli];
-            spalphatrCells[celli] = alphatr(speciei, pCells[celli], TtCells[celli]);
+            spalphatrCells[celli] = alphatr(speciei, pCells[celli], TCells[celli]);
             alphatrCells[celli] += XCells[celli]*spalphatrCells[celli];
-            spalphaveCells[celli] = alphave(speciei, pCells[celli], TtCells[celli], TveCells[celli]);
+            spalphaveCells[celli] = alphave(speciei, pCells[celli], TCells[celli], TveCells[celli]);
             alphaveCells[celli] += XCells[celli]*spalphaveCells[celli];
         }
 
@@ -137,7 +135,7 @@ void Foam::molarMR<ThermoType>::correct()
         {
             const fvPatchScalarField& pX = X.boundaryField()[patchi];
             const fvPatchScalarField& pp = p.boundaryField()[patchi];
-            const fvPatchScalarField& pTt = Tt.boundaryField()[patchi];
+            const fvPatchScalarField& pT = T.boundaryField()[patchi];
             const fvPatchScalarField& pTve = Tve.boundaryField()[patchi];
 
             fvPatchScalarField& pspmu = spmu_[speciei].boundaryFieldRef()[patchi];
@@ -153,19 +151,20 @@ void Foam::molarMR<ThermoType>::correct()
 
             forAll(pX, facei)
             {
-                pspmu[facei] = mu(speciei, pp[facei], pTt[facei]);
+                pspmu[facei] = mu(speciei, pp[facei], pT[facei]);
                 pmu[facei] += pX[facei]*pspmu[facei];
-                pspkappatr[facei] = kappatr(speciei, pp[facei], pTt[facei]);
+                pspkappatr[facei] = kappatr(speciei, pp[facei], pT[facei]);
                 pkappatr[facei] += pX[facei]*pspkappatr[facei];
-                pspkappave[facei] = kappave(speciei, pp[facei], pTt[facei], pTve[facei]);
+                pspkappave[facei] = kappave(speciei, pp[facei], pT[facei], pTve[facei]);
                 pkappave[facei] += pX[facei]*pspkappave[facei];
-                pspalphatr[facei] = alphatr(speciei, pp[facei], pTt[facei]);
+                pspalphatr[facei] = alphatr(speciei, pp[facei], pT[facei]);
                 palphatr[facei] += pX[facei]*pspalphatr[facei];
-                pspalphave[facei] = alphave(speciei, pp[facei], pTt[facei], pTve[facei]);
+                pspalphave[facei] = alphave(speciei, pp[facei], pT[facei], pTve[facei]);
                 palphave[facei] += pX[facei]*pspalphave[facei];
             }
         }
     }
+    
     muMix = tempoMu;
     kappaMix = tempoKappatr;
     kappaveMix = tempoKappave;
@@ -196,8 +195,6 @@ void Foam::molarMR<ThermoType>::write()
         {
             spkappatr_[speciei].write();
             spkappave_[speciei].write();
-            //spalphatr_[speciei].write();
-            //spalphave_[speciei].write();
         }
     }
 
@@ -205,8 +202,6 @@ void Foam::molarMR<ThermoType>::write()
     {
         thermo_.kappatr().write();
         thermo_.kappave().write();
-        //thermo_.alphatr().write();
-        //thermo_.alphave().write();
     }
 }
 
