@@ -111,6 +111,9 @@ dsmcFieldProperties::dsmcFieldProperties
             fieldIds_[f] = f;
 
             fields_[f]->casePath() = fieldPath;
+
+            // update field properties from dict
+            fields_[f]->updateProperties(fieldIDict);
         }
     }
 }
