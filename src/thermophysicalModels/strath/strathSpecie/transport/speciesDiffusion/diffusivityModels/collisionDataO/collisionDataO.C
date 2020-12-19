@@ -130,6 +130,33 @@ Foam::binaryDiffusivityModels::collisionDataO::collisionDataO
             .subDict(collisionDataModel).subDict("Omega11")
             .lookupOrDefault<FixedList<scalar,4>>(name2+"_"+name1, defaultList);
     }
+
+    if
+    (
+        dictTransport.subDict("collisionData")
+            .subDict("neutralNeutralInteractions").subDict(collisionDataModel)
+            .subDict("Omega22").found(name1+"_"+name2)
+    )
+    {
+        piOmega2_ = dictTransport.subDict("collisionData")
+            .subDict("neutralNeutralInteractions")
+            .subDict(collisionDataModel).subDict("Omega22")
+            .lookupOrDefault<FixedList<scalar,4>>(name1+"_"+name2, defaultList);
+    }
+    else if
+    (
+        dictTransport.subDict("collisionData")
+            .subDict("neutralNeutralInteractions")
+            .subDict(collisionDataModel)
+            .subDict("Omega22").found(name2+"_"+name1)
+    )
+    {
+        piOmega2_ = dictTransport.subDict("collisionData")
+            .subDict("neutralNeutralInteractions")
+            .subDict(collisionDataModel).subDict("Omega22")
+            .lookupOrDefault<FixedList<scalar,4>>(name2+"_"+name1, defaultList);
+    }
+
     else
     {
         FatalErrorIn("void Foam::binaryDiffusivityModels::collisionDataO::collisionDataO(...)")
