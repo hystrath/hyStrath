@@ -58,8 +58,11 @@ class collisionDataO
 {
     // Private data
 
-        //- Model coefficients
+        //- Model coefficients piOmega1
         FixedList<scalar, 4> piOmega1_;
+
+        //- Model coefficients piOmega2
+        FixedList<scalar, 4> piOmega2_;
 
         //- Molecular weights
         const scalar W1_, W2_;
@@ -89,7 +92,7 @@ class collisionDataO
                 }
                 else if(pe > SMALL)
                 {
-                    return constantFactorInCollisionTerm_
+                    return constantFactorInCollisionTerm_/(3.0*sqrt(T))
                         *piOmega11NonNeutral(T, pe);
                 }
             }
@@ -97,14 +100,14 @@ class collisionDataO
             return VSMALL;
         }
 
-        //- Collision term 2 (unused)
-        /*inline scalar collisionTerm2Neutral(const scalar T) const
+        //- Collision term 2
+        inline scalar collisionTerm2Neutral(const scalar T, const scalar pe = 0) const
         {
             if(T != 0.0)
             {
                 if(this->collisionType_ < 2)
                 {
-                    return 2.0*constantFactorInCollisionTerms_/(5.0*sqrt(T))
+                    return 2.0*constantFactorInCollisionTerm_/(5.0*sqrt(T))
                         *piOmega22Neutral(T); // to implement should it be needed, would require piOmega2_
 
                 }
@@ -112,25 +115,25 @@ class collisionDataO
                 {
                     if(this->collisionType_ != 4)
                     {
-                        return constantFactorInCollisionTerm_
+                        return 2.0*constantFactorInCollisionTerm_/(5.0*sqrt(T))
                             *piOmega22NonNeutralI(T, pe);
                     }
                     else
                     {
-                        return constantFactorInCollisionTerm_
+                        return 2.0*constantFactorInCollisionTerm_/(5.0*sqrt(T))
                             *piOmega22NonNeutralE(T, pe);
                     }
                 }
             }
 
             return VSMALL;
-        }*/
+        }
 
         //- Collision cross-section (1,1) for neutral interactions
         //  in Angstrom^2
         inline scalar piOmega11Neutral(const scalar T) const
         {
-            return piOmega1_[3]
+            return exp(piOmega1_[3])
                 *pow
                 (
                     T,
@@ -141,23 +144,24 @@ class collisionDataO
 
         //- Collision cross-section (2,2) for neutral interactions
         //  in Angstrom^2 (unused)
-        /*inline scalar piOmega22Neutral(const scalar T) const
+        inline scalar piOmega22Neutral(const scalar T) const
         {
-            return piOmega2_[3]
+            return exp(piOmega2_[3])
                 *pow
                 (
                     T,
                     piOmega2_[0]*sqr(log(T))
                   + piOmega2_[1]*log(T) + piOmega2_[2]
                 );
-        }*/
+        }
 
         //- Collision cross-section (1,1) for non-neutral interactions
         //  in Angstrom^2
         inline scalar piOmega11NonNeutral(const scalar T, const scalar pe) const
         {
-            // It is assuned that Z = 1, name that the species is
+            // It is assumed that Z = 1, name that the species is
             // singly-ionised (see Eq. 23.c in Ref Gupta 1989)
+
             return 0.795*e4OverkB2_*log(shieldingParameter(T, pe))/sqr(T);
         }
 
@@ -174,6 +178,7 @@ class collisionDataO
         {
             // It is assuned that Z = 1, name that the species is
             // singly-ionised (see Eq. 23.c in Ref Gupta 1989)
+
             return 1.36*e4OverkB2_*log(shieldingParameter(T, pe))/sqr(T);
         }
 
@@ -181,8 +186,8 @@ class collisionDataO
         //  pressure.
         inline scalar shieldingParameter(const scalar T, const scalar pe) const
         {
-            return sqrt(2.09e-14*pow(T, 4.0)/pe
-                + 1.52*pow(pow(T, 4.0)/pe, 2.0/3.0));
+            return sqrt(2.09e-2*pow(T, 4.0)/(1.0e12*pe)
+                + 1.52*pow(pow(T, 4.0)/(1.0e12*pe), 2.0/3.0));
         }
 
 
