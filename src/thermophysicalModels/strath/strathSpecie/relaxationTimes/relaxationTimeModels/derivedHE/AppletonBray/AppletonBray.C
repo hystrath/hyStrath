@@ -117,7 +117,7 @@ void Foam::AppletonBray<ThermoType>::correct()
                 {
                     scalar sigma_eIon = sigma_eIon_factor1_/sqr(TeCells[celli]);
 
-                    if (nDeCells[celli] != 0.0)
+                    if (nDeCells[celli] > SMALL)
                     {
                         sigma_eIon *=
                             log
@@ -145,7 +145,7 @@ void Foam::AppletonBray<ThermoType>::correct()
                     {
                         scalar sigma_eIon = sigma_eIon_factor1_/sqr(pTe[facei]);
 
-                        if (pnDe[facei] != 0.0)
+                        if (pnDe[facei] > SMALL)
                         {
                             sigma_eIon *=
                                 log

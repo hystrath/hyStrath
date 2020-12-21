@@ -1,9 +1,9 @@
 <h1 align="center">hyStrath</h1>  
 
-#### Hypersonic / Rarefied gas dynamics code developments released under license GPL-3.0 
+#### Hypersonic / Rarefied gas dynamics code developments under license GPL-3.0 
 #### The only platform to conjointly host open-source CFD and DSMC codes designed for atmospheric re-entry analysis
 
-#### Includes  
+#### The *Concordia* release includes  
 + *hyFoam*: a CFD solver for supersonic combusting flows   
 + *hy2Foam*: a CFD solver for hypersonic reacting flows   
 + *hy2MhdFoam*: the *hy2Foam* solver with additional MHD capabilities  
