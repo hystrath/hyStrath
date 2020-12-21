@@ -72,8 +72,8 @@ class dsmcStandardFields
         //- Mass density field
         volScalarField rhoM_;
 
-        //- dsmc particle density field
-        volScalarField dsmcRhoN_;
+        //- dsmc particle per cell field
+        volScalarField dsmcN_;
 
         //- linear kinetic energy density field
         volScalarField linearKE_;
@@ -192,7 +192,7 @@ public:
     inline const volScalarField& rhoM() const;
 
     //- Return the field of number of DSMC particles
-    inline const volScalarField& dsmcRhoN() const;
+    inline const volScalarField& dsmcN() const;
 
     //- Return the total linear kinetic energy (translational and
     // thermal density field

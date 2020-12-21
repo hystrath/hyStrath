@@ -152,9 +152,9 @@ inline const volScalarField& dsmcStandardFields::rhoM() const
 
 
 //template <class dsmcParcel>
-inline const volScalarField& dsmcStandardFields::dsmcRhoN() const
+inline const volScalarField& dsmcStandardFields::dsmcN() const
 {
-    return dsmcRhoN_;
+    return dsmcN_;
 }
 
 
