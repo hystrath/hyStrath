@@ -199,11 +199,11 @@ reactions
     }
     
     // Reaction no 6
-    /*atomicNitrogenElectronImpactIonisationReaction
+    atomicNitrogenElectronImpactIonisationReaction
     {
         type     reversibleArrheniusReaction;
         reaction "N + e- = N+ + e- + e-";
-        controlT impactIonisation; // pb fwd & rev without trick
+        controlT impactIonisation; 
         A        2.5e31;
         beta     -3.82;
         Ta       168600;
@@ -221,7 +221,7 @@ reactions
     {
         type     reversibleArrheniusReaction;
         reaction "O + e- = O+ + e- + e-";
-        controlT impactIonisation; // pb fwd & rev without trick
+        controlT impactIonisation; 
         A        3.9e30;
         beta     -3.78;
         Ta       158500;
@@ -237,7 +237,7 @@ reactions
     // Reaction no 8
     atomicNitrogenAtomicOxygenDissociativeRecombinationReaction
     {
-        type     reversibleArrheniusReaction; // pb rev without trick
+        type     reversibleArrheniusReaction; 
         reaction "N + O = NO+ + e-";
         controlT associativeIonisation;
         A        5.3e09;
@@ -255,7 +255,7 @@ reactions
     // Reaction no 9
     atomicNitrogenAtomicNitrogenDissociativeRecombinationReaction
     {
-        type     reversibleArrheniusReaction; // pb rev without trick
+        type     reversibleArrheniusReaction; 
         reaction "N + N = N2+ + e-";
         controlT associativeIonisation;
         A        4.4e04;
@@ -273,7 +273,7 @@ reactions
     // Reaction no 10
     atomicOxygenAtomicOxygenDissociativeRecombinationReaction
     {
-        type     reversibleArrheniusReaction; // pb rev without trick
+        type     reversibleArrheniusReaction; 
         reaction "O + O = O2+ + e-";
         controlT associativeIonisation;
         A        7.1e-01;
@@ -286,7 +286,7 @@ reactions
         A2       (-2.2498 -0.96678 -0.58082 -0.45461 -0.41245 -0.39146);
         A3       (-7.7905 -8.3559 -8.5251 -8.5808 -8.5995 -8.6087);
         A4       (-0.011079 0.02644 0.037629 0.041333 0.042571 0.043187);
-    }*/
+    }
     
     // Reaction no 11
     atomicOxygenCationNitrogenChargeExchangeReaction
@@ -381,7 +381,7 @@ reactions
     // Reaction no 16
     oxygenCationAtomicNitrogenChargeExchangeReaction
     {
-        type     reversibleArrheniusReaction; // pb rev without trick
+        type     reversibleArrheniusReaction; 
         reaction "O2+ + N = N+ + O2";
         controlT chargeExchange;
         A        8.7e10;
