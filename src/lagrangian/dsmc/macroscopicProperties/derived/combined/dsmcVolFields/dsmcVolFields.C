@@ -98,31 +98,31 @@ dsmcVolFields::dsmcVolFields
     sampleCounter_(0),
     mfpReferenceTemperature_(273.0),
     fieldName_(propsDict_.lookup("fieldName")),
-    dsmcRhoN_
+    dsmcN_
     (
         IOobject
         (
-            "dsmcRhoN_"+ fieldName_,
+            "dsmcN_"+ fieldName_,
             time_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
             IOobject::AUTO_WRITE
         ),
         mesh_,
-        dimensionedScalar("0.0", dimless/dimVolume, 0.0)
+        dimensionedScalar("0.0", dimless, 0.0)
     ),
-    dsmcRhoNMean_
+    dsmcNMean_
     (
         IOobject
         (
-            "dsmcRhoNMean_"+ fieldName_,
+            "dsmcNMean_"+ fieldName_,
             time_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
             IOobject::AUTO_WRITE
         ),
         mesh_,
-        dimensionedScalar("0.0", dimless/dimVolume, 0.0)
+        dimensionedScalar("0.0", dimless, 0.0)
     ),
     rhoN_
     (
@@ -562,48 +562,48 @@ dsmcVolFields::dsmcVolFields
     ),
     nTimeSteps_(0.0),
     typeIds_(),
-    rhoNMean_(mesh_.nCells(), 0.0),
-    rhoNInstantaneous_(mesh_.nCells(), 0.0),
-    rhoNMeanXnParticle_(mesh_.nCells(), 0.0),
-    rhoNMeanInt_(mesh_.nCells(), 0.0),
-    molsElec_(mesh_.nCells(), 0.0),
-    rhoMMean_(mesh_.nCells(), 0.0),
-    rhoMMeanXnParticle_(mesh_.nCells(), 0.0),
-    linearKEMean_(mesh_.nCells(), 0.0),
-    linearKEMeanXnParticle_(mesh_.nCells(), 0.0),
-    rotationalEMean_(mesh_.nCells(), 0.0),
-    rotationalDofMean_(mesh_.nCells(), 0.0),
-    muu_(mesh_.nCells(), 0.0),
-    muv_(mesh_.nCells(), 0.0),
-    muw_(mesh_.nCells(), 0.0),
-    mvv_(mesh_.nCells(), 0.0),
-    mvw_(mesh_.nCells(), 0.0),
-    mww_(mesh_.nCells(), 0.0),
-    mcc_(mesh_.nCells(), 0.0),
-    mccu_(mesh_.nCells(), 0.0),
-    mccv_(mesh_.nCells(), 0.0),
-    mccw_(mesh_.nCells(), 0.0),
-    eu_(mesh_.nCells(), 0.0),
-    ev_(mesh_.nCells(), 0.0),
-    ew_(mesh_.nCells(), 0.0),
-    e_(mesh_.nCells(), 0.0),
+    dsmcNCum_(mesh_.nCells(), 0.0),
+    dsmcNInstantaneous_(mesh_.nCells(), 0.0),
+    nCum_(mesh_.nCells(), 0.0),
+    dsmcNWithRotDofCum_(mesh_.nCells(), 0.0),
+    dsmcNEleCum_(mesh_.nCells(), 0.0),
+    dsmcMCum_(mesh_.nCells(), 0.0),
+    mCum_(mesh_.nCells(), 0.0),
+    dsmcLinKinEnCum_(mesh_.nCells(), 0.0),
+    linKinEnCum_(mesh_.nCells(), 0.0),
+    dsmcRotEnCum_(mesh_.nCells(), 0.0),
+    dsmcRotDofCum_(mesh_.nCells(), 0.0),
+    dsmcMuuCum_(mesh_.nCells(), 0.0),
+    dsmcMuvCum_(mesh_.nCells(), 0.0),
+    dsmcMuwCum_(mesh_.nCells(), 0.0),
+    dsmcMvvCum_(mesh_.nCells(), 0.0),
+    dsmcMvwCum_(mesh_.nCells(), 0.0),
+    dsmcMwwCum_(mesh_.nCells(), 0.0),
+    dsmcMccCum_(mesh_.nCells(), 0.0),
+    dsmcMccuCum_(mesh_.nCells(), 0.0),
+    dsmcMccvCum_(mesh_.nCells(), 0.0),
+    dsmcMccwCum_(mesh_.nCells(), 0.0),
+    dsmcEuCum_(mesh_.nCells(), 0.0),
+    dsmcEvCum_(mesh_.nCells(), 0.0),
+    dsmcEwCum_(mesh_.nCells(), 0.0),
+    dsmcECum_(mesh_.nCells(), 0.0),
     totalvDof_(mesh_.nCells(), 0.0),
-    nClassI_(mesh_.nCells(), 0.0),
-    nClassII_(mesh_.nCells(), 0.0),
-    nClassIII_(mesh_.nCells(), 0.0),
+    dsmcNClassICum_(mesh_.nCells(), 0.0),
+    dsmcNClassIICum_(mesh_.nCells(), 0.0),
+    dsmcNClassIIICum_(mesh_.nCells(), 0.0),
     collisionSeparation_(mesh_.nCells(), 0.0),
-    nColls_(mesh_.nCells(), 0.0),
-    momentumMean_(mesh.nCells(), vector::zero),
-    momentumMeanXnParticle_(mesh.nCells(), vector::zero),
+    dsmcNCollsCum_(mesh_.nCells(), 0.0),
+    dsmcMomentumCum_(mesh.nCells(), vector::zero),
+    momentumCum_(mesh.nCells(), vector::zero),
     boundaryCells_(),
-    vibrationalETotal_(),
-    electronicETotal_(),
-    nParcels_(),
-    nParcelsXnParticle_(),
-    mccSpecies_(),
+    dsmcVibEnSpeciesModeCum_(),
+    dsmcEleEnSpeciesCum_(),
+    dsmcNSpeciesCum_(),
+    nSpeciesCum_(),
+    dsmcMccSpeciesCum_(),
     vibT_(),
-    nGroundElectronicLevel_(),
-    nFirstElectronicLevel_(),
+    dsmcNGroundEleLvlSpeciesCum_(),
+    dsmcNFirstEleLvlSpeciesCum_(),
     vDof_(),
     mfp_(),
     mcr_(),
@@ -662,17 +662,50 @@ void dsmcVolFields::readIn()
         )
     );
 
-    dict.readIfPresent("rhoNMean", rhoNMean_);
-    dict.readIfPresent("rhoMMean", rhoMMean_);
-    dict.readIfPresent("linearKEMean", linearKEMean_);
-    dict.readIfPresent("momentumMean", momentumMean_);
-    dict.readIfPresent("rotationalEMean", rotationalEMean_);
-    dict.readIfPresent("rotationalDofMean", rotationalDofMean_);
-    dict.readIfPresent("vibrationalETotal", vibrationalETotal_);
-    dict.readIfPresent("nParcels", nParcels_);
-    dict.readIfPresent("rhoNMeanInt", rhoNMeanInt_);
-
     dict.readIfPresent("nTimeSteps", nTimeSteps_);
+
+    // DSMC parcel related cumulative values
+    dict.readIfPresent("dsmcNCum", dsmcNCum_);
+    dict.readIfPresent("dsmcMCum", dsmcMCum_);
+
+    dict.readIfPresent("dsmcLinKinEnCum", dsmcLinKinEnCum_);
+    dict.readIfPresent("dsmcMomentumCum", dsmcMomentumCum_);
+    dict.readIfPresent("dsmcRotEnCum", dsmcRotEnCum_);
+    dict.readIfPresent("dsmcRotDofCum", dsmcRotDofCum_);
+    dict.readIfPresent("dsmcEleEnSpeciesCum", dsmcEleEnSpeciesCum_);
+    dict.readIfPresent("dsmcNSpeciesCum", dsmcNSpeciesCum_);
+    dict.readIfPresent("dsmcMccSpeciesCum", dsmcMccSpeciesCum_);
+    dict.readIfPresent("dsmcMuuCum", dsmcMuuCum_);
+    dict.readIfPresent("dsmcMuvCum", dsmcMuvCum_);
+    dict.readIfPresent("dsmcMuwCum", dsmcMuwCum_);
+    dict.readIfPresent("dsmcMvvCum", dsmcMvvCum_);
+    dict.readIfPresent("dsmcMvwCum", dsmcMvwCum_);
+    dict.readIfPresent("dsmcMwwCum", dsmcMwwCum_);
+    dict.readIfPresent("dsmcMccCum", dsmcMccCum_);
+    dict.readIfPresent("dsmcMccuCum", dsmcMccuCum_);
+    dict.readIfPresent("dsmcMccvCum", dsmcMccvCum_);
+    dict.readIfPresent("dsmcMccwCum", dsmcMccwCum_);
+    dict.readIfPresent("dsmcEuCum", dsmcEuCum_);
+    dict.readIfPresent("dsmcEvCum", dsmcEvCum_);
+    dict.readIfPresent("dsmcEwCum", dsmcEwCum_);
+    dict.readIfPresent("dsmcECum", dsmcECum_);
+    dict.readIfPresent("dsmcNWithRotDofCum", dsmcNWithRotDofCum_);
+    dict.readIfPresent("dsmcNEleCum", dsmcNEleCum_);
+    dict.readIfPresent("dsmcNGroundEleLvlSpeciesCum", dsmcNGroundEleLvlSpeciesCum_);
+    dict.readIfPresent("dsmcNFirstEleLvlSpeciesCum", dsmcNFirstEleLvlSpeciesCum_);
+    dict.readIfPresent("dsmcNClassICum", dsmcNClassICum_);
+    dict.readIfPresent("dsmcNClassIICum", dsmcNClassIICum_);
+    dict.readIfPresent("dsmcNClassIIICum", dsmcNClassIIICum_);
+    dict.readIfPresent("dsmcVibEnSpeciesModeCum", dsmcVibEnSpeciesModeCum_);
+    dict.readIfPresent("dsmcNCollsCum", dsmcNCollsCum_);
+
+    // cumulative values
+    dict.readIfPresent("nCum", nCum_);
+    dict.readIfPresent("mCum", mCum_);
+    dict.readIfPresent("nSpeciesCum", nSpeciesCum_);
+    dict.readIfPresent("momentumCum", momentumCum_);
+    dict.readIfPresent("linKinEnCum", linKinEnCum_);
+    dict.readIfPresent("totalvDof", totalvDof_);
 }
 
 
@@ -694,17 +727,50 @@ void dsmcVolFields::writeOut()
             )
         );
 
-        dict.add("rhoNMean", rhoNMean_);
-        dict.add("rhoMMean", rhoMMean_);
-        dict.add("linearKEMean", linearKEMean_);
-        dict.add("momentumMean", momentumMean_);
-        dict.add("rotationalEMean", rotationalEMean_);
-        dict.add("rotationalDofMean", rotationalDofMean_);
-        dict.add("vibrationalETotal", vibrationalETotal_);
-        dict.add("nParcels", nParcels_);
-        dict.add("rhoNMeanInt", rhoNMeanInt_);
-
         dict.add("nTimeSteps", nTimeSteps_);
+
+        // DSMC parcel related cumulative values
+        dict.add("dsmcNCum", dsmcNCum_);
+        dict.add("dsmcMCum", dsmcMCum_);
+
+        dict.add("dsmcLinKinEnCum", dsmcLinKinEnCum_);
+        dict.add("dsmcMomentumCum", dsmcMomentumCum_);
+        dict.add("dsmcRotEnCum", dsmcRotEnCum_);
+        dict.add("dsmcRotDofCum", dsmcRotDofCum_);
+        dict.add("dsmcEleEnSpeciesCum", dsmcEleEnSpeciesCum_);
+        dict.add("dsmcNSpeciesCum", dsmcNSpeciesCum_);
+        dict.add("dsmcMccSpeciesCum", dsmcMccSpeciesCum_);
+        dict.add("dsmcMuuCum", dsmcMuuCum_);
+        dict.add("dsmcMuvCum", dsmcMuvCum_);
+        dict.add("dsmcMuwCum", dsmcMuwCum_);
+        dict.add("dsmcMvvCum", dsmcMvvCum_);
+        dict.add("dsmcMvwCum", dsmcMvwCum_);
+        dict.add("dsmcMwwCum", dsmcMwwCum_);
+        dict.add("dsmcMccCum", dsmcMccCum_);
+        dict.add("dsmcMccuCum", dsmcMccuCum_);
+        dict.add("dsmcMccvCum", dsmcMccvCum_);
+        dict.add("dsmcMccwCum", dsmcMccwCum_);
+        dict.add("dsmcEuCum", dsmcEuCum_);
+        dict.add("dsmcEvCum", dsmcEvCum_);
+        dict.add("dsmcEwCum", dsmcEwCum_);
+        dict.add("dsmcECum", dsmcECum_);
+        dict.add("dsmcNWithRotDofCum", dsmcNWithRotDofCum_);
+        dict.add("dsmcNEleCum", dsmcNEleCum_);
+        dict.add("dsmcNGroundEleLvlSpeciesCum", dsmcNGroundEleLvlSpeciesCum_);
+        dict.add("dsmcNFirstEleLvlSpeciesCum", dsmcNFirstEleLvlSpeciesCum_);
+        dict.add("dsmcNClassICum", dsmcNClassICum_);
+        dict.add("dsmcNClassIICum", dsmcNClassIICum_);
+        dict.add("dsmcNClassIIICum", dsmcNClassIIICum_);
+        dict.add("dsmcVibEnSpeciesModeCum", dsmcVibEnSpeciesModeCum_);
+        dict.add("dsmcNCollsCum", dsmcNCollsCum_);
+
+        // cumulative values
+        dict.add("nCum", nCum_);
+        dict.add("mCum", mCum_);
+        dict.add("nSpeciesCum", nSpeciesCum_);
+        dict.add("momentumCum", momentumCum_);
+        dict.add("linKinEnCum", linKinEnCum_);
+        dict.add("totalvDof", totalvDof_);
 
         IOstream::streamFormat fmt = time_.time().writeFormat();
         IOstream::versionNumber ver = time_.time().writeVersion();
@@ -756,14 +822,14 @@ void dsmcVolFields::createField()
     }
 
     vibT_.setSize(typeIds_.size());
-    nGroundElectronicLevel_.setSize(typeIds_.size());
-    nFirstElectronicLevel_.setSize(typeIds_.size());
+    dsmcNGroundEleLvlSpeciesCum_.setSize(typeIds_.size());
+    dsmcNFirstEleLvlSpeciesCum_.setSize(typeIds_.size());
     vDof_.setSize(typeIds_.size());
-    vibrationalETotal_.setSize(typeIds_.size());
-    electronicETotal_.setSize(typeIds_.size());
-    nParcels_.setSize(typeIds_.size());
-    nParcelsXnParticle_.setSize(typeIds_.size());
-    mccSpecies_.setSize(typeIds_.size());
+    dsmcVibEnSpeciesModeCum_.setSize(typeIds_.size());
+    dsmcEleEnSpeciesCum_.setSize(typeIds_.size());
+    dsmcNSpeciesCum_.setSize(typeIds_.size());
+    nSpeciesCum_.setSize(typeIds_.size());
+    dsmcMccSpeciesCum_.setSize(typeIds_.size());
     mfp_.setSize(typeIds_.size());
     mcr_.setSize(typeIds_.size());
 
@@ -772,24 +838,24 @@ void dsmcVolFields::createField()
     forAll(typeIds_, i)
     {
         vibT_[i].setSize(mesh_.nCells());
-        nGroundElectronicLevel_[i].setSize(mesh_.nCells(), 0.0);
-        nFirstElectronicLevel_[i].setSize(mesh_.nCells(), 0.0);
+        dsmcNGroundEleLvlSpeciesCum_[i].setSize(mesh_.nCells(), 0.0);
+        dsmcNFirstEleLvlSpeciesCum_[i].setSize(mesh_.nCells(), 0.0);
         vDof_[i].setSize(mesh_.nCells(), 0.0);
-        electronicETotal_[i].setSize(mesh_.nCells(), 0.0);
-        nParcels_[i].setSize(mesh_.nCells(), 0.0);
-        nParcelsXnParticle_[i].setSize(mesh_.nCells(), 0.0);
-        mccSpecies_[i].setSize(mesh_.nCells(), 0.0);
+        dsmcEleEnSpeciesCum_[i].setSize(mesh_.nCells(), 0.0);
+        dsmcNSpeciesCum_[i].setSize(mesh_.nCells(), 0.0);
+        nSpeciesCum_[i].setSize(mesh_.nCells(), 0.0);
+        dsmcMccSpeciesCum_[i].setSize(mesh_.nCells(), 0.0);
         mfp_[i].setSize(mesh_.nCells(), 0.0);
         mcr_[i].setSize(mesh_.nCells(), 0.0);
 
-        vibrationalETotal_[i].setSize
+        dsmcVibEnSpeciesModeCum_[i].setSize
         (
             cloud_.constProps(typeIds_[i]).nVibrationalModes()
         );
 
-        forAll(vibrationalETotal_[i], j)
+        forAll(dsmcVibEnSpeciesModeCum_[i], j)
         {
-            vibrationalETotal_[i][j].setSize(mesh_.nCells(), 0.0);
+            dsmcVibEnSpeciesModeCum_[i][j].setSize(mesh_.nCells(), 0.0);
         }
     }
 
@@ -933,7 +999,7 @@ void dsmcVolFields::calculateField()
 {
     sampleCounter_++;
 
-    rhoNInstantaneous_ = 0.0;
+    dsmcNInstantaneous_ = 0.0;
 
     const scalar kB = physicoChemical::k.value();
     const scalar NAvo = physicoChemical::NA.value();
@@ -956,11 +1022,15 @@ void dsmcVolFields::calculateField()
                     const scalar nParticles = cloud_.nParticles(cell);
                     const scalar mass = cloud_.constProps(p.typeId()).mass();
 
-                    rhoNMean_[cell] += 1.0;
-                    rhoNInstantaneous_[cell] += 1.0;
+                    // cumulative number of DSMC parcels
+                    dsmcNCum_[cell] += 1.0;
+                    // instantaneous number of DSMC parcels in this time step
+                    dsmcNInstantaneous_[cell] += 1.0;
 
-                    rhoNMeanXnParticle_[cell] += nParticles;
-                    rhoMMeanXnParticle_[cell] += mass*nParticles;
+                    // cumulative number of simulated real particles
+                    nCum_[cell] += nParticles;
+                    // cumulative mass
+                    mCum_[cell] += mass*nParticles;
                 }
             }
         }
@@ -988,63 +1058,85 @@ void dsmcVolFields::calculateField()
                     forAll(cP.thetaV(), mode)
                     {
                         const scalar eVib_m = cP.eVib_m(mode, p.vibLevel()[mode]);
-                        vibrationalETotal_[iD][mode][cell] += eVib_m;
+                        dsmcVibEnSpeciesModeCum_[iD][mode][cell] += eVib_m;
                         vibEn += eVib_m;
                     }
 
-                    rhoNMean_[cell] += 1.0;
-                    rhoNInstantaneous_[cell] += 1.0;
-                    rhoMMean_[cell] += mass;
-                    linearKEMean_[cell] += massBySqMagU;
-                    momentumMean_[cell] += mass*p.U();
-                    rotationalEMean_[cell] += p.ERot();
-                    rotationalDofMean_[cell] += rotationalDof;
-                    electronicETotal_[iD][cell] +=
+                    // cumulative number of DSMC parcels
+                    dsmcNCum_[cell] += 1.0;
+                    // instantaneous number of DSMC parcels in this time step
+                    dsmcNInstantaneous_[cell] += 1.0;
+                    // cumulative mass of the DSMC parcels
+                    dsmcMCum_[cell] += mass;
+                    // cumulative linear kinetic energy of the DSMC parcels
+                    dsmcLinKinEnCum_[cell] += massBySqMagU;
+                    // cumulative momentum of the DSMC parcels
+                    dsmcMomentumCum_[cell] += mass*p.U();
+                    // cumulative rotational energy of the DSMC parcels
+                    dsmcRotEnCum_[cell] += p.ERot();
+                    // cumulative rotational degrees of freedom of the DSMC
+                    // parcels
+                    dsmcRotDofCum_[cell] += rotationalDof;
+                    // cumulative electronic energy of the DSMC parcels of
+                    // each species
+                    dsmcEleEnSpeciesCum_[iD][cell] +=
                         electronicEnergies[p.ELevel()];
-                    nParcels_[iD][cell] += 1.0;
-                    mccSpecies_[iD][cell] += massBySqMagU;
+                    // cumulative number of DSMC parcels of each species
+                    dsmcNSpeciesCum_[iD][cell] += 1.0;
+                    dsmcMccSpeciesCum_[iD][cell] += massBySqMagU;
+                    // cumulative number of simulated real particles of each
+                    // species
+                    nSpeciesCum_[iD][cell] += nParticles;
+                    // cumulative number of simulated real particles
+                    nCum_[cell] += nParticles;
+                    // cumulative mass
+                    mCum_[cell] += mass*nParticles;
+                    // cumulative momentum of the simulated real particles
+                    momentumCum_[cell] += mass*(p.U())*nParticles;
+                    // cumulative linear kinetic energy of the simulated
+                    // particles
+                    linKinEnCum_[cell] += massBySqMagU*nParticles;
 
-                    nParcelsXnParticle_[iD][cell] += nParticles;
-                    rhoNMeanXnParticle_[cell] += nParticles;
-                    rhoMMeanXnParticle_[cell] += mass*nParticles;
-                    momentumMeanXnParticle_[cell] += mass*(p.U())*nParticles;
-                    linearKEMeanXnParticle_[cell] += massBySqMagU*nParticles;
+                    // cumulative counters for mass times squared velocity
+                    // components of the DSMC parcels
+                    // notation: p.U = c = (u v w)
+                    dsmcMuuCum_[cell] += mass*sqr(p.U().x());
+                    dsmcMuvCum_[cell] += mass*p.U().x()*p.U().y();
+                    dsmcMuwCum_[cell] += mass*p.U().x()*p.U().z();
+                    dsmcMvvCum_[cell] += mass*sqr(p.U().y());
+                    dsmcMvwCum_[cell] += mass*p.U().y()*p.U().z();
+                    dsmcMwwCum_[cell] += mass*sqr(p.U().z());
 
-                    muu_[cell] += mass*sqr(p.U().x());
-                    muv_[cell] += mass*p.U().x()*p.U().y();
-                    muw_[cell] += mass*p.U().x()*p.U().z();
-                    mvv_[cell] += mass*sqr(p.U().y());
-                    mvw_[cell] += mass*p.U().y()*p.U().z();
-                    mww_[cell] += mass*sqr(p.U().z());
+                    dsmcMccCum_[cell] += massBySqMagU;
+                    dsmcMccuCum_[cell] += massBySqMagU*(p.U().x());
+                    dsmcMccvCum_[cell] += massBySqMagU*(p.U().y());
+                    dsmcMccwCum_[cell] += massBySqMagU*(p.U().z());
 
-                    mcc_[cell] += massBySqMagU;
-                    mccu_[cell] += massBySqMagU*(p.U().x());
-                    mccv_[cell] += massBySqMagU*(p.U().y());
-                    mccw_[cell] += massBySqMagU*(p.U().z());
-
-                    eu_[cell] += (p.ERot() + vibEn)*p.U().x(); // TODO missing Eel
-                    ev_[cell] += (p.ERot() + vibEn)*p.U().y(); // TODO missing Eel
-                    ew_[cell] += (p.ERot() + vibEn)*p.U().z(); // TODO missing Eel
-                    e_[cell] += (p.ERot() + vibEn); // TODO missing Eel
+                    // cumulative energy times velocity components of the DSMC
+                    // parcels
+                    dsmcEuCum_[cell] += (p.ERot() + vibEn)*p.U().x(); // TODO missing Eel
+                    dsmcEvCum_[cell] += (p.ERot() + vibEn)*p.U().y(); // TODO missing Eel
+                    dsmcEwCum_[cell] += (p.ERot() + vibEn)*p.U().z(); // TODO missing Eel
+                    dsmcECum_[cell] += (p.ERot() + vibEn); // TODO missing Eel
 
                     if (rotationalDof > 0)
                     {
-                        rhoNMeanInt_[cell] += 1.0;
+                        dsmcNWithRotDofCum_[cell] += 1.0;
                     }
 
                     const label& nElecLevels = cP.nElectronicLevels();
 
                     if (nElecLevels > 1)
                     {
-                        molsElec_[cell] += 1.0;
+                        dsmcNEleCum_[cell] += 1.0;
 
                         if (p.ELevel() == 0)
                         {
-                            nGroundElectronicLevel_[iD][cell]++;
+                            dsmcNGroundEleLvlSpeciesCum_[iD][cell]++;
                         }
                         if (p.ELevel() == 1)
                         {
-                            nFirstElectronicLevel_[iD][cell]++;
+                            dsmcNFirstEleLvlSpeciesCum_[iD][cell]++;
                         }
                     }
 
@@ -1054,17 +1146,17 @@ void dsmcVolFields::calculateField()
 
                         if (classification == 0)
                         {
-                            nClassI_[cell] += 1.0;
+                            dsmcNClassICum_[cell] += 1.0;
                         }
 
                         if (classification == 1)
                         {
-                            nClassII_[cell] += 1.0;
+                            dsmcNClassIICum_[cell] += 1.0;
                         }
 
                         if (classification == 2)
                         {
-                            nClassIII_[cell] += 1.0;
+                            dsmcNClassIIICum_[cell] += 1.0;
                         }
                     }
                 }
@@ -1078,27 +1170,27 @@ void dsmcVolFields::calculateField()
             {
                 collisionSeparation_[cell] +=
                     cloud_.cellPropMeasurements().collisionSeparation()[cell];
-                nColls_[cell] += cloud_.cellPropMeasurements().nColls()[cell];
+                dsmcNCollsCum_[cell] += cloud_.cellPropMeasurements().nColls()[cell];
 
-                if (rhoNMean_[cell] > 1e-3)
+                if (dsmcNCum_[cell] > 1e-3)
                 {
                     const scalar cellVolume = mesh_.cellVolumes()[cell];
 
-                    dsmcRhoNMean_[cell] = rhoNMean_[cell]/nAvTimeSteps;
+                    dsmcNMean_[cell] = dsmcNCum_[cell]/nAvTimeSteps;
 
-                    const scalar rhoNMean = rhoNMeanXnParticle_[cell]
+                    const scalar rhoNMean = nCum_[cell]
                         /(nAvTimeSteps*cellVolume);
-                    const scalar rhoMMean = rhoMMeanXnParticle_[cell]
+                    const scalar rhoMMean = mCum_[cell]
                         /(nAvTimeSteps*cellVolume);
 
                     rhoN_[cell] = rhoNMean;
                     rhoM_[cell] = rhoMMean;
 
-                    UMean_[cell] = momentumMeanXnParticle_[cell]
-                        /rhoMMeanXnParticle_[cell];
+                    UMean_[cell] = momentumCum_[cell]
+                        /mCum_[cell];
 
                     const scalar linearKEMean = 0.5
-                        *linearKEMeanXnParticle_[cell]
+                        *linKinEnCum_[cell]
                         /(cellVolume*nAvTimeSteps);
 
                     //- Translational temperature
@@ -1116,8 +1208,8 @@ void dsmcVolFields::calculateField()
                 else
                 {
                     // not zero so that weighted decomposition still works
-                    dsmcRhoNMean_[cell] = 0.001;
-                    //dsmcRhoN_[cell] = 0.001;
+                    dsmcNMean_[cell] = 0.001;
+                    //dsmcN_[cell] = 0.001;
                     rhoN_[cell] = 0.0;
                     rhoM_[cell] = 0.0;
                     UMean_[cell] = vector::zero;
@@ -1176,36 +1268,36 @@ void dsmcVolFields::calculateField()
 
         if (densityOnly_)
         {
-            forAll(rhoNMean_, cell)
+            forAll(dsmcNCum_, cell)
             {
-                if (rhoNMean_[cell] > SMALL)
+                if (dsmcNCum_[cell] > SMALL)
                 {
                     const scalar cellVolume = mesh_.cellVolumes()[cell];
 
-                    dsmcRhoNMean_[cell] = rhoNMean_[cell]/nAvTimeSteps;
+                    dsmcNMean_[cell] = dsmcNCum_[cell]/nAvTimeSteps;
 
-                    rhoN_[cell] = rhoNMeanXnParticle_[cell]
+                    rhoN_[cell] = nCum_[cell]
                         /(nAvTimeSteps*cellVolume);
 
-                    rhoM_[cell] = rhoMMeanXnParticle_[cell]
+                    rhoM_[cell] = mCum_[cell]
                         /(nAvTimeSteps*cellVolume);
                 }
                 else
                 {
                     // not zero so that weighted decomposition still works
-                    dsmcRhoNMean_[cell] = 0.001;
-                    //dsmcRhoN_[cell] = 0.001;
+                    dsmcNMean_[cell] = 0.001;
+                    //dsmcN_[cell] = 0.001;
                     rhoN_[cell] = 0.0;
                     rhoM_[cell] = 0.0;
                 }
 
-                if (rhoNInstantaneous_[cell] > SMALL)
+                if (dsmcNInstantaneous_[cell] > SMALL)
                 {
-                    dsmcRhoN_[cell] = rhoNInstantaneous_[cell];
+                    dsmcN_[cell] = dsmcNInstantaneous_[cell];
                 }
                 else
                 {
-                    dsmcRhoN_[cell] = 0.001;
+                    dsmcN_[cell] = 0.001;
                 }
             }
         }
@@ -1224,29 +1316,29 @@ void dsmcVolFields::calculateField()
             scalarField particleCv(nCells, 0.0);
             scalarField totalvDofOverall(nCells, 0.0);
 
-            forAll(rhoNMean_, cell)
+            forAll(dsmcNCum_, cell)
             {
-                /*if (rhoNMean_[cell] > 1e-3) // TODO moved up already
+                /*if (dsmcNCum_[cell] > 1e-3) // TODO moved up already
                 {
                     const scalar cellVolume = mesh_.cellVolumes()[cell];
 
-                    dsmcRhoNMean_[cell] = rhoNMean_[cell]/nAvTimeSteps;
+                    dsmcNMean_[cell] = dsmcNCum_[cell]/nAvTimeSteps;
 
-                    //dsmcRhoN_[cell] = rhoNInstantaneous_[cell];
+                    //dsmcN_[cell] = dsmcNInstantaneous_[cell];
 
-                    const scalar rhoNMean = rhoNMeanXnParticle_[cell]
+                    const scalar rhoNMean = nCum_[cell]
                         /(nAvTimeSteps*cellVolume);
-                    const scalar rhoMMean = rhoMMeanXnParticle_[cell]
+                    const scalar rhoMMean = mCum_[cell]
                         /(nAvTimeSteps*cellVolume);
 
                     rhoN_[cell] = rhoNMean;
                     rhoM_[cell] = rhoMMean;
 
-                    UMean_[cell] = momentumMeanXnParticle_[cell]
-                        /rhoMMeanXnParticle_[cell];
+                    UMean_[cell] = momentumCum_[cell]
+                        /mCum_[cell];
 
                     const scalar linearKEMean = 0.5
-                        *linearKEMeanXnParticle_[cell]
+                        *linKinEnCum_[cell]
                         /(cellVolume*nAvTimeSteps);
 
                     translationalT_[cell] =
@@ -1263,8 +1355,8 @@ void dsmcVolFields::calculateField()
                 else
                 {
                     // not zero so that weighted decomposition still works
-                    dsmcRhoNMean_[cell] = 0.001;
-                    //dsmcRhoN_[cell] = 0.001;
+                    dsmcNMean_[cell] = 0.001;
+                    //dsmcN_[cell] = 0.001;
                     rhoN_[cell] = 0.0;
                     rhoM_[cell] = 0.0;
                     UMean_[cell] = vector::zero;
@@ -1272,27 +1364,27 @@ void dsmcVolFields::calculateField()
                     p_[cell] = 0.0;
                 }*/
 
-                if (rhoNInstantaneous_[cell] > SMALL)
+                if (dsmcNInstantaneous_[cell] > SMALL)
                 {
-                    dsmcRhoN_[cell] = rhoNInstantaneous_[cell];
+                    dsmcN_[cell] = dsmcNInstantaneous_[cell];
                 }
                 else
                 {
-                    dsmcRhoN_[cell] = 0.001;
+                    dsmcN_[cell] = 0.001;
                 }
 
                 //- Rotational energy mode
                 const scalar totalrDof
                 (
-                    rhoNMean_[cell] > SMALL
-                  ? rotationalDofMean_[cell]/rhoNMean_[cell]
+                    dsmcNCum_[cell] > SMALL
+                  ? dsmcRotDofCum_[cell]/dsmcNCum_[cell]
                   : 0.0
                 );
 
                 rotationalT_[cell] =
                 (
-                    rotationalDofMean_[cell] > SMALL
-                  ? 2.0*rotationalEMean_[cell]/(kB*rotationalDofMean_[cell])
+                    dsmcRotDofCum_[cell] > SMALL
+                  ? 2.0*dsmcRotEnCum_[cell]/(kB*dsmcRotDofCum_[cell])
                   : 0.0
                 );
 
@@ -1318,18 +1410,18 @@ void dsmcVolFields::calculateField()
 
                 forAll(typeIds_, i)
                 {
-                    forAll(vibrationalETotal_[i], mode)
+                    forAll(dsmcVibEnSpeciesModeCum_[i], mode)
                     {
-                        if (vibrationalETotal_[i][mode][cell] > VSMALL
-                            && nParcels_[i][cell] > SMALL
+                        if (dsmcVibEnSpeciesModeCum_[i][mode][cell] > VSMALL
+                            && dsmcNSpeciesCum_[i][cell] > SMALL
                             && degreesOfFreedomMode.size() > SMALL)
                         {
                             const scalar thetaV =
                                 cloud_.constProps(typeIds_[i]).thetaV_m(mode);
 
                             const scalar vibrationalEMean =
-                                vibrationalETotal_[i][mode][cell]
-                               /nParcels_[i][cell];
+                                dsmcVibEnSpeciesModeCum_[i][mode][cell]
+                               /dsmcNSpeciesCum_[i][cell];
 
                             const scalar iMean = vibrationalEMean/(kB*thetaV);
 
@@ -1357,16 +1449,16 @@ void dsmcVolFields::calculateField()
 
                     if
                     (
-                         rhoNMeanInt_[cell] > VSMALL
-                      && rhoNMean_[cell] > VSMALL
-                      && nParcels_[i][cell] > SMALL
+                         dsmcNWithRotDofCum_[cell] > VSMALL
+                      && dsmcNCum_[cell] > VSMALL
+                      && dsmcNSpeciesCum_[i][cell] > SMALL
                     )
                     {
-                        const scalar fraction = nParcels_[i][cell]
-                            /rhoNMeanInt_[cell];
+                        const scalar fraction = dsmcNSpeciesCum_[i][cell]
+                            /dsmcNWithRotDofCum_[cell];
 
-                        const scalar fractionOverall = nParcels_[i][cell]
-                            /rhoNMean_[cell];
+                        const scalar fractionOverall = dsmcNSpeciesCum_[i][cell]
+                            /dsmcNCum_[cell];
 
                         totalvDofOverall[cell] +=
                             totalvDof_[cell]*fractionOverall/fraction;
@@ -1380,7 +1472,7 @@ void dsmcVolFields::calculateField()
                 scalar totalEDof = 0.0;
                 scalar elecT = 0.0;
 
-                forAll(nParcels_, i) // TODO
+                forAll(dsmcNSpeciesCum_, i) // TODO
                 {
                     /*const scalarList& electronicEnergies =
                         cloud_.constProps(typeIds_[i]).electronicEnergyList();
@@ -1388,10 +1480,10 @@ void dsmcVolFields::calculateField()
                         cloud_.constProps(typeIds_[i]).electronicDegeneracyList();
 
                     if
-                    (    nGroundElectronicLevel_[i][cell] > SMALL
-                      && nFirstElectronicLevel_[i][cell] > SMALL
-                      && nFirstElectronicLevel_[i][cell]*degeneracies[0]
-                            != nGroundElectronicLevel_[i][cell]*degeneracies[1]
+                    (    dsmcNGroundEleLvlSpeciesCum_[i][cell] > SMALL
+                      && dsmcNFirstEleLvlSpeciesCum_[i][cell] > SMALL
+                      && dsmcNFirstEleLvlSpeciesCum_[i][cell]*degeneracies[0]
+                            != dsmcNGroundEleLvlSpeciesCum_[i][cell]*degeneracies[1]
                     )
                     {
                         const scalar elecTID =
@@ -1399,28 +1491,28 @@ void dsmcVolFields::calculateField()
                            /(
                                 kB*log
                                 (
-                                    nGroundElectronicLevel_[i][cell]*degeneracies[1]
-                                   /(nFirstElectronicLevel_[i][cell]*degeneracies[0])
+                                    dsmcNGroundEleLvlSpeciesCum_[i][cell]*degeneracies[1]
+                                   /(dsmcNFirstEleLvlSpeciesCum_[i][cell]*degeneracies[0])
                                 )
                             );
 
-                        const scalar fraction = nParcels_[i][cell]
-                            /molsElec_[cell];
+                        const scalar fraction = dsmcNSpeciesCum_[i][cell]
+                            /dsmcNEleCum_[cell];
 
                         if (elecTID > VSMALL)
                         {
                             elecT += fraction*elecTID;
                         }
 
-                        const scalar eDof = 2.0*electronicETotal_[i][cell]
-                            /nParcels_[i][cell]/(kB*elecTID);
+                        const scalar eDof = 2.0*dsmcEleEnSpeciesCum_[i][cell]
+                            /dsmcNSpeciesCum_[i][cell]/(kB*elecTID);
 
                         totalEDof += fraction*eDof;
                     }*/
 
                      label nElectronicLevels = cloud_.constProps(typeIds_[i]).nElectronicLevels();
 
-                     if (nElectronicLevels > 1 && nParcels_[i][cell] > SMALL && molsElec_[cell] > SMALL)
+                     if (nElectronicLevels > 1 && dsmcNSpeciesCum_[i][cell] > SMALL && dsmcNEleCum_[cell] > SMALL)
                      {
                          const scalarList& electronicEnergies = cloud_.constProps(typeIds_[i]).electronicEnergyList();
                          const labelList& degeneracies = cloud_.constProps(typeIds_[i]).electronicDegeneracyList();
@@ -1428,19 +1520,19 @@ void dsmcVolFields::calculateField()
                          const scalar translationalTSpecies =
                             1.0/(3.0*kB)
                            *(
-                               mccSpecies_[i][cell]/nParcels_[i][cell]
+                               dsmcMccSpeciesCum_[i][cell]/dsmcNSpeciesCum_[i][cell]
                              - (
                                    cloud_.constProps(typeIds_[i]).mass()
                                   *mag(UMean_[cell])*mag(UMean_[cell])
                                )
                            );
 
-                         const scalar fraction = nParcels_[i][cell]/molsElec_[cell];
+                         const scalar fraction = dsmcNSpeciesCum_[i][cell]/dsmcNEleCum_[cell];
 
                          //Info << "translationalTSpecies" << tab << translationalTSpecies << endl;
                          //Info << "fraction" << tab << fraction << endl;
 
-                         if (translationalTSpecies > SMALL && electronicETotal_[i][cell] > VSMALL)
+                         if (translationalTSpecies > SMALL && dsmcEleEnSpeciesCum_[i][cell] > VSMALL)
                          {
                              scalar sum1 = 0.0;
                              scalar sum2 = 0.0;
@@ -1455,15 +1547,15 @@ void dsmcVolFields::calculateField()
                              if (sum1 > VSMALL && sum2 > VSMALL)
                              {
                                  const scalar electronicTSpecies =
-                                    electronicETotal_[i][cell]
-                                   /(kB*nParcels_[i][cell])*sum1/sum2;
+                                    dsmcEleEnSpeciesCum_[i][cell]
+                                   /(kB*dsmcNSpeciesCum_[i][cell])*sum1/sum2;
 
                                  if (electronicTSpecies > SMALL && electronicTSpecies < GREAT)
                                  {
                                      elecT += fraction*electronicTSpecies;
 
                                      const scalar eDof =
-                                        2.0*electronicETotal_[i][cell]/nParcels_[i][cell]
+                                        2.0*dsmcEleEnSpeciesCum_[i][cell]/dsmcNSpeciesCum_[i][cell]
                                        /(kB*translationalTSpecies);
 
                                      totalEDof += fraction*eDof;
@@ -1480,7 +1572,7 @@ void dsmcVolFields::calculateField()
                 /*scalar totalEDof = 0.0;
                 scalar elecT = 0.0;
 
-                forAll(nParcels_, iD)
+                forAll(dsmcNSpeciesCum_, iD)
                 {
                     const scalarList& electronicEnergies =
                         cloud_.constProps(typeIds_[iD]).electronicEnergyList();
@@ -1489,10 +1581,10 @@ void dsmcVolFields::calculateField()
 
                     if
                     (
-                        nGroundElectronicLevel_[iD][cell] > VSMALL
-                     && nFirstElectronicLevel_[iD][cell] > VSMALL
-                     && nFirstElectronicLevel_[iD][cell]*degeneracies[0]
-                            != nGroundElectronicLevel_[iD][cell]*degeneracies[1]
+                        dsmcNGroundEleLvlSpeciesCum_[iD][cell] > VSMALL
+                     && dsmcNFirstEleLvlSpeciesCum_[iD][cell] > VSMALL
+                     && dsmcNFirstEleLvlSpeciesCum_[iD][cell]*degeneracies[0]
+                            != dsmcNGroundEleLvlSpeciesCum_[iD][cell]*degeneracies[1]
                     )
                     {
                         const scalar elecTID =
@@ -1501,13 +1593,13 @@ void dsmcVolFields::calculateField()
                                 kB*
                                 log
                                 (
-                                    (nGroundElectronicLevel_[iD][cell]*degeneracies[1])/
-                                    (nFirstElectronicLevel_[iD][cell]*degeneracies[0])
+                                    (dsmcNGroundEleLvlSpeciesCum_[iD][cell]*degeneracies[1])/
+                                    (dsmcNFirstEleLvlSpeciesCum_[iD][cell]*degeneracies[0])
                                 )
                             );
 
 
-                        const scalar fraction = nParcels_[iD][cell]/molsElec_[cell];
+                        const scalar fraction = dsmcNSpeciesCum_[iD][cell]/dsmcNEleCum_[cell];
 
                         if(elecTID > VSMALL)
                         {
@@ -1516,8 +1608,8 @@ void dsmcVolFields::calculateField()
 
                         const scalar eDof =
                             (
-                                2.0*(electronicETotal_[iD][cell]/
-                             nParcels_[iD][cell])
+                                2.0*(dsmcEleEnSpeciesCum_[iD][cell]/
+                             dsmcNSpeciesCum_[iD][cell])
                             )
                             /
                             (
@@ -1543,27 +1635,27 @@ void dsmcVolFields::calculateField()
 
                 if (measureHeatFluxShearStress_)
                 {
-                    if (rhoNMean_[cell] > SMALL)
+                    if (dsmcNCum_[cell] > SMALL)
                     {
                         pressureTensor_[cell].xx() =
                             rhoN_[cell]*
                             (
-                                muu_[cell]/rhoNMean_[cell]
-                              - rhoMMean_[cell]/rhoNMean_[cell]
+                                dsmcMuuCum_[cell]/dsmcNCum_[cell]
+                              - dsmcMCum_[cell]/dsmcNCum_[cell]
                                   *sqr(UMean_[cell].x())
                             );
                         pressureTensor_[cell].xy() =
                             rhoN_[cell]*
                             (
-                                muv_[cell]/rhoNMean_[cell]
-                              - rhoMMean_[cell]/rhoNMean_[cell]
+                                dsmcMuvCum_[cell]/dsmcNCum_[cell]
+                              - dsmcMCum_[cell]/dsmcNCum_[cell]
                                     *UMean_[cell].x()*UMean_[cell].y()
                             );
                         pressureTensor_[cell].xz() =
                             rhoN_[cell]*
                             (
-                                muw_[cell]/rhoNMean_[cell]
-                              - rhoMMean_[cell]/rhoNMean_[cell]
+                                dsmcMuwCum_[cell]/dsmcNCum_[cell]
+                              - dsmcMCum_[cell]/dsmcNCum_[cell]
                                   *UMean_[cell].x()*UMean_[cell].z()
                             );
 
@@ -1571,15 +1663,15 @@ void dsmcVolFields::calculateField()
                         pressureTensor_[cell].yy() =
                             rhoN_[cell]*
                             (
-                                mvv_[cell]/(rhoNMean_[cell])
-                              - rhoMMean_[cell]/rhoNMean_[cell]
+                                dsmcMvvCum_[cell]/(dsmcNCum_[cell])
+                              - dsmcMCum_[cell]/dsmcNCum_[cell]
                                     *sqr(UMean_[cell].y())
                             );
                         pressureTensor_[cell].yz() =
                             rhoN_[cell]*
                             (
-                                mvw_[cell]/rhoNMean_[cell]
-                              - rhoMMean_[cell]/rhoNMean_[cell]
+                                dsmcMvwCum_[cell]/dsmcNCum_[cell]
+                              - dsmcMCum_[cell]/dsmcNCum_[cell]
                                     *UMean_[cell].y()*UMean_[cell].z()
                             );
 
@@ -1588,8 +1680,8 @@ void dsmcVolFields::calculateField()
                         pressureTensor_[cell].zz() =
                             rhoN_[cell]*
                             (
-                                mww_[cell]/rhoNMean_[cell]
-                              - rhoMMean_[cell]/rhoNMean_[cell]
+                                dsmcMwwCum_[cell]/dsmcNCum_[cell]
+                              - dsmcMCum_[cell]/dsmcNCum_[cell]
                                     *sqr(UMean_[cell].z())
                             );
 
@@ -1613,10 +1705,10 @@ void dsmcVolFields::calculateField()
                         heatFluxVector_[cell].x() =
                             rhoN_[cell]*
                             (
-                                0.5*mccu_[cell]/rhoNMean_[cell]
-                              - 0.5*mcc_[cell]/rhoNMean_[cell]*UMean_[cell].x()
-                              + eu_[cell]/rhoNMean_[cell]
-                              - e_[cell]/rhoNMean_[cell]*UMean_[cell].x()
+                                0.5*dsmcMccuCum_[cell]/dsmcNCum_[cell]
+                              - 0.5*dsmcMccCum_[cell]/dsmcNCum_[cell]*UMean_[cell].x()
+                              + dsmcEuCum_[cell]/dsmcNCum_[cell]
+                              - dsmcECum_[cell]/dsmcNCum_[cell]*UMean_[cell].x()
                             )
                           - pressureTensor_[cell].xx()*UMean_[cell].x()
                           - pressureTensor_[cell].xy()*UMean_[cell].y()
@@ -1625,10 +1717,10 @@ void dsmcVolFields::calculateField()
                         heatFluxVector_[cell].y() =
                             rhoN_[cell]*
                             (
-                                0.5*mccv_[cell]/rhoNMean_[cell]
-                              - 0.5*mcc_[cell]/rhoNMean_[cell]*UMean_[cell].y()
-                              + ev_[cell]/rhoNMean_[cell]
-                              - e_[cell]/rhoNMean_[cell]*UMean_[cell].y()
+                                0.5*dsmcMccvCum_[cell]/dsmcNCum_[cell]
+                              - 0.5*dsmcMccCum_[cell]/dsmcNCum_[cell]*UMean_[cell].y()
+                              + dsmcEvCum_[cell]/dsmcNCum_[cell]
+                              - dsmcECum_[cell]/dsmcNCum_[cell]*UMean_[cell].y()
                             )
                           - pressureTensor_[cell].yx()*UMean_[cell].x()
                           - pressureTensor_[cell].yy()*UMean_[cell].y()
@@ -1637,10 +1729,10 @@ void dsmcVolFields::calculateField()
                         heatFluxVector_[cell].z() =
                             rhoN_[cell]*
                             (
-                                0.5*mccw_[cell]/rhoNMean_[cell]
-                              - 0.5*mcc_[cell]/rhoNMean_[cell]*UMean_[cell].z()
-                              + ew_[cell]/rhoNMean_[cell]
-                              - e_[cell]/rhoNMean_[cell]*UMean_[cell].z()
+                                0.5*dsmcMccwCum_[cell]/dsmcNCum_[cell]
+                              - 0.5*dsmcMccCum_[cell]/dsmcNCum_[cell]*UMean_[cell].z()
+                              + dsmcEwCum_[cell]/dsmcNCum_[cell]
+                              - dsmcECum_[cell]/dsmcNCum_[cell]*UMean_[cell].z()
                             )
                           - pressureTensor_[cell].zx()*UMean_[cell].x()
                           - pressureTensor_[cell].zy()*UMean_[cell].y()
@@ -1654,14 +1746,14 @@ void dsmcVolFields::calculateField()
                     }
                 }
 
-                forAll(nParcels_, i)
+                forAll(dsmcNSpeciesCum_, i)
                 {
                     const label iD = typeIds_[i];
 
-                    if (rhoNMean_[cell] > SMALL)
+                    if (dsmcNCum_[cell] > SMALL)
                     {
-                        const scalar molarFrac = nParcels_[i][cell]
-                            /rhoNMean_[cell];
+                        const scalar molarFrac = dsmcNSpeciesCum_[i][cell]
+                            /dsmcNCum_[cell];
 
                         molecularMass[cell] += molarFrac
                             *cloud_.constProps(iD).mass();
@@ -1736,12 +1828,12 @@ void dsmcVolFields::calculateField()
 
                             if
                             (
-                                nParcels_[qspec][cell] > SMALL
+                                dsmcNSpeciesCum_[qspec][cell] > SMALL
                              && translationalT_[cell] > SMALL
                             )
                             {
                                 const scalar nDensQ =
-                                    nParcelsXnParticle_[qspec][cell]
+                                    nSpeciesCum_[qspec][cell]
                                    /(mesh_.cellVolumes()[cell]*nAvTimeSteps);
                                 const scalar reducedMass =
                                     cloud_.constProps(typeIds_[i]).mass()
@@ -1784,8 +1876,8 @@ void dsmcVolFields::calculateField()
 
                     meanCollisionSeparation_[cell] =
                     (
-                        nColls_[cell] > SMALL
-                      ? collisionSeparation_[cell]/nColls_[cell]
+                        dsmcNCollsCum_[cell] > SMALL
+                      ? collisionSeparation_[cell]/dsmcNCollsCum_[cell]
                       : GREAT
                     );
 
@@ -1795,7 +1887,7 @@ void dsmcVolFields::calculateField()
                     {
                         //const scalar symmFactor = 2.0; // TODO (i == qspec ? 1.0 : 2.0);
 
-                        cr_[cell] = nColls_[cell]*cloud_.nParticles(cell)
+                        cr_[cell] = dsmcNCollsCum_[cell]*cloud_.nParticles(cell)
                             /(rhoN_[cell]*mesh_.cellVolumes()[cell]
                                 *nAvTimeSteps*deltaT);
                     }
@@ -1807,7 +1899,7 @@ void dsmcVolFields::calculateField()
                     {
                         if (rhoN_[cell] > SMALL)
                         {
-                            const scalar nDensP = nParcelsXnParticle_[i][cell]
+                            const scalar nDensP = nSpeciesCum_[i][cell]
                                 /(mesh_.cellVolumes()[cell]*nAvTimeSteps);
 
                             meanFreePath_[cell] += mfp_[i][cell]*nDensP
@@ -1885,7 +1977,7 @@ void dsmcVolFields::calculateField()
 
                     // when no particle in cell, refines when it should not
                     // the condition should eliminates this
-                    if (dsmcRhoN_[cell] >= 4.0)
+                    if (dsmcN_[cell] >= 4.0)
                     {
                         cellMfpRatio_[cell] = 1.0/mfpCellRatio_[cell];
                     }
@@ -1893,14 +1985,14 @@ void dsmcVolFields::calculateField()
 
                 if (measureClassifications_)
                 {
-                    if (rhoNMean_[cell] > SMALL)
+                    if (dsmcNCum_[cell] > SMALL)
                     {
-                        classIDistribution_[cell] = nClassI_[cell]
-                            /rhoNMean_[cell];
-                        classIIDistribution_[cell] = nClassII_[cell]
-                            /rhoNMean_[cell];
-                        classIIIDistribution_[cell] = nClassIII_[cell]
-                            /rhoNMean_[cell];
+                        classIDistribution_[cell] = dsmcNClassICum_[cell]
+                            /dsmcNCum_[cell];
+                        classIIDistribution_[cell] = dsmcNClassIICum_[cell]
+                            /dsmcNCum_[cell];
+                        classIIIDistribution_[cell] = dsmcNClassIIICum_[cell]
+                            /dsmcNCum_[cell];
                     }
                 }
 
@@ -1908,18 +2000,18 @@ void dsmcVolFields::calculateField()
                 {
                     // TODO
                     if (
-                           dsmcRhoNMean_[cell] > SMALL && Ma_[cell] > SMALL
+                           dsmcNMean_[cell] > SMALL && Ma_[cell] > SMALL
                         && gamma > SMALL && particleCv[cell] > SMALL
                        )
                     {
                         densityError_[cell] = 1.0
-                            /sqrt(dsmcRhoNMean_[cell]*nAvTimeSteps);
-                        velocityError_[cell] = (1.0/sqrt(dsmcRhoNMean_[cell]*nAvTimeSteps))*(1.0/(Ma_[cell]*sqrt(gamma)));
+                            /sqrt(dsmcNMean_[cell]*nAvTimeSteps);
+                        velocityError_[cell] = (1.0/sqrt(dsmcNMean_[cell]*nAvTimeSteps))*(1.0/(Ma_[cell]*sqrt(gamma)));
                         temperatureError_[cell] =
-                            (1.0/sqrt(dsmcRhoNMean_[cell]*nAvTimeSteps))
+                            (1.0/sqrt(dsmcNMean_[cell]*nAvTimeSteps))
                            *sqrt(kB/particleCv[cell]);
                         pressureError_[cell] = sqrt(gamma)
-                            /sqrt(dsmcRhoNMean_[cell]*nAvTimeSteps);
+                            /sqrt(dsmcNMean_[cell]*nAvTimeSteps);
                     }
 
                 }
@@ -2316,8 +2408,8 @@ void dsmcVolFields::calculateField()
                         vibrationalT_.boundaryFieldRef()[j][k] =
                             vibrationalT_[celli];
                         overallT_.boundaryFieldRef()[j][k] = overallT_[celli];
-                        dsmcRhoNMean_.boundaryFieldRef()[j][k] =
-                            dsmcRhoNMean_[celli];
+                        dsmcNMean_.boundaryFieldRef()[j][k] =
+                            dsmcNMean_[celli];
                         rhoN_.boundaryFieldRef()[j][k] = rhoN_[celli];
                         rhoM_.boundaryFieldRef()[j][k] = rhoM_[celli];
                         p_.boundaryFieldRef()[j][k] = p_[celli];
@@ -2379,71 +2471,71 @@ void dsmcVolFields::calculateField()
         {
             nTimeSteps_ = 0.0;
 
-            forAll(rhoNMean_, celli)
+            forAll(dsmcNCum_, celli)
             {
-                rhoNMean_[celli] = 0.0;
-                rhoNInstantaneous_[celli] = 0.0;
-                rhoMMean_[celli] = 0.0;
-                linearKEMean_[celli] = 0.0;
-                momentumMean_[celli] = vector::zero;
-                rotationalEMean_[celli] = 0.0;
-                rotationalDofMean_[celli] = 0.0;
-                rhoNMeanInt_[celli] = 0.0;
-                molsElec_[celli] = 0.0,
-                nClassI_[celli] = 0.0;
-                nClassII_[celli] = 0.0;
-                nClassIII_[celli] = 0.0;
+                dsmcNCum_[celli] = 0.0;
+                dsmcNInstantaneous_[celli] = 0.0;
+                dsmcMCum_[celli] = 0.0;
+                dsmcLinKinEnCum_[celli] = 0.0;
+                dsmcMomentumCum_[celli] = vector::zero;
+                dsmcRotEnCum_[celli] = 0.0;
+                dsmcRotDofCum_[celli] = 0.0;
+                dsmcNWithRotDofCum_[celli] = 0.0;
+                dsmcNEleCum_[celli] = 0.0,
+                dsmcNClassICum_[celli] = 0.0;
+                dsmcNClassIICum_[celli] = 0.0;
+                dsmcNClassIIICum_[celli] = 0.0;
                 collisionSeparation_[celli] = 0.0;
-                nColls_[celli] = 0.0;
+                dsmcNCollsCum_[celli] = 0.0;
                 cr_[celli] = 0.0;
-                muu_[celli] = 0.0;
-                muv_[celli] = 0.0;
-                muw_[celli] = 0.0;
-                mvv_[celli] = 0.0;
-                mvw_[celli] = 0.0;
-                mww_[celli] = 0.0;
-                mcc_[celli] = 0.0;
-                mccu_[celli] = 0.0;
-                mccv_[celli] = 0.0;
-                mccw_[celli] = 0.0;
-                eu_[celli] = 0.0;
-                ev_[celli] = 0.0;
-                ew_[celli] = 0.0;
-                e_[celli] = 0.0;
+                dsmcMuuCum_[celli] = 0.0;
+                dsmcMuvCum_[celli] = 0.0;
+                dsmcMuwCum_[celli] = 0.0;
+                dsmcMvvCum_[celli] = 0.0;
+                dsmcMvwCum_[celli] = 0.0;
+                dsmcMwwCum_[celli] = 0.0;
+                dsmcMccCum_[celli] = 0.0;
+                dsmcMccuCum_[celli] = 0.0;
+                dsmcMccvCum_[celli] = 0.0;
+                dsmcMccwCum_[celli] = 0.0;
+                dsmcEuCum_[celli] = 0.0;
+                dsmcEvCum_[celli] = 0.0;
+                dsmcEwCum_[celli] = 0.0;
+                dsmcECum_[celli] = 0.0;
                 totalvDof_[celli] = 0.0;
-                rhoNMeanXnParticle_[celli] = 0.0;
-                rhoMMeanXnParticle_[celli] = 0.0;
-                momentumMeanXnParticle_[celli] = vector::zero;
-                linearKEMeanXnParticle_[celli] = 0.0;
+                nCum_[celli] = 0.0;
+                mCum_[celli] = 0.0;
+                momentumCum_[celli] = vector::zero;
+                linKinEnCum_[celli] = 0.0;
             }
 
-            forAll(vibrationalETotal_, i)
+            forAll(dsmcVibEnSpeciesModeCum_, i)
             {
-                forAll(vibrationalETotal_[i], cell)
+                forAll(dsmcVibEnSpeciesModeCum_[i], cell)
                 {
                     vibT_[i][cell] = 0.0;
                     vDof_[i][cell] = 0.0;
                 }
 
-                forAll(vibrationalETotal_[i], mode)
+                forAll(dsmcVibEnSpeciesModeCum_[i], mode)
                 {
-                    forAll(vibrationalETotal_[i][mode], cell)
+                    forAll(dsmcVibEnSpeciesModeCum_[i][mode], cell)
                     {
-                        vibrationalETotal_[i][mode][cell] = 0.0;
+                        dsmcVibEnSpeciesModeCum_[i][mode][cell] = 0.0;
                     }
                 }
             }
 
-            forAll(nParcels_, i)
+            forAll(dsmcNSpeciesCum_, i)
             {
-                forAll(nParcels_[i], cell)
+                forAll(dsmcNSpeciesCum_[i], cell)
                 {
-                    electronicETotal_[i][cell] = 0.0;
-                    mccSpecies_[i][cell] = 0.0;
-                    nParcels_[i][cell] = 0.0;
-                    nGroundElectronicLevel_[i][cell] = 0.0;
-                    nFirstElectronicLevel_[i][cell] = 0.0;
-                    nParcelsXnParticle_[i][cell] = 0.0;
+                    dsmcEleEnSpeciesCum_[i][cell] = 0.0;
+                    dsmcMccSpeciesCum_[i][cell] = 0.0;
+                    dsmcNSpeciesCum_[i][cell] = 0.0;
+                    dsmcNGroundEleLvlSpeciesCum_[i][cell] = 0.0;
+                    dsmcNFirstEleLvlSpeciesCum_[i][cell] = 0.0;
+                    nSpeciesCum_[i][cell] = 0.0;
 
                     mfp_[i][cell] = 0.0;
                     mcr_[i][cell] = 0.0;
@@ -2515,107 +2607,107 @@ void dsmcVolFields::resetField()
 {
     nTimeSteps_ = 0.0;
 
-    rhoNMean_.clear();
-    rhoNInstantaneous_.clear();
-    rhoMMean_.clear();
-    linearKEMean_.clear();
-    momentumMean_.clear();
-    rotationalEMean_.clear();
-    rotationalDofMean_.clear();
-    rhoNMeanInt_.clear();
-    molsElec_.clear();
-    nClassI_.clear();
-    nClassII_.clear();
-    nClassIII_.clear();
+    dsmcNCum_.clear();
+    dsmcNInstantaneous_.clear();
+    dsmcMCum_.clear();
+    dsmcLinKinEnCum_.clear();
+    dsmcMomentumCum_.clear();
+    dsmcRotEnCum_.clear();
+    dsmcRotDofCum_.clear();
+    dsmcNWithRotDofCum_.clear();
+    dsmcNEleCum_.clear();
+    dsmcNClassICum_.clear();
+    dsmcNClassIICum_.clear();
+    dsmcNClassIIICum_.clear();
     collisionSeparation_.clear();
-    nColls_.clear();
-    muu_.clear();
-    muv_.clear();
-    muw_.clear();
-    mvv_.clear();
-    mvw_.clear();
-    mww_.clear();
-    mcc_.clear();
-    mccu_.clear();
-    mccv_.clear();
-    mccw_.clear();
-    eu_.clear();
-    ev_.clear();
-    ew_.clear();
-    e_.clear();
+    dsmcNCollsCum_.clear();
+    dsmcMuuCum_.clear();
+    dsmcMuvCum_.clear();
+    dsmcMuwCum_.clear();
+    dsmcMvvCum_.clear();
+    dsmcMvwCum_.clear();
+    dsmcMwwCum_.clear();
+    dsmcMccCum_.clear();
+    dsmcMccuCum_.clear();
+    dsmcMccvCum_.clear();
+    dsmcMccwCum_.clear();
+    dsmcEuCum_.clear();
+    dsmcEvCum_.clear();
+    dsmcEwCum_.clear();
+    dsmcECum_.clear();
     totalvDof_.clear();
-    rhoNMeanXnParticle_.clear();
-    rhoMMeanXnParticle_.clear();
-    momentumMeanXnParticle_.clear();
-    linearKEMeanXnParticle_.clear();
+    nCum_.clear();
+    mCum_.clear();
+    momentumCum_.clear();
+    linKinEnCum_.clear();
 
 
-    rhoNMean_.setSize(mesh_.nCells(), 0.0);
-    rhoNInstantaneous_.setSize(mesh_.nCells(), 0.0);
-    rhoMMean_.setSize(mesh_.nCells(), 0.0);
-    linearKEMean_.setSize(mesh_.nCells(), 0.0);
-    momentumMean_.setSize(mesh_.nCells(), vector::zero);
-    rotationalEMean_.setSize(mesh_.nCells(), 0.0);
-    rotationalDofMean_.setSize(mesh_.nCells(), 0.0);
-    rhoNMeanInt_.setSize(mesh_.nCells(), 0.0);
-    molsElec_.setSize(mesh_.nCells(), 0.0);
-    nClassI_.setSize(mesh_.nCells(), 0.0);
-    nClassII_.setSize(mesh_.nCells(), 0.0);
-    nClassIII_.setSize(mesh_.nCells(), 0.0);
+    dsmcNCum_.setSize(mesh_.nCells(), 0.0);
+    dsmcNInstantaneous_.setSize(mesh_.nCells(), 0.0);
+    dsmcMCum_.setSize(mesh_.nCells(), 0.0);
+    dsmcLinKinEnCum_.setSize(mesh_.nCells(), 0.0);
+    dsmcMomentumCum_.setSize(mesh_.nCells(), vector::zero);
+    dsmcRotEnCum_.setSize(mesh_.nCells(), 0.0);
+    dsmcRotDofCum_.setSize(mesh_.nCells(), 0.0);
+    dsmcNWithRotDofCum_.setSize(mesh_.nCells(), 0.0);
+    dsmcNEleCum_.setSize(mesh_.nCells(), 0.0);
+    dsmcNClassICum_.setSize(mesh_.nCells(), 0.0);
+    dsmcNClassIICum_.setSize(mesh_.nCells(), 0.0);
+    dsmcNClassIIICum_.setSize(mesh_.nCells(), 0.0);
     collisionSeparation_.setSize(mesh_.nCells(), 0.0);
-    nColls_.setSize(mesh_.nCells(), 0.0);
+    dsmcNCollsCum_.setSize(mesh_.nCells(), 0.0);
     cr_.setSize(mesh_.nCells(), 0.0);
-    muu_.setSize(mesh_.nCells(), 0.0);
-    muv_.setSize(mesh_.nCells(), 0.0);
-    muw_.setSize(mesh_.nCells(), 0.0);
-    mvv_.setSize(mesh_.nCells(), 0.0);
-    mvw_.setSize(mesh_.nCells(), 0.0);
-    mww_.setSize(mesh_.nCells(), 0.0);
-    mcc_.setSize(mesh_.nCells(), 0.0);
-    mccu_.setSize(mesh_.nCells(), 0.0);
-    mccv_.setSize(mesh_.nCells(), 0.0);
-    mccw_.setSize(mesh_.nCells(), 0.0);
-    eu_.setSize(mesh_.nCells(), 0.0);
-    ev_.setSize(mesh_.nCells(), 0.0);
-    ew_.setSize(mesh_.nCells(), 0.0);
-    e_.setSize(mesh_.nCells(), 0.0);
+    dsmcMuuCum_.setSize(mesh_.nCells(), 0.0);
+    dsmcMuvCum_.setSize(mesh_.nCells(), 0.0);
+    dsmcMuwCum_.setSize(mesh_.nCells(), 0.0);
+    dsmcMvvCum_.setSize(mesh_.nCells(), 0.0);
+    dsmcMvwCum_.setSize(mesh_.nCells(), 0.0);
+    dsmcMwwCum_.setSize(mesh_.nCells(), 0.0);
+    dsmcMccCum_.setSize(mesh_.nCells(), 0.0);
+    dsmcMccuCum_.setSize(mesh_.nCells(), 0.0);
+    dsmcMccvCum_.setSize(mesh_.nCells(), 0.0);
+    dsmcMccwCum_.setSize(mesh_.nCells(), 0.0);
+    dsmcEuCum_.setSize(mesh_.nCells(), 0.0);
+    dsmcEvCum_.setSize(mesh_.nCells(), 0.0);
+    dsmcEwCum_.setSize(mesh_.nCells(), 0.0);
+    dsmcECum_.setSize(mesh_.nCells(), 0.0);
     totalvDof_.setSize(mesh_.nCells(), 0.0);
-    rhoNMeanXnParticle_.setSize(mesh_.nCells(), 0.0);
-    rhoMMeanXnParticle_.setSize(mesh_.nCells(), 0.0);
-    momentumMeanXnParticle_.setSize(mesh_.nCells(), vector::zero);
-    linearKEMeanXnParticle_.setSize(mesh_.nCells(), 0.0);
+    nCum_.setSize(mesh_.nCells(), 0.0);
+    mCum_.setSize(mesh_.nCells(), 0.0);
+    momentumCum_.setSize(mesh_.nCells(), vector::zero);
+    linKinEnCum_.setSize(mesh_.nCells(), 0.0);
 
-    forAll(nParcels_, i)
+    forAll(dsmcNSpeciesCum_, i)
     {
-        electronicETotal_[i].clear();
-        mccSpecies_[i].clear();
-        nParcels_[i].clear();
-        nGroundElectronicLevel_[i].clear();
-        nFirstElectronicLevel_[i].clear();
-        nParcelsXnParticle_[i].clear();
+        dsmcEleEnSpeciesCum_[i].clear();
+        dsmcMccSpeciesCum_[i].clear();
+        dsmcNSpeciesCum_[i].clear();
+        dsmcNGroundEleLvlSpeciesCum_[i].clear();
+        dsmcNFirstEleLvlSpeciesCum_[i].clear();
+        nSpeciesCum_[i].clear();
 
         mfp_[i].clear();
         mcr_[i].clear();
 
-        electronicETotal_[i].setSize(mesh_.nCells(), 0.0);
-        mccSpecies_[i].setSize(mesh_.nCells(), 0.0);
-        nParcels_[i].setSize(mesh_.nCells(), 0.0);
-        nGroundElectronicLevel_[i].setSize(mesh_.nCells(), 0.0);
-        nFirstElectronicLevel_[i].setSize(mesh_.nCells(), 0.0);
-        nParcelsXnParticle_[i].setSize(mesh_.nCells(), 0.0);
+        dsmcEleEnSpeciesCum_[i].setSize(mesh_.nCells(), 0.0);
+        dsmcMccSpeciesCum_[i].setSize(mesh_.nCells(), 0.0);
+        dsmcNSpeciesCum_[i].setSize(mesh_.nCells(), 0.0);
+        dsmcNGroundEleLvlSpeciesCum_[i].setSize(mesh_.nCells(), 0.0);
+        dsmcNFirstEleLvlSpeciesCum_[i].setSize(mesh_.nCells(), 0.0);
+        nSpeciesCum_[i].setSize(mesh_.nCells(), 0.0);
 
         mfp_[i].setSize(mesh_.nCells(), 0.0);
         mcr_[i].setSize(mesh_.nCells(), 0.0);
     }
 
 
-    forAll(vibrationalETotal_, i)
+    forAll(dsmcVibEnSpeciesModeCum_, i)
     {
-        forAll(vibrationalETotal_[i], mode)
+        forAll(dsmcVibEnSpeciesModeCum_[i], mode)
         {
-           vibrationalETotal_[i][mode].clear();
+           dsmcVibEnSpeciesModeCum_[i][mode].clear();
 
-           vibrationalETotal_[i][mode].setSize(mesh_.nCells(), 0.0);
+           dsmcVibEnSpeciesModeCum_[i][mode].setSize(mesh_.nCells(), 0.0);
         }
     }
 
