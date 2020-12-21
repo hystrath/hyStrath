@@ -11,7 +11,7 @@ FoamFile
     format      ascii;
     class       volScalarField;
     location    "4.78";
-    object      dsmcRhoNMean_Ar2;
+    object      dsmcNMean_Ar2;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

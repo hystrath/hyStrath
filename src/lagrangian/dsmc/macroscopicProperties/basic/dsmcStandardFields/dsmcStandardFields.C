@@ -109,18 +109,18 @@ Foam::dsmcStandardFields::dsmcStandardFields
         mesh_,
         dimensionedScalar("zero",  dimensionSet(1, -3, 0, 0, 0), 0.0)
     ),
-    dsmcRhoN_
+    dsmcN_
     (
         IOobject
         (
-            "dsmcRhoN",
+            "dsmcN",
             mesh_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
             IOobject::AUTO_WRITE
         ),
         mesh_,
-        dimensionedScalar("zero",  dimensionSet(0, -3, 0, 0, 0), 0.0)
+        dimensionedScalar("zero",  dimensionSet(0, 0, 0, 0, 0), 0.0)
     ),
     linearKE_
     (
@@ -280,11 +280,11 @@ Foam::dsmcStandardFields::dsmcStandardFields
         ),
         mesh_
     ),
-    dsmcRhoN_
+    dsmcN_
     (
         IOobject
         (
-            "dsmcRhoN",
+            "dsmcN",
             mesh_.time().timeName(),
             mesh_,
             IOobject::MUST_READ,
@@ -380,7 +380,7 @@ void Foam::dsmcStandardFields::calculateFields()
 
     scalarField& rhoM = rhoM_.internalField();
 
-    scalarField& dsmcRhoN = dsmcRhoN_.internalField();
+    scalarField& dsmcN = dsmcN_.internalField();
 
     scalarField& linearKE = linearKE_.internalField();
 
@@ -403,7 +403,7 @@ void Foam::dsmcStandardFields::calculateFields()
 
         rhoM[cellI] += cloud_.constProps(p.typeId()).mass();
 
-        dsmcRhoN[cellI]++;
+        dsmcN[cellI]++;
 
         linearKE[cellI] += 0.5*cloud_.constProps(p.typeId()).mass()*(p.U() & p.U());
 
@@ -425,7 +425,7 @@ void Foam::dsmcStandardFields::calculateFields()
     rhoM *= cloud_.nParticle()/mesh_.cellVolumes();
     rhoM_.correctBoundaryConditions();
 
-    dsmcRhoN_.correctBoundaryConditions();
+    dsmcN_.correctBoundaryConditions();
 
     linearKE *= cloud_.nParticle()/mesh_.cellVolumes();
     linearKE_.correctBoundaryConditions();
@@ -461,7 +461,7 @@ void Foam::dsmcStandardFields::resetFields()
 
     rhoM_ =  dimensionedScalar("zero",  dimensionSet(1, -3, 0, 0, 0), VSMALL);
 
-    dsmcRhoN_ = dimensionedScalar("zero",  dimensionSet(0, -3, 0, 0, 0), 0.0);
+    dsmcN_ = dimensionedScalar("zero",  dimensionSet(0, 0, 0, 0, 0), 0.0);
 
     linearKE_ = dimensionedScalar("zero",  dimensionSet(1, -1, -2, 0, 0), 0.0);
 
