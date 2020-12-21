@@ -18,6 +18,6 @@ FoamFile
 numberOfSubdomains 8;
 
 method          scotch;
-weightField     dsmcRhoN_Ar;
+weightField     dsmcN_Ar;
 
 // ************************************************************************* //

@@ -37,12 +37,12 @@ Reconstructing FV fields
         surfaceHeatTransfer_Ar
         rhoM_Ar
         surfaceShearStress_Ar
-        dsmcRhoN_Ar
+        dsmcN_Ar
         dsmcSigmaTcRMax
         rhoN_Ar
         meanCollisionTime_Ar
         mfpCellRatio_Ar
-        dsmcRhoNMean_Ar
+        dsmcNMean_Ar
         electronicT_Ar
         overallT_Ar
         p_Ar
