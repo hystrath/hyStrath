@@ -51,7 +51,7 @@ Foam::scalar Foam::rho2ReactionThermo::Temperature_NewtonRaphson
 {
     // The tolerance and maximum number of iterations are identical to the ones
     // in multiThermo.C
-    scalar tol_ = 1e-6;
+    scalar tol_ = 1e-06;
     label maxIter_ = 100;
 
     scalar Test = T0;
@@ -63,7 +63,8 @@ Foam::scalar Foam::rho2ReactionThermo::Temperature_NewtonRaphson
     {
         Test = Tnew;
 
-        scalar Fipt(0), dFipt(0);
+        scalar Fipt = 0.0;
+        scalar dFipt = 0.0;
         forAll(composition().species(), i)
         {
             Fipt  += (composition().*F)(i, p, Test)*YList[i];
@@ -120,7 +121,8 @@ Foam::scalar Foam::rho2ReactionThermo::Temperature_Secant
     {
         Test1 = Tnew;
 
-        scalar Fipt1(0), Fipt2(0);
+        scalar Fipt1 = 0.0;
+        scalar Fipt2 = 0.0;
         forAll(composition().species(), i)
         {
             Fipt1 += (composition().*F)(i, p, Test1)*YList[i];
