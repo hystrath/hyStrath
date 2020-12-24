@@ -15,7 +15,7 @@ runApplication createPatch -overwrite
 postProcess -func writeCellCentres -time '0' > /dev/null 2>&1
 gcc calculateBMSL.C -o calculateB_MSL -lm
 ./calculateB_MSL > /dev/null 2>&1
-rm 0/C 0/Cx 0/Cy 0/Cz
+rm -f 0/C 0/Cx 0/Cy 0/Cz
 
 cp -r backup_NR_0.0014 0.0014
 mv 0/B 0.0014/

@@ -8,4 +8,4 @@ cleanCase
 cleanSamples
 
 find . -name "*~" -delete
-rm calculateB_MSL centers coil
+rm -f calculateB_MSL centers coil

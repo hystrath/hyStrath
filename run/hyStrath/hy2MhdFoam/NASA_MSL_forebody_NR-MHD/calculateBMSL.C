@@ -164,7 +164,7 @@ int main()
   fprintf(B_file, "/*--------------------------------*- C++ -*----------------------------------*\\\n\
 | =========                 |                                                 |\n\
 | \\\\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |\n\
-|  \\    /   O peration     | Version:  v1706                                 |
+|  \\    /   O peration     | Version:  v1706                                 |\n\
 |   \\\\  /    A nd           | Web:      www.OpenFOAM.com                      |\n\
 |    \\\\/     M anipulation  |                                                 |\n\
 \\*---------------------------------------------------------------------------*/\n\
