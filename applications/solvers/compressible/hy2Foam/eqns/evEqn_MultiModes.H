@@ -22,7 +22,7 @@ forAll (rhoEvk_mode, speciei)
                 solve
                 (
                     fvm::ddt(rhoEvk_mode[speciei][vibMode])
-                  //+ fvc::div(phiEvk_mode[speciei][vibMode])  // TODO create this in declaration/uppwind declarations
+                  //+ fvc::div(phiEvk_mode[speciei][vibMode])  // TODO create this in declaration/upwind declarations
                   ==
                     thermalRelaxModelVT().QVT_mode(speciei, vibMode)
                   //+ thermalRelaxModelVV().QVV(speciei, vibMode)
@@ -36,7 +36,7 @@ forAll (rhoEvk_mode, speciei)
                 solve
                 (
                     fvm::ddt(rhoEvk_mode[speciei][vibMode])
-                  //+ fvc::div(phiEvk_mode[speciei][vibMode]) // TODO create this in declaration/uppwind declarations
+                  //+ fvc::div(phiEvk_mode[speciei][vibMode]) // TODO create this in declaration/upwind declarations
                   ==
                     thermalRelaxModelVT().QVT_mode(speciei, vibMode)
                   //+ thermalRelaxModelVV().QVV(speciei, vibMode)

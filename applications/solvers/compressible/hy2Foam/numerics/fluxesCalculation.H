@@ -1,10 +1,4 @@
 
-//#include "numerics/upwindInterpolation_KNP.H"
-//#include "numerics/upwindInterpolation_AUSM2.H"
-
-// --- Fluxes calculation
-//#include "numerics/fluxesCalculation-KNP.H"
-
 if
 (
     fluxScheme == "Kurganov" or fluxScheme == "Tadmor" or fluxScheme == "ROE"

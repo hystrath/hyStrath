@@ -26,7 +26,6 @@
 
 // --- Numerical flux functions
 #include "numerics/directionInterpolate.H"
-#include "numerics/AUSM_functions.H"
 #include "numerics/KNP-KT.H"
 #include "numerics/KFVS.H"
 #include "numerics/LxF.H"

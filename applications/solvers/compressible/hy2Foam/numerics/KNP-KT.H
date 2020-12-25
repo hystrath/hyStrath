@@ -77,11 +77,11 @@ void KurganovFlux
       + aphiv_neg*(rho_neg*(e_neg + 0.5*magSqr(U_neg)) + p_neg)
       + aSf*p_pos - aSf*p_neg;
 
-    if(downgradeSingleT)
+    if (downgradeSingleT)
     {
         rhoEvkFlux.clear();
     }
-    else if(downgradeSingleTv)
+    else if (downgradeSingleTv)
     {
         rhoEvkFlux[0] = aphiv_pos*rho_pos*evk_pos[0]
             + aphiv_neg*rho_neg*evk_neg[0];
@@ -179,11 +179,11 @@ void TadmorFlux
       + aphiv_neg*(rho_neg*(e_neg + 0.5*magSqr(U_neg)) + p_neg)
       + aSf*p_pos - aSf*p_neg;
 
-    if(downgradeSingleT)
+    if (downgradeSingleT)
     {
         rhoEvkFlux.clear();
     }
-    else if(downgradeSingleTv)
+    else if (downgradeSingleTv)
     {
         rhoEvkFlux[0] = aphiv_pos*rho_pos*evk_pos[0]
             + aphiv_neg*rho_neg*evk_neg[0];
