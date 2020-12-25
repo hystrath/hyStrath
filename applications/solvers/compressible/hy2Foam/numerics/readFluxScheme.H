@@ -40,29 +40,32 @@ FixedList<word, 2> blendedSchemes;
 
 if (mesh.schemesDict().readIfPresent("fluxScheme", fluxScheme))
 {
-    if (
-             (fluxScheme == "Tadmor")
-          or (fluxScheme == "Kurganov")
-          or (fluxScheme == "AUSM+-up")
-          or (fluxScheme == "KFVS")
-          or (fluxScheme == "LxF")
-          or (fluxScheme == "ROE")
-       )
+    if
+    (
+        (fluxScheme == "Tadmor")
+     or (fluxScheme == "Kurganov")
+     or (fluxScheme == "AUSM+-up")
+     or (fluxScheme == "KFVS")
+     or (fluxScheme == "LxF")
+     or (fluxScheme == "ROE")
+    )
     {
         Info<< "fluxScheme: " << fluxScheme << endl;
     }
     else if (fluxScheme == "blended")
     {
-        if(mesh.schemesDict().readIfPresent("blendedSchemes", blendedSchemes))
+        if (mesh.schemesDict().readIfPresent("blendedSchemes", blendedSchemes))
         {
-            Info<< "fluxScheme for shock vicinity: " << blendedSchemes[0] << endl;
-            Info<< "fluxScheme for near-wall region: " << blendedSchemes[1] << endl;
+            Info<< "fluxScheme for shock vicinity: " << blendedSchemes[0]
+                << endl;
+            Info<< "fluxScheme for near-wall region: " << blendedSchemes[1]
+                << endl;
         }
         else
         {
             FatalErrorIn
             (
-                "hy2Foam::readFluxScheme"
+                "readFluxScheme"
             )   << "blendedSchemes: " << fluxScheme
                 << " is not a valid choice. "
                 << "Options are: Kurganov, Tadmor, ROE, KFVS, LxF and AUSM+-up"
@@ -73,15 +76,16 @@ if (mesh.schemesDict().readIfPresent("fluxScheme", fluxScheme))
     {
         FatalErrorIn
         (
-            "hy2Foam::readFluxScheme"
+            "readFluxScheme"
         )   << "fluxScheme: " << fluxScheme
-            << " is not a valid choice. "
-            << "Options are: Kurganov, Tadmor, ROE, KFVS, LxF, AUSM+ -up and blended"
+            << " is not a valid choice. Options are: Kurganov, Tadmor, ROE, "
+            << "KFVS, LxF, AUSM+ -up and blended"
             << abort(FatalError);
     }
 }
 
-scalar sqrMachInf = sqr(mesh.schemesDict().lookupOrDefault<scalar>("Mach_inf", SMALL));
+scalar sqrMachInf =
+    sqr(mesh.schemesDict().lookupOrDefault<scalar>("Mach_inf", SMALL));
 
 
 // --- Declarations ---
@@ -135,11 +139,11 @@ surfaceScalarField phiEp
 
 PtrList<surfaceScalarField> phiEvk(noSolvedVibEq);
 
-if(downgradeSingleT)
+if (downgradeSingleT)
 {
     phiEvk.clear();
 }
-else if(downgradeSingleTv)
+else if (downgradeSingleTv)
 {
     phiEvk.resize(1);
 

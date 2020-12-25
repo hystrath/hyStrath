@@ -24,42 +24,34 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "LewisNumber.H"
-//#include <time.h>
 
 // * * * * * * * * * * * * * Protected Member Functions  * * * * * * * * * * //
 
 template<class ThermoType>
 void Foam::LewisNumber<ThermoType>::updateCoefficients()
 {
-    // rho*Ds = Le*kappa_tr/Cp_tr - NEW VINCENT 16/05/2016
-    /*std::clock_t start;
-    double duration;*/
-
-    //this->D_[0] = this->turbulence_.kappaEff()*Le_ / this->thermo_.Cp_t(); //TODO
+    // TODO this->thermo_.kappaEff(alphat)
     this->D_[0] = this->thermo_.kappatr()*Le_ / this->thermo_.Cp_t();
-
-    /*start = std::clock();
-    volScalarField kk = this->turbulence_.kappaEff();
-    duration = (std::clock() - start) / double(CLOCKS_PER_SEC);
-    Info << "timer kappa load: " << duration << endl;
-    start = std::clock();
-    volScalarField Cpt = this->thermo_.Cp_t();
-    duration = (std::clock() - start) / double(CLOCKS_PER_SEC);
-    Info << "timer Cpt load: " << duration << endl;*/
-
-    if(this->thermo_.composition().particleType(0) == 3)
-    {
-        this->D_[0] *= 2.0; // Ambipolar diffusion for charged particles
-    }
 
     for(int speciei=1; speciei < this->D_.size(); speciei++)
     {
-        this->D_[speciei] = this->D_[0];
-
-        if(this->thermo_.composition().particleType(speciei) == 3)
+        scalar factor = 1.0;
+        
+        if (this->thermo_.composition().particleType(speciei) == 3)
         {
-            this->D_[speciei] *= 2.0; // Ambipolar diffusion for charged particles
+            //- Ambipolar diffusion for charged particles
+            //  In: G. V. Candler and I. Nompelis.
+            //  "Computational Fluid Dynamics for Atmospheric Entry"
+            //  RTO-AVT-VKI Lecture Series 2009-AVT-162, p. 22, 2009
+            factor = 2.0;
         }
+        
+        this->D_[speciei] = factor*this->D_[0];
+    }
+    
+    if (this->thermo_.composition().particleType(0) == 3)
+    {
+        this->D_[0] *= 2.0;
     }
 }
 
@@ -74,9 +66,14 @@ Foam::LewisNumber<ThermoType>::LewisNumber
 )
 :
     Fick<ThermoType>(thermo, turbulence),
-
-    Le_(readScalar(IOdictionary::subDict("transportModels")
-        .subDict("diffusionModelParameters").lookup("LewisNumber")))
+    Le_
+    (
+        readScalar
+        (
+            IOdictionary::subDict("transportModels")
+                .subDict("diffusionModelParameters").lookup("LewisNumber")
+        )
+    )
 {}
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

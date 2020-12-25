@@ -29,7 +29,6 @@ License
 #include "Fick.H"
 #include "SCEBD.H"
 #include "LewisNumber.H"
-#include "modifiedLewisNumber.H"
 
 #include "thermoPhysics2Types.H"
 
@@ -50,27 +49,16 @@ makeMultiSpeciesTransportModel
 makeMultiSpeciesTransportModel(Fick, demConstGasHThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(SCEBD, demConstGasHThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(LewisNumber, demConstGasHThermoPhysicsH2TGD);
-makeMultiSpeciesTransportModel
-(
-    modifiedLewisNumber,
-    demConstGasHThermoPhysicsH2TGD
-);
 
 makeMultiSpeciesTransportModel(noSpeciesDiffusion, demGasHThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(Fick, demGasHThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(SCEBD, demGasHThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(LewisNumber, demGasHThermoPhysicsH2TGD);
-makeMultiSpeciesTransportModel(modifiedLewisNumber, demGasHThermoPhysicsH2TGD);
 
 makeMultiSpeciesTransportModel(noSpeciesDiffusion, demBEGasHThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(Fick, demBEGasHThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(SCEBD, demBEGasHThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(LewisNumber, demBEGasHThermoPhysicsH2TGD);
-makeMultiSpeciesTransportModel
-(
-    modifiedLewisNumber,
-    demBEGasHThermoPhysicsH2TGD
-);
 
 makeMultiSpeciesTransportModel
 (
@@ -80,11 +68,6 @@ makeMultiSpeciesTransportModel
 makeMultiSpeciesTransportModel(Fick, demPLEGasHThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(SCEBD, demPLEGasHThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(LewisNumber, demPLEGasHThermoPhysicsH2TGD);
-makeMultiSpeciesTransportModel
-(
-    modifiedLewisNumber,
-    demPLEGasHThermoPhysicsH2TGD
-);
 
 makeMultiSpeciesTransportModel
 (
@@ -94,11 +77,6 @@ makeMultiSpeciesTransportModel
 makeMultiSpeciesTransportModel(Fick, demCEAGasHThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(SCEBD, demCEAGasHThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(LewisNumber, demCEAGasHThermoPhysicsH2TGD);
-makeMultiSpeciesTransportModel
-(
-    modifiedLewisNumber,
-    demCEAGasHThermoPhysicsH2TGD
-);
 
 // Based on sensible internal energy
 
@@ -110,27 +88,16 @@ makeMultiSpeciesTransportModel
 makeMultiSpeciesTransportModel(Fick, demConstGasEThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(SCEBD, demConstGasEThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(LewisNumber, demConstGasEThermoPhysicsH2TGD);
-makeMultiSpeciesTransportModel
-(
-    modifiedLewisNumber,
-    demConstGasEThermoPhysicsH2TGD
-);
 
 makeMultiSpeciesTransportModel(noSpeciesDiffusion, demGasEThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(Fick, demGasEThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(SCEBD, demGasEThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(LewisNumber, demGasEThermoPhysicsH2TGD);
-makeMultiSpeciesTransportModel(modifiedLewisNumber, demGasEThermoPhysicsH2TGD);
 
 makeMultiSpeciesTransportModel(noSpeciesDiffusion, demBEGasEThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(Fick, demBEGasEThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(SCEBD, demBEGasEThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(LewisNumber, demBEGasEThermoPhysicsH2TGD);
-makeMultiSpeciesTransportModel
-(
-    modifiedLewisNumber,
-    demBEGasEThermoPhysicsH2TGD
-);
 
 makeMultiSpeciesTransportModel
 (
@@ -140,11 +107,6 @@ makeMultiSpeciesTransportModel
 makeMultiSpeciesTransportModel(Fick, demPLEGasEThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(SCEBD, demPLEGasEThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(LewisNumber, demPLEGasEThermoPhysicsH2TGD);
-makeMultiSpeciesTransportModel
-(
-    modifiedLewisNumber,
-    demPLEGasEThermoPhysicsH2TGD
-);
 
 makeMultiSpeciesTransportModel
 (
@@ -154,11 +116,6 @@ makeMultiSpeciesTransportModel
 makeMultiSpeciesTransportModel(Fick, demCEAGasEThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(SCEBD, demCEAGasEThermoPhysicsH2TGD);
 makeMultiSpeciesTransportModel(LewisNumber, demCEAGasEThermoPhysicsH2TGD);
-makeMultiSpeciesTransportModel
-(
-    modifiedLewisNumber,
-    demCEAGasEThermoPhysicsH2TGD
-);
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

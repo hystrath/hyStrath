@@ -89,8 +89,10 @@ void Foam::LandauTellerVT<ThermoType>::updateCoefficients()
     {
         sumWeightedReciprocalRelaxTimes = zero;
         
-        // no electrons here (Candler 09), although (ScalabrinPhD 07)
-        // defined tauVTie
+        //- The contribution of free-electrons is not included
+        //  In: G. V. Candler and I. Nompelis.
+        //  "Computational Fluid Dynamics for Atmospheric Entry"
+        //  RTO-AVT-VKI Lecture Series 2009-AVT-162, Eq. 2.47, p. 15, 2009
         forAll(thermo_.composition().heavySpecies(), j)
         {
             const label speciej = thermo_.composition().heavySpeciesIds(j);

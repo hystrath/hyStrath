@@ -40,7 +40,6 @@ else
     }
 }
 
-
 surfaceVectorField rhoU_pos(interpolate(rhoU, pos, U.name()));
 surfaceVectorField rhoU_neg(interpolate(rhoU, neg, U.name()));
 
@@ -113,8 +112,18 @@ else
     }
 }
 
-volScalarField gammatr("gammatr", thermo.Cp_t()/thermo.Cv_t()); // NEW VINCENT (also useful for bdry cdts)
-volScalarField c(sqrt(gammatr*rPsi)); // See Candler 2009
+//- Fields for boundary conditions
+volScalarField cp("cp", thermo.Cp());
+volScalarField gamma("gamma", cp/thermo.Cv());
+
+//- In: G. V. Candler and I. Nompelis.
+//  "Computational Fluid Dynamics for Atmospheric Entry"
+//  RTO-AVT-VKI Lecture Series 2009-AVT-162, Eq. 3.35, p. 39, 2009
+//  + gamma = frozen translational-rotational specific heats of the gas mixture
+//  + convention in hy2Foam: translational-rotational specific heats of the gas
+//    mixture
+volScalarField gammatr("gammatr", thermo.Cp_t()/thermo.Cv_t());
+volScalarField c(sqrt(gammatr*rPsi));
 Mach = mag(U)/c;
 
 surfaceVectorField U_pos("U_pos", rhoU_pos/rho_pos);
