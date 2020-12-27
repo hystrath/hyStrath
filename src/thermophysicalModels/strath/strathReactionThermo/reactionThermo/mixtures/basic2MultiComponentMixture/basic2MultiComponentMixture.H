@@ -698,6 +698,12 @@ public:
         
         //- Does this species index point to a neutral specie of the mixture?
         inline bool isNeutral(const label speciei) const;
+        
+        //- Does this species index point to a heavy specie of the mixture?
+        inline bool isHeavySpecies(const label speciei) const;
+        
+        //- Does this species index point to free-electrons?
+        inline bool isElectron(const label speciei) const;
 
         //- Does the species have a vibration rate equation?
         inline bool containsVib(const word& specieName) const;
