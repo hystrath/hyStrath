@@ -194,9 +194,7 @@ tmp<volVectorField> lowReMag::j(const volVectorField& U) const
               / (localElecCharge_*nDe);
         }
     }
-    Info << gMin(betaHall) <<endl;
 
-    Info<< "Calculating D\n" << endl;
     volScalarField D
     (
         IOobject
@@ -209,8 +207,6 @@ tmp<volVectorField> lowReMag::j(const volVectorField& U) const
         ),
         magSqr(B_)*(1.0+sqr(betaHall))
     );
-    Info << gMin(D) << endl;
-
     
     hallParameter.replace(0, (magSqr(B_)+sqr(betaHall)*sqr(B_.component(0)))); 
     
@@ -280,7 +276,6 @@ tmp<volVectorField> lowReMag::j(const volVectorField& U) const
             hallParameter[cellI] = Tensor<scalar>(0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
     }
-    Info << gMax(hallParameter) << endl;
 
     if (hallEffect_)
     {
@@ -355,7 +350,6 @@ tmp<volTensorField> lowReMag::hallCorrection() const
         }
     }
 
-    Info<< "Calculating D\n" << endl;
     volScalarField D
     (
         IOobject
@@ -369,7 +363,6 @@ tmp<volTensorField> lowReMag::hallCorrection() const
         magSqr(B_)*(1.0+sqr(betaHall))
     );
 
-    Info<< "Calculating Hall tensor\n" << endl;
     volTensorField hallParameter
     (
         IOobject
