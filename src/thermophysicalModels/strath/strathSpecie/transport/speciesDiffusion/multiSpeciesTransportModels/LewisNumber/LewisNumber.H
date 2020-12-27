@@ -43,7 +43,7 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                             Class LewisNumber Declaration
+                         Class LewisNumber Declaration
 \*---------------------------------------------------------------------------*/
 
 template<class ThermoType>
@@ -61,7 +61,7 @@ protected:
 
     // Protected member functions
 
-        //- Update the coefficients of the species equations
+        //- Update the species diffusion coefficients
         void updateCoefficients();
 
 

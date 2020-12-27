@@ -48,7 +48,7 @@ void Foam::multiSpeciesTransportModel::calculateJ
     const label i
 )
 {
-    if (thermo_.composition().particleType(i) != 0)
+    if (thermo_.composition().isHeavySpecies(i))
     {
         JnonCorrected_[i] = -rhoD(i)*fvc::grad(thermo_.composition().Y(i))
             + JGradp_[i] + JGradT_[i];
@@ -101,7 +101,7 @@ void Foam::multiSpeciesTransportModel::calculateSumDiffusionFluxes()
 Foam::volVectorField
 Foam::multiSpeciesTransportModel::Jcorrected(const label i) const
 {
-    if ((thermo_.composition().particleType(i) != 0) and (not useNonCorrected_))
+    if (thermo_.composition().isHeavySpecies(i) and (not useNonCorrected_))
     {
         return JnonCorrected_[i]
             - thermo_.composition().Y(i)*sumDiffusionFluxes_;
@@ -175,7 +175,8 @@ Foam::multiSpeciesTransportModel::multiSpeciesTransportModel
         dimensionedVector
         (
             "sumDiffusionFluxes",
-            dimMass/dimArea/dimTime, vector::zero
+            dimMass/dimArea/dimTime,
+            vector::zero
         )
     ),
 

@@ -72,7 +72,7 @@ protected:
 
     // Protected member functions
 
-        //- Update the coefficients of the species equations
+        //- Update the species diffusion coefficients
         virtual void updateCoefficients();
 
 

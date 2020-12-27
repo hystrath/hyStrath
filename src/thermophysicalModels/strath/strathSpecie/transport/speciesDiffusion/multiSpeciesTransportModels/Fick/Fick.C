@@ -24,7 +24,6 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "Fick.H"
-//#include <ctime>
 
 // * * * * * * * * * * * * * Protected Member Functions  * * * * * * * * * * //
 
@@ -35,7 +34,7 @@ void Foam::Fick<ThermoType>::updateCoefficients()
 
     forAll(species(), speciei)
     {
-        volScalarField tmpSum = 0 / Dij(0,0);
+        volScalarField tmpSum = 0.0 / Dij(0,0);
 
         forAll(species(), speciej)
         {
@@ -54,7 +53,7 @@ void Foam::Fick<ThermoType>::updateCoefficients()
         {
             if (1.0 - Xi[celli] < miniXs_)
             {
-                D_[speciei][celli] = 0;
+                D_[speciei][celli] = 0.0;
             }
         }
 
@@ -123,12 +122,12 @@ void Foam::Fick<ThermoType>::correct()
 {
     updateCoefficients();
 
-    if(addPressureGradientTerm_)
+    if (addPressureGradientTerm_)
     {
         pressureGradientContributionToSpeciesMassFlux();
     }
 
-    if(addTemperatureGradientTerm_)
+    if (addTemperatureGradientTerm_)
     {
         temperatureGradientContributionToSpeciesMassFlux();
     }

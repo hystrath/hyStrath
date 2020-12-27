@@ -99,4 +99,11 @@ Foam::multiSpeciesTransportModel::species() const
     return thermo_.composition().species();
 }
 
+
+inline const Foam::speciesTable&
+Foam::multiSpeciesTransportModel::heavySpecies() const
+{
+    return thermo_.composition().heavySpecies();
+}
+
 // ************************************************************************* //

@@ -239,6 +239,9 @@ public:
 
             //- Return the table of species
             inline const speciesTable& species() const;
+            
+            //- Return the table of heavy species
+            inline const speciesTable& heavySpecies() const;
 
             //- Return the const mass flux field for species i
             inline const surfaceScalarField& speciesMassFlux

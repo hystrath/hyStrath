@@ -30,14 +30,13 @@ License
 template<class ThermoType>
 void Foam::LewisNumber<ThermoType>::updateCoefficients()
 {
-    // TODO this->thermo_.kappaEff(alphat)
     this->D_[0] = this->thermo_.kappatr()*Le_ / this->thermo_.Cp_t();
 
     for(int speciei=1; speciei < this->D_.size(); speciei++)
     {
         scalar factor = 1.0;
         
-        if (this->thermo_.composition().particleType(speciei) == 3)
+        if (this->thermo_.composition().isIon(speciei))
         {
             //- Ambipolar diffusion for charged particles
             //  In: G. V. Candler and I. Nompelis.
@@ -49,7 +48,7 @@ void Foam::LewisNumber<ThermoType>::updateCoefficients()
         this->D_[speciei] = factor*this->D_[0];
     }
     
-    if (this->thermo_.composition().particleType(0) == 3)
+    if (this->thermo_.composition().isIon(0))
     {
         this->D_[0] *= 2.0;
     }
