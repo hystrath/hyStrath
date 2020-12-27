@@ -81,7 +81,7 @@ class collisionDataO
             
             if (this->collisionType_ > 1)
             {
-                Deltaij1 *= nonNominalPeCorrection(T, pe/Pstd);
+                Deltaij1 *= nonNominalPeCorrection(T, pe/(1.01325e5));
             }
 
             return Deltaij1;
@@ -94,7 +94,7 @@ class collisionDataO
             
             if (this->collisionType_ > 1)
             {
-                Deltaij2 *= nonNominalPeCorrection(T, pe/Pstd);
+                Deltaij2 *= nonNominalPeCorrection(T, pe/(1.01325e5));
             }
 
             return Deltaij2;

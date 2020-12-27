@@ -87,7 +87,7 @@ class collisionDataD
             // interactions
             if (this->collisionType_ > 1)
             {
-                pDij *= nonNominalPeCorrection(T, pe/Pstd);
+                pDij *= nonNominalPeCorrection(T, pe/(1.01325e5));
             }
 
             return pDij;

@@ -128,7 +128,7 @@ Foam::binaryDiffusionModels::collisionDataD::collisionDataD
             << exit(FatalError);
     }
 
-    Dbar_[3] = Pstd*exp(Dbar_[3])/1.0e4;
+    Dbar_[3] = 1.01325e5*exp(Dbar_[3])/1.0e4;
 }
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
