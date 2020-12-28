@@ -411,7 +411,8 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                         IOobject::AUTO_WRITE
                     ),
                     mesh,
-                    dimensionedScalar(species_[i], dimless, 0.0)
+                    dimensionedScalar(species_[i], dimless, 0.0),
+                    X_[i].boundaryField().types()
                 )
             );
         }
