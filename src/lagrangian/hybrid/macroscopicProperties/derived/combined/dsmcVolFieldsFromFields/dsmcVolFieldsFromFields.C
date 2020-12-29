@@ -142,7 +142,7 @@ dsmcVolFieldsFromFields::dsmcVolFieldsFromFields
                     {
                         forAll(EVib, i)
                         {
-                            eVib_[cell] += vibrationalETotal_[iD][i][cell];
+                            eVib_[cell] += dsmcVibEnSpeciesModeCum_[iD][i][cell];
                         }
                     }
                 }
@@ -154,11 +154,11 @@ dsmcVolFieldsFromFields::dsmcVolFieldsFromFields
             const scalar nTVBynEq = nTBynEq*V_[cell];
 
             eRotU_[cell] = heatFluxRotVector_[cell].x() * nTVBynEq
-                + rotationalEMean_[cell] * UMean_[cell].x();
+                + dsmcRotEnCum_[cell] * UMean_[cell].x();
             eRotV_[cell] = heatFluxRotVector_[cell].y() * nTVBynEq
-                + rotationalEMean_[cell] * UMean_[cell].y();
+                + dsmcRotEnCum_[cell] * UMean_[cell].y();
             eRotW_[cell] = heatFluxRotVector_[cell].z() * nTVBynEq
-                + rotationalEMean_[cell] * UMean_[cell].z();
+                + dsmcRotEnCum_[cell] * UMean_[cell].z();
 
             eVibU_[cell] = heatFluxVibVector_[cell].x() * nTVBynEq
                 + eVib_[cell] * UMean_[cell].x();
@@ -206,21 +206,21 @@ void dsmcVolFieldsFromFields::calculateField()
 
     if (time_.time().outputTime())
     {
-        forAll(rhoNMean_, cell)
+        forAll(dsmcNCum_, cell)
         {
-            if (rhoNMean_[cell] > SMALL)
+            if (dsmcNCum_[cell] > SMALL)
             {
-                heatFluxTraVector_[cell].x() = 0.5 * rhoN_[cell] * (mccu_[cell]
-                    - mcc_[cell] * UMean_[cell].x()) / rhoNMean_[cell]
+                heatFluxTraVector_[cell].x() = 0.5 * rhoN_[cell] * (dsmcMccuCum_[cell]
+                    - dsmcMccCum_[cell] * UMean_[cell].x()) / dsmcNCum_[cell]
                     - pressureTensor_[cell].xx() * UMean_[cell].x()
                     - pressureTensor_[cell].xy() * UMean_[cell].y()
                     - pressureTensor_[cell].xz() * UMean_[cell].z();
 
                 heatFluxRotVector_[cell].x() = rhoN_[cell] * (eRotU_[cell]
-                    - rotationalEMean_[cell] * UMean_[cell].x()) / rhoNMean_[cell];
+                    - dsmcRotEnCum_[cell] * UMean_[cell].x()) / dsmcNCum_[cell];
 
                 heatFluxVibVector_[cell].x() = rhoN_[cell] * (eVibU_[cell]
-                    - eVib_[cell] * UMean_[cell].x()) / rhoNMean_[cell];
+                    - eVib_[cell] * UMean_[cell].x()) / dsmcNCum_[cell];
 
 
                 heatFluxVector_[cell].x() = heatFluxTraVector_[cell].x()
@@ -228,34 +228,34 @@ void dsmcVolFieldsFromFields::calculateField()
                     + heatFluxVibVector_[cell].x();
 
 
-                heatFluxTraVector_[cell].y() = 0.5 * rhoN_[cell] * (mccv_[cell]
-                    - mcc_[cell] * UMean_[cell].y()) / rhoNMean_[cell]
+                heatFluxTraVector_[cell].y() = 0.5 * rhoN_[cell] * (dsmcMccvCum_[cell]
+                    - dsmcMccCum_[cell] * UMean_[cell].y()) / dsmcNCum_[cell]
                     - pressureTensor_[cell].yx() * UMean_[cell].x()
                     - pressureTensor_[cell].yy() * UMean_[cell].y()
                     - pressureTensor_[cell].yz() * UMean_[cell].z();
 
                 heatFluxRotVector_[cell].y() = rhoN_[cell] * (eRotV_[cell]
-                    - rotationalEMean_[cell] * UMean_[cell].y()) / rhoNMean_[cell];
+                    - dsmcRotEnCum_[cell] * UMean_[cell].y()) / dsmcNCum_[cell];
 
                 heatFluxVibVector_[cell].y() = rhoN_[cell] * (eVibV_[cell]
-                    - eVib_[cell] * UMean_[cell].y()) / rhoNMean_[cell];
+                    - eVib_[cell] * UMean_[cell].y()) / dsmcNCum_[cell];
 
                 heatFluxVector_[cell].y() = heatFluxTraVector_[cell].y()
                     + heatFluxRotVector_[cell].y()
                     + heatFluxVibVector_[cell].y();
 
 
-                heatFluxTraVector_[cell].z() = 0.5 * rhoN_[cell] * (mccw_[cell]
-                    - mcc_[cell] * UMean_[cell].z()) / rhoNMean_[cell]
+                heatFluxTraVector_[cell].z() = 0.5 * rhoN_[cell] * (dsmcMccwCum_[cell]
+                    - dsmcMccCum_[cell] * UMean_[cell].z()) / dsmcNCum_[cell]
                     - pressureTensor_[cell].zx() * UMean_[cell].x()
                     - pressureTensor_[cell].zy() * UMean_[cell].y()
                     - pressureTensor_[cell].zz() * UMean_[cell].z();
 
                 heatFluxRotVector_[cell].z() = rhoN_[cell] * (eRotW_[cell]
-                    - rotationalEMean_[cell] * UMean_[cell].z()) / rhoNMean_[cell];
+                    - dsmcRotEnCum_[cell] * UMean_[cell].z()) / dsmcNCum_[cell];
 
                 heatFluxVibVector_[cell].z() = rhoN_[cell] * (eVibW_[cell]
-                    - eVib_[cell] * UMean_[cell].z()) / rhoNMean_[cell];
+                    - eVib_[cell] * UMean_[cell].z()) / dsmcNCum_[cell];
 
                 heatFluxVector_[cell].z() = heatFluxTraVector_[cell].z()
                     + heatFluxRotVector_[cell].z()
@@ -277,7 +277,7 @@ void dsmcVolFieldsFromFields::calculateField()
         //- Reset
         if (time_.resetFieldsAtOutput())
         {
-            forAll(rhoNMean_, celli)
+            forAll(dsmcNCum_, celli)
             {
                 eRotU_[celli] = 0.0;
                 eRotV_[celli] = 0.0;
