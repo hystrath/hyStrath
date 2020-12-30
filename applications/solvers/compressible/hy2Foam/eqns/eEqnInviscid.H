@@ -1,6 +1,5 @@
 
 // --- Solve energy, INVISCID
-//- NOTE VINCENT: aByU is equivalent to the original (a_pos*U_pos + a_neg*U_neg)
 surfaceScalarField sigmaDotU
 (
     "sigmaDotU",

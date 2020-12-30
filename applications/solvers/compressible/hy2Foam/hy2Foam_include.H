@@ -26,10 +26,8 @@
 
 // --- Numerical flux functions
 #include "numerics/directionInterpolate.H"
-#include "numerics/KNP-KT.H"
-#include "numerics/KFVS.H"
-#include "numerics/LxF.H"
-#include "numerics/ROE.H"
+#include "numerics/KNP.H"
+#include "numerics/KT.H"
 
 // --- Others
 #include "wallFvPatch.H"

@@ -1,11 +1,7 @@
 
-if
-(
-    fluxScheme == "Kurganov" or fluxScheme == "Tadmor" or fluxScheme == "ROE"
- or fluxScheme == "KFVS" or fluxScheme == "LxF"
-)
+if (fluxScheme == "Kurganov" or fluxScheme == "Tadmor")
 {
-    scalar pDListSizes = phiEvk.size();
+    label pDListSizes = phiEvk.size();
     if(downgradeSingleT or downgradeSingleTv)
     {
         pDListSizes = 0;
@@ -55,11 +51,19 @@ if
                 new scalar(phiEvk[speciei][facei])
             );
         }
+        
+        scalar mesh_phi = 0.0;
+        if (mesh.moving())
+        {
+            mesh_phi = mesh.phi()[facei];
+        }
 
         fluxMap[fluxScheme]
         (
             downgradeSingleT,
             downgradeSingleTv,
+            mesh.moving(),
+            mesh_phi,
             mesh.Sf()[facei],
             cSf_pos[facei],
             cSf_neg[facei],
@@ -154,11 +158,19 @@ if
                         )
                     );
                 }
+                
+                scalar mesh_phi = 0.0;
+                if (mesh.moving())
+                {
+                    mesh_phi = mesh.phi().boundaryField()[patchi][facei];
+                }
 
                 fluxMap[fluxScheme]
                 (
                     downgradeSingleT,
                     downgradeSingleTv,
+                    mesh.moving(),
+                    mesh_phi,
                     mesh.boundaryMesh()[patchi].faceAreas()[facei],
                     cSf_pos.boundaryField()[patchi][facei],
                     cSf_neg.boundaryField()[patchi][facei],

@@ -5,6 +5,7 @@
 
 // --- Upwind interpolation of primitive fields on faces
 #include "numerics/upwindInterpolation.H"
+// --- Compute numerical fluxes
 #include "numerics/fluxesCalculation.H"
 
 // --- Time control and local time stepping
@@ -45,9 +46,7 @@ thermo.resetTemperatureBoundingInfo();
 #include "eqns/rhoEqn.H"
 
 // --- Solve species transport and reaction equations
-//scalar time = runTime.elapsedCpuTime();
 #include "eqns/YEqn.H"
-//Info<< "YEqn time" << tab << runTime.elapsedCpuTime() - time << " s" << endl;
 
 // --- Solve momentum equations
 #include HY2FOAM_EXTERNAL_FILE_MOMENTUM_EQNS

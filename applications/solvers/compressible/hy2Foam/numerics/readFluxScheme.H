@@ -3,6 +3,8 @@ typedef void (*FnPtr)
 (
     const bool&,
     const bool&,
+    const bool&,
+    const scalar&,
     const vector&,
     const scalar&,
     const scalar&,
@@ -31,9 +33,6 @@ typedef void (*FnPtr)
 std::map<word, FnPtr> fluxMap;
 fluxMap["Kurganov"] = KurganovFlux;
 fluxMap["Tadmor"] = TadmorFlux;
-fluxMap["KFVS"] = KFVSFlux;
-fluxMap["LxF"] = LxFFlux;
-fluxMap["ROE"] = ROEFlux;
 
 word fluxScheme("Kurganov");
 FixedList<word, 2> blendedSchemes;
@@ -44,10 +43,6 @@ if (mesh.schemesDict().readIfPresent("fluxScheme", fluxScheme))
     (
         (fluxScheme == "Tadmor")
      or (fluxScheme == "Kurganov")
-     or (fluxScheme == "AUSM+-up")
-     or (fluxScheme == "KFVS")
-     or (fluxScheme == "LxF")
-     or (fluxScheme == "ROE")
     )
     {
         Info<< "fluxScheme: " << fluxScheme << endl;
@@ -68,7 +63,7 @@ if (mesh.schemesDict().readIfPresent("fluxScheme", fluxScheme))
                 "readFluxScheme"
             )   << "blendedSchemes: " << fluxScheme
                 << " is not a valid choice. "
-                << "Options are: Kurganov, Tadmor, ROE, KFVS, LxF and AUSM+-up"
+                << "Options are: Kurganov, and Tadmor."
                 << abort(FatalError);
         }
     }
@@ -78,8 +73,8 @@ if (mesh.schemesDict().readIfPresent("fluxScheme", fluxScheme))
         (
             "readFluxScheme"
         )   << "fluxScheme: " << fluxScheme
-            << " is not a valid choice. Options are: Kurganov, Tadmor, ROE, "
-            << "KFVS, LxF, AUSM+ -up and blended"
+            << " is not a valid choice. Options are: Kurganov, Tadmor, "
+            << "and blended"
             << abort(FatalError);
     }
 }
