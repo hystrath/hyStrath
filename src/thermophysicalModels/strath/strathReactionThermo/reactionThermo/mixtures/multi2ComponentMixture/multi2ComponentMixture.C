@@ -1171,17 +1171,6 @@ Foam::scalar Foam::multi2ComponentMixture<ThermoType>::numberDensity
 
 
 template<class ThermoType>
-Foam::scalar Foam::multi2ComponentMixture<ThermoType>::partialPressure
-(
-    const scalar Xi,
-    const scalar p
-)
-{
-    return Xi*p;
-}
-
-
-template<class ThermoType>
 Foam::scalar Foam::multi2ComponentMixture<ThermoType>::partialPressureEoS
 (
     const label speciei,

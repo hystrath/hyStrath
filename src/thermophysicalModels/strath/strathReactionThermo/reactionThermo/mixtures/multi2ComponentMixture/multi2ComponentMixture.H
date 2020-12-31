@@ -397,9 +397,6 @@ public:
             const scalar rho
         );
 
-        //- Update values of partial pressures from molar fractions
-        virtual scalar partialPressure(const scalar Xi, const scalar p);
-
         //- Update values of partial pressures from the equation of state
         virtual scalar partialPressureEoS
         (

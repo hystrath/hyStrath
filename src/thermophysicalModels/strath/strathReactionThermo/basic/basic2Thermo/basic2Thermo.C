@@ -161,7 +161,7 @@ Foam::basic2Thermo::basic2Thermo
             IOobject::NO_WRITE
         ),
         mesh,
-        dimPressure
+        dimensionedScalar("pe", dimPressure, 0.0)
     ),
 
     T_
