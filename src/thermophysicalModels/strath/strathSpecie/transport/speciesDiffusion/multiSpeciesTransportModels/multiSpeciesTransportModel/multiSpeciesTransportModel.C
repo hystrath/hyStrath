@@ -41,7 +41,7 @@ namespace Foam
 }
 
 
-// * * * * * * * * * * * * * * Protected Memeber Functions * * * * * * * * * //
+// * * * * * * * * * * * * * * Protected Member Functions  * * * * * * * * * //
 
 void Foam::multiSpeciesTransportModel::calculateJ
 (
@@ -63,37 +63,46 @@ void Foam::multiSpeciesTransportModel::calculateJ
     }
     else
     {
-        volVectorField sum = JnonCorrected_[0]
-            *thermo_.composition().particleCharge(0)/W(0);
+        const dimensionedVector zero
+        (
+            "zero",
+            dimMass/dimArea/dimTime,
+            vector::zero
+        );
+    
+        JnonCorrected_[i] = zero;
 
-        for(label specier=1; specier < species().size(); specier++)
+        forAll(heavySpecies(), j)
         {
-            if (thermo_.composition().particleType(specier) != 0)
-            {
-                sum +=
-                    JnonCorrected_[specier]
-                   *thermo_.composition().particleCharge(specier)
-                   /W(specier);
-            }
+            const label speciej = thermo_.composition().heavySpeciesIds(j);
+            
+            JnonCorrected_[i] += JnonCorrected_[speciej]
+               *thermo_.composition().particleCharge(speciej)/W(speciej);
         }
 
-        JnonCorrected_[i] = W(i)*sum;
+        JnonCorrected_[i] *= W(i);
     }
 }
 
 
 void Foam::multiSpeciesTransportModel::calculateSumDiffusionFluxes()
 {
+    const dimensionedVector zero
+    (
+        "zero",
+        dimMass/dimArea/dimTime,
+        vector::zero
+    );
+        
     // Uses the non-corrected diffusion fluxes for the calculation
     // of the diffusion fluxes
-    sumDiffusionFluxes_ = JnonCorrected_[0];
+    sumDiffusionFluxes_ = zero;
 
-    for(label speciej=1 ; speciej < species().size(); speciej++)
+    forAll(heavySpecies(), j)
     {
-        if (thermo_.composition().particleType(speciej) != 0)
-        {
-            sumDiffusionFluxes_ += JnonCorrected_[speciej];
-        }
+        const label speciej = thermo_.composition().heavySpeciesIds(j);
+            
+        sumDiffusionFluxes_ += JnonCorrected_[speciej];
     }
 }
 
@@ -116,20 +125,26 @@ Foam::multiSpeciesTransportModel::Jcorrected(const label i) const
 void Foam::multiSpeciesTransportModel::
 pressureGradientContributionToSpeciesMassFlux()
 {
-    const volVectorField gradLnpToWmix = fvc::grad(thermo_.p())/thermo_.p()
+    const volScalarField& p = thermo_.p();
+    const volVectorField gradLnpToWmix = fvc::grad(p)/p
         /thermo_.composition().Wmix();
 
-    forAll(species(), i)
+    forAll(heavySpecies(), i)
     {
+        const label speciei = thermo_.composition().heavySpeciesIds(i);
+        
         const dimensionedScalar Wi
         (
             "unitsW",
             dimMass/dimMoles,
-            thermo_.composition().W(i)
+            thermo_.composition().W(speciei)
         );
 
-        JGradp_[i] = -rhoD(i)*gradLnpToWmix*Wi
-            *(thermo_.composition().X(i) - thermo_.composition().Y(i));
+        JGradp_[speciei] = -rhoD(speciei)*gradLnpToWmix*Wi
+            * (
+                  thermo_.composition().X(speciei)
+                - thermo_.composition().Y(speciei)
+              );
     }
 }
 
@@ -158,7 +173,7 @@ Foam::multiSpeciesTransportModel::multiSpeciesTransportModel
     thermo_(thermo),
     turbulence_(turbulence),
 
-    spMassFlux_(species().size()),
+    spMassFlux_(), //species().size()),
     JnonCorrected_(species().size()),
 
     sumDiffusionFluxes_
@@ -233,23 +248,23 @@ Foam::multiSpeciesTransportModel::multiSpeciesTransportModel
 
     forAll(species(), speciei)
     {
-        spMassFlux_.set
-        (
-            speciei,
-            new surfaceScalarField
-            (
-                IOobject
-                (
-                    "massFlux_" + species()[speciei],
-                    mesh_.time().timeName(),
-                    mesh_,
-                    IOobject::NO_READ,
-                    IOobject::NO_WRITE
-                ),
-                mesh_,
-                dimensionedScalar("massFlux", dimMass/dimTime, 0.0)
-            )
-        );
+//        spMassFlux_.set
+//        (
+//            speciei,
+//            new surfaceScalarField
+//            (
+//                IOobject
+//                (
+//                    "massFlux_" + species()[speciei],
+//                    mesh_.time().timeName(),
+//                    mesh_,
+//                    IOobject::NO_READ,
+//                    IOobject::NO_WRITE
+//                ),
+//                mesh_,
+//                dimensionedScalar("massFlux", dimMass/dimTime, 0.0)
+//            )
+//        );
 
         JnonCorrected_.set
         (
@@ -325,93 +340,82 @@ Foam::multiSpeciesTransportModel::multiSpeciesTransportModel
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-Foam::volVectorField
+Foam::tmp<Foam::volVectorField> 
 Foam::multiSpeciesTransportModel::multiSpeciesHeatSource() const
 {
-    volVectorField multiSpeciesHeatSource
+    const volScalarField& pCells = thermo_.p();
+    const volScalarField& TtCells = thermo_.T();
+    
+    tmp<volVectorField> tmultiSpeciesHeatSource
     (
-        IOobject
+        new volVectorField
         (
-            "multiSpeciesHeatSource",
-            mesh_.time().timeName(),
+            IOobject
+            (
+                "multiSpeciesHeatSource",
+                mesh_.time().timeName(),
+                mesh_,
+                IOobject::NO_READ,
+                IOobject::NO_WRITE
+            ),
             mesh_,
-            IOobject::NO_READ,
-            IOobject::NO_WRITE
-        ),
-        mesh_,
-        dimensionedVector
-        (
-            "multiSpeciesHeatSource",
-            dimEnergy/dimArea/dimTime,
-            vector::zero
+            dimensionedVector
+            (
+                "zero",
+                dimEnergy/dimArea/dimTime,
+                vector::zero
+            )
         )
     );
-
-    forAll(species(), speciej)
-    {
-        if (thermo_.composition().particleType(speciej) != 0)
-        {
-            const volScalarField pCells = thermo_.p();
-            const volScalarField TtCells = thermo_.T();
-            const volScalarField TvCells = thermo_.composition().Tv(speciej);
-
-            volScalarField hsj
+    
+    volVectorField& multiSpeciesHeatSource = tmultiSpeciesHeatSource.ref();
+    vectorField& multiSpeciesHeatSourceCells =
+        multiSpeciesHeatSource.primitiveFieldRef();
+    
+    tmp<volScalarField> thsj
+    (
+        new volScalarField
+        (
+            IOobject
             (
-                IOobject
-                (
-                    "hsj",
-                    mesh_.time().timeName(),
-                    mesh_,
-                    IOobject::NO_READ,
-                    IOobject::NO_WRITE
-                ),
+                "hsj",
+                mesh_.time().timeName(),
                 mesh_,
-                dimensionedScalar("hsj", dimEnergy/dimMass, 0.0)
-            );
+                IOobject::NO_READ,
+                IOobject::NO_WRITE
+            ),
+            mesh_,
+            dimensionedScalar("hsj", dimEnergy/dimMass, 0.0)
+        )
+    );
+    
+    volScalarField& hsj = thsj.ref();
+    scalarField& hsjCells = hsj.primitiveFieldRef();
+    
+    forAll(heavySpecies(), j)
+    {
+        const label speciej = thermo_.composition().heavySpeciesIds(j);
+        
+        const volScalarField& TvCells = thermo_.composition().Tv(speciej);
+        const volVectorField& JcorrCells = Jcorrected(speciej);
 
-            forAll(hsj, celli)
-            {
-                hsj[celli] =
-                    hs
-                    (
-                        speciej,
-                        pCells[celli],
-                        TtCells[celli],
-                        TvCells[celli]
-                    );
-            }
-
-            forAll(hsj.boundaryField(), patchi)
-            {
-                const fvPatchScalarField& pp =
-                    thermo_.p().boundaryField()[patchi];
-                const fvPatchScalarField& pTt =
-                    thermo_.T().boundaryField()[patchi];
-                const fvPatchScalarField& pTv =
-                    thermo_.composition().Tv(speciej).boundaryField()[patchi];
-
-                fvPatchScalarField& phsj = hsj.boundaryFieldRef()[patchi];
-
-                forAll(pTt, facei)
-                {
-                    phsj[facei] =
-                        hs
-                        (
-                            speciej,
-                            pp[facei],
-                            pTt[facei],
-                            pTv[facei]
-                        );
-                }
-            }
-
-            // The following works whether the corrected or non-corrected form
-            // is employed.
-            multiSpeciesHeatSource += Jcorrected(speciej)*hsj;
+        forAll(hsj, celli)
+        {
+            hsjCells[celli] =
+                hs
+                (
+                    speciej,
+                    pCells[celli],
+                    TtCells[celli],
+                    TvCells[celli]
+                );
+                
+            multiSpeciesHeatSourceCells[celli] +=
+                hsjCells[celli]*JcorrCells[celli];
         }
     }
 
-    return multiSpeciesHeatSource;
+    return tmultiSpeciesHeatSource;
 }
 
 

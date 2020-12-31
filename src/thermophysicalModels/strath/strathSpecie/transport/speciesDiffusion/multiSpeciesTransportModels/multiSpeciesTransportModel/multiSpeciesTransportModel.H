@@ -196,7 +196,7 @@ public:
     // Member Functions
 
         //- Term in the total energy equation due to diffusion fluxes
-        volVectorField multiSpeciesHeatSource() const;
+        tmp<Foam::volVectorField> multiSpeciesHeatSource() const;
 
         //- Update the species diffusion coefficients
         virtual void correct() = 0;
