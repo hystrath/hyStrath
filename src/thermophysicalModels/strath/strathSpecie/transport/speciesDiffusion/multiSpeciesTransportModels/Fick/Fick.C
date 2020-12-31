@@ -30,41 +30,62 @@ License
 template<class ThermoType>
 void Foam::Fick<ThermoType>::updateCoefficients()
 {
+    const dimensionedScalar zero =
+        dimensionedScalar("zero", dimTime/dimArea, 0.0);
+        
+    const dimensionedScalar epsilon =
+        dimensionedScalar("VSMALL", dimTime/dimArea, Foam::VSMALL);
+        
+    tmp<volScalarField> tsum
+    (
+        new volScalarField
+        (
+            IOobject
+            (
+                "tsum",
+                mesh_.time().timeName(),
+                mesh_,
+                IOobject::NO_READ,
+                IOobject::NO_WRITE
+            ),
+            mesh_,
+            zero
+        )
+    );
+    
+    const volScalarField& rho = thermo_.rho();
+    
+    volScalarField& sum = tsum.ref();
+    
     DijModel_().update();
 
-    forAll(species(), speciei)
+    forAll(heavySpecies(), i)
     {
-        volScalarField tmpSum = 0.0 / Dij(0,0);
+        const label speciei = thermo_.composition().heavySpeciesIds(i);
+        
+        const volScalarField& Xi = thermo_.composition().X(speciei);
+        
+        sum = zero;
 
-        forAll(species(), speciej)
+        forAll(heavySpecies(), j)
         {
-            if (speciej != speciei and thermo_.composition().particleType(speciej) != 0)
+            const label speciej = thermo_.composition().heavySpeciesIds(j);
+            
+            const volScalarField& Xj = thermo_.composition().X(speciej);
+            
+            if (speciej != speciei)
             {
-                tmpSum += thermo_.composition().X(speciej) / Dij(speciei, speciej);
+                sum += Xj / Dij(speciei, speciej);
             }
         }
 
-        const volScalarField& Xi = thermo_.composition().X(speciei);
-
-        D_[speciei] = thermo_.rho()*(1.0 - Xi)
-            / (tmpSum + dimensionedScalar("VSMALL", dimTime/dimArea, Foam::VSMALL));
+        D_[speciei] = rho*(1.0 - Xi)/(sum + epsilon);
 
         forAll(D_[speciei], celli)
         {
             if (1.0 - Xi[celli] < miniXs_)
             {
                 D_[speciei][celli] = 0.0;
-            }
-        }
-
-        forAll(D_[speciei].boundaryField(), patchi)
-        {
-            forAll(D_[speciei].boundaryField()[patchi], facei)
-            {
-                if (1.0 - Xi.boundaryField()[patchi][facei] < miniXs_)
-                {
-                    D_[speciei].boundaryFieldRef()[patchi][facei] = 0;
-                }
             }
         }
     }
@@ -108,7 +129,7 @@ Foam::Fick<ThermoType>::Fick
                     IOobject::NO_WRITE
                 ),
                 mesh_,
-                dimensionedScalar("D", dimMass/dimLength/dimTime, 0.0)
+                dimensionedScalar("rhoD", dimMass/dimLength/dimTime, 0.0)
             )
         );
     }
