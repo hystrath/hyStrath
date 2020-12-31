@@ -27,7 +27,7 @@ License
 #include "addToRunTimeSelectionTable.H"
 #include "fvPatchFieldMapper.H"
 #include "volFields.H"
-#include "multi2Thermo.H" // NEW VINCENT
+#include "multi2Thermo.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
@@ -97,22 +97,23 @@ void Foam::gradient2TREnergyFvPatchScalarField::updateCoeffs()
         return;
     }
 
-    //Info << "gradient2TREnergy is used for patch called " << patch().name() << endl;
+//    Info<< "gradient2TREnergy is used for patch called "
+//        << patch().name() << endl;
 
     const multi2Thermo& thermo = multi2Thermo::lookup2Thermo(*this);
     const label patchi = patch().index();
 
     const scalarField& pw = thermo.p().boundaryField()[patchi];
 
-    fvPatchScalarField& Ttw =
+    fvPatchScalarField& Tw =
         const_cast<fvPatchScalarField&>(thermo.T().boundaryField()[patchi]);
-    Ttw.evaluate();
+    Tw.evaluate();
 
-    gradient() = thermo.Cv_t(pw, Ttw, patchi)*Ttw.snGrad()
+    gradient() = thermo.Cv_t(pw, Tw, patchi)*Tw.snGrad()
       + patch().deltaCoeffs()*
         (
-            thermo.het(pw, Ttw, patchi)
-          - thermo.het(pw, Ttw, patch().faceCells())
+            thermo.het(pw, Tw, patchi)
+          - thermo.het(pw, Tw, patch().faceCells())
         );
 
     fixedGradientFvPatchScalarField::updateCoeffs();

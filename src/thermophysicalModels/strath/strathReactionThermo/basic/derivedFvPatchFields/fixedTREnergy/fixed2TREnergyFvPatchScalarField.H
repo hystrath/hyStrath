@@ -28,7 +28,8 @@ Group
     grpThermoBoundaryConditions
 
 Description
-    This boundary condition provides a fixed condition for internal energy
+    This boundary condition provides a fixed condition for 
+    trans-rotational energy
 
     \heading Patch usage
 
@@ -36,7 +37,7 @@ Description
     \verbatim
     myPatch
     {
-        type            fixed2Energy;
+        type            fixed2TREnergy;
         value           uniform 100;
     }
     \endverbatim

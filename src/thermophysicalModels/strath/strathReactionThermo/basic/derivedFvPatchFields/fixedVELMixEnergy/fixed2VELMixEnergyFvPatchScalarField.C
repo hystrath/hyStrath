@@ -25,7 +25,7 @@ License
 
 #include "fvPatchFieldMapper.H"
 #include "volFields.H"
-#include "multi2Thermo.H" // NEW VINCENT
+#include "multi2Thermo.H"
 #include "addToRunTimeSelectionTable.H"
 #include "fixed2VELMixEnergyFvPatchScalarField.H"
 
@@ -102,7 +102,8 @@ void Foam::fixed2VELMixEnergyFvPatchScalarField::updateCoeffs()
         return;
     }
 
-    //Info << "fixed2VELMixEnergy is used for patch called " << patch().name() << endl;
+    //Info<< "fixed2VELMixEnergy is used for patch called "
+    //    << patch().name() << endl;
 
     const multi2Thermo& multiThermo = multi2Thermo::lookup2Thermo(*this);
     const label patchi = patch().index();
@@ -110,28 +111,34 @@ void Foam::fixed2VELMixEnergyFvPatchScalarField::updateCoeffs()
     const scalarField& pw = multiThermo.p().boundaryField()[patchi];
 
     fvPatchScalarField& Tvw =
-        const_cast<fvPatchScalarField&>(multiThermo.Tv().boundaryField()[patchi]);
+        const_cast<fvPatchScalarField&>
+        (
+            multiThermo.Tv().boundaryField()[patchi]
+        );
     Tvw.evaluate();
 
-    // NEW VINCENT 15/02/2017 *************************************************
-    tmp<Field<scalar>> thevel(new Field<scalar>(pw.size()));
-    Field<scalar>& hevel = thevel.ref();
+    tmp<scalarField> thevel(new scalarField(pw.size()));
+    scalarField& hevel = thevel.ref();
 
     hevel = 0.0;
-    for(label speciei=0 ; speciei<thermo_.composition().Y().size() ; speciei++)
+    forAll(thermo_.composition().Y(), speciei)
     {
         fvPatchScalarField& spYw =
-            const_cast<fvPatchScalarField&>(thermo_.composition().Y(speciei).boundaryField()[patchi]);
+            const_cast<fvPatchScalarField&>
+            (
+                thermo_.composition().Y(speciei).boundaryField()[patchi]
+            );
         spYw.evaluate();
 
         hevel += spYw*thermo_.composition().hevel(speciei, pw, Tvw, patchi);
     }
 
-    operator==(thevel); // Force an assignment, overriding fixedValue status
-    // END NEW VINCENT 15/02/2017 *********************************************
+    // Force an assignment, overriding fixedValue status
+    operator==(thevel);
 
     // DELETED VINCENT 15/02/2017 OLD FORMULATION
-    //operator==(thermo.hevel(pw, Tvw, patchi)); // Force an assignment, overriding fixedValue status
+    // Force an assignment, overriding fixedValue status
+    //operator==(thermo.hevel(pw, Tvw, patchi));
 
     fixedValueFvPatchScalarField::updateCoeffs();
 }

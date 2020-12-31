@@ -27,7 +27,7 @@ License
 #include "addToRunTimeSelectionTable.H"
 #include "fvPatchFieldMapper.H"
 #include "volFields.H"
-#include "multi2Thermo.H" // NEW VINCENT
+#include "multi2Thermo.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
@@ -110,26 +110,31 @@ void Foam::gradient2VELMixEnergyFvPatchScalarField::updateCoeffs()
     const scalarField& pw = multiThermo.p().boundaryField()[patchi];
 
     fvPatchScalarField& Tvw =
-        const_cast<fvPatchScalarField&>(multiThermo.Tv().boundaryField()[patchi]);
+        const_cast<fvPatchScalarField&>
+        (
+            multiThermo.Tv().boundaryField()[patchi]
+        );
     Tvw.evaluate();
 
-    // NEW VINCENT 15/02/2017 *************************************************
-    tmp<Field<scalar>> thevel(new Field<scalar>(pw.size()));
-    Field<scalar>& hevel = thevel.ref();
+    tmp<scalarField> thevel(new scalarField(pw.size()));
+    scalarField& hevel = thevel.ref();
     hevel = 0.0;
 
-    tmp<Field<scalar>> thevelfC(new Field<scalar>(pw.size()));
-    Field<scalar>& hevelfC = thevelfC.ref();
+    tmp<scalarField> thevelfC(new scalarField(pw.size()));
+    scalarField& hevelfC = thevelfC.ref();
     hevelfC = 0.0;
 
-    tmp<Field<scalar>> tCvvelTvw(new Field<scalar>(pw.size()));
-    Field<scalar>& cvvelTvw = tCvvelTvw.ref();
+    tmp<scalarField> tCvvelTvw(new scalarField(pw.size()));
+    scalarField& cvvelTvw = tCvvelTvw.ref();
     cvvelTvw = 0.0;
 
-    for(label speciei=0 ; speciei<thermo_.composition().Y().size() ; speciei++)
+    forAll(thermo_.composition().Y(), speciei)
     {
         fvPatchScalarField& spYw =
-            const_cast<fvPatchScalarField&>(thermo_.composition().Y(speciei).boundaryField()[patchi]);
+            const_cast<fvPatchScalarField&>
+            (
+                thermo_.composition().Y(speciei).boundaryField()[patchi]
+            );
         spYw.evaluate();
 
         hevel += spYw*thermo_.composition().hevel(speciei, pw, Tvw, patchi);

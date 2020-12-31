@@ -54,7 +54,7 @@ SourceFiles
 
 #include "fixedValueFvPatchFields.H"
 
-#include "rho2ReactionThermo.H" // NEW VINCENT 15/02/2017
+#include "rho2ReactionThermo.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -62,7 +62,7 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-               Class fixed2VELMixEnergyFvPatchScalarField Declaration
+            Class fixed2VELMixEnergyFvPatchScalarField Declaration
 \*---------------------------------------------------------------------------*/
 
 class fixed2VELMixEnergyFvPatchScalarField

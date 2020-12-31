@@ -120,8 +120,6 @@ Foam::he2Thermo<BasicThermo, MixtureType>::~he2Thermo()
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-// NEW VINCENT ****************************************************************
-//-----                            het                                  -----//
 template<class BasicThermo, class MixtureType>
 Foam::tmp<Foam::volScalarField> Foam::he2Thermo<BasicThermo, MixtureType>::het
 (
@@ -217,7 +215,6 @@ Foam::tmp<Foam::scalarField> Foam::he2Thermo<BasicThermo, MixtureType>::het
 }
 
 
-//-----                            hev                                  -----//
 template<class BasicThermo, class MixtureType>
 Foam::tmp<Foam::volScalarField> Foam::he2Thermo<BasicThermo, MixtureType>::hev
 (
@@ -1554,7 +1551,12 @@ Foam::he2Thermo<BasicThermo, MixtureType>::alpha_v() const
     forAll(this->Tv_, celli)
     {
         alphav[celli] =
-            this->cellMixture(celli).alphave(this->p_[celli], this->T_[celli], this->Tv_[celli]);
+            this->cellMixture(celli).alphave
+            (
+                this->p_[celli],
+                this->T_[celli],
+                this->Tv_[celli]
+            );
     }
 
     forAll(this->Tv_.boundaryField(), patchi)
@@ -1566,13 +1568,14 @@ Foam::he2Thermo<BasicThermo, MixtureType>::alpha_v() const
 
         forAll(pTv, facei)
         {
-            palphav[facei] = this->patchFaceMixture(patchi, facei).alphave(pp[facei], pTt[facei], pTv[facei]);
+            palphav[facei] =
+                this->patchFaceMixture(patchi, facei)
+                    .alphave(pp[facei], pTt[facei], pTv[facei]);
         }
     }
 
     return talphav;
 }
-// END NEW VINCENT ******************************************************
 
 
 template<class BasicThermo, class MixtureType>

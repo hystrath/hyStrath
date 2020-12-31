@@ -340,9 +340,15 @@ Foam::multi2Thermo::multi2Thermo(const fvMesh& mesh, const word& phaseName)
 
     downgradeSingleTv_(lookupOrDefault<Switch>("downgradeToSingleTv", false)),
 
-    downgradeSingleTemperature_(lookupOrDefault<Switch>("downgradeToSingleTemperature", false)),
+    downgradeSingleTemperature_
+    (
+        lookupOrDefault<Switch>("downgradeToSingleTemperature", false)
+    ),
 
-    downgradeSingleVibMode_(lookupOrDefault<Switch>("downgradeToSingleVibMode", true)),
+    downgradeSingleVibMode_
+    (
+        lookupOrDefault<Switch>("downgradeToSingleVibMode", true)
+    ),
 
     hyLight_(false) // TODO 2020 lookupOrDefault<Switch>("hyLight", true))
 {
@@ -403,7 +409,8 @@ Foam::multi2Thermo::multi2Thermo
             (
                 fileName(lookup("twoTemperatureDictFile")).substr
                 (
-                    fileName(lookup("twoTemperatureDictFile")).find("constant/") + 9
+                    fileName(lookup("twoTemperatureDictFile"))
+                        .find("constant/") + 9
                 ),
                 phaseName
             ),
@@ -530,9 +537,15 @@ Foam::multi2Thermo::multi2Thermo
 
     downgradeSingleTv_(lookupOrDefault<Switch>("downgradeToSingleTv", false)),
 
-    downgradeSingleTemperature_(lookupOrDefault<Switch>("downgradeToSingleTemperature", false)),
+    downgradeSingleTemperature_
+    (
+        lookupOrDefault<Switch>("downgradeToSingleTemperature", false)
+    ),
 
-    downgradeSingleVibMode_(lookupOrDefault<Switch>("downgradeToSingleVibMode", true)),
+    downgradeSingleVibMode_
+    (
+        lookupOrDefault<Switch>("downgradeToSingleVibMode", true)
+    ),
 
     hyLight_(lookupOrDefault<Switch>("hyLight", true))
 {

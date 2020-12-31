@@ -25,7 +25,7 @@ License
 
 #include "fvPatchFieldMapper.H"
 #include "volFields.H"
-#include "multi2Thermo.H" // NEW VINCENT
+#include "multi2Thermo.H"
 #include "addToRunTimeSelectionTable.H"
 #include "fixed2TREnergyFvPatchScalarField.H"
 
@@ -97,18 +97,20 @@ void Foam::fixed2TREnergyFvPatchScalarField::updateCoeffs()
         return;
     }
 
-    //Info << "fixed2TREnergy is used for patch called " << patch().name() << endl;
+//    Info<< "fixed2TREnergy is used for patch called "
+//        << patch().name() << endl;
 
     const multi2Thermo& thermo = multi2Thermo::lookup2Thermo(*this);
     const label patchi = patch().index();
 
     const scalarField& pw = thermo.p().boundaryField()[patchi];
 
-    fvPatchScalarField& Ttw =
+    fvPatchScalarField& Tw =
         const_cast<fvPatchScalarField&>(thermo.T().boundaryField()[patchi]);
-    Ttw.evaluate();
+    Tw.evaluate();
 
-    operator==(thermo.het(pw, Ttw, patchi)); // Force an assignment, overriding fixedValue status
+    // Force an assignment, overriding fixedValue status
+    operator==(thermo.het(pw, Tw, patchi));
 
     fixedValueFvPatchScalarField::updateCoeffs();
 }
