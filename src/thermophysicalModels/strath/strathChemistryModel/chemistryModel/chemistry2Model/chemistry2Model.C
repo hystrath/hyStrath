@@ -806,9 +806,10 @@ void Foam::chemistry2Model<CompType, ThermoType>::derivatives
 ) const
 {
     // PRINTED = FALSE
+    // NB VINCENT: this function is not meant to be called
     const scalar T = c[nSpecie_];
-    const scalar Tv = c[nSpecie_ + 1]; // NEW VINCENT
-    const scalar p = c[nSpecie_ + 2]; // MODIFIED VINCENT
+    const scalar Tv = c[nSpecie_ + 1];
+    const scalar p = c[nSpecie_ + 2];
 
     dcdt = omega(c, T, Tv, p); // MODIFIED VINCENT
 
@@ -825,16 +826,16 @@ void Foam::chemistry2Model<CompType, ThermoType>::derivatives
     scalar cp = 0.0;
     for (label i=0; i<nSpecie_; i++)
     {
-        //cp += c[i]*specieThermo_[i].cp(p, T); // DELETED VINCENT
-        cp += c[i]*specieThermo_[i].cp_t(p, T); // NEW VINCENT
+        //cp += c[i]*specieThermo_[i].cp(p, T); // DELETED
+        cp += c[i]*specieThermo_[i].cp_t(p, T);
     }
     cp /= rho;
 
     scalar dT = 0.0;
     for (label i = 0; i < nSpecie_; i++)
     {
-        //const scalar hi = specieThermo_[i].ha(p, T, T); //TODO il va falloir un dTtr et un dTv
-        const scalar hi = specieThermo_[i].het(p, T); // NEW VINCENT
+        //const scalar hi = specieThermo_[i].ha(p, T, T); // DELETED
+        const scalar hi = specieThermo_[i].het(p, T);
         dT += hi*dcdt[i];
     }
     dT /= rho*cp;
@@ -842,11 +843,10 @@ void Foam::chemistry2Model<CompType, ThermoType>::derivatives
     dcdt[nSpecie_] = -dT;
 
     // dTv/dt = ...
-    //TODO
-    dcdt[nSpecie_ + 1] = 0.0; // TODO NEW VINCENT
+    dcdt[nSpecie_ + 1] = 0.0;
 
     // dp/dt = ...
-    dcdt[nSpecie_ + 2] = 0.0; // MODIFIED VINCENT
+    dcdt[nSpecie_ + 2] = 0.0;
 }
 
 
@@ -860,9 +860,10 @@ void Foam::chemistry2Model<CompType, ThermoType>::jacobian
 ) const
 {
     // PRINTED = FALSE
+    // NB VINCENT: this function is not meant to be called
     const scalar T = c[nSpecie_];
-    const scalar Tv = c[nSpecie_ + 1]; // NEW VINCENT
-    const scalar p = c[nSpecie_ + 2]; // MODIFIED VINCENT
+    const scalar Tv = c[nSpecie_ + 1];
+    const scalar p = c[nSpecie_ + 2];
 
     scalarField c2(nSpecie_, 0.0);
     forAll(c2, i)
@@ -879,14 +880,14 @@ void Foam::chemistry2Model<CompType, ThermoType>::jacobian
     }
 
     // length of the first argument must be nSpecie()
-    dcdt = omega(c2, T, Tv, p); // MODIFIED VINCENT
+    dcdt = omega(c2, T, Tv, p);
 
     forAll(reactions_, ri)
     {
         const Reaction2<ThermoType>& R = reactions_[ri];
 
-        const scalar kf0 = R.kf(p, T, c2); //TODO introduce the switch
-        const scalar kr0 = R.kr(p, T, c2); //TODO
+        const scalar kf0 = R.kf(p, T, c2);
+        const scalar kr0 = R.kr(p, T, c2);
 
         forAll(R.lhs(), j)
         {
@@ -983,8 +984,8 @@ void Foam::chemistry2Model<CompType, ThermoType>::jacobian
 
     // Calculate the dcdT elements numerically
     const scalar delta = 1.0e-3;
-    const scalarField dcdT0(omega(c2, T - delta, Tv - delta, p)); // MODIFIED VINCENT
-    const scalarField dcdT1(omega(c2, T + delta, Tv - delta, p)); // MODIFIED VINCENT
+    const scalarField dcdT0(omega(c2, T - delta, Tv - delta, p));
+    const scalarField dcdT1(omega(c2, T + delta, Tv - delta, p));
 
     for (label i = 0; i < nEqns(); i++)
     {
@@ -1517,7 +1518,7 @@ template<class CompType, class ThermoType>
 Foam::label Foam::chemistry2Model<CompType, ThermoType>::nEqns() const
 {
     // nEqns = number of species + temperature_tr + temperature_v + pressure
-    return nSpecie_ + 2 + 1; // MODIFIED VINCENT
+    return nSpecie_ + 2 + 1;
 }
 
 

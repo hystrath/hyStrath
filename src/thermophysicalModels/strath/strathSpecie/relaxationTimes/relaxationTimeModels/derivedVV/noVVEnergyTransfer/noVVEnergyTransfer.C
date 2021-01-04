@@ -55,7 +55,7 @@ Foam::noVVEnergyTransfer<ThermoType>::noVVEnergyTransfer
             (this->thermo_).speciesData()
     )
 {
-    tauVV_.setSize(solvedVibEqSpecies().size()); // NEW VINCENT 06/08/2016
+    tauVV_.setSize(solvedVibEqSpecies().size());
 
     forAll(tauVV_, speciei)
     {

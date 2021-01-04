@@ -42,8 +42,7 @@ SourceFiles
 #define mixed2EnergyFvPatchScalarField_H
 
 #include "mixedFvPatchFields.H"
-
-#include "rho2ReactionThermo.H" // NEW VINCENT 18/04/2016
+#include "rho2ReactionThermo.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

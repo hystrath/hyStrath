@@ -28,7 +28,7 @@ Group
     grpThermoBoundaryConditions
 
 Description
-    This boundary condition provides a mixed condition for the
+    This boundary condition provides a mixed condition for the species
     vibro-electronic mode of the internal energy
 
 SeeAlso
@@ -43,8 +43,7 @@ SourceFiles
 #define mixed2VELEnergyFvPatchScalarField_H
 
 #include "mixedFvPatchFields.H"
-
-#include "rho2ReactionThermo.H" // NEW VINCENT 18/04/2016
+#include "rho2ReactionThermo.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

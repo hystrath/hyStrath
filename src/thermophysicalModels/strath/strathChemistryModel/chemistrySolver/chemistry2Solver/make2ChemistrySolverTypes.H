@@ -31,7 +31,6 @@ License
 
 #include "no2ChemistrySolver.H"
 #include "Euler2Implicit.H"
-/*#include "ode2.H"*/
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -70,13 +69,6 @@ License
         CompChemModel,                                                        \
         MultiThermo                                                           \
     );                                                                        \
-/*                                                                              \*/
-/*    make2ChemistrySolverType                                                  \*/
-/*    (                                                                         \*/
-/*        ode2,                                                                 \*/
-/*        CompChemModel,                                                        \*/
-/*        MultiThermo                                                           \*/
-/*    );                                                                        \*/
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

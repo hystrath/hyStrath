@@ -83,8 +83,8 @@ void Foam::rarefied<ThermoType>::correct(const volVectorField& U)
         const scalarField& muMixCells = muMix.internalField();
 
         scalarField& mfpMixCells = mfpMix_.primitiveFieldRef();
-        volScalarField innerSum = mfpMix_, outerSum = mfpMix_; // NEW VINCENT 03/08/2016
-        volScalarField nDmix = thermo_.composition().nD()[0]; // NEW VINCENT 03/08/2016
+        volScalarField innerSum = mfpMix_, outerSum = mfpMix_;
+        volScalarField nDmix = thermo_.composition().nD()[0];
 
         volScalarField tMfpMix = mfpMix_;
 
@@ -112,14 +112,16 @@ void Foam::rarefied<ThermoType>::correct(const volVectorField& U)
         {
             const volScalarField& X = thermo_.composition().X()[speciei];
             const volScalarField& pD = thermo_.composition().pD()[speciei];
-            volScalarField& mfp = mfpModel_().mfp(speciei); // NOTE VINCENT: non-constant declaration because it has to be multiplied by mu_i/rho_i
+            // NOTE VINCENT: non-constant declaration because it has to be
+            // multiplied by mu_i/rho_i
+            volScalarField& mfp = mfpModel_().mfp(speciei); 
 
             const scalarField& XCells = X.internalField();
             const scalarField& pDCells = pD.internalField();
 
             scalarField& mfpCells = mfp.primitiveFieldRef();
 
-            if(oldMfpDefinition_) // NEW VINCENT 03/08/2016
+            if(oldMfpDefinition_)
             {
                 tMfpMix += X*mfp;
             }
@@ -158,7 +160,7 @@ void Foam::rarefied<ThermoType>::correct(const volVectorField& U)
             }
 
 
-            if(not oldMfpDefinition_ /*and species().size() > 1*/) // NEW VINCENT 03/08/2016
+            if(not oldMfpDefinition_ /*and species().size() > 1*/)
             {
                 const volScalarField& nDi = thermo_.composition().nD()[speciei];
                 const scalarField& nDiCells = nDi.internalField();
@@ -240,7 +242,7 @@ void Foam::rarefied<ThermoType>::correct(const volVectorField& U)
 
         forAll(rhoCells, celli)
         {
-            if(oldMfpDefinition_) // NEW VINCENT 03/08/2016
+            if(oldMfpDefinition_)
             {
                 mfpMixCells[celli] = tMfpMixCells[celli]*muMixCells[celli]/rhoCells[celli];
             }
@@ -289,8 +291,8 @@ void Foam::rarefied<ThermoType>::correct(const volVectorField& U)
             const fvPatchScalarField& pgradTv = gradTv.boundaryField()[patchi];
             const fvPatchScalarField& pgradU = gradU.boundaryField()[patchi];
 
-            const fvPatchScalarField& pOuterSum = outerSum.boundaryField()[patchi]; // NEW VINCENT 03/08/2016
-            const fvPatchScalarField& pnDmix = nDmix.boundaryField()[patchi]; // NEW VINCENT 03/08/2016
+            const fvPatchScalarField& pOuterSum = outerSum.boundaryField()[patchi];
+            const fvPatchScalarField& pnDmix = nDmix.boundaryField()[patchi];
 
             fvPatchScalarField& pmfpMix = mfpMix_.boundaryFieldRef()[patchi];
             fvPatchScalarField& pKnov = Knov_.boundaryFieldRef()[patchi];
@@ -301,7 +303,7 @@ void Foam::rarefied<ThermoType>::correct(const volVectorField& U)
 
             forAll(prho, facei)
             {
-                if(oldMfpDefinition_) // NEW VINCENT 03/08/2016
+                if(oldMfpDefinition_)
                 {
                     pmfpMix[facei] = ptMfpMix[facei]*pmuMix[facei]/prho[facei];
                 }
@@ -346,7 +348,9 @@ void Foam::rarefied<ThermoType>::correct(const volVectorField& U)
             {
                 const volScalarField& X = thermo_.composition().X()[speciei];
                 const volScalarField& pD = thermo_.composition().pD()[speciei];
-                volScalarField& mfp = mfpModel_().mfp(speciei); // NOTE VINCENT: non-constant declaration because it has to be multiplied by mu_i/rho_i
+                // NOTE VINCENT: non-constant declaration because it has to be
+                // multiplied by mu_i/rho_i
+                volScalarField& mfp = mfpModel_().mfp(speciei);
 
                 tMfpMix.boundaryFieldRef() += X.boundaryField()*mfp.boundaryField();
 

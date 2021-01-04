@@ -27,9 +27,9 @@ License
 #include "addToRunTimeSelectionTable.H"
 #include "fvPatchFieldMapper.H"
 #include "volFields.H"
-#include "multi2Thermo.H" // NEW VINCENT
+#include "multi2Thermo.H"
 
-#include <string.H> // NEW VINCENT 18/04/2016
+#include <string.H>
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
@@ -126,19 +126,29 @@ void Foam::mixed2VELEnergyFvPatchScalarField::updateCoeffs()
     const scalarField& pw = multiThermo.p().boundaryField()[patchi];
     mixedFvPatchScalarField& Tvw = refCast<mixedFvPatchScalarField>
     (
-        const_cast<fvPatchScalarField&>(thermo_.composition().Tv(specieName_).boundaryField()[patchi])
+        const_cast<fvPatchScalarField&>
+        (
+            thermo_.composition().Tv(specieName_).boundaryField()[patchi]
+        )
     );
 
     Tvw.evaluate();
 
     valueFraction() = Tvw.valueFraction();
-    refValue() = thermo_.composition().hevel(specieName_, pw, Tvw.refValue(), patchi);
+    refValue() =
+        thermo_.composition().hevel(specieName_, pw, Tvw.refValue(), patchi);
     refGrad() =
         thermo_.composition().Cv_vel(specieName_, pw, Tvw, patchi)*Tvw.refGrad()
       + patch().deltaCoeffs()*
         (
             thermo_.composition().hevel(specieName_, pw, Tvw, patchi)
-          - thermo_.composition().hevel(specieName_, pw, Tvw, patch().faceCells())
+          - thermo_.composition().hevel
+            (
+                specieName_,
+                pw,
+                Tvw,
+                patch().faceCells()
+            )
         );
 
     mixedFvPatchScalarField::updateCoeffs();

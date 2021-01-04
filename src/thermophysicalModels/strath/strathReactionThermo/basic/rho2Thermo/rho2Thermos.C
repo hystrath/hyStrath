@@ -50,7 +50,6 @@ License
 #include "icoPolynomial.H"
 #include "hPolynomialThermo.H"
 #include "polynomialTransport.H"
-//#include "tabulatedTransport.H" // NEW VINCENT TODO
 
 #include "heRho2Thermo.H"
 #include "pureMixture.H"

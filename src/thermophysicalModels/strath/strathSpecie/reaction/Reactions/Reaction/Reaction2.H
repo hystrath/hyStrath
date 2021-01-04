@@ -57,10 +57,10 @@ template<class Reaction2Thermo>
 inline Ostream& operator<<(Ostream&, const Reaction2<Reaction2Thermo>&);
 
 
-// NEW VINCENT
 enum ControllingTemperatureType {chargeExchange, dissociation, exchange,
     impactDissociation, impactIonisation, associativeIonisation,
     transrotational, vibrational};
+
 
 /*---------------------------------------------------------------------------*\
                            Class Reaction2 Declaration

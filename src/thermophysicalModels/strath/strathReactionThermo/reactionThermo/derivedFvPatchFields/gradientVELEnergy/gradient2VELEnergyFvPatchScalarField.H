@@ -28,8 +28,8 @@ Group
     grpThermoBoundaryConditions
 
 Description
-    This boundary condition provides a gradient condition for internal energy,
-    where the gradient is calculated using:
+    This boundary condition provides a gradient condition for species
+    vibro-electronic energy, where the gradient is calculated using:
 
         \f[
             \nabla(e_p) = \nabla_\perp C_p(p, T) + \frac{e_p - e_c}{\Delta}
@@ -68,8 +68,7 @@ SourceFiles
 #define gradient2VELEnergyFvPatchScalarField_H
 
 #include "fixedGradientFvPatchFields.H"
-
-#include "rho2ReactionThermo.H" // NEW VINCENT 19/02/2016
+#include "rho2ReactionThermo.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

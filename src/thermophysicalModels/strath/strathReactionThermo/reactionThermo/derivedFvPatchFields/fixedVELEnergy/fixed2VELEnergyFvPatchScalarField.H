@@ -28,7 +28,8 @@ Group
     grpThermoBoundaryConditions
 
 Description
-    This boundary condition provides a fixed condition for internal energy
+    This boundary condition provides a fixed condition for species
+    vibro-electronic energy
 
     \heading Patch usage
 
@@ -36,7 +37,7 @@ Description
     \verbatim
     myPatch
     {
-        type            fixedEnergy;
+        type            fixed2VELEnergy;
         value           uniform 100;
     }
     \endverbatim
@@ -53,8 +54,7 @@ SourceFiles
 #define fixed2VELEnergyFvPatchScalarField_H
 
 #include "fixedValueFvPatchFields.H"
-
-#include "rho2ReactionThermo.H" // NEW VINCENT 19/02/2016
+#include "rho2ReactionThermo.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -62,7 +62,7 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-               Class fixed2VELEnergyFvPatchScalarField Declaration
+              Class fixed2VELEnergyFvPatchScalarField Declaration
 \*---------------------------------------------------------------------------*/
 
 class fixed2VELEnergyFvPatchScalarField

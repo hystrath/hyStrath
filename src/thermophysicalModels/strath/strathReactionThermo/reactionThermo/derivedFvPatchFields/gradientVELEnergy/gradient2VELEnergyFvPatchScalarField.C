@@ -27,9 +27,9 @@ License
 #include "addToRunTimeSelectionTable.H"
 #include "fvPatchFieldMapper.H"
 #include "volFields.H"
+#include "multi2Thermo.H"
 
-#include "multi2Thermo.H" // NEW VINCENT 20/02/2016
-#include <string.H> // NEW VINCENT 20/02/2016
+#include <string.H>
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
@@ -116,7 +116,8 @@ void Foam::gradient2VELEnergyFvPatchScalarField::updateCoeffs()
         return;
     }
 
-    //Info << "gradient2VELEnergy is used for patch called " << patch().name() << ", species " << specieName_ << endl;
+    //Info<< "gradient2VELEnergy is used for patch called "
+    //    << patch().name() << ", species " << specieName_ << endl;
 
     const multi2Thermo& multiThermo = multi2Thermo::lookup2Thermo(*this);
     const label patchi = patch().index();
@@ -124,14 +125,25 @@ void Foam::gradient2VELEnergyFvPatchScalarField::updateCoeffs()
     const scalarField& pw = multiThermo.p().boundaryField()[patchi];
 
     fvPatchScalarField& spTvw =
-        const_cast<fvPatchScalarField&>(thermo_.composition().Tv(specieName_).boundaryField()[patchi]);
+        const_cast<fvPatchScalarField&>
+        (
+            thermo_.composition().Tv(specieName_).boundaryField()[patchi]
+        );
     spTvw.evaluate();
 
-    gradient() = thermo_.composition().Cv_vel(specieName_, pw, spTvw, patchi)*spTvw.snGrad()
+    gradient() =
+        thermo_.composition().Cv_vel(specieName_, pw, spTvw, patchi)
+      * spTvw.snGrad()
       + patch().deltaCoeffs()*
         (
             thermo_.composition().hevel(specieName_, pw, spTvw, patchi)
-          - thermo_.composition().hevel(specieName_, pw, spTvw, patch().faceCells())
+          - thermo_.composition().hevel
+            (
+                specieName_,
+                pw,
+                spTvw,
+                patch().faceCells()
+            )
         );
 
     fixedGradientFvPatchScalarField::updateCoeffs();

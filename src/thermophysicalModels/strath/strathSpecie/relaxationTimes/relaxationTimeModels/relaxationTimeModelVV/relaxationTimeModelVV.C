@@ -74,7 +74,7 @@ Foam::relaxationTimeModelVV::relaxationTimeModelVV
         (
             dict2T,
             dictThermoPhy,
-            solvedVibEqSpecies(), // NEW VINCENT 06/08/2016
+            solvedVibEqSpecies(),
             thermo.p(),
             thermo.T(),
             thermo.composition().Tv(),
@@ -109,30 +109,6 @@ Foam::relaxationTimeModelVV::relaxationTimeModelVV
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
-
-/*Foam::tmp<Foam::volScalarField>
-Foam::relaxationTimeModelVV::VVRelaxationSource()
-{
-    tmp<volScalarField> tQVV
-    (
-        new volScalarField
-        (
-            IOobject
-            (
-                "VVRelaxationSource",
-                mesh_.time().timeName(),
-                mesh_,
-                IOobject::NO_READ,
-                IOobject::NO_WRITE
-            ),
-            mesh_,
-            dimensionedScalar("QVV", dimensionSet(1, -1, -3, 0, 0), 0.0)
-        )
-    );
-
-    return tQVV;
-}*/
-
 
 bool Foam::relaxationTimeModelVV::read()
 {

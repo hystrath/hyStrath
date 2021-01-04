@@ -25,11 +25,11 @@ License
 
 #include "fvPatchFieldMapper.H"
 #include "volFields.H"
-#include "multi2Thermo.H" // NEW VINCENT
+#include "multi2Thermo.H"
 #include "addToRunTimeSelectionTable.H"
 #include "fixed2VELEnergyFvPatchScalarField.H"
 
-#include <string.H> // NEW VINCENT 20/02/2016
+#include <string.H>
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
@@ -116,7 +116,8 @@ void Foam::fixed2VELEnergyFvPatchScalarField::updateCoeffs()
         return;
     }
 
-    //Info << "fixed2VELEnergy is used for patch called " << patch().name() << ", species " << specieName_ << endl;
+    //Info<< "fixed2VELEnergy is used for patch called "
+    //    << patch().name() << ", species " << specieName_ << endl;
 
     const multi2Thermo& multiThermo = multi2Thermo::lookup2Thermo(*this);
 
@@ -125,7 +126,10 @@ void Foam::fixed2VELEnergyFvPatchScalarField::updateCoeffs()
     const scalarField& pw = multiThermo.p().boundaryField()[patchi];
 
     fvPatchScalarField& spTvw =
-        const_cast<fvPatchScalarField&>(thermo_.composition().Tv(specieName_).boundaryField()[patchi]);
+        const_cast<fvPatchScalarField&>
+        (
+            thermo_.composition().Tv(specieName_).boundaryField()[patchi]
+        );
     spTvw.evaluate();
 
     operator==(thermo_.composition().hevel(specieName_, pw, spTvw, patchi));

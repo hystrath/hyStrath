@@ -24,7 +24,7 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "relaxationTimeModelHE.H"
-#include "IFstream.H" // NEW VINCENT 10/08/2016
+#include "IFstream.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -49,11 +49,18 @@ Foam::relaxationTimeModelHE::New
             )()
         );
 
-        const word partialHEModelName = word(thermo2TModel.subDict("thermalRelaxationModels").subDict("he").lookup("relaxationType"));
+        const word partialHEModelName =
+            word
+            (
+                thermo2TModel.subDict("thermalRelaxationModels").subDict("he")
+                    .lookup("relaxationType")
+            );
 
-        HEModelName = partialHEModelName +'<' + thermo.partialThermoName() + '>';
+        HEModelName = partialHEModelName +'<' + thermo.partialThermoName()
+            + '>';
 
-        Info<< "Loading the h-e relaxation time model" << tab << partialHEModelName << "\n" << endl;
+        Info<< "Loading the h-e relaxation time model" << tab
+            << partialHEModelName << "\n" << endl;
     }
 
     fvMeshConstructorTable::iterator cstrIter =

@@ -24,7 +24,7 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "relaxationTimeModelVV.H"
-#include "IFstream.H" // NEW VINCENT 10/08/2016
+#include "IFstream.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -49,11 +49,17 @@ Foam::relaxationTimeModelVV::New
             )()
         );
 
-        word partialVVname = word(thermo2TModel.subDict("thermalRelaxationModels").subDict("VV").lookup("relaxationType"));
+        word partialVVname =
+            word
+            (
+                thermo2TModel.subDict("thermalRelaxationModels").subDict("VV")
+                    .lookup("relaxationType")
+            );
 
         VVModelName = partialVVname +'<' + thermo.partialThermoName() + '>';
 
-        Info<< "Loading the V-V relaxation time model:" << tab << partialVVname << "\n" << endl;
+        Info<< "Loading the V-V relaxation time model:" << tab
+            << partialVVname << "\n" << endl;
     }
 
     fvMeshConstructorTable::iterator cstrIter =

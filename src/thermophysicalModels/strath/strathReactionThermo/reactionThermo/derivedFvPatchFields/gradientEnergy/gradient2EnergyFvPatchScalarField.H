@@ -68,8 +68,7 @@ SourceFiles
 #define gradient2EnergyFvPatchScalarField_H
 
 #include "fixedGradientFvPatchFields.H"
-
-#include "rho2ReactionThermo.H" // NEW VINCENT 22/02/2016
+#include "rho2ReactionThermo.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

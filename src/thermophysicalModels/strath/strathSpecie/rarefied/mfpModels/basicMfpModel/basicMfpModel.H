@@ -42,7 +42,7 @@ SourceFiles
 #define basicMfpModel_H
 
 #include "specie.H"
-#include "advancedSpecie.H" // NEW VINCENT
+#include "advancedSpecie.H"
 #include "IOdictionary.H"
 #include "typeInfo.H"
 #include "runTimeSelectionTables.H"
