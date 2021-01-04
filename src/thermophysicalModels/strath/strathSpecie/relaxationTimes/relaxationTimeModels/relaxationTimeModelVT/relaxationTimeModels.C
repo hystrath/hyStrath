@@ -38,28 +38,6 @@ namespace Foam
 
 /* * * * * * * * * * * * * * * private static data * * * * * * * * * * * * * */
 
-// Based on sensible enthalpy
-
-makeRelaxationTimeModel(noVTEnergyTransfer, demConstGasHThermoPhysicsH2TGD);
-makeRelaxationTimeModel(LandauTellerVT, demConstGasHThermoPhysicsH2TGD);
-//makeRelaxationTimeModel(LarsenBorgnakkeVT, demConstGasHThermoPhysicsH2TGD);
-
-makeRelaxationTimeModel(noVTEnergyTransfer, demGasHThermoPhysicsH2TGD);
-makeRelaxationTimeModel(LandauTellerVT, demGasHThermoPhysicsH2TGD);
-//makeRelaxationTimeModel(LarsenBorgnakkeVT, demGasHThermoPhysicsH2TGD);
-
-makeRelaxationTimeModel(noVTEnergyTransfer, demBEGasHThermoPhysicsH2TGD);
-makeRelaxationTimeModel(LandauTellerVT, demBEGasHThermoPhysicsH2TGD);
-//makeRelaxationTimeModel(LarsenBorgnakkeVT, demBEGasHThermoPhysicsH2TGD);
-
-makeRelaxationTimeModel(noVTEnergyTransfer, demPLEGasHThermoPhysicsH2TGD);
-makeRelaxationTimeModel(LandauTellerVT, demPLEGasHThermoPhysicsH2TGD);
-//makeRelaxationTimeModel(LarsenBorgnakkeVT, demPLEGasHThermoPhysicsH2TGD);
-
-makeRelaxationTimeModel(noVTEnergyTransfer, demCEAGasHThermoPhysicsH2TGD);
-makeRelaxationTimeModel(LandauTellerVT, demCEAGasHThermoPhysicsH2TGD);
-//makeRelaxationTimeModel(LarsenBorgnakkeVT, demCEAGasHThermoPhysicsH2TGD);
-
 // Based on sensible internal energy
 
 makeRelaxationTimeModel(noVTEnergyTransfer, demConstGasEThermoPhysicsH2TGD);

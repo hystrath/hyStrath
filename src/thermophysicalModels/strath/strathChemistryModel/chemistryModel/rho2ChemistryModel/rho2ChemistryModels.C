@@ -40,42 +40,6 @@ Description
 
 namespace Foam
 {
-    // Chemistry models based on sensibleEnthalpy
-
-    make2ChemistryModel
-    (
-        chemistry2Model,
-        rho2ChemistryModel,
-        demConstGasHThermoPhysicsH2TGD
-    );
-    make2ChemistryModel
-    (
-        chemistry2Model,
-        rho2ChemistryModel,
-        demGasHThermoPhysicsH2TGD
-    );
-
-    make2ChemistryModel
-    (
-        chemistry2Model,
-        rho2ChemistryModel,
-        demBEGasHThermoPhysicsH2TGD
-    );
-
-    make2ChemistryModel
-    (
-        chemistry2Model,
-        rho2ChemistryModel,
-        demPLEGasHThermoPhysicsH2TGD
-    );
-
-    make2ChemistryModel
-    (
-        chemistry2Model,
-        rho2ChemistryModel,
-        demCEAGasHThermoPhysicsH2TGD
-    );
-
     // Chemistry moldels based on sensibleInternalEnergy
     make2ChemistryModel
     (

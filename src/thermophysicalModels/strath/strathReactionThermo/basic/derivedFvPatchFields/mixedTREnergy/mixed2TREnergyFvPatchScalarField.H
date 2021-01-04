@@ -29,7 +29,7 @@ Group
 
 Description
     This boundary condition provides a mixed condition for the
-    trnas-rotational mode of the internal energy
+    trans-rotational energy mode
 
 SeeAlso
     Foam::mixedFvPatchField
@@ -43,6 +43,7 @@ SourceFiles
 #define mixed2TREnergyFvPatchScalarField_H
 
 #include "mixedFvPatchFields.H"
+#include "rho2ReactionThermo.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -50,7 +51,7 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-               Class mixed2TREnergyFvPatchScalarField Declaration
+              Class mixed2TREnergyFvPatchScalarField Declaration
 \*---------------------------------------------------------------------------*/
 
 class mixed2TREnergyFvPatchScalarField
@@ -58,6 +59,13 @@ class mixed2TREnergyFvPatchScalarField
     public mixedFvPatchScalarField
 {
 
+private:
+
+    // Private data
+
+        // Thermo package that contains species patch data
+        const rho2ReactionThermo& thermo_;
+        
 public:
 
     //- Runtime type information

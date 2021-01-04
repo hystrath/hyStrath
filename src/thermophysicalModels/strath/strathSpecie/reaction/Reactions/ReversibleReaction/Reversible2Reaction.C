@@ -199,7 +199,7 @@ Foam::scalar Foam::Reversible2Reaction
 ) const
 {
     //return kfwd/this->Kc(p, T); // ORIGINAL FORMULATION, DELETED
-    return kfwd/Keq(p, T); // NEW VINCENT 09/02/2016
+    return kfwd/Keq(p, T);
 }
 
 
@@ -247,11 +247,51 @@ Foam::scalar Foam::Reversible2Reaction
     scalar nDMix = p/(constant::physicoChemical::k.value()*T);
     const label nLow(findBounds(nDMix)), nHigh(nLow+1);
 
-    const scalar A0Mix = boundedLinearInterpolation(nDMix, ni_[nLow], ni_[nHigh], A0_[nLow], A0_[nHigh]);
-    const scalar A1Mix = boundedLinearInterpolation(nDMix, ni_[nLow], ni_[nHigh], A1_[nLow], A1_[nHigh]);
-    const scalar A2Mix = boundedLinearInterpolation(nDMix, ni_[nLow], ni_[nHigh], A2_[nLow], A2_[nHigh]);
-    const scalar A3Mix = boundedLinearInterpolation(nDMix, ni_[nLow], ni_[nHigh], A3_[nLow], A3_[nHigh]);
-    const scalar A4Mix = boundedLinearInterpolation(nDMix, ni_[nLow], ni_[nHigh], A4_[nLow], A4_[nHigh]);
+    const scalar A0Mix =
+        boundedLinearInterpolation
+        (
+            nDMix,
+            ni_[nLow],
+            ni_[nHigh],
+            A0_[nLow],
+            A0_[nHigh]
+        );
+    const scalar A1Mix =
+        boundedLinearInterpolation
+        (
+            nDMix,
+            ni_[nLow],
+            ni_[nHigh],
+            A1_[nLow],
+            A1_[nHigh]
+        );
+    const scalar A2Mix =
+        boundedLinearInterpolation
+        (
+            nDMix,
+            ni_[nLow],
+            ni_[nHigh],
+            A2_[nLow],
+            A2_[nHigh]
+        );
+    const scalar A3Mix =
+        boundedLinearInterpolation
+        (
+            nDMix,
+            ni_[nLow],
+            ni_[nHigh],
+            A3_[nLow],
+            A3_[nHigh]
+        );
+    const scalar A4Mix =
+        boundedLinearInterpolation
+        (
+            nDMix,
+            ni_[nLow],
+            ni_[nHigh],
+            A4_[nLow],
+            A4_[nHigh]
+        );
 
     return exp(A0Mix/Z + A1Mix + A2Mix*log(Z) + A3Mix*Z + A4Mix*sqr(Z));
 }

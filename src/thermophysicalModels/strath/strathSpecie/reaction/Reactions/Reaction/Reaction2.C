@@ -369,7 +369,7 @@ Foam::Reaction2<Reaction2Thermo>::Reaction2
     name_(dict.dictName()),
     species_(species)
 {
-    // NB VINCENT: this constructor is used in the beginning of a simulation
+    // NB: this constructor is used in the beginning of a simulation
     word controllingTemperature =
         dict.lookupOrDefault<word>
         (

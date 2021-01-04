@@ -237,7 +237,7 @@ public:
             ) const;
 
             //- Heat capacity at constant pressure [J/(kg K)]
-            //  vib-electronic energy mode
+            //  Vibro-electronic energy mode
             virtual scalar Cv_vel
             (
                 const label speciei,
@@ -273,7 +273,7 @@ public:
             ) const;
 
             //- Heat capacity at constant pressure [J/(kg K)]
-            //  vib-electronic energy mode
+            //  Vibro-electronic energy mode
             virtual scalar Cp_vel
             (
                 const label speciei,
@@ -323,7 +323,7 @@ public:
                 const scalar Tv
             ) const;
 
-            //- Sensible enthalpy, vib-electronic [J/kg]
+            //- Sensible enthalpy, Vibro-electronic [J/kg]
             virtual scalar Hvels
             (
                 const label speciei,
@@ -373,7 +373,7 @@ public:
                 const scalar Tv
             ) const;
 
-            //- Sensible internal energy, vib-electronic [J/kg]
+            //- Sensible internal energy, Vibro-electronic [J/kg]
             virtual scalar Evels
             (
                 const label speciei,
@@ -405,7 +405,7 @@ public:
                 const scalar Tv
             ) const;
 
-            //- Vib-electronic Enthalpy/Internal energy [J/kg]
+            //- Vibro-electronic Enthalpy/Internal energy [J/kg]
             virtual scalar HEvel
             (
                 const label speciei,
@@ -413,7 +413,7 @@ public:
                 const scalar Tv
             ) const;
 
-            //- Vib-electronic Enthalpy/Internal energy [J/kg]
+            //- Vibro-electronic Enthalpy/Internal energy [J/kg]
             //  for the vibrational mode m TODO ABORTIVE WORK
             /*virtual scalar HEvel_mode
             (
@@ -424,7 +424,17 @@ public:
             ) const;*/
 
             //- Heat capacity at constant volume for patch[J/kg/K]
-            //  vib-electronic energy mode
+            //  Trans-rotational energy mode
+            virtual tmp<scalarField> Cv_t
+            (
+                const label speciei,
+                const scalarField& p,
+                const scalarField& T,
+                const label patchi
+            ) const;
+            
+            //- Heat capacity at constant volume for patch[J/kg/K]
+            //  Vibro-electronic energy mode
             virtual tmp<scalarField> Cv_vel
             (
                 const label speciei,
@@ -433,7 +443,25 @@ public:
                 const label patchi
             ) const;
 
-            //- Vib-electronic Enthalpy/Internal energy for cell-set [J/kg]
+            //- Trans-rotational Enthalpy/Internal energy for cell-set [J/kg]
+            virtual tmp<scalarField> het
+            (
+                const label speciei,
+                const scalarField& p,
+                const scalarField& T,
+                const labelList& cells
+            ) const;
+
+            //- Trans-rotational Enthalpy/Internal energy for patch [J/kg]
+            virtual tmp<scalarField> het
+            (
+                const label speciei,
+                const scalarField& p,
+                const scalarField& T,
+                const label patchi
+            ) const;
+            
+            //- Vibro-electronic Enthalpy/Internal energy for cell-set [J/kg]
             virtual tmp<scalarField> hevel
             (
                 const label speciei,
@@ -442,7 +470,7 @@ public:
                 const labelList& cells
             ) const;
 
-            //- Vib-electronic Enthalpy/Internal energy for patch [J/kg]
+            //- Vibro-electronic Enthalpy/Internal energy for patch [J/kg]
             virtual tmp<scalarField> hevel
             (
                 const label speciei,
@@ -471,7 +499,7 @@ public:
                 const scalar Tv
             ) const;
 
-            //- Vib-electronic temperature from sensible internal energy given an
+            //- Vibro-electronic temperature from sensible internal energy given an
             //  initial T0
             virtual scalar TvelHEvel
             (
@@ -481,7 +509,7 @@ public:
                 const scalar Tvel
             ) const;
 
-            //- Vib-electronic temperature from sensible internal energy given
+            //- Vibro-electronic temperature from sensible internal energy given
             //  an initial T0, for the vibrational mode m TODO ABORTIVE WORK
             /*virtual scalar TvelHEvel_mode
             (
@@ -593,7 +621,7 @@ public:
             ) const;
 
             //- Thermal diffusivity [kg/m/s]
-            //  vib-electronic energy mode
+            //  Vibro-electronic energy mode
             virtual scalar alphave
             (
                 const label speciei,

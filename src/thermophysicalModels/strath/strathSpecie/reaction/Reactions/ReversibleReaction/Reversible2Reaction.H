@@ -65,17 +65,11 @@ class Reversible2Reaction
 
         ReactionRate k_;
 
-        // NEW VINCENT 09/02/2016 *********************************************
         //- Mixture number density table entries
         DynamicList<scalar> ni_;
 
         //- Coefficients to determine Keq(nDMix): bounded interpolation
-        DynamicList<scalar> A0_;
-        DynamicList<scalar> A1_;
-        DynamicList<scalar> A2_;
-        DynamicList<scalar> A3_;
-        DynamicList<scalar> A4_;
-        // END NEW VINCENT 09/02/2016 *****************************************
+        DynamicList<scalar> A0_, A1_, A2_, A3_, A4_;
 
 
     // Private Member Functions
@@ -105,7 +99,7 @@ public:
         (
             const ReactionType<ReactionThermo>& reaction,
             const ReactionRate& k,
-            const DynamicList<scalar> ni, // NEW VINCENT 09/02/2016
+            const DynamicList<scalar> ni,
             const DynamicList<scalar> A0,
             const DynamicList<scalar> A1,
             const DynamicList<scalar> A2,
@@ -209,7 +203,6 @@ public:
                 const scalarField& c
             ) const;
 
-            // NEW VINCENT 09/02/2016 *****************************************
             //- Equilibrium constant calculation to evaluate the backward rate
             //  constant
             virtual scalar Keq
@@ -223,7 +216,7 @@ public:
                 const scalar& xpt
             ) const
             {
-                label bMax = ni_.size();
+                const label bMax = ni_.size();
                 label bCurrent = 0;
                 while (xpt > ni_[bCurrent+1] and bCurrent < bMax-2)
                 {
@@ -254,7 +247,6 @@ public:
                     return y1 + (xpt-x1)*(y2-y1)/(x2-x1);
                 }
             }
-            // END NEW VINCENT 09/02/2016 *************************************
 
 
         //- Write

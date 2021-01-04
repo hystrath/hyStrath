@@ -28,8 +28,8 @@ Group
     grpThermoBoundaryConditions
 
 Description
-    This boundary condition provides a gradient condition for internal energy,
-    where the gradient is calculated using:
+    This boundary condition provides a gradient condition for
+    trans-rotational energy, where the gradient is calculated using:
 
         \f[
             \nabla(e_p) = \nabla_\perp C_p(p, T) + \frac{e_p - e_c}{\Delta}
@@ -68,6 +68,7 @@ SourceFiles
 #define gradient2TREnergyFvPatchScalarField_H
 
 #include "fixedGradientFvPatchFields.H"
+#include "rho2ReactionThermo.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -83,6 +84,13 @@ class gradient2TREnergyFvPatchScalarField
     public fixedGradientFvPatchScalarField
 {
 
+private:
+
+    // Private data
+
+        // Thermo package that contains species patch data
+        const rho2ReactionThermo& thermo_;
+        
 public:
 
     //- Runtime type information

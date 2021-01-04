@@ -33,7 +33,6 @@ License
 #include "janafThermo.H"
 
 #include "decoupledEnergyModesThermo.H"
-#include "sensible2Enthalpy.H"
 #include "multiThermo.H"
 
 #include "constantTransport.H"
@@ -41,7 +40,7 @@ License
 #include "BlottnerEuckenTransport.H"
 #include "powerLawEuckenTransport.H"
 #include "CEATransport.H"
-//#include "tabulatedTransport.H" // TODO NEW VINCENT BUT CAN'T WORK AT THE MOMENT
+//#include "tabulatedTransport.H" // NEW VINCENT BUT WON'T WORK AT THE MOMENT
 
 #include "multi2ComponentMixture.H"
 #include "reacting2Mixture.H"
@@ -55,7 +54,7 @@ namespace Foam
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-// Multi-component reaction thermo
+// Multi-component reaction thermo based on sensible internal energy
 
 make2ReactionMixtureThermo
 (
@@ -100,53 +99,6 @@ make2ReactionMixtureThermo
     heRho2Thermo,
     reacting2Mixture,
     demCEAGasEThermoPhysicsH2TGD
-);
-
-// Multi-component reaction thermo
-
-make2ReactionMixtureThermo
-(
-    rho2Thermo,
-    rho2ReactionThermo,
-    heRho2Thermo,
-    reacting2Mixture,
-    demConstGasHThermoPhysicsH2TGD
-);
-
-make2ReactionMixtureThermo
-(
-    rho2Thermo,
-    rho2ReactionThermo,
-    heRho2Thermo,
-    reacting2Mixture,
-    demGasHThermoPhysicsH2TGD
-);
-
-make2ReactionMixtureThermo
-(
-    rho2Thermo,
-    rho2ReactionThermo,
-    heRho2Thermo,
-    reacting2Mixture,
-    demBEGasHThermoPhysicsH2TGD
-);
-
-make2ReactionMixtureThermo
-(
-    rho2Thermo,
-    rho2ReactionThermo,
-    heRho2Thermo,
-    reacting2Mixture,
-    demPLEGasHThermoPhysicsH2TGD
-);
-
-make2ReactionMixtureThermo
-(
-    rho2Thermo,
-    rho2ReactionThermo,
-    heRho2Thermo,
-    reacting2Mixture,
-    demCEAGasHThermoPhysicsH2TGD
 );
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

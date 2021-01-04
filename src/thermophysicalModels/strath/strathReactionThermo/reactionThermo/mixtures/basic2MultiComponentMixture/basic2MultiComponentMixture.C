@@ -145,7 +145,7 @@ Foam::wordList Foam::basic2MultiComponentMixture::hev2BoundaryTypes
         else if
         (
             isA<zeroGradientFvPatchScalarField>(tbf[patchi])
-         || isA<fixedGradientFvPatchScalarField>(tbf[patchi])
+         or isA<fixedGradientFvPatchScalarField>(tbf[patchi])
         )
         {
             hbt[patchi] = gradient2VELEnergyFvPatchScalarField::typeName;
@@ -606,8 +606,10 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                             dimEnergy/dimMass,
                             0.0
                         ),
-                        this->hev2BoundaryTypes(i, T.boundaryField()), // TODO wrong for now introduce mode in bdry cdt
-                        this->hev2BoundaryBaseTypes(i, T.boundaryField()) // TODO wrong for now
+                        // TODO wrong for now introduce mode in bdry cdt
+                        this->hev2BoundaryTypes(i, T.boundaryField()),
+                        // TODO wrong for now
+                        this->hev2BoundaryBaseTypes(i, T.boundaryField())
                     )
                 );
 

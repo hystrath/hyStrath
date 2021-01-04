@@ -27,8 +27,7 @@ License
 #include "addToRunTimeSelectionTable.H"
 #include "fvPatchFieldMapper.H"
 #include "volFields.H"
-#include "multi2Thermo.H" // NEW VINCENT
-
+#include "multi2Thermo.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
@@ -40,7 +39,7 @@ mixed2VELMixEnergyFvPatchScalarField
 )
 :
     mixedFvPatchScalarField(p, iF),
-    thermo_(rho2ReactionThermo::lookup2ReactionThermo(*this)) // NEW VINCENT 15/02/2017
+    thermo_(rho2ReactionThermo::lookup2ReactionThermo(*this))
 {
     valueFraction() = 0.0;
     refValue() = 0.0;
@@ -117,55 +116,44 @@ void Foam::mixed2VELMixEnergyFvPatchScalarField::updateCoeffs()
     );
 
     Tvw.evaluate();
-
     valueFraction() = Tvw.valueFraction();
 
-    // NEW VINCENT 15/02/2017 *************************************************
-    tmp<Field<scalar>> thevel(new Field<scalar>(pw.size()));
-    Field<scalar>& hevel = thevel.ref();
+    tmp<scalarField> thevel(new scalarField(pw.size()));
+    tmp<scalarField> thevelRef(new scalarField(pw.size()));
+    tmp<scalarField> thevelfC(new scalarField(pw.size()));
+    tmp<scalarField> tcvvelTvw(new scalarField(pw.size()));
+    
+    scalarField& hevel = thevel.ref();
+    scalarField& hevelRef = thevelRef.ref();
+    scalarField& hevelfC = thevelfC.ref();
+    scalarField& cvvelTvw = tcvvelTvw.ref();
+    
     hevel = 0.0;
-
-    tmp<Field<scalar>> thevelRef(new Field<scalar>(pw.size()));
-    Field<scalar>& hevelRef = thevelRef.ref();
     hevelRef = 0.0;
-
-    tmp<Field<scalar>> thevelfC(new Field<scalar>(pw.size()));
-    Field<scalar>& hevelfC = thevelfC.ref();
     hevelfC = 0.0;
-
-    tmp<Field<scalar>> tCvvelTvw(new Field<scalar>(pw.size()));
-    Field<scalar>& cvvelTvw = tCvvelTvw.ref();
     cvvelTvw = 0.0;
 
-    for(label speciei=0 ; speciei<thermo_.composition().Y().size() ; speciei++)
+    forAll(thermo_.composition().Y(), speciei)
     {
         fvPatchScalarField& spYw =
-            const_cast<fvPatchScalarField&>(thermo_.composition().Y(speciei).boundaryField()[patchi]);
+            const_cast<fvPatchScalarField&>
+            (
+                thermo_.composition().Y(speciei).boundaryField()[patchi]
+            );
         spYw.evaluate();
 
         hevel += spYw*thermo_.composition().hevel(speciei, pw, Tvw, patchi);
-        hevelRef += spYw*thermo_.composition().hevel(speciei, pw, Tvw.refValue(), patchi);
-        hevelfC += spYw*thermo_.composition().hevel(speciei, pw, Tvw, patch().faceCells());
-        cvvelTvw += spYw*thermo_.composition().Cv_vel(speciei, pw, Tvw, patchi)*Tvw.refGrad();
+        hevelRef += spYw
+            *thermo_.composition().hevel(speciei, pw, Tvw.refValue(), patchi);
+        hevelfC += spYw
+            *thermo_.composition().hevel(speciei, pw, Tvw, patch().faceCells());
+        cvvelTvw += spYw*thermo_.composition().Cv_vel(speciei, pw, Tvw, patchi);
     }
+    
+    cvvelTvw *= Tvw.refGrad();
 
     refValue() = thevelRef;
-    refGrad() = tCvvelTvw
-        + patch().deltaCoeffs()*
-          (
-              thevel - thevelfC
-          );
-    // END NEW VINCENT 15/02/2017 *********************************************
-
-
-    /*refValue() = multiThermo.hevel(pw, Tvw.refValue(), patchi);
-    refGrad() =
-        multiThermo.Cv_v(pw, Tvw, patchi)*Tvw.refGrad()
-      + patch().deltaCoeffs()*
-        (
-            multiThermo.hevel(pw, Tvw, patchi)
-          - multiThermo.hevel(pw, Tvw, patch().faceCells())
-        );*/ // DELETED VINCENT 15/02/2017 OLD FORMULATION
+    refGrad() = tcvvelTvw + patch().deltaCoeffs()*(thevel - thevelfC);
 
     mixedFvPatchScalarField::updateCoeffs();
 }

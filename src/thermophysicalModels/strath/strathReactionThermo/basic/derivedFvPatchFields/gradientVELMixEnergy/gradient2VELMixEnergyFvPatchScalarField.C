@@ -102,7 +102,8 @@ void Foam::gradient2VELMixEnergyFvPatchScalarField::updateCoeffs()
         return;
     }
 
-    //Info << "gradient2VELMixEnergy is used for patch called " << patch().name() << endl;
+    //Info<< "gradient2VELMixEnergy is used for patch called "
+    //    << patch().name() << endl;
 
     const multi2Thermo& multiThermo = multi2Thermo::lookup2Thermo(*this);
     const label patchi = patch().index();
@@ -117,15 +118,15 @@ void Foam::gradient2VELMixEnergyFvPatchScalarField::updateCoeffs()
     Tvw.evaluate();
 
     tmp<scalarField> thevel(new scalarField(pw.size()));
-    scalarField& hevel = thevel.ref();
-    hevel = 0.0;
-
     tmp<scalarField> thevelfC(new scalarField(pw.size()));
-    scalarField& hevelfC = thevelfC.ref();
-    hevelfC = 0.0;
-
     tmp<scalarField> tCvvelTvw(new scalarField(pw.size()));
+    
+    scalarField& hevel = thevel.ref();
+    scalarField& hevelfC = thevelfC.ref();
     scalarField& cvvelTvw = tCvvelTvw.ref();
+    
+    hevel = 0.0;
+    hevelfC = 0.0;
     cvvelTvw = 0.0;
 
     forAll(thermo_.composition().Y(), speciei)
@@ -137,25 +138,17 @@ void Foam::gradient2VELMixEnergyFvPatchScalarField::updateCoeffs()
             );
         spYw.evaluate();
 
-        hevel += spYw*thermo_.composition().hevel(speciei, pw, Tvw, patchi);
-        hevelfC += spYw*thermo_.composition().hevel(speciei, pw, Tvw, patch().faceCells());
-        cvvelTvw += spYw*thermo_.composition().Cv_vel(speciei, pw, Tvw, patchi)*Tvw.snGrad();
+        hevel += spYw
+            *thermo_.composition().hevel(speciei, pw, Tvw, patchi);
+        hevelfC += spYw
+            *thermo_.composition().hevel(speciei, pw, Tvw, patch().faceCells());
+        cvvelTvw += spYw
+            *thermo_.composition().Cv_vel(speciei, pw, Tvw, patchi);
     }
+    
+    cvvelTvw *= Tvw.snGrad();
 
-    gradient() = tCvvelTvw
-      + patch().deltaCoeffs()*
-        (
-            thevel - thevelfC
-        );
-    // END NEW VINCENT 15/02/2017 *********************************************
-
-    /*gradient() = thermo.Cv_v(pw, Tvw, patchi)*Tvw.snGrad()
-      + patch().deltaCoeffs()*
-        (
-            thermo.hevel(pw, Tvw, patchi)
-          - thermo.hevel(pw, Tvw, patch().faceCells())
-        );*/ // DELETED VINCENT 15/02/2017 OLD FORMULATION
-
+    gradient() = tCvvelTvw + patch().deltaCoeffs()*(thevel - thevelfC);
 
     fixedGradientFvPatchScalarField::updateCoeffs();
 }

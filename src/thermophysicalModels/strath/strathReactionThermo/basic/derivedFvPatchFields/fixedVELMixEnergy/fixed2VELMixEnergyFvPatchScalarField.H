@@ -28,7 +28,8 @@ Group
     grpThermoBoundaryConditions
 
 Description
-    This boundary condition provides a fixed condition for internal energy
+    This boundary condition provides a fixed condition for the mixture
+    vibro-electronic energy
 
     \heading Patch usage
 
@@ -53,7 +54,6 @@ SourceFiles
 #define fixed2VELMixEnergyFvPatchScalarField_H
 
 #include "fixedValueFvPatchFields.H"
-
 #include "rho2ReactionThermo.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -75,7 +75,7 @@ private:
     // Private data
 
         // Thermo package that contains species patch data
-        const rho2ReactionThermo& thermo_; // NEW VINCENT 15/02/2017
+        const rho2ReactionThermo& thermo_;
 
 public:
 

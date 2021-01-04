@@ -36,7 +36,7 @@ SourceFiles
 #define fluid2Thermo_H
 
 #include "basic2Thermo.H"
-#include "compressibleTransportModel.H" // NEW VINCENT 08/10/2017
+#include "compressibleTransportModel.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -50,7 +50,7 @@ namespace Foam
 class fluid2Thermo
 :
     public basic2Thermo,
-    public compressibleTransportModel // NEW VINCENT 08/10/2017
+    public compressibleTransportModel
 {
 
 protected:
@@ -123,16 +123,10 @@ public:
 
             //- Return non-const access to the local compressibility
             //  field [s^2/m^2]
-            virtual volScalarField& getPsi() = 0;
+            virtual volScalarField& psi() = 0;
 
 
         // Access to transport state variables
-
-            //- Dynamic viscosity of mixture [kg/m/s]
-            //virtual const volScalarField& mu() const = 0;
-
-            //- Dynamic viscosity of mixture for patch [kg/m/s]
-            //virtual const scalarField& mu(const label patchi) const = 0;
 
             //- Return the dynamic laminar viscosity of the mixture [kg/m/s]
             virtual tmp<volScalarField> mu() const = 0;

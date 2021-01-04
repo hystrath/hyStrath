@@ -39,45 +39,6 @@ namespace Foam
 
 /* * * * * * * * * * * * * * * private static data * * * * * * * * * * * * * */
 
-// Based on sensible enthalpy
-
-makeMultiSpeciesTransportModel
-(
-    noSpeciesDiffusion,
-    demConstGasHThermoPhysicsH2TGD
-);
-makeMultiSpeciesTransportModel(Fick, demConstGasHThermoPhysicsH2TGD);
-makeMultiSpeciesTransportModel(SCEBD, demConstGasHThermoPhysicsH2TGD);
-makeMultiSpeciesTransportModel(LewisNumber, demConstGasHThermoPhysicsH2TGD);
-
-makeMultiSpeciesTransportModel(noSpeciesDiffusion, demGasHThermoPhysicsH2TGD);
-makeMultiSpeciesTransportModel(Fick, demGasHThermoPhysicsH2TGD);
-makeMultiSpeciesTransportModel(SCEBD, demGasHThermoPhysicsH2TGD);
-makeMultiSpeciesTransportModel(LewisNumber, demGasHThermoPhysicsH2TGD);
-
-makeMultiSpeciesTransportModel(noSpeciesDiffusion, demBEGasHThermoPhysicsH2TGD);
-makeMultiSpeciesTransportModel(Fick, demBEGasHThermoPhysicsH2TGD);
-makeMultiSpeciesTransportModel(SCEBD, demBEGasHThermoPhysicsH2TGD);
-makeMultiSpeciesTransportModel(LewisNumber, demBEGasHThermoPhysicsH2TGD);
-
-makeMultiSpeciesTransportModel
-(
-    noSpeciesDiffusion,
-    demPLEGasHThermoPhysicsH2TGD
-);
-makeMultiSpeciesTransportModel(Fick, demPLEGasHThermoPhysicsH2TGD);
-makeMultiSpeciesTransportModel(SCEBD, demPLEGasHThermoPhysicsH2TGD);
-makeMultiSpeciesTransportModel(LewisNumber, demPLEGasHThermoPhysicsH2TGD);
-
-makeMultiSpeciesTransportModel
-(
-    noSpeciesDiffusion,
-    demCEAGasHThermoPhysicsH2TGD
-);
-makeMultiSpeciesTransportModel(Fick, demCEAGasHThermoPhysicsH2TGD);
-makeMultiSpeciesTransportModel(SCEBD, demCEAGasHThermoPhysicsH2TGD);
-makeMultiSpeciesTransportModel(LewisNumber, demCEAGasHThermoPhysicsH2TGD);
-
 // Based on sensible internal energy
 
 makeMultiSpeciesTransportModel

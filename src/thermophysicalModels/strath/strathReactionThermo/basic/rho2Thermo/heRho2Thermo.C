@@ -55,7 +55,7 @@ void Foam::heRho2Thermo<BasicPsi2Thermo, MixtureType>::init2()
         fvPatchScalarField& ppsi = this->psi_.boundaryFieldRef()[patchi];
         fvPatchScalarField& prho = this->rho_.boundaryFieldRef()[patchi];
 
-        fvPatchScalarField& pht = this->het_.boundaryFieldRef()[patchi];
+        fvPatchScalarField& pht = this->het().boundaryFieldRef()[patchi];
 
         if (pTt.fixesValue())
         {

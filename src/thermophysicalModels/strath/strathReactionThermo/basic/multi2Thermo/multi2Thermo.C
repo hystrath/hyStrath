@@ -55,8 +55,7 @@ namespace Foam
 
 Foam::wordList Foam::multi2Thermo::het2BoundaryBaseTypes()
 {
-    const volScalarField::Boundary& tbf =
-        this->T_.boundaryField();
+    const volScalarField::Boundary& tbf = this->T_.boundaryField();
 
     wordList hbt(tbf.size(), word::null);
 
@@ -87,8 +86,7 @@ Foam::wordList Foam::multi2Thermo::het2BoundaryBaseTypes()
 
 Foam::wordList Foam::multi2Thermo::het2BoundaryTypes()
 {
-    const volScalarField::Boundary& tbf =
-        this->T_.boundaryField();
+    const volScalarField::Boundary& tbf = this->T_.boundaryField();
 
     wordList hbt = tbf.types();
 
@@ -130,8 +128,7 @@ Foam::wordList Foam::multi2Thermo::het2BoundaryTypes()
 
 Foam::wordList Foam::multi2Thermo::hevelMix2BoundaryBaseTypes()
 {
-    const volScalarField::Boundary& tbf =
-        this->Tv_.boundaryField();
+    const volScalarField::Boundary& tbf = this->Tv_.boundaryField();
 
     wordList hbt(tbf.size(), word::null);
 
@@ -162,8 +159,7 @@ Foam::wordList Foam::multi2Thermo::hevelMix2BoundaryBaseTypes()
 
 Foam::wordList Foam::multi2Thermo::hevelMix2BoundaryTypes()
 {
-    const volScalarField::Boundary& tbf =
-        this->Tv_.boundaryField();
+    const volScalarField::Boundary& tbf = this->Tv_.boundaryField();
 
     wordList hbt = tbf.types();
 
@@ -252,22 +248,6 @@ Foam::multi2Thermo::multi2Thermo(const fvMesh& mesh, const word& phaseName)
         dimTemperature
     ),
 
-    het_
-    (
-        IOobject
-        (
-            phasePropertyName("het"),
-            mesh.time().timeName(),
-            mesh,
-            IOobject::NO_READ,
-            IOobject::NO_WRITE
-        ),
-        mesh,
-        dimEnergy/dimMass,
-        this->het2BoundaryTypes(),
-        this->het2BoundaryBaseTypes()
-    ),
-
     hevMix_
     (
         IOobject
@@ -352,26 +332,16 @@ Foam::multi2Thermo::multi2Thermo(const fvMesh& mesh, const word& phaseName)
 
     hyLight_(false) // TODO 2020 lookupOrDefault<Switch>("hyLight", true))
 {
+    //- het_ volScalaField defined in the constructor of rho2ReactionThermo
+    //  for boundary condition implementation. Indeed, it will change the
+    //  lookup of thermophysicalProperties from objectRegistry from
+    //  multi2Thermo to rho2ReactionThermo
+        
     if(downgradeSingleTv_)
     {
-        // NEW VINCENT 15/02/2017
-        // Defined in the constructor of rho2ReactionThermo
-        // for boundary condition implementation
-        /*hevelMix_ = new volScalarField
-        (
-            IOobject
-            (
-                phasePropertyName("hevel"),
-                mesh.time().timeName(),
-                mesh,
-                IOobject::NO_READ,
-                IOobject::NO_WRITE
-            ),
-            mesh,
-            dimEnergy/dimMass,
-            this->hevelMix2BoundaryTypes(),
-            this->hevelMix2BoundaryBaseTypes()
-        );*/
+        //- hevelMix_ volScalaField defined in the constructor of
+        //  rho2ReactionThermo for boundary condition implementation. Same
+        //  reason than for het_
     }
     else
     {
@@ -447,22 +417,6 @@ Foam::multi2Thermo::multi2Thermo
         ),
         mesh,
         dimTemperature
-    ),
-
-    het_
-    (
-        IOobject
-        (
-            phasePropertyName("het"),
-            mesh.time().timeName(),
-            mesh,
-            IOobject::NO_READ,
-            IOobject::NO_WRITE
-        ),
-        mesh,
-        dimEnergy/dimMass,
-        this->het2BoundaryTypes(),
-        this->het2BoundaryBaseTypes()
     ),
 
     hevMix_
@@ -549,26 +503,16 @@ Foam::multi2Thermo::multi2Thermo
 
     hyLight_(lookupOrDefault<Switch>("hyLight", true))
 {
+    //- het_ volScalaField defined in the constructor of rho2ReactionThermo
+    //  for boundary condition implementation. Indeed, it will change the
+    //  lookup of thermophysicalProperties from objectRegistry from
+    //  multi2Thermo to rho2ReactionThermo
+        
     if(downgradeSingleTv_)
     {
-        // NEW VINCENT 15/02/2017
-        // Defined in the constructor of rho2ReactionThermo
-        // for boundary condition implementation
-        /*hevelMix_ = new volScalarField
-        (
-            IOobject
-            (
-                phasePropertyName("hevel"),
-                mesh.time().timeName(),
-                mesh,
-                IOobject::NO_READ,
-                IOobject::NO_WRITE
-            ),
-            mesh,
-            dimEnergy/dimMass,
-            this->hevelMix2BoundaryTypes(),
-            this->hevelMix2BoundaryBaseTypes()
-        );*/
+        //- hevelMix_ volScalaField defined in the constructor of
+        //  rho2ReactionThermo for boundary condition implementation. Same
+        //  reason than for het_
     }
     else
     {
@@ -630,7 +574,19 @@ const Foam::scalarField& Foam::multi2Thermo::Tov(const label patchi) const
 }
 
 
+Foam::volScalarField& Foam::multi2Thermo::Tov()
+{
+    return Tov_;
+}
+
+
 const Foam::volScalarField& Foam::multi2Thermo::Tv() const
+{
+    return Tv_;
+}
+
+
+Foam::volScalarField& Foam::multi2Thermo::Tv()
 {
     return Tv_;
 }
@@ -645,6 +601,36 @@ const Foam::scalarField& Foam::multi2Thermo::Tv(const label patchi) const
 const Foam::volScalarField& Foam::multi2Thermo::zetar() const
 {
     return zetar_;
+}
+
+
+Foam::volScalarField& Foam::multi2Thermo::zetar()
+{
+    return zetar_;
+}
+
+
+const Foam::volScalarField& Foam::multi2Thermo::zetav() const
+{
+    return zetav_;
+}
+
+
+Foam::volScalarField& Foam::multi2Thermo::zetav()
+{
+    return zetav_;
+}
+
+
+const Foam::volScalarField& Foam::multi2Thermo::zetael() const
+{
+    return zetael_;
+}
+
+
+Foam::volScalarField& Foam::multi2Thermo::zetael()
+{
+    return zetael_;
 }
 
 

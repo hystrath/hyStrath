@@ -606,6 +606,27 @@ Foam::scalar Foam::Specie2Mixture<MixtureType>::HEvel_mode
 
 
 template<class MixtureType>
+Foam::tmp<Foam::scalarField> Foam::Specie2Mixture<MixtureType>::Cv_t
+(
+    const label speciei,
+    const scalarField& p,
+    const scalarField& T,
+    const label patchi
+) const
+{
+    tmp<scalarField> tCvt(new scalarField(T.size()));
+    scalarField& Cvt = tCvt.ref();
+
+    forAll(T, facei)
+    {
+        Cvt[facei] = Cv_t(speciei, p[facei], T[facei]);
+    }
+
+    return tCvt;
+}
+
+
+template<class MixtureType>
 Foam::tmp<Foam::scalarField> Foam::Specie2Mixture<MixtureType>::Cv_vel
 (
     const label speciei,
@@ -623,6 +644,48 @@ Foam::tmp<Foam::scalarField> Foam::Specie2Mixture<MixtureType>::Cv_vel
     }
 
     return tCvvel;
+}
+
+
+template<class MixtureType>
+Foam::tmp<Foam::scalarField> Foam::Specie2Mixture<MixtureType>::het
+(
+    const label speciei,
+    const scalarField& p,
+    const scalarField& T,
+    const labelList& cells
+) const
+{
+    tmp<scalarField> thet(new scalarField(T.size()));
+    scalarField& het = thet.ref();
+
+    forAll(T, celli)
+    {
+        het[celli] = HEt(speciei, p[celli], T[celli]);
+    }
+
+    return thet;
+}
+
+
+template<class MixtureType>
+Foam::tmp<Foam::scalarField> Foam::Specie2Mixture<MixtureType>::het
+(
+    const label speciei,
+    const scalarField& p,
+    const scalarField& T,
+    const label patchi
+) const
+{
+    tmp<scalarField> thet(new scalarField(T.size()));
+    scalarField& het = thet.ref();
+
+    forAll(T, facei)
+    {
+        het[facei] = HEt(speciei, p[facei], T[facei]);
+    }
+
+    return thet;
 }
 
 

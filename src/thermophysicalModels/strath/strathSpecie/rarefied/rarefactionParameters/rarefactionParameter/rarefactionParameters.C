@@ -36,18 +36,6 @@ namespace Foam
 
 /* * * * * * * * * * * * * * * private static data * * * * * * * * * * * * * */
 
-// Based on sensible enthalpy
-
-makeRarefactionParameter(rarefied, demConstGasHThermoPhysicsH2TGD);
-
-makeRarefactionParameter(rarefied, demGasHThermoPhysicsH2TGD);
-
-makeRarefactionParameter(rarefied, demBEGasHThermoPhysicsH2TGD);
-
-makeRarefactionParameter(rarefied, demPLEGasHThermoPhysicsH2TGD);
-
-makeRarefactionParameter(rarefied, demCEAGasHThermoPhysicsH2TGD);
-
 // Based on sensible internal energy
 
 makeRarefactionParameter(rarefied, demConstGasEThermoPhysicsH2TGD);

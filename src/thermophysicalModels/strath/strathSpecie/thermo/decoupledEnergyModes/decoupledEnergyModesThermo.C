@@ -43,7 +43,10 @@ void Foam::decoupledEnergyModesThermo<EquationOfState>::checkInputData() const
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 template<class EquationOfState>
-Foam::decoupledEnergyModesThermo<EquationOfState>::decoupledEnergyModesThermo(Istream& is)
+Foam::decoupledEnergyModesThermo<EquationOfState>::decoupledEnergyModesThermo
+(
+    Istream& is
+)
 :
     EquationOfState(is),
     Tlow_(readScalar(is)),
@@ -67,17 +70,34 @@ Foam::decoupledEnergyModesThermo<EquationOfState>::decoupledEnergyModesThermo(Is
     }
 
     // Check state of Istream
-    is.check("decoupledEnergyModesThermo::decoupledEnergyModesThermo(Istream& is)");
+    is.check
+    (
+        "decoupledEnergyModesThermo::decoupledEnergyModesThermo(Istream& is)"
+    );
 }
 
 
 template<class EquationOfState>
-Foam::decoupledEnergyModesThermo<EquationOfState>::decoupledEnergyModesThermo(const dictionary& dict)
+Foam::decoupledEnergyModesThermo<EquationOfState>::decoupledEnergyModesThermo
+(
+    const dictionary& dict
+)
 :
     EquationOfState(dict),
-    Tlow_(dict.subDict("thermodynamics").lookupOrDefault<scalar>("Tlow", Foam::SMALL)),
-    Thigh_(dict.subDict("thermodynamics").lookupOrDefault<scalar>("Thigh", Foam::GREAT)),
-    decoupledCvCoeffs_(dict.subDict("thermodynamics").lookup("decoupledCvCoeffs")),
+    Tlow_
+    (
+        dict.subDict("thermodynamics")
+            .lookupOrDefault<scalar>("Tlow", Foam::SMALL)
+    ),
+    Thigh_
+    (
+        dict.subDict("thermodynamics")
+            .lookupOrDefault<scalar>("Thigh", Foam::GREAT)
+    ),
+    decoupledCvCoeffs_
+    (
+        dict.subDict("thermodynamics").lookup("decoupledCvCoeffs")
+    ),
     vibrationalList_(dict.subDict("thermodynamics").lookup("vibrationalList")),
     electronicList_(dict.subDict("thermodynamics").lookup("electronicList"))
 {
@@ -140,7 +160,8 @@ Foam::Ostream& Foam::operator<<
 
     os.check
     (
-        "operator<<(Ostream& os, const decoupledEnergyModesThermo<EquationOfState>& dem)"
+        "operator<<(Ostream& os, "
+        "const decoupledEnergyModesThermo<EquationOfState>& dem)"
     );
 
     return os;

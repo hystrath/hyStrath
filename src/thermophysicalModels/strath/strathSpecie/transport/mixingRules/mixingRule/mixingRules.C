@@ -39,34 +39,6 @@ namespace Foam
 
 /* * * * * * * * * * * * * * * private static data * * * * * * * * * * * * * */
 
-// Based on sensible enthalpy
-
-makeMixingRule(molarMR, demConstGasHThermoPhysicsH2TGD);
-//makeMixingRule(GuptaMR, demConstGasHThermoPhysicsH2TGD);
-makeMixingRule(WilkeMR, demConstGasHThermoPhysicsH2TGD);
-makeMixingRule(ArmalySuttonMR, demConstGasHThermoPhysicsH2TGD);
-
-makeMixingRule(molarMR, demGasHThermoPhysicsH2TGD);
-//makeMixingRule(GuptaMR, demGasHThermoPhysicsH2TGD);
-makeMixingRule(WilkeMR, demGasHThermoPhysicsH2TGD);
-makeMixingRule(ArmalySuttonMR, demGasHThermoPhysicsH2TGD);
-
-makeMixingRule(molarMR, demBEGasHThermoPhysicsH2TGD);
-//akeMixingRule(GuptaMR, demBEGasHThermoPhysicsH2TGD);
-makeMixingRule(WilkeMR, demBEGasHThermoPhysicsH2TGD);
-makeMixingRule(ArmalySuttonMR, demBEGasHThermoPhysicsH2TGD);
-
-makeMixingRule(molarMR, demPLEGasHThermoPhysicsH2TGD);
-//makeMixingRule(GuptaMR, demPLEGasHThermoPhysicsH2TGD);
-makeMixingRule(WilkeMR, demPLEGasHThermoPhysicsH2TGD);
-makeMixingRule(ArmalySuttonMR, demPLEGasHThermoPhysicsH2TGD);
-
-makeMixingRule(molarMR, demCEAGasHThermoPhysicsH2TGD);
-//makeMixingRule(GuptaMR, demCEAGasHThermoPhysicsH2TGD);
-makeMixingRule(WilkeMR, demCEAGasHThermoPhysicsH2TGD);
-makeMixingRule(ArmalySuttonMR, demCEAGasHThermoPhysicsH2TGD);
-
-
 // Based on sensible internal energy
 
 makeMixingRule(molarMR, demConstGasEThermoPhysicsH2TGD);

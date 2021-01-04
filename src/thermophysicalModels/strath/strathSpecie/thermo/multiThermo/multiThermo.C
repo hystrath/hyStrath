@@ -28,8 +28,9 @@ License
 
 /* * * * * * * * * * * * * * * private static data * * * * * * * * * * * * * */
 
+ // Default OpenFOAM: 1e-4; Rowan Gollan (PhD, 2009) suggests 1.0e-6
 template<class MultiThermo, template<class> class Type>
-const Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::tol_ = 1.0e-4; // Default OF: 1e-4; Gollan PhD09 suggests 1.0e-6
+const Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::tol_ = 1.0e-4;
 
 template<class MultiThermo, template<class> class Type>
 const int Foam::species::multiThermo<MultiThermo, Type>::maxIter_ = 100;

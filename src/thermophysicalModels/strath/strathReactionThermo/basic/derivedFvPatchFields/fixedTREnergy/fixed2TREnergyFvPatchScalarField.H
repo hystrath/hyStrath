@@ -54,6 +54,7 @@ SourceFiles
 #define fixed2TREnergyFvPatchScalarField_H
 
 #include "fixedValueFvPatchFields.H"
+#include "rho2ReactionThermo.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -68,6 +69,13 @@ class fixed2TREnergyFvPatchScalarField
 :
     public fixedValueFvPatchScalarField
 {
+
+private:
+
+    // Private data
+
+        // Thermo package that contains species patch data
+        const rho2ReactionThermo& thermo_;
 
 public:
 

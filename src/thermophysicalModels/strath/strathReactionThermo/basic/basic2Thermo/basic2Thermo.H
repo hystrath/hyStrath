@@ -279,24 +279,8 @@ public:
             //- Equilibrium heat capacity at constant volume [J/kg/K]
             virtual tmp<volScalarField> Cv() const = 0;
 
-            //- Equilibrium heat capacity at constant volume for patch [J/kg/K]
-            virtual tmp<scalarField> Cv
-            (
-                const scalarField& p,
-                const scalarField& T,
-                const label patchi
-            ) const = 0;
-
             //- Equilibrium gamma = Cp/Cv []
             virtual tmp<volScalarField> gamma() const = 0;
-
-            //- Equilibrium gamma = Cp/Cv for patch []
-            virtual tmp<scalarField> gamma
-            (
-                const scalarField& p,
-                const scalarField& T,
-                const label patchi
-            ) const = 0;
 
 
         // Fields derived from transport state variables

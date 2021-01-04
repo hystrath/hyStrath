@@ -102,8 +102,8 @@ void Foam::fixed2VELMixEnergyFvPatchScalarField::updateCoeffs()
         return;
     }
 
-    //Info<< "fixed2VELMixEnergy is used for patch called "
-    //    << patch().name() << endl;
+//    Info<< "fixed2VELMixEnergy is used for patch called "
+//        << patch().name() << endl;
 
     const multi2Thermo& multiThermo = multi2Thermo::lookup2Thermo(*this);
     const label patchi = patch().index();
@@ -135,10 +135,6 @@ void Foam::fixed2VELMixEnergyFvPatchScalarField::updateCoeffs()
 
     // Force an assignment, overriding fixedValue status
     operator==(thevel);
-
-    // DELETED VINCENT 15/02/2017 OLD FORMULATION
-    // Force an assignment, overriding fixedValue status
-    //operator==(thermo.hevel(pw, Tvw, patchi));
 
     fixedValueFvPatchScalarField::updateCoeffs();
 }

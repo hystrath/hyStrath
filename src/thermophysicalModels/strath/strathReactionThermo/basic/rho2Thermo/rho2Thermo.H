@@ -44,7 +44,7 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                       Class rho2Thermo Declaration
+                         Class rho2Thermo Declaration
 \*---------------------------------------------------------------------------*/
 
 class rho2Thermo
@@ -159,17 +159,10 @@ public:
 
             //- Return non-const access to the local compressibility
             //  field [s^2/m^2]
-            virtual volScalarField& getPsi();
+            virtual volScalarField& psi();
 
 
         // Access to transport state variables
-
-          //- mu
-            //- Dynamic viscosity of mixture [kg/m/s]
-            //virtual const volScalarField& mu() const;
-
-            //- Dynamic viscosity of mixture for patch [kg/m/s]
-            //virtual const scalarField& mu(const label patchi) const;
 
             //- Return the dynamic laminar viscosity
             virtual tmp<volScalarField> mu() const;
@@ -177,67 +170,68 @@ public:
             //- Return the dynamic laminar viscosity for patch
             virtual tmp<scalarField> mu(const label patchi) const;
 
-            //- Return non-const access to the dynamic viscosity of mixture [kg/m/s]
+            //- Return non-const access to the dynamic viscosity of
+            //  mixture [kg/m/s]
             virtual volScalarField& mu();
 
-          //- kappatr
-            //- Thermal conductivity of mixture [W/mK], trans-rotational mode
+            //- Thermal conductivity of mixture [W/mK]
+            //  trans-rotational energy mode
             virtual const volScalarField& kappatr() const;
 
-            //- Thermal conductivity of mixture for patch [W/mK], trans-rotational mode
+            //- Thermal conductivity of mixture for patch [W/mK]
+            //  trans-rotational energy mode
             virtual const scalarField& kappatr(const label patchi) const;
 
-            //- Return non-const access to the thermal conductivity of mixture [W/mK]
-            //  trans-rotational energy mode
+            //- Return non-const access to the thermal conductivity of
+            //  mixture [W/mK], trans-rotational energy mode
             virtual volScalarField& kappatr();
 
-          //- kappave
-            //- Thermal conductivity of mixture [W/mK], vibro-electronic mode
+            //- Thermal conductivity of mixture [W/mK]
+            //  vibro-electronic energy mode
             virtual const volScalarField& kappave() const;
 
-            //- Thermal conductivity of mixture for patch [W/mK], vibro-electronic mode
+            //- Thermal conductivity of mixture for patch [W/mK]
+            //  vibro-electronic energy mode
             virtual const scalarField& kappave(const label patchi) const;
 
-            //- Return non-const access to the thermal conductivity of mixture [W/mK]
-            //  vibro-electronic energy mode
+            //- Return non-const access to the thermal conductivity of
+            //  mixture [W/mK], vibro-electronic energy mode
             virtual volScalarField& kappave();
 
-          //- alphatr
-            //- Thermal diffusivity of mixture [kg/m/s], trans-rotational mode
+            //- Thermal diffusivity of mixture [kg/m/s]
+            //  trans-rotational energy mode
             virtual const volScalarField& alphatr() const;
 
-            //- Thermal diffusivity of mixture for patch [kg/m/s], trans-rotational mode
+            //- Thermal diffusivity of mixture for patch [kg/m/s]
+            //  trans-rotational energy mode
             virtual const scalarField& alphatr(const label patchi) const;
 
-            //- Return non-const access to the thermal diffusivity of mixture [kg/m/s]
-            //  trans-rotational energy mode
+            //- Return non-const access to the thermal diffusivity of
+            //  mixture [kg/m/s], trans-rotational energy mode
             virtual volScalarField& alphatr();
 
-          //- alphave
-            //- Thermal diffusivity of mixture [kg/m/s], vibro-electronic mode
+            //- Thermal diffusivity of mixture [kg/m/s]
+            //  vibro-electronic energy mode
             virtual const volScalarField& alphave() const;
 
-            //- Thermal diffusivity of mixture for patch [kg/m/s], vibro-electronic mode
+            //- Thermal diffusivity of mixture for patch [kg/m/s]
+            //  vibro-electronic energy mode
             virtual const scalarField& alphave(const label patchi) const;
 
-            //- Return non-const access to the thermal diffusivity of mixture [kg/m/s]
-            //  vibro-electronic energy mode
+            //- Return non-const access to the thermal diffusivity of
+            //  mixture [kg/m/s], vibro-electronic energy mode
             virtual volScalarField& alphave();
 
-          //- kappaEff
-            //- Effective thermal diffusivity for temperature // NEW VINCENT 11/03/2016
-            //  of mixture [J/m/s/K]
+            //- Effective thermal diffusivity of mixture [J/m/s/K] // NEW VINCENT 11/03/2016
             virtual tmp<volScalarField> kappaEff(const volScalarField&) const;
 
-            //- Effective thermal diffusivity for temperature
-            //  of mixture for patch [J/m/s/K]
+            //- Effective thermal diffusivity of mixture for patch [J/m/s/K]
             virtual tmp<scalarField> kappaEff
             (
                 const scalarField& alphat,
                 const label patchi
             ) const;
 
-          //- alphaEff
             //- Effective thermal diffusivity of mixture [kg/m/s]
             virtual tmp<volScalarField> alphaEff
             (

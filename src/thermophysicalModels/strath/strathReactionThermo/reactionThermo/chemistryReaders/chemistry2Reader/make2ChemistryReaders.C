@@ -37,24 +37,6 @@ namespace Foam
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-// Solid chemistry readers based on sensibleEnthalpy
-
-make2ChemistryReader(demConstGasHThermoPhysicsH2TGD);
-make2ChemistryReaderType(foam2ChemistryReader, demConstGasHThermoPhysicsH2TGD);
-
-make2ChemistryReader(demGasHThermoPhysicsH2TGD);
-make2ChemistryReaderType(foam2ChemistryReader, demGasHThermoPhysicsH2TGD);
-
-make2ChemistryReader(demBEGasHThermoPhysicsH2TGD);
-make2ChemistryReaderType(foam2ChemistryReader, demBEGasHThermoPhysicsH2TGD);
-
-make2ChemistryReader(demPLEGasHThermoPhysicsH2TGD);
-make2ChemistryReaderType(foam2ChemistryReader, demPLEGasHThermoPhysicsH2TGD);
-
-make2ChemistryReader(demCEAGasHThermoPhysicsH2TGD);
-make2ChemistryReaderType(foam2ChemistryReader, demCEAGasHThermoPhysicsH2TGD);
-
-
 // Solid chemistry readers for solids based on sensibleInternalEnergy
 
 make2ChemistryReader(demConstGasEThermoPhysicsH2TGD);

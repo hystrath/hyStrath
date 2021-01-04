@@ -37,7 +37,6 @@ Description
 #include "decoupledEnergyModesThermo.H"
 
 #include "multiThermo.H"
-#include "sensible2Enthalpy.H"
 #include "sensible2InternalEnergy.H"
 
 #include "constantTransport.H"
@@ -50,73 +49,6 @@ Description
 
 namespace Foam
 {
-    // thermo physics types based on sensibleEnthalpy
-
-    typedef
-    constantTransport
-    <
-        species::multiThermo
-        <
-            decoupledEnergyModesThermo
-            <
-                perfect2Gas<advancedSpecie>
-            >,
-            sensible2Enthalpy
-        >
-    > demConstGasHThermoPhysicsH2TGD;
-
-    typedef
-    SutherlandEuckenTransport
-    <
-        species::multiThermo
-        <
-            decoupledEnergyModesThermo
-            <
-                perfect2Gas<advancedSpecie>
-            >,
-            sensible2Enthalpy
-        >
-    > demGasHThermoPhysicsH2TGD;
-
-    typedef
-    BlottnerEuckenTransport
-    <
-        species::multiThermo
-        <
-            decoupledEnergyModesThermo
-            <
-                perfect2Gas<advancedSpecie>
-            >,
-            sensible2Enthalpy
-        >
-    > demBEGasHThermoPhysicsH2TGD;
-
-    typedef
-    powerLawEuckenTransport
-    <
-        species::multiThermo
-        <
-            decoupledEnergyModesThermo
-            <
-                perfect2Gas<advancedSpecie>
-            >,
-            sensible2Enthalpy
-        >
-    > demPLEGasHThermoPhysicsH2TGD;
-
-    typedef
-    CEATransport
-    <
-        species::multiThermo
-        <
-            decoupledEnergyModesThermo
-            <
-                perfect2Gas<advancedSpecie>
-            >,
-            sensible2Enthalpy
-        >
-    > demCEAGasHThermoPhysicsH2TGD;
-
     // thermo physics types based on sensibleInternalEnergy
 
     typedef

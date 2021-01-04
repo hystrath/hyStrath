@@ -114,10 +114,10 @@ protected:
         //- Species partial densities
         PtrList<volScalarField> pD_;
 
-        //- Species vibrational (or vibro-electronic) temperatures
+        //- Species vibro-electronic temperatures
         PtrList<volScalarField> spTv_;
 
-        //- Species vibrational (or vibro-electronic) temperatures
+        //- Species vibro-electronic temperatures
         //  for the different modes
         //PtrList<PtrList<volScalarField> > spmodeTv_; // TODO ABORTIVE WORK
 
@@ -133,8 +133,7 @@ protected:
         //- Species enthalpies
         PtrList<volScalarField> h_;
 
-        //- Species vib-electronic energies
-        //  for the different modes
+        //- Species vibro-electronic energies for the different modes
         //PtrList<PtrList<volScalarField> > modehevel_; // TODO ABORTIVE WORK
 
         //- Energy field [J/kg]
@@ -480,16 +479,16 @@ public:
         inline const volScalarField& enthalpy(const word& specieName) const;
 
       //- hevel for a specific mode m TODO ABORTIVE WORK
-        /*//- Return the vib-electronic energy fields
+        /*//- Return the vibro-electronic energy fields
         inline PtrList<PtrList<volScalarField> >& hevel_mode();
 
-        //- Return the const vib-electronic energy fields
+        //- Return the const vibro-electronic energy fields
         inline const PtrList<PtrList<volScalarField> >& hevel_mode() const;
 
-        //- Return the vib-electronic energy field for a specie given by index
+        //- Return the vibro-electronic energy field for a specie given by index
         inline volScalarField& hevel_mode(const label i, const label m);
 
-        //- Return the const vib-electronic energy field for a specie given by
+        //- Return the const vibro-electronic energy field for a specie given by
         //  index
         inline const volScalarField& hevel_mode
         (
@@ -774,21 +773,13 @@ public:
             const label facei
         ) = 0;
 
-        //- Update values of mass-fractions from molar-fractions during the
+        //- Update values of mass-fractions from molar fractions during the
         //  initialisation
         virtual scalar massFractionFromMolarFraction
         (
             const label speciei,
             const scalar Xi,
             const scalar Wmix
-        ) = 0;
-
-        //- Update values of mass-fractions from partial densities
-        virtual scalar massFractionFromPartialDensity
-        (
-            const scalar rhoi,
-            const scalar p,
-            const scalar Tt
         ) = 0;
 
         //- Update values of number densities from mass fractions
@@ -814,10 +805,10 @@ public:
         // Per specie properties
 
             //- Number of moles []
-            virtual scalar nMoles(const label specieI) const = 0;
+            virtual scalar nMoles(const label speciei) const = 0;
 
             //- Molecular weight [kg/kmol]
-            virtual scalar W(const label specieI) const = 0;
+            virtual scalar W(const label speciei) const = 0;
 
             //- Molecular weight [kg/kmol]
             virtual scalar W(const word& specieName) const = 0;
@@ -978,7 +969,7 @@ public:
             ) const = 0;
 
             //- Heat capacity at constant volume [J/(kg K)]
-            //  vib-electronic energy mode
+            //  vibro-electronic energy mode
             virtual scalar Cv_vel
             (
                 const label speciei,
@@ -1040,7 +1031,7 @@ public:
                 const scalar Tv
             ) const = 0;
 
-            //- Sensible enthalpy, trans-rotational [J/kg]
+            //- Sensible enthalpy, trans-rotational energy mode [J/kg]
             virtual scalar Hts
             (
                 const label speciei,
@@ -1048,7 +1039,7 @@ public:
                 const scalar Tt
             ) const = 0;
 
-            //- Sensible enthalpy, vibrational [J/kg]
+            //- Sensible enthalpy, vibrational energy mode [J/kg]
             virtual scalar Hvs
             (
                 const label speciei,
@@ -1056,7 +1047,7 @@ public:
                 const scalar Tv
             ) const = 0;
 
-            //- Sensible enthalpy, electronic [J/kg]
+            //- Sensible enthalpy, electronic energy mode [J/kg]
             virtual scalar Hels
             (
                 const label speciei,
@@ -1064,7 +1055,7 @@ public:
                 const scalar Tv
             ) const = 0;
 
-            //- Sensible enthalpy, vibro-electronic [J/kg]
+            //- Sensible enthalpy, vibro-electronic energy mode [J/kg]
             virtual scalar Hvels
             (
                 const label speciei,
@@ -1090,7 +1081,7 @@ public:
                 const scalar Tv
             ) const = 0;
 
-            //- Sensible internal energy, trans-rotational [J/kg]
+            //- Sensible internal energy, trans-rotational energy mode [J/kg]
             virtual scalar Ets
             (
                 const label speciei,
@@ -1098,7 +1089,7 @@ public:
                 const scalar Tt
             ) const = 0;
 
-            //- Sensible internal energy, vibrational [J/kg]
+            //- Sensible internal energy, vibrational energy mode [J/kg]
             virtual scalar Evs
             (
                 const label speciei,
@@ -1106,7 +1097,7 @@ public:
                 const scalar Tv
             ) const = 0;
 
-            //- Sensible internal energy, electronic [J/kg]
+            //- Sensible internal energy, electronic energy mode [J/kg]
             virtual scalar Eels
             (
                 const label speciei,
@@ -1114,7 +1105,7 @@ public:
                 const scalar Tv
             ) const = 0;
 
-            //- Sensible internal energy, vib-electronic [J/kg]
+            //- Sensible internal energy, vibro-electronic energy mode [J/kg]
             virtual scalar Evels
             (
                 const label speciei,
@@ -1122,7 +1113,7 @@ public:
                 const scalar Tv
             ) const = 0;
 
-            //- Trans-rotational Enthalpy/Internal energy [J/kg]
+            //- Trans-rotational enthalpy/internal energy [J/kg]
             virtual scalar HEt
             (
                 const label speciei,
@@ -1130,7 +1121,7 @@ public:
                 const scalar Tt
             ) const = 0;
 
-            //- Vibrational Enthalpy/Internal energy [J/kg]
+            //- Vibrational enthalpy/internal energy [J/kg]
             virtual scalar HEv
             (
                 const label speciei,
@@ -1138,7 +1129,7 @@ public:
                 const scalar Tv
             ) const = 0;
 
-            //- Electronic Enthalpy/Internal energy [J/kg]
+            //- Electronic enthalpy/internal energy [J/kg]
             virtual scalar HEel
             (
                 const label speciei,
@@ -1146,7 +1137,7 @@ public:
                 const scalar Tv
             ) const = 0;
 
-            //- Vibro-electronic Enthalpy/Internal energy [J/kg]
+            //- Vibro-electronic enthalpy/internal energy [J/kg]
             virtual scalar HEvel
             (
                 const label speciei,
@@ -1154,7 +1145,7 @@ public:
                 const scalar Tv
             ) const = 0;
 
-            //- Vibro-electronic Enthalpy/Internal energy [J/kg]
+            //- Vibro-electronic enthalpy/internal energy [J/kg]
             //  for the vibrational mode m TODO ABORTIVE WORK
             /*virtual scalar HEvel_mode
             (
@@ -1164,7 +1155,17 @@ public:
                 const scalar Tv
             ) const = 0;*/
 
-            //- Heat capacity at constant volume for patch[J/kg/K]
+            //- Heat capacity at constant volume for patch [J/kg/K]
+            //  trans-rotational energy mode
+            virtual tmp<scalarField> Cv_t
+            (
+                const label speciei,
+                const scalarField& p,
+                const scalarField& T,
+                const label patchi
+            ) const = 0;
+            
+            //- Heat capacity at constant volume for patch [J/kg/K]
             //  vibro-electronic energy mode
             virtual tmp<scalarField> Cv_vel
             (
@@ -1174,7 +1175,7 @@ public:
                 const label patchi
             ) const = 0;
 
-            //- Heat capacity at constant volume for patch[J/kg/K]
+            //- Heat capacity at constant volume for patch [J/kg/K]
             //  vibro-electronic energy mode
             //  Interface with the energy boundary condition
             virtual tmp<scalarField> Cv_vel
@@ -1194,7 +1195,63 @@ public:
                 );
             }
 
-            //- Vibro-electronic Enthalpy/Internal energy for cell-set [J/kg]
+            //- Trans-rotational enthalpy/internal energy for cell-set [J/kg]
+            virtual tmp<scalarField> het
+            (
+                const label speciei,
+                const scalarField& p,
+                const scalarField& T,
+                const labelList& cells
+            ) const = 0;
+
+            //- Trans-rotational enthalpy/internal energy for patch [J/kg]
+            //  Interface with the energy boundary condition
+            virtual tmp<scalarField> het
+            (
+                const word specieName,
+                const scalarField& p,
+                const scalarField& T,
+                const labelList& cells
+            ) const
+            {
+                return het
+                (
+                    species_[specieName],
+                    p,
+                    T,
+                    cells
+                );
+            }
+            
+            //- Trans-rotational enthalpy/internal energy for patch [J/kg]
+            virtual tmp<scalarField> het
+            (
+                const label speciei,
+                const scalarField& p,
+                const scalarField& T,
+                const label patchi
+            ) const = 0;
+
+            //- Trans-rotational enthalpy/internal energy for patch [J/kg]
+            //  Interface with the energy boundary condition
+            virtual tmp<scalarField> het
+            (
+                const word specieName,
+                const scalarField& p,
+                const scalarField& T,
+                const label patchi
+            ) const
+            {
+                return het
+                (
+                    species_[specieName],
+                    p,
+                    T,
+                    patchi
+                );
+            }
+            
+            //- Vibro-electronic enthalpy/internal energy for cell-set [J/kg]
             virtual tmp<scalarField> hevel
             (
                 const label speciei,
@@ -1203,7 +1260,7 @@ public:
                 const labelList& cells
             ) const = 0;
 
-            //- Vibro-electronic Enthalpy/Internal energy for patch [J/kg]
+            //- Vibro-electronic enthalpy/internal energy for patch [J/kg]
             //  Interface with the energy boundary condition
             virtual tmp<scalarField> hevel
             (
@@ -1222,7 +1279,7 @@ public:
                 );
             }
 
-            //- Vibro-electronic Enthalpy/Internal energy for patch [J/kg]
+            //- Vibro-electronic enthalpy/internal energy for patch [J/kg]
             virtual tmp<scalarField> hevel
             (
                 const label speciei,
@@ -1231,7 +1288,7 @@ public:
                 const label patchi
             ) const = 0;
 
-            //- Vibro-electronic Enthalpy/Internal energy for patch [J/kg]
+            //- Vibro-electronic enthalpy/internal energy for patch [J/kg]
             //  Interface with the energy boundary condition
             virtual tmp<scalarField> hevel
             (

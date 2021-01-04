@@ -38,7 +38,6 @@ License
 #include "janafThermo.H"
 
 #include "decoupledEnergyModesThermo.H"
-#include "sensible2Enthalpy.H"
 #include "sensible2InternalEnergy.H"
 #include "multiThermo.H"
 
@@ -62,104 +61,6 @@ namespace Foam
 {
 
 /* * * * * * * * * * * * * * * private static data * * * * * * * * * * * * * */
-
-/*make2Thermo
-(
-    rho2Thermo,
-    heRho2Thermo,
-    pureMixture,
-    constantTransport,
-    sensible2Enthalpy,
-    decoupledEnergyModesThermo,
-    perfect2Gas,
-    advancedSpecie
-);
-
-make2Thermo
-(
-    rho2Thermo,
-    heRho2Thermo,
-    pureMixture,
-    SutherlandEuckenTransport,
-    sensible2Enthalpy,
-    decoupledEnergyModesThermo,
-    perfect2Gas,
-    advancedSpecie
-);
-
-make2Thermo
-(
-    rho2Thermo,
-    heRho2Thermo,
-    pureMixture,
-    BlottnerEuckenTransport,
-    sensible2Enthalpy,
-    decoupledEnergyModesThermo,
-    perfect2Gas,
-    advancedSpecie
-);
-
-make2Thermo
-(
-    rho2Thermo,
-    heRho2Thermo,
-    pureMixture,
-    powerLawEuckenTransport,
-    sensible2Enthalpy,
-    decoupledEnergyModesThermo,
-    perfect2Gas,
-    advancedSpecie
-);*/
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
-/*make2Thermo
-(
-    rho2Thermo,
-    heRho2Thermo,
-    pureMixture,
-    constantTransport,
-    sensible2InternalEnergy,
-    decoupledEnergyModesThermo,
-    perfect2Gas,
-    advancedSpecie
-);
-
-make2Thermo
-(
-    rho2Thermo,
-    heRho2Thermo,
-    pureMixture,
-    SutherlandEuckenTransport,
-    sensible2InternalEnergy,
-    decoupledEnergyModesThermo,
-    perfect2Gas,
-    advancedSpecie
-);
-
-make2Thermo
-(
-    rho2Thermo,
-    heRho2Thermo,
-    pureMixture,
-    BlottnerEuckenTransport,
-    sensible2InternalEnergy,
-    decoupledEnergyModesThermo,
-    perfect2Gas,
-    advancedSpecie
-);
-
-make2Thermo
-(
-    rho2Thermo,
-    heRho2Thermo,
-    pureMixture,
-    powerLawEuckenTransport,
-    sensible2InternalEnergy,
-    decoupledEnergyModesThermo,
-    perfect2Gas,
-    advancedSpecie
-);*/
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

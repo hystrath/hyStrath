@@ -37,23 +37,6 @@ namespace Foam
 
 /* * * * * * * * * * * * * * * private static data * * * * * * * * * * * * * */
 
-// Based on sensible enthalpy
-
-makeRelaxationTimeModelVV(noVVEnergyTransfer, demConstGasHThermoPhysicsH2TGD);
-makeRelaxationTimeModelVV(KnabVV, demConstGasHThermoPhysicsH2TGD);
-
-makeRelaxationTimeModelVV(noVVEnergyTransfer, demGasHThermoPhysicsH2TGD);
-makeRelaxationTimeModelVV(KnabVV, demGasHThermoPhysicsH2TGD);
-
-makeRelaxationTimeModelVV(noVVEnergyTransfer, demBEGasHThermoPhysicsH2TGD);
-makeRelaxationTimeModelVV(KnabVV, demBEGasHThermoPhysicsH2TGD);
-
-makeRelaxationTimeModelVV(noVVEnergyTransfer, demPLEGasHThermoPhysicsH2TGD);
-makeRelaxationTimeModelVV(KnabVV, demPLEGasHThermoPhysicsH2TGD);
-
-makeRelaxationTimeModelVV(noVVEnergyTransfer, demCEAGasHThermoPhysicsH2TGD);
-makeRelaxationTimeModelVV(KnabVV, demCEAGasHThermoPhysicsH2TGD);
-
 // Based on sensible internal energy
 
 makeRelaxationTimeModelVV(noVVEnergyTransfer, demConstGasEThermoPhysicsH2TGD);

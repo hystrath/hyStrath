@@ -312,24 +312,14 @@ Foam::decoupledEnergyModesThermo<EquationOfState>::electronicList() const
 }
 
 
-/*Meaning of the table elements*/
-/*a[0] :: cv translational*/
-/*a[1] :: cv rotational*/
-/*a[2] :: cv vibrational*/
-/*a[3] :: cv electronic*/
-/*a[4] :: cv electron*/
-/*a[5] :: chemical enthalpy*/
-/*a[5] :: chemical entropy*/
-
-
 template<class EquationOfState>
 inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::cv_trans
 (
     const scalar p,
-    const scalar Tt
+    const scalar T
 ) const
 {
-    const cvCoeffsArray& a = cvCoeffs(Tt);
+    const cvCoeffsArray& a = cvCoeffs(T);
     return this->RR*a[0];
 }
 
@@ -338,10 +328,10 @@ template<class EquationOfState>
 inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::cv_r
 (
     const scalar p,
-    const scalar Tt
+    const scalar T
 ) const
 {
-    const cvCoeffsArray& a = cvCoeffs(Tt);
+    const cvCoeffsArray& a = cvCoeffs(T);
     return this->RR*a[1];
 }
 
@@ -350,10 +340,10 @@ template<class EquationOfState>
 inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::cv_t
 (
     const scalar p,
-    const scalar Tt
+    const scalar T
 ) const
 {
-    return this->cv_trans(p, Tt) + this->cv_r(p, Tt);
+    return this->cv_trans(p, T) + this->cv_r(p, T);
 }
 
 
@@ -486,12 +476,12 @@ template<class EquationOfState>
 inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::ha
 (
     const scalar p,
-    const scalar Tt,
+    const scalar T,
     const scalar Tv
 ) const
 {
-    return ets(p, Tt) + evs(p, Tv) + eels(p, Tv) + ees(p, Tv) + hc()
-        + this->RR*Tt;
+    return ets(p, T) + evs(p, Tv) + eels(p, Tv) + ees(p, Tv) + hc()
+        + this->RR*T;
 }
 
 
@@ -499,11 +489,11 @@ template<class EquationOfState>
 inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::ets
 (
     const scalar p,
-    const scalar Tt
+    const scalar T
 ) const
 {
-    const cvCoeffsArray& a = cvCoeffs(Tt);
-    return this->RR*a[0]*Tt + this->ers(p, Tt);
+    const cvCoeffsArray& a = cvCoeffs(T);
+    return this->RR*a[0]*T + this->ers(p, T);
 }
 
 
@@ -511,11 +501,11 @@ template<class EquationOfState>
 inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::ers
 (
     const scalar p,
-    const scalar Tt
+    const scalar T
 ) const
 {
-    const cvCoeffsArray& a = cvCoeffs(Tt);
-    return this->RR*a[1]*Tt;
+    const cvCoeffsArray& a = cvCoeffs(T);
+    return this->RR*a[1]*T;
 }
 
 
@@ -639,11 +629,11 @@ template<class EquationOfState>
 inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::zetar
 (
     const scalar p,
-    const scalar Tt,
+    const scalar T,
     const scalar Tv
 ) const
 {
-    const cvCoeffsArray& a = cvCoeffs(Tt);
+    const cvCoeffsArray& a = cvCoeffs(T);
 
     return 2.0*a[1];
 }
@@ -742,11 +732,11 @@ template<class EquationOfState>
 inline Foam::scalar Foam::decoupledEnergyModesThermo<EquationOfState>::s
 (
     const scalar p,
-    const scalar Tt,
+    const scalar T,
     const scalar Tv
 ) const
 {
-    const cvCoeffsArray& a = cvCoeffs(Tt);
+    const cvCoeffsArray& a = cvCoeffs(T);
     return this->RR*a[6];
 }
 

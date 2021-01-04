@@ -62,14 +62,13 @@ Reaction2<Reaction2Thermo>::rhs() const
 }
 
 
-// NEW VINCENT ****************************************************************
 template<class Reaction2Thermo>
 inline const ControllingTemperatureType&
 Reaction2<Reaction2Thermo>::controlT() const
 {
     return controlT_;
 }
-// END NEW VINCENT ************************************************************
+
 
 // * * * * * * * * * * * * * * * Ostream Operator  * * * * * * * * * * * * * //
 

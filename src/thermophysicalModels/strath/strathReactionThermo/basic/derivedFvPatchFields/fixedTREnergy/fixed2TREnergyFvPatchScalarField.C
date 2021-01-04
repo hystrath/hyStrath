@@ -38,7 +38,8 @@ fixed2TREnergyFvPatchScalarField
     const DimensionedField<scalar, volMesh>& iF
 )
 :
-    fixedValueFvPatchScalarField(p, iF)
+    fixedValueFvPatchScalarField(p, iF),
+    thermo_(rho2ReactionThermo::lookup2ReactionThermo(*this))
 {} // Only this constructor is used at run-time
 
 
@@ -51,7 +52,8 @@ fixed2TREnergyFvPatchScalarField
     const fvPatchFieldMapper& mapper
 )
 :
-    fixedValueFvPatchScalarField(ptf, p, iF, mapper)
+    fixedValueFvPatchScalarField(ptf, p, iF, mapper),
+    thermo_(rho2ReactionThermo::lookup2ReactionThermo(*this))
 {}
 
 
@@ -63,7 +65,8 @@ fixed2TREnergyFvPatchScalarField
     const dictionary& dict
 )
 :
-    fixedValueFvPatchScalarField(p, iF, dict)
+    fixedValueFvPatchScalarField(p, iF, dict),
+    thermo_(rho2ReactionThermo::lookup2ReactionThermo(*this))
 {}
 
 
@@ -73,7 +76,8 @@ fixed2TREnergyFvPatchScalarField
     const fixed2TREnergyFvPatchScalarField& tppsf
 )
 :
-    fixedValueFvPatchScalarField(tppsf)
+    fixedValueFvPatchScalarField(tppsf),
+    thermo_(rho2ReactionThermo::lookup2ReactionThermo(*this))
 {}
 
 
@@ -84,7 +88,8 @@ fixed2TREnergyFvPatchScalarField
     const DimensionedField<scalar, volMesh>& iF
 )
 :
-    fixedValueFvPatchScalarField(tppsf, iF)
+    fixedValueFvPatchScalarField(tppsf, iF),
+    thermo_(rho2ReactionThermo::lookup2ReactionThermo(*this))
 {}
 
 
@@ -100,17 +105,36 @@ void Foam::fixed2TREnergyFvPatchScalarField::updateCoeffs()
 //    Info<< "fixed2TREnergy is used for patch called "
 //        << patch().name() << endl;
 
-    const multi2Thermo& thermo = multi2Thermo::lookup2Thermo(*this);
+    const multi2Thermo& multiThermo = multi2Thermo::lookup2Thermo(*this);
     const label patchi = patch().index();
 
-    const scalarField& pw = thermo.p().boundaryField()[patchi];
+    const scalarField& pw = multiThermo.p().boundaryField()[patchi];
 
     fvPatchScalarField& Tw =
-        const_cast<fvPatchScalarField&>(thermo.T().boundaryField()[patchi]);
+        const_cast<fvPatchScalarField&>
+        (
+            multiThermo.T().boundaryField()[patchi]
+        );
     Tw.evaluate();
 
+    tmp<scalarField> thet(new scalarField(pw.size()));
+    scalarField& het = thet.ref();
+
+    het = 0.0;
+    forAll(thermo_.composition().Y(), speciei)
+    {
+        fvPatchScalarField& spYw =
+            const_cast<fvPatchScalarField&>
+            (
+                thermo_.composition().Y(speciei).boundaryField()[patchi]
+            );
+        spYw.evaluate();
+
+        het += spYw*thermo_.composition().het(speciei, pw, Tw, patchi);
+    }
+
     // Force an assignment, overriding fixedValue status
-    operator==(thermo.het(pw, Tw, patchi));
+    operator==(het);
 
     fixedValueFvPatchScalarField::updateCoeffs();
 }

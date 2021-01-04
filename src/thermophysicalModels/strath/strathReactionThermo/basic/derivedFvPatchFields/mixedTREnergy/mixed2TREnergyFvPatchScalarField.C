@@ -27,8 +27,7 @@ License
 #include "addToRunTimeSelectionTable.H"
 #include "fvPatchFieldMapper.H"
 #include "volFields.H"
-#include "multi2Thermo.H" // NEW VINCENT
-
+#include "multi2Thermo.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
@@ -39,7 +38,8 @@ mixed2TREnergyFvPatchScalarField
     const DimensionedField<scalar, volMesh>& iF
 )
 :
-    mixedFvPatchScalarField(p, iF)
+    mixedFvPatchScalarField(p, iF),
+    thermo_(rho2ReactionThermo::lookup2ReactionThermo(*this))
 {
     valueFraction() = 0.0;
     refValue() = 0.0;
@@ -56,7 +56,8 @@ mixed2TREnergyFvPatchScalarField
     const fvPatchFieldMapper& mapper
 )
 :
-    mixedFvPatchScalarField(ptf, p, iF, mapper)
+    mixedFvPatchScalarField(ptf, p, iF, mapper),
+    thermo_(rho2ReactionThermo::lookup2ReactionThermo(*this))
 {}
 
 
@@ -68,7 +69,8 @@ mixed2TREnergyFvPatchScalarField
     const dictionary& dict
 )
 :
-    mixedFvPatchScalarField(p, iF, dict)
+    mixedFvPatchScalarField(p, iF, dict),
+    thermo_(rho2ReactionThermo::lookup2ReactionThermo(*this))
 {}
 
 
@@ -78,7 +80,8 @@ mixed2TREnergyFvPatchScalarField
     const mixed2TREnergyFvPatchScalarField& tppsf
 )
 :
-    mixedFvPatchScalarField(tppsf)
+    mixedFvPatchScalarField(tppsf),
+    thermo_(rho2ReactionThermo::lookup2ReactionThermo(*this))
 {}
 
 
@@ -89,7 +92,8 @@ mixed2TREnergyFvPatchScalarField
     const DimensionedField<scalar, volMesh>& iF
 )
 :
-    mixedFvPatchScalarField(tppsf, iF)
+    mixedFvPatchScalarField(tppsf, iF),
+    thermo_(rho2ReactionThermo::lookup2ReactionThermo(*this))
 {}
 
 
@@ -106,22 +110,50 @@ void Foam::mixed2TREnergyFvPatchScalarField::updateCoeffs()
     const label patchi = patch().index();
 
     const scalarField& pw = multiThermo.p().boundaryField()[patchi];
-    mixedFvPatchScalarField& Ttw = refCast<mixedFvPatchScalarField>
+    mixedFvPatchScalarField& Tw = refCast<mixedFvPatchScalarField>
     (
         const_cast<fvPatchScalarField&>(multiThermo.T().boundaryField()[patchi])
     );
 
-    Ttw.evaluate();
+    Tw.evaluate();
+    valueFraction() = Tw.valueFraction();
+    
+    tmp<scalarField> thet(new scalarField(pw.size()));
+    tmp<scalarField> thetRef(new scalarField(pw.size()));
+    tmp<scalarField> thetfC(new scalarField(pw.size()));
+    tmp<scalarField> tcvtTw(new scalarField(pw.size()));
+    
+    scalarField& het = thet.ref();
+    scalarField& hetRef = thetRef.ref();
+    scalarField& hetfC = thetfC.ref();
+    scalarField& cvtTw = tcvtTw.ref();
+    
+    het = 0.0;
+    hetRef = 0.0;
+    hetfC = 0.0;
+    cvtTw = 0.0;
 
-    valueFraction() = Ttw.valueFraction();
-    refValue() = multiThermo.het(pw, Ttw.refValue(), patchi);
-    refGrad() =
-        multiThermo.Cv_t(pw, Ttw, patchi)*Ttw.refGrad()
-      + patch().deltaCoeffs()*
-        (
-            multiThermo.het(pw, Ttw, patchi)
-          - multiThermo.het(pw, Ttw, patch().faceCells())
-        );
+    forAll(thermo_.composition().Y(), speciei)
+    {
+        fvPatchScalarField& spYw =
+            const_cast<fvPatchScalarField&>
+            (
+                thermo_.composition().Y(speciei).boundaryField()[patchi]
+            );
+        spYw.evaluate();
+
+        het += spYw*thermo_.composition().het(speciei, pw, Tw, patchi);
+        hetRef += spYw
+            *thermo_.composition().het(speciei, pw, Tw.refValue(), patchi);
+        hetfC += spYw
+            *thermo_.composition().het(speciei, pw, Tw, patch().faceCells());
+        cvtTw += spYw*thermo_.composition().Cv_t(speciei, pw, Tw, patchi);
+    }
+    
+    cvtTw *= Tw.refGrad();
+    
+    refValue() = thetRef;
+    refGrad() = tcvtTw + patch().deltaCoeffs()*(thet - thetfC);
 
     mixedFvPatchScalarField::updateCoeffs();
 }

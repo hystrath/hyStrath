@@ -39,7 +39,7 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                       Class sensible2InternalEnergy Declaration
+                   Class sensible2InternalEnergy Declaration
 \*---------------------------------------------------------------------------*/
 
 template<class Thermo>
@@ -70,31 +70,31 @@ public:
                 return "e";
             }
 
-            //- Sensible Internal energy [J/kmol]
+            //- Sensible internal energy [J/kmol]
             scalar he
             (
                 const Thermo& thermo,
                 const scalar p,
-                const scalar Tt,
+                const scalar T,
                 const scalar Tv = 0
             ) const
             {
-                return thermo.es(p, Tt, Tv);
+                return thermo.es(p, T, Tv);
             }
 
-            // NEW VINCENT ****************************************************
-            // Sensible Internal energy, trans-rotational mode [J/kmol]
+            // Sensible internal energy, trans-rotational energy mode [J/kmol]
             scalar het
             (
                 const Thermo& thermo,
                 const scalar p,
-                const scalar Tt
+                const scalar T
             ) const
             {
-                return thermo.ets(p, Tt);
+                return thermo.ets(p, T);
             }
 
-            // Sensible Internal energy, vibrational mode [J/kg], mode vibMode
+            // Sensible internal energy, vibrational energy mode [J/kg]
+            // for a given mode vibMode
             scalar hev_mode
             (
                 const Thermo& thermo,
@@ -106,7 +106,7 @@ public:
                 return thermo.evs_mode(vibMode, p, Tv);
             }
 
-            // Sensible Internal energy, vibrational mode [J/kg]
+            // Sensible internal energy, vibrational energy mode [J/kg]
             scalar hev
             (
                 const Thermo& thermo,
@@ -117,7 +117,7 @@ public:
                 return thermo.evs(p, Tv);
             }
 
-            // Sensible Internal energy, electronic mode [J/kg]
+            // Sensible internal energy, electronic energy mode [J/kg]
             scalar heel
             (
                 const Thermo& thermo,
@@ -128,8 +128,9 @@ public:
                 return thermo.eels(p, Tv);
             }
 
-            // Sensible Internal energy, vib-electronic mode [J/kg], mode vibMode
-            scalar hevel_mode
+            // Sensible internal energy, vibro-electronic energy mode [J/kg]
+            // for a given mode vibMode
+            scalar hevel_mode // TODO should not exist
             (
                 const Thermo& thermo,
                 const label vibMode,
@@ -140,7 +141,7 @@ public:
                 return thermo.evels_mode(vibMode, p, Tv);
             }
 
-            // Sensible Internal energy, vib-electronic mode [J/kg]
+            // Sensible internal energy, vibro-electronic energy mode [J/kg]
             scalar hevel
             (
                 const Thermo& thermo,
@@ -150,18 +151,17 @@ public:
             {
                 return thermo.evels(p, Tv);
             }
-            // END NEW VINCENT ************************************************
 
             //- Heat capacity at constant volume [J/(kmol K)]
             scalar cpv
             (
                 const Thermo& thermo,
                 const scalar p,
-                const scalar Tt,
+                const scalar T,
                 const scalar Tv = 0
             ) const
             {
-                return thermo.cv(p, Tt, Tv);
+                return thermo.cv(p, T, Tv);
             }
 
             //- cp/cv []
@@ -169,11 +169,11 @@ public:
             (
                 const Thermo& thermo,
                 const scalar p,
-                const scalar Tt,
+                const scalar T,
                 const scalar Tv = 0
             ) const
             {
-                return thermo.gamma(p, Tt, Tv);
+                return thermo.gamma(p, T, Tv);
             }
 
             //- Sensible internal energy [J/kg]
@@ -181,26 +181,26 @@ public:
             (
                 const Thermo& thermo,
                 const scalar p,
-                const scalar Tt,
+                const scalar T,
                 const scalar Tv = 0
             ) const
             {
-                return thermo.Es(p, Tt, Tv);
+                return thermo.Es(p, T, Tv);
             }
 
-            // NEW VINCENT ****************************************************
-            // Sensible Internal energy, trans-rotational mode [J/kg]
+            // Sensible internal energy, trans-rotational energy mode [J/kg]
             scalar HEt
             (
                 const Thermo& thermo,
                 const scalar p,
-                const scalar Tt
+                const scalar T
             ) const
             {
-                return thermo.Ets(p, Tt);
+                return thermo.Ets(p, T);
             }
 
-            // Sensible Internal energy, vibrational mode [J/kg], mode vibMode
+            // Sensible internal energy, vibrational energy mode [J/kg]
+            // for a given mode vibMode
             scalar HEv_mode
             (
                 const Thermo& thermo,
@@ -212,7 +212,7 @@ public:
                 return thermo.Evs_mode(vibMode, p, Tv);
             }
 
-            // Sensible Internal energy, vibrational mode [J/kg]
+            // Sensible internal energy, vibrational energy mode [J/kg]
             scalar HEv
             (
                 const Thermo& thermo,
@@ -223,7 +223,7 @@ public:
                 return thermo.Evs(p, Tv);
             }
 
-            // Sensible Internal energy, electronic mode [J/kg]
+            // Sensible internal energy, electronic energy mode [J/kg]
             scalar HEel
             (
                 const Thermo& thermo,
@@ -234,7 +234,9 @@ public:
                 return thermo.Eels(p, Tv);
             }
 
-            // Sensible Internal energy, vib-electronic mode [J/kg], mode vibMode
+            // Sensible internal energy, vibro-electronic energy mode [J/kg]
+            // for a given mode vibMode
+            // TODO should not exist
             scalar HEvel_mode
             (
                 const Thermo& thermo,
@@ -246,7 +248,7 @@ public:
                 return thermo.Evels_mode(vibMode, p, Tv);
             }
 
-            // Sensible Internal energy, vib-electronic mode [J/kg]
+            // Sensible internal energy, vibro-electronic energy mode [J/kg]
             scalar HEvel
             (
                 const Thermo& thermo,
@@ -257,7 +259,6 @@ public:
                 return thermo.Evels(p, Tv);
             }
 
-            // DELETION VINCENT ***********************************************
             //- Temperature from sensible internal
             //  energy given an initial temperature T0
             scalar THE
@@ -270,9 +271,7 @@ public:
             {
                 return thermo.TEs(e, p, T0);
             }
-            // END DELETION VINCENT *******************************************
 
-            // NEW VINCENT ****************************************************
             //- Trans-rotational temperature from sensible internal
             //  energy given an initial temperature T0
             scalar TtHEt
@@ -313,8 +312,8 @@ public:
                 return thermo.TvEvs(e, p, T0);
             }
 
-            //- Vib-electronic temperature from sensible internal
-            //  energy given an initial temperature T0, mode vibMode
+            //- Vibro-electronic temperature from sensible internal
+            //  energy given an initial temperature T0, for a given mode vibMode
             scalar TvelHEvel_mode
             (
                 const Thermo& thermo,
@@ -327,7 +326,7 @@ public:
                 return thermo.TvelEvels_mode(vibMode, e, p, T0);
             }
 
-            //- Vib-electronic temperature from sensible internal
+            //- vibro-electronic temperature from sensible internal
             //  energy given an initial temperature T0
             scalar TvelHEvel
             (
@@ -339,7 +338,6 @@ public:
             {
                 return thermo.TvelEvels(e, p, T0);
             }
-            // END NEW VINCENT ************************************************
 };
 
 

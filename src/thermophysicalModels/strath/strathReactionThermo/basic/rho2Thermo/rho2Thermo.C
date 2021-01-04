@@ -216,7 +216,6 @@ Foam::rho2Thermo::rho2Thermo
         ),
         mesh,
         dimensionedScalar("mu", dimensionSet(1, -1, -1, 0, 0), 1e-6)
-        //dimensionSet(1, -1, -1, 0, 0)
     ),
 
     kappatr_
@@ -321,22 +320,10 @@ const Foam::volScalarField& Foam::rho2Thermo::psi() const
 }
 
 
-Foam::volScalarField& Foam::rho2Thermo::getPsi()
+Foam::volScalarField& Foam::rho2Thermo::psi()
 {
     return psi_;
 }
-
-
-/*const Foam::volScalarField& Foam::rho2Thermo::mu() const
-{
-    return mu_;
-}
-
-
-const Foam::scalarField& Foam::rho2Thermo::mu(const label patchi) const
-{
-    return mu_.boundaryField()[patchi];
-}*/
 
 
 Foam::tmp<Foam::volScalarField> Foam::rho2Thermo::mu() const
@@ -434,12 +421,38 @@ Foam::tmp<Foam::volScalarField> Foam::rho2Thermo::kappaEff
     const volScalarField& alphat
 ) const
 {
-    //tmp<Foam::volScalarField> kappaEff(Cv()*alphaEff(alphat)); // DELETED VINCENT
-    // Both kappa_transrot and alpha_turbulent are known
-    // Unlike kappa_transrot, kappa_turbu = Cp()*alphat
-    tmp<Foam::volScalarField> kappaEff(kappatr() + Cp_t()*alphat);
-    kappaEff.ref().rename("kappaEff");
-    return kappaEff;
+    const fvMesh& mesh = alphat.mesh();
+    
+    tmp<volScalarField> tkappaEff
+    (
+        new volScalarField
+        (
+            IOobject
+            (
+                "kappaEff",
+                mesh.time().timeName(),
+                mesh,
+                IOobject::NO_READ,
+                IOobject::NO_WRITE
+            ),
+            mesh,
+            dimensionedScalar
+            (
+                "zero",
+                dimensionSet(1, 1, -3, -1, 0),
+                0.0
+            )
+        )
+    );
+    
+    volScalarField& kappaEff = tkappaEff.ref();
+    
+    kappaEff = kappatr() + Cp_t()*alphat; // TODO
+    
+//tmp<Foam::volScalarField> kappaEff(Cv()*alphaEff(alphat)); // DELETED VINCENT
+// Both kappa_transrot and alpha_turbulent are known
+// Unlike kappa_transrot, kappa_turbu = Cp()*alphat    
+    return tkappaEff;
 }
 
 
@@ -476,10 +489,40 @@ Foam::tmp<Foam::volScalarField> Foam::rho2Thermo::alphaEff
     const volScalarField& alphat
 ) const
 {
+    const fvMesh& mesh = alphat.mesh();
+    
+    tmp<volScalarField> talphaEff
+    (
+        new volScalarField
+        (
+            IOobject
+            (
+                "alphaEff",
+                mesh.time().timeName(),
+                mesh,
+                IOobject::NO_READ,
+                IOobject::NO_WRITE
+            ),
+            mesh,
+            dimensionedScalar
+            (
+                "zero",
+                dimMass/dimLength/dimTime,
+                0.0
+            )
+        )
+    );
+    
+    volScalarField& alphaEff = talphaEff.ref();
+    
+    alphaEff = alphatr() + alphat; // TODO
+    
+    return talphaEff;
+    
     // Both alpha_transrot and alpha_turbulent are known
-    tmp<Foam::volScalarField> alphaEff(alphatr() + alphat);
-    alphaEff.ref().rename("alphaEff");
-    return alphaEff;
+//    tmp<Foam::volScalarField> alphaEff(alphatr() + alphat);
+//    alphaEff.ref().rename("alphaEff");
+//    return alphaEff;
 }
 
 

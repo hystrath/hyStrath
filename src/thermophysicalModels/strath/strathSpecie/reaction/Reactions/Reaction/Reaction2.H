@@ -43,9 +43,6 @@ SourceFiles
 #include "typeInfo.H"
 #include "runTimeSelectionTables.H"
 
-//#include "EnumString.h" // NEW VINCENT
-//#include <cassert>
-
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
@@ -149,7 +146,7 @@ private:
         List<specieCoeffs> rhs_;
 
         //- Controlling temperature
-        ControllingTemperatureType controlT_; // NEW VINCENT
+        ControllingTemperatureType controlT_;
 
 
     // Private Member Functions
@@ -263,7 +260,7 @@ public:
         );
 
         //- Construct and return a clone
-        virtual autoPtr<Reaction2<Reaction2Thermo> > clone() const //
+        virtual autoPtr<Reaction2<Reaction2Thermo> > clone() const
         {
             return autoPtr<Reaction2<Reaction2Thermo> >
             (

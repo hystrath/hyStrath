@@ -39,18 +39,6 @@ Description
 
 namespace Foam
 {
-    // sensible enthalpy based reactions
-
-    typedef Reaction2<demConstGasHThermoPhysicsH2TGD> demConstGasHReactionH2TGD;
-
-    typedef Reaction2<demGasHThermoPhysicsH2TGD> demGasHReactionH2TGD;
-
-    typedef Reaction2<demBEGasHThermoPhysicsH2TGD> demBEGasHReactionH2TGD;
-
-    typedef Reaction2<demPLEGasHThermoPhysicsH2TGD> demPLEGasHReactionH2TGD;
-
-    typedef Reaction2<demCEAGasHThermoPhysicsH2TGD> demCEAGasHReactionH2TGD;
-
     // internal energy based reactions
 
     typedef Reaction2<demConstGasEThermoPhysicsH2TGD> demConstGasEReactionH2TGD;
