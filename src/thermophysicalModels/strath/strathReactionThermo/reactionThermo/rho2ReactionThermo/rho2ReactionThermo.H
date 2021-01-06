@@ -223,9 +223,6 @@ protected:
         //- Initialise the fields
         void initialise();
 
-        //- Minimal initialisation of the fields
-        void initialiseLight();
-
 public:
 
     //- Public constant
@@ -417,9 +414,6 @@ public:
 
         //- Initialise the 2T model
         virtual void initialise2T();
-
-        //- Initialise the 2T model (light)
-        virtual void initialise2T_Light();
 };
 
 

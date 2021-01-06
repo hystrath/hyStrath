@@ -112,10 +112,6 @@ else
     }
 }
 
-//- Fields for boundary conditions
-volScalarField cp("cp", thermo.Cp());
-volScalarField gamma("gamma", cp/thermo.Cv());
-
 //- In: G. V. Candler and I. Nompelis.
 //  "Computational Fluid Dynamics for Atmospheric Entry"
 //  RTO-AVT-VKI Lecture Series 2009-AVT-162, Eq. 3.35, p. 39, 2009

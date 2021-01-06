@@ -31,7 +31,8 @@ License
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::nonEqSmoluchowskiJumpTvMixFvPatchScalarField::nonEqSmoluchowskiJumpTvMixFvPatchScalarField
+Foam::nonEqSmoluchowskiJumpTvMixFvPatchScalarField::
+nonEqSmoluchowskiJumpTvMixFvPatchScalarField
 (
     const fvPatch& p,
     const DimensionedField<scalar, volMesh>& iF
@@ -42,7 +43,7 @@ Foam::nonEqSmoluchowskiJumpTvMixFvPatchScalarField::nonEqSmoluchowskiJumpTvMixFv
     rhoName_("rho"),
     muName_("mu"),
     alphaName_("alphave"),
-    gammatrName_("gammatr"),
+    gammaName_("gammatr"),
     mfpName_("mfp"),
     accommodationCoeff_(1.0),
     Twall_(p.size(), 0.0)
@@ -53,7 +54,8 @@ Foam::nonEqSmoluchowskiJumpTvMixFvPatchScalarField::nonEqSmoluchowskiJumpTvMixFv
 }
 
 
-Foam::nonEqSmoluchowskiJumpTvMixFvPatchScalarField::nonEqSmoluchowskiJumpTvMixFvPatchScalarField
+Foam::nonEqSmoluchowskiJumpTvMixFvPatchScalarField::
+nonEqSmoluchowskiJumpTvMixFvPatchScalarField
 (
     const nonEqSmoluchowskiJumpTvMixFvPatchScalarField& ptf,
     const fvPatch& p,
@@ -67,14 +69,15 @@ Foam::nonEqSmoluchowskiJumpTvMixFvPatchScalarField::nonEqSmoluchowskiJumpTvMixFv
     rhoName_(ptf.rhoName_),
     muName_(ptf.muName_),
     alphaName_(ptf.alphaName_),
-    gammatrName_(ptf.gammatrName_),
+    gammaName_(ptf.gammaName_),
     mfpName_(ptf.mfpName_),
     accommodationCoeff_(ptf.accommodationCoeff_),
     Twall_(ptf.Twall_)
 {}
 
 
-Foam::nonEqSmoluchowskiJumpTvMixFvPatchScalarField::nonEqSmoluchowskiJumpTvMixFvPatchScalarField
+Foam::nonEqSmoluchowskiJumpTvMixFvPatchScalarField::
+nonEqSmoluchowskiJumpTvMixFvPatchScalarField
 (
     const fvPatch& p,
     const DimensionedField<scalar, volMesh>& iF,
@@ -86,7 +89,7 @@ Foam::nonEqSmoluchowskiJumpTvMixFvPatchScalarField::nonEqSmoluchowskiJumpTvMixFv
     rhoName_(dict.lookupOrDefault<word>("rho", "rho")),
     muName_(dict.lookupOrDefault<word>("mu", "mu")),
     alphaName_(dict.lookupOrDefault<word>("alphave", "alphave")),
-    gammatrName_(dict.lookupOrDefault<word>("gammatr", "gammatr")),
+    gammaName_(dict.lookupOrDefault<word>("gammatr", "gammatr")),
     mfpName_(dict.lookupOrDefault<word>("mfp", "mfp")),
     accommodationCoeff_(readScalar(dict.lookup("accommodationCoeff"))),
     Twall_("Twall", dict, p.size())
@@ -130,7 +133,8 @@ Foam::nonEqSmoluchowskiJumpTvMixFvPatchScalarField::nonEqSmoluchowskiJumpTvMixFv
 }
 
 
-Foam::nonEqSmoluchowskiJumpTvMixFvPatchScalarField::nonEqSmoluchowskiJumpTvMixFvPatchScalarField
+Foam::nonEqSmoluchowskiJumpTvMixFvPatchScalarField::
+nonEqSmoluchowskiJumpTvMixFvPatchScalarField
 (
     const nonEqSmoluchowskiJumpTvMixFvPatchScalarField& ptpsf,
     const DimensionedField<scalar, volMesh>& iF
@@ -177,8 +181,8 @@ void Foam::nonEqSmoluchowskiJumpTvMixFvPatchScalarField::updateCoeffs()
         patch().lookupPatchField<volScalarField, scalar>(muName_);
     const fvPatchScalarField& palpha =
         patch().lookupPatchField<volScalarField, scalar>(alphaName_);
-    const fvPatchScalarField& pgammatr =
-        patch().lookupPatchField<volScalarField, scalar>(gammatrName_);
+    const fvPatchScalarField& pgamma =
+        patch().lookupPatchField<volScalarField, scalar>(gammaName_);
     const fvPatchScalarField& pmfp =
         patch().lookupPatchField<volScalarField, scalar>(mfpName_);
     const fvPatchScalarField& prho =
@@ -188,12 +192,12 @@ void Foam::nonEqSmoluchowskiJumpTvMixFvPatchScalarField::updateCoeffs()
 
     Field<scalar> C2
     (
-        pmfp*2.0/(pgammatr + 1.0)/(pmu/palpha) // Pr = mu*Cp/k = mu/alpha * Cp/Cv = mu/alpha * gamma
-        *(2.0 - accommodationCoeff_)/accommodationCoeff_
+        pmfp*2.0/(pgamma + 1.0)/(pmu/palpha) // Pr = mu*Cp/k = mu/alpha * Cp/Cv = mu/alpha * gamma
+      * (2.0 - accommodationCoeff_)/accommodationCoeff_
     );
 
-    Field<scalar> aCoeff(prho.snGrad() - prho/C2);
-    Field<scalar> KEbyRho(0.5*magSqr(pU));
+//    Field<scalar> aCoeff(prho.snGrad() - prho/C2);
+//    Field<scalar> KEbyRho(0.5*magSqr(pU));
 
     valueFraction() = (1.0/(1.0 + patch().deltaCoeffs()*C2));
     refValue() = Twall_;
@@ -204,7 +208,10 @@ void Foam::nonEqSmoluchowskiJumpTvMixFvPatchScalarField::updateCoeffs()
 
 
 // Write
-void Foam::nonEqSmoluchowskiJumpTvMixFvPatchScalarField::write(Ostream& os) const
+void Foam::nonEqSmoluchowskiJumpTvMixFvPatchScalarField::write
+(
+    Ostream& os
+) const
 {
     fvPatchScalarField::write(os);
 
@@ -212,7 +219,7 @@ void Foam::nonEqSmoluchowskiJumpTvMixFvPatchScalarField::write(Ostream& os) cons
     writeEntryIfDifferent<word>(os, "rho", "rho", rhoName_);
     writeEntryIfDifferent<word>(os, "mu", "mu", muName_);
     writeEntryIfDifferent<word>(os, "alphave", "alphave", alphaName_);
-    writeEntryIfDifferent<word>(os, "gammatr", "gammatr", gammatrName_);
+    writeEntryIfDifferent<word>(os, "gammatr", "gammatr", gammaName_);
     writeEntryIfDifferent<word>(os, "mfp", "mfp", mfpName_);
 
     os.writeKeyword("accommodationCoeff")

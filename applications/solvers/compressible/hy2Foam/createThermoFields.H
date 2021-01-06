@@ -15,10 +15,8 @@ thermo.validate(args.executable(), "h", "e");
 //---------------------------------------------------------
 // Initialisation of the two-temperature model
 //---------------------------------------------------------
-bool hyLight = thermo.hyLight();
 
-if (hyLight) thermo.initialise2T_Light();
-else thermo.initialise2T();
+thermo.initialise2T();
 
 bool downgradeSingleVibMode = thermo.downgradeSingleVibMode();
 bool downgradeSingleTv = thermo.downgradeSingleTv();
@@ -26,6 +24,7 @@ bool downgradeSingleT = thermo.downgradeSingleTemperature();
 
 bool hyDev = thermo.lookupOrDefault<bool>("hyDev", false);
 bool injectors = thermo.lookupOrDefault<bool>("injectors", false);
+bool hyLight = thermo.hyLight();
 
 //---------------------------------------------------------
 // Loading some general thermophysical quantities
@@ -157,7 +156,7 @@ autoPtr<mixingRule> transport
 
 const volScalarField& mu = thermo.mu();
 
-//- Bulk viscosity 08/10/2016
+//- Bulk viscosity
 /*const scalar pi = constant::mathematical::pi;
 const scalar ZrotInf = 18.0;
 const dimensionedScalar TZ ("TZ", dimTemperature, 91.5);
@@ -181,7 +180,7 @@ volScalarField bulkToShearRatio
     dimensionedScalar("scalarZero", dimless, 0.0)
 );*/
 
-bool inviscid(true);
+bool inviscid = true;
 if (max(mu.primitiveField()) > 0.0)
 {
     inviscid = false;

@@ -29,11 +29,12 @@ License
 #include "volFields.H"
 #include "mathematicalConstants.H"
 
-#include <string.H> // NEW VINCENT 11/05/2016
+#include <string.H>
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::nonEqSmoluchowskiJumpTvFvPatchScalarField::nonEqSmoluchowskiJumpTvFvPatchScalarField
+Foam::nonEqSmoluchowskiJumpTvFvPatchScalarField::
+nonEqSmoluchowskiJumpTvFvPatchScalarField
 (
     const fvPatch& p,
     const DimensionedField<scalar, volMesh>& iF
@@ -43,16 +44,16 @@ Foam::nonEqSmoluchowskiJumpTvFvPatchScalarField::nonEqSmoluchowskiJumpTvFvPatchS
     UName_("U"),
     rhoName_("rho"),
     muName_("mu"),
-    //alphaName_("alphave"), // NEW VINCENT 03/03/2016
-    gammatrName_("gammatr"), // NEW VINCENT 03/03/2016
-    mfpName_("mfp"), // NEW VINCENT 28/02/2016
+    //alphaName_("alphave"),
+    gammaName_("gammatr"),
+    mfpName_("mfp"),
     accommodationCoeff_(1.0),
     Twall_(p.size(), 0.0)
 {
     word fieldName = iF.name();
     specieName_ = fieldName.substr(fieldName.find("_") + 1);
-    alphaName_ = "alphave_"+specieName_;
-    //mfpName_ = "mfpvib_"+specieName_; // NEW VINCENT 11/05/2016
+    alphaName_ = "alphave_" + specieName_;
+    //mfpName_ = "mfpvib_" + specieName_;
 
     refValue() = 0.0;
     refGrad() = 0.0;
@@ -60,7 +61,8 @@ Foam::nonEqSmoluchowskiJumpTvFvPatchScalarField::nonEqSmoluchowskiJumpTvFvPatchS
 }
 
 
-Foam::nonEqSmoluchowskiJumpTvFvPatchScalarField::nonEqSmoluchowskiJumpTvFvPatchScalarField
+Foam::nonEqSmoluchowskiJumpTvFvPatchScalarField::
+nonEqSmoluchowskiJumpTvFvPatchScalarField
 (
     const nonEqSmoluchowskiJumpTvFvPatchScalarField& ptf,
     const fvPatch& p,
@@ -73,15 +75,16 @@ Foam::nonEqSmoluchowskiJumpTvFvPatchScalarField::nonEqSmoluchowskiJumpTvFvPatchS
     UName_(ptf.UName_),
     rhoName_(ptf.rhoName_),
     muName_(ptf.muName_),
-    alphaName_(ptf.alphaName_), // NEW VINCENT 03/03/2016
-    gammatrName_(ptf.gammatrName_), // NEW VINCENT 03/03/2016
-    mfpName_(ptf.mfpName_), // NEW VINCENT 28/02/2016
+    alphaName_(ptf.alphaName_),
+    gammaName_(ptf.gammaName_),
+    mfpName_(ptf.mfpName_),
     accommodationCoeff_(ptf.accommodationCoeff_),
     Twall_(ptf.Twall_)
 {}
 
 
-Foam::nonEqSmoluchowskiJumpTvFvPatchScalarField::nonEqSmoluchowskiJumpTvFvPatchScalarField
+Foam::nonEqSmoluchowskiJumpTvFvPatchScalarField::
+nonEqSmoluchowskiJumpTvFvPatchScalarField
 (
     const fvPatch& p,
     const DimensionedField<scalar, volMesh>& iF,
@@ -92,9 +95,9 @@ Foam::nonEqSmoluchowskiJumpTvFvPatchScalarField::nonEqSmoluchowskiJumpTvFvPatchS
     UName_(dict.lookupOrDefault<word>("U", "U")),
     rhoName_(dict.lookupOrDefault<word>("rho", "rho")),
     muName_(dict.lookupOrDefault<word>("mu", "mu")),
-    //alphaName_(dict.lookupOrDefault<word>("alphave", "alphave")), // NEW VINCENT 03/03/2016
-    gammatrName_(dict.lookupOrDefault<word>("gammatr", "gammatr")), // NEW VINCENT 03/03/2016
-    mfpName_(dict.lookupOrDefault<word>("mfp", "mfp")), // NEW VINCENT 28/02/2016
+    //alphaName_(dict.lookupOrDefault<word>("alphave", "alphave")),
+    gammaName_(dict.lookupOrDefault<word>("gammatr", "gammatr")),
+    mfpName_(dict.lookupOrDefault<word>("mfp", "mfp")),
     accommodationCoeff_(readScalar(dict.lookup("accommodationCoeff"))),
     Twall_("Twall", dict, p.size())
 {
@@ -142,7 +145,8 @@ Foam::nonEqSmoluchowskiJumpTvFvPatchScalarField::nonEqSmoluchowskiJumpTvFvPatchS
 }
 
 
-Foam::nonEqSmoluchowskiJumpTvFvPatchScalarField::nonEqSmoluchowskiJumpTvFvPatchScalarField
+Foam::nonEqSmoluchowskiJumpTvFvPatchScalarField::
+nonEqSmoluchowskiJumpTvFvPatchScalarField
 (
     const nonEqSmoluchowskiJumpTvFvPatchScalarField& ptpsf,
     const DimensionedField<scalar, volMesh>& iF
@@ -191,21 +195,22 @@ void Foam::nonEqSmoluchowskiJumpTvFvPatchScalarField::updateCoeffs()
     const fvPatchScalarField& pmu =
         patch().lookupPatchField<volScalarField, scalar>(muName_);
     const fvPatchScalarField& palpha =
-        patch().lookupPatchField<volScalarField, scalar>(alphaName_); // NEW VINCENT 03/03/2016
+        patch().lookupPatchField<volScalarField, scalar>(alphaName_);
     const fvPatchScalarField& pgammatr =
-        patch().lookupPatchField<volScalarField, scalar>(gammatrName_); // NEW VINCENT 03/03/2016
+        patch().lookupPatchField<volScalarField, scalar>(gammaName_);
     const fvPatchScalarField& pmfp =
-        patch().lookupPatchField<volScalarField, scalar>(mfpName_); // NEW VINCENT 28/02/2016
+        patch().lookupPatchField<volScalarField, scalar>(mfpName_);
     const fvPatchScalarField& prho =
         patch().lookupPatchField<volScalarField, scalar>(rhoName_);
     const fvPatchVectorField& pU =
         patch().lookupPatchField<volVectorField, vector>(UName_);
 
+    // Pr = mu*Cp/k = mu/alpha * Cp/Cv = mu/alpha * gamma
     Field<scalar> C2
     (
-        pmfp*2.0/(pgammatr + 1.0)/(pmu/palpha) // Pr = mu*Cp/k = mu/alpha * Cp/Cv = mu/alpha * gamma
-        *(2.0 - accommodationCoeff_)/accommodationCoeff_
-    ); // NEW VINCENT 03/03/2016
+        pmfp*2.0/(pgammatr + 1.0)/(pmu/palpha)
+      * (2.0 - accommodationCoeff_)/accommodationCoeff_
+    );
 
     Field<scalar> aCoeff(prho.snGrad() - prho/C2);
     Field<scalar> KEbyRho(0.5*magSqr(pU));
@@ -226,9 +231,9 @@ void Foam::nonEqSmoluchowskiJumpTvFvPatchScalarField::write(Ostream& os) const
     writeEntryIfDifferent<word>(os, "U", "U", UName_);
     writeEntryIfDifferent<word>(os, "rho", "rho", rhoName_);
     writeEntryIfDifferent<word>(os, "mu", "mu", muName_);
-    writeEntryIfDifferent<word>(os, "alphave", "alphave", alphaName_); // NEW VINCENT 03/03/2016
-    writeEntryIfDifferent<word>(os, "gammatr", "gammatr", gammatrName_); // NEW VINCENT 03/03/2016
-    writeEntryIfDifferent<word>(os, "mfp", "mfp", mfpName_); // NEW VINCENT 28/02/2016
+    writeEntryIfDifferent<word>(os, "alphave", "alphave", alphaName_);
+    writeEntryIfDifferent<word>(os, "gammatr", "gammatr", gammaName_);
+    writeEntryIfDifferent<word>(os, "mfp", "mfp", mfpName_);
 
     os.writeKeyword("accommodationCoeff")
         << accommodationCoeff_ << token::END_STATEMENT << nl;

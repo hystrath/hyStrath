@@ -25,7 +25,8 @@ Class
     Foam::nonEqSmoluchowskiJumpTvMixFvPatchScalarField
 
 Description
-    Smoluchowski temperature jump boundary condition
+    Smoluchowski temperature jump boundary condition, vibro-electronic energy
+    equation (single vibrational energy pool)
 
 SourceFiles
     nonEqSmoluchowskiJumpTvMixFvPatchScalarField.C
@@ -68,8 +69,8 @@ class nonEqSmoluchowskiJumpTvMixFvPatchScalarField
         //- Thermal diffusivity field name, default = "alphave"
         word alphaName_;
 
-        //- Ratio of specific heat capacities field name, default = "gammatr"
-        word gammatrName_;
+        //- Ratio of specific heat capacities field name, default = "gamma"
+        word gammaName_;
 
         //- Mean free path field name, default = "mfp"
         word mfpName_;
@@ -103,8 +104,8 @@ public:
             const dictionary&
         );
 
-        //- Construct by mapping given nonEqSmoluchowskiJumpTvMixFvPatchScalarField
-        //  onto a new patch
+        //- Construct by mapping given
+        //  nonEqSmoluchowskiJumpTvMixFvPatchScalarField onto a new patch
         nonEqSmoluchowskiJumpTvMixFvPatchScalarField
         (
             const nonEqSmoluchowskiJumpTvMixFvPatchScalarField&,

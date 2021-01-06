@@ -59,29 +59,23 @@ class nonEqSmoluchowskiJumpTFvPatchScalarField
         //- Density field name, default = "rho"
         word rhoName_;
 
-        //- Compressibility field name, default = "thermo:psi"
-        //word psiName_;
-
         //- Dynamic viscosity field name, default = "mu"
         word muName_;
 
         //- Thermal diffusivity field name, default = "alphatr"
-        word alphaName_; // NEW VINCENT 03/03/2016
+        word alphaName_;
 
         //- Ratio of specific heat capacities field name, default = "gammatr"
-        word gammatrName_; // NEW VINCENT 03/03/2016
+        word gammaName_;
 
         //- Mean free path field name, default = "mfp"
-        word mfpName_; // NEW VINCENT 28/02/2016
+        word mfpName_;
 
         //- Accommodation coefficient
         scalar accommodationCoeff_;
 
         //- Wall surface temperature
         scalarField Twall_;
-
-        //- Heat capacity ratio (default 1.4)
-        //scalar gamma_;
 
 public:
 
