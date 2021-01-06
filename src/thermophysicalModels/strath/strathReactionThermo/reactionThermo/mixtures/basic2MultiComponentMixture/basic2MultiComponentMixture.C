@@ -497,12 +497,12 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                         "downgradeToSingleTemperature",
                         false
                     );
-                downgradeToSingleTv =
-                    thermophysicalProperties.lookupOrDefault<bool>
-                    (
-                        "downgradeToSingleTv",
-                        true
-                    );
+                downgradeToSingleTv = true;
+//                    thermophysicalProperties.lookupOrDefault<bool>
+//                    (
+//                        "downgradeToSingleTv",
+//                        true
+//                    );
             }
 
             if (downgradeToSingleTemperature or downgradeToSingleTv)
