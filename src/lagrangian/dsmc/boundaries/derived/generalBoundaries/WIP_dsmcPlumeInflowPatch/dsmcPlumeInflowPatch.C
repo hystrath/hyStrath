@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016-2020 hyStrath
+    \\  /    A nd           | Copyright (C) 2016-2021 hyStrath
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
