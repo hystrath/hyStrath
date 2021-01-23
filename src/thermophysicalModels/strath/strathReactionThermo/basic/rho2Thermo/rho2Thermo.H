@@ -73,6 +73,9 @@ protected:
         //- Thermal conductivity of the mixture [W/mK]
         //  vibro-electronic energy mode
         volScalarField kappave_;
+        
+        //- Thermal conductivity of the mixture [W/mK]
+        volScalarField kappa_;
 
         //- Thermal diffusivity of the mixture [kg/ms]
         //  trans-rotational energy mode
@@ -81,6 +84,9 @@ protected:
         //- Thermal diffusivity of the mixture [kg/ms]
         //  vibro-electronic energy mode
         volScalarField alphave_;
+        
+        //- Thermal diffusivity of the mixture [kg/ms]
+        volScalarField alpha_;
 
 
     // Protected Member Functions
@@ -197,6 +203,16 @@ public:
             //- Return non-const access to the thermal conductivity of
             //  mixture [W/mK], vibro-electronic energy mode
             virtual volScalarField& kappave();
+            
+            //- Thermal conductivity of mixture [W/mK]
+            virtual const volScalarField& kappa() const;
+
+            //- Thermal conductivity of mixture for patch [W/mK]
+            virtual const scalarField& kappa(const label patchi) const;
+
+            //- Return non-const access to the thermal conductivity of
+            //  mixture [W/mK]
+            virtual volScalarField& kappa();
 
             //- Thermal diffusivity of mixture [kg/m/s]
             //  trans-rotational energy mode
@@ -221,6 +237,16 @@ public:
             //- Return non-const access to the thermal diffusivity of
             //  mixture [kg/m/s], vibro-electronic energy mode
             virtual volScalarField& alphave();
+            
+            //- Thermal diffusivity of mixture [kg/m/s]
+            virtual const volScalarField& alpha() const;
+
+            //- Thermal diffusivity of mixture for patch [kg/m/s]
+            virtual const scalarField& alpha(const label patchi) const;
+
+            //- Return non-const access to the thermal diffusivity of
+            //  mixture [kg/m/s]
+            virtual volScalarField& alpha();
 
             //- Effective thermal diffusivity of mixture [J/m/s/K] // NEW VINCENT 11/03/2016
             virtual tmp<volScalarField> kappaEff(const volScalarField&) const;

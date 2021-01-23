@@ -7,13 +7,11 @@ composition.write();
 //- Write diffusion fluxes
 if (not hyLight)
 {
-/*    volVectorField sumDiffusiveFluxes = speciesDiffusion().sumDiffusiveFluxes();*/
+/*    volVectorField sumDiffusiveFluxes =
+          speciesDiffusion().sumDiffusiveFluxes();*/
 /*    sumDiffusiveFluxes.write();*/
 /*    forAll(Y, speciei)*/
 /*    {*/
-/*        volVectorField Jnc = speciesDiffusion().J(speciei);*/
-/*        Jnc.write();*/
-
 /*        volVectorField Jc*/
 /*        (*/
 /*            IOobject*/
@@ -27,6 +25,24 @@ if (not hyLight)
 /*            speciesDiffusion().Jcorr(speciei)*/
 /*        );*/
 /*        Jc.write();*/
+/*    }*/
+
+/*    forAll(Y, speciei)*/
+/*    {*/
+/*        const volScalarField Di*/
+/*        (*/
+/*            IOobject*/
+/*            (*/
+/*                "D_" + composition.species()[speciei],*/
+/*                runTime.timeName(),*/
+/*                mesh,*/
+/*                IOobject::NO_READ,*/
+/*                IOobject::NO_WRITE*/
+/*            ),*/
+/*            speciesDiffusion().rhoD(speciei)*/
+/*        );*/
+/*        */
+/*        Di.write();*/
 /*    }*/
 }
 
@@ -52,10 +68,10 @@ if (downgradeSingleTv)
 if (writeWallHeatFlux)
 {
     surfaceScalarField heatFlux_convtr =
-        -fvc::interpolate(turbulence->alphaEff())*fvc::snGrad(et);
+        -fvc::interpolate(transport().kappatr())*fvc::snGrad(thermo.T());
 
     surfaceScalarField heatFlux_convve =
-        -fvc::interpolate(transport().alphave())*fvc::snGrad(ev);
+        -fvc::interpolate(transport().kappave())*fvc::snGrad(thermo.Tv());
         
     surfaceScalarField heatFlux_diff =
         speciesDiffusion().getDiffusiveWallHeatFlux();
@@ -63,7 +79,8 @@ if (writeWallHeatFlux)
     surfaceScalarField heatFlux = heatFlux_convtr + heatFlux_convve
         + heatFlux_diff;
 
-    const surfaceScalarField::Boundary& patchHeatFlux = heatFlux.boundaryField();
+    const surfaceScalarField::Boundary& patchHeatFlux =
+        heatFlux.boundaryField();
 
     Info<< "\nIntegrated wall heat flux [W]" << endl;
     forAll(patchHeatFlux, patchi)

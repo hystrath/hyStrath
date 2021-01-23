@@ -5,14 +5,7 @@ if (!inviscid)
     fvScalarMatrix eEqnViscous
     (
         fvm::ddt(rho, e) - fvc::ddt(rho, e)
-      - (  
-            fvm::laplacian(turbulence->alphaEff(), e)
-          - fvc::laplacian(turbulence->alphaEff(), ev)
-        )
-      - (
-            fvm::laplacian(transport().alphave(), e)
-          - fvc::laplacian(transport().alphave(), et)
-        )
+      - fvm::laplacian(thermo.kappa()/thermo.CvMix(), e)
       ==
         fvOptions(rho, e)
     );
@@ -36,8 +29,17 @@ if (!inviscid)
     fvOptions.correct(e);
 
     et.ref() = e() - ev();
-    et.correctBoundaryConditions();
-    e.boundaryFieldRef() = et.boundaryField() + ev.boundaryField();
+
+    if (downgradeSingleT)
+    {
+        e.correctBoundaryConditions();
+        et.boundaryFieldRef() = e.boundaryField() - ev.boundaryField();
+    }
+    else
+    {
+        et.correctBoundaryConditions();
+        e.boundaryFieldRef() = et.boundaryField() + ev.boundaryField();
+    }
 
     rhoE = rho*(e + 0.5*magSqr(U));
 }

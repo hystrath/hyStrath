@@ -114,9 +114,7 @@ void Foam::mixed2TREnergyFvPatchScalarField::updateCoeffs()
     (
         const_cast<fvPatchScalarField&>(multiThermo.T().boundaryField()[patchi])
     );
-
     Tw.evaluate();
-    valueFraction() = Tw.valueFraction();
     
     tmp<scalarField> thet(new scalarField(pw.size()));
     tmp<scalarField> thetRef(new scalarField(pw.size()));
@@ -152,6 +150,7 @@ void Foam::mixed2TREnergyFvPatchScalarField::updateCoeffs()
     
     cvtTw *= Tw.refGrad();
     
+    valueFraction() = Tw.valueFraction();
     refValue() = thetRef;
     refGrad() = tcvtTw + patch().deltaCoeffs()*(thet - thetfC);
 

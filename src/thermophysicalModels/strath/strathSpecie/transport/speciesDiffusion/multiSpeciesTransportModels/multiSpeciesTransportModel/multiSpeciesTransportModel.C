@@ -396,8 +396,11 @@ Foam::multiSpeciesTransportModel::multiSpeciesHeatSource() const
     {
         const label speciej = thermo_.composition().heavySpeciesIds(j);
         
-        const volScalarField& TvCells = thermo_.composition().Tv(speciej);
-        const volVectorField& JcorrCells = Jcorrected(speciej);
+        const volScalarField& Tv = thermo_.composition().Tv(speciej);
+        const volVectorField& Jcorr = Jcorrected(speciej);
+        
+        const scalarField& TvCells = Tv.internalField();
+        const vectorField& JcorrCells = Jcorr.internalField();
 
         forAll(hsj, celli)
         {
@@ -416,6 +419,61 @@ Foam::multiSpeciesTransportModel::multiSpeciesHeatSource() const
     }
 
     return tmultiSpeciesHeatSource;
+}
+
+
+Foam::tmp<Foam::volVectorField> 
+Foam::multiSpeciesTransportModel::multiSpeciesVEHeatSource() const
+{
+    tmp<volVectorField> tmultiSpeciesVEHeatSource
+    (
+        new volVectorField
+        (
+            IOobject
+            (
+                "multiSpeciesVEHeatSource",
+                mesh_.time().timeName(),
+                mesh_,
+                IOobject::NO_READ,
+                IOobject::NO_WRITE
+            ),
+            mesh_,
+            dimensionedVector
+            (
+                "zero",
+                dimEnergy/dimArea/dimTime,
+                vector::zero
+            )
+        )
+    );
+    
+    volVectorField& multiSpeciesVEHeatSource = tmultiSpeciesVEHeatSource.ref();
+    vectorField& multiSpeciesVEHeatSourceCells =
+        multiSpeciesVEHeatSource.primitiveFieldRef();
+    
+    // Term #5 in Eq. (16)
+    // In: NASA-TM-101528 (Gupta, Yos, Thompson: Feb. 1989)
+    // Document ID: 19890011822
+    // A review of reaction rates and thermodynamic and transport 
+    // properties for the 11-species air model for chemical and
+    // thermal nonequilibrium calculations to 30000 K
+            
+    forAll(species(), speciej)
+    {
+        const volScalarField& hevel = thermo_.composition().hevel(speciej);
+        const volVectorField& Jcorr = Jcorrected(speciej);
+        
+        const scalarField& hevelCells = hevel.internalField();
+        const vectorField& JcorrCells = Jcorr.internalField();
+
+        forAll(hevelCells, celli)
+        {
+            multiSpeciesVEHeatSourceCells[celli] +=
+                hevelCells[celli]*JcorrCells[celli];
+        }
+    }
+
+    return tmultiSpeciesVEHeatSource;
 }
 
 
@@ -475,110 +533,108 @@ Foam::multiSpeciesTransportModel::getDiffusiveWallHeatFlux() const
         )
     );
     
+    volScalarField hai
+    (
+        IOobject
+        (
+            "hai",
+            mesh_.time().timeName(),
+            mesh_,
+            IOobject::NO_READ,
+            IOobject::NO_WRITE
+        ),
+        mesh_,
+        dimensionedScalar("hai", dimEnergy/dimMass, 0.0)
+    );
+    
     PtrList<surfaceScalarField> Is(species().size());
     PtrList<surfaceScalarField> Js(species().size());
                     
-    forAll(species(), speciei)
+    forAll(heavySpecies(), i)
     {
-        if (thermo_.composition().particleType(speciei) != 0)
-        {
-            Is.set
-            (
-                speciei,
-                new surfaceScalarField
-                (
-                    IOobject
-                    (
-                        "Is_" + Y[speciei].name(),
-                        mesh_.time().timeName(),
-                        mesh_,
-                        IOobject::NO_READ,
-                        IOobject::NO_WRITE
-                    ),
-                    -fvc::interpolate(rhoD(speciei))*fvc::snGrad(Y[speciei])
-                )
-            );
-
-            sum_diff_fluxes += Is[speciei]; 
-        }
-    }
-    
-    forAll(species(), speciei)
-    {
-        if (thermo_.composition().particleType(speciei) != 0)
-        {
-            Js.set
-            (
-                speciei,
-                new surfaceScalarField
-                (
-                    IOobject
-                    (
-                        "Is_" + Y[speciei].name(),
-                        mesh_.time().timeName(),
-                        mesh_,
-                        IOobject::NO_READ,
-                        IOobject::NO_WRITE
-                    ),
-                    Is[speciei]
-                )
-            );
-            
-            if (not useNonCorrected_)
-            {
-                Js[speciei] -= fvc::interpolate(Y[speciei])*sum_diff_fluxes;
-            }
-            
-            volScalarField hai
+        const label speciei = thermo_.composition().heavySpeciesIds(i);
+        
+        Is.set
+        (
+            speciei,
+            new surfaceScalarField
             (
                 IOobject
                 (
-                    "hai",
+                    "Is_" + Y[speciei].name(),
                     mesh_.time().timeName(),
                     mesh_,
                     IOobject::NO_READ,
                     IOobject::NO_WRITE
                 ),
-                mesh_,
-                dimensionedScalar("hai", dimEnergy/dimMass, 0.0)
-            );
+                -fvc::interpolate(rhoD(speciei))*fvc::snGrad(Y[speciei])
+            )
+        );
 
-            forAll(hai, celli)
+        sum_diff_fluxes += Is[speciei]; 
+    }
+    
+    forAll(heavySpecies(), i)
+    {
+        const label speciei = thermo_.composition().heavySpeciesIds(i);
+
+        Js.set
+        (
+            speciei,
+            new surfaceScalarField
+            (
+                IOobject
+                (
+                    "Is_" + Y[speciei].name(),
+                    mesh_.time().timeName(),
+                    mesh_,
+                    IOobject::NO_READ,
+                    IOobject::NO_WRITE
+                ),
+                Is[speciei]
+            )
+        );
+        
+        if (not useNonCorrected_)
+        {
+            Js[speciei] -= fvc::interpolate(Y[speciei])*sum_diff_fluxes;
+        }
+        
+        forAll(hai, celli)
+        {
+            hai[celli] =
+                ha
+                (
+                    speciei,
+                    p[celli],
+                    Tt[celli],
+                    Tv[speciei][celli]
+                );
+        }
+
+        forAll(hai.boundaryField(), patchi)
+        {
+            const fvPatchScalarField& pp = p.boundaryField()[patchi];
+            const fvPatchScalarField& pTt = Tt.boundaryField()[patchi];
+            const fvPatchScalarField& pTv =
+                thermo_.composition().Tv(speciei).boundaryField()[patchi];
+
+            fvPatchScalarField& phai = hai.boundaryFieldRef()[patchi];
+
+            forAll(pTt, facei)
             {
-                hai[celli] =
+                phai[facei] =
                     ha
                     (
                         speciei,
-                        p[celli],
-                        Tt[celli],
-                        Tv[speciei][celli]
+                        pp[facei],
+                        pTt[facei],
+                        pTv[facei]
                     );
             }
-
-            forAll(hai.boundaryField(), patchi)
-            {
-                const fvPatchScalarField& pp = p.boundaryField()[patchi];
-                const fvPatchScalarField& pTt = Tt.boundaryField()[patchi];
-                const fvPatchScalarField& pTv =
-                    thermo_.composition().Tv(speciei).boundaryField()[patchi];
-
-                fvPatchScalarField& phai = hai.boundaryFieldRef()[patchi];
-
-                forAll(pTt, facei)
-                {
-                    phai[facei] =
-                        ha
-                        (
-                            speciei,
-                            pp[facei],
-                            pTt[facei],
-                            pTv[facei]
-                        );
-                }
-            }  
-            
-            heatFlux_diff = Js[speciei]*fvc::interpolate(hai);
-        }
+        }  
+        
+        heatFlux_diff = Js[speciei]*fvc::interpolate(hai);
     }
     
     return heatFlux_diff;

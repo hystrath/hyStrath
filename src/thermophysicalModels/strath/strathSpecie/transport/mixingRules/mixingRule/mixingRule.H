@@ -48,7 +48,7 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                    Class mixingRule Declaration
+                         Class mixingRule Declaration
 \*---------------------------------------------------------------------------*/
 
 class mixingRule
@@ -71,24 +71,27 @@ protected:
 
         //- Viscosity [kg/m/s]
         PtrList<volScalarField> spmu_;
+        
+/*        PtrList<volScalarField> spCptr_;*/
+/*        PtrList<volScalarField> spCvvel_;*/
 
-        //- Thermal conductivity, trans-rotational mode [W/mK]
+        //- Thermal conductivity, trans-rotational energy mode [W/mK]
         PtrList<volScalarField> spkappatr_;
 
-        //- Thermal conductivity, vib-electronic mode [W/mK]
+        //- Thermal conductivity, vibro-electronic energy mode [W/mK]
         PtrList<volScalarField> spkappave_;
 
-        //- Thermal diffusivity, trans-rotational mode [kg/ms], also called kappatrTilda
+        //- Thermal diffusivity, trans-rotational energy mode [kg/ms]
         PtrList<volScalarField> spalphatr_;
 
-        //- Thermal diffusivity, vib-eletronic mode [kg/ms], also called kappaveTilda
+        //- Thermal diffusivity, vibro-eletronic energy mode [kg/ms]
         PtrList<volScalarField> spalphave_;
 
-        //- Write the viscosity species/mixture?
+        //- Write the species/mixture viscosity?
         const bool writeMuSpecies_;
         const bool writeMuMixture_;
 
-        //- Write the thermal diffusivity species/mixture?
+        //- Write the species/mixture thermal diffusivity?
         const bool writeKappaSpecies_;
         const bool writeKappaMixture_;
 
@@ -160,28 +163,36 @@ public:
             //- Return the const viscosity field for species i
             inline const volScalarField& mu(label i) const;
 
-            //- Return the const trans-rot thermal conductivity field for species i
+            //- Return the const trans-rotational thermal conductivity field
+            //  for a given species
             inline const volScalarField& kappatr(label i) const;
 
-            //- Return the const vib-elec thermal conductivity field for species i
+            //- Return the const vibro-electronic thermal conductivity field
+            //  for a given species
             inline const volScalarField& kappave(label i) const;
 
-            //- Return the const trans-rot thermal conductivity field for the mixture
+            //- Return the const trans-rotational thermal conductivity field
+            //  for the mixture
             inline volScalarField& kappatr() const;
 
-            //- Return the const vib-elec thermal conductivity field for the mixture
+            //- Return the const vibro-electronic thermal conductivity field
+            //  for the mixture
             inline volScalarField& kappave() const;
 
-            //- Return the const trans-rot thermal diffusivity field for species i
+            //- Return the const trans-rotational thermal diffusivity field
+            //  for a given species
             inline const volScalarField& alphatr(label i) const;
 
-            //- Return the const vib-elec thermal diffusivity field for species i
+            //- Return the const vibro-electronic thermal diffusivity field
+            //  for a given species
             inline const volScalarField& alphave(label i) const;
 
-            //- Return the const trans-rot thermal diffusivity field for the mixture
+            //- Return the const trans-rotational thermal diffusivity field
+            //  for the mixture
             inline volScalarField& alphatr() const;
 
-            //- Return the const vib-elec thermal diffusivity field for the mixture
+            //- Return the const vibro-electronic thermal diffusivity field
+            //  for the mixture
             inline volScalarField& alphave() const;
 
             //- Return the table of species
@@ -195,7 +206,31 @@ public:
         virtual inline scalar W(const label i) const = 0;
 
         //- Viscosity for a specie given by index
-        virtual inline scalar mu(const label i, const scalar p, const scalar Tt) const = 0;
+        virtual inline scalar mu
+        (
+            const label i,
+            const scalar p,
+            const scalar T
+        ) const = 0;
+        
+        //- Thermal conductivity [W/mK], for a specie given by index
+        //  trans-rotational energy mode
+        virtual inline scalar kappatr
+        (
+            const label i,
+            const scalar p,
+            const scalar T
+        ) const = 0;
+
+        //- Thermal conductivity [W/mK], for a specie given by index
+        //  vibro-electronic energy mode
+        virtual inline scalar kappave
+        (
+            const label i,
+            const scalar p,
+            const scalar T,
+            const scalar Tve
+        ) const = 0;
 
         //- Calculations and updates the different fields
         virtual void correct() = 0;

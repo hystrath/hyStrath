@@ -173,64 +173,70 @@ public:
         // Fundamental properties
         // (These functions must be provided in derived types)
 
-            // Heat capacity at constant volume for the trans-rotational mode
-            // [J/(kmol K)]
+            // Heat capacity at constant volume [J/(kmol K)]
+            // trans-rotational energy mode
             // scalar cv_t(const scalar, const scalar) const;
 
-            // Heat capacity at constant volume for the rotational mode
-            // [J/(kmol K)]
+            // Heat capacity at constant volume [J/(kmol K)]
+            // rotational energy mode
             // scalar cv_r(const scalar, const scalar) const;
 
-            // Heat capacity at constant volume for the vibrational mode
-            // [J/(kmol K)], mode vibMode
+            // Heat capacity at constant volume [J/(kmol K)]
+            // vibrational energy mode, mode vibMode
             // scalar cv_v_mode(const label, const scalar, const scalar) const;
 
-            // Heat capacity at constant volume for the vibrational mode
-            // [J/(kmol K)]
+            // Heat capacity at constant volume [J/(kmol K)]
+            // vibrational energy mode
             // scalar cv_v(const scalar, const scalar) const;
 
-            // Heat capacity at constant volume for the electronic mode
-            // [J/(kmol K)]
+            // Heat capacity at constant volume [J/(kmol K)]
+            // electronic energy mode
             // scalar cv_el(const scalar, const scalar) const;
 
-            // Heat capacity at constant volume for the electron mode
-            // [J/(kmol K)]
+            // Heat capacity at constant volume [J/(kmol K)]
+            // electron energy mode
             // scalar cv_e(const scalar, const scalar) const;
 
-            // Absolute Enthalpy [J/kmol]
+            // Absolute enthalpy [J/kmol]
             // scalar ha(const scalar) const;
 
-            // Sensible internal energy [J/kmol], trans-rotational mode
+            // Sensible internal energy [J/kmol], trans-rotational energy mode
             // scalar ets(const scalar, const scalar) const;
 
-            // Sensible internal energy [J/kmol], rotational mode
+            // Sensible internal energy [J/kmol], rotational energy mode
             // scalar ers(const scalar, const scalar) const;
 
-            // Sensible internal energy [J/kmol], vibrational mode, mode vibMode
+            // Sensible internal energy [J/kmol]
+            // for a given vibrational energy mode
             // scalar evs_mode(const label, const scalar, const scalar) const;
 
-            // Sensible internal energy [J/kmol], vibrational mode
+            // Sensible internal energy [J/kmol], vibrational energy mode
             // scalar evs(const scalar, const scalar) const;
 
-            // Sensible internal energy [J/kmol], electronic mode
+            // Sensible internal energy [J/kmol], electronic energy mode
             // scalar eels(const scalar, const scalar) const;
 
             // Sensible internal energy [J/kmol], electron mode
             // scalar ees(const scalar, const scalar) const;
 
-            //- Degrees of freedom associated with the rotational energy mode [-]
-            // inline scalar zetar(const scalar, const scalar, const scalar) const;
+            //- Degrees of freedom associated with the rotational energy mode
+            // inline scalar zetar
+            // (
+            //    const scalar,
+            //    const scalar,
+            //    const scalar
+            // ) const;
 
-            //- Degrees of freedom associated with the vibrational energy mode [-], mode vibMode
+            //- Degrees of freedom associated with the vibrational energy mode, mode vibMode
             // inline scalar zetav_mode(const label, const scalar, const scalar) const;
 
-            //- Degrees of freedom associated with the vibrational energy mode [-]
+            //- Degrees of freedom associated with the vibrational energy mode
             // inline scalar zetav(const scalar, const scalar) const;
 
-            //- Degrees of freedom associated with the electronic energy mode [-]
+            //- Degrees of freedom associated with the electronic energy mode
             // inline scalar zetael(const scalar, const scalar) const;
 
-            //- Degrees of freedom associated with the electron energy mode [-]
+            //- Degrees of freedom associated with the electron energy mode
             // inline scalar zetae(const scalar, const scalar) const;
 
             // Chemical enthalpy [J/kmol]
@@ -248,8 +254,10 @@ public:
                 //- Name of enthalpy/internal energy
                 static inline word heName();
 
-                //- Enthalpy/Internal energy [J/kmol]
+                //- Enthalpy/Internal energy [J/kmol] (backward compatibility)
                 inline scalar he(const scalar p, const scalar T) const;
+                
+                //- Enthalpy/Internal energy [J/kmol]
                 inline scalar he
                 (
                     const scalar p,
@@ -274,19 +282,14 @@ public:
                 //- Electronic enthalpy/internal energy [J/kmol]
                 inline scalar heel(const scalar p, const scalar Tv) const;
 
-                //- Vibro-electronic enthalpy/internal energy [J/kmol], mode vibMode
-                inline scalar hevel_mode
-                (
-                    const label vibMode,
-                    const scalar p,
-                    const scalar Tv
-                ) const;
-
                 //- Vibro-electronic enthalpy/internal energy [J/kmol]
                 inline scalar hevel(const scalar p, const scalar Tv) const;
 
                 //- Heat capacity at constant volume [J/(kmol K)]
+                //  (backward compatibility)
                 inline scalar cv(const scalar p, const scalar T) const;
+                
+                //- Heat capacity at constant volume [J/(kmol K)]
                 inline scalar cv
                 (
                     const scalar p,
@@ -294,20 +297,15 @@ public:
                     const scalar Tv
                 ) const;
 
-                //- Heat capacity at constant volume [J/(kmol K)], vibro-electronic mode,
-                //  mode vibMode
-                inline scalar cv_vel_mode
-                (
-                    const label vibMode,
-                    const scalar p,
-                    const scalar Tv
-                ) const;
-
-                //- Heat capacity at constant volume [J/(kmol K)], vibro-electronic mode
+                //- Heat capacity at constant volume [J/(kmol K)]
+                //  vibro-electronic energy mode
                 inline scalar cv_vel(const scalar p, const scalar Tv) const;
 
                 //- Heat capacity at constant pressure [J/(kmol K)]
+                //  (backward compatibility)
                 inline scalar cp(const scalar p, const scalar T) const;
+                
+                //- Heat capacity at constant pressure [J/(kmol K)]
                 inline scalar cp
                 (
                     const scalar p,
@@ -315,10 +313,12 @@ public:
                     const scalar Tv
                 ) const;
 
-                //- Heat capacity at constant pressure, trans-rotational mode [J/(kmol K)]
+                //- Heat capacity at constant pressure [J/(kmol K)]
+                //  trans-rotational energy mode
                 inline scalar cp_t(const scalar p, const scalar T) const;
 
-                //- Heat capacity at constant pressure, vibrational mode, mode vibMode [J/(kmol K)]
+                //- Heat capacity at constant pressure [J/(kmol K)]
+                //  vibrational energy mode vibMode 
                 inline scalar cp_v_mode
                 (
                     const label vibMode,
@@ -326,24 +326,13 @@ public:
                     const scalar Tv
                 ) const;
 
-                //- Heat capacity at constant pressure, vibrational mode [J/(kmol K)]
+                //- Heat capacity at constant pressure [J/(kmol K)]
+                //  vibrational energy mode 
                 inline scalar cp_v(const scalar p, const scalar Tv) const;
 
-                //- Heat capacity at constant pressure, electronic mode [J/(kmol K)]
-                inline scalar cp_el(const scalar p, const scalar Tv) const;
-
-                //- Heat capacity at constant pressure [J/(kmol K)], vibro-electronic mode
-                //  mode vibMode
-                inline scalar cp_vel_mode
-                (
-                    const label vibMode,
-                    const scalar p,
-                    const scalar Tv
-                ) const;
-
                 //- Heat capacity at constant pressure [J/(kmol K)]
-                //  vibro-electronic mode
-                inline scalar cp_vel(const scalar p, const scalar Tv) const;
+                //  electronic energy mode
+                inline scalar cp_el(const scalar p, const scalar Tv) const;
 
                 //- gamma = cp/cv []
                 inline scalar gamma
@@ -353,8 +342,10 @@ public:
                     const scalar Tv = 0
                 ) const;
 
-                //- Sensible internal energy [J/kmol]
+                //- Sensible internal energy [J/kmol] (backward compatibility)
                 inline scalar es(const scalar p, const scalar T) const;
+                
+                //- Sensible internal energy [J/kmol]
                 inline scalar es
                 (
                     const scalar p,
@@ -362,7 +353,8 @@ public:
                     const scalar Tv
                 ) const;
 
-                //- Sensible enthalpy [J/kmol], vibro-electronic mode, mode vibMode
+                //- Sensible enthalpy [J/kmol]
+                //  vibro-electronic energy mode vibMode
                 inline scalar evels_mode
                 (
                     const label vibMode,
@@ -370,7 +362,7 @@ public:
                     const scalar Tv
                 ) const;
 
-                //- Sensible enthalpy [J/kmol], vibro-electronic mode
+                //- Sensible enthalpy [J/kmol], vibro-electronic energy mode
                 inline scalar evels(const scalar p, const scalar Tv) const;
 
                 //- Sensible enthalpy [J/kmol]
@@ -382,10 +374,10 @@ public:
                     const scalar Tv
                 ) const;
 
-                //- Sensible enthalpy [J/kmol], trans-rotational mode
+                //- Sensible enthalpy [J/kmol], trans-rotational energy mode
                 inline scalar hts(const scalar p, const scalar T) const;
 
-                //- Sensible enthalpy [J/kmol], vibrational mode, mode vibMode
+                //- Sensible enthalpy [J/kmol], vibrational energy mode vibMode
                 inline scalar hvs_mode
                 (
                     const label vibMode,
@@ -393,22 +385,11 @@ public:
                     const scalar Tv
                 ) const;
 
-                //- Sensible enthalpy [J/kmol], vibrational mode
+                //- Sensible enthalpy [J/kmol], vibrational energy mode
                 inline scalar hvs(const scalar p, const scalar Tv) const;
 
-                //- Sensible enthalpy [J/kmol], electronic mode
+                //- Sensible enthalpy [J/kmol], electronic energy mode
                 inline scalar hels(const scalar p, const scalar Tv) const;
-
-                //- Sensible enthalpy [J/kmol], vibro-electronic mode, mode vibMode
-                inline scalar hvels_mode
-                (
-                    const label vibMode,
-                    const scalar p,
-                    const scalar Tv
-                ) const;
-
-                //- Sensible enthalpy [J/kmol], vibro-electronic mode
-                inline scalar hvels(const scalar p, const scalar Tv) const;
 
                 //- Absolute internal energy [J/kmol]
                 inline scalar ea
@@ -446,7 +427,10 @@ public:
                 ) const;
 
                 //- Heat capacity at constant volume [J/(kg K)]
+                //  (backward compatibility)
                 inline scalar Cv(const scalar p, const scalar T) const;
+                
+                //- Heat capacity at constant volume [J/(kg K)]
                 inline scalar Cv
                 (
                     const scalar p,
@@ -462,20 +446,20 @@ public:
                     const scalar Tv = 0
                 ) const;
 
-                //- Heat capacity at constant volume for the
-                //  translational energy mode [J/(kg K)]
+                //- Heat capacity at constant volume [J/(kg K)]
+                //  translational energy mode
                 inline scalar Cv_trans(const scalar p, const scalar T) const;
 
-                //- Heat capacity at constant volume for the
-                //  rotational energy mode [J/(kg K)]
+                //- Heat capacity at constant volume [J/(kg K)]
+                //  rotational energy mode
                 inline scalar Cv_r(const scalar p, const scalar T) const;
 
                 //- Heat capacity at constant volume for the
                 //  trans-rotational energy mode [J/(kg K)]
                 inline scalar Cv_t(const scalar p, const scalar T) const;
 
-                //- Heat capacity at constant volume for the
-                //  vibrational internal energy mode  [J/(kg K)], mode vibMode
+                //- Heat capacity at constant volume [J/(kg K)]
+                //  vibrational energy mode vibMode
                 inline scalar Cv_v_mode
                 (
                     const label vibMode,
@@ -483,33 +467,24 @@ public:
                     const scalar Tv
                 ) const;
 
-                //- Heat capacity at constant volume for the
-                //  vibrational internal energy mode  [J/(kg K)]
+                //- Heat capacity at constant volume [J/(kg K)]
+                //  vibrational energy mode
                 inline scalar Cv_v(const scalar p, const scalar Tv) const;
 
-                //- Heat capacity at constant volume for the
-                //  electronic internal energy mode  [J/(kg K)]
+                //- Heat capacity at constant volume [J/(kg K)]
+                //  electronic energy mode
                 inline scalar Cv_el(const scalar p, const scalar Tv) const;
 
-                //- Heat capacity at constant volume for the
-                //  vibro-electronic internal energy mode  [J/(kg K)], mode vibMode
-                inline scalar Cv_vel_mode
-                (
-                    const label vibMode,
-                    const scalar p,
-                    const scalar Tv
-                ) const;
-
-                //- Heat capacity at constant volume for the
-                //  vibro-electronic internal energy mode  [J/(kg K)]
+                //- Heat capacity at constant volume [J/(kg K)]
+                //  vibro-electronic energy mode
                 inline scalar Cv_vel(const scalar p, const scalar Tv) const;
 
-                //- Heat capacity at constant pressure for the
-                //  trans-rotational energy mode [J/(kg K)]
+                //- Heat capacity at constant pressure [J/(kg K)]
+                //  trans-rotational energy mode
                 inline scalar Cp_t(const scalar p, const scalar T) const;
 
-                //- Heat capacity at constant pressure for the
-                //  vibrational internal energy mode  [J/(kg K)]
+                //- Heat capacity at constant pressure [J/(kg K)]
+                //  vibrational energy mode
                 inline scalar Cp_v_mode
                 (
                     const label vibMode,
@@ -517,29 +492,18 @@ public:
                     const scalar Tv
                 ) const;
 
-                //- Heat capacity at constant pressure for the
-                //  vibrational internal energy mode  [J/(kg K)]
+                //- Heat capacity at constant pressure [J/(kg K)]
+                //  vibrational energy mode
                 inline scalar Cp_v(const scalar p, const scalar Tv) const;
 
-                //- Heat capacity at constant pressure for the
-                //  electronic internal energy mode  [J/(kg K)]
+                //- Heat capacity at constant pressure [J/(kg K)]
+                //  electronic energy mode
                 inline scalar Cp_el(const scalar p, const scalar Tv) const;
 
-                //- Heat capacity at constant pressure for the
-                //  vibro-electronic internal energy mode  [J/(kg K)], mode vibMode
-                inline scalar Cp_vel_mode
-                (
-                    const label vibMode,
-                    const scalar p,
-                    const scalar Tv
-                ) const;
-
-                //- Heat capacity at constant pressure for the
-                //  vibro-electronic internal energy mode  [J/(kg K)]
-                inline scalar Cp_vel(const scalar p, const scalar Tv) const;
-
-                //- Enthalpy/Internal energy [J/kg]
+                //- Enthalpy/Internal energy [J/kg] (backward compatibility)
                 inline scalar HE(const scalar p, const scalar T) const;
+                
+                //- Enthalpy/Internal energy [J/kg]
                 inline scalar HE
                 (
                     const scalar p,
@@ -564,15 +528,7 @@ public:
                 //- Electronic enthalpy/internal energy [J/kg]
                 inline scalar HEel(const scalar p, const scalar Tv) const;
 
-                //- Vibrational + Electronic enthalpy/internal energy [J/kg], mode vibMode
-                inline scalar HEvel_mode
-                (
-                    const label vibMode,
-                    const scalar p,
-                    const scalar Tv
-                ) const;
-
-                //- Vibrational + Electronic enthalpy/internal energy [J/kg]
+                //- Vibro-electronic enthalpy/internal energy [J/kg]
                 inline scalar HEvel(const scalar p, const scalar Tv) const;
 
                 //- Sensible enthalpy [J/kg]
@@ -583,10 +539,10 @@ public:
                     const scalar Tv = 0
                 ) const;
 
-                //- Sensible enthalpy [J/kg], trans-rotational mode
+                //- Sensible enthalpy [J/kg], trans-rotational energy mode
                 inline scalar Hts(const scalar p, const scalar T) const;
 
-                //- Sensible enthalpy [J/kg], vibrational mode, mode vibMode
+                //- Sensible enthalpy [J/kg], vibrational energy mode vibMode
                 inline scalar Hvs_mode
                 (
                     const label vibMode,
@@ -594,22 +550,11 @@ public:
                     const scalar Tv
                 ) const;
 
-                //- Sensible enthalpy [J/kg], vibrational mode
+                //- Sensible enthalpy [J/kg], vibrational energy mode
                 inline scalar Hvs(const scalar p, const scalar Tv) const;
 
-                //- Sensible enthalpy [J/kg], electronic mode
+                //- Sensible enthalpy [J/kg], electronic energy mode
                 inline scalar Hels(const scalar p, const scalar Tv) const;
-
-                //- Sensible enthalpy [J/kg], vibro-electronic mode, mode vibMode
-                inline scalar Hvels_mode
-                (
-                    const label vibMode,
-                    const scalar p,
-                    const scalar Tv
-                ) const;
-
-                //- Sensible enthalpy [J/kg], vibro-electronic mode
-                inline scalar Hvels(const scalar p, const scalar Tv) const;
 
                 //- Chemical enthalpy [J/kg]
                 inline scalar Hc() const;
@@ -638,8 +583,10 @@ public:
                     const scalar Tv = 0
                 ) const;
 
-                //- Sensible internal energy [J/kg]
+                //- Sensible internal energy [J/kg] (backward compatibility)
                 inline scalar Es(const scalar p, const scalar T) const;
+                
+                //- Sensible internal energy [J/kg]
                 inline scalar Es
                 (
                     const scalar p,
@@ -647,10 +594,12 @@ public:
                     const scalar Tv
                 ) const;
 
-                //- Sensible internal energy [J/kg], trans-rotational mode
+                //- Sensible internal energy [J/kg]
+                //  trans-rotational energy mode
                 inline scalar Ets(const scalar p, const scalar T) const;
 
-                //- Sensible internal energy [J/kg], vibrational mode, mode vibMode
+                //- Sensible internal energy [J/kg]
+                //  vibrational energy mode vibMode
                 inline scalar Evs_mode
                 (
                     const label vibMode,
@@ -658,22 +607,14 @@ public:
                     const scalar Tv
                 ) const;
 
-                //- Sensible internal energy [J/kg], vibrational mode
+                //- Sensible internal energy [J/kg], vibrational energy mode
                 inline scalar Evs(const scalar p, const scalar Tv) const;
 
-                //- Sensible internal energy [J/kg], electronic mode
+                //- Sensible internal energy [J/kg], electronic energy mode
                 inline scalar Eels(const scalar p, const scalar Tv) const;
 
-                //- Sensible internal energy [J/kg], vibro-electronic mode,
-                //  mode vibMode
-                inline scalar Evels_mode
-                (
-                    const label vibMode,
-                    const scalar p,
-                    const scalar Tv
-                ) const;
-
-                //- Sensible internal energy [J/kg], vibro-electronic mode
+                //- Sensible internal energy [J/kg]
+                //  vibro-electronic energy mode
                 inline scalar Evels(const scalar p, const scalar Tv) const;
 
                 //- Absolute internal energy [J/kg]
@@ -777,16 +718,6 @@ public:
                 const scalar T0
             ) const;
 
-            //- Vibro-electronic temperature from enthalpy or internal energy
-            //  given an initial temperature T0, mode vibMode
-            inline scalar TvelHEvel_mode
-            (
-                const label vibMode,
-                const scalar H,
-                const scalar p,
-                const scalar T0
-            ) const;
-
             //- Trans-rotational temperature from sensible enthalpy
             //  given an initial T0
             inline scalar TtHts
@@ -799,15 +730,6 @@ public:
             //- Vibrational temperature from sensible enthalpy given an
             //  initial T0
             inline scalar TvHvs
-            (
-                const scalar Hs,
-                const scalar p,
-                const scalar T0
-            ) const;
-
-            //- Vibro-electronic temperature from sensible enthalpy given an
-            //  initial T0
-            inline scalar TvelHvels
             (
                 const scalar Hs,
                 const scalar p,
@@ -847,16 +769,6 @@ public:
             inline scalar TvEvs
             (
                 const scalar Es,
-                const scalar p,
-                const scalar T0
-            ) const;
-
-            //- Vibro-electronic temperature from sensible internal energy
-            //  given an initial T0, mode vibMode
-            inline scalar TvelEvels_mode
-            (
-                const label vibMode,
-                const scalar Es_mode,
                 const scalar p,
                 const scalar T0
             ) const;

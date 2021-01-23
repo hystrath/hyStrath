@@ -53,7 +53,6 @@ nonEqSmoluchowskiJumpTvFvPatchScalarField
     word fieldName = iF.name();
     specieName_ = fieldName.substr(fieldName.find("_") + 1);
     alphaName_ = "alphave_" + specieName_;
-    //mfpName_ = "mfpvib_" + specieName_;
 
     refValue() = 0.0;
     refGrad() = 0.0;
@@ -104,7 +103,6 @@ nonEqSmoluchowskiJumpTvFvPatchScalarField
     word fieldName = iF.name();
     specieName_ = fieldName.substr(fieldName.find("_") + 1);
     alphaName_ = "alphave_" + specieName_;
-    //mfpName_ = "mfpvib_"+specieName_; // NEW VINCENT 11/05/2016
 
     if
     (
@@ -205,15 +203,14 @@ void Foam::nonEqSmoluchowskiJumpTvFvPatchScalarField::updateCoeffs()
     const fvPatchVectorField& pU =
         patch().lookupPatchField<volVectorField, vector>(UName_);
 
-    // Pr = mu*Cp/k = mu/alpha * Cp/Cv = mu/alpha * gamma
-    Field<scalar> C2
+    scalarField C2
     (
-        pmfp*2.0/(pgammatr + 1.0)/(pmu/palpha)
+        pmfp*2.0*palpha/(pgammatr + 1.0)/(pmu/palpha)
       * (2.0 - accommodationCoeff_)/accommodationCoeff_
     );
 
-    Field<scalar> aCoeff(prho.snGrad() - prho/C2);
-    Field<scalar> KEbyRho(0.5*magSqr(pU));
+//    scalarField aCoeff(prho.snGrad() - prho/C2);
+//    scalarField KEbyRho(0.5*magSqr(pU));
 
     valueFraction() = (1.0/(1.0 + patch().deltaCoeffs()*C2));
     refValue() = Twall_;

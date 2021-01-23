@@ -439,54 +439,6 @@ inline const Foam::volScalarField& Foam::basic2MultiComponentMixture::hevel
 }
 
 
-inline Foam::PtrList<Foam::volScalarField>&
-Foam::basic2MultiComponentMixture::enthalpy()
-{
-    return h_;
-}
-
-
-inline const Foam::PtrList<Foam::volScalarField>&
-Foam::basic2MultiComponentMixture::enthalpy() const
-{
-    return h_;
-}
-
-
-inline Foam::volScalarField&
-Foam::basic2MultiComponentMixture::enthalpy(const label i)
-{
-    return h_[i];
-}
-
-
-inline const Foam::volScalarField& Foam::basic2MultiComponentMixture::enthalpy
-(
-    const label i
-) const
-{
-    return h_[i];
-}
-
-
-inline Foam::volScalarField& Foam::basic2MultiComponentMixture::enthalpy
-(
-    const word& specieName
-)
-{
-    return h_[species_[specieName]];
-}
-
-
-inline const Foam::volScalarField& Foam::basic2MultiComponentMixture::enthalpy
-(
-    const word& specieName
-) const
-{
-    return h_[species_[specieName]];
-}
-
-
 // TODO ABORTIVE WORK
 /*inline Foam::PtrList<Foam::PtrList<Foam::volScalarField> >&
 Foam::basic2MultiComponentMixture::hevel_mode()
@@ -631,6 +583,64 @@ inline const Foam::volScalarField& Foam::basic2MultiComponentMixture::Tv_mode
 {
     return spmodeTv_[species_[specieName]][m];
 }*/
+
+
+inline Foam::PtrList<Foam::volScalarField>&
+Foam::basic2MultiComponentMixture::Cvtr()
+{
+    return Cvtr_;
+}
+
+
+inline const Foam::PtrList<Foam::volScalarField>&
+Foam::basic2MultiComponentMixture::Cvtr() const
+{
+    return Cvtr_;
+}
+
+
+inline Foam::volScalarField&
+Foam::basic2MultiComponentMixture::Cvtr(const label i)
+{
+    return Cvtr_[i];
+}
+
+
+inline const Foam::volScalarField& Foam::basic2MultiComponentMixture::Cvtr
+(
+    const label i
+) const
+{
+    return Cvtr_[i];
+}
+
+
+inline Foam::PtrList<Foam::volScalarField>&
+Foam::basic2MultiComponentMixture::Cvvel()
+{
+    return Cvvel_;
+}
+
+
+inline const Foam::PtrList<Foam::volScalarField>&
+Foam::basic2MultiComponentMixture::Cvvel() const
+{
+    return Cvvel_;
+}
+
+
+inline Foam::volScalarField&
+Foam::basic2MultiComponentMixture::Cvvel(const label i)
+{
+    return Cvvel_[i];
+}
+
+
+inline const Foam::volScalarField&
+Foam::basic2MultiComponentMixture::Cvvel(const label i) const
+{
+    return Cvvel_[i];
+}
 
 
 inline Foam::PtrList<Foam::volScalarField>&

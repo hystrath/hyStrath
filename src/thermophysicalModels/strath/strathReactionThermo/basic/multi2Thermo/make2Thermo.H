@@ -25,7 +25,7 @@ InClass
     Foam::multi2Thermo
 
 Description
-    Macros for creating basic multi2 thermo packages
+    Macros for creating basic thermo packages for multi-temperature models
 
 \*---------------------------------------------------------------------------*/
 
@@ -42,9 +42,9 @@ Description
 typedef                                                                       \
     Transport                                                                 \
     <                                                                         \
-        species::multiThermo                                                       \
+        species::multiThermo                                                  \
         <                                                                     \
-            MultiThermo                                                            \
+            MultiThermo                                                       \
             <                                                                 \
                 EqnOfState                                                    \
                 <                                                             \
@@ -53,21 +53,21 @@ typedef                                                                       \
             >,                                                                \
             Type                                                              \
         >                                                                     \
-    > Transport##Type##MultiThermo##EqnOfState##Specie;                            \
+    > Transport##Type##MultiThermo##EqnOfState##Specie;                       \
                                                                               \
 typedef                                                                       \
     Cthermo                                                                   \
     <                                                                         \
         BaseThermo,                                                           \
-        Mixture<Transport##Type##MultiThermo##EqnOfState##Specie>                  \
-    > Cthermo##Mixture##Transport##Type##MultiThermo##EqnOfState##Specie;          \
+        Mixture<Transport##Type##MultiThermo##EqnOfState##Specie>             \
+    > Cthermo##Mixture##Transport##Type##MultiThermo##EqnOfState##Specie;     \
                                                                               \
 defineTemplateTypeNameAndDebugWithName                                        \
 (                                                                             \
-    Cthermo##Mixture##Transport##Type##MultiThermo##EqnOfState##Specie,            \
+    Cthermo##Mixture##Transport##Type##MultiThermo##EqnOfState##Specie,       \
     (                                                                         \
         #Cthermo"<"#Mixture"<"                                                \
-      + Transport##Type##MultiThermo##EqnOfState##Specie::typeName()               \
+      + Transport##Type##MultiThermo##EqnOfState##Specie::typeName()          \
       + ">>"                                                                  \
     ).c_str(),                                                                \
     0                                                                         \
@@ -76,36 +76,36 @@ defineTemplateTypeNameAndDebugWithName                                        \
 
 #define make2Thermo(BaseThermo,Cthermo,Mixture,Transport,Type,MultiThermo,EqnOfState,Specie)\
                                                                               \
-make2ThermoTypedefs                                                            \
+make2ThermoTypedefs                                                           \
 (                                                                             \
     BaseThermo,                                                               \
     Cthermo,                                                                  \
     Mixture,                                                                  \
     Transport,                                                                \
     Type,                                                                     \
-    MultiThermo,                                                                   \
+    MultiThermo,                                                              \
     EqnOfState,                                                               \
     Specie                                                                    \
 )                                                                             \
                                                                               \
 addToRunTimeSelectionTable                                                    \
 (                                                                             \
-    basic2Thermo,                                                              \
-    Cthermo##Mixture##Transport##Type##MultiThermo##EqnOfState##Specie,            \
+    basic2Thermo,                                                             \
+    Cthermo##Mixture##Transport##Type##MultiThermo##EqnOfState##Specie,       \
     fvMesh                                                                    \
 );                                                                            \
                                                                               \
 addToRunTimeSelectionTable                                                    \
 (                                                                             \
-    multi2Thermo,                                                              \
-    Cthermo##Mixture##Transport##Type##MultiThermo##EqnOfState##Specie,            \
+    multi2Thermo,                                                             \
+    Cthermo##Mixture##Transport##Type##MultiThermo##EqnOfState##Specie,       \
     fvMesh                                                                    \
 );                                                                            \
                                                                               \
 addToRunTimeSelectionTable                                                    \
 (                                                                             \
     BaseThermo,                                                               \
-    Cthermo##Mixture##Transport##Type##MultiThermo##EqnOfState##Specie,            \
+    Cthermo##Mixture##Transport##Type##MultiThermo##EqnOfState##Specie,       \
     fvMesh                                                                    \
 );
 

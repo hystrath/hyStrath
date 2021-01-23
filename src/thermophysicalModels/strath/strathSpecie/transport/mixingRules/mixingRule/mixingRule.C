@@ -65,11 +65,26 @@ Foam::mixingRule::mixingRule
     spalphatr_(species().size()),
     spalphave_(species().size()),
 
-    writeMuSpecies_(subDict("transportModels").lookupOrDefault<bool>("writeViscositySpecies", false)),
-    writeMuMixture_(subDict("transportModels").lookupOrDefault<bool>("writeViscosityMixture", false)),
-    writeKappaSpecies_(subDict("transportModels").lookupOrDefault<bool>("writeThermalConducSpecies", false)),
-    writeKappaMixture_(subDict("transportModels").lookupOrDefault<bool>("writeThermalConducMixture", false))
-
+    writeMuSpecies_
+    (
+        subDict("transportModels")
+            .lookupOrDefault<bool>("writeViscositySpecies", false)
+    ),
+    writeMuMixture_
+    (
+        subDict("transportModels")
+            .lookupOrDefault<bool>("writeViscosityMixture", false)
+    ),
+    writeKappaSpecies_
+    (
+        subDict("transportModels")
+            .lookupOrDefault<bool>("writeThermalConducSpecies", false)
+    ),
+    writeKappaMixture_
+    (
+        subDict("transportModels")
+            .lookupOrDefault<bool>("writeThermalConducMixture", false)
+    )
 {
     forAll(spmu_, speciei)
     {
@@ -87,10 +102,15 @@ Foam::mixingRule::mixingRule
                     IOobject::NO_WRITE
                 ),
                 mesh_,
-                dimensionedScalar("mu_" + species()[speciei], dimMass/dimLength/dimTime, 0.0)
+                dimensionedScalar
+                (
+                    "mu_" + species()[speciei],
+                    dimMass/dimLength/dimTime,
+                    0.0
+                )
             )
         );
-
+        
         spkappatr_.set
         (
             speciei,
@@ -105,7 +125,12 @@ Foam::mixingRule::mixingRule
                     IOobject::NO_WRITE
                 ),
                 mesh_,
-                dimensionedScalar("kappatr_" + species()[speciei], dimensionSet(1,1,-3,-1,0,0,0), 0.0)
+                dimensionedScalar
+                (
+                    "kappatr_" + species()[speciei],
+                    dimensionSet(1,1,-3,-1,0,0,0),
+                    0.0
+                )
             )
         );
 
@@ -123,7 +148,12 @@ Foam::mixingRule::mixingRule
                     IOobject::NO_WRITE
                 ),
                 mesh_,
-                dimensionedScalar("kappave_" + species()[speciei], dimensionSet(1,1,-3,-1,0,0,0), 0.0)
+                dimensionedScalar
+                (
+                    "kappave_" + species()[speciei],
+                    dimensionSet(1,1,-3,-1,0,0,0),
+                    0.0
+                )
             )
         );
 
@@ -141,7 +171,12 @@ Foam::mixingRule::mixingRule
                     IOobject::NO_WRITE
                 ),
                 mesh_,
-                dimensionedScalar("alphatr_" + species()[speciei], dimMass/dimLength/dimTime, 0.0)
+                dimensionedScalar
+                (
+                    "alphatr_" + species()[speciei],
+                    dimMass/dimLength/dimTime,
+                    0.0
+                )
             )
         );
 
@@ -159,7 +194,12 @@ Foam::mixingRule::mixingRule
                     IOobject::NO_WRITE
                 ),
                 mesh_,
-                dimensionedScalar("alphave_" + species()[speciei], dimMass/dimLength/dimTime, 0.0)
+                dimensionedScalar
+                (
+                    "alphave_" + species()[speciei],
+                    dimMass/dimLength/dimTime,
+                    0.0
+                )
             )
         );
     }

@@ -109,42 +109,30 @@ void Foam::fixed2EnergyFvPatchScalarField::updateCoeffs()
 
     const label patchi = patch().index();
 
-    const scalarField& pw = multiThermo.p().boundaryField()[patchi];
+    const fvPatchScalarField& pw = multiThermo.p().boundaryField()[patchi];
+    const fvPatchScalarField& Tw = multiThermo.T().boundaryField()[patchi];
 
-    fvPatchScalarField& Tw =
-        const_cast<fvPatchScalarField&>
-        (
-            multiThermo.T().boundaryField()[patchi]
-        );
-    Tw.evaluate();
-
-    tmp<scalarField> thevel
-    (
-        new scalarField(multiThermo.p().boundaryField()[patchi].size())
-    );
+    tmp<scalarField> thet(new scalarField(pw.size()));
+    tmp<scalarField> thevel(new scalarField(pw.size()));
+    
+    scalarField& het = thet.ref();
     scalarField& hevel = thevel.ref();
 
+    het = 0.0;
     hevel = 0.0;
+    
     forAll(thermo_.composition().species(), speciei)
     {
-        fvPatchScalarField& spYw =
-            const_cast<fvPatchScalarField&>
-            (
-                thermo_.composition().Y(speciei).boundaryField()[patchi]
-            );
-        spYw.evaluate();
+        const fvPatchScalarField& spYw =
+            thermo_.composition().Y(speciei).boundaryField()[patchi];
+        const fvPatchScalarField& spTvw =
+            thermo_.composition().Tv(speciei).boundaryField()[patchi];
 
-        fvPatchScalarField& spTvw =
-            const_cast<fvPatchScalarField&>
-            (
-                thermo_.composition().Tv(speciei).boundaryField()[patchi]
-            );
-        spTvw.evaluate();
-
+        het += spYw*thermo_.composition().het(speciei, pw, Tw, patchi);
         hevel += spYw*thermo_.composition().hevel(speciei, pw, spTvw, patchi);
     }
 
-    operator==(multiThermo.het(pw, Tw, patchi) + thevel);
+    operator==(het + thevel);
 
     fixedValueFvPatchScalarField::updateCoeffs();
 }

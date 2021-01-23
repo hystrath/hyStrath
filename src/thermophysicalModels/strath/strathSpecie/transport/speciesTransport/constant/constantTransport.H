@@ -167,16 +167,16 @@ public:
             const scalar Tve
         ) const;
 
-        //- Thermal diffusivity, trans-rotational mode [kg/ms]
-        inline scalar alphatr(const scalar p, const scalar Tt) const;
+/*        //- Thermal diffusivity, trans-rotational mode [kg/ms]*/
+/*        inline scalar alphatr(const scalar p, const scalar Tt) const;*/
 
-        //- Thermal diffusivity, vib-electronic mode [kg/ms]
-        inline scalar alphave
-        (
-            const scalar p,
-            const scalar Tt,
-            const scalar Tve
-        ) const;
+/*        //- Thermal diffusivity, vib-electronic mode [kg/ms]*/
+/*        inline scalar alphave*/
+/*        (*/
+/*            const scalar p,*/
+/*            const scalar Tt,*/
+/*            const scalar Tve*/
+/*        ) const;*/
 
         //- Write to Ostream
         void write(Ostream& os) const;

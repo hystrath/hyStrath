@@ -78,7 +78,32 @@ protected:
         //- Pointer to the energy field associated with the vibro-electronic
         //  energy mode [J/kg]
         volScalarField *hevelMix_;
-
+        
+        //- Mixture heat capacity at constant volume, trans-rotational energy
+        //  mode [J/kg/K]
+        volScalarField CvtrMix_;
+        
+        //- Mixture heat capacity at constant pressure, trans-rotational energy
+        //  mode [J/kg/K]
+        volScalarField CptrMix_;
+        
+        //- Mixture heat capacity at constant volume, vibro-electronic energy
+        //  mode [J/kg/K]
+        volScalarField CvvelMix_;
+        
+        //- Mixture heat capacity at constant pressure, vibro-electronic energy
+        //  mode [J/kg/K]
+        volScalarField CpvelMix_;
+        
+        //- Mixture gas constant [J/kg/K]
+        volScalarField RMix_;
+        
+        //- Mixture heat capacity at constant volume [J/kg/K]
+        volScalarField CvMix_;
+        
+        //- Mixture heat capacity at constant pressure [J/kg/K]
+        volScalarField CpMix_;
+        
         //- Degrees of freedom associated with the rotational energy mode
         volScalarField zetar_;
 
@@ -255,12 +280,12 @@ public:
             ) const = 0;
 
             //- Heat capacity at constant volume [J/kg/K]
-            //  Vibro-electronic energy mode
+            //  vibro-electronic energy mode
             virtual tmp<volScalarField> Cv_v() const = 0;
 
             //- Heat capacity at constant pressure [J/kg/K]
             //  trans-rotational energy mode
-            virtual tmp<volScalarField> Cp_t() const = 0;
+            virtual tmp<volScalarField> Cp_t() const;
 
             //- Heat capacity at constant pressure for patch [J/kg/K]
             //  trans-rotational energy mode
@@ -268,8 +293,57 @@ public:
             (
                 const scalarField& p,
                 const scalarField& T,
-                const label patchi
+                const label patch
             ) const = 0;
+            
+            //- Heat capacity at constant volume of mixture [J/kg/K]
+            //  trans-rotational energy mode
+            virtual const volScalarField& CvtrMix() const;
+            
+            //- Non-const access to heat capacity at constant volume of
+            //  mixture [J/kg/K], trans-rotational energy mode
+            virtual volScalarField& CvtrMix();
+            
+            //- Heat capacity at constant pressure of mixture [J/kg/K]
+            //  trans-rotational energy mode
+            virtual const volScalarField& CptrMix() const;
+            
+            //- Non-const access to heat capacity at constant pressure of
+            //  mixture [J/kg/K], trans-rotational energy mode
+            virtual volScalarField& CptrMix();
+            
+            //- Heat capacity at constant volume of mixture [J/kg/K]
+            //  vibro-electronic energy mode
+            virtual const volScalarField& CvvelMix() const;
+            
+            //- Non-const access to heat capacity at constant volume of
+            //  mixture [J/kg/K], vibro-electronic energy mode
+            virtual volScalarField& CvvelMix();
+            
+            //- Heat capacity at constant pressure of mixture [J/kg/K]
+            //  vibro-electronic energy mode
+            virtual const volScalarField& CpvelMix() const;
+            
+            //- Non-const access to heat capacity at constant pressure of
+            //  mixture [J/kg/K], vibro-electronic energy mode
+            virtual volScalarField& CpvelMix();
+            
+            //- Heat capacity at constant volume of mixture [J/kg/K]
+            virtual const volScalarField& CvMix() const;
+            
+            //- Non-const access to heat capacity at constant volume of
+            //  mixture [J/kg/K]
+            virtual volScalarField& CvMix();
+            
+            //- Heat capacity at constant pressure of mixture [J/kg/K]
+            virtual const volScalarField& CpMix() const;
+            
+            //- Heat capacity at constant pressure of mixture for patch [J/kg/K]
+            virtual const scalarField& CpMix(const label patchi) const;
+            
+            //- Non-const access to heat capacity at constant pressure of
+            //  mixture [J/kg/K]
+            virtual volScalarField& CpMix();
 
 
         // Fields derived from thermodynamic state variables
@@ -286,11 +360,20 @@ public:
             //- Vibro-electronic temperature of mixture [K]
             virtual const volScalarField& Tv() const;
             
-            //- Non-const access to vibro-electronic temperature of mixture [K]
-            virtual volScalarField& Tv();
-
             //- Vibro-electronic temperature of mixture for patch [K]
             virtual const scalarField& Tv(const label patchi) const;
+            
+            //- Non-const access to vibro-electronic temperature of mixture [K]
+            virtual volScalarField& Tv();
+            
+            //- Mixture gas constant [J/kg/K]
+            virtual const volScalarField& RMix() const;
+            
+            //- Mixture gas constant for patch [J/kg/K]
+            virtual const scalarField& RMix(const label patchi) const;
+            
+            //- Non-const access to mixture gas constant [J/kg/K]
+            virtual volScalarField& RMix();
 
             //- Rotational degrees of freedom of mixture
             virtual const volScalarField& zetar() const;
@@ -336,6 +419,15 @@ public:
             //- Return non-const access to the thermal conductivity of
             //  mixture [W/mK], vibro-electronic energy mode
             virtual volScalarField& kappave() = 0;
+            
+            //- Thermal conductivity of mixture [W/mK]
+            virtual const volScalarField& kappa() const = 0;
+
+            //- Thermal conductivity of mixture for patch [W/mK]
+            virtual const scalarField& kappa(const label patchi) const = 0;
+
+            //- Return non-const access to the thermal conductivity of
+            virtual volScalarField& kappa() = 0;
 
             //- Thermal diffusivity of mixture [kg/m/s]
             //  trans-rotational energy mode
@@ -360,32 +452,16 @@ public:
             //- Return non-const access to the thermal diffusivity of
             //  mixture [kg/m/s], vibro-electronic energy mode
             virtual volScalarField& alphave() = 0;
+            
+            //- Thermal diffusivity of mixture [kg/m/s]
+            virtual const volScalarField& alpha() const = 0;
 
-            //- Thermal diffusivity of the mixture [kg/m/s]
-            //  trans-rotational energy mode
-            virtual tmp<volScalarField> alpha_t() const = 0;
+            //- Thermal diffusivity of mixture for patch [kg/m/s]
+            virtual const scalarField& alpha(const label patchi) const = 0;
 
-            //- Thermal diffusivity of the mixture for patch [kg/m/s]
-            //  trans-rotational energy mode
-            virtual tmp<scalarField> alpha_t
-            (
-                const scalarField& p,
-                const scalarField& T,
-                const label patchi
-            ) const = 0;
-
-            //- Thermal diffusivity of the mixture [kg/m/s]
-            //  vibro-electronical energy mode
-            virtual tmp<volScalarField> alpha_v() const = 0;
-
-            //- Thermal diffusivity of the mixture for patch [kg/m/s]
-            //  vibro-electronical energy mode
-            virtual tmp<scalarField> alpha_v
-            (
-                const scalarField& p,
-                const scalarField& Tv,
-                const label patchi
-            ) const = 0;
+            //- Return non-const access to the thermal diffusivity of
+            //  mixture [kg/m/s]
+            virtual volScalarField& alpha() = 0;
 };
 
 

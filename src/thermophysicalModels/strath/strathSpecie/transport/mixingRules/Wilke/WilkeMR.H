@@ -56,10 +56,13 @@ protected:
 
     // Protected data
 
+        //- Thermodynamic data of the species
+        const PtrList<ThermoType>& speciesThermo_;
+        
         // Weight coefficient in WilkeMR's mixing rule
         PtrList<volScalarField> phi_;
 
-        // Mole-fraction below which the contribution of the species is ignored
+        // Molar-fraction below which the contribution of the species is ignored
         const scalar miniXs_;
 
 
@@ -92,46 +95,46 @@ public:
 
     // Member Functions
 
-        //- Molar weight for a specie given by index. Defined here
-        //  becouse depends on thermoType template
-        inline virtual scalar W(const label i) const
+        //- Molar weight for a specie given by index
+        virtual inline scalar W(const label i) const
         {
-            return thermo_.composition().W(i);
+            return speciesThermo_[i].W();
         }
 
-        //- Viscosity for a specie given by index. Defined here
-        //  becouse depends on thermoType template
-        inline virtual scalar mu(const label i, const scalar p, const scalar Tt) const
+        //- Viscosity for a specie given by index
+        virtual inline scalar mu
+        (
+            const label i,
+            const scalar p,
+            const scalar T
+        ) const
         {
-            return thermo_.composition().mu(i, p, Tt);
+            return speciesThermo_[i].mu(p, T);
         }
 
-        //- Thermal conductivity, trans-rotational mode,
-        //  for a specie given by index.
-        inline virtual scalar kappatr(const label i, const scalar p, const scalar Tt) const
+        //- Thermal conductivity [W/mK], for a specie given by index
+        //  trans-rotational energy mode
+        virtual inline scalar kappatr
+        (
+            const label i,
+            const scalar p,
+            const scalar T
+        ) const
         {
-            return thermo_.composition().kappatr(i, p, Tt);
+            return speciesThermo_[i].kappatr(p, T);
         }
 
-        //- Thermal conductivity, vib-electronic mode,
-        //  for a specie given by index.
-        inline virtual scalar kappave(const label i, const scalar p, const scalar Tt, const scalar Tve) const
+        //- Thermal conductivity [W/mK], for a specie given by index
+        //  vibro-electronic energy mode
+        virtual inline scalar kappave
+        (
+            const label i,
+            const scalar p,
+            const scalar T,
+            const scalar Tve
+        ) const
         {
-            return thermo_.composition().kappave(i, p, Tt, Tve);
-        }
-
-        //- Thermal diffusivity [kg/ms], trans-rotational mode,
-        //  for a specie given by index.
-        inline virtual scalar alphatr(const label i, const scalar p, const scalar Tt) const
-        {
-            return thermo_.composition().alphatr(i, p, Tt);
-        }
-
-        //- Thermal diffusivity [kg/ms], vib-electronic mode,
-        //  for a specie given by index.
-        inline virtual scalar alphave(const label i, const scalar p, const scalar Tt, const scalar Tve) const
-        {
-            return thermo_.composition().alphave(i, p, Tt, Tve);
+            return speciesThermo_[i].kappave(p, T, Tve);
         }
 
         // Calculations and updates of the different fields

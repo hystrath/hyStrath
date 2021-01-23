@@ -267,7 +267,7 @@ public:
 
             //- Heat capacity at constant pressure [J/kg/K]
             //  trans-rotational energy mode
-            virtual tmp<volScalarField> Cp_t() const;
+/*            virtual tmp<volScalarField> Cp_t() const;*/
 
             //- Heat capacity at constant pressure for patch[J/kg/K]
             //  trans-rotational energy mode
@@ -293,31 +293,31 @@ public:
 
         // Fields derived from transport state variables
 
-            //- Thermal diffusivity of the mixture [kg/m/s]
-            //  trans-rotational energy mode
-            virtual tmp<volScalarField> alpha_t() const;
+/*            //- Thermal diffusivity of the mixture [kg/m/s]*/
+/*            //  trans-rotational energy mode*/
+/*            virtual tmp<volScalarField> alpha_t() const;*/
 
-            //- Thermal diffusivity of the mixture for patch [kg/m/s]
-            //  trans-rotational energy mode
-            virtual tmp<scalarField> alpha_t
-            (
-                const scalarField& p,
-                const scalarField& T,
-                const label patchi
-            ) const;
+/*            //- Thermal diffusivity of the mixture for patch [kg/m/s]*/
+/*            //  trans-rotational energy mode*/
+/*            virtual tmp<scalarField> alpha_t*/
+/*            (*/
+/*                const scalarField& p,*/
+/*                const scalarField& T,*/
+/*                const label patchi*/
+/*            ) const;*/
 
-            //- Thermal diffusivity of the mixture [kg/m/s]
-            //  vibro-electronic energy mode
-            virtual tmp<volScalarField> alpha_v() const;
+/*            //- Thermal diffusivity of the mixture [kg/m/s]*/
+/*            //  vibro-electronic energy mode*/
+/*            virtual tmp<volScalarField> alpha_v() const;*/
 
-            //- Thermal diffusivity of the mixture for patch [kg/m/s]
-            //  vibro-electronic energy mode
-            virtual tmp<scalarField> alpha_v
-            (
-                const scalarField& p,
-                const scalarField& Tv,
-                const label patchi
-            ) const;
+/*            //- Thermal diffusivity of the mixture for patch [kg/m/s]*/
+/*            //  vibro-electronic energy mode*/
+/*            virtual tmp<scalarField> alpha_v*/
+/*            (*/
+/*                const scalarField& p,*/
+/*                const scalarField& Tv,*/
+/*                const label patchi*/
+/*            ) const;*/
 
         //- Read thermophysical properties dictionary
         virtual bool read();

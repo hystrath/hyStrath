@@ -87,46 +87,46 @@ public:
 
     // Member Functions
 
-        //- Molar weight for a specie given by index. Defined here
-        //  becouse depends on thermoType template
+        //- Molar weight for a specie given by index
         virtual inline scalar W(const label i) const
         {
             return speciesThermo_[i].W();
         }
 
-        //- Viscosity for a specie given by index. Defined here
-        //  becouse depends on thermoType template
-        virtual inline scalar mu(const label i, const scalar p, const scalar Tt) const
+        //- Viscosity for a specie given by index
+        virtual inline scalar mu
+        (
+            const label i,
+            const scalar p,
+            const scalar T
+        ) const
         {
-            return speciesThermo_[i].mu(p, Tt);
+            return speciesThermo_[i].mu(p, T);
+        }
+        
+        //- Thermal conductivity [W/mK], for a specie given by index
+        //  trans-rotational energy mode
+        virtual inline scalar kappatr
+        (
+            const label i,
+            const scalar p,
+            const scalar T
+        ) const
+        {
+            return speciesThermo_[i].kappatr(p, T);
         }
 
-        //- Thermal conductivity [W/mK], trans-rotational mode,
-        //  for a specie given by index.
-        virtual inline scalar kappatr(const label i, const scalar p, const scalar Tt) const
+        //- Thermal conductivity [W/mK], for a specie given by index
+        //  vibro-electronic energy mode
+        virtual inline scalar kappave
+        (
+            const label i,
+            const scalar p,
+            const scalar T,
+            const scalar Tve
+        ) const
         {
-            return speciesThermo_[i].kappatr(p, Tt);
-        }
-
-        //- Thermal conductivity [W/mK], vib-electronic mode,
-        //  for a specie given by index.
-        virtual inline scalar kappave(const label i, const scalar p, const scalar Tt, const scalar Tve) const
-        {
-            return speciesThermo_[i].kappave(p, Tt, Tve);
-        }
-
-        //- Thermal diffusivity [kg/ms], trans-rotational mode,
-        //  for a specie given by index.
-        virtual inline scalar alphatr(const label i, const scalar p, const scalar Tt) const
-        {
-            return speciesThermo_[i].alphatr(p, Tt);
-        }
-
-        //- Thermal diffusivity [kg/ms], vib-electronic mode,
-        //  for a specie given by index.
-        virtual inline scalar alphave(const label i, const scalar p, const scalar Tt, const scalar Tve) const
-        {
-            return speciesThermo_[i].alphave(p, Tt, Tve);
+            return speciesThermo_[i].kappave(p, T, Tve);
         }
 
         // Calculations and updates of the different fields

@@ -22,23 +22,27 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::powerLawEuckenTransport
+    Foam::SutherlandEuckenTransport
 
 Description
-    Transport package using the power law and Eucken's formulas.
+    Transport package using Sutherland's formula.
 
     Templated into a given thermodynamics package (needed for thermal
     conductivity).
 
+    Dynamic viscosity [kg/m.s]
+    \f[
+        \mu = A_s \frac{\sqrt{T}}{1 + T_s / T}
+    \f]
 
 SourceFiles
-    powerLawEuckenTransportI.H
-    powerLawEuckenTransport.C
+    SutherlandEuckenTransportI.H
+    SutherlandEuckenTransport.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef powerLawEuckenTransport_H
-#define powerLawEuckenTransport_H
+#ifndef SutherlandEuckenTransport_H
+#define SutherlandEuckenTransport_H
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -47,57 +51,57 @@ namespace Foam
 
 // Forward declaration of friend functions and operators
 
-template<class Thermo> class powerLawEuckenTransport;
+template<class Thermo> class SutherlandEuckenTransport;
 
 template<class Thermo>
-inline powerLawEuckenTransport<Thermo> operator+
+inline SutherlandEuckenTransport<Thermo> operator+
 (
-    const powerLawEuckenTransport<Thermo>&,
-    const powerLawEuckenTransport<Thermo>&
+    const SutherlandEuckenTransport<Thermo>&,
+    const SutherlandEuckenTransport<Thermo>&
 );
 
 template<class Thermo>
-inline powerLawEuckenTransport<Thermo> operator-
+inline SutherlandEuckenTransport<Thermo> operator-
 (
-    const powerLawEuckenTransport<Thermo>&,
-    const powerLawEuckenTransport<Thermo>&
+    const SutherlandEuckenTransport<Thermo>&,
+    const SutherlandEuckenTransport<Thermo>&
 );
 
 template<class Thermo>
-inline powerLawEuckenTransport<Thermo> operator*
+inline SutherlandEuckenTransport<Thermo> operator*
 (
     const scalar,
-    const powerLawEuckenTransport<Thermo>&
+    const SutherlandEuckenTransport<Thermo>&
 );
 
 template<class Thermo>
-inline powerLawEuckenTransport<Thermo> operator==
+inline SutherlandEuckenTransport<Thermo> operator==
 (
-    const powerLawEuckenTransport<Thermo>&,
-    const powerLawEuckenTransport<Thermo>&
+    const SutherlandEuckenTransport<Thermo>&,
+    const SutherlandEuckenTransport<Thermo>&
 );
 
 template<class Thermo>
 Ostream& operator<<
 (
     Ostream&,
-    const powerLawEuckenTransport<Thermo>&
+    const SutherlandEuckenTransport<Thermo>&
 );
 
 
 /*---------------------------------------------------------------------------*\
-                    Class powerLawEuckenTransport Declaration
+                    Class SutherlandEuckenTransport Declaration
 \*---------------------------------------------------------------------------*/
 
 template<class Thermo>
-class powerLawEuckenTransport
+class SutherlandEuckenTransport
 :
     public Thermo
 {
     // Private data
 
-        // Power law's coefficients
-        scalar Tref_, dref_, omega_, muref_;
+        //- Sutherland's coefficients
+        scalar As_, Ts_;
 
         //- Factor in vibrational thermal conductivity kappave
         // Hard-sphere: (7-2*omega_m)/5 with omega_m = 0.5
@@ -105,45 +109,56 @@ class powerLawEuckenTransport
         scalar eta_s_;
 
 
+    // Private Member Functions
+
+        //- Calculate the Sutherland coefficients
+        //  given two viscosities and temperatures
+        inline void calcCoeffs
+        (
+            const scalar mu1, const scalar T1,
+            const scalar mu2, const scalar T2
+
+        );
+
+
 public:
 
     // Constructors
 
         //- Construct from components
-        inline powerLawEuckenTransport
+        inline SutherlandEuckenTransport
         (
             const Thermo& t,
-            const scalar Tref,
-            const scalar dref,
-            const scalar omega,
-            const scalar muref,
+            const scalar As,
+            const scalar Ts,
             const scalar eta_s
         );
 
-        //- Construct as named copy
-        inline powerLawEuckenTransport
+        //- Construct from two viscosities
+        inline SutherlandEuckenTransport
         (
-            const word&,
-            const powerLawEuckenTransport&
+            const Thermo& t,
+            const scalar mu1, const scalar T1,
+            const scalar mu2, const scalar T2
         );
+
+        //- Construct as named copy
+        inline SutherlandEuckenTransport(const word&, const SutherlandEuckenTransport&);
 
         //- Construct from Istream
-        powerLawEuckenTransport(Istream&);
+        SutherlandEuckenTransport(Istream&);
 
         //- Construct from dictionary
-        powerLawEuckenTransport(const dictionary& dict);
+        SutherlandEuckenTransport(const dictionary& dict);
 
         //- Construct and return a clone
-        inline autoPtr<powerLawEuckenTransport> clone() const;
+        inline autoPtr<SutherlandEuckenTransport> clone() const;
 
         // Selector from Istream
-        inline static autoPtr<powerLawEuckenTransport> New(Istream& is);
+        inline static autoPtr<SutherlandEuckenTransport> New(Istream& is);
 
         // Selector from dictionary
-        inline static autoPtr<powerLawEuckenTransport> New
-        (
-            const dictionary& dict
-        );
+        inline static autoPtr<SutherlandEuckenTransport> New(const dictionary& dict);
 
 
     // Member functions
@@ -151,11 +166,11 @@ public:
         //- Return the instantiated type name
         static word typeName()
         {
-            return "powerLawEucken<" + Thermo::typeName() + '>';
+            return "SutherlandEucken<" + Thermo::typeName() + '>';
         }
 
         //- Dynamic viscosity [kg/ms]
-        inline scalar mu(const scalar p, const scalar Tt) const;
+        inline scalar mu(const scalar p, const scalar T) const;
 
         //- Thermal conductivity, translational mode [W/mK]
         inline scalar kappatrans(const scalar p, const scalar Tt) const;
@@ -167,23 +182,13 @@ public:
         inline scalar kappatr(const scalar p, const scalar Tt) const;
 
         //- Thermal conductivity, vib-electronic mode [W/mK]
-        inline scalar kappave
-        (
-            const scalar p,
-            const scalar Tt,
-            const scalar Tve
-        ) const;
+        inline scalar kappave(const scalar p, const scalar Tt, const scalar Tve) const;
 
-        //- Thermal diffusivity, trans-rotational mode [kg/ms]
-        inline scalar alphatr(const scalar p, const scalar Tt) const;
+/*        //- Thermal diffusivity, trans-rotational mode [kg/ms]*/
+/*        inline scalar alphatr(const scalar p, const scalar Tt) const;*/
 
-        //- Thermal diffusivity, vib-electronic mode [kg/ms]
-        inline scalar alphave
-        (
-            const scalar p,
-            const scalar Tt,
-            const scalar Tve
-        ) const;
+/*        //- Thermal diffusivity, vib-electronic mode [kg/ms]*/
+/*        inline scalar alphave(const scalar p, const scalar Tt, const scalar Tve) const;*/
 
         //- Write to Ostream
         void write(Ostream& os) const;
@@ -191,42 +196,39 @@ public:
 
     // Member operators
 
-        inline powerLawEuckenTransport& operator=
-        (
-            const powerLawEuckenTransport&
-        );
+        inline SutherlandEuckenTransport& operator=(const SutherlandEuckenTransport&);
 
-        inline void operator+=(const powerLawEuckenTransport&);
+        inline void operator+=(const SutherlandEuckenTransport&);
 
-        inline void operator-=(const powerLawEuckenTransport&);
+        inline void operator-=(const SutherlandEuckenTransport&);
 
         inline void operator*=(const scalar);
 
 
     // Friend operators
 
-        friend powerLawEuckenTransport operator+ <Thermo>
+        friend SutherlandEuckenTransport operator+ <Thermo>
         (
-            const powerLawEuckenTransport&,
-            const powerLawEuckenTransport&
+            const SutherlandEuckenTransport&,
+            const SutherlandEuckenTransport&
         );
 
-        friend powerLawEuckenTransport operator- <Thermo>
+        friend SutherlandEuckenTransport operator- <Thermo>
         (
-            const powerLawEuckenTransport&,
-            const powerLawEuckenTransport&
+            const SutherlandEuckenTransport&,
+            const SutherlandEuckenTransport&
         );
 
-        friend powerLawEuckenTransport operator* <Thermo>
+        friend SutherlandEuckenTransport operator* <Thermo>
         (
             const scalar,
-            const powerLawEuckenTransport&
+            const SutherlandEuckenTransport&
         );
 
-        friend powerLawEuckenTransport operator== <Thermo>
+        friend SutherlandEuckenTransport operator== <Thermo>
         (
-            const powerLawEuckenTransport&,
-            const powerLawEuckenTransport&
+            const SutherlandEuckenTransport&,
+            const SutherlandEuckenTransport&
         );
 
 
@@ -235,7 +237,7 @@ public:
         friend Ostream& operator<< <Thermo>
         (
             Ostream&,
-            const powerLawEuckenTransport&
+            const SutherlandEuckenTransport&
         );
 };
 
@@ -246,10 +248,10 @@ public:
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include "powerLawEuckenTransportI.H"
+#include "SutherlandEuckenTransportI.H"
 
 #ifdef NoRepository
-#   include "powerLawEuckenTransport.C"
+#   include "SutherlandEuckenTransport.C"
 #endif
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

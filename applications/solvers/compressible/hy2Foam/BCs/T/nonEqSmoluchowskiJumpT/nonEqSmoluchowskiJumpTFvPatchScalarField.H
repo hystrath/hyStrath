@@ -62,7 +62,7 @@ class nonEqSmoluchowskiJumpTFvPatchScalarField
         //- Dynamic viscosity field name, default = "mu"
         word muName_;
 
-        //- Thermal diffusivity field name, default = "alphatr"
+        //- Thermal diffusivity field name, default = "alpha"
         word alphaName_;
 
         //- Ratio of specific heat capacities field name, default = "gammatr"

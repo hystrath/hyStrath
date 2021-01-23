@@ -84,9 +84,9 @@ void Foam::LeeLandauTellereV<ThermoType>::correct()
 {
     updateCoefficients();
 
-    const volScalarField& ee = thermo_.composition().hevel("e-");
-    const volScalarField& Xe = thermo_.composition().X("e-");
-    const scalarField& eeCells = ee.internalField();
+//    const volScalarField& ee = thermo_.composition().hevel("e-");
+//    const volScalarField& Xe = thermo_.composition().X("e-");
+//    const scalarField& eeCells = ee.internalField();
 
     forAll(solvedVibEqSpecies(), speciei)
     {

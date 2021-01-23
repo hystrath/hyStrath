@@ -85,8 +85,11 @@ public:
 
             //- Molecular weight [kg/kmol]
             virtual scalar W(const word& specieName) const;
+            
+            //- Species gas constant [J/kg/K]
+            virtual scalar R(const label speciei) const;
 
-            //- Particle Type
+            //- Particle type
             virtual label particleType(const label speciei) const;
 
             //- Particle charge
@@ -105,7 +108,7 @@ public:
             //- Dissociation potential of the particle [J/kg]
             virtual scalar dissociationPotential(const label speciei) const;
 
-            //- Temperature-viscosity coefficient [-]
+            //- Temperature-viscosity coefficient
             virtual scalar omega(const label speciei) const;
 
             //- Number of characteristic vibrational temperatures
@@ -196,8 +199,8 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt,
-                const scalar Tv
+                const scalar T,
+                const scalar Tve
             ) const;
 
             //- Heat capacity at constant volume [J/(kg K)]
@@ -205,8 +208,8 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt,
-                const scalar Tv
+                const scalar T,
+                const scalar Tve
             ) const;
 
             //- Heat capacity at constant volume [J/(kg K)]
@@ -215,7 +218,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt
+                const scalar T
             ) const;
 
             //- Heat capacity at constant volume [J/(kg K)]
@@ -224,7 +227,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tv
+                const scalar Tve
             ) const;
 
             //- Heat capacity at constant volume [J/(kg K)]
@@ -233,7 +236,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tv
+                const scalar Tve
             ) const;
 
             //- Heat capacity at constant pressure [J/(kg K)]
@@ -242,7 +245,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tv
+                const scalar Tve
             ) const;
 
             //- Heat capacity at constant pressure [J/(kg K)]
@@ -251,7 +254,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt
+                const scalar T
             ) const;
 
             //- Heat capacity at constant pressure [J/(kg K)]
@@ -260,7 +263,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tv
+                const scalar Tve
             ) const;
 
             //- Heat capacity at constant pressure [J/(kg K)]
@@ -269,7 +272,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tv
+                const scalar Tve
             ) const;
 
             //- Heat capacity at constant pressure [J/(kg K)]
@@ -278,7 +281,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tv
+                const scalar Tve
             ) const;
 
             //- Absolute enthalpy [J/kg]
@@ -286,8 +289,8 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt,
-                const scalar Tv
+                const scalar T,
+                const scalar Tve
             ) const;
 
             //- Sensible enthalpy [J/kg]
@@ -295,8 +298,8 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt,
-                const scalar Tv
+                const scalar T,
+                const scalar Tve
             ) const;
 
             //- Sensible enthalpy, trans-rotational [J/kg]
@@ -304,7 +307,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt
+                const scalar T
             ) const;
 
             //- Sensible enthalpy, vibrational [J/kg]
@@ -312,7 +315,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tv
+                const scalar Tve
             ) const;
 
             //- Sensible enthalpy, electronic [J/kg]
@@ -320,7 +323,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tv
+                const scalar Tve
             ) const;
 
             //- Sensible enthalpy, Vibro-electronic [J/kg]
@@ -328,7 +331,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tv
+                const scalar Tve
             ) const;
 
             //- Entropy [J/(kg K)]
@@ -336,8 +339,8 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt,
-                const scalar Tv
+                const scalar T,
+                const scalar Tve
             ) const;
 
             //- Sensible internal energy [J/kg]
@@ -345,8 +348,8 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt,
-                const scalar Tv
+                const scalar T,
+                const scalar Tve
             ) const;
 
             //- Sensible internal energy, trans-rot. [J/kg]
@@ -354,7 +357,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt
+                const scalar T
             ) const;
 
             //- Sensible internal energy, vibration. [J/kg]
@@ -362,7 +365,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tv
+                const scalar Tve
             ) const;
 
             //- Sensible internal energy, electronic [J/kg]
@@ -370,7 +373,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tv
+                const scalar Tve
             ) const;
 
             //- Sensible internal energy, Vibro-electronic [J/kg]
@@ -378,7 +381,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tv
+                const scalar Tve
             ) const;
 
              //- Trans-rotational Enthalpy/Internal energy [J/kg]
@@ -386,7 +389,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt
+                const scalar T
             ) const;
 
             //- Vibrational Enthalpy/Internal energy [J/kg]
@@ -394,7 +397,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tv
+                const scalar Tve
             ) const;
 
             //- Electronic Enthalpy/Internal energy [J/kg]
@@ -402,7 +405,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tv
+                const scalar Tve
             ) const;
 
             //- Vibro-electronic Enthalpy/Internal energy [J/kg]
@@ -410,7 +413,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tv
+                const scalar Tve
             ) const;
 
             //- Vibro-electronic Enthalpy/Internal energy [J/kg]
@@ -420,7 +423,7 @@ public:
                 const label speciei,
                 const label mode,
                 const scalar p,
-                const scalar Tv
+                const scalar Tve
             ) const;*/
 
             //- Heat capacity at constant volume for patch[J/kg/K]
@@ -439,7 +442,7 @@ public:
             (
                 const label speciei,
                 const scalarField& p,
-                const scalarField& Tv,
+                const scalarField& Tve,
                 const label patchi
             ) const;
 
@@ -466,7 +469,7 @@ public:
             (
                 const label speciei,
                 const scalarField& p,
-                const scalarField& Tv,
+                const scalarField& Tve,
                 const labelList& cells
             ) const;
 
@@ -475,7 +478,7 @@ public:
             (
                 const label speciei,
                 const scalarField& p,
-                const scalarField& Tv,
+                const scalarField& Tve,
                 const label patchi
             ) const;
 
@@ -486,73 +489,42 @@ public:
                 const label speciei,
                 const scalar het,
                 const scalar p,
-                const scalar Tt
+                const scalar T
             ) const;
 
-            //- Vibrational temperature from sensible internal energy given an
-            //  initial T0
-            virtual scalar TvHEv
-            (
-                const label speciei,
-                const scalar hev,
-                const scalar p,
-                const scalar Tv
-            ) const;
-
-            //- Vibro-electronic temperature from sensible internal energy given an
-            //  initial T0
-            virtual scalar TvelHEvel
-            (
-                const label speciei,
-                const scalar hevel,
-                const scalar p,
-                const scalar Tvel
-            ) const;
-
-            //- Vibro-electronic temperature from sensible internal energy given
-            //  an initial T0, for the vibrational mode m TODO ABORTIVE WORK
-            /*virtual scalar TvelHEvel_mode
-            (
-                const label speciei,
-                const label mode,
-                const scalar hevel,
-                const scalar p,
-                const scalar Tvel
-            ) const;*/
-
-            //- Degrees of freedom associated with the rot mode [-]
+            //- Degrees of freedom associated with the rot mode
             virtual scalar zetar
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt,
-                const scalar Tv
+                const scalar T,
+                const scalar Tve
             ) const;
 
-            //- Degrees of freedom associated with the vib mode [-]
+            //- Degrees of freedom associated with the vib mode
             virtual scalar zetav
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tv
+                const scalar Tve
             ) const;
 
-            //- Degrees of freedom associated with the vib mode [-]
+            //- Degrees of freedom associated with the vib mode
             //  for the vibrational mode m TODO ABORTIVE WORK
             /*virtual scalar zetav_mode
             (
                 const label speciei,
                 const label mode,
                 const scalar p,
-                const scalar Tv
+                const scalar Tve
             ) const;*/
 
-            //- Degrees of freedom associated with the elec mode [-]
+            //- Degrees of freedom associated with the electronic energy mode
             virtual scalar zetael
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tv
+                const scalar Tve
             ) const;
 
             //- Gibbs free energy [J/kg]
@@ -560,8 +532,8 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt,
-                const scalar Tv
+                const scalar T,
+                const scalar Tve
             ) const;
 
             //- Helmholtz free energy [J/kg]
@@ -569,8 +541,8 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt,
-                const scalar Tv
+                const scalar T,
+                const scalar Tve
             ) const;
 
 
@@ -598,7 +570,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt
+                const scalar T
             ) const;
 
             //- Thermal conductivity [W/m/K]
@@ -607,7 +579,16 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt,
+                const scalar T,
+                const scalar Tve = 0
+            ) const;
+            
+            //- Thermal conductivity [W/m/K]
+            virtual scalar kappa
+            (
+                const label speciei,
+                const scalar p,
+                const scalar T,
                 const scalar Tve = 0
             ) const;
 
@@ -617,7 +598,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt
+                const scalar T
             ) const;
 
             //- Thermal diffusivity [kg/m/s]
@@ -626,16 +607,17 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt,
+                const scalar T,
                 const scalar Tve = 0
             ) const;
-
-            //- Density [kg/m3]
-            virtual scalar rho
+            
+            //- Thermal diffusivity [kg/m/s]
+            virtual scalar alpha
             (
-                const label specieI,
+                const label speciei,
                 const scalar p,
-                const scalar T
+                const scalar T,
+                const scalar Tve = 0
             ) const;
 };
 

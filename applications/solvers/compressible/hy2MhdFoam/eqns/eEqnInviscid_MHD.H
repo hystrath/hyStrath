@@ -1,6 +1,5 @@
 
 // --- Solve energy, INVISCID
-//- NOTE VINCENT: aByU is equivalent to the original (a_pos*U_pos + a_neg*U_neg)
 surfaceScalarField sigmaDotU
 (
     "sigmaDotU",
@@ -21,15 +20,24 @@ solve
   + mhd->Q(U)
 );
 
-Info<< "max(Q_mag) = " << max(mhd->Q(U)) << endl;
-
 e = rhoE/rho - 0.5*magSqr(U);
 
 et.ref() = e() - ev();
-et.correctBoundaryConditions();
-e.boundaryFieldRef() = et.boundaryField() + ev.boundaryField();
+
+if (downgradeSingleT)
+{
+    e.correctBoundaryConditions();
+    et.boundaryFieldRef() = e.boundaryField() - ev.boundaryField();
+}
+else
+{
+    et.correctBoundaryConditions();
+    e.boundaryFieldRef() = et.boundaryField() + ev.boundaryField();
+}
 
 rhoE.boundaryFieldRef() =
-    rho.boundaryField()*(e.boundaryField()
-  + 0.5*magSqr(U.boundaryField()));
+    rho.boundaryField()
+  * (
+        e.boundaryField() + 0.5*magSqr(U.boundaryField())
+    );
 

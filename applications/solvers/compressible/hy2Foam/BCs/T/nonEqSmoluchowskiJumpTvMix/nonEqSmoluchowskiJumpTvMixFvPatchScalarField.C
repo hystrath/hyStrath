@@ -190,14 +190,14 @@ void Foam::nonEqSmoluchowskiJumpTvMixFvPatchScalarField::updateCoeffs()
     const fvPatchVectorField& pU =
         patch().lookupPatchField<volVectorField, vector>(UName_);
 
-    Field<scalar> C2
+    scalarField C2
     (
-        pmfp*2.0/(pgamma + 1.0)/(pmu/palpha) // Pr = mu*Cp/k = mu/alpha * Cp/Cv = mu/alpha * gamma
+        pmfp*2.0*pgamma/(pgamma + 1.0)/(pmu/palpha)
       * (2.0 - accommodationCoeff_)/accommodationCoeff_
     );
 
-//    Field<scalar> aCoeff(prho.snGrad() - prho/C2);
-//    Field<scalar> KEbyRho(0.5*magSqr(pU));
+//    scalarField aCoeff(prho.snGrad() - prho/C2);
+//    scalarField KEbyRho(0.5*magSqr(pU));
 
     valueFraction() = (1.0/(1.0 + patch().deltaCoeffs()*C2));
     refValue() = Twall_;

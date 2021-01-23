@@ -130,15 +130,20 @@ protected:
         //- Species vibro-electronic energies
         PtrList<volScalarField> hevel_;
 
-        //- Species enthalpies
-        PtrList<volScalarField> h_;
-
         //- Species vibro-electronic energies for the different modes
         //PtrList<PtrList<volScalarField> > modehevel_; // TODO ABORTIVE WORK
 
         //- Energy field [J/kg]
         volScalarField* e_;
 
+        //- Species heat capacity at constant volume [J/kg/K]
+        //  trans-rotational mode
+        PtrList<volScalarField> Cvtr_;
+        
+        //- Species heat capacity at constant volume [J/kg/K]
+        //  vibro-electronic mode
+        PtrList<volScalarField> Cvvel_;
+        
         //- Degrees of freedom associated with the rotational energy mode
         PtrList<volScalarField> zetaRot_;
 
@@ -459,25 +464,6 @@ public:
         //  by name
         inline const volScalarField& hevel(const word& specieName) const;
 
-      //- h
-        //- Return the enthalpy fields
-        inline PtrList<volScalarField>& enthalpy();
-
-        //- Return the const enthalpy fields
-        inline const PtrList<volScalarField>& enthalpy() const;
-
-        //- Return the enthalpy field for a specie given by index
-        inline volScalarField& enthalpy(const label i);
-
-        //- Return the const enthalpy field for a specie given by index
-        inline const volScalarField& enthalpy(const label i) const;
-
-        //- Return the enthalpy field for a specie given by name
-        inline volScalarField& enthalpy(const word& specieName);
-
-        //- Return the const enthalpy field for a specie given by name
-        inline const volScalarField& enthalpy(const word& specieName) const;
-
       //- hevel for a specific mode m TODO ABORTIVE WORK
         /*//- Return the vibro-electronic energy fields
         inline PtrList<PtrList<volScalarField> >& hevel_mode();
@@ -561,7 +547,42 @@ public:
             const label m
         ) const;*/
 
-      //- zetar
+        //- Return the species heat capacities at constant volume fields
+        //  trans-rotational mode
+        inline PtrList<volScalarField>& Cvtr();
+
+        //- Return the const species heat capacities at constant volume fields
+        //  trans-rotational mode
+        inline const PtrList<volScalarField>& Cvtr() const;
+
+        //- Return the species heat capacitie at constant volume
+        //  for a specie given by index
+        //  trans-rotational mode
+        inline volScalarField& Cvtr(const label i);
+
+        //- Return the const species heat capacitie at constant volume
+        //  for a specie given by index
+        //  trans-rotational mode
+        inline const volScalarField& Cvtr(const label i) const;
+        
+        //- Return the species heat capacities at constant volume fields
+        //  vibro-electronic mode
+        inline PtrList<volScalarField>& Cvvel();
+
+        //- Return the const species heat capacities at constant volume fields
+        //  vibro-electronic mode
+        inline const PtrList<volScalarField>& Cvvel() const;
+
+        //- Return the species heat capacitie at constant volume
+        //  for a specie given by index
+        //  vibro-electronic mode
+        inline volScalarField& Cvvel(const label i);
+
+        //- Return the const species heat capacitie at constant volume
+        //  for a specie given by index
+        //  vibro-electronic mode
+        inline const volScalarField& Cvvel(const label i) const;
+        
         //- Return the no of deg of freedom / rot energy mode fields
         inline PtrList<volScalarField>& zetar();
 
@@ -812,11 +833,14 @@ public:
 
             //- Molecular weight [kg/kmol]
             virtual scalar W(const word& specieName) const = 0;
+            
+            //- Species gas constant [J/kg/K]
+            virtual scalar R(const label speciei) const = 0;
 
-            //- Particle Type
+            //- Particle type
             virtual label particleType(const label speciei) const = 0;
 
-            //- Particle Charge
+            //- Particle charge
             virtual label particleCharge(const label speciei) const = 0;
 
             //- Diameter of the particle
@@ -829,7 +853,7 @@ public:
                 const label speciei
             ) const = 0;
 
-            //- Temperature-viscosity coefficient [-]
+            //- Temperature-viscosity coefficient
             virtual scalar omega(const label speciei) const = 0;
 
             //- Number of characteristic vibrational temperatures
@@ -928,7 +952,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt,
+                const scalar T,
                 const scalar Tv
             ) const = 0;
 
@@ -937,7 +961,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt,
+                const scalar T,
                 const scalar Tv
             ) const = 0;
 
@@ -947,7 +971,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt
+                const scalar T
             ) const = 0;
 
             //- Heat capacity at constant volume [J/(kg K)]
@@ -983,7 +1007,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt
+                const scalar T
             ) const = 0;
 
             //- Heat capacity at constant pressure [J/(kg K)]
@@ -1018,7 +1042,7 @@ public:
             (
                 const label specieI,
                 const scalar p,
-                const scalar Tt,
+                const scalar T,
                 const scalar Tv
             ) const = 0;
 
@@ -1027,7 +1051,7 @@ public:
             (
                 const label specieI,
                 const scalar p,
-                const scalar Tt,
+                const scalar T,
                 const scalar Tv
             ) const = 0;
 
@@ -1036,7 +1060,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt
+                const scalar T
             ) const = 0;
 
             //- Sensible enthalpy, vibrational energy mode [J/kg]
@@ -1068,7 +1092,7 @@ public:
             (
                 const label specieI,
                 const scalar p,
-                const scalar Tt,
+                const scalar T,
                 const scalar Tv
             ) const = 0;
 
@@ -1077,7 +1101,7 @@ public:
             (
                 const label specieI,
                 const scalar p,
-                const scalar Tt,
+                const scalar T,
                 const scalar Tv
             ) const = 0;
 
@@ -1086,7 +1110,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt
+                const scalar T
             ) const = 0;
 
             //- Sensible internal energy, vibrational energy mode [J/kg]
@@ -1118,7 +1142,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt
+                const scalar T
             ) const = 0;
 
             //- Vibrational enthalpy/internal energy [J/kg]
@@ -1314,50 +1338,19 @@ public:
                 const label speciei,
                 const scalar het,
                 const scalar p,
-                const scalar Tt
+                const scalar T
             ) const = 0;
 
-            //- Vibrational temperature from sensible internal energy
-            //  given an initial T0
-            virtual scalar TvHEv
-            (
-                const label speciei,
-                const scalar hev,
-                const scalar p,
-                const scalar Tv
-            ) const = 0;
-
-            //- Vibro-electronic temperature from sensible internal energy
-            //  given an initial T0
-            virtual scalar TvelHEvel
-            (
-                const label speciei,
-                const scalar hevel,
-                const scalar p,
-                const scalar Tvel
-            ) const = 0;
-
-            //- Vib-electronic temperature from sensible internal energy given an
-            //  initial T0, for the vibrational mode m TODO ABORTIVE WORK
-            /*virtual scalar TvelHEvel_mode
-            (
-                const label speciei,
-                const label mode,
-                const scalar hevel,
-                const scalar p,
-                const scalar Tvel
-            ) const = 0;*/
-
-            //- Degrees of freedom associated with the rotational mode [-]
+            //- Degrees of freedom associated with the rotational mode
             virtual scalar zetar
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt,
+                const scalar T,
                 const scalar Tv
             ) const = 0;
 
-            //- Degrees of freedom associated with the vibrational mode [-]
+            //- Degrees of freedom associated with the vibrational mode
             virtual scalar zetav
             (
                 const label speciei,
@@ -1365,7 +1358,7 @@ public:
                 const scalar Tv
             ) const = 0;
 
-            //- Degrees of freedom associated with the vibrational mode [-]
+            //- Degrees of freedom associated with the vibrational mode
             //  for the vibrational mode m TODO ABORTIVE WORK
             /*virtual scalar zetav_mode
             (
@@ -1375,7 +1368,7 @@ public:
                 const scalar Tv
             ) const = 0;*/
 
-            //- Degrees of freedom associated with the electronic mode [-]
+            //- Degrees of freedom associated with the electronic mode
             virtual scalar zetael
             (
                 const label speciei,
@@ -1388,7 +1381,7 @@ public:
             (
                 const label specieI,
                 const scalar p,
-                const scalar Tt,
+                const scalar T,
                 const scalar Tv
             ) const = 0;
 
@@ -1397,7 +1390,7 @@ public:
             (
                 const label specieI,
                 const scalar p,
-                const scalar Tt,
+                const scalar T,
                 const scalar Tv
             ) const = 0;
 
@@ -1425,7 +1418,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt
+                const scalar T
             ) const = 0;
 
             //- Thermal conductivity [W/m/K]
@@ -1434,7 +1427,16 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt,
+                const scalar T,
+                const scalar Tve = 0
+            ) const = 0;
+            
+            //- Thermal conductivity [W/m/K]
+            virtual scalar kappa
+            (
+                const label speciei,
+                const scalar p,
+                const scalar T,
                 const scalar Tve = 0
             ) const = 0;
 
@@ -1444,7 +1446,7 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt
+                const scalar T
             ) const = 0;
 
             //- Thermal diffusivity [kg/m/s]
@@ -1453,16 +1455,17 @@ public:
             (
                 const label speciei,
                 const scalar p,
-                const scalar Tt,
+                const scalar T,
                 const scalar Tve = 0
             ) const = 0;
-
-            //- Density [kg/m3]
-            virtual scalar rho
+            
+            //- Thermal diffusivity [kg/m/s]
+            virtual scalar alpha
             (
-                const label specieI,
+                const label speciei,
                 const scalar p,
-                const scalar T
+                const scalar T,
+                const scalar Tve = 0
             ) const = 0;
 
 

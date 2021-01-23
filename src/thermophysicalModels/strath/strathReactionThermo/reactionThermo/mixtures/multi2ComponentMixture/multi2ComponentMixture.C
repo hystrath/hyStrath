@@ -596,13 +596,13 @@ Foam::multi2ComponentMixture<ThermoType>::molWeightMixture() const
 template<class ThermoType>
 Foam::scalar Foam::multi2ComponentMixture<ThermoType>::RspecificMixture
 (
-    const label posi
+    const label celli
 ) const
 {
     scalar invMolWmix = 0.0;
     forAll(speciesData_, i)
     {
-        invMolWmix += Y_[i][posi]/speciesData_[i].W();
+        invMolWmix += Y_[i][celli]/speciesData_[i].W();
     }
 
     return constant::physicoChemical::R.value()*invMolWmix;

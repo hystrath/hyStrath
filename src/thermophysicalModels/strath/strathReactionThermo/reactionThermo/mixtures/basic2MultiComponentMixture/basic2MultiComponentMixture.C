@@ -196,15 +196,14 @@ Foam::wordList Foam::basic2MultiComponentMixture::he2BoundaryTypes
         }
         else if (isA<mixedFvPatchScalarField>(tbf[patchi]))
         {
-            /*if (downgradeToSingleTemperature)
+            if (downgradeToSingleTemperature)
             {
                 hbt[patchi] = mixed2EnergyFvPatchScalarField::typeName;
             }
             else
-            {*/
+            {
                 hbt[patchi] = fixed2EnergyFvPatchScalarField::typeName;
-            //}
-            //hbt[patchi] = mixed2EnergyFvPatchScalarField::typeName;
+            }
         }
         else if (isA<fixedJumpFvPatchScalarField>(tbf[patchi]))
         {
@@ -256,8 +255,9 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
     hev_(species_.size()),
     heel_(species_.size()),
     hevel_(species_.size()),
-    h_(species_.size()),
     //modehevel_(species_.size()), ABORTIVE WORK
+    Cvtr_(species_.size()),
+    Cvvel_(species_.size()),
     zetaRot_(species_.size()),
     zetaVib_(species_.size()),
     //modezetaVib_(species_.size()), ABORTIVE WORK
@@ -497,12 +497,12 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                         "downgradeToSingleTemperature",
                         false
                     );
-                downgradeToSingleTv = true;
-//                    thermophysicalProperties.lookupOrDefault<bool>
-//                    (
-//                        "downgradeToSingleTv",
-//                        true
-//                    );
+                downgradeToSingleTv =
+                    thermophysicalProperties.lookupOrDefault<bool>
+                    (
+                        "downgradeToSingleTv",
+                        true
+                    );
             }
 
             if (downgradeToSingleTemperature or downgradeToSingleTv)
@@ -770,14 +770,14 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                 );
             }
 
-            h_.set
+            Cvtr_.set
             (
                 i,
                 new volScalarField
                 (
                     IOobject
                     (
-                        "h_" + species_[i],
+                        "Cvtr_" + species()[i],
                         mesh.time().timeName(),
                         mesh,
                         IOobject::NO_READ,
@@ -786,8 +786,31 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
                     mesh,
                     dimensionedScalar
                     (
-                        "h_" + species_[i],
-                        dimEnergy/dimMass,
+                        "Cvtr_" + species()[i],
+                        dimEnergy/dimMass/dimTemperature,
+                        0.0
+                    )
+                )
+            );
+            
+            Cvvel_.set
+            (
+                i,
+                new volScalarField
+                (
+                    IOobject
+                    (
+                        "Cvvel_" + species()[i],
+                        mesh.time().timeName(),
+                        mesh,
+                        IOobject::NO_READ,
+                        IOobject::NO_WRITE
+                    ),
+                    mesh,
+                    dimensionedScalar
+                    (
+                        "Cvvel_" + species()[i],
+                        dimEnergy/dimMass/dimTemperature,
                         0.0
                     )
                 )
@@ -900,7 +923,7 @@ Foam::basic2MultiComponentMixture::basic2MultiComponentMixture
         ),
         this->he2BoundaryBaseTypes(T.boundaryField())
     );
-
+    
     // Do not enforce constraint of sum of mass fractions to equal 1 here
     // - not applicable to all models
     {

@@ -30,7 +30,5 @@ rhoEvInviscid.solve
 ev.correctBoundaryConditions();
 rhoEv.boundaryFieldRef() = rho.boundaryField()*ev.boundaryField();
 
-thermo.correctHEVK();
-
 ev = rhoEv/rho;
 

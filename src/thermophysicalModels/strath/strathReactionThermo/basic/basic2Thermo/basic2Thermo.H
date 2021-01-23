@@ -233,18 +233,16 @@ public:
         // Access to thermodynamic state variables
 
             //- Pressure [Pa]
-            //  Non-const access allowed for transport equations
-            virtual volScalarField& p();
-
-            //- Pressure [Pa]
             virtual const volScalarField& p() const;
             
-            //- Electron pressure [Pa]
-            //  Non-const access allowed for transport equations
-            virtual volScalarField& pe();
+            //- Non-const access to pressure [Pa]
+            virtual volScalarField& p();
 
             //- Electron pressure [Pa]
             virtual const volScalarField& pe() const;
+            
+            //- Non-const access to electron pressure [Pa]
+            virtual volScalarField& pe();
 
             //- Density [kg/m^3]
             virtual tmp<volScalarField> rho() const = 0;
@@ -260,15 +258,15 @@ public:
             //- Trans-rotational temperature [K]
             virtual const volScalarField& T() const;
 
-            //- Trans-rotational temperature [K]
-            //  Non-const access allowed for transport equations
+            //- Non-const access to trans-rotational temperature [K]
             virtual volScalarField& T();
 
-            //- Equilibrium heat capacity at constant pressure [J/kg/K]
+            //- Heat capacity at constant pressure [J/kg/K]
+            //  TODO
             virtual tmp<volScalarField> Cp() const = 0;
 
-            //- Equilibrium heat capacity at constant pressure for patch
-            //  [J/kg/K]
+            //- Heat capacity at constant pressure [J/kg/K] for patch
+            //  TODO
             virtual tmp<scalarField> Cp
             (
                 const scalarField& p,
@@ -276,10 +274,12 @@ public:
                 const label patchi
             ) const = 0;
 
-            //- Equilibrium heat capacity at constant volume [J/kg/K]
+            //- Heat capacity at constant volume [J/kg/K]
+            //  TODO
             virtual tmp<volScalarField> Cv() const = 0;
 
-            //- Equilibrium gamma = Cp/Cv []
+            //- Heat capacity ratio, gamma = Cp/Cv
+            //  TODO
             virtual tmp<volScalarField> gamma() const = 0;
 
 

@@ -351,25 +351,25 @@ Foam::wordList Foam::basic2Thermo::splitThermoName
 }
 
 
-Foam::volScalarField& Foam::basic2Thermo::p()
-{
-    return p_;
-}
-
-
 const Foam::volScalarField& Foam::basic2Thermo::p() const
 {
     return p_;
 }
 
 
-Foam::volScalarField& Foam::basic2Thermo::pe()
+Foam::volScalarField& Foam::basic2Thermo::p()
+{
+    return p_;
+}
+
+
+const Foam::volScalarField& Foam::basic2Thermo::pe() const
 {
     return pe_;
 }
 
 
-const Foam::volScalarField& Foam::basic2Thermo::pe() const
+Foam::volScalarField& Foam::basic2Thermo::pe()
 {
     return pe_;
 }

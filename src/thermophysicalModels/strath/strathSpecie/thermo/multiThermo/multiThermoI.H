@@ -245,25 +245,6 @@ inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::heel
 
 
 template<class MultiThermo, template<class> class Type>
-inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::hevel_mode
-(
-    const label vibMode,
-    const scalar p,
-    const scalar Tv
-) const
-{
-    return
-        Type<multiThermo<MultiThermo, Type> >::hevel_mode
-        (
-            *this,
-            vibMode,
-            p,
-            Tv
-        );
-}
-
-
-template<class MultiThermo, template<class> class Type>
 inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::hevel
 (
     const scalar p,
@@ -307,26 +288,6 @@ inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::cv_vel
 ) const
 {
     return this->cv_v(p, Tv) + this->cv_el(p, Tv) + this->cv_e(p, Tv);
-}
-
-
-template<class MultiThermo, template<class> class Type>
-inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::cv_vel_mode
-(
-    const label vibMode,
-    const scalar p,
-    const scalar Tv
-) const
-{
-    if (vibMode == 0)
-    {
-        return this->cv_v_mode(vibMode, p, Tv) + this->cv_el(p, Tv)
-            + this->cv_e(p, Tv);
-    }
-    else
-    {
-        return this->cv_v_mode(vibMode, p, Tv);
-    }
 }
 
 
@@ -399,17 +360,6 @@ inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::cp_el
 
 
 template<class MultiThermo, template<class> class Type>
-inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::cp_vel
-(
-    const scalar p,
-    const scalar Tv
-) const
-{
-    return this->cv_vel(p, Tv);
-}
-
-
-template<class MultiThermo, template<class> class Type>
 inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::gamma
 (
     const scalar p,
@@ -444,26 +394,6 @@ inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::es
 {
     return this->ets(p, T) + this->evs(p, Tv) + this->eels(p, Tv)
         + this->ees(p, Tv);
-}
-
-
-template<class MultiThermo, template<class> class Type>
-inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::evels_mode
-(
-    const label vibMode,
-    const scalar p,
-    const scalar Tv
-) const
-{
-    if (vibMode == 0)
-    {
-        return this->evs_mode(vibMode, p, Tv) + this->eels(p, Tv)
-            + this->ees(p, Tv);
-    }
-    else
-    {
-        return this->evs_mode(vibMode, p, Tv);
-    }
 }
 
 
@@ -545,29 +475,6 @@ inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::hels
 ) const
 {
     return this->eels(p, Tv);
-}
-
-
-template<class MultiThermo, template<class> class Type>
-inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::hvels_mode
-(
-    const label vibMode,
-    const scalar p,
-    const scalar Tv
-) const
-{
-    return this->evels_mode(vibMode, p, Tv);
-}
-
-
-template<class MultiThermo, template<class> class Type>
-inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::hvels
-(
-    const scalar p,
-    const scalar Tv
-) const
-{
-    return this->evels(p, Tv);
 }
 
 
@@ -722,18 +629,6 @@ inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::Cv_el
 
 
 template<class MultiThermo, template<class> class Type>
-inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::Cv_vel_mode
-(
-    const label vibMode,
-    const scalar p,
-    const scalar Tv
-) const
-{
-    return this->cv_vel_mode(vibMode, p, Tv)/this->W();
-}
-
-
-template<class MultiThermo, template<class> class Type>
 inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::Cv_vel
 (
     const scalar p,
@@ -786,28 +681,6 @@ inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::Cp_el
 ) const
 {
     return this->cp_el(p, Tv)/this->W();
-}
-
-
-template<class MultiThermo, template<class> class Type>
-inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::Cp_vel
-(
-    const scalar p,
-    const scalar Tv
-) const
-{
-    return this->cp_vel(p, Tv)/this->W();
-}
-
-template<class MultiThermo, template<class> class Type>
-inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::Cp_vel_mode
-(
-    const label vibMode,
-    const scalar p,
-    const scalar Tv
-) const
-{
-    return this->cp_vel_mode(vibMode, p, Tv)/this->W();
 }
 
 
@@ -887,25 +760,6 @@ inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::HEel
 
 
 template<class MultiThermo, template<class> class Type>
-inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::HEvel_mode
-(
-    const label vibMode,
-    const scalar p,
-    const scalar Tv
-) const
-{
-    return
-        Type<multiThermo<MultiThermo, Type> >::HEvel_mode
-        (
-            *this,
-            vibMode,
-            p,
-            Tv
-        );
-}
-
-
-template<class MultiThermo, template<class> class Type>
 inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::HEvel
 (
     const scalar p,
@@ -958,29 +812,6 @@ inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::Hels
 ) const
 {
     return this->hels(p, Tv)/this->W();
-}
-
-
-template<class MultiThermo, template<class> class Type>
-inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::Hvels
-(
-    const scalar p,
-    const scalar Tv
-) const
-{
-    return this->hvels(p, Tv)/this->W();
-}
-
-
-template<class MultiThermo, template<class> class Type>
-inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::Hvels_mode
-(
-    const label vibMode,
-    const scalar p,
-    const scalar Tv
-) const
-{
-    return this->hvels_mode(vibMode, p, Tv)/this->W();
 }
 
 
@@ -1103,18 +934,6 @@ inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::Eels
 ) const
 {
     return this->eels(p, Tv)/this->W();
-}
-
-
-template<class MultiThermo, template<class> class Type>
-inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::Evels_mode
-(
-    const label vibMode,
-    const scalar p,
-    const scalar Tv
-) const
-{
-    return this->evels_mode(vibMode, p, Tv)/this->W();
 }
 
 
@@ -1310,28 +1129,6 @@ inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::TvelHEvel
 
 
 template<class MultiThermo, template<class> class Type>
-inline Foam::scalar
-Foam::species::multiThermo<MultiThermo, Type>::TvelHEvel_mode
-(
-    const label vibMode,
-    const scalar hevel,
-    const scalar p,
-    const scalar T0
-) const
-{
-    return
-        Type<multiThermo<MultiThermo, Type> >::TvelHEvel_mode
-        (
-            *this,
-            vibMode,
-            hevel,
-            p,
-            T0
-        );
-}
-
-
-template<class MultiThermo, template<class> class Type>
 inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::TtHts
 (
     const scalar hts,
@@ -1366,26 +1163,6 @@ inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::TvHvs
         T0,
         &multiThermo<MultiThermo, Type>::Hvs,
         &multiThermo<MultiThermo, Type>::Cp_v,
-        &multiThermo<MultiThermo, Type>::limit
-    );
-}
-
-
-template<class MultiThermo, template<class> class Type>
-inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::TvelHvels
-(
-    const scalar hvels,
-    const scalar p,
-    const scalar T0
-) const
-{
-    return T
-    (
-        hvels,
-        p,
-        T0,
-        &multiThermo<MultiThermo, Type>::Hvels,
-        &multiThermo<MultiThermo, Type>::Cp_vel,
         &multiThermo<MultiThermo, Type>::limit
     );
 }
@@ -1470,29 +1247,6 @@ inline Foam::scalar Foam::species::multiThermo<MultiThermo, Type>::TvEvs
         T0,
         &multiThermo<MultiThermo, Type>::Evs,
         &multiThermo<MultiThermo, Type>::Cv_v,
-        &multiThermo<MultiThermo, Type>::limit
-    );
-}
-
-
-template<class MultiThermo, template<class> class Type>
-inline Foam::scalar
-Foam::species::multiThermo<MultiThermo, Type>::TvelEvels_mode
-(
-    const label vibMode,
-    const scalar evels_mode,
-    const scalar p,
-    const scalar T0
-) const
-{
-    return T
-    (
-        vibMode,
-        evels_mode,
-        p,
-        T0,
-        &multiThermo<MultiThermo, Type>::Evels_mode,
-        &multiThermo<MultiThermo, Type>::Cv_vel_mode,
         &multiThermo<MultiThermo, Type>::limit
     );
 }

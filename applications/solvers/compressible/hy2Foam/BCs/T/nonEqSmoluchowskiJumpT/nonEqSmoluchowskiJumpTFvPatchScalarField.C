@@ -42,7 +42,7 @@ nonEqSmoluchowskiJumpTFvPatchScalarField
     UName_("U"),
     rhoName_("rho"),
     muName_("mu"),
-    alphaName_("alphatr"),
+    alphaName_("alpha"),
     gammaName_("gammatr"),
     mfpName_("mfp"),
     accommodationCoeff_(1.0),
@@ -87,7 +87,7 @@ nonEqSmoluchowskiJumpTFvPatchScalarField
     UName_(dict.lookupOrDefault<word>("U", "U")),
     rhoName_(dict.lookupOrDefault<word>("rho", "rho")),
     muName_(dict.lookupOrDefault<word>("mu", "mu")),
-    alphaName_(dict.lookupOrDefault<word>("alphatr", "alphatr")),
+    alphaName_(dict.lookupOrDefault<word>("alpha", "alpha")),
     gammaName_(dict.lookupOrDefault<word>("gammatr", "gammatr")),
     mfpName_(dict.lookupOrDefault<word>("mfp", "mfp")),
     accommodationCoeff_(readScalar(dict.lookup("accommodationCoeff"))),
@@ -188,15 +188,15 @@ void Foam::nonEqSmoluchowskiJumpTFvPatchScalarField::updateCoeffs()
         patch().lookupPatchField<volScalarField, scalar>(rhoName_);
     const fvPatchVectorField& pU =
         patch().lookupPatchField<volVectorField, vector>(UName_);
-
-    Field<scalar> C2
+        
+    scalarField C2
     (
-        pmfp*2.0/(pgamma + 1.0)/(pmu/palpha) // Pr = mu*Cp/k = mu/alpha * Cp/Cv = mu/alpha * gamma
+        pmfp*2.0*pgamma/(pgamma + 1.0)/(pmu/palpha)
       * (2.0 - accommodationCoeff_)/accommodationCoeff_
     );
 
-//    Field<scalar> aCoeff(prho.snGrad() - prho/C2);
-//    Field<scalar> KEbyRho(0.5*magSqr(pU));
+//    scalarField aCoeff(prho.snGrad() - prho/C2);
+//    scalarField KEbyRho(0.5*magSqr(pU));
 
     valueFraction() = (1.0/(1.0 + patch().deltaCoeffs()*C2));
     refValue() = Twall_;
@@ -214,7 +214,7 @@ void Foam::nonEqSmoluchowskiJumpTFvPatchScalarField::write(Ostream& os) const
     writeEntryIfDifferent<word>(os, "U", "U", UName_);
     writeEntryIfDifferent<word>(os, "rho", "rho", rhoName_);
     writeEntryIfDifferent<word>(os, "mu", "mu", muName_);
-    writeEntryIfDifferent<word>(os, "alphatr", "alphatr", alphaName_);
+    writeEntryIfDifferent<word>(os, "alpha", "alpha", alphaName_);
     writeEntryIfDifferent<word>(os, "gammatr", "gammatr", gammaName_);
     writeEntryIfDifferent<word>(os, "mfp", "mfp", mfpName_);
 

@@ -197,6 +197,9 @@ public:
 
         //- Term in the total energy equation due to diffusion fluxes
         tmp<Foam::volVectorField> multiSpeciesHeatSource() const;
+        
+        //- Term in the vibro-electronic energy equation due to diffusion fluxes
+        tmp<Foam::volVectorField> multiSpeciesVEHeatSource() const;
 
         //- Update the species diffusion coefficients
         virtual void correct() = 0;

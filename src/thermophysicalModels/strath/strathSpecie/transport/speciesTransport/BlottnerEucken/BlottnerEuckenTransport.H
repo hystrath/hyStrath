@@ -22,36 +22,36 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::CEATransport
+    Foam::BlottnerEuckenTransport
 
 Description
-    Transport package using CEA formulas.
+    Transport package using Blottner and Eucken's formulas.
 
     Templated into a given thermodynamics package (needed for thermal
     conductivity).
 
-    Dynamic viscosity [kg/m.s]
+    Dynamic viscosity [kg/m.s] - Blottner
     \f[
-        \mu_k = exp(Amu_k*ln(T) + Bmu_k/T + Cmu_k/T^2 + Dmu_k)
+        \mu_k = 0.1*exp((A_k*ln(Tt)+B_k)*ln(Tt)+C_k)
     \f]
 
-    Thermal conductivity [W/mK]
+    Thermal conductivity [W/mK] - Eucken
     \f[
-        \kappa_tr_k = exp(Akp_k*ln(T) + Bkp_k/T + Ckp_k/T^2 + Dkp_k)
+        \kappa_t_k = 3/2*mu_k*Cv_t_k
+        \kappa_r_k = mu_k*Cv_r_k
+        \kappa_ve_k = mu_k*Cv_ve_k
     \f]
 
     \kappa_ve_k amended to be eta_s_k*mu_k*Cv_ve_k
 
 SourceFiles
-    CEATransportI.H
-    CEATransport.C
+    BlottnerEuckenTransportI.H
+    BlottnerEuckenTransport.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef CEATransport_H
-#define CEATransport_H
-
-#include "DynamicList.H"
+#ifndef BlottnerEuckenTransport_H
+#define BlottnerEuckenTransport_H
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -60,68 +60,57 @@ namespace Foam
 
 // Forward declaration of friend functions and operators
 
-template<class Thermo> class CEATransport;
+template<class Thermo> class BlottnerEuckenTransport;
 
 template<class Thermo>
-inline CEATransport<Thermo> operator+
+inline BlottnerEuckenTransport<Thermo> operator+
 (
-    const CEATransport<Thermo>&,
-    const CEATransport<Thermo>&
+    const BlottnerEuckenTransport<Thermo>&,
+    const BlottnerEuckenTransport<Thermo>&
 );
 
 template<class Thermo>
-inline CEATransport<Thermo> operator-
+inline BlottnerEuckenTransport<Thermo> operator-
 (
-    const CEATransport<Thermo>&,
-    const CEATransport<Thermo>&
+    const BlottnerEuckenTransport<Thermo>&,
+    const BlottnerEuckenTransport<Thermo>&
 );
 
 template<class Thermo>
-inline CEATransport<Thermo> operator*
+inline BlottnerEuckenTransport<Thermo> operator*
 (
     const scalar,
-    const CEATransport<Thermo>&
+    const BlottnerEuckenTransport<Thermo>&
 );
 
 template<class Thermo>
-inline CEATransport<Thermo> operator==
+inline BlottnerEuckenTransport<Thermo> operator==
 (
-    const CEATransport<Thermo>&,
-    const CEATransport<Thermo>&
+    const BlottnerEuckenTransport<Thermo>&,
+    const BlottnerEuckenTransport<Thermo>&
 );
 
 template<class Thermo>
 Ostream& operator<<
 (
     Ostream&,
-    const CEATransport<Thermo>&
+    const BlottnerEuckenTransport<Thermo>&
 );
 
 
 /*---------------------------------------------------------------------------*\
-                    Class CEATransport Declaration
+                    Class BlottnerEuckenTransport Declaration
 \*---------------------------------------------------------------------------*/
 
 template<class Thermo>
-class CEATransport
+class BlottnerEuckenTransport
 :
     public Thermo
 {
-
-public:
-
-    static const int nCoeffs_ = 4;
-    typedef FixedList<scalar, nCoeffs_> CEATransportArray;
-
-private:
-
     // Private data
 
-        //- Temperature bounds for the viscosity and thermal conductivity lists
-        DynamicList<scalar> temp_;
-
-        //- CEA coefficients for viscosity and thermal conductivity
-        DynamicList<CEATransportArray> mu_, kappa_;
+        //- Blottner's coefficients
+        scalar Ak_, Bk_, Ck_;
 
         //- Factor in vibrational thermal conductivity kappave
         // Hard-sphere: (7-2*omega_m)/5 with omega_m = 0.5
@@ -134,32 +123,32 @@ public:
     // Constructors
 
         //- Construct from components
-        inline CEATransport
+        inline BlottnerEuckenTransport
         (
             const Thermo& t,
-            const DynamicList<scalar>& temp,
-            const DynamicList<CEATransportArray>& mu,
-            const DynamicList<CEATransportArray>& kappa,
+            const scalar Ak,
+            const scalar Bk,
+            const scalar Ck,
             const scalar eta_s
         );
 
         //- Construct as named copy
-        inline CEATransport(const word&, const CEATransport&);
+        inline BlottnerEuckenTransport(const word&, const BlottnerEuckenTransport&);
 
         //- Construct from Istream
-        CEATransport(Istream&);
+        BlottnerEuckenTransport(Istream&);
 
         //- Construct from dictionary
-        CEATransport(const dictionary& dict);
+        BlottnerEuckenTransport(const dictionary& dict);
 
         //- Construct and return a clone
-        inline autoPtr<CEATransport> clone() const;
+        inline autoPtr<BlottnerEuckenTransport> clone() const;
 
         // Selector from Istream
-        inline static autoPtr<CEATransport> New(Istream& is);
+        inline static autoPtr<BlottnerEuckenTransport> New(Istream& is);
 
         // Selector from dictionary
-        inline static autoPtr<CEATransport> New(const dictionary& dict);
+        inline static autoPtr<BlottnerEuckenTransport> New(const dictionary& dict);
 
 
     // Member functions
@@ -167,42 +156,29 @@ public:
         //- Return the instantiated type name
         static word typeName()
         {
-            return "CEA<" + Thermo::typeName() + '>';
+            return "BlottnerEucken<" + Thermo::typeName() + '>';
         }
-
-        //- Return the viscosity coefficients for a given temperature
-        inline const CEATransportArray& viscosityCoeffs(const scalar T) const;
-
-        //- Return the thermal conductivity coefficients for a given temperature
-        inline const CEATransportArray& thermalConductivityCoeffs
-        (
-            const scalar T
-        ) const;
 
         //- Dynamic viscosity [kg/ms]
         inline scalar mu(const scalar p, const scalar Tt) const;
+
+        //- Thermal conductivity, translational mode [W/mK]
+        inline scalar kappatrans(const scalar p, const scalar Tt) const;
+
+        //- Thermal conductivity, rotational mode [W/mK]
+        inline scalar kappar(const scalar p, const scalar Tr) const;
 
         //- Thermal conductivity, trans-rotational mode [W/mK]
         inline scalar kappatr(const scalar p, const scalar Tt) const;
 
         //- Thermal conductivity, vib-electronic mode [W/mK]
-        inline scalar kappave
-        (
-            const scalar p,
-            const scalar Tt,
-            const scalar Tve
-        ) const;
+        inline scalar kappave(const scalar p, const scalar Tt, const scalar Tve) const;
 
-        //- Thermal diffusivity, trans-rotational mode [kg/ms]
-        inline scalar alphatr(const scalar p, const scalar Tt) const;
+/*        //- Thermal diffusivity, trans-rotational mode [kg/ms]*/
+/*        inline scalar alphatr(const scalar p, const scalar Tt) const;*/
 
-        //- Thermal diffusivity, vib-electronic mode [kg/ms]
-        inline scalar alphave
-        (
-            const scalar p,
-            const scalar Tt,
-            const scalar Tve
-        ) const;
+/*        //- Thermal diffusivity, vib-electronic mode [kg/ms]*/
+/*        inline scalar alphave(const scalar p, const scalar Tt, const scalar Tve) const;*/
 
         //- Write to Ostream
         void write(Ostream& os) const;
@@ -210,39 +186,39 @@ public:
 
     // Member operators
 
-        inline CEATransport& operator=(const CEATransport&);
+        inline BlottnerEuckenTransport& operator=(const BlottnerEuckenTransport&);
 
-        inline void operator+=(const CEATransport&);
+        inline void operator+=(const BlottnerEuckenTransport&);
 
-        inline void operator-=(const CEATransport&);
+        inline void operator-=(const BlottnerEuckenTransport&);
 
         inline void operator*=(const scalar);
 
 
     // Friend operators
 
-        friend CEATransport operator+ <Thermo>
+        friend BlottnerEuckenTransport operator+ <Thermo>
         (
-            const CEATransport&,
-            const CEATransport&
+            const BlottnerEuckenTransport&,
+            const BlottnerEuckenTransport&
         );
 
-        friend CEATransport operator- <Thermo>
+        friend BlottnerEuckenTransport operator- <Thermo>
         (
-            const CEATransport&,
-            const CEATransport&
+            const BlottnerEuckenTransport&,
+            const BlottnerEuckenTransport&
         );
 
-        friend CEATransport operator* <Thermo>
+        friend BlottnerEuckenTransport operator* <Thermo>
         (
             const scalar,
-            const CEATransport&
+            const BlottnerEuckenTransport&
         );
 
-        friend CEATransport operator== <Thermo>
+        friend BlottnerEuckenTransport operator== <Thermo>
         (
-            const CEATransport&,
-            const CEATransport&
+            const BlottnerEuckenTransport&,
+            const BlottnerEuckenTransport&
         );
 
 
@@ -251,7 +227,7 @@ public:
         friend Ostream& operator<< <Thermo>
         (
             Ostream&,
-            const CEATransport&
+            const BlottnerEuckenTransport&
         );
 };
 
@@ -262,10 +238,10 @@ public:
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include "CEATransportI.H"
+#include "BlottnerEuckenTransportI.H"
 
 #ifdef NoRepository
-#   include "CEATransport.C"
+#   include "BlottnerEuckenTransport.C"
 #endif
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

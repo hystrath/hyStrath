@@ -114,9 +114,7 @@ void Foam::mixed2VELMixEnergyFvPatchScalarField::updateCoeffs()
     (
         const_cast<fvPatchScalarField&>(multiThermo.Tv().boundaryField()[patchi])
     );
-
     Tvw.evaluate();
-    valueFraction() = Tvw.valueFraction();
 
     tmp<scalarField> thevel(new scalarField(pw.size()));
     tmp<scalarField> thevelRef(new scalarField(pw.size()));
@@ -152,6 +150,7 @@ void Foam::mixed2VELMixEnergyFvPatchScalarField::updateCoeffs()
     
     cvvelTvw *= Tvw.refGrad();
 
+    valueFraction() = Tvw.valueFraction();
     refValue() = thevelRef;
     refGrad() = tcvvelTvw + patch().deltaCoeffs()*(thevel - thevelfC);
 

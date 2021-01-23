@@ -22,10 +22,19 @@ solve
 e = rhoE/rho - 0.5*magSqr(U);
 
 et.ref() = e() - ev();
-et.correctBoundaryConditions();
-e.boundaryFieldRef() = et.boundaryField() + ev.boundaryField();
 
-rhoE.boundaryFieldRef() = 
+if (downgradeSingleT)
+{
+    e.correctBoundaryConditions();
+    et.boundaryFieldRef() = e.boundaryField() - ev.boundaryField();
+}
+else
+{
+    et.correctBoundaryConditions();
+    e.boundaryFieldRef() = et.boundaryField() + ev.boundaryField();
+}
+
+rhoE.boundaryFieldRef() =
     rho.boundaryField()
   * (
         e.boundaryField() + 0.5*magSqr(U.boundaryField())

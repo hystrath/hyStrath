@@ -30,7 +30,7 @@ License
 template<class ThermoType>
 void Foam::LewisNumber<ThermoType>::updateCoefficients()
 {
-    this->D_[0] = this->thermo_.kappatr()*Le_ / this->thermo_.Cp_t();
+    this->D_[0] = this->thermo_.kappa()*Le_ / this->thermo_.CpMix();
 
     for(int speciei=1; speciei < this->D_.size(); speciei++)
     {

@@ -108,27 +108,18 @@ void Foam::fixed2TREnergyFvPatchScalarField::updateCoeffs()
     const multi2Thermo& multiThermo = multi2Thermo::lookup2Thermo(*this);
     const label patchi = patch().index();
 
-    const scalarField& pw = multiThermo.p().boundaryField()[patchi];
-
-    fvPatchScalarField& Tw =
-        const_cast<fvPatchScalarField&>
-        (
-            multiThermo.T().boundaryField()[patchi]
-        );
-    Tw.evaluate();
+    const fvPatchScalarField& pw = multiThermo.p().boundaryField()[patchi];
+    const fvPatchScalarField& Tw = multiThermo.T().boundaryField()[patchi];
 
     tmp<scalarField> thet(new scalarField(pw.size()));
     scalarField& het = thet.ref();
 
     het = 0.0;
+    
     forAll(thermo_.composition().Y(), speciei)
     {
-        fvPatchScalarField& spYw =
-            const_cast<fvPatchScalarField&>
-            (
-                thermo_.composition().Y(speciei).boundaryField()[patchi]
-            );
-        spYw.evaluate();
+        const fvPatchScalarField& spYw =
+            thermo_.composition().Y(speciei).boundaryField()[patchi];
 
         het += spYw*thermo_.composition().het(speciei, pw, Tw, patchi);
     }
