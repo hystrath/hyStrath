@@ -159,24 +159,13 @@ public:
         //- Thermal conductivity, trans-rotational mode [W/mK]
         inline scalar kappatr(const scalar p, const scalar Tt) const;
 
-        //- Thermal conductivity, vibro-electronic mode [W/mK]
+        //- Thermal conductivity, vibro-electronic energy mode [W/mK]
         inline scalar kappave
         (
             const scalar p,
             const scalar Tt,
             const scalar Tve
         ) const;
-
-/*        //- Thermal diffusivity, trans-rotational mode [kg/ms]*/
-/*        inline scalar alphatr(const scalar p, const scalar Tt) const;*/
-
-/*        //- Thermal diffusivity, vib-electronic mode [kg/ms]*/
-/*        inline scalar alphave*/
-/*        (*/
-/*            const scalar p,*/
-/*            const scalar Tt,*/
-/*            const scalar Tve*/
-/*        ) const;*/
 
         //- Write to Ostream
         void write(Ostream& os) const;

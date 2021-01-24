@@ -113,8 +113,8 @@ class BlottnerEuckenTransport
         scalar Ak_, Bk_, Ck_;
 
         //- Factor in vibrational thermal conductivity kappave
-        // Hard-sphere: (7-2*omega_m)/5 with omega_m = 0.5
-        // Default value: 1.2
+        //  Hard-sphere: (7-2*omega_m)/5 with omega_m = 0.5
+        //  Default value: 1.2
         scalar eta_s_;
 
 
@@ -133,7 +133,10 @@ public:
         );
 
         //- Construct as named copy
-        inline BlottnerEuckenTransport(const word&, const BlottnerEuckenTransport&);
+        inline BlottnerEuckenTransport
+        (
+            const word&, const BlottnerEuckenTransport&
+        );
 
         //- Construct from Istream
         BlottnerEuckenTransport(Istream&);
@@ -148,7 +151,10 @@ public:
         inline static autoPtr<BlottnerEuckenTransport> New(Istream& is);
 
         // Selector from dictionary
-        inline static autoPtr<BlottnerEuckenTransport> New(const dictionary& dict);
+        inline static autoPtr<BlottnerEuckenTransport> New
+        (
+            const dictionary& dict
+        );
 
 
     // Member functions
@@ -171,14 +177,13 @@ public:
         //- Thermal conductivity, trans-rotational mode [W/mK]
         inline scalar kappatr(const scalar p, const scalar Tt) const;
 
-        //- Thermal conductivity, vib-electronic mode [W/mK]
-        inline scalar kappave(const scalar p, const scalar Tt, const scalar Tve) const;
-
-/*        //- Thermal diffusivity, trans-rotational mode [kg/ms]*/
-/*        inline scalar alphatr(const scalar p, const scalar Tt) const;*/
-
-/*        //- Thermal diffusivity, vib-electronic mode [kg/ms]*/
-/*        inline scalar alphave(const scalar p, const scalar Tt, const scalar Tve) const;*/
+        //- Thermal conductivity, vibro-electronic energy mode [W/mK]
+        inline scalar kappave
+        (
+            const scalar p,
+            const scalar Tt,
+            const scalar Tve
+        ) const;
 
         //- Write to Ostream
         void write(Ostream& os) const;
@@ -186,7 +191,10 @@ public:
 
     // Member operators
 
-        inline BlottnerEuckenTransport& operator=(const BlottnerEuckenTransport&);
+        inline BlottnerEuckenTransport& operator=
+        (
+            const BlottnerEuckenTransport&
+        );
 
         inline void operator+=(const BlottnerEuckenTransport&);
 

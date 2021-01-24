@@ -151,43 +151,6 @@ inline Foam::scalar Foam::constantTransport<Thermo>::kappave
 }
 
 
-/*template<class Thermo>*/
-/*inline Foam::scalar Foam::constantTransport<Thermo>::alphatr*/
-/*(*/
-/*    const scalar p,*/
-/*    const scalar Tt*/
-/*) const*/
-/*{*/
-/*    if (this->Cv_t(p, Tt) != 0.0)*/
-/*    {*/
-/*        return kappatr(p, Tt)/this->Cv_t(p, Tt);*/
-/*    }*/
-/*    else*/
-/*    {*/
-/*        return 0.0;*/
-/*    }*/
-/*}*/
-
-
-/*template<class Thermo>*/
-/*inline Foam::scalar Foam::constantTransport<Thermo>::alphave*/
-/*(*/
-/*    const scalar p,*/
-/*    const scalar Tt,*/
-/*    const scalar Tve*/
-/*) const*/
-/*{*/
-/*    if (this->Cv_vel(p, Tve) != 0.0)*/
-/*    {*/
-/*        return kappave(p, Tt, Tve)/this->Cv_vel(p, Tve);*/
-/*    }*/
-/*    else*/
-/*    {*/
-/*        return 0.0;*/
-/*    }*/
-/*}*/
-
-
 // * * * * * * * * * * * * * * * Member Operators  * * * * * * * * * * * * * //
 
 template<class Thermo>
