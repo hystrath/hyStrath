@@ -352,51 +352,6 @@ Foam::VTRelaxationModels::SchwartzSlawskyHerzfeld::tauVT() const
 }
 
 
-Foam::tmp<Foam::scalarField> Foam::VTRelaxationModels::SchwartzSlawskyHerzfeld::tauVT
-(
-    const label patchi,
-    const scalarField& p,
-    const scalarField& Tt,
-    const PtrList<scalarField>& Tv,
-    const PtrList<scalarField>& nD
-) const
-{
-    tmp<scalarField> ttauVT(new scalarField(Tt.size()));
-    scalarField& tauVT = ttauVT.ref();
-
-    if(SHHon_)
-    {
-        forAll(Tt, facei)
-        {
-            tauVT[facei] = 1.0 /
-                (
-                    (1.0-exp(-TH1_/Tt[facei]))
-                  * P10sr(Tt[facei])
-                  * Zcollsr(Tt[facei], nD[species1_][facei], nD[species2_][facei])
-                );
-        }
-    }
-    else
-    {
-        scalarField nDcol = nD[species1_];
-        if(species1_ != species2_)
-        {
-            nDcol += nD[species2_];
-        }
-
-        forAll(Tt, facei)
-        {
-            tauVT[facei] =
-                1.01325e5 / p[facei] * exp(A12_*(pow(Tt[facei], -1.0/3.0) - B12_) - offset_)
-              + 1.0/(sqrt(8.0*constant::physicoChemical::R.value()*1000.0*Tt[facei]/
-                  (pi*W1_)) * sigma1_*sqr(sigma2_/Tt[facei]) * max(nDcol[facei],Foam::SMALL));
-        }
-    }
-
-    return ttauVT;
-}
-
-
 } // End namespace Foam
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

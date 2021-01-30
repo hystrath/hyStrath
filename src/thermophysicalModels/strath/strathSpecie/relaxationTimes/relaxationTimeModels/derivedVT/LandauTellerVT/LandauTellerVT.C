@@ -99,11 +99,12 @@ void Foam::LandauTellerVT<ThermoType>::updateCoefficients()
             
             const volScalarField& Xj = thermo_.composition().X(speciej);
 
-            sumWeightedReciprocalRelaxTimes += Xj / tauVTij(moli,speciej);
+            sumWeightedReciprocalRelaxTimes += Xj/tauVTij(moli, speciej);
         }
 
-        tauVT_[moli] = (1.0 - tXe.ref())
-            / (sumWeightedReciprocalRelaxTimes + invtSMALL);
+        tauVT_[moli] =
+            (1.0 - tXe.ref())/(sumWeightedReciprocalRelaxTimes + invtSMALL)
+          + tauVTijModel_().tauVTcorr(moli);
     }
 
 
@@ -126,8 +127,8 @@ void Foam::LandauTellerVT<ThermoType>::updateCoefficients()
                 }
             }
             
-            tauVTmode_[moli][mi] = (1.0 - tXe.ref())
-                / (sumWeightedReciprocalRelaxTimes + invtSMALL);
+            tauVTmode_[moli][mi] = 
+                (1.0 - tXe.ref())/(sumWeightedReciprocalRelaxTimes + invtSMALL);
         }
     }*/
 }

@@ -82,6 +82,7 @@ Foam::VTModel::VTModel
 {
     tauVTijModels_.setSize(molecules.size()*species.size());
     tauVTij_.setSize(tauVTijModels_.size());
+    tauVTcorr_.setSize(molecules.size());
 
     forAll(molecules_, i)
     {
@@ -116,6 +117,24 @@ Foam::VTModel::VTModel
                 )
             );
         }
+        
+        tauVTcorr_.set
+        (
+            i,
+            new volScalarField
+            (
+                IOobject
+                (
+                    "tauVTcorr_" + molecules[i],
+                    T.mesh().time().timeName(),
+                    T.mesh(),
+                    IOobject::NO_READ,
+                    IOobject::NO_WRITE
+                ),
+                T.mesh(),
+                dimensionedScalar("zero", dimTime, 0.0)
+            )
+        );
     }
 }
 
@@ -131,6 +150,9 @@ void Foam::VTModel::update()
             const label k = species_.size()*i + j;
             tauVTij_[k] = tauVTijModels_[k].tauVT();
         }
+        
+        const label moli = (species_.size() + 1)*i;
+        tauVTcorr_[i] = tauVTijModels_[moli].tauVTcorr();
     }
 }
 

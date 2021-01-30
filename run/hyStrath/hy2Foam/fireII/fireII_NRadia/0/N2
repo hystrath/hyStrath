@@ -10,34 +10,32 @@ FoamFile
     version     2.0;
     format      ascii;
     class       volScalarField;
-    object      Tt;
+    location    "0";
+    object      N2;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 #include "include/initialConditions"
 
-dimensions      [0 0 0 1 0 0 0];
+dimensions      [0 0 0 0 0 0 0];
 
-internalField   uniform $Ttr;
+internalField   uniform $Y_N2;
 
 boundaryField
 {
     inlet
     {
         type            fixedValue;
-        value           uniform $Ttr;
+        value           uniform $Y_N2;
     }
     
     fire
     {
-        type            nonEqSmoluchowskiJumpT;
-        accommodationCoeff 1;
-        alpha           "alphatr";
-        Twall           uniform $Twall;
-        value           $Twall;
+        type            zeroGradient;
     }
     
     #include "include/boundaries"
 }
+
 
 // ************************************************************************* //

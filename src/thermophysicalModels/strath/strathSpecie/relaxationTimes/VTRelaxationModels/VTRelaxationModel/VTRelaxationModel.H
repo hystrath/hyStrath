@@ -74,16 +74,16 @@ protected:
         //- Species label associated with the names
         const label& lname1_, lname2_;
 
-        // Pressure [Pa]
+        //- Pressure [Pa]
         const volScalarField& p_;
 
-        // Heavy-particle temperature [K]
+        //- Trans-rotational temperature [K]
         const volScalarField& T_;
 
-        // Vibrational temperatures [K]
+        //- Vibro-electronic temperatures [K]
         const PtrList<volScalarField>& Tv_;
 
-        // Number densities [m^-3]
+        //- Species number densities [m^-3]
         const PtrList<volScalarField>& nD_;
 
         //- Full (true) or partial/pre coefficients formulation
@@ -182,17 +182,10 @@ public:
     // Member Functions
 
         //- V-T relaxation time [s]
-         virtual tmp<volScalarField> tauVT() const = 0;
-
-        //- V-T relaxation time for patch [s]
-        virtual tmp<scalarField> tauVT
-        (
-            const label patchi,
-            const scalarField& p,
-            const scalarField& T,
-            const PtrList<scalarField>& Tv,
-            const PtrList<scalarField>& nD
-        ) const = 0;
+        virtual tmp<volScalarField> tauVT() const = 0;
+        
+        //- Correction to the V-T relaxation time [s]
+        virtual tmp<volScalarField> tauVTcorr() const;
 
 };
 

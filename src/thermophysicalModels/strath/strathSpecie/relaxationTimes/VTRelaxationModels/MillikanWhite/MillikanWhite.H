@@ -56,10 +56,10 @@ class MillikanWhite
 {
     // Private data
 
-        // Coefficients
+        //- Millikan and White coefficients
         scalar A12_, B12_;
 
-        // Offset term in the exponential
+        //- Offset term in the exponential
         scalar offset_;
 
 
@@ -81,7 +81,7 @@ public:
             const dictionary& dict2T,
             const dictionary& dictThermoPhy,
             const volScalarField& p,
-            const volScalarField& Tt,
+            const volScalarField& T,
             const PtrList<volScalarField>& Tv,
             const PtrList<volScalarField>& nD
         );
@@ -97,16 +97,6 @@ public:
 
         //- V-T relaxation time [s]
         virtual tmp<volScalarField> tauVT() const;
-
-        //- V-T relaxation time for patch [s]
-        virtual tmp<scalarField> tauVT
-        (
-            const label patchi,
-            const scalarField& p,
-            const scalarField& Tt,
-            const PtrList<scalarField>& Tv,
-            const PtrList<scalarField>& nD
-        ) const;
 
 };
 

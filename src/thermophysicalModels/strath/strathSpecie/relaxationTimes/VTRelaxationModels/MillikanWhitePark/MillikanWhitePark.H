@@ -59,7 +59,7 @@ class MillikanWhitePark
     // Private data
 
         //- Species indices
-        scalar species1_, species2_;
+        label species1_, species2_;
 
         //- Millikan and White coefficients
         scalar A12_, B12_;
@@ -108,16 +108,6 @@ public:
 
         //- V-T relaxation time [s]
         virtual tmp<volScalarField> tauVT() const;
-
-        //- V-T relaxation time for patch [s]
-        virtual tmp<scalarField> tauVT
-        (
-            const label patchi,
-            const scalarField& p,
-            const scalarField& T,
-            const PtrList<scalarField>& Tv,
-            const PtrList<scalarField>& nD
-        ) const;
 
 };
 

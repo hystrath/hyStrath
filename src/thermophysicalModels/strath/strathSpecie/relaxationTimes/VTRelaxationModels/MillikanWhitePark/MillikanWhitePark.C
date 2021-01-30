@@ -297,22 +297,23 @@ Foam::VTRelaxationModels::MillikanWhitePark::tauVT() const
 
     forAll(this->T_, celli)
     {
+        const scalar T = this->T_[celli];
+        
         tauVT[celli] =
             1.01325e5 / this->p_[celli]
-          * exp(A12_*(pow(this->T_[celli], -1.0/3.0) - B12_) - offset_)
+          * exp(A12_*(pow(T, -1.0/3.0) - B12_) - offset_)
           + 1.0
             /
               (
                   sqrt
                   (
                       8.0*constant::physicoChemical::R.value()*1000.0
-                    * this->T_[celli]/(constant::mathematical::pi*W1_)
+                    * T/(constant::mathematical::pi*W1_)
                   ) 
-                * sigma1_*sqr(sigma2_/this->T_[celli])
+                * sigma1_*sqr(sigma2_/T)
                 * max(nDcol[celli], Foam::SMALL)
               );
     }
-
 
     forAll(this->T_.boundaryField(), patchi)
     {
@@ -323,61 +324,23 @@ Foam::VTRelaxationModels::MillikanWhitePark::tauVT() const
 
         forAll(pT, facei)
         {
+            const scalar T = pT[facei];
+            
             ptauVT[facei] =
                 1.01325e5 / pp[facei]
-              * exp(A12_*(pow(pT[facei], -1.0/3.0) - B12_) - offset_)
+              * exp(A12_*(pow(T, -1.0/3.0) - B12_) - offset_)
               + 1.0
                 /
                   (
                       sqrt
                       (
                           8.0*constant::physicoChemical::R.value()*1000.0
-                        * pT[facei]/(constant::mathematical::pi*W1_)
+                        * T/(constant::mathematical::pi*W1_)
                       )
-                    * sigma1_*sqr(sigma2_/pT[facei])
+                    * sigma1_*sqr(sigma2_/T)
                     * max(pnDcol[facei], Foam::SMALL)
                   );
         }
-    }
-
-    return ttauVT;
-}
-
-
-Foam::tmp<Foam::scalarField> Foam::VTRelaxationModels::MillikanWhitePark::tauVT
-(
-    const label patchi,
-    const scalarField& p,
-    const scalarField& T,
-    const PtrList<scalarField>& Tv,
-    const PtrList<scalarField>& nD
-) const
-{
-    tmp<scalarField> ttauVT(new scalarField(T.size()));
-    scalarField& tauVT = ttauVT.ref();
-
-    scalarField nDcol = nD[species1_];
-    if (species1_ != species2_)
-    {
-        nDcol += nD[species2_];
-    }
-
-    forAll(T, facei)
-    {
-        tauVT[facei] =
-            1.01325e5 / p[facei]
-          * exp(A12_*(pow(T[facei], -1.0/3.0) - B12_) - offset_)
-          + 1.0
-            /
-              (
-                  sqrt
-                  (
-                      8.0*constant::physicoChemical::R.value()*1000.0
-                    * T[facei]/(constant::mathematical::pi*W1_)
-                  )
-                * sigma1_*sqr(sigma2_/T[facei])
-                * max(nDcol[facei], Foam::SMALL)
-              );
     }
 
     return ttauVT;

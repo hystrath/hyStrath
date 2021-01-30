@@ -9,35 +9,54 @@ FoamFile
 {
     version     2.0;
     format      ascii;
-    class       volScalarField;
-    object      Tt;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include "include/initialConditions"
+application     hy2Foam;
 
-dimensions      [0 0 0 1 0 0 0];
+startFrom       latestTime;
 
-internalField   uniform $Ttr;
+startTime       0;
 
-boundaryField
+stopAt          endTime;
+
+endTime         1.0e-03;
+
+deltaT          1.0e-10;
+
+writeControl    adjustableRunTime;
+
+writeInterval   1.0e-5;
+
+purgeWrite      10;
+
+writeFormat     ascii;
+
+writePrecision  10;
+
+writeCompression uncompressed;
+
+timeFormat      general;
+
+timePrecision   10;
+
+runTimeModifiable yes;
+
+adjustTimeStep  yes;
+
+maxCo           0.5;
+
+maxDeltaT       1.0e-5;
+
+libs ("libstrathFiniteVolume.so");
+
+functions
 {
-    inlet
-    {
-        type            fixedValue;
-        value           uniform $Ttr;
-    }
-    
-    fire
-    {
-        type            nonEqSmoluchowskiJumpT;
-        accommodationCoeff 1;
-        alpha           "alphatr";
-        Twall           uniform $Twall;
-        value           $Twall;
-    }
-    
-    #include "include/boundaries"
+    //#include "forces"
 }
+
 
 // ************************************************************************* //

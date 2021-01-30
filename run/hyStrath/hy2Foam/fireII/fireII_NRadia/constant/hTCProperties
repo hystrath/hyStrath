@@ -9,35 +9,27 @@ FoamFile
 {
     version     2.0;
     format      ascii;
-    class       volScalarField;
-    object      Tt;
+    class       dictionary;
+    location    "constant";
+    object      hTCProperties;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include "include/initialConditions"
+hTC2Model  laminar2<rho2ChemistryHTC>;
 
-dimensions      [0 0 0 1 0 0 0];
+active     off;
 
-internalField   uniform $Ttr;
+laminar2Coeffs
+{}
 
-boundaryField
+mixtureOutputs
 {
-    inlet
-    {
-        type            fixedValue;
-        value           uniform $Ttr;
-    }
-    
-    fire
-    {
-        type            nonEqSmoluchowskiJumpT;
-        accommodationCoeff 1;
-        alpha           "alphatr";
-        Twall           uniform $Twall;
-        value           $Twall;
-    }
-    
-    #include "include/boundaries"
+    molarFraction       on;
+    numberDensity       off;
+    partialDensity      off;
+    partialPressure     off;
+    degreesOfFreedom    off;
+    vibrationalEnergy   off;
 }
 
 // ************************************************************************* //

@@ -20,7 +20,7 @@ thermalRelaxationModels
     VT
     {
         relaxationType        LandauTellerVT;
-        model                 MillikanWhitePark;
+        model                 LeMANSMWP;
         fullCoeffsForm        on;
         overwriteDefault      on;
         speciesDependent      on;

@@ -9,35 +9,40 @@ FoamFile
 {
     version     2.0;
     format      ascii;
-    class       volScalarField;
-    object      Tt;
+    class       dictionary;
+    location    "constant";
+    object      thermophysicalProperties;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include "include/initialConditions"
-
-dimensions      [0 0 0 1 0 0 0];
-
-internalField   uniform $Ttr;
-
-boundaryField
+thermoType
 {
-    inlet
-    {
-        type            fixedValue;
-        value           uniform $Ttr;
-    }
-    
-    fire
-    {
-        type            nonEqSmoluchowskiJumpT;
-        accommodationCoeff 1;
-        alpha           "alphatr";
-        Twall           uniform $Twall;
-        value           $Twall;
-    }
-    
-    #include "include/boundaries"
+    type            heRho2Thermo;
+    mixture         reacting2Mixture;
+    transport       BlottnerEucken;
+    thermo          decoupledEnergyModes;
+    energy          sensible2InternalEnergy;
+    equationOfState perfect2Gas;
+    specie          advancedSpecie;
+}
+
+hyLight no;
+
+downgradeToSingleTv yes;
+downgradeToSingleTemperature no;
+
+chemistryReader foam2ChemistryReader;
+
+foamChemistryFile "$FOAM_CASE/constant/hTCReactionsEarth93";
+
+foamChemistryThermoFile "$FOAM_CASE/constant/thermoDEM";
+
+twoTemperatureDictFile "$FOAM_CASE/constant/thermo2TModel";
+
+temperatureBounds
+{
+    Tlow    200;
+    Thigh   90000;
 }
 
 // ************************************************************************* //

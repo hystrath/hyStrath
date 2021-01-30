@@ -9,35 +9,14 @@ FoamFile
 {
     version     2.0;
     format      ascii;
-    class       volScalarField;
-    object      Tt;
+    class       dictionary;
+    location    "system";
+    object      decomposeParDict;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include "include/initialConditions"
+numberOfSubdomains 4;
 
-dimensions      [0 0 0 1 0 0 0];
-
-internalField   uniform $Ttr;
-
-boundaryField
-{
-    inlet
-    {
-        type            fixedValue;
-        value           uniform $Ttr;
-    }
-    
-    fire
-    {
-        type            nonEqSmoluchowskiJumpT;
-        accommodationCoeff 1;
-        alpha           "alphatr";
-        Twall           uniform $Twall;
-        value           $Twall;
-    }
-    
-    #include "include/boundaries"
-}
+method          scotch;
 
 // ************************************************************************* //

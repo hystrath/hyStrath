@@ -138,4 +138,30 @@ Foam::autoPtr<Foam::VTRelaxationModel> Foam::VTRelaxationModel::New
 }
 
 
+Foam::tmp<Foam::volScalarField> Foam::VTRelaxationModel::tauVTcorr() const
+{
+    const fvMesh& mesh = T_.mesh();
+
+    tmp<volScalarField> ttauVTcorr
+    (
+        new volScalarField
+        (
+            IOobject
+            (
+                "tauVTcorr",
+                mesh.time().timeName(),
+                mesh,
+                IOobject::NO_READ,
+                IOobject::NO_WRITE,
+                false
+            ),
+            mesh,
+            dimensionedScalar("zero", dimTime, 0.0)
+        )
+    );
+    
+    return ttauVTcorr;
+}
+
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

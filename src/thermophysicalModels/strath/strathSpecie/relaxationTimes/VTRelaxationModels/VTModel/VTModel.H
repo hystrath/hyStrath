@@ -63,7 +63,7 @@ protected:
         //- List of molecules
         const wordList& molecules_;
 
-        //- List of Species
+        //- List of species
         const wordList& species_;
 
         //- Pressure [Pa]
@@ -75,7 +75,7 @@ protected:
         //- Vibro-electronic temperatures [K]
         const PtrList<volScalarField>& Tv_;
 
-        //- Number densities [m^-3]
+        //- Species number density [m^-3]
         const PtrList<volScalarField>& nD_;
 
         //- V-T relaxation models
@@ -83,6 +83,9 @@ protected:
 
         //- Interspecies V-T relaxation time [s]
         PtrList<volScalarField> tauVTij_;
+        
+        //- Correction to the V-T relaxation time [s]
+        PtrList<volScalarField> tauVTcorr_;
 
 
     // Private Member Functions
@@ -123,6 +126,7 @@ public:
 
     // Member Functions
 
+        //- Return const access to the interspecies V-T relaxation time
         inline const volScalarField& tauVT(label i, label j) const
         {
             label k = 0;
@@ -137,6 +141,12 @@ public:
             }
             
             return tauVTij_[k];
+        }
+        
+        //- Return const access to the V-T relaxation time correction term
+        inline const volScalarField& tauVTcorr(label moli) const
+        {
+            return tauVTcorr_[moli];
         }
 
         //- Update the interspecies V-T relaxation times

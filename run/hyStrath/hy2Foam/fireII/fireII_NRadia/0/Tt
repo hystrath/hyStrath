@@ -30,11 +30,7 @@ boundaryField
     
     fire
     {
-        type            nonEqSmoluchowskiJumpT;
-        accommodationCoeff 1;
-        alpha           "alphatr";
-        Twall           uniform $Twall;
-        value           $Twall;
+        type            zeroGradient;
     }
     
     #include "include/boundaries"

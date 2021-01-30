@@ -149,16 +149,6 @@ public:
         //- V-T relaxation time [s]
         virtual tmp<volScalarField> tauVT() const;
 
-        //- V-T relaxation time for patch [s]
-        virtual tmp<scalarField> tauVT
-        (
-            const label patchi,
-            const scalarField& p,
-            const scalarField& Tt,
-            const PtrList<scalarField>& Tv,
-            const PtrList<scalarField>& nD
-        ) const;
-
         scalar linearInterpolation //- bounded
         (
             const scalar xpt,
