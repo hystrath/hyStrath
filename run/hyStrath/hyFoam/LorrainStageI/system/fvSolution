@@ -28,7 +28,7 @@ solvers
         smoother        GaussSeidel;
         nSweeps         2;
         tolerance       1e-09;
-        relTol          0.01;
+        relTol          0.0001;
     }
 
     "(h|e).*"
