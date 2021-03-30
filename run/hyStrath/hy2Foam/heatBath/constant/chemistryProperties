@@ -40,7 +40,7 @@ modifiedTemperatureCoeffs
 
 chemistryVibrationCoupling
 {
-    model CVDV;
+    model ParkTTv;
     
     ParkTTvCoeffs
     {

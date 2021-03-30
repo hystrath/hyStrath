@@ -9,20 +9,45 @@ FoamFile
 {
     version     2.0;
     format      ascii;
-    class       volScalarField;
-    object      Tv_N2;
+    class       dictionary;
+    location    "constant";
+    object      hTCReactionsEarth93;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include "include/initialConditions"
+species
+(
+    N2
+    //O2
+    //NO
+    //N2+
+    //O2+
+    //NO+
+    N
+    //O
+    //N+
+    //O+
+    //e-
+);
 
-dimensions      [0 0 0 1 0 0 0];
+/*vibTempAssociativity (0 1);*/
 
-internalField   uniform $Tve;
+// Units
+// A: m^3 kmol^-1 s^-1
+// Ta: K
 
-boundaryField
+reactions
 {
-    #include "include/boundaries"
+    nitrogenReaction
+    {
+        type     irreversibleArrheniusReaction;
+        reaction "N2 + N2 = 2N + N2";
+        controlT dissociation;
+        A        7.0e18;
+        beta     -1.6;
+        Ta       113200;
+    }
 }
 
-// ************************************************************************* //
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

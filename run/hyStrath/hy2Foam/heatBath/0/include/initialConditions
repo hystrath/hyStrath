@@ -7,25 +7,13 @@
 \*---------------------------------------------------------------------------*/
 
 Ttr       30000;
-Tve       10000;
-TveAtom   0;
+Tve       1000;
 
-pressure  1.01325e5;
+pressure  41419.4;
 
-magVelocityInlet 0;
-velocityInlet  ($magVelocityInlet 0 0);
 velocityField  (0 0 0);
 
-Y_N2      0.5;
-Y_O2      0;
-Y_NO      0;
-Y_N       0.5;
-Y_O       0;
-Y_N2+     0;
-Y_O2+     0;
-Y_NO+     0;
-Y_N+      0;
-Y_O+      0;
-Y_e-      0;
+X_N2      0.5;
+X_N       0.5;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
