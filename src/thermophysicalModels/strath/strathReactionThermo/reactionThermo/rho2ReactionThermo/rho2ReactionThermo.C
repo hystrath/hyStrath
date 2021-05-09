@@ -424,8 +424,6 @@ void Foam::rho2ReactionThermo::correctOverallTemperature()
 
 void Foam::rho2ReactionThermo::initialise()
 {
-    correctChemFractions();
-
     //- Declarations
     const bool downgradeSingleTemperature = this->downgradeSingleTemperature();
     const bool downgradeSingleTv = this->downgradeSingleTv();
@@ -440,6 +438,7 @@ void Foam::rho2ReactionThermo::initialise()
     PtrList<Foam::volScalarField>& hvel = composition().hevel();
     PtrList<Foam::volScalarField>& Tv = composition().Tv();
     PtrList<Foam::volScalarField>& zetav = composition().zetav();
+    PtrList<Foam::volScalarField>& pP = composition().pP();
     PtrList<Foam::volScalarField>& Cvtr = composition().Cvtr();
     PtrList<Foam::volScalarField>& Cvvel = composition().Cvvel();
 
@@ -505,6 +504,7 @@ void Foam::rho2ReactionThermo::initialise()
             scalarField& helCells = hel[speciei].primitiveFieldRef();
             scalarField& hvelCells = hvel[speciei].primitiveFieldRef();
             scalarField& TvCells = Tv[speciei].primitiveFieldRef();
+            scalarField& pPCells = pP[speciei].primitiveFieldRef();
             scalarField& zetavCells = zetav[speciei].primitiveFieldRef();
             scalarField& CvtrCells = Cvtr[speciei].primitiveFieldRef();
             scalarField& CvvelCells = Cvvel[speciei].primitiveFieldRef();
@@ -584,24 +584,30 @@ void Foam::rho2ReactionThermo::initialise()
             CptrCellsMix[celli] += YCells[celli]*CvtrCells[celli];
             CpvelCellsMix[celli] += YCells[celli]*CvvelCells[celli];
                 
+            scalar pPToRhomix = 0.0;
+
             if (composition().isHeavySpecies(speciei))
             {
                 CptrCellsMix[celli] += YCells[celli]*R;
-                
-                psiCellsMix[celli] += YCells[celli]
+
+                pPToRhomix = YCells[celli]
                     /composition().psi(speciei, pCells[celli], TtCells[celli]);
             }
             else
             {
                 CpvelCellsMix[celli] += YCells[celli]*R;
                 
-                psiCellsMix[celli] += YCells[celli]
+                pPToRhomix = YCells[celli]
                     /composition().psi(speciei, pCells[celli], TvCells[celli]);
             }
+
+            pPCells[celli] = pPToRhomix;
+            psiCellsMix[celli] += pPToRhomix;
         }//end species loop
         
         psiCellsMix[celli] = 1.0/psiCellsMix[celli];
         rhoCellsMix[celli] = pCells[celli]*psiCellsMix[celli];
+        
         CvCellsMix[celli] = CvtrCellsMix[celli] + CvvelCellsMix[celli];
         CpCellsMix[celli] = CvCellsMix[celli] + RmixCells[celli];
 
@@ -612,6 +618,16 @@ void Foam::rho2ReactionThermo::initialise()
 
         hCellsMix[celli] += htCellsMix[celli];
     }//end cells loop
+    
+    //- Volume calculation for partial pressures
+    forAll(Y, speciei)
+    {
+        scalarField& pPCells = pP[speciei].primitiveFieldRef();
+        forAll(pCells, celli)
+        {
+            pPCells[celli] *= rhoCellsMix[celli];
+        }
+    }
 
     //- Patch values
     forAll(this->T().boundaryField(), patchi)
@@ -891,6 +907,7 @@ void Foam::rho2ReactionThermo::initialise()
             const fvPatchScalarField& pY = Y[speciei].boundaryField()[patchi];
             const fvPatchScalarField& pTv = Tv[speciei].boundaryField()[patchi];
             
+            fvPatchScalarField& ppP = pP[speciei].boundaryFieldRef()[patchi];
             fvPatchScalarField& pCvtr =
                 Cvtr[speciei].boundaryFieldRef()[patchi];
             fvPatchScalarField& pCvvel =
@@ -907,31 +924,54 @@ void Foam::rho2ReactionThermo::initialise()
                 pCptrMix[facei] += pY[facei]*pCvtr[facei];
                 pCpvelMix[facei] += pY[facei]*pCvvel[facei];
                 
+                scalar pPToRhoMix = 0.0;
+                
                 if (composition().isHeavySpecies(speciei))
                 {
                     pCptrMix[facei] += pY[facei]*R;
                     
-                    ppsiMix[facei] += pY[facei]
+                    pPToRhoMix = pY[facei]
                         /composition().psi(speciei, pp[facei], pTt[facei]);
                 }
                 else
                 {
                     pCpvelMix[facei] += pY[facei]*R;
                     
-                    ppsiMix[facei] += pY[facei]
+                    pPToRhoMix = pY[facei]
                         /composition().psi(speciei, pp[facei], pTv[facei]);
                 }
+                
+                ppP[facei] = pPToRhoMix;
+                ppsiMix[facei] += pPToRhoMix;
+                
             }//end faces loop
         }//end species loop
         
         ppsiMix = 1.0/ppsiMix;
         prhoMix = pp*ppsiMix;
         
+        forAll(Y, speciei)
+        {
+            fvPatchScalarField& ppP = pP[speciei].boundaryFieldRef()[patchi];
+            forAll(ppP, facei)
+            {
+                ppP[facei] *= prhoMix[facei];
+            }
+        }
+        
         pCvMix = pCvtrMix + pCvvelMix;
         pCpMix = pCvMix + pRmix;
         
     }//end patches loop
+    
+    // Calculation of the electron pressure 
+    if (composition().contains("e-"))
+    {
+        this->pe_ = composition().pP("e-");
+    }
 
+    correctChemFractions();
+    
     correctOverallTemperature();
 }
 

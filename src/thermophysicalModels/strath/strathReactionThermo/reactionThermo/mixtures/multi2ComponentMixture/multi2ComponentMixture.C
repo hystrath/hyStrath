@@ -55,7 +55,7 @@ void Foam::multi2ComponentMixture<ThermoType>::correctMassFractions()
     forAll(Y_, speciei)
     {
         const scalarField& YCells = Y_[speciei].internalField();
-        if (YCells[0] != 0)
+        if (YCells[0] >= 1e-4)
         {
             initialiseY = false;
             break;
@@ -64,6 +64,35 @@ void Foam::multi2ComponentMixture<ThermoType>::correctMassFractions()
 
     if (initialiseY)
     {
+        // Molar fractions are given as an input in the 0/ folder: compute
+        // mass fractions
+        
+        // Multiplication by 1.0 changes Xt patches to "calculated"
+        volScalarField Xt("Xt", 1.0*X_[0]);
+    
+        // First ensure that the sum of molar fractions is equal to 1
+        for (label n=1; n<X_.size(); n++)
+        {
+            Xt += X_[n];
+        }
+
+        if (mag(max(Xt).value()) < ROOTVSMALL)
+        {
+            FatalErrorIn
+            (
+                "void Foam::multi2ComponentMixture<ThermoType>::"
+                    "correctMassFractions()"
+            )
+                << "Sum of molar fractions is zero for species "
+                << this->species() << exit(FatalError);
+        }
+
+        forAll(X_, n)
+        {
+            X_[n] /= Xt;
+        }
+    
+        // Then compute mass fractions for all cells and boundary patches
         forAll(Y_, speciei)
         {
             const scalarField& XCells = X_[speciei].internalField();
@@ -99,29 +128,76 @@ void Foam::multi2ComponentMixture<ThermoType>::correctMassFractions()
             }
         }
     }
-
-    // Multiplication by 1.0 changes Yt patches to "calculated"
-    volScalarField Yt("Yt", 1.0*Y_[0]);
-
-    for (label n=1; n<Y_.size(); n++)
+    else
     {
-        Yt += Y_[n];
-    }
+        // Mass fractions are given as an input in the 0/ folder: compute
+        // molar fractions
+        
+        // Multiplication by 1.0 changes Yt patches to "calculated"
+        volScalarField Yt("Yt", 1.0*Y_[0]);
 
-    if (mag(max(Yt).value()) < ROOTVSMALL)
-    {
-        FatalErrorIn
-        (
-            "void Foam::multi2ComponentMixture<ThermoType>::"
-                "correctMassFractions()"
-        )
-            << "Sum of mass fractions is zero for species " << this->species()
-            << exit(FatalError);
-    }
+        // First ensure that the sum of mass fractions is equal to 1
+        for (label n=1; n<Y_.size(); n++)
+        {
+            Yt += Y_[n];
+        }
 
-    forAll(Y_, n)
-    {
-        Y_[n] /= Yt;
+        if (mag(max(Yt).value()) < ROOTVSMALL)
+        {
+            FatalErrorIn
+            (
+                "void Foam::multi2ComponentMixture<ThermoType>::"
+                    "correctMassFractions()"
+            )
+                << "Sum of mass fractions is zero for species "
+                << this->species() << exit(FatalError);
+        }
+
+        forAll(Y_, n)
+        {
+            Y_[n] /= Yt;
+        }
+    
+        // Molar fractions are updated here to move the call the 
+        // correctChemFractions() in rho2ReactionThermo::initialise() to the
+        // end. The reason is that the density field may differ from the one
+        // computed in rho2Thermo (a-priori estimate for the single-temperature
+        // model). Thus, partial densities and number densities would need to
+        // be recomputed.
+        
+        forAll(Y_, speciei)
+        {
+            const scalarField& YCells = Y_[speciei].internalField();
+            scalarField& XCells = X_[speciei].primitiveFieldRef();
+            
+            forAll(YCells, celli)
+            {
+                XCells[celli] =
+                    molarFraction(speciei, YCells[celli], celli);
+            }
+        }
+
+        forAll(Y_[0].boundaryField(), patchi)
+        {
+            forAll(Y_, speciei)
+            {
+                const fvPatchScalarField& pY =
+                    Y_[speciei].boundaryField()[patchi];
+                fvPatchScalarField& pX = X_[speciei].boundaryFieldRef()[patchi];
+
+                forAll(pY, facei)
+                {
+                    pX[facei] =
+                        molarFraction
+                        (
+                            speciei,
+                            pY[facei],
+                            patchi,
+                            facei
+                        );
+                }
+            }
+        }
     }
 }
 
