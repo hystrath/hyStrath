@@ -71,7 +71,7 @@ Foam::binaryDiffusionModels::collisionDataO::collisionDataO
             dictThermo.subDict(name2).subDict("specie").lookup("molWeight")
         )*1.0e-3;
         
-    constantFactor_ = 8.0e-20
+    constantFactor_ = 8.0e-20/3.0
         *sqrt
         (
             2.0*W1*W2
