@@ -133,18 +133,6 @@ class collisionDataO
         {
             // It is assumed that Z = 1, i.e., that the species is
             // singly-ionised (see Eq. 23.c in Ref Gupta 1989)
-/*            if (this->name1_ == "e-" and this->name2_ == "e-") {*/
-/*            for (scalar tt = 500; tt <=30000; tt+=500 )*/
-/*            {*/
-/*                Info<< tt << tab 
-                      << 0.795*e4OverkB2_*log(shieldingParameter(tt, 1))/sqr(tt)
-                      << endl;*/
-/*            }*/
-/*            FatalErrorIn*/
-/*            (*/
-/*                "DiffusionModel - my error"*/
-/*            )   << tab << exit(FatalError);}*/
-            
             return 0.795*e4OverkB2_/sqr(T)*log(shieldingParameter(T, pe));
         }
 
@@ -169,7 +157,7 @@ class collisionDataO
         //- Shielding parameter
         inline scalar shieldingParameter(const scalar T, const scalar pe) const
         {
-            scalar factor = 1.0e-12*pow(T, 4.0)/pe;
+            scalar factor = 1.0e-12*pow(T, 4.0)/(pe+VSMALL);
             return sqrt(2.09e-02*factor + 1.52*pow(factor, 2.0/3.0));
         }
         

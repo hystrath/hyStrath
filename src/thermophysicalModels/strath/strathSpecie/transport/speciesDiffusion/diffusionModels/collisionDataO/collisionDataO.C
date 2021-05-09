@@ -240,9 +240,6 @@ Foam::binaryDiffusionModels::collisionDataO::D() const
     {
         d[celli] = localkB_*T[celli]
             /(p[celli]*collisionTerm1(T[celli], pe[celli]));
-            
-//        Info << T[celli] << tab << pe[celli] << tab << this->name1_ 
-//                     << tab << this->name2_ << tab << d[celli] << endl;    
     }
     
     forAll(this->T_.boundaryField(), patchi)

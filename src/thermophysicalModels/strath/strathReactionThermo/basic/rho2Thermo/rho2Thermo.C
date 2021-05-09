@@ -39,7 +39,7 @@ namespace Foam
 
 // * * * * * * * * * * * * Protected Member Functions  * * * * * * * * * * * //
 
-Foam::wordList Foam::rho2Thermo::rhoBoundaryTypes() // NEW VINCENT 13/04/2016
+Foam::wordList Foam::rho2Thermo::rhoBoundaryTypes()
 {
     const volScalarField::Boundary& pbf = this->T_.boundaryField();
     wordList rhoBoundaryTypes = pbf.types();

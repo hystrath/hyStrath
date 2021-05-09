@@ -79,7 +79,7 @@ Foam::diffusionModel::diffusionModel
 
     forAll(species, i)
     {
-        for(label j=i; j < species.size(); j++)
+        for(label j=i+1; j < species.size(); j++)
         {
             const label k = species.size()*i+j-0.5*i*(i+1);
 
@@ -117,19 +117,12 @@ void Foam::diffusionModel::update()
 {
     forAll(species_, i)
     {
-        for(label j=i; j < species_.size(); j++)
+        for(label j=i+1; j < species_.size(); j++)
         {
             const label k = species_.size()*i+j-0.5*i*(i+1);
-//            Info<< "k = " << i << j << endl;
             Dij_[k] = DijModels_[k].D();
-//            Info<< "Dij_[k] = " << Dij_[k].internalField()[0] << endl;
         }
     }
-    
-//    FatalErrorIn
-//    (
-//        "DiffusionModel my error"
-//    )   << exit(FatalError);
 }
 
 
