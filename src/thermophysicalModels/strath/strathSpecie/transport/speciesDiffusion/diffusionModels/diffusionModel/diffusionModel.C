@@ -41,6 +41,7 @@ Foam::diffusionModel::diffusionModel
     const volScalarField& p,
     const volScalarField& pe,
     const volScalarField& T,
+    const volScalarField& Te,
     const wordList& species
 )
 :
@@ -71,6 +72,7 @@ Foam::diffusionModel::diffusionModel
     p_(p),
     pe_(pe),
     T_(T),
+    Te_(Te),
     species_(species)
 
 {
@@ -94,7 +96,8 @@ Foam::diffusionModel::diffusionModel
                     dictTransport_,
                     p_,
                     pe_,
-                    T_
+                    T_,
+                    Te_
                 )
             );
 

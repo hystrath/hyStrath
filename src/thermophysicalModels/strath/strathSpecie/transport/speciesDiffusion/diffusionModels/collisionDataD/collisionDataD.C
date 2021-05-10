@@ -53,10 +53,11 @@ Foam::binaryDiffusionModels::collisionDataD::collisionDataD
     const dictionary& dictTransport,
     const volScalarField& p,
     const volScalarField& pe,
-    const volScalarField& T
+    const volScalarField& T,
+    const volScalarField& Te
 )
 :
-    binaryDiffusionModel(name1, name2, dictThermo, dictTransport, p, pe, T)
+    binaryDiffusionModel(name1, name2, dictThermo, dictTransport, p, pe, T, Te)
 {
     word collisionDataModel = word::null;
 
@@ -84,6 +85,15 @@ Foam::binaryDiffusionModels::collisionDataD::collisionDataD
         )   << "Entry 'collisionDataModel' is missing in transportModels/"
             << "diffusionModelParameters."
             << exit(FatalError);
+    }
+    
+    if (collisionDataModel.find("1989") != std::string::npos)
+    {
+        limitingElectronPressureModel_ = 0;
+    }
+    else
+    {
+        limitingElectronPressureModel_ = 1;
     }
 
     FixedList<scalar,4> defaultList;
@@ -190,6 +200,7 @@ Foam::binaryDiffusionModels::collisionDataD::D
     const scalarField& p,
     const scalarField& pe,
     const scalarField& T,
+    const scalarField& Te,
     const label patchi
 ) const
 {

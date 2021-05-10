@@ -77,7 +77,8 @@ public:
             const dictionary& dictTransport,
             const volScalarField& p,
             const volScalarField& pe,
-            const volScalarField& T
+            const volScalarField& T,
+            const volScalarField& Te
         );
 
 
@@ -98,6 +99,7 @@ public:
             const scalarField& p,
             const scalarField& pe,
             const scalarField& T,
+            const scalarField& Te,
             const label patchi
         ) const;
 

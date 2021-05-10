@@ -54,10 +54,11 @@ constantBinaryDiffusionModel
     const dictionary& dictTransport,
     const volScalarField& p,
     const volScalarField& pe,
-    const volScalarField& T
+    const volScalarField& T,
+    const volScalarField& Te
 )
 :
-    binaryDiffusionModel(name1, name2, dictThermo, dictTransport, p, pe, T)
+    binaryDiffusionModel(name1, name2, dictThermo, dictTransport, p, pe, T, Te)
 {
     word coupleName = name1 + "_" + name2;
     
@@ -203,6 +204,7 @@ Foam::binaryDiffusionModels::constantBinaryDiffusionModel::D
     const scalarField& p,
     const scalarField& pe,
     const scalarField& T,
+    const scalarField& Te,
     const label patchi
 ) const
 {

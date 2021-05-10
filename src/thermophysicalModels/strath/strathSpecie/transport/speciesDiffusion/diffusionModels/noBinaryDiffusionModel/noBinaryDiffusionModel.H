@@ -72,7 +72,8 @@ public:
             const dictionary& dictTransport,
             const volScalarField& p,
             const volScalarField& pe,
-            const volScalarField& T
+            const volScalarField& T,
+            const volScalarField& Te
         );
 
 

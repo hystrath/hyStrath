@@ -68,6 +68,9 @@ protected:
 
         //- Temperature [K]
         const volScalarField& T_;
+        
+        //- Electron temperature (vibro-electronic temperature) [K]
+        const volScalarField& Te_;
 
         //- List of species
         wordList species_;
@@ -103,6 +106,7 @@ public:
             const volScalarField& p,
             const volScalarField& pe,
             const volScalarField& T,
+            const volScalarField& Te,
             const wordList& species
         );
 

@@ -79,6 +79,9 @@ protected:
 
         //- Temperature [K]
         const volScalarField& T_;
+        
+        //- Electron temperature (vibro-electronic temperature) [K]
+        const volScalarField& Te_;
 
         //- Integer to give the type of collision interaction
         //  0: 2 neutrals, 1: 1 neutral-ion/e-, 2: 2 ions, 3: ion-electron
@@ -115,9 +118,10 @@ public:
                 const dictionary& dictTransport,
                 const volScalarField& p,
                 const volScalarField& pe,
-                const volScalarField& T
+                const volScalarField& T,
+                const volScalarField& Te
             ),
-            (name1, name2, dictThermo, dictTransport, p, pe, T)
+            (name1, name2, dictThermo, dictTransport, p, pe, T, Te)
         );
 
 
@@ -132,7 +136,8 @@ public:
             const dictionary& dictTransport,
             const volScalarField& p,
             const volScalarField& pe,
-            const volScalarField& T
+            const volScalarField& T,
+            const volScalarField& Te
         );
 
 
@@ -147,7 +152,8 @@ public:
             const dictionary& dictTransport,
             const volScalarField& p,
             const volScalarField& pe,
-            const volScalarField& T
+            const volScalarField& T,
+            const volScalarField& Te
         );
 
 
@@ -169,6 +175,7 @@ public:
             const scalarField& p,
             const scalarField& pe,
             const scalarField& T,
+            const scalarField& Te,
             const label patchi
         ) const;
 

@@ -26,7 +26,7 @@ Class
 
 Description
     Curve-fitted binary diffusion coefficients with correction term for non-
-    nominal electron pressure (i.e., p_e != 1 atm)
+    nominal electron pressure (i.e., p_e != p_em)
     _
     D_ij = exp(Dbar_3) * T^( Dbar_0*(lnT)^2 + Dbar_1*lnT + Dbar_2 )
 
@@ -64,6 +64,12 @@ class collisionDataD
 {
     // Private data
 
+        //- Label to decide which limiting electron pressure model to use
+        //  0: 1 atm, as in NASA-TM-101528 (Gupta, Yos, Thompson: Feb. 1989)
+        //  1: 0.0975*(T/1e3)^4, as in NASA-RP-1232 (Gupta, Yos, Thompson, Lee:
+        //                       Aug. 1990)
+        label limitingElectronPressureModel_;
+        
         //- Model's coefficients
         FixedList<scalar, 4> Dbar_;
 
@@ -108,19 +114,34 @@ class collisionDataD
         {
             scalar tprime = 1.0e-12*pow(T, 4.0);
             scalar factor = tprime/(pe+VSMALL);
-            
-            // the function output is in the range [6e-4, 1]
-            return
-                log
-                (
-                    2.09e-02*tprime
-                  + 1.52*pow(tprime, 2.0/3.0)
-                )
-              / log
-                (
-                    2.09e-02*factor
-                  + 1.52*pow(factor, 2.0/3.0)
-                );
+                
+            if (limitingElectronPressureModel_ == 0)
+            {
+                // the function output is in the range [6e-4, 1]
+                return
+                    log
+                    (
+                        2.09e-02*tprime
+                      + 1.52*pow(tprime, 2.0/3.0)
+                    )
+                  / log
+                    (
+                        2.09e-02*factor
+                      + 1.52*pow(factor, 2.0/3.0)
+                    );
+            }
+            else
+            {
+                // in this case, the limiting electron pressure is equal to
+                // 0.0975*(T/1e3)^4
+                return
+                    2.0
+                  / log
+                    (
+                        2.09e-02*factor
+                      + 1.52*pow(factor, 2.0/3.0)
+                    );
+            }
         }
 
 
@@ -141,7 +162,8 @@ public:
             const dictionary& dictTransport,
             const volScalarField& p,
             const volScalarField& pe,
-            const volScalarField& T
+            const volScalarField& T,
+            const volScalarField& Te
         );
 
 
@@ -162,6 +184,7 @@ public:
             const scalarField& p,
             const scalarField& pe,
             const scalarField& T,
+            const scalarField& Te,
             const label patchi
         ) const;
 

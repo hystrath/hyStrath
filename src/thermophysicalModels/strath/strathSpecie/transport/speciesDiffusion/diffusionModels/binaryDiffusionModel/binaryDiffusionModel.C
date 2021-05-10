@@ -45,7 +45,8 @@ Foam::binaryDiffusionModel::binaryDiffusionModel
     const dictionary& dictTransport,
     const volScalarField& p,
     const volScalarField& pe,
-    const volScalarField& T
+    const volScalarField& T,
+    const volScalarField& Te
 )
 :
     name1_(name1),
@@ -54,23 +55,24 @@ Foam::binaryDiffusionModel::binaryDiffusionModel
     dictTransport_(dictTransport),
     p_(p),
     pe_(pe),
-    T_(T)
+    T_(T),
+    Te_(Te)
 {
-    if(name1_.back() == '-')
+    if (name1_.back() == '-')
     {
-        if(name2_.back() == '-') collisionType_ = 4;
-        else if(name2_.back() == '+') collisionType_ = 3;
+        if (name2_.back() == '-') collisionType_ = 4;
+        else if (name2_.back() == '+') collisionType_ = 3;
         else collisionType_ = 1;
     }
-    else if(name1_.back() == '+')
+    else if (name1_.back() == '+')
     {
-        if(name2_.back() == '-') collisionType_ = 3;
-        else if(name2_.back() == '+') collisionType_ = 2;
+        if (name2_.back() == '-') collisionType_ = 3;
+        else if (name2_.back() == '+') collisionType_ = 2;
         else collisionType_ = 1;
     }
     else
     {
-        if(name2_.back() == '-' or name2_.back() == '+') collisionType_ = 1;
+        if (name2_.back() == '-' or name2_.back() == '+') collisionType_ = 1;
         else collisionType_ = 0;
     }
 }
@@ -85,7 +87,8 @@ Foam::autoPtr<Foam::binaryDiffusionModel> Foam::binaryDiffusionModel::New
     const dictionary& dictTransport,
     const volScalarField& p,
     const volScalarField& pe,
-    const volScalarField& T
+    const volScalarField& T,
+    const volScalarField& Te
 )
 {
     word binaryDiffusionModelTypeName
@@ -131,7 +134,7 @@ Foam::autoPtr<Foam::binaryDiffusionModel> Foam::binaryDiffusionModel::New
     }
 
     return autoPtr<binaryDiffusionModel>
-        (cstrIter()(name1, name2, dictThermo, dictTransport, p, pe, T));
+        (cstrIter()(name1, name2, dictThermo, dictTransport, p, pe, T, Te));
 }
 
 
@@ -185,6 +188,7 @@ Foam::tmp<Foam::scalarField> Foam::binaryDiffusionModel::D
     const scalarField& p,
     const scalarField& pe,
     const scalarField& T,
+    const scalarField& Te,
     const label patchi
 ) const
 {

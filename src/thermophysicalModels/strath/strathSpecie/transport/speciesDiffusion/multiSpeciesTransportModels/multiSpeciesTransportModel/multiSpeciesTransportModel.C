@@ -233,6 +233,12 @@ Foam::multiSpeciesTransportModel::multiSpeciesTransportModel
         solvingForX_ = true;
     }
 
+    //- Either pass the vibro-electronic temperature of the free-electron if
+    //  this species is present or the vibro-electronic temperature of the first
+    //  species in mixture
+    label electronId = thermo_.composition().electronId();
+    if (electronId == -1) electronId = 0;
+    
     DijModel_.set
     (
         new diffusionModel
@@ -242,6 +248,7 @@ Foam::multiSpeciesTransportModel::multiSpeciesTransportModel
             thermo.p(),
             thermo.pe(),
             thermo.T(),
+            thermo.composition().Tv()[electronId],
             species()
          )
     );
