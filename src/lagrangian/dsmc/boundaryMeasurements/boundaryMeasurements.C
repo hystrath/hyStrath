@@ -325,20 +325,20 @@ void boundaryMeasurements::outputResults()
 {
     if(mesh_.time().outputTime())
     {
-        if(cloud_.boundaries().isAStickingPatch())
-        {
-            writenStuckParticles();
-        }
+//        if(cloud_.boundaries().isAStickingPatch())
+//        {
+//            writenStuckParticles();
+//        }
 
-        if(cloud_.boundaries().isAAbsorbingPatch())
-        {
-            writenAbsorbedParticles();
-        }
+//        if(cloud_.boundaries().isAAbsorbingPatch())
+//        {
+//            writenAbsorbedParticles();
+//        }
 
-        if(cloud_.boundaries().isAFieldPatch())
-        {
-            writePatchFields();
-        }
+//        if(cloud_.boundaries().isAFieldPatch())
+//        {
+//            writePatchFields();
+//        }
     }
 }
 

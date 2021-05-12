@@ -23,12 +23,14 @@ License
 
 Description
 
-Measures overall temperature, including vibrational temperature, for a single species gas
-or a gas mixture and writes the results to a volume scalar field that can be viewed in Paraview.
+Measures DSMC macroscopic fields for a single species or a gas mixture and
+writes the results to a volume field that can be viewed in Paraview.
 
-Translational, rotatational and vibrational temperature field will also be written automatically.
+Translational, rotatational and vibrational temperature fields will also be
+written automatically.
 
-Boundary fields are measured in conjunction with the boundaryMeasurements class and are also written.
+Boundary fields are measured in conjunction with the boundaryMeasurements class
+and are also written.
 
 \*---------------------------------------------------------------------------*/
 
@@ -64,7 +66,8 @@ void dsmcVolFields::calculateWallUnitVectors()
 
                 //- Wall tangential unit vector. Use the direction between the
                 // face centre and the first vertex in the list
-                t1_[patchi][facei] = fC[facei] - mesh_.points()[mesh_.faces()[pPatch.start() + facei][0]];
+                t1_[patchi][facei] = fC[facei]
+                    - mesh_.points()[mesh_.faces()[pPatch.start() + facei][0]];
                 t1_[patchi][facei] /= mag(t1_[patchi][facei]);
 
                 //- Other tangential unit vector.  Rescaling in case face is not
@@ -72,10 +75,6 @@ void dsmcVolFields::calculateWallUnitVectors()
                 t2_[patchi][facei] = n_[patchi][facei]^t1_[patchi][facei];
                 t2_[patchi][facei] /= mag(t2_[patchi][facei]);
             }
-
-            //Info << "n_[patchi]: " << n_[patchi] << endl;
-            //Info << "t1_[patchi]: " << t1_[patchi] << endl;
-            //Info << "t2_[patchi]: " << t2_[patchi] << endl;
         }
     }
 }
@@ -972,8 +971,8 @@ void dsmcVolFields::createField()
     mfpReferenceTemperature_ =
         propsDict_.lookupOrDefault<scalar>("mfpReferenceTemperature", 273.0);
 
-    averagingAcrossManyRuns_ =
-        propsDict_.lookupOrDefault<bool>("averagingAcrossManyRuns", false);
+    averagingAcrossManyRuns_ = false;
+//        propsDict_.lookupOrDefault<bool>("averagingAcrossManyRuns", false); TODO
 
     //- read in stored data from dictionary
     if (averagingAcrossManyRuns_)
@@ -981,7 +980,7 @@ void dsmcVolFields::createField()
         if (!time_.resetFieldsAtOutput())
         {
             Info<< "Averaging across many runs for field " << fieldName_
-                << " is enabled. Averaging data will be read from file."
+                << " is enabled. Sampled data will be read from file."
                 << endl;
             readIn();
         }
@@ -1036,8 +1035,6 @@ void dsmcVolFields::calculateField()
         }
         else
         {
-            //scalar timer = mesh_.time().elapsedCpuTime(); // TODO VINCENT
-
             forAllConstIter(dsmcCloud, cloud_, iter)
             {
                 const dsmcParcel& p = iter();
@@ -1045,12 +1042,14 @@ void dsmcVolFields::calculateField()
 
                 if (iD != -1 && p.isFree())
                 {
-                    const dsmcParcel::constantProperties& cP = cloud_.constProps(p.typeId());
+                    const dsmcParcel::constantProperties& cP =
+                        cloud_.constProps(p.typeId());
+                    const vector& Up = p.U();  
 
                     const label cell = p.cell();
                     const scalar nParticles = cloud_.nParticles(cell);
                     const scalar mass = cP.mass();
-                    const scalar massBySqMagU = mass*(p.U() & p.U());
+                    const scalar massBySqMagU = mass*(Up & Up);
                     const scalar rotationalDof = cP.rotationalDegreesOfFreedom();
                     const scalarList& electronicEnergies = cP.electronicEnergyList();
 
@@ -1071,7 +1070,7 @@ void dsmcVolFields::calculateField()
                     // cumulative linear kinetic energy of the DSMC parcels
                     dsmcLinKinEnCum_[cell] += massBySqMagU;
                     // cumulative momentum of the DSMC parcels
-                    dsmcMomentumCum_[cell] += mass*p.U();
+                    dsmcMomentumCum_[cell] += mass*Up;
                     // cumulative rotational energy of the DSMC parcels
                     dsmcRotEnCum_[cell] += p.ERot();
                     // cumulative rotational degrees of freedom of the DSMC
@@ -1092,31 +1091,31 @@ void dsmcVolFields::calculateField()
                     // cumulative mass
                     mCum_[cell] += mass*nParticles;
                     // cumulative momentum of the simulated real particles
-                    momentumCum_[cell] += mass*(p.U())*nParticles;
+                    momentumCum_[cell] += mass*(Up)*nParticles;
                     // cumulative linear kinetic energy of the simulated
                     // particles
                     linKinEnCum_[cell] += massBySqMagU*nParticles;
 
                     // cumulative counters for mass times squared velocity
                     // components of the DSMC parcels
-                    // notation: p.U = c = (u v w)
-                    dsmcMuuCum_[cell] += mass*sqr(p.U().x());
-                    dsmcMuvCum_[cell] += mass*p.U().x()*p.U().y();
-                    dsmcMuwCum_[cell] += mass*p.U().x()*p.U().z();
-                    dsmcMvvCum_[cell] += mass*sqr(p.U().y());
-                    dsmcMvwCum_[cell] += mass*p.U().y()*p.U().z();
-                    dsmcMwwCum_[cell] += mass*sqr(p.U().z());
+                    // notation: Up = c = (u v w)
+                    dsmcMuuCum_[cell] += mass*sqr(Up.x());
+                    dsmcMuvCum_[cell] += mass*Up.x()*Up.y();
+                    dsmcMuwCum_[cell] += mass*Up.x()*Up.z();
+                    dsmcMvvCum_[cell] += mass*sqr(Up.y());
+                    dsmcMvwCum_[cell] += mass*Up.y()*Up.z();
+                    dsmcMwwCum_[cell] += mass*sqr(Up.z());
 
                     dsmcMccCum_[cell] += massBySqMagU;
-                    dsmcMccuCum_[cell] += massBySqMagU*(p.U().x());
-                    dsmcMccvCum_[cell] += massBySqMagU*(p.U().y());
-                    dsmcMccwCum_[cell] += massBySqMagU*(p.U().z());
+                    dsmcMccuCum_[cell] += massBySqMagU*(Up.x());
+                    dsmcMccvCum_[cell] += massBySqMagU*(Up.y());
+                    dsmcMccwCum_[cell] += massBySqMagU*(Up.z());
 
                     // cumulative energy times velocity components of the DSMC
                     // parcels
-                    dsmcEuCum_[cell] += (p.ERot() + vibEn)*p.U().x(); // TODO missing Eel
-                    dsmcEvCum_[cell] += (p.ERot() + vibEn)*p.U().y(); // TODO missing Eel
-                    dsmcEwCum_[cell] += (p.ERot() + vibEn)*p.U().z(); // TODO missing Eel
+                    dsmcEuCum_[cell] += (p.ERot() + vibEn)*Up.x(); // TODO missing Eel
+                    dsmcEvCum_[cell] += (p.ERot() + vibEn)*Up.y(); // TODO missing Eel
+                    dsmcEwCum_[cell] += (p.ERot() + vibEn)*Up.z(); // TODO missing Eel
                     dsmcECum_[cell] += (p.ERot() + vibEn); // TODO missing Eel
 
                     if (rotationalDof > 0)
@@ -1162,8 +1161,6 @@ void dsmcVolFields::calculateField()
                 }
             }
 
-            //Info<< "fields myCal" << tab << mesh_.time().elapsedCpuTime() - timer << " s" << endl; // TODO VINCENT
-
             //- Obtain collision quality measurements and mixture translational
             //  temperature
             forAll(cloud_.cellPropMeasurements().collisionSeparation(), cell)
@@ -1185,9 +1182,8 @@ void dsmcVolFields::calculateField()
 
                     rhoN_[cell] = rhoNMean;
                     rhoM_[cell] = rhoMMean;
-
-                    UMean_[cell] = momentumCum_[cell]
-                        /mCum_[cell];
+                    
+                    UMean_[cell] = momentumCum_[cell]/mCum_[cell];
 
                     const scalar linearKEMean = 0.5
                         *linKinEnCum_[cell]
@@ -1450,7 +1446,6 @@ void dsmcVolFields::calculateField()
                     if
                     (
                          dsmcNWithRotDofCum_[cell] > VSMALL
-                      && dsmcNCum_[cell] > VSMALL
                       && dsmcNSpeciesCum_[i][cell] > SMALL
                     )
                     {

@@ -631,7 +631,14 @@ Foam::dsmcCloud::dsmcCloud
     ),
     collisionSelectionRemainder_(),
     constProps_(),
-    rndGen_(label(clock::getTime()) + 7183*Pstream::myProcNo()), // different seed every time simulation is started - needed for ensemble averaging!
+    rndGen_
+    (
+        particleProperties_.lookupOrDefault<label>
+        (
+            "seedNumber",
+            label(clock::getTime()) + 7183*Pstream::myProcNo()
+        )
+    ), 
     controllers_(t, mesh, *this),
     dynamicLoadBalancing_(t, mesh, *this),
     boundaryMeas_(mesh, *this, true),
@@ -744,7 +751,14 @@ Foam::dsmcCloud::dsmcCloud
     ),
     collisionSelectionRemainder_(),
     constProps_(),
-    rndGen_(label(clock::getTime()) + 1526*Pstream::myProcNo()),
+    rndGen_
+    (
+        particleProperties_.lookupOrDefault<label>
+        (
+            "seedNumber",
+            label(clock::getTime()) + 1526*Pstream::myProcNo()
+        )
+    ),
     controllers_(t, mesh),
     dynamicLoadBalancing_(t, mesh, *this),
     boundaryMeas_(mesh, *this),
@@ -1004,8 +1018,8 @@ void Foam::dsmcCloud::autoMap(const mapPolyMesh& mapper)
 
 Foam::label Foam::dsmcCloud::randomLabel
 (
-            const label valOne,
-            const label valTwo
+    const label valOne,
+    const label valTwo
 )
 {
     if (valOne == valTwo)

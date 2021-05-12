@@ -103,6 +103,7 @@ autoPtr<dsmcField> dsmcField::New
 dsmcField::~dsmcField()
 {}
 
+
 void dsmcField::updateTime()
 {
     time_++;
@@ -152,10 +153,12 @@ void dsmcField::updateBasicFieldProperties
     }
 }
 
+
 const fileName& dsmcField::casePath() const
 {
     return casePath_;
 }
+
 
 fileName& dsmcField::casePath()
 {
@@ -168,11 +171,11 @@ const fileName& dsmcField::timePath() const
     return timePath_;
 }
 
+
 fileName& dsmcField::timePath()
 {
     return timePath_;
 }
-
 
 
 } // End namespace Foam
