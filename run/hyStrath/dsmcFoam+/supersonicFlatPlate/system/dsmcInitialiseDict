@@ -31,7 +31,7 @@ configurations
 		    vibrationalTemperature          0;
         electronicTemperature           0;
 
-		    velocity        (0 0 0);
+		    velocity        (1412.5 0 0);
     } 
 );
 

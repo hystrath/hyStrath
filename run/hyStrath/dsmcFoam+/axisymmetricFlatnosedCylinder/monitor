@@ -2,16 +2,18 @@ set term x11
 
 eV = 1.60218e-19
 
+nTerminalOutputs = 50
+
 set ytics nomirror
 set y2tics nomirror
 
-set xlabel "Timestep x output frequency"
+set xlabel "Iteration"
 set ylabel "Number of DSMC particles  [million]"
-set y2label "Average energy for a given mode [eV]"
+set y2label "Average modal energy [eV]"
 
 plot \
-"< cat log.dsmcFoam+ | grep 'Number of DSMC particles' | cut -d '=' -f 2" u 0:($1/1e6) w l axis x1y1 t "Number of DSMC particles", \
-"< cat log.dsmcFoam+ | grep 'Average linear kinetic energy' | cut -d '=' -f 2" u 0:($1/eV) w l axis x1y2 t "Average linear kinetic energy"
+"< cat log.dsmcFoam+ | grep 'Number of DSMC particles' | cut -d '=' -f 2" u (($0+1)*nTerminalOutputs):($1/1e6) w l axis x1y1 t "Number of DSMC particles", \
+"< cat log.dsmcFoam+ | grep 'Average linear kinetic energy' | cut -d '=' -f 2" u (($0+1)*nTerminalOutputs):($1/eV) w l axis x1y2 t "Average linear kinetic energy"
 
 pause 10
 reread 

@@ -19,13 +19,13 @@ application     dsmcFoam+;
 
 nTerminalOutputs	10;
 
-startFrom       startTime;
+startFrom       latestTime;
 
 startTime       0;
 
 stopAt          endTime;
 
-endTime         0.14;
+endTime         4e-2;
 
 deltaT          4e-6;
 
@@ -51,8 +51,7 @@ adjustTimeStep  no;
 
 functions
 {
-    #include "forces"
-}
 
+}
 
 // ************************************************************************* //

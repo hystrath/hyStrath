@@ -17,15 +17,15 @@ FoamFile
 
 application     dsmcFoam+;
 
-startFrom       latestTime;
-
 nTerminalOutputs    50;
+
+startFrom       latestTime;
 
 startTime       0;
 
 stopAt          endTime;
 
-endTime         0.05;
+endTime         3e-3;
 
 deltaT          1e-6;
 

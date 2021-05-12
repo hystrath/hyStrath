@@ -25,7 +25,8 @@ dsmcFields
          timeProperties
          {
          	  timeOption        write;
-             resetAtOutput       off;
+            resetAtOutput       on;
+            resetAtOutputUntilTime       1.5e-3;
          }
          
          dsmcVolFieldsProperties
@@ -33,7 +34,7 @@ dsmcFields
             fieldName                 Ar;
            	typeIds                     (Ar);
            	measureMeanFreePath         true;
-           	averagingAcrossManyRuns     true;
+           	averagingAcrossManyRuns     false;
          }
      }
 

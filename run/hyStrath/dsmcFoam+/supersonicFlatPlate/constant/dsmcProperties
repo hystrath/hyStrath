@@ -32,8 +32,9 @@ LarsenBorgnakkeVariableHardSphereCoeffs
     rotationalRelaxationCollisionNumber     5.0;
 }
 
+
 // Collision Partner Selection Model
-// ~~~~~~~~~~~~~~~~~~~~~~
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 collisionPartnerSelectionModel   		noTimeCounter;  
 
@@ -49,7 +50,6 @@ moleculeProperties
     {
         mass                                  46.5e-27;
         diameter                              4.17e-10;
-        diameterVSS                           4.11e-10;
         omega                                     0.74;
         alpha                                     1.36;
         rotationalDegreesOfFreedom                   2;

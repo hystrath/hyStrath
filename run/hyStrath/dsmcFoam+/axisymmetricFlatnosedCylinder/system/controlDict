@@ -17,15 +17,15 @@ FoamFile
 
 application     dsmcFoam+;
 
-startFrom       latestTime;
-
 nTerminalOutputs    50;
+
+startFrom       latestTime;
 
 startTime       0;
 
 stopAt          endTime;
 
-endTime         0.008;
+endTime         0.004;
 
 deltaT          8e-8;
 
@@ -33,7 +33,7 @@ writeControl    runTime;
 
 writeInterval   8e-5;
 
-purgeWrite      1;
+purgeWrite      2;
 
 writeFormat     ascii;
 

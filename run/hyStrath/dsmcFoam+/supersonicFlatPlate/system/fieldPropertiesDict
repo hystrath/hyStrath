@@ -24,8 +24,9 @@ dsmcFields
  
          timeProperties
          {
-         	  timeOption          write;
-             resetAtOutput       off;
+            timeOption          write;
+            resetAtOutput       on;
+            resetAtOutputUntilTime  8e-3;    
          }
          
          dsmcVolFieldsProperties
@@ -33,7 +34,7 @@ dsmcFields
             fieldName                 N2cold;
            	typeIds                 (N2cold);
            	measureMeanFreePath         true;
-           	averagingAcrossManyRuns     true;
+           	averagingAcrossManyRuns    false;
          }
      }
 );

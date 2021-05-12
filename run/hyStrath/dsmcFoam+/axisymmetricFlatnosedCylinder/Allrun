@@ -16,14 +16,10 @@ runApplication dsmcInitialise+
 
 ./resetSampling
 
-delaySampling=$((6000 / $nProcs))
-
 if [ $nProcs -eq 1 ] ; then
-  sleep $delaySampling && ./startSampling &
   runApplication dsmcFoam+
 else
   runApplication decomposePar -latestTime
-  sleep $delaySampling && ./startSampling &
   mpirun -np $nProcs dsmcFoam+ -parallel > log.dsmcFoam+ 2>&1
   runApplication reconstructPar -latestTime
 fi

@@ -29,7 +29,7 @@ BinaryCollisionModel            VariableHardSphere;
 
 
 // Collision Partner Selection Model
-// ~~~~~~~~~~~~~~~~~~~~~~~
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 collisionPartnerSelectionModel   		 noTimeCounter;
 
@@ -45,7 +45,6 @@ moleculeProperties
     {
         mass                                  66.3e-27;
         diameter                              4.17e-10;
-        diameterVSS                           4.11e-10;    
         omega                                     0.81;
         alpha                                      1.4;
     }
