@@ -36,99 +36,175 @@ namespace Foam
 
 //- Access
 
-inline const List<List<scalarField>>& boundaryMeasurements::rhoNIntBF() const
+inline scalar boundaryMeasurements::speciesRhoNIntBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+) const
 {
-    return rhoNIntBF_;
+    return speciesRhoNIntBF_[speciei][patchi][facei];
 }
 
 
-inline const List<List<scalarField>>& boundaryMeasurements::rhoNElecBF() const
+inline scalar boundaryMeasurements::speciesRhoNElecBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+) const
 {
-    return rhoNElecBF_;
+    return speciesRhoNElecBF_[speciei][patchi][facei];
 }
 
 
-inline const List<List<scalarField>>& boundaryMeasurements::rhoNBF() const
+inline scalar boundaryMeasurements::speciesRhoNBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+) const
 {
-    return rhoNBF_;
+    return speciesRhoNBF_[speciei][patchi][facei];
 }
 
 
-inline const List<List<scalarField>>& boundaryMeasurements::rhoMBF() const
+inline scalar boundaryMeasurements::speciesRhoMBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+) const
 {
-    return rhoMBF_;
+    return speciesRhoMBF_[speciei][patchi][facei];
 }
 
 
-inline const List<List<scalarField>>& boundaryMeasurements::linearKEBF() const
+inline scalar boundaryMeasurements::speciesLinearKEBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+) const
 {
-    return linearKEBF_;
+    return speciesLinearKEBF_[speciei][patchi][facei];
 }
 
 
-inline const List<List<scalarField>>& boundaryMeasurements::mccSpeciesBF() const
+inline scalar boundaryMeasurements::speciesMccBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+) const
 {
-    return mccSpeciesBF_;
+    return speciesMccBF_[speciei][patchi][facei];
 }
 
 
-inline const List<List<vectorField>>& boundaryMeasurements::momentumBF() const
+inline vector boundaryMeasurements::speciesMomentumBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+) const
 {
-    return momentumBF_;
+    return speciesMomentumBF_[speciei][patchi][facei];
 }
 
 
-inline const List<List<vectorField>>& boundaryMeasurements::UMeanBF() const
+inline vector boundaryMeasurements::speciesUMeanBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+) const
 {
-    return UMeanBF_;
+    return speciesUMeanBF_[speciei][patchi][facei];
 }
 
 
-inline const List<List<scalarField>>& boundaryMeasurements::rotationalEBF() const
+inline scalar boundaryMeasurements::speciesErotBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+) const
 {
-    return rotationalEBF_;
+    return speciesErotBF_[speciei][patchi][facei];
 }
 
 
-inline const List<List<scalarField>>& boundaryMeasurements::rotationalDofBF() const
+inline scalar boundaryMeasurements::speciesZetaRotBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+) const
 {
-    return rotationalDofBF_;
+    return speciesZetaRotBF_[speciei][patchi][facei];
 }
 
 
-inline const List<List<scalarField>>& boundaryMeasurements::vibrationalEBF() const
+inline scalar boundaryMeasurements::speciesEvibBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+) const
 {
-    return vibrationalEBF_;
+    return speciesEvibBF_[speciei][patchi][facei];
 }
 
 
-inline const List<List<List<scalarField>>>& boundaryMeasurements::evmsBF() const
+inline scalar boundaryMeasurements::speciesEvibModBF
+(
+    const label speciei,
+    const label modi,
+    const label patchi,
+    const label facei
+) const
 {
-    return evmsBF_;
+    return speciesEvibModBF_[speciei][modi][patchi][facei];
 }
 
 
-inline const List<List<scalarField>>& boundaryMeasurements::electronicEBF() const
+inline scalar boundaryMeasurements::speciesEelecBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+) const
 {
-    return electronicEBF_;
+    return speciesEelecBF_[speciei][patchi][facei];
 }
 
 
-inline const List<List<scalarField>>& boundaryMeasurements::qBF() const
+inline scalar boundaryMeasurements::speciesqBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+) const
 {
-    return qBF_;
+    return speciesqBF_[speciei][patchi][facei];
 }
 
 
-inline const List<List<vectorField>>& boundaryMeasurements::fDBF() const
+inline vector boundaryMeasurements::speciesfDBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+) const
 {
-    return fDBF_;
+    return speciesfDBF_[speciei][patchi][facei];
 }
 
 
 inline const fvPatchScalarField& boundaryMeasurements::pnStuckParticles
 (
-    const label& patchi
+    const label patchi
 ) const
 {
     return nParticlesOnStickingBoundaries_[patchi];
@@ -137,7 +213,7 @@ inline const fvPatchScalarField& boundaryMeasurements::pnStuckParticles
 
 inline const fvPatchScalarField& boundaryMeasurements::pnAbsorbedParticles
 (
-    const label& patchi
+    const label patchi
 ) const
 {
     return nAbsorbedParticles_[patchi];
@@ -146,7 +222,7 @@ inline const fvPatchScalarField& boundaryMeasurements::pnAbsorbedParticles
 
 inline const fvPatchScalarField& boundaryMeasurements::boundaryT
 (
-    const label& patchi
+    const label patchi
 ) const
 {
     return boundaryT_[patchi];
@@ -155,7 +231,7 @@ inline const fvPatchScalarField& boundaryMeasurements::boundaryT
 
 inline const fvPatchVectorField& boundaryMeasurements::boundaryU
 (
-    const label& patchi
+    const label patchi
 ) const
 {
     return boundaryU_[patchi];
@@ -164,99 +240,175 @@ inline const fvPatchVectorField& boundaryMeasurements::boundaryU
 
 //- Edit
 
-inline List<List<scalarField>>& boundaryMeasurements::rhoNIntBF()
+inline scalar& boundaryMeasurements::speciesRhoNIntBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+)
 {
-    return rhoNIntBF_;
+    return speciesRhoNIntBF_[speciei][patchi][facei];
 }
 
 
-inline List<List<scalarField>>& boundaryMeasurements::rhoNElecBF()
+inline scalar& boundaryMeasurements::speciesRhoNElecBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+)
 {
-    return rhoNElecBF_;
+    return speciesRhoNElecBF_[speciei][patchi][facei];
 }
 
 
-inline List<List<scalarField>>& boundaryMeasurements::rhoNBF()
+inline scalar& boundaryMeasurements::speciesRhoNBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+)
 {
-    return rhoNBF_;
+    return speciesRhoNBF_[speciei][patchi][facei];
 }
 
 
-inline List<List<scalarField>>& boundaryMeasurements::rhoMBF()
+inline scalar& boundaryMeasurements::speciesRhoMBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+)
 {
-    return rhoMBF_;
+    return speciesRhoMBF_[speciei][patchi][facei];
 }
 
 
-inline List<List<scalarField>>& boundaryMeasurements::linearKEBF()
+inline scalar& boundaryMeasurements::speciesLinearKEBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+)
 {
-    return linearKEBF_;
+    return speciesLinearKEBF_[speciei][patchi][facei];
 }
 
 
-inline List<List<scalarField>>& boundaryMeasurements::mccSpeciesBF()
+inline scalar& boundaryMeasurements::speciesMccBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+)
 {
-    return mccSpeciesBF_;
+    return speciesMccBF_[speciei][patchi][facei];
 }
 
 
-inline List<List<vectorField>>& boundaryMeasurements::momentumBF()
+inline vector& boundaryMeasurements::speciesMomentumBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+)
 {
-    return momentumBF_;
+    return speciesMomentumBF_[speciei][patchi][facei];
 }
 
 
-inline List<List<vectorField>>& boundaryMeasurements::UMeanBF()
+inline vector& boundaryMeasurements::speciesUMeanBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+)
 {
-    return UMeanBF_;
+    return speciesUMeanBF_[speciei][patchi][facei];
 }
 
 
-inline List<List<scalarField>>& boundaryMeasurements::rotationalEBF()
+inline scalar& boundaryMeasurements::speciesErotBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+)
 {
-    return rotationalEBF_;
+    return speciesErotBF_[speciei][patchi][facei];
 }
 
 
-inline List<List<scalarField>>& boundaryMeasurements::rotationalDofBF()
+inline scalar& boundaryMeasurements::speciesZetaRotBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+)
 {
-    return rotationalDofBF_;
+    return speciesZetaRotBF_[speciei][patchi][facei];
 }
 
 
-inline List<List<scalarField>>& boundaryMeasurements::vibrationalEBF()
+inline scalar& boundaryMeasurements::speciesEvibBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+)
 {
-    return vibrationalEBF_;
+    return speciesEvibBF_[speciei][patchi][facei];
 }
 
 
-inline List<List<List<scalarField>>>& boundaryMeasurements::evmsBF()
+inline scalar& boundaryMeasurements::speciesEvibModBF
+(
+    const label speciei,
+    const label modi,
+    const label patchi,
+    const label facei
+)
 {
-    return evmsBF_;
+    return speciesEvibModBF_[speciei][modi][patchi][facei];
 }
 
 
-inline List<List<scalarField>>& boundaryMeasurements::electronicEBF()
+inline scalar& boundaryMeasurements::speciesEelecBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+)
 {
-    return electronicEBF_;
+    return speciesEelecBF_[speciei][patchi][facei];
 }
 
 
-inline List<List<scalarField>>& boundaryMeasurements::qBF()
+inline scalar& boundaryMeasurements::speciesqBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+)
 {
-    return qBF_;
+    return speciesqBF_[speciei][patchi][facei];
 }
 
 
-inline List<List<vectorField>>& boundaryMeasurements::fDBF()
+inline vector& boundaryMeasurements::speciesfDBF
+(
+    const label speciei,
+    const label patchi,
+    const label facei
+)
 {
-    return fDBF_;
+    return speciesfDBF_[speciei][patchi][facei];
 }
 
 
 inline fvPatchScalarField& boundaryMeasurements::pnStuckParticles
 (
-    const label& patchi
+    const label patchi
 )
 {
     return nParticlesOnStickingBoundaries_[patchi];
@@ -265,7 +417,7 @@ inline fvPatchScalarField& boundaryMeasurements::pnStuckParticles
 
 inline fvPatchScalarField& boundaryMeasurements::pnAbsorbedParticles
 (
-    const label& patchi
+    const label patchi
 )
 {
     return nAbsorbedParticles_[patchi];
@@ -274,7 +426,7 @@ inline fvPatchScalarField& boundaryMeasurements::pnAbsorbedParticles
 
 inline fvPatchScalarField& boundaryMeasurements::boundaryT
 (
-    const label& patchi
+    const label patchi
 )
 {
     return boundaryT_[patchi];
@@ -283,7 +435,7 @@ inline fvPatchScalarField& boundaryMeasurements::boundaryT
 
 inline fvPatchVectorField& boundaryMeasurements::boundaryU
 (
-    const label& patchi
+    const label patchi
 )
 {
     return boundaryU_[patchi];

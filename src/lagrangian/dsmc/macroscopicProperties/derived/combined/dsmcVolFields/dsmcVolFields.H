@@ -63,28 +63,32 @@ protected:
 
         label sampleInterval_;
         label sampleCounter_;
-        scalar mfpReferenceTemperature_;
+        scalar nTimeSteps_;
+        
+        scalar mfpTref_;
         word fieldName_;
+        
+        labelList speciesIds_;
+        
         volScalarField dsmcN_;
         volScalarField dsmcNMean_;
         volScalarField rhoN_;
         volScalarField rhoM_;
         volScalarField p_;
-        volScalarField translationalT_;
-        volScalarField rotationalT_;
-        volScalarField vibrationalT_;
-        volScalarField electronicT_;
-        volScalarField overallT_;
+        volScalarField Ttra_;
+        volScalarField Trot_;
+        volScalarField Tvib_;
+        volScalarField Telec_;
+        volScalarField Tov_;
         volScalarField q_;
         volScalarField tau_;
-        volScalarField meanFreePath_;
-        volScalarField mfpCellRatio_;
-        volScalarField cellMfpRatio_;
+        volScalarField mfp_;
+        volScalarField mfpToDx_;
+        volScalarField DxToMfp_;
         volScalarField meanCollisionRate_;
+        volScalarField measuredCollisionRate_;
         volScalarField meanCollisionTime_;
-        volScalarField meanCollisionTimeTimeStepRatio_;
-        //- Measured local collision rate
-        volScalarField cr_;
+        volScalarField mctToDt_;
         volScalarField meanCollisionSeparation_;
         volScalarField SOF_;
         volScalarField Ma_;
@@ -100,19 +104,16 @@ protected:
         volVectorField heatFluxVector_;
         volTensorField pressureTensor_;
         volTensorField shearStressTensor_;
-        scalar nTimeSteps_;
-        labelList typeIds_;
+
         scalarField dsmcNCum_;
-        scalarField dsmcNInstantaneous_;
         scalarField nCum_;
-        scalarField dsmcNWithRotDofCum_;
-        scalarField dsmcNEleCum_;
+        scalarField dsmcNElecLvlCum_;
         scalarField dsmcMCum_;
         scalarField mCum_;
-        scalarField dsmcLinKinEnCum_;
-        scalarField linKinEnCum_;
-        scalarField dsmcRotEnCum_;
-        scalarField dsmcRotDofCum_;
+        scalarField dsmcLinearKECum_;
+        scalarField linearKECum_;
+        scalarField dsmcErotCum_;
+        scalarField dsmcZetaRotCum_;
         scalarField dsmcMuuCum_;
         scalarField dsmcMuvCum_;
         scalarField dsmcMuwCum_;
@@ -127,7 +128,7 @@ protected:
         scalarField dsmcEvCum_;
         scalarField dsmcEwCum_;
         scalarField dsmcECum_;
-        scalarField totalvDof_;
+        scalarField zetaVib_;
         scalarField dsmcNClassICum_;
         scalarField dsmcNClassIICum_;
         scalarField dsmcNClassIIICum_;
@@ -135,51 +136,44 @@ protected:
         scalarField dsmcNCollsCum_;
         vectorField dsmcMomentumCum_;
         vectorField momentumCum_;
+        
         List<labelList> boundaryCells_;
-        List< List < scalarField > > dsmcVibEnSpeciesModeCum_;
-        List<scalarField> dsmcEleEnSpeciesCum_;
+        List<List<scalarField>> dsmcSpeciesEvibModCum_;
+        List<scalarField> dsmcSpeciesEelecCum_;
         List<scalarField> dsmcNSpeciesCum_;
         List<scalarField> nSpeciesCum_;
         List<scalarField> dsmcMccSpeciesCum_;
-        List<scalarField> vibT_;
-        List<scalarField> dsmcNGroundEleLvlSpeciesCum_;
-        List<scalarField> dsmcNFirstEleLvlSpeciesCum_;
-
-        //- Effective degrees of freedom
-        List<scalarField> vDof_;
-
-        //- Mean free path
-        List<scalarField> mfp_;
-
-        //- Mean collision rate
-        List<scalarField> mcr_;
+        List<scalarField> speciesTvib_;
+        List<scalarField> dsmcNGrndElecLvlSpeciesCum_;
+        List<scalarField> dsmcN1stElecLvlSpeciesCum_;
+        List<scalarField> speciesMfp_;
+        List<scalarField> speciesMcr_;
 
 
-
-
-        //- Boundary measurements
+      //- Boundary measurements
+      
         List<scalarField> rhoNBF_;
         List<scalarField> rhoMBF_;
         List<scalarField> linearKEBF_;
-        List<scalarField> rotationalEBF_;
-        List<scalarField> rotationalDofBF_;
+        List<scalarField> ErotBF_;
+        List<scalarField> zetaRotBF_;
         List<scalarField> qBF_;
-        List<scalarField> vibTxvDofBF_;
-        List<scalarField> totalvDofBF_;
-        List<scalarField> speciesRhoNIntBF_;
-        List<scalarField> speciesRhoNElecBF_;
+        List<scalarField> zetaVibBF_;
+        List<scalarField> rhoNIntBF_;
+        List<scalarField> rhoNElecBF_;
         List<vectorField> momentumBF_;
         List<vectorField> fDBF_;
 
-        List<List<scalarField>> vibrationalEBF_;
-        List<List<scalarField>> electronicEBF_;
+        List<List<scalarField>> speciesEvibBF_;
+        List<List<scalarField>> speciesEelecBF_;
         List<List<scalarField>> speciesRhoNBF_;
-        List<List<scalarField>> mccSpeciesBF_;
-        List<List<scalarField>> vibTBF_;
-        List<List<scalarField>> vDofBF_;
-        List<List<List<scalarField>>> evmsBF_;
+        List<List<scalarField>> speciesMccBF_;
+        List<List<scalarField>> speciesTvibBF_;
+        List<List<scalarField>> speciesZetaVibBF_;
+        List<List<List<scalarField>>> speciesEvibModBF_;
 
-        //- Wall unit vectors - temporary storage, should be done in boundaries/patch
+        //- Wall unit vectors
+        //  temporary storage, should be done in boundaries/patch
         List<vectorField> n_;
         List<vectorField> t1_;
         List<vectorField> t2_;
@@ -241,12 +235,12 @@ public:
 
       virtual scalar translationalT(const label cellI)
       {
-          return translationalT_[cellI];
+          return Ttra_[cellI];
       }
 
       virtual scalar overallT(const label cellI)
       {
-          return overallT_[cellI];
+          return Tov_[cellI];
       }
 };
 

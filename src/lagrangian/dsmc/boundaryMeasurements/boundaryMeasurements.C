@@ -194,21 +194,21 @@ boundaryMeasurements::boundaryMeasurements
     mesh_(refCast<const fvMesh>(mesh)),
     cloud_(cloud),
     typeIds_(cloud_.typeIdList().size(), -1),
-    rhoNIntBF_(),
-    rhoNElecBF_(),
-    rhoNBF_(),
-    rhoMBF_(),
-    linearKEBF_(),
-    mccSpeciesBF_(),
-    momentumBF_(),
-    UMeanBF_(),
-    rotationalEBF_(),
-    rotationalDofBF_(),
-    vibrationalEBF_(),
-    electronicEBF_(),
-    qBF_(),
-    fDBF_(),
-    evmsBF_(),
+    speciesRhoNIntBF_(),
+    speciesRhoNElecBF_(),
+    speciesRhoNBF_(),
+    speciesRhoMBF_(),
+    speciesLinearKEBF_(),
+    speciesMccBF_(),
+    speciesMomentumBF_(),
+    speciesUMeanBF_(),
+    speciesErotBF_(),
+    speciesZetaRotBF_(),
+    speciesEvibBF_(),
+    speciesEelecBF_(),
+    speciesqBF_(),
+    speciesfDBF_(),
+    speciesEvibModBF_(),
     nParticlesOnStickingBoundaries_
     (
         mesh_.boundary(),
@@ -323,19 +323,19 @@ void boundaryMeasurements::setBoundarynAbsorbedParticles
 
 void boundaryMeasurements::outputResults()
 {
-    if(mesh_.time().outputTime())
+    if (mesh_.time().outputTime())
     {
-//        if(cloud_.boundaries().isAStickingPatch())
+//        if (cloud_.boundaries().isAStickingPatch())
 //        {
 //            writenStuckParticles();
 //        }
 
-//        if(cloud_.boundaries().isAAbsorbingPatch())
+//        if (cloud_.boundaries().isAAbsorbingPatch())
 //        {
 //            writenAbsorbedParticles();
 //        }
 
-//        if(cloud_.boundaries().isAFieldPatch())
+//        if (cloud_.boundaries().isAFieldPatch())
 //        {
 //            writePatchFields();
 //        }
@@ -359,39 +359,36 @@ void boundaryMeasurements::clean()
     //- clean geometric fields
     forAll(typeIds_, i)
     {
-        forAll(rhoNBF_[i], j)
+        forAll(speciesRhoNBF_[i], j)
         {
-            rhoNIntBF_[i][j] = 0.0;
-            rhoNElecBF_[i][j] = 0.0;
-            rhoNBF_[i][j] = 0.0;
-            rhoMBF_[i][j] = 0.0;
-            linearKEBF_[i][j] = 0.0;
-            mccSpeciesBF_[i][j] = 0.0;
-            momentumBF_[i][j] = vector::zero;
-            UMeanBF_[i][j] = vector::zero;
-            rotationalEBF_[i][j] = 0.0;
-            rotationalDofBF_[i][j] = 0.0;
-            vibrationalEBF_[i][j] = 0.0;
-            electronicEBF_[i][j] = 0.0;
-            qBF_[i][j] = 0.0;
-            fDBF_[i][j] = vector::zero;
+            speciesRhoNIntBF_[i][j] = 0.0;
+            speciesRhoNElecBF_[i][j] = 0.0;
+            speciesRhoNBF_[i][j] = 0.0;
+            speciesRhoMBF_[i][j] = 0.0;
+            speciesLinearKEBF_[i][j] = 0.0;
+            speciesMccBF_[i][j] = 0.0;
+            speciesMomentumBF_[i][j] = vector::zero;
+            speciesUMeanBF_[i][j] = vector::zero;
+            speciesErotBF_[i][j] = 0.0;
+            speciesZetaRotBF_[i][j] = 0.0;
+            speciesEvibBF_[i][j] = 0.0;
+            speciesEelecBF_[i][j] = 0.0;
+            speciesqBF_[i][j] = 0.0;
+            speciesfDBF_[i][j] = vector::zero;
         }
 
-        forAll(evmsBF_[i], m)
+        forAll(speciesEvibModBF_[i], mod)
         {
-            forAll(evmsBF_[i][m], j)
+            forAll(speciesEvibModBF_[i][mod], j)
             {
-                evmsBF_[i][m][j] = 0.0;
+                speciesEvibModBF_[i][mod][j] = 0.0;
             }
         }
     }
 
-    forAll(nParticlesOnStickingBoundaries_, patchi)
+    forAll(nParticlesOnStickingBoundaries_, j)
     {
-        forAll(nParticlesOnStickingBoundaries_[patchi], facei)
-        {
-            nParticlesOnStickingBoundaries_[patchi][facei] = 0.0;
-        }
+        nParticlesOnStickingBoundaries_[j] = 0.0;
     }
 }
 
@@ -402,84 +399,91 @@ void boundaryMeasurements::reset()
     const label nSpecies = typeIds_.size();
     const label nPatches = mesh_.boundaryMesh().size();
 
-    rhoNIntBF_.setSize(nSpecies);
-    rhoNElecBF_.setSize(nSpecies);
-    rhoNBF_.setSize(nSpecies);
-    rhoMBF_.setSize(nSpecies);
-    linearKEBF_.setSize(nSpecies);
-    mccSpeciesBF_.setSize(nSpecies);
-    momentumBF_.setSize(nSpecies);
-    UMeanBF_.setSize(nSpecies);
-    rotationalEBF_.setSize(nSpecies);
-    rotationalDofBF_.setSize(nSpecies);
-    vibrationalEBF_.setSize(nSpecies);
-    electronicEBF_.setSize(nSpecies);
-    qBF_.setSize(nSpecies);
-    fDBF_.setSize(nSpecies);
-    evmsBF_.setSize(nSpecies);
-
+    speciesRhoNIntBF_.setSize(nSpecies);
+    speciesRhoNElecBF_.setSize(nSpecies);
+    speciesRhoNBF_.setSize(nSpecies);
+    speciesRhoMBF_.setSize(nSpecies);
+    speciesLinearKEBF_.setSize(nSpecies);
+    speciesMccBF_.setSize(nSpecies);
+    speciesMomentumBF_.setSize(nSpecies);
+    speciesUMeanBF_.setSize(nSpecies);
+    speciesErotBF_.setSize(nSpecies);
+    speciesZetaRotBF_.setSize(nSpecies);
+    speciesEvibBF_.setSize(nSpecies);
+    speciesEelecBF_.setSize(nSpecies);
+    speciesqBF_.setSize(nSpecies);
+    speciesfDBF_.setSize(nSpecies);
+    speciesEvibModBF_.setSize(nSpecies);
+    
     forAll(typeIds_, i)
     {
-        rhoNIntBF_[i].setSize(nPatches);
-        rhoNElecBF_[i].setSize(nPatches);
-        rhoNBF_[i].setSize(nPatches);
-        rhoMBF_[i].setSize(nPatches);
-        linearKEBF_[i].setSize(nPatches);
-        mccSpeciesBF_[i].setSize(nPatches);
-        momentumBF_[i].setSize(nPatches);
-        UMeanBF_[i].setSize(nPatches);
-        rotationalEBF_[i].setSize(nPatches);
-        rotationalDofBF_[i].setSize(nPatches);
-        vibrationalEBF_[i].setSize(nPatches);
-        electronicEBF_[i].setSize(nPatches);
-        qBF_[i].setSize(nPatches);
-        fDBF_[i].setSize(nPatches);
+        const label spId = typeIds_[i];
+        const label nVibMod = cloud_.constProps(spId).nVibrationalModes();
+        
+        speciesRhoNIntBF_[i].setSize(nPatches);
+        speciesRhoNElecBF_[i].setSize(nPatches);
+        speciesRhoNBF_[i].setSize(nPatches);
+        speciesRhoMBF_[i].setSize(nPatches);
+        speciesLinearKEBF_[i].setSize(nPatches);
+        speciesMccBF_[i].setSize(nPatches);
+        speciesMomentumBF_[i].setSize(nPatches);
+        speciesUMeanBF_[i].setSize(nPatches);
+        speciesErotBF_[i].setSize(nPatches);
+        speciesZetaRotBF_[i].setSize(nPatches);
+        speciesEvibBF_[i].setSize(nPatches);
+        speciesEelecBF_[i].setSize(nPatches);
+        speciesqBF_[i].setSize(nPatches);
+        speciesfDBF_[i].setSize(nPatches);
 
-        evmsBF_[i].setSize(cloud_.constProps(typeIds_[i]).thetaV().size());
-        forAll(evmsBF_[i], m)
+        speciesEvibModBF_[i].setSize(nVibMod);
+        forAll(speciesEvibModBF_[i], mod)
         {
-            evmsBF_[i][m].setSize(nPatches);
+            speciesEvibModBF_[i][mod].setSize(nPatches);
         }
 
-        forAll(rhoNBF_[i], j)
+        forAll(speciesRhoNBF_[i], j)
         {
             const label nFaces = mesh_.boundaryMesh()[j].size();
 
-            rhoNIntBF_[i][j].setSize(nFaces, 0.0);
-            rhoNElecBF_[i][j].setSize(nFaces, 0.0);
-            rhoNBF_[i][j].setSize(nFaces, 0.0);
-            rhoMBF_[i][j].setSize(nFaces, 0.0);
-            linearKEBF_[i][j].setSize(nFaces, 0.0);
-            mccSpeciesBF_[i][j].setSize(nFaces, 0.0);
-            momentumBF_[i][j].setSize(nFaces, vector::zero);
-            UMeanBF_[i][j].setSize(nFaces, vector::zero);
-            rotationalEBF_[i][j].setSize(nFaces, 0.0);
-            rotationalDofBF_[i][j].setSize(nFaces, 0.0);
-            vibrationalEBF_[i][j].setSize(nFaces, 0.0);
-            electronicEBF_[i][j].setSize(nFaces, 0.0);
-            qBF_[i][j].setSize(nFaces, 0.0);
-            fDBF_[i][j].setSize(nFaces, vector::zero);
+            speciesRhoNIntBF_[i][j].setSize(nFaces, 0.0);
+            speciesRhoNElecBF_[i][j].setSize(nFaces, 0.0);
+            speciesRhoNBF_[i][j].setSize(nFaces, 0.0);
+            speciesRhoMBF_[i][j].setSize(nFaces, 0.0);
+            speciesLinearKEBF_[i][j].setSize(nFaces, 0.0);
+            speciesMccBF_[i][j].setSize(nFaces, 0.0);
+            speciesMomentumBF_[i][j].setSize(nFaces, vector::zero);
+            speciesUMeanBF_[i][j].setSize(nFaces, vector::zero);
+            speciesErotBF_[i][j].setSize(nFaces, 0.0);
+            speciesZetaRotBF_[i][j].setSize(nFaces, 0.0);
+            speciesEvibBF_[i][j].setSize(nFaces, 0.0);
+            speciesEelecBF_[i][j].setSize(nFaces, 0.0);
+            speciesqBF_[i][j].setSize(nFaces, 0.0);
+            speciesfDBF_[i][j].setSize(nFaces, vector::zero);
         }
 
-        forAll(evmsBF_[i], m)
+        forAll(speciesEvibModBF_[i], mod)
         {
-            forAll(evmsBF_[i][m], j)
+            forAll(speciesEvibModBF_[i][mod], j)
             {
                 const label nFaces = mesh_.boundaryMesh()[j].size();
-                evmsBF_[i][m][j].setSize(nFaces, 0.0);
+                speciesEvibModBF_[i][mod][j].setSize(nFaces, 0.0);
             }
         }
     }
+    
+    nParticlesOnStickingBoundaries_.setSize(nPatches);
+    nAbsorbedParticles_.setSize(nPatches);
+    boundaryT_.setSize(nPatches);
+    boundaryU_.setSize(nPatches);
 
-    forAll(nParticlesOnStickingBoundaries_, patchi)
+    forAll(mesh_.boundaryMesh(), j)
     {
-        forAll(nParticlesOnStickingBoundaries_[patchi], facei)
-        {
-            nParticlesOnStickingBoundaries_[patchi][facei] = 0.0;
-            nAbsorbedParticles_[patchi][facei] = 0.0;
-            boundaryT_[patchi][facei] = 0.0;
-            boundaryU_[patchi][facei] = vector::zero;
-        }
+        const label nFaces = mesh_.boundaryMesh()[j].size();
+        
+        nParticlesOnStickingBoundaries_[j].setSize(nFaces, 0.0);
+        nAbsorbedParticles_[j].setSize(nFaces, 0.0);
+        boundaryT_[j].setSize(nFaces, 0.0);
+        boundaryU_[j].setSize(nFaces, vector::zero);
     }
 }
 

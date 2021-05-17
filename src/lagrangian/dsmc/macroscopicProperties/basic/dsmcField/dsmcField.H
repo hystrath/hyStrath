@@ -37,7 +37,6 @@ SourceFiles
 #define dsmcField_H
 
 #include "IOdictionary.H"
-// #include "Time.H"
 #include "autoPtr.H"
 #include "runTimeSelectionTables.H"
 #include "vector.H"
@@ -46,7 +45,6 @@ SourceFiles
 #include "Random.H"
 #include "dsmcParcel.H"
 #include "timeDataMeas.H"
-// #include "propertyField.H"
 #include "writeTimeData.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -74,10 +72,6 @@ protected:
 
         timeDataMeas time_;
 
-//         bool resetFieldsAtOutput_;
-
-//         label resetIndex_;
-//         Random rndGen_;
         fileName casePath_;
 
         fileName timePath_;
@@ -127,47 +121,6 @@ public:
             const dictionary& dict
         );
 
-/*
-        void writeTimeData
-        (
-            const fileName& pathName,
-            const word& nameFile,
-            const scalarField& xData,
-            const scalarField& yData
-        );
-
-        void writeTimeData
-        (
-            const fileName& pathName,
-            const word& fileName,
-            const List< Pair<scalar> >& data
-        );
-
-        void writeTimeData
-        (
-            const fileName& pathName,
-            const word& nameFile,
-            const List< Pair<scalar> >& data,
-            const label& dummy
-        );
-
-        //- vector field
-        void writeTimeData
-        (
-            const fileName& pathName,
-            const word& nameFile,
-            const scalarField& xData,
-            const vectorField& yData
-        );
-
-        //- tensor field
-        void writeTimeData
-        (
-            const fileName& pathName,
-            const word& nameFile,
-            const scalarField& xData,
-            const tensorField& yData
-        );*/
 
     // Destructor
 
@@ -200,11 +153,6 @@ public:
         void updateBasicFieldProperties(const dictionary&);
 
         virtual void updateProperties(const dictionary&) = 0;
-
-//         virtual const propertyField& fields() const = 0;
-        //- return fields
-
-//         virtual const propertyField& field() const = 0;
 
         virtual scalar translationalT(const label cellI) = 0;
 

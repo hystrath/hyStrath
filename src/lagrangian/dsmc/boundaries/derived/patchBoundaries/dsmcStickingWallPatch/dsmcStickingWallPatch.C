@@ -41,7 +41,7 @@ void dsmcStickingWallPatch::setProperties()
 {
     const List<word> molecules (propsDict_.lookup("typeIds"));
 
-    if(molecules.size() == 0)
+    if (molecules.size() == 0)
     {
          FatalErrorIn("dsmcStickingWallPatch::setProperties()")
             << "Cannot have zero typeIds being adsorbed." << nl << "in: "
@@ -55,7 +55,7 @@ void dsmcStickingWallPatch::setProperties()
     {
         const word& moleculeName(molecules[i]);
 
-        if(findIndex(moleculesReduced, moleculeName) == -1)
+        if (findIndex(moleculesReduced, moleculeName) == -1)
         {
             moleculesReduced.append(moleculeName);
         }
@@ -71,7 +71,7 @@ void dsmcStickingWallPatch::setProperties()
 
         const label typeId(findIndex(cloud_.typeIdList(), moleculeName));
 
-        if(typeId == -1)
+        if (typeId == -1)
         {
             FatalErrorIn("dsmcStickingWallPatch::setProperties()")
                 << "Cannot find typeId: " << moleculeName << nl << "in: "
@@ -158,7 +158,7 @@ void dsmcStickingWallPatch::readPatchField()
 
 bool dsmcStickingWallPatch::isNotSaturated(const label facei)
 {
-    if(saturationLimit(facei) - nStuckParticles(facei) > 1e-6)
+    if (saturationLimit(facei) - nStuckParticles(facei) > 1e-6)
     {
         return true;
     }
@@ -189,9 +189,9 @@ void dsmcStickingWallPatch::adsorbParticle
 
     dsmcPatchBoundary::calculateWallUnitVectors(p, nw, tw1, tw2);
 
-    const label& typeId = p.typeId();
+    const label spId = p.typeId();
 
-    const scalar mass = cloud_.constProps(typeId).mass();
+    const scalar mass = cloud_.constProps(spId).mass();
 
     if (localTemperature == 0)
     {
@@ -203,8 +203,8 @@ void dsmcStickingWallPatch::adsorbParticle
     // it might be updated in one or several intermediate coordinate system
     // evolve step(s).
     const scalar preIE = p.RWF()*(0.5*mass*(U & U) + ERot
-        + cloud_.constProps(typeId).eVib_tot(p.vibLevel())
-        + cloud_.constProps(typeId).electronicEnergyList()[p.ELevel()]);
+        + cloud_.constProps(spId).eVib_tot(p.vibLevel())
+        + cloud_.constProps(spId).electronicEnergyList()[p.ELevel()]);
 
     const vector preIMom = p.RWF()*mass*U;
 
@@ -235,19 +235,19 @@ void dsmcStickingWallPatch::adsorbParticle
 
 void dsmcStickingWallPatch::testForDesorption(dsmcParcel& p)
 {
-    const label typeId = p.typeId();
-    const label iD = findIndex(typeIds_, typeId);
+    const label spId = p.typeId();
+    const label iD = findIndex(typeIds_, spId);
 
-    if(iD != -1)
+    if (iD != -1)
     {
         const scalar deltaT = cloud_.deltaTValue(p.cell());
 
         Random& rndGen = cloud_.rndGen();
 
         //- Calculate the probability that this particle will be released
-        if(rndGen.sample01<scalar>() < deltaT/residenceTimes_[iD])
+        if (rndGen.sample01<scalar>() < deltaT/residenceTimes_[iD])
         {
-            const scalar mass = cloud_.constProps(typeId).mass();
+            const scalar mass = cloud_.constProps(spId).mass();
 
             vector& U = p.U();
 
@@ -284,8 +284,9 @@ void dsmcStickingWallPatch::measurePropertiesAfterDesorption
     const scalar& heatOfReaction
 )
 {
-    if(measurePropertiesAtWall_)
+    if (measurePropertiesAtWall_)
     {
+        const label spId = p.typeId();
         const label wppIndex = p.stuck().wallTemperature()[1];
         const polyPatch& wpp = mesh_.boundaryMesh()[wppIndex];
         const label wppLocalFace = p.stuck().wallTemperature()[2];
@@ -295,7 +296,7 @@ void dsmcStickingWallPatch::measurePropertiesAfterDesorption
         const scalar deltaT = cloud_.deltaTValue(p.cell());
 
         const dsmcParcel::constantProperties&
-            constProps(cloud_.constProps(p.typeId()));
+            constProps(cloud_.constProps(spId));
 
         const scalar m = constProps.mass();
 
@@ -310,61 +311,60 @@ void dsmcStickingWallPatch::measurePropertiesAfterDesorption
             p.RWF()/max(mag(U_dot_nw)*fA*deltaT, SMALL);
 
         cloud_.boundaryFluxMeasurements()
-            .rhoNBF()[p.typeId()][wppIndex][wppLocalFace] += rwfDivMagUnfADt;
+            .speciesRhoNBF(spId, wppIndex, wppLocalFace) += rwfDivMagUnfADt;
 
-        if(constProps.rotationalDegreesOfFreedom() > 0)
+        if (constProps.rotationalDegreesOfFreedom() > 0)
         {
             cloud_.boundaryFluxMeasurements()
-                .rhoNIntBF()[p.typeId()][wppIndex][wppLocalFace] +=
+                .speciesRhoNIntBF(spId, wppIndex, wppLocalFace) +=
                     rwfDivMagUnfADt;
         }
 
-        if(constProps.nElectronicLevels() > 1)
+        if (constProps.nElectronicLevels() > 1)
         {
             cloud_.boundaryFluxMeasurements()
-                .rhoNElecBF()[p.typeId()][wppIndex][wppLocalFace] +=
+                .speciesRhoNElecBF(spId, wppIndex, wppLocalFace) +=
                     rwfDivMagUnfADt;
         }
 
         cloud_.boundaryFluxMeasurements()
-            .rhoMBF()[p.typeId()][wppIndex][wppLocalFace] += m*rwfDivMagUnfADt;
+            .speciesRhoMBF(spId, wppIndex, wppLocalFace) += m*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
-            .linearKEBF()[p.typeId()][wppIndex][wppLocalFace] +=
+            .speciesLinearKEBF(spId, wppIndex, wppLocalFace) +=
                 0.5*m*(p.U() & p.U())*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
-            .mccSpeciesBF()[p.typeId()][wppIndex][wppLocalFace] +=
+            .speciesMccBF(spId, wppIndex, wppLocalFace) +=
                 m*(p.U() & p.U())*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
-            .momentumBF()[p.typeId()][wppIndex][wppLocalFace] +=
+            .speciesMomentumBF(spId, wppIndex, wppLocalFace) +=
                 m*Ut*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
-            .rotationalEBF()[p.typeId()][wppIndex][wppLocalFace] +=
+            .speciesErotBF(spId, wppIndex, wppLocalFace) +=
                 p.ERot()*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
-            .rotationalDofBF()[p.typeId()][wppIndex][wppLocalFace] +=
+            .speciesZetaRotBF(spId, wppIndex, wppLocalFace) +=
                 constProps.rotationalDegreesOfFreedom()*rwfDivMagUnfADt;
 
         const scalar EVibP_tot = constProps.eVib_tot(p.vibLevel());
 
         cloud_.boundaryFluxMeasurements()
-            .vibrationalEBF()[p.typeId()][wppIndex][wppLocalFace] +=
+            .speciesEvibBF(spId, wppIndex, wppLocalFace) +=
                 EVibP_tot*rwfDivMagUnfADt;
 
-        forAll(p.vibLevel(), mode)
+        forAll(p.vibLevel(), mod)
         {
             cloud_.boundaryFluxMeasurements()
-                .evmsBF()[p.typeId()][mode][wppIndex][wppLocalFace] +=
-                    constProps.eVib_m(mode, p.vibLevel()[mode])
-                    * rwfDivMagUnfADt;
+                .speciesEvibModBF(spId, mod, wppIndex, wppLocalFace) +=
+                    constProps.eVib_m(mod, p.vibLevel()[mod])*rwfDivMagUnfADt;
         }
 
         cloud_.boundaryFluxMeasurements()
-            .electronicEBF()[p.typeId()][wppIndex][wppLocalFace] +=
+            .speciesEelecBF(spId, wppIndex, wppLocalFace) +=
                 constProps.electronicEnergyList()[p.ELevel()]*rwfDivMagUnfADt;
 
         // post-interaction energy
@@ -400,10 +400,10 @@ void dsmcStickingWallPatch::measurePropertiesAfterDesorption
         const vector deltaFD = nParticle*(preIMom - postIMom)/(deltaT*fA);
 
         cloud_.boundaryFluxMeasurements()
-            .qBF()[p.typeId()][wppIndex][wppLocalFace] += deltaQ;
+            .speciesqBF(spId, wppIndex, wppLocalFace) += deltaQ;
 
         cloud_.boundaryFluxMeasurements()
-            .fDBF()[p.typeId()][wppIndex][wppLocalFace] += deltaFD;
+            .speciesfDBF(spId, wppIndex, wppLocalFace) += deltaFD;
     }
 }
 

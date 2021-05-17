@@ -71,23 +71,23 @@ private:
 
         //- Outer list is typeId, middle is the patch, inner is the local patch
         //  face
-        List<List<scalarField>> rhoNIntBF_;
-        List<List<scalarField>> rhoNElecBF_;
-        List<List<scalarField>> rhoNBF_;
-        List<List<scalarField>> rhoMBF_;
-        List<List<scalarField>> linearKEBF_;
-        List<List<scalarField>> mccSpeciesBF_;
-        List<List<vectorField>> momentumBF_;
-        List<List<vectorField>> UMeanBF_;
-        List<List<scalarField>> rotationalEBF_;
-        List<List<scalarField>> rotationalDofBF_;
-        List<List<scalarField>> vibrationalEBF_;
-        List<List<scalarField>> electronicEBF_;
-        List<List<scalarField>> qBF_;
-        List<List<vectorField>> fDBF_;
+        List<List<scalarField>> speciesRhoNIntBF_;
+        List<List<scalarField>> speciesRhoNElecBF_;
+        List<List<scalarField>> speciesRhoNBF_;
+        List<List<scalarField>> speciesRhoMBF_;
+        List<List<scalarField>> speciesLinearKEBF_;
+        List<List<scalarField>> speciesMccBF_;
+        List<List<vectorField>> speciesMomentumBF_;
+        List<List<vectorField>> speciesUMeanBF_;
+        List<List<scalarField>> speciesErotBF_;
+        List<List<scalarField>> speciesZetaRotBF_;
+        List<List<scalarField>> speciesEvibBF_;
+        List<List<scalarField>> speciesEelecBF_;
+        List<List<scalarField>> speciesqBF_;
+        List<List<vectorField>> speciesfDBF_;
 
         //- species ID, vibrational energy mode, patch, face
-        List<List<List<scalarField>>> evmsBF_;
+        List<List<List<scalarField>>> speciesEvibModBF_;
 
         //- Number of stuck parcels on every boundary patch
         volScalarField::Boundary nParticlesOnStickingBoundaries_;
@@ -196,66 +196,244 @@ public:
 
     // Access
 
-      const List<List<scalarField>>& rhoNIntBF() const;
-      const List<List<scalarField>>& rhoNElecBF() const;
-      const List<List<scalarField>>& rhoNBF() const;
-      const List<List<scalarField>>& rhoMBF() const;
-      const List<List<scalarField>>& linearKEBF() const;
-      const List<List<scalarField>>& mccSpeciesBF() const;
-      const List<List<vectorField>>& momentumBF() const;
-      const List<List<vectorField>>& UMeanBF() const;
-      const List<List<scalarField>>& rotationalEBF() const;
-      const List<List<scalarField>>& rotationalDofBF() const;
-      const List<List<scalarField>>& vibrationalEBF() const;
-      const List<List<List<scalarField>>>& evmsBF() const;
-      const List<List<scalarField>>& electronicEBF() const;
-      const List<List<scalarField>>& qBF() const;
-      const List<List<vectorField>>& fDBF() const;
+      inline scalar speciesRhoNIntBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      ) const;
+      
+      inline scalar speciesRhoNElecBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      ) const;
+      
+      inline scalar speciesRhoNBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      ) const;
+      
+      inline scalar speciesRhoMBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      ) const;
+      
+      inline scalar speciesLinearKEBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      ) const;
+      
+      inline scalar speciesMccBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      ) const;
+      
+      inline vector speciesMomentumBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      ) const;
+      
+      inline vector speciesUMeanBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      ) const;
+      
+      inline scalar speciesErotBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      ) const;
+      
+      inline scalar speciesZetaRotBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      ) const;
+      
+      inline scalar speciesEvibBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      ) const;
+      
+      inline scalar speciesEvibModBF
+      (
+          const label speciei,
+          const label modi,
+          const label patchi,
+          const label facei
+      ) const;
+      
+      inline scalar speciesEelecBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      ) const;
+      
+      inline scalar speciesqBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      ) const;
+      
+      inline vector speciesfDBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      ) const;
 
       //- Return const access to the number of stuck parcels on patchi
-      const fvPatchScalarField& pnStuckParticles(const label& patchi) const;
+      const fvPatchScalarField& pnStuckParticles(const label patchi) const;
 
       //- Return const access to the number of absorbed parcels on patchi
-      const fvPatchScalarField& pnAbsorbedParticles(const label& patchi) const;
+      const fvPatchScalarField& pnAbsorbedParticles(const label patchi) const;
 
       //- Return access to the temperature boundary values on patchi
-      const fvPatchScalarField& boundaryT(const label& patchi) const;
+      const fvPatchScalarField& boundaryT(const label patchi) const;
 
       //- Return access to the velocity boundary values on patchi
-      const fvPatchVectorField& boundaryU(const label& patchi) const;
+      const fvPatchVectorField& boundaryU(const label patchi) const;
 
-
-    // Check
 
     // Edit
 
-      List<List<scalarField>>& rhoNIntBF();
-      List<List<scalarField>>& rhoNElecBF();
-      List<List<scalarField>>& rhoNBF();
-      List<List<scalarField>>& rhoMBF();
-      List<List<scalarField>>& linearKEBF();
-      List<List<scalarField>>& mccSpeciesBF();
-      List<List<vectorField>>& momentumBF();
-      List<List<vectorField>>& UMeanBF();
-      List<List<scalarField>>& rotationalEBF();
-      List<List<scalarField>>& rotationalDofBF();
-      List<List<scalarField>>& vibrationalEBF();
-      List<List<List<scalarField>>>& evmsBF();
-      List<List<scalarField>>& electronicEBF();
-      List<List<scalarField>>& qBF();
-      List<List<vectorField>>& fDBF();
+      inline scalar& speciesRhoNIntBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      );
+      
+      inline scalar& speciesRhoNElecBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      );
+      
+      inline scalar& speciesRhoNBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      );
+      
+      inline scalar& speciesRhoMBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      );
+      
+      inline scalar& speciesLinearKEBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      );
+      
+      inline scalar& speciesMccBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      );
+      
+      inline vector& speciesMomentumBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      );
+      
+      inline vector& speciesUMeanBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      );
+      
+      inline scalar& speciesErotBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      );
+      
+      inline scalar& speciesZetaRotBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      );
+      
+      inline scalar& speciesEvibBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      );
+      
+      inline scalar& speciesEvibModBF
+      (
+          const label speciei,
+          const label modi,
+          const label patchi,
+          const label facei
+      );
+      
+      inline scalar& speciesEelecBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      );
+      
+      inline scalar& speciesqBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      );
+      
+      inline vector& speciesfDBF
+      (
+          const label speciei,
+          const label patchi,
+          const label facei
+      );
 
       //- Return access to the number of stuck parcels on patchi
-      fvPatchScalarField& pnStuckParticles(const label& patchi);
+      fvPatchScalarField& pnStuckParticles(const label patchi);
 
       //- Return access to the number of absorbed parcels on patchi
-      fvPatchScalarField& pnAbsorbedParticles(const label& patchi);
+      fvPatchScalarField& pnAbsorbedParticles(const label patchi);
 
       //- Return access to the temperature boundary values on patchi
-      fvPatchScalarField& boundaryT(const label& patchi);
+      fvPatchScalarField& boundaryT(const label patchi);
 
       //- Return access to the velocity boundary values on patchi
-      fvPatchVectorField& boundaryU(const label& patchi);
+      fvPatchVectorField& boundaryU(const label patchi);
 
 
     // Write

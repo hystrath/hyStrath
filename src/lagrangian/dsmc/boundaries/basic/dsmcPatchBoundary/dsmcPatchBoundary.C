@@ -76,7 +76,7 @@ dsmcPatchBoundary::dsmcPatchBoundary
     //- confirm that the patch exists on the mesh
     patchId_ = mesh_.boundaryMesh().findPatchID(patchName_);
 
-    if(patchId_ == -1)
+    if (patchId_ == -1)
     {
         FatalErrorIn("dsmcPatchBoundary::dsmcPatchBoundary()")
             << "Cannot find patch: " << patchName_ << nl << "in: "
@@ -117,7 +117,7 @@ dsmcPatchBoundary::dsmcPatchBoundary
 
     totalPatchSurfaceArea_ = patchSurfaceArea_;
 
-    if(Pstream::parRun())
+    if (Pstream::parRun())
     {
         //- total area on all processors
         reduce(totalPatchSurfaceArea_, sumOp<scalar>());
@@ -205,7 +205,7 @@ void dsmcPatchBoundary::setNewBoundaryFields()
 
     totalPatchSurfaceArea_ = patchSurfaceArea_;
 
-    if(Pstream::parRun())
+    if (Pstream::parRun())
     {
         //- total area on all processors
         reduce(totalPatchSurfaceArea_, sumOp<scalar>());
@@ -262,9 +262,10 @@ void dsmcPatchBoundary::calculateWallUnitVectors
 
 void dsmcPatchBoundary::measurePropertiesBeforeControl(dsmcParcel& p)
 {
-    if(measurePropertiesAtWall_)
+    if (measurePropertiesAtWall_)
     {
-        const label& wppIndex = patchId_;
+        const label spId = p.typeId();
+        const label wppIndex = patchId_;
         const polyPatch& wpp = mesh_.boundaryMesh()[wppIndex];
         const label wppLocalFace = wpp.whichFace(p.face());
 
@@ -273,7 +274,7 @@ void dsmcPatchBoundary::measurePropertiesBeforeControl(dsmcParcel& p)
         const scalar deltaT = cloud_.deltaTValue(p.cell());
 
         const dsmcParcel::constantProperties&
-            constProps(cloud_.constProps(p.typeId()));
+            constProps(cloud_.constProps(spId));
 
         const scalar m = constProps.mass();
 
@@ -289,63 +290,61 @@ void dsmcPatchBoundary::measurePropertiesBeforeControl(dsmcParcel& p)
 
         //- Update boundary flux measurements
         cloud_.boundaryFluxMeasurements()
-            .rhoNBF()[p.typeId()][wppIndex][wppLocalFace] += rwfDivMagUnfADt;
+            .speciesRhoNBF(spId, wppIndex, wppLocalFace) += rwfDivMagUnfADt;
 
-        if(constProps.rotationalDegreesOfFreedom() > 0)
+        if (constProps.rotationalDegreesOfFreedom() > 0)
         {
             cloud_.boundaryFluxMeasurements()
-                .rhoNIntBF()[p.typeId()][wppIndex][wppLocalFace] +=
+                .speciesRhoNIntBF(spId, wppIndex, wppLocalFace) +=
                     rwfDivMagUnfADt;
         }
 
-        if(constProps.nElectronicLevels() > 1)
+        if (constProps.nElectronicLevels() > 1)
         {
             cloud_.boundaryFluxMeasurements()
-                .rhoNElecBF()[p.typeId()][wppIndex][wppLocalFace] +=
+                .speciesRhoNElecBF(spId, wppIndex, wppLocalFace) +=
                     rwfDivMagUnfADt;
         }
 
         cloud_.boundaryFluxMeasurements()
-            .rhoMBF()[p.typeId()][wppIndex][wppLocalFace] += m*rwfDivMagUnfADt;
+            .speciesRhoMBF(spId, wppIndex, wppLocalFace) += m*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
-            .linearKEBF()[p.typeId()][wppIndex][wppLocalFace] +=
+            .speciesLinearKEBF(spId, wppIndex, wppLocalFace) +=
                 0.5*m*(p.U() & p.U())*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
-            .mccSpeciesBF()[p.typeId()][wppIndex][wppLocalFace] +=
+            .speciesMccBF(spId, wppIndex, wppLocalFace) +=
                 m*(p.U() & p.U())*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
-            .momentumBF()[p.typeId()][wppIndex][wppLocalFace] +=
+            .speciesMomentumBF(spId, wppIndex, wppLocalFace) +=
                 m*Ut*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
-            .rotationalEBF()[p.typeId()][wppIndex][wppLocalFace] +=
+            .speciesErotBF(spId, wppIndex, wppLocalFace) +=
                 p.ERot()*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
-            .rotationalDofBF()[p.typeId()][wppIndex][wppLocalFace] +=
+            .speciesZetaRotBF(spId, wppIndex, wppLocalFace) +=
                 constProps.rotationalDegreesOfFreedom()*rwfDivMagUnfADt;
 
         const scalar EVibP_tot = constProps.eVib_tot(p.vibLevel());
 
         cloud_.boundaryFluxMeasurements()
-            .vibrationalEBF()[p.typeId()][wppIndex][wppLocalFace] +=
+            .speciesEvibBF(spId, wppIndex, wppLocalFace) +=
                 EVibP_tot*rwfDivMagUnfADt;
 
-        forAll(p.vibLevel(), mode)
+        forAll(p.vibLevel(), mod)
         {
             cloud_.boundaryFluxMeasurements()
-                .evmsBF()[p.typeId()][mode][wppIndex][wppLocalFace] +=
-                    constProps.eVib_m(mode, p.vibLevel()[mode])
-                    * rwfDivMagUnfADt;
+                .speciesEvibModBF(spId, mod, wppIndex, wppLocalFace) +=
+                    constProps.eVib_m(mod, p.vibLevel()[mod])*rwfDivMagUnfADt;
         }
 
         cloud_.boundaryFluxMeasurements()
-            .electronicEBF()[p.typeId()][wppIndex][wppLocalFace] +=
-                constProps.electronicEnergyList()[p.ELevel()]
-                * rwfDivMagUnfADt;
+            .speciesEelecBF(spId, wppIndex, wppLocalFace) +=
+                constProps.electronicEnergyList()[p.ELevel()]*rwfDivMagUnfADt;
 
         //- pre-interaction energy
         preIE_ = 0.5*m*(p.U() & p.U()) + p.ERot() + EVibP_tot
@@ -362,8 +361,9 @@ void dsmcPatchBoundary::measurePropertiesAfterControl
     const scalar& heatOfReaction
 )
 {
-    if(measurePropertiesAtWall_)
+    if (measurePropertiesAtWall_)
     {
+        const label spId = p.typeId();
         const label wppIndex = patchId_;
         const polyPatch& wpp = mesh_.boundaryMesh()[wppIndex];
         const label wppLocalFace = wpp.whichFace(p.face());
@@ -373,7 +373,7 @@ void dsmcPatchBoundary::measurePropertiesAfterControl
         const scalar deltaT = cloud_.deltaTValue(p.cell());
 
         const dsmcParcel::constantProperties&
-            constProps(cloud_.constProps(p.typeId()));
+            constProps(cloud_.constProps(spId));
 
         const scalar m = constProps.mass();
 
@@ -389,61 +389,61 @@ void dsmcPatchBoundary::measurePropertiesAfterControl
 
         //- Update boundary flux measurements
         cloud_.boundaryFluxMeasurements()
-            .rhoNBF()[p.typeId()][wppIndex][wppLocalFace] += rwfDivMagUnfADt;
+            .speciesRhoNBF(spId, wppIndex, wppLocalFace) += rwfDivMagUnfADt;
 
-        if(constProps.rotationalDegreesOfFreedom() > 0)
+        if (constProps.rotationalDegreesOfFreedom() > 0)
         {
             cloud_.boundaryFluxMeasurements()
-                .rhoNIntBF()[p.typeId()][wppIndex][wppLocalFace]
-                    += rwfDivMagUnfADt;
+                .speciesRhoNIntBF(spId, wppIndex, wppLocalFace) +=
+                    rwfDivMagUnfADt;
         }
 
-        if(constProps.nElectronicLevels() > 1)
+        if (constProps.nElectronicLevels() > 1)
         {
             cloud_.boundaryFluxMeasurements()
-                .rhoNElecBF()[p.typeId()][wppIndex][wppLocalFace] +=
+                .speciesRhoNElecBF(spId, wppIndex, wppLocalFace) +=
                     rwfDivMagUnfADt;
         }
 
         cloud_.boundaryFluxMeasurements()
-            .rhoMBF()[p.typeId()][wppIndex][wppLocalFace] += m*rwfDivMagUnfADt;
+            .speciesRhoMBF(spId, wppIndex, wppLocalFace) += m*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
-            .linearKEBF()[p.typeId()][wppIndex][wppLocalFace] +=
+            .speciesLinearKEBF(spId, wppIndex, wppLocalFace) +=
                 0.5*m*(p.U() & p.U())*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
-            .mccSpeciesBF()[p.typeId()][wppIndex][wppLocalFace] +=
+            .speciesMccBF(spId, wppIndex, wppLocalFace) +=
                 m*(p.U() & p.U())*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
-            .momentumBF()[p.typeId()][wppIndex][wppLocalFace] +=
+            .speciesMomentumBF(spId, wppIndex, wppLocalFace) +=
                 m*Ut*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
-            .rotationalEBF()[p.typeId()][wppIndex][wppLocalFace] +=
+            .speciesErotBF(spId, wppIndex, wppLocalFace) +=
                 p.ERot()*rwfDivMagUnfADt;
 
         cloud_.boundaryFluxMeasurements()
-            .rotationalDofBF()[p.typeId()][wppIndex][wppLocalFace] +=
+            .speciesZetaRotBF(spId, wppIndex, wppLocalFace) +=
                 constProps.rotationalDegreesOfFreedom()*rwfDivMagUnfADt;
 
         const scalar EVibP_tot = constProps.eVib_tot(p.vibLevel());
 
         cloud_.boundaryFluxMeasurements()
-            .vibrationalEBF()[p.typeId()][wppIndex][wppLocalFace] +=
+            .speciesEvibBF(spId, wppIndex, wppLocalFace) +=
                 EVibP_tot*rwfDivMagUnfADt;
 
-        forAll(p.vibLevel(), mode)
+        forAll(p.vibLevel(), mod)
         {
             cloud_.boundaryFluxMeasurements()
-                .evmsBF()[p.typeId()][mode][wppIndex][wppLocalFace] +=
-                    constProps.eVib_m(mode, p.vibLevel()[mode])
+                .speciesEvibModBF(spId, mod, wppIndex, wppLocalFace) +=
+                    constProps.eVib_m(mod, p.vibLevel()[mod])
                     * rwfDivMagUnfADt;
         }
 
         cloud_.boundaryFluxMeasurements()
-            .electronicEBF()[p.typeId()][wppIndex][wppLocalFace] +=
+            .speciesEelecBF(spId, wppIndex, wppLocalFace) +=
                 constProps.electronicEnergyList()[p.ELevel()]*rwfDivMagUnfADt;
 
         //- post-interaction energy
@@ -474,10 +474,10 @@ void dsmcPatchBoundary::measurePropertiesAfterControl
         const vector deltaFD = nParticle*(preIMom_ - postIMom)/(deltaT*fA);
 
         cloud_.boundaryFluxMeasurements()
-            .qBF()[p.typeId()][wppIndex][wppLocalFace] += deltaQ;
+            .speciesqBF(spId, wppIndex, wppLocalFace) += deltaQ;
 
         cloud_.boundaryFluxMeasurements()
-            .fDBF()[p.typeId()][wppIndex][wppLocalFace] += deltaFD;
+            .speciesfDBF(spId, wppIndex, wppLocalFace) += deltaFD;
     }
 }
 
