@@ -43,8 +43,6 @@ namespace Foam
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-
-
 //- Constructor
 dsmcDynamicLoadBalancing::dsmcDynamicLoadBalancing
 (
@@ -82,11 +80,6 @@ dsmcDynamicLoadBalancing::dsmcDynamicLoadBalancing
     (
         dsmcLoadBalanceDict_.lookup("maximumAllowableImbalance")
     )),
-    // allow specifying a limit for the number of time directories that will be
-    // backuped up in the resultFolders directory.
-    //  - -1 (default): backup all time directories
-    //  - N >= 0: backup the N most recent time directories and delete oldest
-    //            directories in case the limit is exceeded.
     limitTimeDirBackups_
     (
         dsmcLoadBalanceDict_.lookupOrDefault<label>
@@ -106,7 +99,7 @@ dsmcDynamicLoadBalancing::~dsmcDynamicLoadBalancing()
 
 void dsmcDynamicLoadBalancing::update()
 {
-    if(time_.time().outputTime())
+    if (time_.time().outputTime())
     {
         updateProperties();
 
@@ -186,7 +179,7 @@ void dsmcDynamicLoadBalancing::copyPolyMeshToLatestTimeFolder() const
 
 void dsmcDynamicLoadBalancing::perform(const int noRefinement)
 {
-    if(performBalance_)
+    if (performBalance_)
     {
         if (Pstream::master())
         {
@@ -289,11 +282,6 @@ void dsmcDynamicLoadBalancing::updateProperties()
     );
 }
 
-// * * * * * * * * * * * * * * * Member Operators  * * * * * * * * * * * * * //
-
-// * * * * * * * * * * * * * * * Friend Functions  * * * * * * * * * * * * * //
-
-// * * * * * * * * * * * * * * * Friend Operators  * * * * * * * * * * * * * //
 
 }  // End namespace Foam
 

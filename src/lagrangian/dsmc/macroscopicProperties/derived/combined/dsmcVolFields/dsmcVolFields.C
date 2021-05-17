@@ -1983,17 +1983,17 @@ void dsmcVolFields::calculateField()
                               + zetaElecTot
                             );
 
-                        //- Loop over all species
-                        forAll(speciesIds_, i)
+                        if (rhoNBF_[j][k] > SMALL)
                         {
-                            const label spId = speciesIds_[i];
-                            
-                            const scalar speciesZetaRotBF =
-                                cloud_.constProps(spId)
-                                  .rotationalDegreesOfFreedom();
-
-                            if (rhoNBF_[j][k] > SMALL)
+                            //- Loop over all species
+                            forAll(speciesIds_, i)
                             {
+                                const label spId = speciesIds_[i];
+                                
+                                const scalar speciesZetaRotBF =
+                                    cloud_.constProps(spId)
+                                      .rotationalDegreesOfFreedom();
+
                                 const scalar Xs =
                                     speciesRhoNBF_[i][j][k]/rhoNBF_[j][k];
 
@@ -2008,27 +2008,31 @@ void dsmcVolFields::calculateField()
                                 //  trans-rotational energy mode
                                 molarCpBF_trarot += Xs*(5.0 + speciesZetaRotBF);
                             }
+
+                            //- Mach number calculation
+                            const scalar gasConstant = 
+                                (
+                                    rhoNBF_[j][k] > SMALL
+                                 && Ttra_.boundaryFieldRef()[j][k] > SMALL
+                                  ? kB/molecularMassBF
+                                  : 0.0
+                                );
+
+                            const scalar gamma = molarCpBF_trarot/molarCvBF_trarot;
+
+                            const scalar speedOfSound =
+                                sqrt
+                                (
+                                    gamma*gasConstant*Ttra_.boundaryField()[j][k]
+                                );
+
+                            Ma_.boundaryFieldRef()[j][k] =
+                                mag(UMean_.boundaryField()[j][k])/speedOfSound;
                         }
-
-                        //- Mach number calculation
-                        const scalar gasConstant = 
-                            (
-                                rhoNBF_[j][k] > SMALL
-                             && Ttra_.boundaryFieldRef()[j][k] > SMALL
-                              ? kB/molecularMassBF
-                              : 0.0
-                            );
-
-                        const scalar gamma = molarCpBF_trarot/molarCvBF_trarot;
-
-                        const scalar speedOfSound =
-                            sqrt
-                            (
-                                gamma*gasConstant*Ttra_.boundaryField()[j][k]
-                            );
-
-                        Ma_.boundaryFieldRef()[j][k] =
-                            mag(UMean_.boundaryField()[j][k])/speedOfSound;
+                        else
+                        {
+                            Ma_.boundaryFieldRef()[j][k] = 0.0;
+                        }
 
                         //- Force density
                         fD_.boundaryFieldRef()[j][k] = fDBF_[j][k]/nAvTimeSteps;

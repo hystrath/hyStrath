@@ -47,10 +47,8 @@ namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                           Class dsmcDynamicLoadBalancing Declaration
+                  Class dsmcDynamicLoadBalancing Declaration
 \*---------------------------------------------------------------------------*/
-// class dsmcCloud;
-
 
 class dsmcDynamicLoadBalancing
 {
@@ -74,6 +72,11 @@ class dsmcDynamicLoadBalancing
 
         scalar maxImbalance_;
 
+        // allow specifying a limit for the number of time directories that will
+        // be backuped up in the resultFolders directory.
+        //  - -1 (default): backup all time directories
+        //  - N >= 0: backup the N most recent time directories and delete
+        //            oldest directories in case the limit is exceeded.
         label limitTimeDirBackups_;
 
     // Private Member Functions
@@ -101,13 +104,9 @@ public:
 
         void update();
 
-        void perform
-        (
-            const int noRefinement = 0
-        );
+        void perform (const int noRefinement = 0);
 
         void copyPolyMeshToLatestTimeFolder() const;
-
 
         void updateProperties();
 
@@ -117,22 +116,6 @@ public:
           {
               return performBalance_;
           }
-
-
-        // Check
-
-        // Edit
-
-        // Write
-
-    // Member Operators
-
-    // Friend Functions
-
-    // Friend Operators
-
-
-    // IOstream Operators
 
 };
 
