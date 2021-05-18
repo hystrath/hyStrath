@@ -9,47 +9,42 @@ FoamFile
 {
     version     2.0;
     format      ascii;
-    class       dictionary;
-    location    "system";
-    object      controlDict;
+    class       volScalarField;
+    location    "5";
+    object      surfaceShearStress_mixture;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-application     dsmcFoam+;
+dimensions      [1 -1 -2 0 0 0 0];
 
-nTerminalOutputs   100;
 
-startFrom       latestTime;
+internalField   uniform 0;
 
-startTime       0;
+boundaryField
+{
+    upperWall
+    {
+        type            calculated;
+        value           nonuniform List<scalar> 5(0.02317616724 0.02313366438 0.02345496957 0.02331729832 0.02343942206);
+    }
+    lowerWall
+    {
+        type            calculated;
+        value           nonuniform List<scalar> 5(0.02311600393 0.02333256887 0.02345682117 0.02329128929 0.02332836685);
+    }
+    periodicX_half0
+    {
+        type            cyclic;
+    }
+    periodicX_half1
+    {
+        type            cyclic;
+    }
+    frontAndBack
+    {
+        type            empty;
+    }
+}
 
-stopAt          endTime;
-
-endTime         5;
-
-deltaT          1e-5;
-
-writeControl    adjustableRunTime;
-
-writeInterval   1;
-
-purgeWrite      5;
-
-writeFormat     ascii;
-
-writePrecision  10;
-
-writeCompression uncompressed;
-
-timeFormat      general;
-
-timePrecision   10;
-
-runTimeModifiable yes;
-
-adjustTimeStep  no;
-
-functions
-{}
 
 // ************************************************************************* //

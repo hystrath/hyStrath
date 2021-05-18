@@ -10,46 +10,20 @@ FoamFile
     version     2.0;
     format      ascii;
     class       dictionary;
-    location    "system";
-    object      controlDict;
+    location    "5/uniform";
+    object      time;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-application     dsmcFoam+;
+value           4.99999999997987921;
 
-nTerminalOutputs   100;
+name            "5";
 
-startFrom       latestTime;
+index           500000;
 
-startTime       0;
+deltaT          1e-05;
 
-stopAt          endTime;
+deltaT0         1e-05;
 
-endTime         5;
-
-deltaT          1e-5;
-
-writeControl    adjustableRunTime;
-
-writeInterval   1;
-
-purgeWrite      5;
-
-writeFormat     ascii;
-
-writePrecision  10;
-
-writeCompression uncompressed;
-
-timeFormat      general;
-
-timePrecision   10;
-
-runTimeModifiable yes;
-
-adjustTimeStep  no;
-
-functions
-{}
 
 // ************************************************************************* //

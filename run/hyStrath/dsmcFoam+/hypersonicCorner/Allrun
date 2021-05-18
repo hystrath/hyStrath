@@ -20,6 +20,6 @@ if [ $nProcs -eq 1 ] ; then
   runApplication dsmcFoam+
 else
   runApplication decomposePar -latestTime
-  mpirun -np $nProcs dsmcFoam+ -parallel > log.dsmcFoam+ 2>&1
+  runParallel dsmcFoam+
   runApplication reconstructPar -latestTime
 fi
