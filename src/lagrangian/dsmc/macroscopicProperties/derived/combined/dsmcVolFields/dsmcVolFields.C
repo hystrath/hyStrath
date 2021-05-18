@@ -1331,6 +1331,7 @@ void dsmcVolFields::calculateField()
                 scalar molarCp_trarot = 0.0;
                 scalar molecularMass = 0.0;
                 scalar particleCv = 0.0;
+                scalar gamma = 0.0;
             
                 //- Rotational energy mode
                 const scalar zetaRotTot
@@ -1357,7 +1358,7 @@ void dsmcVolFields::calculateField()
                     speciesZetaVibMod[i].setSize(nVibMod, 0.0);
                     speciesTvibMod[i].setSize(nVibMod, 0.0);
                     scalar zetaByTvibMod = 0.0;
-                    
+
                     forAll(dsmcSpeciesEvibModCum_[i], mod)
                     {
                         if
@@ -1406,7 +1407,7 @@ void dsmcVolFields::calculateField()
                     }
                     
                 } //- end species loop
-                
+
                 if (moleculesRhoN > SMALL)
                 {
                     Tvib_[celli] /= moleculesRhoN;
@@ -1541,15 +1542,16 @@ void dsmcVolFields::calculateField()
                         heatFluxVector_[celli] = vector::zero;
                     }
                 }
-
-                forAll(speciesIds_, i)
+                
+                if (dsmcNCum_[celli] > SMALL and Ttra_[celli] > SMALL)
                 {
-                    const label spId = speciesIds_[i];
-                    const scalar speciesZetaRot =
-                        cloud_.constProps(spId).rotationalDegreesOfFreedom();
-
-                    if (dsmcNCum_[celli] > SMALL)
+                    forAll(speciesIds_, i)
                     {
+                        const label spId = speciesIds_[i];
+                        const scalar speciesZetaRot =
+                            cloud_.constProps(spId)
+                              .rotationalDegreesOfFreedom();
+                        
                         const scalar Xs = nSpeciesCum_[i][celli]
                             /nCum_[celli];
 
@@ -1563,25 +1565,24 @@ void dsmcVolFields::calculateField()
                         //  trans-rotational
                         molarCp_trarot += Xs*(5.0 + speciesZetaRot);
                     }
+
+                    particleCv = molarCv_trarot/NAvo;
+
+                    const scalar gasConstant = kB/molecularMass;
+
+                    gamma = molarCp_trarot/molarCv_trarot;
+
+                    const scalar speedOfSound = sqrt
+                        (
+                            gamma*gasConstant*Ttra_[celli]
+                        );
+
+                    Ma_[celli] = mag(UMean_[celli])/speedOfSound;
                 }
-
-                particleCv = molarCv_trarot/NAvo;
-
-                const scalar gasConstant =
-                    (
-                        dsmcNCum_[celli] > SMALL && Ttra_[celli] > SMALL
-                      ? kB/molecularMass
-                      : 0.0
-                    );
-
-                const scalar gamma = molarCp_trarot/molarCv_trarot;
-
-                const scalar speedOfSound = sqrt
-                    (
-                        gamma*gasConstant*Ttra_[celli]
-                    );
-
-                Ma_[celli] = mag(UMean_[celli])/speedOfSound;
+                else
+                {
+                    Ma_[celli] = 0.0;
+                }
 
                 if (measureMeanFreePath_)
                 {
@@ -1782,20 +1783,18 @@ void dsmcVolFields::calculateField()
 
                 if (measureErrors_)
                 {
-                    if (
-                             dsmcNMean_[celli] > SMALL && Ma_[celli] > SMALL
-                          && gamma > SMALL && particleCv > SMALL
-                       )
+                    if
+                    (
+                         dsmcNMean_[celli] > SMALL && Ma_[celli] > SMALL
+                      && gamma > SMALL && particleCv > SMALL
+                    )
                     {
-                        densityError_[celli] = 1.0
-                            /sqrt(dsmcNMean_[celli]*nAvTimeSteps);
-                        velocityError_[celli] = 1.0
-                            /sqrt(dsmcNMean_[celli]*nAvTimeSteps)
-                            /(Ma_[celli]*sqrt(gamma));
-                        temperatureError_[celli] = sqrt(kB/particleCv)
-                            /sqrt(dsmcNMean_[celli]*nAvTimeSteps);
-                        pressureError_[celli] = sqrt(gamma)
-                            /sqrt(dsmcNMean_[celli]*nAvTimeSteps);
+                        const scalar deno = sqrt(dsmcNMean_[celli]*nAvTimeSteps);
+                        
+                        densityError_[celli] = 1.0/deno;
+                        velocityError_[celli] = 1.0/(deno*Ma_[celli]*sqrt(gamma));
+                        temperatureError_[celli] = sqrt(kB/particleCv)/deno;
+                        pressureError_[celli] = sqrt(gamma)/deno;
                     }
 
                 }
