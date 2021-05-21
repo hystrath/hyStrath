@@ -108,8 +108,7 @@ Foam::chemistry2Model<CompType, ThermoType>::chemistry2Model
                         mesh.time().timeName(),
                         mesh,
                         IOobject::NO_READ,
-                        IOobject::NO_WRITE,
-                        false
+                        IOobject::NO_WRITE
                     ),
                     mesh,
                     dimensionedScalar("zero", dimMass/dimVolume/dimTime, 0.0)
@@ -151,12 +150,11 @@ Foam::chemistry2Model<CompType, ThermoType>::chemistry2Model
                 (
                     IOobject
                     (
-                        "RRfwdiir_" + Y_[fieldI].name(),
+                        "RRfwdiir_" + Y_[posIonisedSpecies_[fieldI]].name(),
                         mesh.time().timeName(),
                         mesh,
                         IOobject::NO_READ,
-                        IOobject::NO_WRITE,
-                        false
+                        IOobject::NO_WRITE
                     ),
                     mesh,
                     dimensionedScalar("zero", dimMass/dimVolume/dimTime, 0.0)
@@ -1835,9 +1833,9 @@ Foam::scalar Foam::chemistry2Model<CompType, ThermoType>::solve
                 }
             }
             
-            forAll(iirIds_, i)
+            forAll(iirIds_, iir)
             {
-                RRfiir_[i][celli] = 0.0;
+                RRfiir_[iir][celli] = 0.0;
             }
         }
     }
