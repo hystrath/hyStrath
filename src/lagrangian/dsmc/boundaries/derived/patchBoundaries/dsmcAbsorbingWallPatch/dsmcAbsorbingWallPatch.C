@@ -164,8 +164,8 @@ void dsmcAbsorbingWallPatch::absorbParticle
 {
     // Particle location on patch / face
     const label wppIndex = patchId();
-    const label wppLocalFace =
-        mesh_.boundaryMesh()[wppIndex].whichFace(p.face());
+    const polyPatch& wpp = mesh_.boundaryMesh()[wppIndex];
+    const label wppLocalFace = wpp.whichFace(p.face());
 
     // Calculate the real number of particles that this parcel represented
     const scalar nAbsorbedParticles = p.RWF() * cloud_.coordSystem().dtModel()
@@ -175,6 +175,21 @@ void dsmcAbsorbingWallPatch::absorbParticle
     td.keepParticle = false;
 
     // Update the boundaryMeasurement relative to this absorbing patch
+    const label spId = p.typeId();
+    const scalar fA = mag(wpp.faceAreas()[wppLocalFace]);
+    const scalar deltaT = cloud_.deltaTValue(p.cell());
+    
+    // Post-interaction momentum and energy are equal to zero and the
+    // difference (preVar - postVar) simply becomes preVar in deltaQ and deltaFD
+    const scalar deltaQ = nAbsorbedParticles*this->preIE_/(deltaT*fA);
+    const vector deltaFD = nAbsorbedParticles*this->preIMom_/(deltaT*fA);    
+        
+    cloud_.boundaryFluxMeasurements()
+        .speciesqBF(spId, wppIndex, wppLocalFace) += deltaQ;
+
+    cloud_.boundaryFluxMeasurements()
+        .speciesfDBF(spId, wppIndex, wppLocalFace) += deltaFD;
+        
     cloud_.boundaryFluxMeasurements().updatenAbsorbedParticlesOnPatch
     (
         wppIndex,
