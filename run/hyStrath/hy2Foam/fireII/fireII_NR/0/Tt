@@ -34,7 +34,7 @@ boundaryField
         accommodationCoeff 1;
         alpha           "alphatr";
         Twall           uniform $Twall;
-        value           $Twall;
+        value           uniform $Twall;
     }
     
     #include "include/boundaries"
