@@ -168,7 +168,7 @@ dsmcVolFields::dsmcVolFields
     (
         IOobject
         (
-            "translationalT_"+ fieldName_,
+            "Ttra_"+ fieldName_,
             time_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
@@ -181,7 +181,7 @@ dsmcVolFields::dsmcVolFields
     (
         IOobject
         (
-            "rotationalT_"+ fieldName_,
+            "Trot_"+ fieldName_,
             time_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
@@ -194,7 +194,7 @@ dsmcVolFields::dsmcVolFields
     (
         IOobject
         (
-            "vibrationalT_"+ fieldName_,
+            "Tvib_"+ fieldName_,
             time_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
@@ -207,7 +207,7 @@ dsmcVolFields::dsmcVolFields
     (
         IOobject
         (
-            "electronicT_"+ fieldName_,
+            "Telec_"+ fieldName_,
             time_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
@@ -220,7 +220,7 @@ dsmcVolFields::dsmcVolFields
     (
         IOobject
         (
-            "overallT_"+ fieldName_,
+            "Tov_"+ fieldName_,
             time_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
@@ -233,7 +233,7 @@ dsmcVolFields::dsmcVolFields
     (
         IOobject
         (
-            "surfaceHeatTransfer_"+ fieldName_,
+            "wallHeatFlux_"+ fieldName_,
             time_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
@@ -246,7 +246,7 @@ dsmcVolFields::dsmcVolFields
     (
         IOobject
         (
-            "surfaceShearStress_"+ fieldName_,
+            "wallShearStress_"+ fieldName_,
             time_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
@@ -259,7 +259,7 @@ dsmcVolFields::dsmcVolFields
     (
         IOobject
         (
-            "variableHardSphereMeanFreePath_"+ fieldName_,
+            "mfp_"+ fieldName_,
             mesh_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
@@ -272,7 +272,7 @@ dsmcVolFields::dsmcVolFields
     (
         IOobject
         (
-            "mfpCellRatio_"+ fieldName_,
+            "mfpToDx_"+ fieldName_,
             mesh_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
@@ -285,7 +285,7 @@ dsmcVolFields::dsmcVolFields
     (
         IOobject
         (
-            "cellMfpRatio_"+ fieldName_,
+            "DxToMfp_"+ fieldName_,
             mesh_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
@@ -324,7 +324,7 @@ dsmcVolFields::dsmcVolFields
     (
         IOobject
         (
-            "meanCollisionTime_"+ fieldName_,
+            "mct_"+ fieldName_,
             mesh_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
@@ -337,7 +337,7 @@ dsmcVolFields::dsmcVolFields
     (
         IOobject
         (
-            "mctTimeStepRatio_"+ fieldName_,
+            "mctToDt_"+ fieldName_,
             mesh_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
@@ -350,7 +350,7 @@ dsmcVolFields::dsmcVolFields
     (
         IOobject
         (
-            "meanCollisionSeparation_"+ fieldName_,
+            "mcs_"+ fieldName_,
             mesh_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
@@ -363,7 +363,7 @@ dsmcVolFields::dsmcVolFields
     (
         IOobject
         (
-            "SOF_"+ fieldName_,
+            "SOFP_"+ fieldName_,
             mesh_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
@@ -428,7 +428,7 @@ dsmcVolFields::dsmcVolFields
     (
         IOobject
         (
-            "densityError_"+ fieldName_,
+            "rhoMError_"+ fieldName_,
             mesh_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
@@ -441,7 +441,7 @@ dsmcVolFields::dsmcVolFields
     (
         IOobject
         (
-            "velocityError_"+ fieldName_,
+            "UError_"+ fieldName_,
             mesh_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
@@ -454,7 +454,7 @@ dsmcVolFields::dsmcVolFields
     (
         IOobject
         (
-            "temperatureError_"+ fieldName_,
+            "TError_"+ fieldName_,
             mesh_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
@@ -467,7 +467,7 @@ dsmcVolFields::dsmcVolFields
     (
         IOobject
         (
-            "pressureError_"+ fieldName_,
+            "pError_"+ fieldName_,
             mesh_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
@@ -480,7 +480,7 @@ dsmcVolFields::dsmcVolFields
     (
         IOobject
         (
-            "UMean_"+ fieldName_,
+            "U_"+ fieldName_,
             time_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
@@ -629,7 +629,10 @@ dsmcVolFields::dsmcVolFields
     measureMeanFreePath_(false),
     measureErrors_(false),
     densityOnly_(false),
-    measureHeatFluxShearStress_(false)
+    measureHeatFluxShearStress_(false),
+    writeRotationalTemperature_(false),
+    writeVibrationalTemperature_(false),
+    writeElectronicTemperature_(false)
 {}
 
 
@@ -643,11 +646,11 @@ dsmcVolFields::~dsmcVolFields()
 
 void dsmcVolFields::readIn()
 {
-    IOdictionary dict
+    IOdictionary resumeSampling
     (
         IOobject
         (
-            "volFieldsMethod_"+fieldName_,
+            "resumeSampling_" + fieldName_,
             time_.time().timeName(),
             "uniform",
             time_.time(),
@@ -656,49 +659,86 @@ void dsmcVolFields::readIn()
             false
         )
     );
+    
+    if (resumeSampling.size() > 0)
+    {
+        dictionary dict
+        (
+            resumeSampling.readStream(resumeSampling.filePath())
+        );
 
-    dict.readIfPresent("nTimeSteps", nTimeSteps_);
+        dict.readIfPresent("nTimeSteps", nTimeSteps_);
 
-    // DSMC parcel related cumulative values
-    dict.readIfPresent("dsmcNCum", dsmcNCum_);
-    dict.readIfPresent("dsmcMCum", dsmcMCum_);
+        // DSMC parcel related cumulative values
+        dict.readIfPresent("dsmcNCum", dsmcNCum_);
+        dict.readIfPresent("dsmcMCum", dsmcMCum_);
 
-    dict.readIfPresent("dsmcLinearKECum", dsmcLinearKECum_);
-    dict.readIfPresent("dsmcMomentumCum", dsmcMomentumCum_);
-    dict.readIfPresent("dsmcErotCum", dsmcErotCum_);
-    dict.readIfPresent("dsmcZetaRotCum", dsmcZetaRotCum_);
-    dict.readIfPresent("dsmcSpeciesEelecCum", dsmcSpeciesEelecCum_);
-    dict.readIfPresent("dsmcNSpeciesCum", dsmcNSpeciesCum_);
-    dict.readIfPresent("dsmcMccSpeciesCum", dsmcMccSpeciesCum_);
-    dict.readIfPresent("dsmcMuuCum", dsmcMuuCum_);
-    dict.readIfPresent("dsmcMuvCum", dsmcMuvCum_);
-    dict.readIfPresent("dsmcMuwCum", dsmcMuwCum_);
-    dict.readIfPresent("dsmcMvvCum", dsmcMvvCum_);
-    dict.readIfPresent("dsmcMvwCum", dsmcMvwCum_);
-    dict.readIfPresent("dsmcMwwCum", dsmcMwwCum_);
-    dict.readIfPresent("dsmcMccCum", dsmcMccCum_);
-    dict.readIfPresent("dsmcMccuCum", dsmcMccuCum_);
-    dict.readIfPresent("dsmcMccvCum", dsmcMccvCum_);
-    dict.readIfPresent("dsmcMccwCum", dsmcMccwCum_);
-    dict.readIfPresent("dsmcEuCum", dsmcEuCum_);
-    dict.readIfPresent("dsmcEvCum", dsmcEvCum_);
-    dict.readIfPresent("dsmcEwCum", dsmcEwCum_);
-    dict.readIfPresent("dsmcECum", dsmcECum_);
-    dict.readIfPresent("dsmcNElecLvlCum", dsmcNElecLvlCum_);
-    dict.readIfPresent("dsmcNGrndElecLvlSpeciesCum", dsmcNGrndElecLvlSpeciesCum_);
-    dict.readIfPresent("dsmcN1stElecLvlSpeciesCum", dsmcN1stElecLvlSpeciesCum_);
-    dict.readIfPresent("dsmcNClassICum", dsmcNClassICum_);
-    dict.readIfPresent("dsmcNClassIICum", dsmcNClassIICum_);
-    dict.readIfPresent("dsmcNClassIIICum", dsmcNClassIIICum_);
-    dict.readIfPresent("dsmcSpeciesEvibModCum", dsmcSpeciesEvibModCum_);
-    dict.readIfPresent("dsmcNCollsCum", dsmcNCollsCum_);
+        dict.readIfPresent("dsmcLinearKECum", dsmcLinearKECum_);
+        dict.readIfPresent("dsmcMomentumCum", dsmcMomentumCum_);
+        dict.readIfPresent("dsmcErotCum", dsmcErotCum_);
+        dict.readIfPresent("dsmcZetaRotCum", dsmcZetaRotCum_);
+        dict.readIfPresent("dsmcSpeciesEelecCum", dsmcSpeciesEelecCum_);
+        dict.readIfPresent("dsmcNSpeciesCum", dsmcNSpeciesCum_);
+        dict.readIfPresent("dsmcMccSpeciesCum", dsmcMccSpeciesCum_);
+        dict.readIfPresent("dsmcMuuCum", dsmcMuuCum_);
+        dict.readIfPresent("dsmcMuvCum", dsmcMuvCum_);
+        dict.readIfPresent("dsmcMuwCum", dsmcMuwCum_);
+        dict.readIfPresent("dsmcMvvCum", dsmcMvvCum_);
+        dict.readIfPresent("dsmcMvwCum", dsmcMvwCum_);
+        dict.readIfPresent("dsmcMwwCum", dsmcMwwCum_);
+        dict.readIfPresent("dsmcMccCum", dsmcMccCum_);
+        dict.readIfPresent("dsmcMccuCum", dsmcMccuCum_);
+        dict.readIfPresent("dsmcMccvCum", dsmcMccvCum_);
+        dict.readIfPresent("dsmcMccwCum", dsmcMccwCum_);
+        dict.readIfPresent("dsmcEuCum", dsmcEuCum_);
+        dict.readIfPresent("dsmcEvCum", dsmcEvCum_);
+        dict.readIfPresent("dsmcEwCum", dsmcEwCum_);
+        dict.readIfPresent("dsmcECum", dsmcECum_);
+        dict.readIfPresent("dsmcNElecLvlCum", dsmcNElecLvlCum_);
+        dict.readIfPresent
+        (
+            "dsmcNGrndElecLvlSpeciesCum",
+            dsmcNGrndElecLvlSpeciesCum_
+        );
+        dict.readIfPresent
+        (
+            "dsmcN1stElecLvlSpeciesCum",
+            dsmcN1stElecLvlSpeciesCum_
+        );
+        if (measureClassifications_)
+        {
+          dict.readIfPresent("dsmcNClassICum", dsmcNClassICum_);
+          dict.readIfPresent("dsmcNClassIICum", dsmcNClassIICum_);
+          dict.readIfPresent("dsmcNClassIIICum", dsmcNClassIIICum_);
+        }
+        dict.readIfPresent("dsmcSpeciesEvibModCum", dsmcSpeciesEvibModCum_);
+        dict.readIfPresent("dsmcNCollsCum", dsmcNCollsCum_);
+        
+        // boundary measurements
+        dict.readIfPresent("rhoNBF", rhoNBF_);
+        dict.readIfPresent("rhoMBF", rhoMBF_);
+        dict.readIfPresent("linearKEBF", linearKEBF_);
+        dict.readIfPresent("momentumBF", momentumBF_);
+        dict.readIfPresent("ErotBF", ErotBF_);
+        dict.readIfPresent("zetaRotBF", zetaRotBF_);
+        dict.readIfPresent("rhoNIntBF", rhoNIntBF_);
+        dict.readIfPresent("rhoNElecBF", rhoNElecBF_);
+        dict.readIfPresent("qBF", qBF_);
+        dict.readIfPresent("fDBF", fDBF_);
+        dict.readIfPresent("speciesRhoNBF", speciesRhoNBF_);
+        dict.readIfPresent("speciesEvibBF", speciesEvibBF_);
+        dict.readIfPresent("speciesEelecBF",  speciesEelecBF_);
+        dict.readIfPresent("speciesMccBF", speciesMccBF_);
+        dict.readIfPresent("speciesEvibModBF", speciesEvibModBF_);
 
-    // cumulative values
-    dict.readIfPresent("nCum", nCum_);
-    dict.readIfPresent("mCum", mCum_);
-    dict.readIfPresent("nSpeciesCum", nSpeciesCum_);
-    dict.readIfPresent("momentumCum", momentumCum_);
-    dict.readIfPresent("linearKECum", linearKECum_);
+        // cumulative values
+        dict.readIfPresent("nCum", nCum_);
+        dict.readIfPresent("mCum", mCum_);
+        dict.readIfPresent("nSpeciesCum", nSpeciesCum_);
+        dict.readIfPresent("momentumCum", momentumCum_);
+        dict.readIfPresent("linearKECum", linearKECum_);
+        dict.readIfPresent("collisionSeparation", collisionSeparation_);
+    }
 }
 
 
@@ -710,7 +750,7 @@ void dsmcVolFields::writeOut()
         (
             IOobject
             (
-                "volFieldsMethod_"+fieldName_,
+                "resumeSampling_" + fieldName_,
                 time_.time().timeName(),
                 "uniform",
                 time_.time(),
@@ -750,9 +790,12 @@ void dsmcVolFields::writeOut()
         dict.add("dsmcNElecLvlCum", dsmcNElecLvlCum_);
         dict.add("dsmcNGrndElecLvlSpeciesCum", dsmcNGrndElecLvlSpeciesCum_);
         dict.add("dsmcN1stElecLvlSpeciesCum", dsmcN1stElecLvlSpeciesCum_);
-        dict.add("dsmcNClassICum", dsmcNClassICum_);
-        dict.add("dsmcNClassIICum", dsmcNClassIICum_);
-        dict.add("dsmcNClassIIICum", dsmcNClassIIICum_);
+        if (measureClassifications_)
+        {
+            dict.add("dsmcNClassICum", dsmcNClassICum_);
+            dict.add("dsmcNClassIICum", dsmcNClassIICum_);
+            dict.add("dsmcNClassIIICum", dsmcNClassIIICum_);
+        }
         dict.add("dsmcSpeciesEvibModCum", dsmcSpeciesEvibModCum_);
         dict.add("dsmcNCollsCum", dsmcNCollsCum_);
 
@@ -762,6 +805,24 @@ void dsmcVolFields::writeOut()
         dict.add("nSpeciesCum", nSpeciesCum_);
         dict.add("momentumCum", momentumCum_);
         dict.add("linearKECum", linearKECum_);
+        dict.add("collisionSeparation", collisionSeparation_);
+        
+        // boundary measurements
+        dict.add("rhoNBF", rhoNBF_);
+        dict.add("rhoMBF", rhoMBF_);
+        dict.add("linearKEBF", linearKEBF_);
+        dict.add("momentumBF", momentumBF_);
+        dict.add("ErotBF", ErotBF_);
+        dict.add("zetaRotBF", zetaRotBF_);
+        dict.add("rhoNIntBF", rhoNIntBF_);
+        dict.add("rhoNElecBF", rhoNElecBF_);
+        dict.add("qBF", qBF_);
+        dict.add("fDBF", fDBF_);
+        dict.add("speciesRhoNBF", speciesRhoNBF_);
+        dict.add("speciesEvibBF", speciesEvibBF_);
+        dict.add("speciesEelecBF",  speciesEelecBF_);
+        dict.add("speciesMccBF", speciesMccBF_);
+        dict.add("speciesEvibModBF", speciesEvibModBF_);
 
         IOstream::streamFormat fmt = time_.time().writeFormat();
         IOstream::versionNumber ver = time_.time().writeVersion();
@@ -831,7 +892,25 @@ void dsmcVolFields::createField()
     forAll(speciesIds_, i)
     {
         const label spId = speciesIds_[i];
+        const label zetaRot =
+            cloud_.constProps(spId).rotationalDegreesOfFreedom();
         const label nVibMod = cloud_.constProps(spId).nVibrationalModes();
+        const label nElecLevels = cloud_.constProps(spId).nElectronicLevels();
+        
+        if (zetaRot > 0 and (not writeRotationalTemperature_))
+        {
+            writeRotationalTemperature_ = true;
+        }
+        
+        if (nVibMod > 0 and (not writeVibrationalTemperature_))
+        {
+            writeVibrationalTemperature_ = true;
+        }
+        
+        if (nElecLevels > 1 and (not writeElectronicTemperature_))
+        {
+            writeElectronicTemperature_ = true;
+        }
         
         dsmcNSpeciesCum_[i].setSize(nCells, 0.0);
         nSpeciesCum_[i].setSize(nCells, 0.0);
@@ -1060,7 +1139,7 @@ void dsmcVolFields::calculateField()
                         Evibp += EvibMod;
                     }
                     
-                    const label& nElecLevels = cP.nElectronicLevels();
+                    const label nElecLevels = cP.nElectronicLevels();
                     const scalarList& electronicEnergies =
                         cP.electronicEnergyList();
                     const scalar Eelecp = 0.0; // TODO
@@ -1137,7 +1216,7 @@ void dsmcVolFields::calculateField()
 
                     if (measureClassifications_)
                     {
-                        const label& classification = p.classification();
+                        const label classification = p.classification();
 
                         if (classification == 0)
                         {
@@ -1162,6 +1241,7 @@ void dsmcVolFields::calculateField()
             {
                 collisionSeparation_[celli] +=
                     cloud_.cellPropMeasurements().collisionSeparation()[celli];
+                    
                 dsmcNCollsCum_[celli] +=
                     cloud_.cellPropMeasurements().nColls()[celli];
 
@@ -1184,7 +1264,6 @@ void dsmcVolFields::calculateField()
                     const scalar linearKEMean = 0.5*linearKECum_[celli]
                         /(cellVolume*nAvTimeSteps);
 
-                    //- Translational temperature
                     Ttra_[celli] =
                         2.0/(3.0*kB*rhoNMean)
                        *(
@@ -1319,7 +1398,7 @@ void dsmcVolFields::calculateField()
 
             forAll(dsmcNCum_, celli)
             {
-                //- Field initialisation 
+                //- Fields initialisation 
                 scalar moleculesRhoN = 0.0;
                 Tvib_[celli] = 0.0;
                 scalarList speciesTvib(nSpecies, 0.0);
@@ -1381,11 +1460,9 @@ void dsmcVolFields::calculateField()
 
                                 speciesTvibMod[i][mod] = thetaV/logFactor;
 
-                                speciesZetaVibMod[i][mod] =
-                                    2.0*iMean*logFactor;
+                                speciesZetaVibMod[i][mod] = 2.0*iMean*logFactor;
 
-                                speciesZetaVib[i] +=
-                                    speciesZetaVibMod[i][mod];
+                                speciesZetaVib[i] += speciesZetaVibMod[i][mod];
                                     
                                 zetaByTvibMod = speciesZetaVibMod[i][mod]
                                     *speciesTvibMod[i][mod];
@@ -1399,8 +1476,7 @@ void dsmcVolFields::calculateField()
                         
                         speciesTvib[i] = zetaByTvibMod/speciesZetaVib[i];
                         
-                        Tvib_[celli] += nSpeciesCum_[i][celli]
-                            *speciesTvib[i];
+                        Tvib_[celli] += nSpeciesCum_[i][celli]*speciesTvib[i];
                             
                         zetaVib_[celli] += nSpeciesCum_[i][celli]
                             *speciesZetaVib[i];    
@@ -1568,13 +1644,11 @@ void dsmcVolFields::calculateField()
 
                     particleCv = molarCv_trarot/NAvo;
 
-                    const scalar gasConstant = kB/molecularMass;
-
                     gamma = molarCp_trarot/molarCv_trarot;
 
                     const scalar speedOfSound = sqrt
                         (
-                            gamma*gasConstant*Ttra_[celli]
+                            gamma*kB/molecularMass*Ttra_[celli]
                         );
 
                     Ma_[celli] = mag(UMean_[celli])/speedOfSound;
@@ -1584,7 +1658,7 @@ void dsmcVolFields::calculateField()
                     Ma_[celli] = 0.0;
                 }
 
-                if (measureMeanFreePath_)
+                if (measureMeanFreePath_ && Ttra_[celli] > 1.0)
                 {
                     const scalar deltaT = cloud_.deltaTValue(celli);
                     
@@ -1659,8 +1733,7 @@ void dsmcVolFields::calculateField()
 
                         if (speciesMfp_[s][celli] > SMALL)
                         {
-                            speciesMfp_[s][celli] =
-                                1.0/speciesMfp_[s][celli];
+                            speciesMfp_[s][celli] = 1.0/speciesMfp_[s][celli];
                         }
                     }
 
@@ -1679,19 +1752,19 @@ void dsmcVolFields::calculateField()
                             *cloud_.nParticles(celli)/(nCum_[celli]*deltaT);
                     }
 
-                    forAll(speciesIds_, i)
+                    if (rhoN_[celli] > SMALL)
                     {
-                        if (rhoN_[celli] > SMALL)
+                        forAll(speciesIds_, i)
                         {
-                            const scalar rhoNp = nSpeciesCum_[i][celli];
+                            const scalar rhoNi = nSpeciesCum_[i][celli];
 
                             // Bird 1994, eq (4.77)
                             mfp_[celli] += speciesMfp_[i][celli]
-                                *rhoNp/nCum_[celli];
+                                *rhoNi/nCum_[celli];
 
                             // Bird 1994, eq (1.38)
                             meanCollisionRate_[celli] +=
-                                speciesMcr_[i][celli]*rhoNp/nCum_[celli];
+                                speciesMcr_[i][celli]*rhoNi/nCum_[celli];
                         }
                     }
 
@@ -1850,8 +1923,7 @@ void dsmcVolFields::calculateField()
                         //- Instantaneous and sampled numbers of DSMC parcels
                         //  are that of the neighbouring cell
                         dsmcN_.boundaryFieldRef()[j][k] = dsmcN_[celli];
-                        dsmcNMean_.boundaryFieldRef()[j][k] =
-                            dsmcNMean_[celli];
+                        dsmcNMean_.boundaryFieldRef()[j][k] = dsmcNMean_[celli];
 
                         //- Translational energy mode and velocity
                         if (rhoMMean > VSMALL)
@@ -2139,10 +2211,26 @@ void dsmcVolFields::calculateField()
             fD_.write();
             tau_.write();
             
-            Trot_.write();
-            Tvib_.write();
-            Telec_.write();
-            Tov_.write();
+            if (writeRotationalTemperature_)
+            {
+                Trot_.write();
+            }
+            if (writeVibrationalTemperature_)
+            {
+                Tvib_.write();
+            }
+            if (writeElectronicTemperature_)
+            {
+                Telec_.write();
+            }
+            if
+            (
+                  writeRotationalTemperature_ or writeVibrationalTemperature_
+                or writeElectronicTemperature_
+            )
+            {
+                Tov_.write();
+            }
             
             if (measureMeanFreePath_)
             {
@@ -2150,6 +2238,7 @@ void dsmcVolFields::calculateField()
                 mfpToDx_.write();
                 meanCollisionTime_.write();
                 mctToDt_.write();
+                SOF_.write();
             }
 
             if (measureClassifications_)

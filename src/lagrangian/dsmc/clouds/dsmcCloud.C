@@ -73,6 +73,7 @@ void Foam::dsmcCloud::buildCellOccupancy()
     }
 }
 
+
 void Foam::dsmcCloud::relocateStuckParcels()
 {
     forAllIter(dsmcCloud, *this, iter)
@@ -90,6 +91,7 @@ void Foam::dsmcCloud::relocateStuckParcels()
     }
 }
 
+
 void Foam::dsmcCloud::buildCellOccupancyFromScratch()
 {
     cellOccupancy_.clear();
@@ -98,6 +100,7 @@ void Foam::dsmcCloud::buildCellOccupancyFromScratch()
     buildCellOccupancy();
     relocateStuckParcels();
 }
+
 
 void Foam::dsmcCloud::buildCollisionSelectionRemainderFromScratch()
 {
@@ -112,19 +115,22 @@ void Foam::dsmcCloud::buildCollisionSelectionRemainderFromScratch()
     }
 }
 
+
 void Foam::dsmcCloud::resetBoundaries()
 {
     boundaryMeas_.reset();
     boundaries_.setNewConfig();
 }
 
+
 void Foam::dsmcCloud::resetMeasurementTools()
 {
     trackingInfo_.reset();
     fields_.resetFields();
 
-    cellMeas_.reset(); // NEW VINCENT
+    cellMeas_.reset();
 }
+
 
 void Foam::dsmcCloud::removeElectrons()
 {
@@ -161,6 +167,7 @@ void Foam::dsmcCloud::removeElectrons()
         }
     }
 }
+
 
 void Foam::dsmcCloud::addElectrons()
 {
@@ -302,8 +309,6 @@ void Foam::dsmcCloud::updateCandidateSubList
     DynamicList<label>& candidatesInSubCell
 )
 {
-//     Info << " updating sub list (before) " << candidatesInSubCell << endl;
-
     label newIndex = findIndex(candidatesInSubCell, candidate);
 
     DynamicList<label> newCandidates(0);
@@ -656,7 +661,6 @@ Foam::dsmcCloud::dsmcCloud
     collisionPartnerSelectionModel_(),
     reactions_(t, mesh, *this),
     cellMeas_(mesh, *this, true)
-
 {
     if (readFields)
     {
@@ -672,13 +676,6 @@ Foam::dsmcCloud::dsmcCloud
 
     buildCellOccupancyFromScratch();
     buildCollisionSelectionRemainderFromScratch();
-
-    // Initialise the collision selection remainder to a random value between 0
-    // and 1.
-    forAll(collisionSelectionRemainder_, i)
-    {
-        collisionSelectionRemainder_[i] = rndGen_.sample01<scalar>();
-    }
 
     collisionPartnerSelectionModel_ = autoPtr<collisionPartnerSelection>
     (
@@ -1004,7 +1001,6 @@ void Foam::dsmcCloud::autoMap(const mapPolyMesh& mapper)
 {
     dsmcParcel::trackingData td(*this);
 
-    //Cloud<dsmcParcel>::autoMap(td, mapper, true);
     Cloud<dsmcParcel>::autoMap(td, mapper);
 
     coordSystem().dtModel().update();

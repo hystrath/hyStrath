@@ -1,0 +1,50 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1706                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    location    "5";
+    object      wallHeatFlux_N2;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [1 0 -3 0 0 0 0];
+
+
+internalField   uniform 0;
+
+boundaryField
+{
+    upperWall
+    {
+        type            calculated;
+        value           nonuniform List<scalar> 5(-96.66507827 -97.19168846 -96.72156302 -96.79459859 -96.98392664);
+    }
+    lowerWall
+    {
+        type            calculated;
+        value           nonuniform List<scalar> 5(96.93788918 96.92203814 97.0105169 97.11358956 96.78278607);
+    }
+    periodicX_half0
+    {
+        type            cyclic;
+    }
+    periodicX_half1
+    {
+        type            cyclic;
+    }
+    frontAndBack
+    {
+        type            empty;
+    }
+}
+
+
+// ************************************************************************* //

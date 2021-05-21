@@ -184,6 +184,9 @@ protected:
         bool measureErrors_;
         bool densityOnly_;
         bool measureHeatFluxShearStress_;
+        bool writeRotationalTemperature_;
+        bool writeVibrationalTemperature_;
+        bool writeElectronicTemperature_;
 
     // Protected Member Functions
 

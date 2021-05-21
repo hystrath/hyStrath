@@ -6,6 +6,8 @@ nTerminalOutputs = 10
 
 set ytics nomirror
 set y2tics nomirror
+set logscale y2
+set format y2 "%g"
 
 set xlabel "Iteration"
 set ylabel "Number of DSMC particles  [million]"

@@ -23,7 +23,7 @@ dynamicRefineFvMeshCoeffs
     refineInterval  1000;
     
     // Field to base refinement on
-    field           cellMfpRatio_N2cold;
+    field           SOFP_N2cold;
     
     // Refine field inbetween lower..upper
     lowerRefineLevel 0.75;

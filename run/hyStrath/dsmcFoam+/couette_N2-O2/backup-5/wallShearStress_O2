@@ -1,0 +1,50 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1706                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    location    "5";
+    object      wallShearStress_O2;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [1 -1 -2 0 0 0 0];
+
+
+internalField   uniform 0;
+
+boundaryField
+{
+    upperWall
+    {
+        type            calculated;
+        value           nonuniform List<scalar> 5(0.005263922122 0.005310837494 0.005327696553 0.005288312307 0.005356325631);
+    }
+    lowerWall
+    {
+        type            calculated;
+        value           nonuniform List<scalar> 5(0.005254825663 0.005367471675 0.005162388966 0.005265138127 0.005414993635);
+    }
+    periodicX_half0
+    {
+        type            cyclic;
+    }
+    periodicX_half1
+    {
+        type            cyclic;
+    }
+    frontAndBack
+    {
+        type            empty;
+    }
+}
+
+
+// ************************************************************************* //

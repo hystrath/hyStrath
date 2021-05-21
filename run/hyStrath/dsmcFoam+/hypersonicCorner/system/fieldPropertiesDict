@@ -34,7 +34,7 @@ dsmcFields
             fieldName                 Ar;
            	typeIds                     (Ar);
            	measureMeanFreePath         true;
-           	averagingAcrossManyRuns     false;
+           	averagingAcrossManyRuns     true;
          }
      }
 
