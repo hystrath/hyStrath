@@ -180,7 +180,10 @@ boundaryMeasurements::boundaryMeasurements
         mesh_.C(),
         calculatedFvPatchVectorField::typeName
     )
-{}
+{
+    nParticlesOnStickingBoundaries_ = 0.0;
+    nAbsorbedParticles_ = 0.0;
+}
 
 
 //- Construct from mesh, cloud and boolean (dsmcFoam)
@@ -233,7 +236,10 @@ boundaryMeasurements::boundaryMeasurements
         mesh_.C(),
         calculatedFvPatchVectorField::typeName
     )
-{}
+{
+    nParticlesOnStickingBoundaries_ = 0.0;
+    nAbsorbedParticles_ = 0.0;
+}
 
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
@@ -303,7 +309,8 @@ void boundaryMeasurements::setBoundarynStuckParticles
 {
     forAll(pnStuckParticles, facei)
     {
-        nParticlesOnStickingBoundaries_[patchi][facei] = pnStuckParticles[facei];
+        nParticlesOnStickingBoundaries_[patchi][facei] =
+            pnStuckParticles[facei];
     }
 }
 
