@@ -988,6 +988,8 @@ void dsmcVolFields::createField()
 
     forAll(speciesIds_, i)
     {
+        const label spId = speciesIds_[i];
+        
         speciesRhoNBF_[i].setSize(nPatches);
         speciesMccBF_[i].setSize(nPatches);
         
@@ -996,7 +998,7 @@ void dsmcVolFields::createField()
         speciesZetaVibBF_[i].setSize(nPatches);
         speciesEvibModBF_[i].setSize
         (
-            cloud_.constProps(i).nVibrationalModes()
+            cloud_.constProps(spId).nVibrationalModes()
         );
         speciesEelecBF_[i].setSize(nPatches);
 
