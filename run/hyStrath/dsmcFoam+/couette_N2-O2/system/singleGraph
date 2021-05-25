@@ -55,13 +55,13 @@ sets
 
 fields 
 (
-	UMean_mixture
-	translationalT_mixture
-	rotationalT_mixture
-	vibrationalT_N2
-	vibrationalT_O2
-	rhoN_N2
-	rhoN_O2
+    U_mixture
+    Ttra_mixture
+    Trot_mixture
+    Tvib_N2
+    Tvib_O2
+    rhoN_N2
+    rhoN_O2
 );
 
 // ************************************************************************* //

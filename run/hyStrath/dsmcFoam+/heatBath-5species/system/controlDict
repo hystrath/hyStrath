@@ -1,0 +1,84 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1706                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+nTerminalOutputs 1;
+
+application     dsmcFoam+;
+
+startFrom       startTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         1e-05;
+
+deltaT          1e-09;
+
+writeControl    runTime;
+
+writeInterval   1e-09;
+
+purgeWrite      1;
+
+writeFormat     ascii;
+
+writePrecision  10;
+
+writeCompression uncompressed;
+
+timeFormat      general;
+
+timePrecision   10;
+
+runTimeModifiable no;
+
+adjustTimeStep  no;
+
+functions
+{
+    probes
+    {
+        type            probes;
+        functionObjectLibs ("libsampling.so");
+        enabled         true;
+        writeControl   timeStep;
+        writeInterval  1;
+
+        fields
+        (
+            Ttra_mixture
+            Trot_mixture
+            Tvib_mixture
+            Telec_mixture
+            Tov_mixture
+            
+            rhoN_N2
+            rhoN_O2
+            rhoN_NO
+            rhoN_N
+            rhoN_O
+        );
+
+        probeLocations
+        (
+            (5e-6 5e-6 5e-6)
+        );
+    }
+}
+
+// ************************************************************************* //

@@ -1,0 +1,219 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1706                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      chemReactDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+reactions
+(
+	  oxygen_nitrogen_reaction
+    {
+        reactionModel   dissociationQK;
+
+        reactants          (O2 N2);
+        allowSplitting        yes;
+        writeRatesToTerminal   no;
+        
+        dissociationQKProperties
+        {
+            dissociationProducts  ((O O) (N N));
+        }
+    }
+    
+    oxygen_atomicNitrogen_reaction
+    {
+        reactionModel   dissociationExchangeQK;
+
+        reactants           (O2 N);
+        allowSplitting        yes;
+        writeRatesToTerminal   no;
+        
+        dissociationQKProperties
+        {
+            dissociationProducts  ((O O) ());
+        }
+        
+        exchangeQKProperties
+        {
+            exchangeProducts        (NO O);
+            heatOfReactionExchange 19693.6; // in Kelvin (exothermic)
+            aCoeff                     0.1; // Scanlon 2015
+            bCoeff                     0.1; // Scanlon 2015
+        }
+    }
+    
+    oxygen_reaction
+    {
+        reactionModel   dissociationQK;
+
+        reactants          (O2 O2);
+        allowSplitting        yes;
+        writeRatesToTerminal   no;
+        
+        dissociationQKProperties
+        {
+            dissociationProducts  ((O O) (O O));
+        }
+    }
+    
+    oxygen_atomicOxygen_reaction
+    {
+        reactionModel   dissociationQK;
+
+        reactants           (O2 O);
+        allowSplitting        yes;
+        writeRatesToTerminal   no;
+        
+        dissociationQKProperties
+        {
+            dissociationProducts  ((O O) ());
+        }
+    }
+    
+    oxygen_nitricOxide_reaction
+    {
+        reactionModel   dissociationQK;
+
+        reactants          (O2 NO);
+        allowSplitting        yes;
+        writeRatesToTerminal   no;
+        
+        dissociationQKProperties
+        {
+            dissociationProducts  ((O O) (N O));
+        }
+    }
+    
+    nitrogen_reaction
+    {
+        reactionModel   dissociationQK;
+        
+        reactants          (N2 N2);
+        allowSplitting        yes;
+        writeRatesToTerminal   no;
+
+        dissociationQKProperties
+        {
+            dissociationProducts  ((N N) (N N));
+        }
+    }
+    
+    nitrogen_atomicNitrogen_reaction
+    {
+        reactionModel   dissociationQK;
+        
+        reactants           (N2 N);
+        allowSplitting        yes;
+        writeRatesToTerminal   no;
+
+        dissociationQKProperties
+        {
+            dissociationProducts  ((N N) ());
+        }
+    }
+    
+    nitrogen_atomicOxygen_reaction
+    {
+        reactionModel   dissociationExchangeQK;
+        
+        reactants           (N2 O);
+        allowSplitting        yes;
+        writeRatesToTerminal   no;
+
+        dissociationQKProperties
+        {
+            dissociationProducts  ((N N) ());
+        }
+        
+        exchangeQKProperties
+        {
+            exchangeProducts       (NO N);
+            heatOfReactionExchange -37482; // in Kelvin (endothermic)
+            aCoeff                   0.15; // Scanlon 2015
+            bCoeff                   0.15; // Scanlon 2015
+        }
+    }
+    
+    nitrogen_nitricOxide_reaction
+    {
+        reactionModel   dissociationQK;
+        
+        reactants          (N2 NO);
+        allowSplitting        yes;
+        writeRatesToTerminal   no;
+
+        dissociationQKProperties
+        {
+            dissociationProducts  ((N N) (N O));
+        }
+    }
+    
+    nitricOxide_atomicNitrogen_reaction
+    {
+        reactionModel   dissociationExchangeQK;
+        
+        reactants          (NO N);
+        allowSplitting        yes;
+        writeRatesToTerminal   no;
+
+        dissociationQKProperties
+        {
+            dissociationProducts  ((N O) ());
+        }
+        
+        exchangeQKProperties
+        {
+            exchangeProducts        (N2 O);
+            heatOfReactionExchange   37482; // in Kelvin (exothermic)
+            aCoeff                   0.033; // Scanlon 2015
+            bCoeff                     0.8; // Scanlon 2015
+        }
+    }
+    
+    nitricOxide_atomicOxygen_reaction
+    {
+        reactionModel   dissociationExchangeQK;
+        
+        reactants          (NO O);
+        allowSplitting        yes;
+        writeRatesToTerminal   no;
+
+        dissociationQKProperties
+        {
+            dissociationProducts  ((N O) ());
+        }
+        
+        exchangeQKProperties
+        {
+            exchangeProducts       (O2 N);
+            heatOfReactionExchange -19693.6; // in Kelvin (endothermic)
+            aCoeff                    0.085; // Scanlon 2015
+            bCoeff                     0.65; // Scanlon 2015
+        }
+    }
+    
+    nitricOxide_reaction
+    {
+        reactionModel   dissociationQK;
+        
+        reactants          (NO NO);
+        allowSplitting        yes;
+        writeRatesToTerminal   no;
+
+        dissociationQKProperties
+        {
+            dissociationProducts  ((N O) (N O));
+        }
+    }
+);
