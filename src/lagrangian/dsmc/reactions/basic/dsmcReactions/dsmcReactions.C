@@ -116,7 +116,7 @@ dsmcReactions::dsmcReactions
     }
     else
     {
-        Info << "WARNING: there are no reactions." << endl;
+        Info << "There are no chemical reactions defined." << endl;
     }
 
     pairAddressing_.setSize(cloud.typeIdList().size());
@@ -170,8 +170,6 @@ void dsmcReactions::initialConfiguration()
             }
         }
     }
-
-    Info << "pair addressing: " << pairAddressing_ << endl;
 }
 
 

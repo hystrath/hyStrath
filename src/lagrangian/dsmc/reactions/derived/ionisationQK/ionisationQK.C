@@ -281,7 +281,7 @@ void ionisationQK::ioniseParticleByPartner
         const scalar cRproducts = sqrt(2.0*translationalEnergyLeft/mRproducts);
 
         vector UP2 = vector::zero;
-        cloud_.binaryCollision().postCollisionVelocities
+        cloud_.binaryCollision().postReactionVelocities
         (
             typeId1,
             typeId2,
@@ -461,15 +461,18 @@ void ionisationQK::reaction(dsmcParcel& p, dsmcParcel& q)
             reactionProbabilities[0]
         );
 
-        testIonisation
-        (
-            q,
-            translationalEnergy,
-            1,
-            collisionEnergies[1],
-            totalReactionProbability,
-            reactionProbabilities[1]
-        );
+        if (typeIdP != typeIdQ)
+        {
+            testIonisation
+            (
+                q,
+                translationalEnergy,
+                1,
+                collisionEnergies[1],
+                totalReactionProbability,
+                reactionProbabilities[1]
+            );
+        }
 
         //- Decide if a reaction is to occur
         if (totalReactionProbability > cloud_.rndGen().sample01<scalar>())

@@ -254,6 +254,8 @@ void Foam::VariableHardSphere::postReactionVelocities
         );
 
     //- Post-collision velocities
+    // As an input, UP is the center of mass velocity and it is modified
+    // to be the velocity of P 
     UQ = UP - postCollisionRelativeU*mP/(mP + mQ);
 
     UP += postCollisionRelativeU*mQ/(mP + mQ);

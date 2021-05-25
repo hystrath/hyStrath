@@ -331,7 +331,7 @@ void dissociationQK::dissociateParticleByPartner
         const scalar cRproducts = sqrt(2.0*translationalEnergyLeft/mRproducts);
 
         vector UP2 = vector::zero;
-        cloud_.binaryCollision().postCollisionVelocities
+        cloud_.binaryCollision().postReactionVelocities
         (
             typeId1,
             typeId2,
@@ -519,15 +519,18 @@ void dissociationQK::reaction(dsmcParcel& p, dsmcParcel& q)
             reactionProbabilities[0]
         );
 
-        testDissociation
-        (
-            q,
-            translationalEnergy,
-            vibModeDissoQ,
-            collisionEnergies[1],
-            totalReactionProbability,
-            reactionProbabilities[1]
-        );
+        if (typeIdP != typeIdQ)
+        {
+            testDissociation
+            (
+                q,
+                translationalEnergy,
+                vibModeDissoQ,
+                collisionEnergies[1],
+                totalReactionProbability,
+                reactionProbabilities[1]
+            );
+        }
 
         //- Decide if a reaction is to occur
         if (totalReactionProbability > cloud_.rndGen().sample01<scalar>())

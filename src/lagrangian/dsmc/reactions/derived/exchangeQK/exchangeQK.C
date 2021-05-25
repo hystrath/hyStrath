@@ -188,17 +188,16 @@ void exchangeQK::testExchange
 )
 {
     const label typeIdP = p.typeId();
+    
+    const scalar chiB = 2.5 - omegaPQ;
 
     //- Collision temperature: Eq.(10) of Bird's QK paper.
-    const scalar TColl = translationalEnergy/physicoChemical::k.value()
-        /(2.5 - omegaPQ);
+    const scalar TColl = translationalEnergy/(physicoChemical::k.value()*chiB);
 
     const scalar aDash =
         aCoeff_
        *(
-            pow(2.5 - omegaPQ, bCoeff_)
-           *exp(lgamma(2.5 - omegaPQ))
-           /exp(lgamma(2.5 - omegaPQ + bCoeff_))
+            pow(chiB, bCoeff_)*exp(lgamma(chiB))/exp(lgamma(chiB + bCoeff_))
         );
 
     scalar activationEnergy =
@@ -206,6 +205,8 @@ void exchangeQK::testExchange
             aDash*pow(TColl/273.0, bCoeff_)
            *fabs(heatOfReactionExchangeJoules_)
         );
+        
+    scalar summation = 1.0;    
 
     if (heatOfReactionExchangeJoules_ < 0.0)
     {
@@ -214,6 +215,7 @@ void exchangeQK::testExchange
     }
 
     label m = 0;
+    
     do
     {
         const label vibLevel_m = p.vibLevel()[m];
@@ -224,17 +226,12 @@ void exchangeQK::testExchange
         collisionEnergy = translationalEnergy + EVibP_m;
 
         //- Condition for the exchange reaction to possibly occur
-        if(collisionEnergy > activationEnergy)
+        if (collisionEnergy > activationEnergy)
         {
-            scalar summation = 0.0;
-
-            if(activationEnergy < kBByThetaVP)
+            if (activationEnergy > kBByThetaVP)
             {
-                // this refers to the first sentence in Bird's QK paper after Eq.(12).
-                summation = 1.0;
-            }
-            else
-            {
+                summation = 0.0;
+                
                 const label iaP = collisionEnergy/kBByThetaVP;
 
                 for(label i=0; i<=iaP; i++)
@@ -257,6 +254,7 @@ void exchangeQK::testExchange
                 )
                 /summation;
 
+            // Condition to exit the do while loop
             m = p.vibLevel().size();
         }
 
@@ -305,38 +303,22 @@ void exchangeQK::exchange
         const scalar mPExch = cloud_.constProps(typeIdAtom).mass();
         const scalar mQExch = cloud_.constProps(typeIdMol).mass();
         const scalar mRExch = mPExch*mQExch/(mPExch + mQExch);
+        const scalar omegaExch =
+            0.5
+            *(
+                  cloud_.constProps(typeIdAtom).omega()
+                + cloud_.constProps(typeIdAtom).omega()
+            );
 
         const scalar EVibP = cloud_.constProps(typeIdP).eVib_tot(p.vibLevel());
         const scalar EEleP = cloud_.constProps(typeIdP).electronicEnergyList()[p.ELevel()];
         const scalar EEleQ = cloud_.constProps(typeIdQ).electronicEnergyList()[q.ELevel()];
 
-        //  Assumption: no energy redistribution for both particles
-        //  All the energy is stored in the translational mode
         translationalEnergy += p.ERot() + EVibP + EEleP + EEleQ
             + heatOfReactionExchangeJoules_;
 
-        const scalar relVelExchMol = sqrt(2.0*translationalEnergy/mRExch);
-
-        //- Variable Hard Sphere collision part for collision of molecules
-        const scalar cosTheta = 2.0*cloud_.rndGen().sample01<scalar>() - 1.0;
-        const scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
-        const scalar phi = twoPi*cloud_.rndGen().sample01<scalar>();
-
-        const vector postCollisionRelU =
-            relVelExchMol
-           *vector
-            (
-                cosTheta,
-                sinTheta*cos(phi),
-                sinTheta*sin(phi)
-            );
-
-        UP = Ucm + postCollisionRelU*mQExch/(mPExch + mQExch);
-        UQ = Ucm - postCollisionRelU*mPExch/(mPExch + mQExch);
-
         //- p is originally the molecule and becomes the atom
         p.typeId() = typeIdAtom;
-        p.U() = UP;
         p.ERot() = 0.0;
         p.vibLevel().setSize
         (
@@ -350,7 +332,6 @@ void exchangeQK::exchange
 
         //- q is originally the atom and becomes the molecule
         q.typeId() = typeIdMol;
-        q.U() = UQ;
         q.ERot() = 0.0;
         q.vibLevel().setSize
         (
@@ -361,6 +342,26 @@ void exchangeQK::exchange
             0
         );
         q.ELevel() = 0;
+        
+        //- Energy redistribution for particle q
+        cloud_.binaryCollision().redistribute
+        (
+            q, translationalEnergy, omegaExch, true
+        );
+        
+        //- Post-collision velocities
+        const scalar relVelExchMol = sqrt(2.0*translationalEnergy/mRExch);
+        
+        p.U() = Ucm;
+        
+        cloud_.binaryCollision().postReactionVelocities
+        (
+            typeIdAtom,
+            typeIdMol,
+            p.U(),
+            q.U(),
+            relVelExchMol
+        );
     }
 }
 
