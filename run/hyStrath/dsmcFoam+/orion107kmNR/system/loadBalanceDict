@@ -21,4 +21,8 @@ maximumAllowableImbalance       0.1;
 
 balanceUntilTime 1e10;
 
+weightField     dsmcNMean_mixture;
+
+limitTimeDirBackups     1;
+
 // ************************************************************************* //
