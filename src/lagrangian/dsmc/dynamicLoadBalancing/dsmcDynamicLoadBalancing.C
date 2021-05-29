@@ -121,18 +121,18 @@ void dsmcDynamicLoadBalancing::update()
             Foam::reduce(localImbalance, maxOp<scalar>());
             scalar maxImbalance = localImbalance/idealNParticles;
 
-            Info<< "    Maximum imbalance = " << 100*maxImbalance << "%"
+            Info<< "    Maximum imbalance = " << 100*maxImbalance << "%" << nl
                 << endl;
 
             // explanation of modes:
             // 1. enableBalancing = true:
-            //   1. if time < balanceUntilTime -> load balance
-            //   2. if time >= balanceUntilTime -> do not load balance
+            //   1. if time <= balanceUntilTime -> load balance
+            //   2. if time > balanceUntilTime -> do not load balance
             // 2. enableBalancing = false -> do not load balance
             if
             (
                    enableBalancing_
-                && time_.time().value() < balanceUntilTime_
+                && time_.time().value() <= balanceUntilTime_
                 && maxImbalance > allowableImbalance
             )
             {
