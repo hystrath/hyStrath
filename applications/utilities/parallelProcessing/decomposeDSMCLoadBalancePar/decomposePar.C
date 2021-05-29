@@ -266,7 +266,7 @@ int main(int argc, char *argv[])
             (
                 IOobject
                 (
-                    "balanceParDict",
+                    "decomposeParDict",
                     runTime.time().system(),
                     regionDir,          // use region if non-standard
                     runTime,
@@ -287,7 +287,7 @@ int main(int argc, char *argv[])
                     << nProcs << " domains"
                     << nl
                     << "instead of " << nDomains
-                    << " domains as specified in balanceParDict"
+                    << " domains as specified in decomposeParDict"
                     << nl
                     << exit(FatalError);
             }

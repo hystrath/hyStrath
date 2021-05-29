@@ -95,28 +95,51 @@ Foam::domainDecomposition::domainDecomposition(const IOobject& io)
     (
         IOobject
         (
-            "balanceParDict",
+            "loadBalanceDict",
             time().system(),
             *this,
             IOobject::MUST_READ_IF_MODIFIED,
             IOobject::NO_WRITE
         )
     ),
-    nProcs_(readInt(decompositionDict_.lookup("numberOfSubdomains"))),
     distributed_(false),
-    cellToProc_(nCells()),
-    procPointAddressing_(nProcs_),
-    procFaceAddressing_(nProcs_),
-    procCellAddressing_(nProcs_),
-    procPatchSize_(nProcs_),
-    procPatchStartIndex_(nProcs_),
-    procNeighbourProcessors_(nProcs_),
-    procProcessorPatchSize_(nProcs_),
-    procProcessorPatchStartIndex_(nProcs_),
-    procProcessorPatchSubPatchIDs_(nProcs_),
-    procProcessorPatchSubPatchStarts_(nProcs_)
+    cellToProc_(nCells())
 {
-    decompositionDict_.readIfPresent("distributed", distributed_);
+    word method = word::null;
+
+    {
+        IOdictionary decomposeParDict
+        (
+            IOobject
+            (
+                "decomposeParDict",
+                time().system(),
+                *this,
+                IOobject::MUST_READ_IF_MODIFIED,
+                IOobject::NO_WRITE,
+                false
+            )
+        );
+        
+        nProcs_ = readLabel(decomposeParDict.lookup("numberOfSubdomains"));
+        method = word(decomposeParDict.lookup("method"));
+        decomposeParDict.readIfPresent("distributed", distributed_);
+    }
+
+    procPointAddressing_.setSize(nProcs_);
+    procFaceAddressing_.setSize(nProcs_);
+    procCellAddressing_.setSize(nProcs_);
+    procPatchSize_.setSize(nProcs_);
+    procPatchStartIndex_.setSize(nProcs_);
+    procNeighbourProcessors_.setSize(nProcs_);
+    procProcessorPatchSize_.setSize(nProcs_);
+    procProcessorPatchStartIndex_.setSize(nProcs_);
+    procProcessorPatchSubPatchIDs_.setSize(nProcs_);
+    procProcessorPatchSubPatchStarts_.setSize(nProcs_);
+
+    decompositionDict_.add("numberOfSubdomains", nProcs_);
+    decompositionDict_.add("method", method);
+    decompositionDict_.add("distributed", distributed_);
 }
 
 
@@ -207,8 +230,7 @@ bool Foam::domainDecomposition::writeDecomposition(const bool decomposeSets)
             IOobject::MUST_READ,
             IOobject::NO_WRITE
         );
-        //if (io.headerOk())
-        if (io.typeHeaderOk<labelIOList>()) // NEW VINCENT
+        if (io.typeHeaderOk<labelIOList>())
         {
             Info<< "Reading hexRef8 data : " << io.name() << endl;
             cellLevelPtr.reset(new labelIOList(io));
@@ -225,8 +247,8 @@ bool Foam::domainDecomposition::writeDecomposition(const bool decomposeSets)
             IOobject::MUST_READ,
             IOobject::NO_WRITE
         );
-        //if (io.headerOk())
-        if (io.typeHeaderOk<labelIOList>()) // NEW VINCENT
+
+        if (io.typeHeaderOk<labelIOList>())
         {
             Info<< "Reading hexRef8 data : " << io.name() << endl;
             pointLevelPtr.reset(new labelIOList(io));
@@ -243,8 +265,8 @@ bool Foam::domainDecomposition::writeDecomposition(const bool decomposeSets)
             IOobject::MUST_READ,
             IOobject::NO_WRITE
         );
-        //if (io.headerOk())
-        if (io.typeHeaderOk<uniformDimensionedScalarField>()) // NEW VINCENT
+
+        if (io.typeHeaderOk<uniformDimensionedScalarField>())
         {
             Info<< "Reading hexRef8 data : " << io.name() << endl;
             level0EdgePtr.reset(new uniformDimensionedScalarField(io));
