@@ -20,7 +20,7 @@ if [ $nProcs -eq 1 ]
   then runApplication pdFoam
 else
   runApplication decomposePar -latestTime
-  runApplication mpirun -np $nProcs pdFoam -parallel
+  runParallel pdFoam
   runApplication reconstructPar -latestTime
 fi  
 
