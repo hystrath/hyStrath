@@ -119,7 +119,7 @@ Foam::pdEmFields::pdEmFields
         dimensionedVector
         (
             "zero",
-            dimensionSet(0, 0, -2, 0, 0, 1, 0),
+            dimensionSet(0, -2, 0, 0, 0, 1, 0),
             vector::zero
         ),
         zeroGradientFvPatchField<vector>::typeName
@@ -568,7 +568,7 @@ void Foam::pdEmFields::resetFields()
     //- debye length
     //lambdaD_   = dimensionedScalar("zero",  dimensionSet(0, 1, 0, 0, 0, 0, 0), 0.0);
     //- ion current density
-    Jp_ = dimensionedVector("zero", dimensionSet(0, 0, -2, 0, 0, 1, 0), vector::zero);
+    Jp_ = dimensionedVector("zero", dimensionSet(0, -2, 0, 0, 0, 1, 0), vector::zero);
 
     /** reset "cloud" fields **/
     //- cloud electric field
