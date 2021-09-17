@@ -15,7 +15,7 @@ fi
 
 #----------------------------------------------------------------------
 
-cases="dsmcInitialise+"
+cases="createCellZones dsmcInitialise+"
 
 for case in $cases
 do

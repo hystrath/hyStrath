@@ -6,7 +6,7 @@ targetType=libso
 . $WM_PROJECT_DIR/wmake/scripts/AllwmakeParseArguments
 set -x
 
-cases="dsmcInitialise+"
+cases="createCellZones dsmcInitialise+"
 
 for case in $cases
 do

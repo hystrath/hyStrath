@@ -1,0 +1,40 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1706                                 |
+|   \\  /    A nd           | Web:      https://www.openfoam.com/             |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      zoneDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+// EXAMPLE
+
+cellZones
+(
+      zone
+      {
+         zoneNname          fillRegionA;
+         option             boundBox;
+         startPoint         (0 0 0);
+         endPoint           (16 6.4 16);
+      }
+      
+      zone
+      {
+         name               fillRegionB;
+         option             boundBox;         
+         startPoint         (0 6.4 0);
+         endPoint           (16 16 16);
+      }
+);
+
+
+// ************************************************************************* //
