@@ -5,8 +5,7 @@
 
 #### The *Fleming* release includes  
 + *hyFoam*: a CFD solver for supersonic combusting flows   
-+ *hy2Foam*: a CFD solver for hypersonic reacting flows   
-+ *hy2MhdFoam*: the *hy2Foam* solver with additional MHD capabilities  
++ *hy2Foam*: a CFD solver for hypersonic reacting flows with MHD capabilities  
 + *dsmcFoam+*: the direct simulation Monte Carlo (DSMC) code with all the latest features  
 + *pdFoam*: a hybrid PIC-DSMC solver   
 

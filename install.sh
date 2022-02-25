@@ -6,10 +6,9 @@ then
     nProcs=$1
 fi
 
-tref_CFD=1050
+tref_CFD=1200
 tref_DSMC=1380
 tref_PICDSMC=310
-tref_MHD=160
 
 speedup=1.0
 if [[ $nProcs -eq 2 || $nProcs -eq 3 ]]
@@ -135,49 +134,17 @@ sync_PICDSMC() {
     print_status logSync-hybridPICDSMC
 }
 
-install_MHD() {
-    local sleep_period=`bc -l <<< $tref_MHD/$speedup/100`
-    progress_bar $sleep_period "installing CFD-MHD module" &
-    ./build/install-MHD.sh $nProcs > logInstall-MHD 2>&1 &
-    wait %2
-    if [ ! -z `jobs -p` ]
-    then
-      progress_bar_pid=$!
-      disown
-      pkill -P $$  > /dev/null 2>&1
-    fi
-    display_bar "100" "installed CFD-MHD module"
-    print_status logInstall-MHD
-}
-
-sync_MHD() {
-    local sleep_period=`bc -l <<< $tref_MHD/$speedup/100`
-    progress_bar $sleep_period "syncing CFD-MHD module" &
-    ./build/resync-MHD.sh $nProcs > logSync-MHD 2>&1 &
-    wait %2
-    if [ ! -z `jobs -p` ]
-    then
-      progress_bar_pid=$!
-      disown
-      pkill -P $$  > /dev/null 2>&1
-    fi
-    display_bar "100" "synced CFD-MHD module"
-    print_status logSync-MHD
-}
-
 echo "-----  INSTALLATION  -----"
 echo "1 - CFD module"
 echo "2 - DSMC module"
 echo "3 - Hybrid PIC-DSMC module"
-echo "4 - CFD-MHD module"
-echo -e "5 - All modules\n"
+echo -e "4 - All modules\n"
 
 echo "-----  SYNCHRONISATION  -----"
 echo "11 - CFD module"
 echo "12 - DSMC module"
 echo "13 - Hybrid PIC-DSMC module"
-echo "14 - CFD-MHD module"
-echo -e "15 - All modules\n"
+echo -e "14 - All modules\n"
 
 echo -e "Enter choice: \c"
 read input
@@ -206,29 +173,11 @@ case $input in
         esac
         ;;
     4)
-        echo -e "Confirm that the CFD module is already installed [Y/n]: \c"
-        read input_conf
-        case $input_conf in
-            [yY][eE][sS]|[yY])
-                install_MHD
-                ;;
-            [nN][oO]|[nN])
-                echo "Please install the CFD module first"
-                ;;
-            *)
-                echo "Invalid input"
-                exit 1
-                ;;
-        esac
-        ;;
-    5)
         install_CFD
         wait -n
         install_DSMC
         wait -n
         install_PICDSMC
-        wait -n
-        install_MHD
         ;;     
     11)
         sync_CFD
@@ -239,17 +188,12 @@ case $input in
     13)
         sync_PICDSMC
         ;;
-    14)
-        sync_MHD
-        ;;
     15)
         sync_CFD
         wait -n
         sync_DSMC
         wait -n
         sync_PICDSMC
-        wait -n
-        sync_MHD
         ;;             
     *)
  echo "Invalid input"

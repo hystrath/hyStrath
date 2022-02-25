@@ -1,3 +1,0 @@
-hy2MhdFoam.C
-
-EXE = $(FOAM_USER_APPBIN)/hy2MhdFoam

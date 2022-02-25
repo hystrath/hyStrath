@@ -52,7 +52,10 @@ class lowReMag
 :
     public mhdModel
 {
-    // Private Member Functions
+
+protected:
+
+    // Protected data
     
         //- Const reference to the trans-rotational temperature field
         const volScalarField& T_;
@@ -66,17 +69,31 @@ class lowReMag
         //- Local copy of the electric charge
         const scalar localElecCharge_;
         
-        //- Magnetic field
+        //- Total magnetic field [Tesla = kg/s^2/A]
         volVectorField B_;
         
-        //- Electric conductivity field
-        volScalarField sigma_;
+        //- Electric field [V/m = kg*m/s^-3/A]
+        volVectorField E_;
+        
+        //- Electric potential [V = kg*m^2/s^-3/A]
+        volScalarField elecPot_;
+        
+        //- Current density field [A/m^2]
+        volVectorField j_;
 
         //- Disallow default bitwise copy construct
         lowReMag(const lowReMag&);
 
         //- Disallow default bitwise assignment
         void operator=(const lowReMag&);
+        
+    // Private Member Functions
+
+        //- Calculate the electric current density
+        void updateElectricCurrentDensity(const volVectorField& U);
+         
+        //- Calculate the Hall tensor
+        tmp<volTensorField> hallTensor() const;
 
 
 public:
@@ -106,25 +123,57 @@ public:
           virtual bool read();
           
           //- Update MHD model
-          virtual void update();
+          virtual void update(const volVectorField& U);
           
-       // Access
+          //- Return non-const access to the electric field
+          virtual volVectorField& E()
+          {
+              return E_;
+          }
+          
+          //- Return non-const access to the electric potential field
+          virtual volScalarField& elecPot()
+          {
+              return elecPot_;
+          }
+          
+          //- Return non-const access to the total magnetic field
+          virtual volVectorField& B()
+          {
+              return B_;
+          }
+          
+        // Access
        
-         //- Calculate the current density
-         tmp<volVectorField> j(const volVectorField& U) const;
+          //- Joule heating: source term in the total energy equation
+          virtual tmp<volScalarField> jouleHeating
+          (
+              const volVectorField& U
+          ) const;
          
-         //- Source term component for energy equation TODO
-         tmp<volScalarField> Q(const volVectorField& U) const;
+          //- Lorentz force: source term in the momentum equations
+          virtual tmp<volVectorField> lorentzForce() const;
          
-         //- Source term component for momentum equations TODO
-         tmp<volVectorField> F(const volVectorField& U) const;
+          //- Return const access to the electrical conductivity field
+          virtual const volTensorField& sigma() const;
          
-         //- TODO
-         tmp<volScalarField> Stuart(const volVectorField& U) const;
-         
-         //- Calculate the Hall Effect tensor TODO
-         tmp<volTensorField> hallCorrection() const;
-
+          //- Return const access to the electric field
+          virtual const volVectorField& E() const
+          {
+              return E_;
+          }
+      
+          //- Return const access to the electric potential field
+          virtual const volScalarField& elecPot() const
+          {
+              return elecPot_;
+          }
+            
+          //- Return const access to the total magnetic field
+          virtual const volVectorField& B() const
+          {
+              return B_;
+          }
 };
 
 

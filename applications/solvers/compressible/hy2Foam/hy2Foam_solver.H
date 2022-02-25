@@ -93,6 +93,9 @@ else
     //#include HY2FOAM_EXTERNAL_FILE_TOTENERGYVIS_EQN
 }
 
+// --- Electro-magnetic fields calculation
+#include "eqns/BEqn.H"
+
 // --- Pressure field calculation
 #include "eqns/pEqn.H"
 
@@ -102,6 +105,8 @@ else
 #endif
 
 turbulence->correct();
+
+mhd->update(U);
 
 rarefactionParameters().correct(U);
 

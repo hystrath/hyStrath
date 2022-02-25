@@ -43,19 +43,27 @@ Foam::mhd::mhdModel::New
         false
     );
 
-    word modelType("none");
+    word modelType("noMHD");
+    bool active = false;
     
     if (mhdIO.typeHeaderOk<IOobject>())
     {
-        IOdictionary(mhdIO).lookup("mhdModel") >> modelType;
+        if (IOdictionary(mhdIO).found("active"))
+        {
+            IOdictionary(mhdIO).lookup("active") >> active;
+            
+            if (active && IOdictionary(mhdIO).found("mhdModel"))
+            {
+                IOdictionary(mhdIO).lookup("mhdModel") >> modelType;
+            }
+        }
     }
     else
     {
-        Info<< "MHDmodel not active: mhdProperties not found"
-            << endl;
+        Info<< "MHD model not active: mhdProperties dict not found" << endl;
     }
 
-    Info<< "Selecting mhdModel " << modelType << endl;
+    Info<< "Selecting mhdModel " << modelType << nl << endl;
 
     thermoConstructorTable::iterator cstrIter =
         thermoConstructorTablePtr_->find(modelType);
@@ -83,9 +91,15 @@ Foam::mhd::mhdModel::New
     const rho2ReactionThermo& thermo
 )
 {
-    const word modelType(dict.lookup("mhdModel"));
+    bool active(dict.lookupOrDefault<bool>("active", false));
+    word modelType("noMHD");
+    
+    if (active && dict.found("mhdModel"))
+    {
+        modelType = word(dict.lookup("mhdModel"));
+    }
 
-    Info<< "Selecting mhdModel " << modelType << endl;
+    Info<< "Selecting mhdModel " << modelType << nl << endl;
 
     dictionaryConstructorTable::iterator cstrIter =
         dictionaryConstructorTablePtr_->find(modelType);

@@ -26,7 +26,7 @@ Applications
             Combusting Flows
 
     hy2Foam: Two-Temperature Open-Source CFD Solver for Hypersonic
-             Weakly-Ionised Reacting Flows
+             Weakly-Ionised Reacting Flows, with MHD Source Terms.
 
 Description
     Density-based compressible flow solver

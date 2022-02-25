@@ -88,18 +88,39 @@ public:
           virtual bool read();
           
           //- Update MHD model
-          virtual void update();
+          virtual void update(const volVectorField& U);
           
-       //Access
+          //- Return non-const access to the electric field
+          virtual volVectorField& E();
+        
+          //- Return non-const access to the electric potential field
+          virtual volScalarField& elecPot();
+          
+          //- Return non-const access to the total magnetic field
+          virtual volVectorField& B();
+          
+        //Access
        
-         //- Source term component for energy equation
-         tmp<volScalarField> Q(const volVectorField& U) const;
+          //- Joule heating: source term in the total energy equation
+          virtual tmp<volScalarField> jouleHeating
+          (
+              const volVectorField& U
+          ) const;
+            
+          //- Lorentz force: source term in the momentum equations
+          virtual tmp<volVectorField> lorentzForce() const;
+          
+          //- Return const access to the electrical conductivity field
+          virtual const volTensorField& sigma() const;
          
-         //- Source term component for momentum equations
-         tmp<volVectorField> F(const volVectorField& U) const;
-         
-         //- TODO
-         tmp<volScalarField> Stuart(const volVectorField& U) const;
+          //- Return const access to the electric field
+          virtual const volVectorField& E() const;
+        
+          //- Return const access to the electric potential field
+          virtual const volScalarField& elecPot() const;
+          
+          //- Return const access to the total magnetic field
+          virtual const volVectorField& B() const;
 
 };
 

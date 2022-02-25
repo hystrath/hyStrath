@@ -21,7 +21,8 @@ if (!inviscid)
       - fvm::laplacian(muEff, U)
       - fvc::div(tauMC)
      ==
-        fvOptions(rho, U)
+        mhd->lorentzForce()
+      + fvOptions(rho, U)
     );
 
     UEqn.relax();

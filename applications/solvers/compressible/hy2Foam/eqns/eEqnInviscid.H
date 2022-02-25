@@ -17,6 +17,7 @@ solve
   - fvc::div(sigmaDotU)
  ==
     reaction->Sh()
+  + mhd->jouleHeating(U)
 );
 
 e = rhoE/rho - 0.5*magSqr(U);

@@ -84,6 +84,9 @@ protected:
         
         //- Hall effect on/off flag
         Switch hallEffect_;
+        
+        //- Constant Hall parameter;
+        scalar constBeta_;
 
         //- MHD model dictionary
         dictionary coeffs_;
@@ -93,6 +96,13 @@ protected:
 
             //- Electrical conductivity model
             autoPtr<electricalConductivityModel> electricalConductivity_;
+            
+            
+    // Protected Member Functions
+    
+        //- Initialise models
+        void initialise();
+        
 
 private:
 
@@ -100,9 +110,6 @@ private:
 
         //- Create IO object if dictionary is present
         IOobject createIOobject(const fvMesh& mesh) const;
-
-        //- Initialise
-        void initialise();
 
         //- Disallow default bitwise copy construct
         mhdModel(const mhdModel&);
@@ -185,36 +192,51 @@ public:
             virtual bool read() = 0;
             
             //- Update MHD model
-            virtual void update() = 0;
+            virtual void update(const volVectorField& U) = 0;
+            
+            //- Return non-const access to the electric field
+            virtual volVectorField& E() = 0;
+            
+            //- Return non-const access to the electric potential field
+            virtual volScalarField& elecPot() = 0;
+            
+            //- Return non-const access to the total magnetic field
+            virtual volVectorField& B() = 0;
 
         // Access
         
-            //- Source term component for the energy equation
-            virtual tmp<volScalarField> Q(const volVectorField& U) const = 0;
-            
-            //- Source term component for the momentum equations
-            virtual tmp<volVectorField> F(const volVectorField& U) const = 0;
-            
-            //- TODO
-            virtual tmp<volScalarField> Stuart
+            //- Joule heating: source term in the total energy equation
+            virtual tmp<volScalarField> jouleHeating
             (
                 const volVectorField& U
             ) const = 0;
+            
+            //- Lorentz force: source term in the momentum equations
+            virtual tmp<volVectorField> lorentzForce() const = 0;
 
-            //- Return the state of the MHD on/off switch
+            //- Return const access to the state of the MHD on/off switch
             const Switch active() const
             {
                 return active_;
             }
             
-            //- Access function to the thermophysical model
+            //- Return const access to the thermophysical model
             const rho2ReactionThermo& thermo() const
             {
                 return thermo_;
             }
             
-            //- Access function to the electrical conductivity model
-            const electricalConductivityModel& electricalConductivity() const;
+            //- Return const access to the electrical conductivity field
+            virtual const volTensorField& sigma() const = 0;
+            
+            //- Return const access to the electric field
+            virtual const volVectorField& E() const = 0;
+            
+            //- Return const access to the electric potential field
+            virtual const volScalarField& elecPot() const = 0;
+            
+            //- Return const access to the total magnetic field
+            virtual const volVectorField& B() const = 0;
 };
 
 

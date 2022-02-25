@@ -6,6 +6,9 @@
 #include "createReactingFields.H"
 #include "createVibrationalFields.H"
 
+// --- Initialisation of MHD fields
+#include "createEMFields.H"
+
 #include "createFvOptions.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -16,11 +19,6 @@
 #include "write/write0.H"
 
 dimensionedScalar v_zero("v_zero", dimVolume/dimTime, 0.0);
-/*dimensionedScalar vv_zero("vv_zero", dimArea, 0.0);
-dimensionedVector Vv_one("vv_one", dimArea, vector::one);
-dimensionedScalar vv_one("vv_one", dimArea, 1.0);
-dimensionedScalar vvv_zero("vvv_zero", dimMass/dimTime, 0.0);
-dimensionedScalar vvvv_zero("vvvv_zero", dimless, 0.0);*/
 
 // --- Upwind interpolation of primitive fields on faces
 #include "numerics/upwindInterpolation.H"

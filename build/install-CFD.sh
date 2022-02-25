@@ -57,6 +57,10 @@ cd $sendingDir/src/hTCModels
 wclean libso
 wmake -j$nProcs libso
 
+cd $sendingDir/src/mhdModels/
+wclean libso
+wmake -j$nProcs libso
+
 cd $sendingDir/src/finiteVolume
 wclean libso
 wmake -j$nProcs libso

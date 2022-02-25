@@ -68,37 +68,11 @@ bool noMHD::read()
 }
 
 
-void noMHD::update()
+void noMHD::update(const volVectorField& U)
 {}
 
 
-tmp<volVectorField> noMHD::F(const volVectorField& U) const
-{
-    return tmp<volVectorField>
-    (
-        new volVectorField
-        (
-            IOobject
-            (
-                "F",
-                mesh_.time().timeName(),
-                mesh_,
-                IOobject::NO_READ,
-                IOobject::NO_WRITE
-            ),
-            mesh_,
-            dimensionedVector
-            (
-                "F",
-                dimensionSet(1, -2, -2, 0, 0, 0, 0),
-                vector::zero
-            )
-        )
-    );
-}
-
-
-tmp<volScalarField> noMHD::Q(const volVectorField& U) const
+tmp<volScalarField> noMHD::jouleHeating(const volVectorField& U) const
 {
     return tmp<volScalarField>
     (
@@ -106,7 +80,7 @@ tmp<volScalarField> noMHD::Q(const volVectorField& U) const
         (
             IOobject
             (
-                "Rp",
+                "jouleHeating",
                 mesh_.time().timeName(),
                 mesh_,
                 IOobject::NO_READ,
@@ -115,7 +89,7 @@ tmp<volScalarField> noMHD::Q(const volVectorField& U) const
             mesh_,
             dimensionedScalar
             (
-                "Rp",
+                "jouleHeating",
                 dimensionSet(1, -1, -3, 0, 0, 0, 0),
                 0.0
             )
@@ -124,26 +98,240 @@ tmp<volScalarField> noMHD::Q(const volVectorField& U) const
 }
 
 
-tmp<volScalarField> noMHD::Stuart(const volVectorField& U) const
+tmp<volVectorField> noMHD::lorentzForce() const
 {
-    return tmp<volScalarField>
+    return tmp<volVectorField>
     (
-        new volScalarField
+        new volVectorField
         (
             IOobject
             (
-                "Stuart",
+                "lorentzForce",
                 mesh_.time().timeName(),
                 mesh_,
                 IOobject::NO_READ,
                 IOobject::NO_WRITE
             ),
             mesh_,
-            dimensionedScalar("Stuart", dimless, 0.0)
+            dimensionedVector
+            (
+                "lorentzForce",
+                dimensionSet(1, -2, -2, 0, 0, 0, 0),
+                vector::zero
+            )
         )
     );
 }
 
+
+volVectorField& noMHD::E()
+{
+    tmp<volVectorField> tE
+    (
+        new volVectorField
+        (
+            IOobject
+            (
+                "E",
+                mesh_.time().timeName(),
+                mesh_,
+                IOobject::NO_READ,
+                IOobject::NO_WRITE
+            ),
+            mesh_,
+            dimensionedVector
+            (
+                "E",
+                dimensionSet(1, 1, -3, 0, 0, -1, 0),
+                vector::zero
+            )
+        )
+    );
+    
+    volVectorField& E = tE.ref();
+    
+    return E;
+}
+
+
+const volVectorField& noMHD::E() const
+{
+    tmp<volVectorField> tE
+    (
+        new volVectorField
+        (
+            IOobject
+            (
+                "E",
+                mesh_.time().timeName(),
+                mesh_,
+                IOobject::NO_READ,
+                IOobject::NO_WRITE
+            ),
+            mesh_,
+            dimensionedVector
+            (
+                "E",
+                dimensionSet(1, 1, -3, 0, 0, -1, 0),
+                vector::zero
+            )
+        )
+    );
+    
+    const volVectorField& E = tE;
+    
+    return E;
+}
+
+
+volScalarField& noMHD::elecPot()
+{
+    tmp<volScalarField> telecPot
+    (
+        new volScalarField
+        (
+            IOobject
+            (
+                "elecPot",
+                mesh_.time().timeName(),
+                mesh_,
+                IOobject::NO_READ,
+                IOobject::NO_WRITE
+            ),
+            mesh_,
+            dimensionedScalar
+            (
+                "elecPot",
+                dimensionSet(1, 2, -3, 0, 0, -1, 0),
+                0.0
+            )
+        )
+    );
+    
+    volScalarField& elecPot = telecPot.ref();
+    
+    return elecPot;
+}
+
+
+const volScalarField& noMHD::elecPot() const
+{
+    tmp<volScalarField> telecPot
+    (
+        new volScalarField
+        (
+            IOobject
+            (
+                "elecPot",
+                mesh_.time().timeName(),
+                mesh_,
+                IOobject::NO_READ,
+                IOobject::NO_WRITE
+            ),
+            mesh_,
+            dimensionedScalar
+            (
+                "elecPot",
+                dimensionSet(1, 2, -3, 0, 0, -1, 0),
+                0.0
+            )
+        )
+    );
+    
+    const volScalarField& elecPot = telecPot;
+    
+    return elecPot;
+}
+
+
+volVectorField& noMHD::B()
+{
+    tmp<volVectorField> tB
+    (
+        new volVectorField
+        (
+            IOobject
+            (
+                "B",
+                mesh_.time().timeName(),
+                mesh_,
+                IOobject::NO_READ,
+                IOobject::NO_WRITE
+            ),
+            mesh_,
+            dimensionedVector
+            (
+                "B",
+                dimensionSet(1, 0, -2, 0, 0, -1, 0),
+                vector::zero
+            )
+        )
+    );
+    
+    volVectorField& B = tB.ref();
+    
+    return B;
+}
+
+
+const volVectorField& noMHD::B() const
+{
+    tmp<volVectorField> tB
+    (
+        new volVectorField
+        (
+            IOobject
+            (
+                "B",
+                mesh_.time().timeName(),
+                mesh_,
+                IOobject::NO_READ,
+                IOobject::NO_WRITE
+            ),
+            mesh_,
+            dimensionedVector
+            (
+                "B",
+                dimensionSet(1, 0, -2, 0, 0, -1, 0),
+                vector::zero
+            )
+        )
+    );
+    
+    const volVectorField& B = tB;
+    
+    return B;
+}
+
+
+const volTensorField& noMHD::sigma() const
+{
+    tmp<volTensorField> tsigma
+    (
+        new volTensorField
+        (
+            IOobject
+            (
+                "sigma",
+                mesh_.time().timeName(),
+                mesh_,
+                IOobject::NO_READ,
+                IOobject::NO_WRITE
+            ),
+            mesh_,
+            dimensionedTensor
+            (
+                "sigma",
+                dimensionSet(-1, -3, 3, 0, 0, 2, 0),
+                tensor::zero
+            )
+        )
+    );
+    
+    const volTensorField& sigma = tsigma;
+    
+    return sigma;
+}
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

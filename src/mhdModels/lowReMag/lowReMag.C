@@ -37,6 +37,94 @@ namespace Foam
         addToMhdRunTimeSelectionTables(lowReMag);
 
 
+// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
+
+void lowReMag::updateElectricCurrentDensity(const volVectorField& U)
+{
+    //- Ohm's law
+    j_ = sigma()&(E_ + (U^B_));
+}
+
+
+tmp<volTensorField> lowReMag::hallTensor() const
+{
+    tmp<volTensorField> thallTensor
+    (
+        new volTensorField
+        (
+            IOobject
+            (
+                "hall",
+                mesh_.time().timeName(),
+                mesh_,
+                IOobject::NO_READ,
+                IOobject::NO_WRITE
+            ),
+            mesh_,
+            dimensionedTensor
+            (
+                "nullTensor",
+                dimless,
+                tensor::zero
+            )
+        )
+    );
+    
+    volTensorField& hall = thallTensor.ref();
+    
+    volScalarField sigma = electricalConductivity_->sigma();
+    
+    forAll(hall, cellI)
+    {
+        scalar beta = 0.0;
+        
+        const scalar magB = mag(B_[cellI]);
+        const scalar magSqrB = sqr(magB);
+        
+        if (constBeta_ >= 0.0)
+        {
+            beta = constBeta_;
+        }
+        else
+        {
+            const scalar nDe = pe_[cellI]/(localkB_*T_[cellI]);
+            if (nDe > SMALL)
+            {
+                beta = sigma[cellI]*magB/(localElecCharge_*nDe);
+            }
+        }
+        
+        const scalar sqrBeta = sqr(beta);
+        const scalar Bx = B_[cellI].component(0);
+        const scalar By = B_[cellI].component(1);
+        const scalar Bz = B_[cellI].component(2);
+        
+        const scalar D = magSqrB*(1.0 + sqrBeta);
+        
+        if (D > VSMALL)
+        {
+            tensor& hParam = hall[cellI];
+            
+            hParam.replace(0, magSqrB + sqrBeta*sqr(Bx)); 
+            hParam.replace(1, beta*(beta*By*Bx - magB*Bz));
+            hParam.replace(2, beta*(beta*Bz*Bx + magB*By));
+
+            hParam.replace(3, beta*(beta*By*Bx + magB*Bz));
+            hParam.replace(4, magSqrB + sqrBeta*sqr(By));
+            hParam.replace(5, beta*(beta*Bz*By + magB*Bx));
+            
+            hParam.replace(6, beta*(beta*Bz*Bx - magB*By));
+            hParam.replace(7, beta*(beta*Bz*By + magB*Bx));
+            hParam.replace(8, magSqrB + sqrBeta*sqr(Bz));
+            
+            hParam /= D;
+        }
+    }
+
+    return thallTensor;
+}
+
+
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 lowReMag::lowReMag(const rho2ReactionThermo& thermo)
@@ -53,30 +141,64 @@ lowReMag::lowReMag(const rho2ReactionThermo& thermo)
             "B",
             mesh_.time().timeName(),
             mesh_,
-            IOobject::MUST_READ,
-            IOobject::AUTO_WRITE
+            IOobject::READ_IF_PRESENT,
+            IOobject::NO_WRITE
         ),
-        mesh_
+        mesh_,
+        dimensionSet(1, 0, -2, 0, 0, -1, 0)
     ),
-    sigma_
+    E_
     (
         IOobject
         (
-            "sigma",
+            "E",
             mesh_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
-            IOobject::AUTO_WRITE
+            IOobject::NO_WRITE
         ),
         mesh_,
-        dimensionedScalar("sigma", dimensionSet(-1, -3, 3, 0, 0, 2, 0), 0.0)
+        dimensionedVector
+        (
+            "E",
+            dimensionSet(1, 1, -3, 0, 0, -1, 0),
+            vector::zero
+        )
+    ),
+    elecPot_
+    (
+        IOobject
+        (
+            "elecPot",
+            mesh_.time().timeName(),
+            mesh_,
+            IOobject::MUST_READ,
+            IOobject::NO_WRITE
+        ),
+        mesh_
+    ),
+    j_
+    (
+        IOobject
+        (
+            "j",
+            mesh_.time().timeName(),
+            mesh_,
+            IOobject::NO_READ,
+            IOobject::NO_WRITE
+        ),
+        mesh_,
+        dimensionSet(0, -2, 0, 0, 0, 1, 0)
     )
 {
-    Info << "Reading electric conductivity field" << endl;
+    initialise();
     
-    electricalConductivity_->update();
-    Info<< "Max(sigma) = "
-        << gMax(electricalConductivity_->sigma()) << endl;
+    if (active_)
+    {
+        B_.writeOpt() = IOobject::AUTO_WRITE;
+        E_.writeOpt() = IOobject::AUTO_WRITE;
+        elecPot_.writeOpt() = IOobject::AUTO_WRITE;
+    }
 }
 
 
@@ -98,28 +220,64 @@ lowReMag::lowReMag
             "B",
             mesh_.time().timeName(),
             mesh_,
-            IOobject::MUST_READ,
-            IOobject::AUTO_WRITE
+            IOobject::READ_IF_PRESENT,
+            IOobject::NO_WRITE
         ),
-        mesh_
+        mesh_,
+        dimensionSet(1, 0, -2, 0, 0, -1, 0)
     ),
-    sigma_
+    E_
     (
         IOobject
         (
-            "sigma",
+            "E",
             mesh_.time().timeName(),
             mesh_,
             IOobject::NO_READ,
-            IOobject::AUTO_WRITE
+            IOobject::NO_WRITE
         ),
         mesh_,
-        dimensionedScalar("sigma", dimensionSet(-1, -3, 3, 0, 0, 2, 0), 0.0)
+        dimensionedVector
+        (
+            "E",
+            dimensionSet(1, 1, -3, 0, 0, -1, 0),
+            vector::zero
+        )
+    ),
+    elecPot_
+    (
+        IOobject
+        (
+            "elecPot",
+            mesh_.time().timeName(),
+            mesh_,
+            IOobject::MUST_READ,
+            IOobject::NO_WRITE
+        ),
+        mesh_
+    ),
+    j_
+    (
+        IOobject
+        (
+            "j",
+            mesh_.time().timeName(),
+            mesh_,
+            IOobject::NO_READ,
+            IOobject::NO_WRITE
+        ),
+        mesh_,
+        dimensionSet(0, -2, 0, 0, 0, 1, 0)
     )
 {
-    electricalConductivity_->update();
-    Info<< "Max(sigma) = "
-        << gMax(electricalConductivity_->sigma()) << endl;
+    initialise();
+    
+    if (active_)
+    {
+        B_.writeOpt() = IOobject::AUTO_WRITE;
+        E_.writeOpt() = IOobject::AUTO_WRITE;
+        elecPot_.writeOpt() = IOobject::AUTO_WRITE;
+    }
 }
 
 
@@ -137,268 +295,38 @@ bool lowReMag::read()
 }
 
 
-void lowReMag::update()
+void lowReMag::update(const volVectorField& U)
 {
     //- Update electrical conductivity
     electricalConductivity_->update();
+    
+    //- Update electric current density
+    updateElectricCurrentDensity(U);
 }
 
 
-tmp<volVectorField> lowReMag::j(const volVectorField& U) const
+tmp<volScalarField> lowReMag::jouleHeating(const volVectorField& U) const
 {
-    volScalarField betaHall
+    return tmp<volScalarField>
     (
-        IOobject
+        new volScalarField
         (
-            "betaHall",
-            mesh_.time().timeName(),
-            mesh_,
-            IOobject::NO_READ,
-            IOobject::AUTO_WRITE
-        ),
-        mesh_,
-        dimensionedScalar
-        (
-            "betaHall",
-            dimless,
-            0.0
-        )
-    );
-    
-    volTensorField hallParameter
-    (
-        IOobject
-        (
-            "hallParameter",
-            mesh_.time().timeName(),
-            mesh_,
-            IOobject::NO_READ,
-            IOobject::AUTO_WRITE
-        ),
-        mesh_,
-        dimensionedTensor
-        (
-            "hallParameter",
-            dimless,
-            Tensor<scalar>(0, 0, 0, 0, 0, 0, 0, 0, 0)
-        )
-    );
-    
-    forAll(betaHall, cellI)
-    {
-        const scalar nDe = pe_[cellI]/(localkB_*T_[cellI]);
-        
-        if (nDe > SMALL)
-        {
-            betaHall[cellI] = sigma_[cellI]*mag(B_[cellI])
-              / (localElecCharge_*nDe);
-        }
-    }
-
-    volScalarField D
-    (
-        IOobject
-        (
-          "D",
-          mesh_.time().timeName(),
-          mesh_,
-          IOobject::NO_READ,
-          IOobject::AUTO_WRITE
-        ),
-        magSqr(B_)*(1.0+sqr(betaHall))
-    );
-    
-    hallParameter.replace(0, (magSqr(B_)+sqr(betaHall)*sqr(B_.component(0)))); 
-    
-    hallParameter.replace
-    (
-        1,
-        betaHall
-      * (
-            betaHall*B_.component(0)*B_.component(1) - mag(B_)*B_.component(2)
-        )
-    );
-    hallParameter.replace
-    (
-        2,
-        betaHall
-      * (
-            betaHall*B_.component(0)*B_.component(2) + mag(B_)*B_.component(1)
-        )
-    );
-    hallParameter.replace
-    (
-        3,
-        betaHall
-      * (
-            betaHall*B_.component(1)*B_.component(0) + mag(B_)*B_.component(2)
-        )
-    );
-    hallParameter.replace
-    (
-        4,
-        magSqr(B_)+sqr(betaHall)*sqr(B_.component(1))
-    );
-    hallParameter.replace
-    (
-        5,
-        betaHall
-      * (
-            betaHall*B_.component(1)*B_.component(2) - mag(B_)*B_.component(0)
-        )
-    );
-    hallParameter.replace
-    (
-        6,
-        betaHall
-      * (
-            betaHall*B_.component(2)*B_.component(0) - mag(B_)*B_.component(1)
-        )
-    );
-    hallParameter.replace
-    (
-        7,
-        betaHall
-      * (
-            betaHall*B_.component(2)*B_.component(1) + mag(B_)*B_.component(0)
-        )
-    );
-    hallParameter.replace(8, (magSqr(B_)+sqr(betaHall)*sqr(B_.component(2))));
-   
-    forAll(hallParameter, cellI)
-    {
-        if (D[cellI] != 0.0)
-        {
-            hallParameter[cellI] /= D[cellI];
-        }
-        else
-        {
-            hallParameter[cellI] = Tensor<scalar>(0, 0, 0, 0, 0, 0, 0, 0, 0);
-        }
-    }
-
-    if (hallEffect_)
-    {
-        return tmp<volVectorField>
-        (
-            new volVectorField
+            IOobject
             (
-                IOobject
-                (
-                    "j",
-                    mesh_.time().timeName(),
-                    mesh_,
-                    IOobject::NO_READ,
-                    IOobject::AUTO_WRITE,
-                    false
-                ),
-                electricalConductivity_->sigma()*hallParameter&(U^B_)
-            )
-        );
-    }
-    else
-    {
-        return tmp<volVectorField>
-        (
-            new volVectorField
-            (
-                IOobject
-                (
-                    "j",
-                    mesh_.time().timeName(),
-                    mesh_,
-                    IOobject::NO_READ,
-                    IOobject::AUTO_WRITE,
-                    false
-                ),
-                electricalConductivity_->sigma()*(U^B_)
-            )
-        );
-    }
+                "jouleHeating",
+                mesh_.time().timeName(),
+                mesh_,
+                IOobject::NO_READ,
+                IOobject::NO_WRITE,
+                false
+            ),
+            j_&E_
+        )
+    );
 }
 
 
-tmp<volTensorField> lowReMag::hallCorrection() const
-{
-    volScalarField betaHall
-    (
-        IOobject
-        (
-            "betaHall",
-            mesh_.time().timeName(),
-            mesh_,
-            IOobject::NO_READ,
-            IOobject::AUTO_WRITE
-        ),
-        mesh_,
-        dimensionedScalar
-        (
-            "betaHall",
-            dimless,
-            0.0
-        )
-    );
-    
-    forAll(betaHall, cellI)
-    {
-        const scalar nDe = pe_[cellI]/(localkB_*T_[cellI]);
-        
-        if (nDe > SMALL)
-        {
-            betaHall[cellI] = sigma_[cellI]*mag(B_[cellI])
-                /(localElecCharge_*nDe);
-        }
-    }
-
-    volScalarField D
-    (
-        IOobject
-        (
-            "D",
-            mesh_.time().timeName(),
-            mesh_,
-            IOobject::NO_READ,
-            IOobject::AUTO_WRITE
-        ),
-        magSqr(B_)*(1.0+sqr(betaHall))
-    );
-
-    volTensorField hallParameter
-    (
-        IOobject
-        (
-            "hallParameter",
-            mesh_.time().timeName(),
-            mesh_,
-            IOobject::NO_READ,
-            IOobject::AUTO_WRITE
-        ),
-        mesh_,
-        dimensionedTensor
-        (
-            "hallParameter",
-            dimless,
-            Tensor<scalar>(0, 0, 0, 0, 0, 0, 0, 0, 0)
-        )
-    );
-   
-    forAll(hallParameter, cellI)
-    {
-        if (D[cellI] != 0.0)
-        {
-            hallParameter[cellI] /= D[cellI];
-        }
-        else
-        {
-            hallParameter[cellI] = Tensor<scalar>(0, 0, 0, 0, 0, 0, 0, 0, 0);
-        }
-    }
-
-    return hallParameter;
-}
-
-
-tmp<volVectorField> lowReMag::F(const volVectorField& U) const
+tmp<volVectorField> lowReMag::lorentzForce() const
 {
     return tmp<volVectorField>
     (
@@ -406,60 +334,42 @@ tmp<volVectorField> lowReMag::F(const volVectorField& U) const
         (
             IOobject
             (
-                "F",
+                "lorentzForce",
                 mesh_.time().timeName(),
                 mesh_,
                 IOobject::NO_READ,
-                IOobject::AUTO_WRITE,
+                IOobject::NO_WRITE,
                 false
             ),
-            j(U)^B_
+            j_^B_
         )
     );
 }
 
 
-tmp<volScalarField> lowReMag::Q(const volVectorField& U) const
+const volTensorField& lowReMag::sigma() const
 {
-    return tmp<volScalarField>
-    (
-        new volScalarField
+    if (!electricalConductivity_.valid())
+    {
+        FatalErrorIn
         (
-            IOobject
-            (
-                "Q",
-                mesh_.time().timeName(),
-                mesh_,
-                IOobject::NO_READ,
-                IOobject::AUTO_WRITE,
-                false
-            ),
-            j(U)&(U^B_)
-        )
-    );
+            "const Foam::mhd::electricalConductivityModel&"
+            "Foam::mhd::mhdModel::electricalConductivity() const"
+        )   << "Requested electrical conductivity model, but model is "
+            << "not activated" << abort(FatalError);
+    }
+    
+    if (hallEffect_)
+    {
+        //- tensor electric conductivity
+        return electricalConductivity_->sigma()*hallTensor();
+    }
+    else
+    {
+        //- scalar electric conductivity
+        return electricalConductivity_->sigma()*tensor::I;
+    }
 }
-
-
-tmp<volScalarField> lowReMag::Stuart(const volVectorField& U) const
-{
-    return tmp<volScalarField>
-    (
-        new volScalarField
-        (
-            IOobject
-            (
-                "Stuart",
-                mesh_.time().timeName(),
-                mesh_,
-                IOobject::NO_READ,
-                IOobject::AUTO_WRITE,
-                false
-            ),
-            magSqr(B_)*sigma_/(mag(U)*thermo_.rho())
-        )
-    );
-}
-
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

@@ -29,5 +29,8 @@
 #include "numerics/KNP.H"
 #include "numerics/KT.H"
 
+// --- MHD library
+#include "mhdModel.H"
+
 // --- Others
 #include "wallFvPatch.H"

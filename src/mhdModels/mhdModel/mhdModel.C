@@ -67,12 +67,12 @@ IOobject mhdModel::createIOobject
 }
 
 
+// * * * * * * * * * * * * Protected Member Functions  * * * * * * * * * * * //
+
 void mhdModel::initialise()
 {
     if (active_)
     {
-        Info << "Initialising MHD model" << endl;
-        
         electricalConductivity_.reset
         (
             electricalConductivityModel::New(*this, mesh_).ptr()
@@ -99,24 +99,31 @@ mhdModel::mhdModel(const rho2ReactionThermo& thermo)
     mesh_(thermo.T().mesh()),
     time_(thermo.T().time()),
     thermo_(thermo),
-    active_(true),
+    active_(false),
     hallEffect_(false),
+    constBeta_(-1.0),
     coeffs_(dictionary::null),
     electricalConductivity_(NULL)
 {
-    const dictionary mhdProperties =
-    (
-        IFstream
-        (
-            fileName(thermo.lookup("mhdDictFile")).expand()
-        )()
-    );
-        
-    *this <<= mhdProperties;
-    
-    initialise();
-    
-    hallEffect_ = lookupOrDefault("hallEffect", false);
+    if (thermo.found("mhdDictFile"))
+    {
+        if (isFile(fileName(thermo.lookup("mhdDictFile")).expand()))
+        {
+            const dictionary mhdProperties =
+            (
+                IFstream
+                (
+                    fileName(thermo.lookup("mhdDictFile")).expand()
+                )()
+            );
+                
+            *this <<= mhdProperties;
+            
+            active_ = lookupOrDefault<bool>("active", false);
+            hallEffect_ = lookupOrDefault<bool>("hallEffect", false);
+            constBeta_ = lookupOrDefault<scalar>("constantHallParameter", -1.0);
+        }
+    }
 }
 
 
@@ -130,17 +137,18 @@ mhdModel::mhdModel
     mesh_(thermo.T().mesh()),
     time_(thermo.T().time()),
     thermo_(thermo),
-    active_(lookupOrDefault("active", true)),
-    hallEffect_(lookupOrDefault("hallEffect", false)),
+    active_(lookupOrDefault("active", false)),
+    hallEffect_(lookupOrDefault<bool>("hallEffect", false)),
+    constBeta_(lookupOrDefault<scalar>("constantHallParameter", -1.0)),
     coeffs_(subOrEmptyDict(type + "Coeffs")),
     electricalConductivity_(NULL)
 {
     if (readOpt() == IOobject::NO_READ)
     {
         active_ = false;
+        hallEffect_ = false;
+        constBeta_ = 1.0;
     }
-    
-    initialise();
 }
 
 
@@ -166,13 +174,12 @@ mhdModel::mhdModel
     mesh_(thermo.T().mesh()),
     time_(thermo.T().time()),
     thermo_(thermo),
-    active_(lookupOrDefault("active", true)),
-    hallEffect_(lookupOrDefault("hallEffect", false)),
+    active_(lookupOrDefault("active", false)),
+    hallEffect_(lookupOrDefault<bool>("hallEffect", false)),
+    constBeta_(lookupOrDefault<scalar>("constantHallParameter", -1.0)),
     coeffs_(subOrEmptyDict(type + "Coeffs")),
     electricalConductivity_(NULL)
-{
-    initialise();
-}
+{}
 
 
 // * * * * * * * * * * * * * * * * Destructor    * * * * * * * * * * * * * * //
@@ -187,8 +194,23 @@ bool mhdModel::read()
 {
     if (regIOobject::read())
     {
-        lookup("active") >> active_;
+        if (found("active"))
+        {
+            lookup("active") >> active_;
+        }
+        
+        if (found("hallEffect"))
+        {
+            lookup("hallEffect") >> hallEffect_;
+        }
+        
+        if (found("constantHallParameter"))
+        {
+            lookup("constantHallParameter") >> constBeta_;
+        }
+        
         coeffs_ = subOrEmptyDict(type() + "Coeffs");
+        
         return true;
     }
     else
@@ -196,24 +218,6 @@ bool mhdModel::read()
         return false;
     }
 }
-
-
-const electricalConductivityModel&
-mhdModel::electricalConductivity() const
-{
-    if (!electricalConductivity_.valid())
-    {
-        FatalErrorIn
-        (
-            "const Foam::mhd::electricalConductivityModel&"
-            "Foam::mhd::mhdModel::electricalConductivity() const"
-        )   << "Requested electrical conductivity model, but model is "
-            << "not activated" << abort(FatalError);
-    }
-
-    return electricalConductivity_();
-}
-
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
