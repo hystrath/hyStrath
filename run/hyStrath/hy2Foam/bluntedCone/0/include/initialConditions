@@ -18,7 +18,7 @@ FoamFile
 Ttr       144.4;
 Tve       $Ttr;
 TveAtom   0;
-Twall     297.2;
+Tcone     297.2;
 
 pressureInlet  21.9139;
 pressureField  $pressureInlet;

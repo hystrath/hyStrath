@@ -32,8 +32,8 @@ boundaryField
     {
         type            nonEqSmoluchowskiJumpT;
         accommodationCoeff 1;
-        Twall           uniform $Twall;
-        value           uniform $Twall;
+        Twall           uniform $Tcone;
+        value           uniform $Tcone;
     }
     
     #include "include/boundaries"
