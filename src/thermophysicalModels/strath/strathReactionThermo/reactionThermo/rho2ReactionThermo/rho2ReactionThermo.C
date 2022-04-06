@@ -86,16 +86,12 @@ Foam::word Foam::rho2ReactionThermo::transportToTypedef
 }
 
 
-void Foam::rho2ReactionThermo::correctChemFractions()
+void Foam::rho2ReactionThermo::correctVolChemFractions()
 {
-    //- Updates molar fractions (X) and partial densities (pD) using mass
-    //  fractions (Y). Partial pressures (pP) are computed in calculate() after
-    //  updating the temperature fields (see: field psi)
-    //  Also udpates mixture molecular weight and mixture gas constant
-    
-    const PtrList<Foam::volScalarField>& Y = composition().Y();
+    const scalar Runi = constant::physicoChemical::R.value();
     const scalarField& rhoCells = this->rho_.internalField();
-
+    
+    PtrList<Foam::volScalarField>& Y = composition().Y();
     PtrList<Foam::volScalarField>& X = composition().X();
     PtrList<Foam::volScalarField>& nD = composition().nD();
     PtrList<Foam::volScalarField>& pD = composition().pD();
@@ -105,33 +101,102 @@ void Foam::rho2ReactionThermo::correctChemFractions()
     
     scalarField& WmixCells = Wmix.primitiveFieldRef();
     scalarField& RmixCells = Rmix.primitiveFieldRef();
+    
+    scalarField YtotCells(rhoCells.size(), 0.0);
 
-    scalarField sumX(rhoCells.size(), 0.0);
-    scalarField sumnD(rhoCells.size(), 0.0);
-    scalarField sumpD(rhoCells.size(), 0.0);
-    
-    //- Initialisation
+    //- Bound Y between 0 and 1 and compute Wmix from solved Y
     WmixCells = 0.0;
-    RmixCells = 0.0;
     
-    //- Cell values
     forAll(Y, speciei)
     {
         const scalar W = composition().W(speciei);
-        const scalarField& YCells = Y[speciei].internalField();
-
-        scalarField& XCells = X[speciei].primitiveFieldRef();
-        scalarField& nDCells = nD[speciei].primitiveFieldRef();
-        scalarField& pDCells = pD[speciei].primitiveFieldRef();
+        scalarField& YCells = Y[speciei].primitiveFieldRef();
         
         forAll(YCells, celli)
         {
-            // This condition ensures that the sum of the chemical quantities
-            // are bounded. Because Y is, quantities derived from Y will be.
-            if (speciei < Y.size() - 1)
-            {       
-                XCells[celli] =
-                    composition().molarFraction(speciei, YCells[celli], celli);
+            YCells[celli] = min(max(YCells[celli], 0.0), 1.0);
+            YtotCells[celli] += YCells[celli];
+            WmixCells[celli] += YCells[celli]/W;
+        }
+    }
+    
+    WmixCells = 1.0/WmixCells;
+    
+    if (composition().contains("e-"))
+    {
+        const scalarField& XeCells = composition().X("e-");
+        
+        scalarField XtotCells(rhoCells.size(), 0.0);
+        scalarField XtotIonCells(rhoCells.size(), 0.0);
+        
+        //- Compute X from known Y and Wmix
+        forAll(Y, speciei)
+        {
+            const scalar W = composition().W(speciei);
+            const scalarField& YCells = Y[speciei].internalField();
+            
+            scalarField& XCells = X[speciei].primitiveFieldRef();
+            
+            forAll(YCells, celli)
+            {
+                XCells[celli] = YCells[celli]*WmixCells[celli]/W;
+                
+                if (composition().isNeutral(speciei))
+                {
+                    XtotCells[celli] += XCells[celli];
+                }
+                else if (composition().isIon(speciei))
+                {
+                    XtotIonCells[celli] += XCells[celli];
+                }
+            }
+        }
+        
+        //- Compute X_corrected ensuring that
+        //    the sum of all X equals 1
+        //    charge conservation
+        WmixCells = 0.0;
+        
+        forAll(Y, speciei)
+        {
+            const scalar W = composition().W(speciei);
+            scalarField& XCells = X[speciei].primitiveFieldRef();
+            
+            forAll(XCells, celli)
+            {
+                if (composition().isNeutral(speciei))
+                {
+                    XCells[celli] *= (1.0-2.0*XeCells[celli])/XtotCells[celli];
+                }
+                else if
+                (
+                    composition().isIon(speciei) and XtotIonCells[celli] > SMALL
+                )
+                {
+                    XCells[celli] *= XeCells[celli]/XtotIonCells[celli];
+                }
+                
+                //- Compute Wmix_corrected from X_corrected
+                WmixCells[celli] += XCells[celli]*W;
+            }
+        }
+        
+        RmixCells = 1000.0*Runi/WmixCells;
+        
+        forAll(Y, speciei)
+        {
+            const scalar W = composition().W(speciei);
+            const scalarField& XCells = X[speciei].internalField();
+            scalarField& YCells = Y[speciei].primitiveFieldRef();
+            scalarField& nDCells = nD[speciei].primitiveFieldRef();
+            scalarField& pDCells = pD[speciei].primitiveFieldRef();
+            
+            forAll(YCells, celli)
+            {
+                //- Compute Y_corrected from X_corrected and Wmix_corrected
+                YCells[celli] = XCells[celli]*W/WmixCells[celli];
+                
+                //- Compute nD and pD from Y_corrected and rho
                 nDCells[celli] =
                     composition().numberDensity
                     (
@@ -145,14 +210,29 @@ void Foam::rho2ReactionThermo::correctChemFractions()
                         YCells[celli],
                         rhoCells[celli]
                     );
-
-                sumX[celli] += XCells[celli];
-                sumnD[celli] += nDCells[celli];
-                sumpD[celli] += pDCells[celli];
             }
-            else
+        }
+    }
+    else
+    {
+        WmixCells = 0.0;
+        
+        //- Compute Y_corrected ensuring that the sum of all Y equals 1
+        forAll(Y, speciei)
+        {
+            const scalar W = composition().W(speciei);
+            scalarField& YCells = Y[speciei].primitiveFieldRef();
+            scalarField& nDCells = nD[speciei].primitiveFieldRef();
+            scalarField& pDCells = pD[speciei].primitiveFieldRef();
+            
+            forAll(YCells, celli)
             {
-                XCells[celli] = max(1.0 - sumX[celli], 0.0);
+                YCells[celli] /= YtotCells[celli];
+                
+                //- Compute Wmix_corrected from Y_corrected
+                WmixCells[celli] += YCells[celli]/W;
+                
+                //- Compute nD and pD from Y_corrected and rho
                 nDCells[celli] =
                     composition().numberDensity
                     (
@@ -160,17 +240,43 @@ void Foam::rho2ReactionThermo::correctChemFractions()
                         YCells[celli],
                         rhoCells[celli]
                     );
-                pDCells[celli] = max(rhoCells[celli] - sumpD[celli], 0.0);
+                pDCells[celli] =
+                    composition().partialDensity
+                    (
+                        YCells[celli],
+                        rhoCells[celli]
+                    );
             }
+        }
+        
+        RmixCells = 1000.0*Runi*WmixCells;
+        WmixCells = 1.0/WmixCells;
+        
+        //- Compute X from Y_corrected
+        forAll(Y, speciei)
+        {
+            const scalar W = composition().W(speciei);
+            const scalarField& YCells = Y[speciei].internalField();
+            scalarField& XCells = X[speciei].primitiveFieldRef();
             
-            WmixCells[celli] += XCells[celli]*W;
-            RmixCells[celli] += YCells[celli]/W;
-            
-        }//end cells loop
-    }//end species loop
-    
-    RmixCells *= 1000.0*constant::physicoChemical::R.value();
+            forAll(YCells, celli)
+            {
+                XCells[celli] = YCells[celli]*WmixCells[celli]/W;
+            }
+        }
+    }
+}
 
+
+void Foam::rho2ReactionThermo::correctBdrChemFractions()
+{
+    const PtrList<Foam::volScalarField>& Y = composition().Y();
+    PtrList<Foam::volScalarField>& X = composition().X();
+    PtrList<Foam::volScalarField>& nD = composition().nD();
+    PtrList<Foam::volScalarField>& pD = composition().pD();
+    volScalarField& Wmix = composition().Wmix();
+    volScalarField& Rmix = this->RMix_;
+    
     //- Boundary patches
     forAll(this->rho_.boundaryField(), patchi)
     {
@@ -179,69 +285,54 @@ void Foam::rho2ReactionThermo::correctChemFractions()
         fvPatchScalarField& pWmix = Wmix.boundaryFieldRef()[patchi];
         fvPatchScalarField& pRmix = Rmix.boundaryFieldRef()[patchi];
 
-        scalarField sumX(prho.size(), 0.0);
-        scalarField sumnD(prho.size(), 0.0);
-        scalarField sumpD(prho.size(), 0.0);
-        
         //- Initialisation
         pWmix = 0.0;
-        pRmix = 0.0;
 
         forAll(Y, speciei)
         {
             const scalar W = composition().W(speciei);
             const fvPatchScalarField& pY = Y[speciei].boundaryField()[patchi];
-
-            fvPatchScalarField& pX = X[speciei].boundaryFieldRef()[patchi];
             fvPatchScalarField& pnD = nD[speciei].boundaryFieldRef()[patchi];
             fvPatchScalarField& ppD = pD[speciei].boundaryFieldRef()[patchi];
 
             forAll(pY, facei)
             {
-                if (speciei < Y.size() - 1)
-                {
-                    pX[facei] =
-                        composition().molarFraction
-                        (
-                            speciei,
-                            pY[facei],
-                            patchi,
-                            facei
-                        );
-                    pnD[facei] =
-                        composition().numberDensity
-                        (
-                            speciei,
-                            pY[facei],
-                            prho[facei]
-                        );
-                    ppD[facei] =
-                        composition().partialDensity(pY[facei], prho[facei]);
-
-                    sumX[facei] += pX[facei];
-                    sumnD[facei] += pnD[facei];
-                    sumpD[facei] += ppD[facei];
-                }
-                else
-                {
-                    pX[facei] = max(1.0 - sumX[facei], 0.0);
-                    pnD[facei] =
-                        composition().numberDensity
-                        (
-                            speciei,
-                            pY[facei],
-                            prho[facei]
-                        );
-                    ppD[facei] = max(prho[facei] - sumpD[facei], 0.0);
-                }
+                pWmix[facei] += pY[facei]/W;
                 
-                pWmix[facei] += pX[facei]*W;
-                pRmix[facei] += pY[facei]/W;
-            
+                pnD[facei] =
+                    composition().numberDensity
+                    (
+                        speciei,
+                        pY[facei],
+                        prho[facei]
+                    );
+                    
+                ppD[facei] =
+                    composition().partialDensity(pY[facei], prho[facei]);
             }//end faces loop
         }//end species loop
         
-        pRmix *= 1000.0*constant::physicoChemical::R.value();
+        pRmix = 1000.0*constant::physicoChemical::R.value()*pWmix;
+        pWmix = 1.0/pWmix;
+        
+        forAll(Y, speciei)
+        {
+            const fvPatchScalarField& pY = Y[speciei].boundaryField()[patchi];
+            fvPatchScalarField& pX = X[speciei].boundaryFieldRef()[patchi];
+            
+            //- Compute X from Y and Wmix
+            forAll(pY, facei)
+            {
+                pX[facei] =
+                    composition().molarFraction
+                    (
+                        speciei,
+                        pY[facei],
+                        patchi,
+                        facei
+                    );
+            }//end faces loop
+        }//end species loop
         
     }//end patches loop
 }
@@ -970,7 +1061,8 @@ void Foam::rho2ReactionThermo::initialise()
         this->pe_ = composition().pP("e-");
     }
 
-    correctChemFractions();
+    correctVolChemFractions();
+    correctBdrChemFractions();
     
     correctOverallTemperature();
 }
@@ -1223,7 +1315,8 @@ void Foam::rho2ReactionThermo::calculateFromDSMC
         }//end patches loop
     }
     
-    correctChemFractions();
+    correctVolChemFractions();
+    correctBdrChemFractions();
 }
 
 
@@ -2432,18 +2525,34 @@ const Foam::rho2ReactionThermo& Foam::rho2ReactionThermo::lookup2ReactionThermo
 }
 
 
-void Foam::rho2ReactionThermo::correctFractions()
+void Foam::rho2ReactionThermo::correctVolFractions()
 {
     if (debug)
     {
-        Info<< "entering rho2ReactionThermo::correctFractions()" << endl;
+        Info<< "entering rho2ReactionThermo::correctVolFractions()" << endl;
     }
 
-    correctChemFractions();
+    correctVolChemFractions();
 
     if (debug)
     {
-        Info<< "exiting rho2ReactionThermo::correctFractions()" << endl;
+        Info<< "exiting rho2ReactionThermo::correctVolFractions()" << endl;
+    }
+}
+
+
+void Foam::rho2ReactionThermo::correctBdrFractions()
+{
+    if (debug)
+    {
+        Info<< "entering rho2ReactionThermo::correctBdrFractions()" << endl;
+    }
+
+    correctBdrChemFractions();
+
+    if (debug)
+    {
+        Info<< "exiting rho2ReactionThermo::correctBdrFractions()" << endl;
     }
 }
 

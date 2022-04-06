@@ -195,8 +195,11 @@ protected:
         //- Limit the temperature to be in the range Tlow_ to Thigh_
         inline scalar limit(const scalar T) const;
 
-        //- Calculate the chemistry fractions
-        void correctChemFractions();
+        //- Calculate chemistry fractions in the volume
+        void correctVolChemFractions();
+        
+        //- Calculate chemistry fractions on boundary patches
+        void correctBdrChemFractions();
 
         //- Calculate the fields from DSMC inputs
         void calculateFromDSMC
@@ -406,8 +409,11 @@ public:
             volVectorField::Boundary& Ubdry
         );
 
-        //- Update chemistry fractions only
-        virtual void correctFractions();
+        //- Update chemistry fractions in the volume
+        virtual void correctVolFractions();
+        
+        //- Update chemistry fractions on boundary patches
+        virtual void correctBdrFractions();
 
         //- Update the overall temperature
         virtual void correctOverallTemperature();

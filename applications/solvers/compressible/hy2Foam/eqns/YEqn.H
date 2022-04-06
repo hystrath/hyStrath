@@ -1,14 +1,5 @@
 
-if
-(
-    (
-        speciesDiffusionName != "noSpeciesDiffusion" 
-     or reaction->active()
-     or injectors
-    )
-  and
-    Y.size() > 1
-)
+if (solveSpeciesEqns)
 {
     tmp<fv::convectionScheme<scalar>> mvConvection
     (
@@ -28,8 +19,6 @@ if
     
     reaction->correct();
     dQ = reaction->dQ();
-
-    volScalarField Ytot(0.0*Y[0]);
 
     const volScalarField& Wmix = composition.Wmix();
     
@@ -107,19 +96,20 @@ if
         YiEqn.solve(mesh.solver("Yi"));
         
         fvOptions.correct(Yi);
-        
-        Yi.max(0.0);
-        Ytot += Yi;
     }
-    
-    forAll(Y, speciei)
+}
+
+thermo.correctVolFractions();
+
+if (solveSpeciesEqns)
+{
+    forAll(Y, speciei) 
     {
-        Y[speciei].primitiveFieldRef() /= Ytot.primitiveField();
         Y[speciei].correctBoundaryConditions();
     }
 }
 
-thermo.correctFractions();
+thermo.correctBdrFractions();
 
 if (hyLight)
 {

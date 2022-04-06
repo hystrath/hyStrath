@@ -57,4 +57,19 @@ autoPtr<multiSpeciesTransportModel> speciesDiffusion
 word speciesDiffusionName =
     thermo.transportDictionary().subDict("transportModels")
         .lookupOrDefault<word>("multiSpeciesTransport", "noSpeciesDiffusion");
+        
+Switch solveSpeciesEqns = false;
+if
+(
+    (
+        speciesDiffusionName != "noSpeciesDiffusion" 
+     or reaction->active()
+     or injectors
+    )
+  and
+    Y.size() > 1
+)
+{
+    solveSpeciesEqns = true;
+}        
 
