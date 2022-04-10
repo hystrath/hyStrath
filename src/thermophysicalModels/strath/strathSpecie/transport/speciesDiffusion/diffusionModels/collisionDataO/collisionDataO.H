@@ -238,7 +238,7 @@ class collisionDataO
         inline scalar
         debyeShieldingLength(const scalar T, const scalar nDe) const
         {
-            return sqrt(T/(4.0*localpi_*nDe*e2TokB_));
+            return sqrt(T/(4.0*localpi_*max(nDe,1e-6)*e2TokB_));
         }
         
         //- Dimensionless reduced temperature, T*
