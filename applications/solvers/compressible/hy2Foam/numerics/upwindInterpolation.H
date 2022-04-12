@@ -44,8 +44,8 @@ surfaceVectorField rhoU_pos(interpolate(rhoU, pos, U.name()));
 surfaceVectorField rhoU_neg(interpolate(rhoU, neg, U.name()));
 
 volScalarField rPsi(1.0/psi);
-surfaceScalarField rPsi_pos(interpolate(rPsi, pos, "T"));
-surfaceScalarField rPsi_neg(interpolate(rPsi, neg, "T"));
+surfaceScalarField rPsi_pos("rPsi_pos", interpolate(rPsi, pos, "T"));
+surfaceScalarField rPsi_neg("rPsi_neg", interpolate(rPsi, neg, "T"));
 
 surfaceScalarField e_pos(interpolate(e, pos, "T"));
 surfaceScalarField e_neg(interpolate(e, neg, "T"));
