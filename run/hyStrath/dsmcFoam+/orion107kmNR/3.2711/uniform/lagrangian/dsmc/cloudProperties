@@ -10,48 +10,69 @@ FoamFile
     version     2.0;
     format      ascii;
     class       dictionary;
-    location    "system";
-    object      controlDict;
+    location    "3.2711/uniform/lagrangian/dsmc";
+    object      cloudProperties;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-application     dsmcFoam+;
-
-nTerminalOutputs    10;
-
-startFrom       latestTime;
-
-startTime       0;
-
-stopAt          endTime;
-
-endTime         4;
-
-deltaT          7.0e-6;
-
-writeControl    runTime;
-
-writeInterval   7.0e-3;
-
-purgeWrite      2;
-
-writeFormat     ascii;
-
-writePrecision  10;
-
-writeCompression uncompressed;
-
-timeFormat      general;
-
-timePrecision   10;
-
-runTimeModifiable yes;
-
-adjustTimeStep  no;
-
-functions
+processor0
 {
-    #include "forces"
+    particleCount   17153708;
+}
+
+processor1
+{
+    particleCount   0;
+}
+
+processor2
+{
+    particleCount   2042396475;
+}
+
+processor3
+{
+    particleCount   0;
+}
+
+processor4
+{
+    particleCount   0;
+}
+
+processor5
+{
+    particleCount   0;
+}
+
+processor6
+{
+    particleCount   0;
+}
+
+processor7
+{
+    particleCount   1103904045;
+}
+
+processor8
+{
+    particleCount   770311615;
+}
+
+processor9
+{
+    particleCount   0;
+}
+
+processor10
+{
+    particleCount   0;
+}
+
+processor11
+{
+    particleCount   1940446294;
 }
 
 

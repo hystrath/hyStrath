@@ -9,50 +9,15 @@ FoamFile
 {
     version     2.0;
     format      ascii;
-    class       dictionary;
-    location    "system";
-    object      controlDict;
+    class       uniformDimensionedScalarField;
+    location    "3.2711/polyMesh";
+    object      level0Edge;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-application     dsmcFoam+;
+dimensions      [0 1 0 0 0 0 0];
+value           0.222222222;
 
-nTerminalOutputs    10;
-
-startFrom       latestTime;
-
-startTime       0;
-
-stopAt          endTime;
-
-endTime         4;
-
-deltaT          7.0e-6;
-
-writeControl    runTime;
-
-writeInterval   7.0e-3;
-
-purgeWrite      2;
-
-writeFormat     ascii;
-
-writePrecision  10;
-
-writeCompression uncompressed;
-
-timeFormat      general;
-
-timePrecision   10;
-
-runTimeModifiable yes;
-
-adjustTimeStep  no;
-
-functions
-{
-    #include "forces"
-}
 
 
 // ************************************************************************* //

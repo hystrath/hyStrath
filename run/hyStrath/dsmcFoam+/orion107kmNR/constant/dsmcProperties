@@ -20,6 +20,7 @@ FoamFile
 // ~~~~~~~~~~~~~~~~~~
 
 nEquivalentParticles            2.6708e15;
+// Results folder 3.2711/ had nEquivalentParticles = 1.0e14
 
 
 // Binary Collision Model

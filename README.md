@@ -9,4 +9,4 @@
 + *dsmcFoam+*: the direct simulation Monte Carlo (DSMC) code with all the latest features  
 + *pdFoam*: a hybrid PIC-DSMC solver   
 
-#### Please visit the [_hyStrath_ website](https://vincentcasseau.github.io/)
+#### Please visit the [_hyStrath_ website](https://hystrath.github.io/)

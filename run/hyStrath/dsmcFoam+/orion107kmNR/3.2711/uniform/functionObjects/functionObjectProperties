@@ -10,48 +10,25 @@ FoamFile
     version     2.0;
     format      ascii;
     class       dictionary;
-    location    "system";
-    object      controlDict;
+    location    "3.2711/uniform/functionObjects";
+    object      functionObjectProperties;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-application     dsmcFoam+;
-
-nTerminalOutputs    10;
-
-startFrom       latestTime;
-
-startTime       0;
-
-stopAt          endTime;
-
-endTime         4;
-
-deltaT          7.0e-6;
-
-writeControl    runTime;
-
-writeInterval   7.0e-3;
-
-purgeWrite      2;
-
-writeFormat     ascii;
-
-writePrecision  10;
-
-writeCompression uncompressed;
-
-timeFormat      general;
-
-timePrecision   10;
-
-runTimeModifiable yes;
-
-adjustTimeStep  no;
-
-functions
+results
 {
-    #include "forces"
+    forces
+    {
+        vector
+        {
+            normalForce     ( 20.61498213 -6.140118507 13.32679086 );
+            tangentialForce ( 10.23806147 3.303627811 -5.153578373 );
+            porousForce     ( 0 0 0 );
+            normalMoment    ( 19.65103305 15.94636948 -19.69459516 );
+            tangentialMoment ( -8.455225407 8.683223374000001 -12.13190383 );
+            porousMoment    ( 0 0 0 );
+        }
+    }
 }
 
 
