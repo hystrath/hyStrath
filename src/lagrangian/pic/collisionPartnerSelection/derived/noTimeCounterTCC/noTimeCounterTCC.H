@@ -75,10 +75,10 @@ private:
         scalar csL_;
 
         //- adaptation interval (number of steps)
-        //int adaptInterval_;
+        //label adaptInterval_;
 
         //- interveral counter for adaptation
-        //int intervalCounter_;
+        //label intervalCounter_;
 
         //- debug switch
         bool debug_;

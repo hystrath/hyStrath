@@ -991,7 +991,7 @@ void Foam::dsmcCloud::loadBalanceCheck()
 }
 
 
-void Foam::dsmcCloud::loadBalance(const int noRefinement)
+void Foam::dsmcCloud::loadBalance(const label noRefinement)
 {
     dynamicLoadBalancing_.perform(noRefinement);
 }

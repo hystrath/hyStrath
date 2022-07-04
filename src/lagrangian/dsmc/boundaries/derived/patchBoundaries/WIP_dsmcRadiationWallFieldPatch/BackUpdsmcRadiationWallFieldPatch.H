@@ -73,11 +73,11 @@ private:
 
         timeDataMeas time_;
 
-	int time2_;
+	      label time2_;
 
         scalar EcTot_;
 
-	scalar EcTotPrev_;
+	      scalar EcTotPrev_;
 
         scalar TwallRad_;
 
@@ -86,15 +86,11 @@ private:
         // emissivity * stefan boltzmann constants
         scalar epsilonSigma_;
 
-	// thermal capacity of wall
-	scalar thermalCapacity_;
+	      // thermal capacity of wall
+	      scalar thermalCapacity_;
 
         // fraction of energy given to wall
         scalar alpha_;
-
-
-
-
 
 
         void setProperties();

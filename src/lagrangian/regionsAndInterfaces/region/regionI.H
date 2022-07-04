@@ -596,11 +596,11 @@ inline void region::checkAllProcs(const polyMesh& mesh)
 //     Pout << "sending check data: " << endl;
 
     // - sending data
-    for (int i = 0; i < Pstream::nProcs(); i++)
+    for (label i = 0; i < Pstream::nProcs(); i++)
     {
         if(i != Pstream::myProcNo())
         {
-            const int proc = i;
+            const label proc = i;
 
             {
                 OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
@@ -613,13 +613,13 @@ inline void region::checkAllProcs(const polyMesh& mesh)
 //     Pout << "receiving check data" << endl;
 
     // - receiving data
-    for (int i = 0; i < Pstream::nProcs(); i++)
+    for (label i = 0; i < Pstream::nProcs(); i++)
     {
         if(i != Pstream::myProcNo())
         {
             List<bool> procTraverse;
 
-            const int proc = i;
+            const label proc = i;
 
             {
                 IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);

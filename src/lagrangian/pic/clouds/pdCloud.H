@@ -158,10 +158,10 @@ private:
         const dictionary measureDict_;
 
         bool    stdMeasure_;
-        int     stdFrequency_;
-        int     stdCount_;
+        label   stdFrequency_;
+        label   stdCount_;
 
-        int     infoFrequency_;
+        label   infoFrequency_;
 
 
     // Private Member Functions
@@ -277,7 +277,7 @@ public:
         inline scalar nParticle() const;
 
         //- return info output frequency
-        inline int infoFrequency() const;
+        inline label infoFrequency() const;
 
         //- Return the cell occupancy addressing
         inline const List<DynamicList<pdParcel*> >&

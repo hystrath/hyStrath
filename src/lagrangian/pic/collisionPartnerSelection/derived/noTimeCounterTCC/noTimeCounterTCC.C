@@ -332,12 +332,12 @@ void noTimeCounterTCC::updateCollisionCellOccupancy()
                 //- possible children for parent
                 const labelList childList = mesh.cellCells()[familyList[parent]];
                 //- maximum possible number of children
-                int sizeC = childList.size();
+                label sizeC = childList.size();
 
                 //- container list for children that are born
                 labelList tempList(sizeC,0);
                 //- counter for number of children born
-                int births = 0;
+                label births = 0;
 
                 forAll(childList,cI)
                 {
@@ -544,8 +544,8 @@ void noTimeCounterTCC::collide()
 
                 //- Declare candidateP cell iD
                 const   label& cellP = cellParcels[candidateP]->cell();
-                int     nSCP         = cellOccupancy[cellP].size();
-                int     nSCQ         = 0;
+                label    nSCP         = cellOccupancy[cellP].size();
+                label    nSCQ         = 0;
 
                 if (nSCP > 1)
                 {

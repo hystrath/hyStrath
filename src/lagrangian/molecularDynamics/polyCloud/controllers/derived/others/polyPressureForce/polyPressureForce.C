@@ -157,11 +157,11 @@ void polyPressureForce::initialConfiguration()
         }
 
         //- sending
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
-                const int proc = p;
+                const label proc = p;
                 {
                     OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << tNs;
@@ -170,13 +170,13 @@ void polyPressureForce::initialConfiguration()
         }
 
         //- receiving
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
                 List<label> tNsProc;
 
-                const int proc = p;
+                const label proc = p;
                 {
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> tNsProc;

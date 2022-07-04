@@ -437,11 +437,11 @@ void polyDensityFadeBounded::nMolsToInsert(label& molsToControl)
     if(Pstream::parRun())
     {
         //- sending
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
-                const int proc = p;
+                const label proc = p;
                 {
                     OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << pointsOnThisProc;
@@ -450,13 +450,13 @@ void polyDensityFadeBounded::nMolsToInsert(label& molsToControl)
         }
 
         //- receiving
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
                 List<bool> pointsOnThisProcRec;
 
-                const int proc = p;
+                const label proc = p;
                 {
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> pointsOnThisProcRec;

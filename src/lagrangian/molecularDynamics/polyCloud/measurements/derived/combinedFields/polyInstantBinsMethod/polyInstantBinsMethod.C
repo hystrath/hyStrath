@@ -426,7 +426,7 @@ void polyInstantBinsMethod::writeField()
             label nBins = nBins_;
             label nTimeSteps = mols_[0].size();
 
-            for (int j = 0; j < nTimeSteps; j++)
+            for (label j = 0; j < nTimeSteps; j++)
             {
                 scalarField mols(nBins, 0.0);
                 scalarField mass(nBins, 0.0);

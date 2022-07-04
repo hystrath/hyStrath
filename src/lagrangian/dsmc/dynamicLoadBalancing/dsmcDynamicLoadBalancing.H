@@ -104,7 +104,7 @@ public:
 
         void update();
 
-        void perform (const int noRefinement = 0);
+        void perform (const label noRefinement = 0);
 
         void copyPolyMeshToLatestTimeFolder() const;
 

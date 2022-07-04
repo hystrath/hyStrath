@@ -177,7 +177,7 @@ void dsmcDynamicLoadBalancing::copyPolyMeshToLatestTimeFolder() const
 }
 
 
-void dsmcDynamicLoadBalancing::perform(const int noRefinement)
+void dsmcDynamicLoadBalancing::perform(const label noRefinement)
 {
     if (performBalance_)
     {

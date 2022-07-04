@@ -48,11 +48,11 @@ void Foam::trackingNumber::resetTrackingNumbers()
         trackingNumber = trackingIndex_ + Pstream::myProcNo() + (Pstream::nProcs()-1)*trackingIndex_;
 
         //- sending
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
-                const int proc = p;
+                const label proc = p;
                 {
                     OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << trackingNumber;
@@ -61,13 +61,13 @@ void Foam::trackingNumber::resetTrackingNumbers()
         }
 
         //- receiving
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
                 label trackingNumberProc;
 
-                const int proc = p;
+                const label proc = p;
                 {
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> trackingNumberProc;
@@ -123,11 +123,11 @@ Foam::label Foam::trackingNumber::getMaxTrackingNumber()
         trackingNumber = trackingIndex_ + Pstream::myProcNo() + (Pstream::nProcs()-1)*trackingIndex_;
 
         //- sending
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
-                const int proc = p;
+                const label proc = p;
                 {
                     OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << trackingNumber;
@@ -136,13 +136,13 @@ Foam::label Foam::trackingNumber::getMaxTrackingNumber()
         }
 
         //- receiving
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
                 label trackingNumberProc;
 
-                const int proc = p;
+                const label proc = p;
                 {
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> trackingNumberProc;

@@ -117,11 +117,11 @@ void axialSelfDiffusion::createField()
     if(Pstream::parRun())
     {
         //-sending
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
-                const int proc = p;
+                const label proc = p;
                 {
                     OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
 
@@ -131,13 +131,13 @@ void axialSelfDiffusion::createField()
         }
 
         //- receiving
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
                 label maxTNProc;
 
-                const int proc = p;
+                const label proc = p;
                 {
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour  >> maxTNProc;
@@ -164,11 +164,11 @@ void axialSelfDiffusion::createField()
         }
 
         //-sending
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
-                const int proc = p;
+                const label proc = p;
                 {
                     OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
 
@@ -178,13 +178,13 @@ void axialSelfDiffusion::createField()
         }
 
         //- receiving
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
                 List<label> tNsProc;
 
-                const int proc = p;
+                const label proc = p;
                 {
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour  >> tNsProc;
@@ -214,11 +214,11 @@ void axialSelfDiffusion::createField()
     if(Pstream::parRun())
     {
         //-sending
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
-                const int proc = p;
+                const label proc = p;
                 {
                     OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
 
@@ -228,13 +228,13 @@ void axialSelfDiffusion::createField()
         }
 
         //- receiving
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
                 List<label> tNaddressProc;
 
-                const int proc = p;
+                const label proc = p;
                 {
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour  >> tNaddressProc;

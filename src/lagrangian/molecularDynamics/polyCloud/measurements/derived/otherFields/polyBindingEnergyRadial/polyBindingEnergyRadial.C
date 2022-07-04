@@ -271,11 +271,11 @@ void polyBindingEnergyRadial::createField()
     if(Pstream::parRun())
     {
         //-sending
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
-                const int proc = p;
+                const label proc = p;
                 {
                     OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << fluidMols_;
@@ -284,14 +284,14 @@ void polyBindingEnergyRadial::createField()
         }
 
         //- receiving
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
 
                 List<bool> fluidMolsProc;
 
-                const int proc = p;
+                const label proc = p;
                 {
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> fluidMolsProc;

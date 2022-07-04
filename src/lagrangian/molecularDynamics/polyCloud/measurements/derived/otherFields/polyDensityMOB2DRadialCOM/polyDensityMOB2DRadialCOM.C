@@ -323,11 +323,11 @@ void polyDensityMOB2DRadialCOM::calculateField()
         if(Pstream::parRun())
         {
             //-sending
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
-                    const int proc = p;
+                    const label proc = p;
                     {
                         OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << mass << centreOfMass;
@@ -336,14 +336,14 @@ void polyDensityMOB2DRadialCOM::calculateField()
             }
 
             //- receiving
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
                     scalar massProc;
                     vector centreOfMassProc;
 
-                    const int proc = p;
+                    const label proc = p;
                     {
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> massProc >> centreOfMassProc;
@@ -480,11 +480,11 @@ void polyDensityMOB2DRadialCOM::calculateField()
         if(Pstream::parRun())
         {
             //-sending
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
-                    const int proc = p;
+                    const label proc = p;
                     {
                         OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << mols;
@@ -493,13 +493,13 @@ void polyDensityMOB2DRadialCOM::calculateField()
             }
 
             //- receiving
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
                     Field<scalarField> molsProc;
 
-                    const int proc = p;
+                    const label proc = p;
                     {
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> molsProc;

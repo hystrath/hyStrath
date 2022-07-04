@@ -523,11 +523,11 @@ void polyPropertyFields::setVolumeMeasurements()
             nCellsProcs[Pstream::myProcNo()] = mesh_.nCells();
 
             //- sending
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
-                    const int proc = p;
+                    const label proc = p;
                     {
                         OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << mesh_.nCells();
@@ -536,13 +536,13 @@ void polyPropertyFields::setVolumeMeasurements()
             }
 
             //- receiving
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
                     label nCellsProc;
 
-                    const int proc = p;
+                    const label proc = p;
                     {
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> nCellsProc;
@@ -566,11 +566,11 @@ void polyPropertyFields::setVolumeMeasurements()
             }
 
             //- sending
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
-                    const int proc = p;
+                    const label proc = p;
                     {
                         OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << volumes;
@@ -579,13 +579,13 @@ void polyPropertyFields::setVolumeMeasurements()
             }
 
             //- receiving
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
                     scalarField volumesProc;
 
-                    const int proc = p;
+                    const label proc = p;
                     {
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> volumesProc;
@@ -699,11 +699,11 @@ void polyPropertyFields::setCoarseGrainedMeasurements()
         nCellsProcs[Pstream::myProcNo()] = mesh_.nCells();
 
         //- sending
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
-                const int proc = p;
+                const label proc = p;
                 {
                     OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << mesh_.nCells();
@@ -712,13 +712,13 @@ void polyPropertyFields::setCoarseGrainedMeasurements()
         }
 
         //- receiving
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
                 label nCellsProc;
 
-                const int proc = p;
+                const label proc = p;
                 {
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> nCellsProc;
@@ -743,11 +743,11 @@ void polyPropertyFields::setCoarseGrainedMeasurements()
         }
 
         //- sending
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
-                const int proc = p;
+                const label proc = p;
                 {
                     OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << mass;
@@ -756,13 +756,13 @@ void polyPropertyFields::setCoarseGrainedMeasurements()
         }
 
         //- receiving
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
                 scalarField massProc;
 
-                const int proc = p;
+                const label proc = p;
                 {
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> massProc;

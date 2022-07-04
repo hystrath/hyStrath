@@ -442,11 +442,11 @@ void polyTwoDimDropletDensity::calculateField()
         if(Pstream::parRun())
         {
             //-sending
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
-                    const int proc = p;
+                    const label proc = p;
                     {
                         OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << mols << mass;
@@ -455,14 +455,14 @@ void polyTwoDimDropletDensity::calculateField()
             }
 
             //- receiving
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
                     Field<scalarField> molsProc;
                     Field<scalarField> massProc;
 
-                    const int proc = p;
+                    const label proc = p;
                     {
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> molsProc >> massProc;

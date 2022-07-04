@@ -65,7 +65,7 @@ inline Foam::scalar Foam::pdCloud::nParticle() const
     return nParticle_;
 }
 
-inline int Foam::pdCloud::infoFrequency() const
+inline label Foam::pdCloud::infoFrequency() const
 {
     return infoFrequency_;
 }

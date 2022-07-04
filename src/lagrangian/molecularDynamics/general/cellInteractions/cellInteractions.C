@@ -219,7 +219,7 @@ template<class ParticleType>
 void Foam::cellInteractions<ParticleType>::buildComplexDIL()
 {
     // to make sure the user sees this
-    for (int j = 0; j < 50; j++)
+    for (label j = 0; j < 50; j++)
     {
         Info << "WARNING - YOUR MESH IS NOT OPTIMISED FOR MD..." << endl;
     }
@@ -870,11 +870,11 @@ void Foam::cellInteractions<ParticleType>::buildReferredCells()
         referredCells[pN].shrink();
 
         //- sending
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
-                const int proc = p;
+                const label proc = p;
                 {
                     OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << refList;
@@ -883,13 +883,13 @@ void Foam::cellInteractions<ParticleType>::buildReferredCells()
         }
 
         //- receiving
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
                 List<referredCell> refCellsProc;
 
-                const int proc = p;
+                const label proc = p;
                 {
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> refCellsProc;
@@ -988,7 +988,7 @@ void Foam::cellInteractions<ParticleType>::buildReferredCells()
 
     {
         //- sending
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             sendSrcCells[p].shrink();
 
@@ -998,7 +998,7 @@ void Foam::cellInteractions<ParticleType>::buildReferredCells()
 
             if(p != Pstream::myProcNo())
             {
-                const int proc = p;
+                const label proc = p;
                 {
                     OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << srcCellsToProc;
@@ -1012,13 +1012,13 @@ void Foam::cellInteractions<ParticleType>::buildReferredCells()
         }
 
         //- receiving
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
                 labelList srcCellsFromProc;
 
-                const int proc = p;
+                const label proc = p;
                 {
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> srcCellsFromProc;
@@ -1617,7 +1617,7 @@ void Foam::cellInteractions<ParticleType>::checkMesh(const scalar& rCut)
 
     scalar tolerance = 0.001*rCut;
 
-    for (int c = 0; c < mesh.nCells(); c++)
+    for (label c = 0; c < mesh.nCells(); c++)
     {
         // by bounding box
 

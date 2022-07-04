@@ -276,11 +276,11 @@ void polyHydroxylSiO2SurfaceBounded::check()
                 nMolsInt = molCloud_.cellOccupancy()[c].size();
                 nMolsRef = molCloud_.kernel().referredInteractionList()[c].size();
 
-                for (int i = 0; i < nMolsInt; i++)
+                for (label i = 0; i < nMolsInt; i++)
                 {
                     molI = molCloud_.cellOccupancy()[c][i];
 
-                    for (int j = 0; j < nMolsInt; j++)
+                    for (label j = 0; j < nMolsInt; j++)
                     {
                         if(j > i)
                         {
@@ -312,7 +312,7 @@ void polyHydroxylSiO2SurfaceBounded::check()
                         }
                     }
 
-                    for (int j = 0; j < nMolsExt; j++)
+                    for (label j = 0; j < nMolsExt; j++)
                     {
                         molJ = molCloud_.il()[c][j];
 
@@ -341,7 +341,7 @@ void polyHydroxylSiO2SurfaceBounded::check()
                         }
                     }
 
-                    for (int j = 0; j < nMolsRef; j++)
+                    for (label j = 0; j < nMolsRef; j++)
                     {
                         molJ = molCloud_.kernel().referredInteractionList()[c][j];
 

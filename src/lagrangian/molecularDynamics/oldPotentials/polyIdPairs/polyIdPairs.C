@@ -96,7 +96,7 @@ namespace Foam
          */
 
 
-	for(int i = 0;i<pairs.size();i++){
+	for(label i = 0;i<pairs.size();i++){
 		if(pairs[i] != "electrostatic")
 		{
 			word pp = pairDict.subDict(pairs[i]).lookup("pairPotential");
@@ -112,7 +112,7 @@ namespace Foam
                                 coeffSize_ = coeffsize;
                                 coeffType_ = pp;
 
-                                for(int k=0; k<coeffsize;++k){
+                                for(label k=0; k<coeffsize;++k){
                                     coeffNames_[k] = coeff[k];
                                     coeffNumIds_[k] = k;
                                 }
@@ -126,13 +126,13 @@ namespace Foam
 	for(;c < coeffsize; ++c)
 		coeffVals_[c].setSize(nIds_);
 	for(c = 0; c < coeffsize; ++c)
-		for(int b = 0; b < nIds_; b++)
+		for(label b = 0; b < nIds_; b++)
 			coeffVals_[c][b].setSize(nIds_);
 
         //make the coeffs zero
         for(c=0;c < coeffsize; ++c){
-            for(int i=0; i<nIds_; ++i){
-                for(int j=0; j<nIds_; ++j){
+            for(label i=0; i<nIds_; ++i){
+                for(label j=0; j<nIds_; ++j){
                     coeffVals_[c][i][j] = 0;
                 }
             }
@@ -154,10 +154,10 @@ namespace Foam
  * value obtained at the beginning which essentially consists of number of Species inside coeffs, subsequently
  * we will be traversing the loop and will use the list of species name inside coeffsNames_ array
  */
-        for(int a=0; a<nIds_; a++)
+        for(label a=0; a<nIds_; a++)
         {
             word idA = pot.siteIdList()[a];
-            for(int b=0; b<nIds_; b++)
+            for(label b=0; b<nIds_; b++)
             {
                 word idB = pot.siteIdList()[b];
 		word pname = idA+"-"+idB;

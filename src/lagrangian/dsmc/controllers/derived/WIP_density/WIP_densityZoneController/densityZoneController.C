@@ -96,11 +96,11 @@ void densityZoneController::initialConfiguration()
 
         volumeWeighting_[Pstream::myProcNo()] = controlVolume_;
 
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
-                const int proc = p;
+                const label proc = p;
                 {
                     OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << controlVolume_;
@@ -109,13 +109,13 @@ void densityZoneController::initialConfiguration()
         }
 
         //- receiving
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
                 scalar controlVolumeProc;
 
-                const int proc = p;
+                const label proc = p;
                 {
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> controlVolumeProc;
@@ -266,7 +266,7 @@ void densityZoneController::nMolsToControl()
 
             forAll(nMols_, c)
             {
-                for (int n = 0; n < mag(nMolsPerCell); n++)
+                for (label n = 0; n < mag(nMolsPerCell); n++)
                 {
                     if(mag(nMolsCumul) < mag(nMolsMesh))
                     {
@@ -292,7 +292,7 @@ void densityZoneController::nMolsToControl()
 
                 DynamicList<label> cellsChosen(0);
 
-                for (int n = 0; n < mag(residualMols); n++)
+                for (label n = 0; n < mag(residualMols); n++)
                 {
                     label iter = 0;
                     bool foundCell = false;
@@ -343,7 +343,7 @@ void densityZoneController::nMolsToControl()
         {
             DynamicList<label> cellsChosen(0);
 
-            for (int n = 0; n < mag(nMolsMesh); n++)
+            for (label n = 0; n < mag(nMolsMesh); n++)
             {
                 label iter = 0;
                 bool foundCell = false;
@@ -475,7 +475,7 @@ void densityZoneController::controlParcelsBeforeMove()
 
 void densityZoneController::insertParcels(const label& nMols, const label& c)
 {
-    for (int n = 0; n < mag(nMols); n++)
+    for (label n = 0; n < mag(nMols); n++)
     {
         const label& cellI = controlZone()[c];
 
@@ -592,7 +592,7 @@ void densityZoneController::insertParcels(const label& nMols, const label& c)
 
 void densityZoneController::deleteParcels(const label& nMols, const label& c)
 {
-    for (int n = 0; n < mag(nMols); n++)
+    for (label n = 0; n < mag(nMols); n++)
     {
         const List<DynamicList<dsmcParcel*> >& cellOccupancy = cloud_.cellOccupancy();
         const label& cellI = controlZone()[c];

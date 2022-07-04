@@ -201,11 +201,11 @@ void temperatureZoneController::calculateProperties()
         if(Pstream::parRun())
         {
             // sending
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
-                    const int proc = p;
+                    const label proc = p;
                     {
                         OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << massV << momV;
@@ -214,14 +214,14 @@ void temperatureZoneController::calculateProperties()
             }
 
             //- receiving
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
                     scalar massVProc;
                     vector momVProc;
 
-                    const int proc = p;
+                    const label proc = p;
                     {
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> massVProc >> momVProc;
@@ -286,11 +286,11 @@ void temperatureZoneController::calculateProperties()
         if(Pstream::parRun())
         {
             //- sending
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
-                    const int proc = p;
+                    const label proc = p;
                     {
                          OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << mcc << m << nParcels;
@@ -299,7 +299,7 @@ void temperatureZoneController::calculateProperties()
             }
 
             //- receiving
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
@@ -307,7 +307,7 @@ void temperatureZoneController::calculateProperties()
                     scalar mProc;
                     scalar nParcelsProc;
 
-                    const int proc = p;
+                    const label proc = p;
                     {
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> mccProc >> mProc >> nParcelsProc;

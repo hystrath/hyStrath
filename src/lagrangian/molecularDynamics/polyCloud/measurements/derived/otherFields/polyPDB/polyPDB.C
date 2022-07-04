@@ -236,7 +236,7 @@ void polyPDB::createField()
     minLimit_[0] = 0;
     maxLimit_[0] = 99999;
 
-    for (int i = 1; i < n_; i++)
+    for (label i = 1; i < n_; i++)
     {
         minLimit_[i] = 100000*(i);
         maxLimit_[i] = (100000*(i+1)) - 1;
@@ -253,7 +253,7 @@ void polyPDB::createField()
 
             label nSitesMol = 0;
 
-            for (int i = 0; i < n; i++)
+            for (label i = 0; i < n; i++)
             {
                 if(findIndex(excludeSites_,  molCloud_.cP().siteNames(molId)[i]) == -1)
                 {
@@ -458,7 +458,7 @@ void polyPDB::write()
         // send to master (master does not send)
         if(!Pstream::master())
         {
-            const int proc = 0;
+            const label proc = 0;
             {
                 OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                 toNeighbour << sites[myProc] << molIds[myProc];
@@ -468,14 +468,14 @@ void polyPDB::write()
         //- receiving (master only receives)
         if(Pstream::master())
         {
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
                     vectorField sitesProc;
                     labelField molIdsProc;
 
-                    const int proc = p;
+                    const label proc = p;
                     {
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> sitesProc >> molIdsProc;
@@ -514,7 +514,7 @@ void polyPDB::write()
     {
         const reducedUnits& rU = molCloud_.redUnits();
 
-        for (int j = 0; j < n_; j++)
+        for (label j = 0; j < n_; j++)
         {
             std::string s;
             std::stringstream out;
@@ -547,7 +547,7 @@ void polyPDB::write()
 
                         label n = molCloud_.cP().nSites(molId);
 
-                        for (int i = 0; i < n; i++)
+                        for (label i = 0; i < n; i++)
                         {
                             if(findIndex(excludeSites_,  molCloud_.cP().siteNames(molId)[i]) == -1)
                             {
@@ -683,7 +683,7 @@ void polyPDB::write()
 
                     label nBufferMols = nBufferSites/nSitesMol_;
 
-                    for (int i = 0; i < nBufferMols; i++)
+                    for (label i = 0; i < nBufferMols; i++)
                     {
                         if(molCloud_.cP().pointMolecule(molId))
                         {
@@ -727,7 +727,7 @@ void polyPDB::write()
                         {
                             label n = molCloud_.cP().nSites(molId);
 
-                            for (int i = 0; i < n; i++)
+                            for (label i = 0; i < n; i++)
                             {
                                 if(findIndex(excludeSites_,  molCloud_.cP().siteNames(molId)[i]) == -1)
                                 {

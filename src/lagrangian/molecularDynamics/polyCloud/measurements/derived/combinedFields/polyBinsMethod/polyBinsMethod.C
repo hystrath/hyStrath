@@ -348,11 +348,11 @@ void polyBinsMethod::createField()
     if(Pstream::parRun())
     {
         // sending
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
-                const int proc = p;
+                const label proc = p;
                 {
                     OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << mols << mass << mom << angularSpeed;
@@ -361,7 +361,7 @@ void polyBinsMethod::createField()
         }
 
         //- receiving
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
@@ -370,7 +370,7 @@ void polyBinsMethod::createField()
                 vectorField momProc;
                 vectorField angularSpeedProc;
 
-                const int proc = p;
+                const label proc = p;
                 {
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> molsProc >> massProc >> momProc >> angularSpeedProc;
@@ -446,11 +446,11 @@ void polyBinsMethod::calculateField()
         if(Pstream::parRun())
         {
             // sending
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
-                    const int proc = p;
+                    const label proc = p;
                     {
                         OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << mols << mass << mom << angularSpeed;
@@ -459,7 +459,7 @@ void polyBinsMethod::calculateField()
             }
 
             //- receiving
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
@@ -468,7 +468,7 @@ void polyBinsMethod::calculateField()
                     vectorField momProc;
                     vectorField angularSpeedProc;
 
-                    const int proc = p;
+                    const label proc = p;
                     {
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> molsProc >> massProc >> momProc >> angularSpeedProc;
@@ -554,11 +554,11 @@ void polyBinsMethod::calculateField()
     if(Pstream::parRun())
     {
         //-sending
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
-                const int proc = p;
+                const label proc = p;
                 {
                     OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << mass << mom;
@@ -567,14 +567,14 @@ void polyBinsMethod::calculateField()
         }
 
         //- receiving
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
                 scalarField massProc;
                 vectorField momProc;
 
-                const int proc = p;
+                const label proc = p;
                 {
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour  >> massProc >> momProc;
@@ -609,11 +609,11 @@ void polyBinsMethod::calculateField()
         if(Pstream::parRun())
         {
             //-sending
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
-                    const int proc = p;
+                    const label proc = p;
                     {
                         OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
 
@@ -625,7 +625,7 @@ void polyBinsMethod::calculateField()
             }
 
             //- receiving
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
@@ -638,7 +638,7 @@ void polyBinsMethod::calculateField()
                     tensorField kineticTensorProc;
                     tensorField virialTensorProc;
 
-                    const int proc = p;
+                    const label proc = p;
                     {
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour  >> molsProc >> massProc >> momProc

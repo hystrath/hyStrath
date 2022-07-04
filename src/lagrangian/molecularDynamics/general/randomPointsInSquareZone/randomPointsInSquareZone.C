@@ -105,11 +105,11 @@ void randomPointsInSquareZone:: setInitialConfiguration
     if(Pstream::parRun())
     {
         //- sending
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
-                const int proc = p;
+                const label proc = p;
                 {
                     OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << XMin << XMax << YMin
@@ -119,7 +119,7 @@ void randomPointsInSquareZone:: setInitialConfiguration
         }
 
         //- receiving
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
@@ -132,7 +132,7 @@ void randomPointsInSquareZone:: setInitialConfiguration
                 scalar ZMaxP;
 //                 bool zoneOnMeshP;
 
-                const int proc = p;
+                const label proc = p;
                 {
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> XMinP >> XMaxP >> YMinP

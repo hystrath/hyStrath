@@ -210,7 +210,7 @@ void Foam::Boltz::calculatePotential()
     dimensionedScalar alpha = e/(kB*Te_);
 
     //- initialise computational variables
-    int iCorr = 0;                      //- outer iteration counter
+    label iCorr = 0;                    //- outer iteration counter
     Foam::solverPerformance solverPerf; //- reference to solver performance monitor
     scalar initialResidual = 1.0;       //- initial residual
     scalar delta = 1.0;
@@ -267,7 +267,7 @@ void Foam::Boltz::calculatePotential()
         delta = gMax(mag(dphi_.primitiveField()));
         /**----------------------------**/
 
-        // intial outer residual
+        // initial outer residual
         if (iCorr == 0)
         {
             //initialResidual = delta.value();

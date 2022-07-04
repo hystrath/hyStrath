@@ -241,7 +241,7 @@ void polyXMOL::write()
         // send to master (master does not send)
         if(!Pstream::master())
         {
-            const int proc = 0;
+            const label proc = 0;
             {
                 OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                 toNeighbour << sites[myProc] << molIds[myProc];
@@ -251,14 +251,14 @@ void polyXMOL::write()
         //- receiving (master only receives)
         if(Pstream::master())
         {
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
                     vectorField sitesProc;
                     labelField molIdsProc;
 
-                    const int proc = p;
+                    const label proc = p;
                     {
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> sitesProc >> molIdsProc;
@@ -304,7 +304,7 @@ void polyXMOL::write()
 
                 label n = molCloud_.cP().nSites(molId);
 
-                for (int i = 0; i < n; i++)
+                for (label i = 0; i < n; i++)
                 {
                     if(findIndex(excludeSites_, molCloud_.cP().siteNames(molId)[i]) == -1)
                     {

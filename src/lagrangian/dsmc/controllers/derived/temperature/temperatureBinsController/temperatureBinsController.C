@@ -237,11 +237,11 @@ void temperatureBinsController::calculateProperties()
         if(Pstream::parRun())
         {
             // sending
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
-                    const int proc = p;
+                    const label proc = p;
                     {
                         OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << mass << mom;
@@ -250,14 +250,14 @@ void temperatureBinsController::calculateProperties()
             }
 
             //- receiving
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
                     scalarField massProc;
                     vectorField momProc;
 
-                    const int proc = p;
+                    const label proc = p;
                     {
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> massProc >> momProc;
@@ -343,11 +343,11 @@ void temperatureBinsController::calculateProperties()
         if(Pstream::parRun())
         {
             //- sending
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
-                    const int proc = p;
+                    const label proc = p;
                     {
                         OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << mcc << m << nParcels;
@@ -356,7 +356,7 @@ void temperatureBinsController::calculateProperties()
             }
 
             //- receiving
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
@@ -364,7 +364,7 @@ void temperatureBinsController::calculateProperties()
                     scalarField mProc;
                     scalarField nParcelsProc;
 
-                    const int proc = p;
+                    const label proc = p;
                     {
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> mccProc >> mProc >> nParcelsProc;

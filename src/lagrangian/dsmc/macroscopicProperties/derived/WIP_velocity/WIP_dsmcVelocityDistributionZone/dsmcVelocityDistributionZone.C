@@ -295,11 +295,11 @@ void dsmcVelocityDistributionZone::writeField()
 
         if (Pstream::parRun())
         {
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
-                    const int proc = p;
+                    const label proc = p;
                     {
                         OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << xAxisX << yAxisX << xAxisY
@@ -309,7 +309,7 @@ void dsmcVelocityDistributionZone::writeField()
             }
 
             //- receiving
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
@@ -320,7 +320,7 @@ void dsmcVelocityDistributionZone::writeField()
                     scalarField xAxisZProc;
                     scalarField yAxisZProc;
 
-                    const int proc = p;
+                    const label proc = p;
                     {
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> xAxisXProc >> yAxisXProc >> xAxisYProc

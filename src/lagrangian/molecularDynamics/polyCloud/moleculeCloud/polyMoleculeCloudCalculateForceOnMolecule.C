@@ -1298,11 +1298,11 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToInsertion
 //         }
 //
 //         //- sending
-//         for (int i = 0; i < Pstream::nProcs(); i++)
+//         for (label i = 0; i < Pstream::nProcs(); i++)
 //         {
 //             if(i != Pstream::myProcNo())
 //             {
-//                 const int proc = i;
+//                 const label proc = i;
 //                 {
 //                     OPstream toNeighbour(proc);
 //                     toNeighbour << cellsOnProcs[i].shrink() << molId << molPosition << cellI;
@@ -1319,7 +1319,7 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToInsertion
 //         vector posI;
 //         label cellFromProc;
 //
-//         const int proc = procN;
+//         const label proc = procN;
 //         {
 //             IPstream fromNeighbour(proc);
 //             fromNeighbour >> cellLabels >> idI >> posI >> cellFromProc;
@@ -2041,11 +2041,11 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToDeletion
 //         }
 //
 //         //- sending
-//         for (int i = 0; i < Pstream::nProcs(); i++)
+//         for (label i = 0; i < Pstream::nProcs(); i++)
 //         {
 //             if((i != Pstream::myProcNo()) &&  (procN == Pstream::myProcNo()))
 //             {
-//                 const int proc = i;
+//                 const label proc = i;
 //                 {
 //                     OPstream toNeighbour(proc);
 //                     toNeighbour << cellsOnProcs[i].shrink() << molId
@@ -2064,7 +2064,7 @@ void waterMoleculeCloud::updateForceOnReferredCellMoleculesDueToDeletion
 //         label cellFromProc;
 //         label cellIdFromProc;
 //
-//         const int proc = procN;
+//         const label proc = procN;
 //         {
 //             IPstream fromNeighbour(proc);
 //             fromNeighbour >> cellLabels >> idI >> posI

@@ -407,14 +407,14 @@ void Foam::polyMoleculeCloud::removeHighEnergyOverlaps()
             nMolsInt = cellOccupancy_[c].size();
             nMolsRef = iL_.ripl()[c].size();
 
-            for (int i = 0; i < nMolsInt; i++)
+            for (label i = 0; i < nMolsInt; i++)
             {
                 molI = cellOccupancy_[c][i];
 
 				label idI = molI->id();
 				bool molIDeleted = false;
 
-				for (int j = 0; j < nMolsInt; j++)
+				for (label j = 0; j < nMolsInt; j++)
 				{
 					if(j > i)
 					{
@@ -453,7 +453,7 @@ void Foam::polyMoleculeCloud::removeHighEnergyOverlaps()
 					}
 				}
 
-				for (int j = 0; j < nMolsExt; j++)
+				for (label j = 0; j < nMolsExt; j++)
 				{
 					molJ = ipl_[c][j];
 
@@ -489,7 +489,7 @@ void Foam::polyMoleculeCloud::removeHighEnergyOverlaps()
 					}
 				}
 
-				for (int j = 0; j < nMolsRef; j++)
+				for (label j = 0; j < nMolsRef; j++)
 				{
 					molJ = iL_.ripl()[c][j];
 
@@ -556,7 +556,7 @@ void Foam::polyMoleculeCloud::removeHighEnergyOverlaps()
     if(nMolsDeleted > 0)
     {
         // to make sure the user sees this
-        for (int j = 0; j < 50; j++)
+        for (label j = 0; j < 50; j++)
         {
             Info << nl << "WARNING: molecules removed due to overlaps = "
                 << nMolsDeleted <<  endl;
@@ -1361,11 +1361,11 @@ void Foam::polyMoleculeCloud::updateTrackingNumbersAfterRead()
     {
 
         //- sending
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
-                const int proc = p;
+                const label proc = p;
                 {
                     OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << tN;
@@ -1374,13 +1374,13 @@ void Foam::polyMoleculeCloud::updateTrackingNumbersAfterRead()
         }
 
         //- receiving
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
                 label trackingNumberProc;
 
-                const int proc = p;
+                const label proc = p;
                 {
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> trackingNumberProc;

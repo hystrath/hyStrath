@@ -577,7 +577,7 @@ public:
             void loadBalanceCheck();
 
             //- Perform load balance
-            void loadBalance(const int noRefinement = 0);
+            void loadBalance(const label noRefinement = 0);
 
 	    // Mapping
 

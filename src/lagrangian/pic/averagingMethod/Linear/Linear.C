@@ -267,9 +267,9 @@ void Foam::AveragingMethods::Linear<Type>::XtoL
     //p4~(0,1,0), p5~(1,1,0), p6~(1,1,1), p7~(0,1,1),
     //Uses Gauss-Newton method.
 
-    int iter = 30;                  //- max iteration counter
-    scalar tol = 1e-10;              //- tolerance
-    vector ss(0.5, 0.5, 0.5);    //- initial guess
+    label iter = 30;                  //- max iteration counter
+    scalar tol = 1e-10;               //- tolerance
+    vector ss(0.5, 0.5, 0.5);         //- initial guess
     //- logical co-ords
     scalar dl = 0;
     scalar dm = 0;
@@ -289,7 +289,7 @@ void Foam::AveragingMethods::Linear<Type>::XtoL
     tensor A    = tensor::zero;
     tensor invA = tensor::zero;
 
-    for(int k = 1; k<iter; k++)
+    for(label k = 1; k<iter; k++)
     {
         dl = ss.x();
         dm = ss.y();

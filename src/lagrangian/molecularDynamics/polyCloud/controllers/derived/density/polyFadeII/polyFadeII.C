@@ -369,7 +369,7 @@ void polyFadeII::controlMolecules
 
     // - insert in parallel
 
-    for (int p = 0; p < Pstream::nProcs(); p++)
+    for (label p = 0; p < Pstream::nProcs(); p++)
     {
         if(p == Pstream::myProcNo())
         {
@@ -1520,11 +1520,11 @@ void polyFadeII::updateLists
             tNsDelList[i]=tNsDel[i];
         }
 
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
-                const int proc = p;
+                const label proc = p;
                 {
                     OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << tNsInsList << tNsDelList;
@@ -1533,14 +1533,14 @@ void polyFadeII::updateLists
         }
 
         //- receiving
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
                 List<label> tNsInsListProc;
                 List<label> tNsDelListProc;
 
-                const int proc = p;
+                const label proc = p;
                 {
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> tNsInsListProc >> tNsDelListProc;
@@ -1637,11 +1637,11 @@ void polyFadeII::insertInLists
             timeDelList[i]=timeDel[i];
         }
 
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
-                const int proc = p;
+                const label proc = p;
                 {
                     OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << tNsInsList << tNsDelList
@@ -1651,7 +1651,7 @@ void polyFadeII::insertInLists
         }
 
         //- receiving
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
@@ -1660,7 +1660,7 @@ void polyFadeII::insertInLists
                 List<scalar> timeInsListProc;
                 List<scalar> timeDelListProc;
 
-                const int proc = p;
+                const label proc = p;
                 {
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> tNsInsListProc >> tNsDelListProc

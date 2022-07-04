@@ -178,7 +178,7 @@ void poly1DMassFluxZone::writeField()
             label nBins = nBins_;
             label nTimeSteps = massFlowRate_[0].size();
 
-            for (int j = 0; j < nTimeSteps; j++)
+            for (label j = 0; j < nTimeSteps; j++)
             {
                 scalarField massFlux(nBins, 0.0);
 

@@ -148,11 +148,11 @@ void trackPolyMolecule::createField()
     if(Pstream::parRun())
     {
         //- sending
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
-                const int proc = p;
+                const label proc = p;
                 {
                     OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << trackingNumber << shortestDistance << startingMolPosition;
@@ -161,7 +161,7 @@ void trackPolyMolecule::createField()
         }
 
         //- receiving
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
@@ -169,7 +169,7 @@ void trackPolyMolecule::createField()
                 scalar shortestDistanceProc;
                 vector startingMolPositionProc;
 
-                const int proc = p;
+                const label proc = p;
                 {
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> trackingNumberProc >> shortestDistanceProc >> startingMolPositionProc;
@@ -257,11 +257,11 @@ void trackPolyMolecule::calculateField()
         if(Pstream::parRun())
         {
             //- sending
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
-                    const int proc = p;
+                    const label proc = p;
                     {
                         OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << trackingPosition << cell
@@ -272,7 +272,7 @@ void trackPolyMolecule::calculateField()
             }
 
             //- receiving
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
@@ -283,7 +283,7 @@ void trackPolyMolecule::calculateField()
                     label cellProc;
                     vectorField trackingMolSitePositionsProc;
 
-                    const int proc = p;
+                    const label proc = p;
                     {
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> trackingPositionProc >> cellProc

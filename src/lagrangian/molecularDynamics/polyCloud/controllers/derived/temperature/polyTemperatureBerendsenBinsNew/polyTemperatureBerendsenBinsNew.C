@@ -214,11 +214,11 @@ void polyTemperatureBerendsenBinsNew::initialConfiguration()
     if(Pstream::parRun())
     {
         //- sending
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
-                const int proc = p;
+                const label proc = p;
                 {
                     OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                     toNeighbour << mass << momentum;
@@ -227,14 +227,14 @@ void polyTemperatureBerendsenBinsNew::initialConfiguration()
         }
 
         //- receiving
-        for (int p = 0; p < Pstream::nProcs(); p++)
+        for (label p = 0; p < Pstream::nProcs(); p++)
         {
             if(p != Pstream::myProcNo())
             {
                 scalarField massProc;
                 vectorField momProc;
 
-                const int proc = p;
+                const label proc = p;
                 {
                     IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                     fromNeighbour >> massProc >> momProc;
@@ -392,11 +392,11 @@ void polyTemperatureBerendsenBinsNew::calculateProperties()
         if(Pstream::parRun())
         {
             //- sending
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
-                    const int proc = p;
+                    const label proc = p;
                     {
                         OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << mass << momentum;
@@ -405,14 +405,14 @@ void polyTemperatureBerendsenBinsNew::calculateProperties()
             }
 
             //- receiving
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
                     scalarField massProc;
                     vectorField momProc;
 
-                    const int proc = p;
+                    const label proc = p;
                     {
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> massProc >> momProc;
@@ -486,11 +486,11 @@ void polyTemperatureBerendsenBinsNew::calculateProperties()
         if(Pstream::parRun())
         {
             //- sending
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
-                    const int proc = p;
+                    const label proc = p;
                     {
                         OPstream toNeighbour(Pstream::commsTypes::blocking, proc);
                         toNeighbour << kE << angularKe << dof;
@@ -499,7 +499,7 @@ void polyTemperatureBerendsenBinsNew::calculateProperties()
             }
 
             //- receiving
-            for (int p = 0; p < Pstream::nProcs(); p++)
+            for (label p = 0; p < Pstream::nProcs(); p++)
             {
                 if(p != Pstream::myProcNo())
                 {
@@ -507,7 +507,7 @@ void polyTemperatureBerendsenBinsNew::calculateProperties()
                     scalarField angularKeProc;
                     scalarField dofProc;
 
-                    const int proc = p;
+                    const label proc = p;
                     {
                         IPstream fromNeighbour(Pstream::commsTypes::blocking, proc);
                         fromNeighbour >> kEProc >>angularKeProc >> dofProc;
