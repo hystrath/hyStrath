@@ -37,7 +37,7 @@ Foam::AveragingMethods::Basic<Type>::Basic
     const fvMesh& mesh
 )
 :
-    AveragingMethod<Type>(io, dict, mesh, labelList(1, mesh.nCells())),
+    AveragingMethod<Type>(io, dict, mesh, labelList(label(1), mesh.nCells())),
     data_(FieldField<Field, Type>::operator[](0)),
     dataGrad_(mesh.nCells())
 {}

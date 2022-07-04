@@ -218,7 +218,7 @@ bool Foam::AveragingMethod<Type>::write()
             cellGrad[cellI] += v*interpolateGrad(mesh_.C()[cellI], tetIs);
 
             const face& f = mesh_.faces()[tetIs.face()];
-            labelList vertices(3);
+            labelList vertices(label(3));
             vertices[0] = f[tetIs.faceBasePt()];
             vertices[1] = f[tetIs.facePtA()];
             vertices[2] = f[tetIs.facePtB()];

@@ -37,7 +37,7 @@ Foam::autoPtr<labelList> Foam::AveragingMethods::Linear<Type>::size
     const fvMesh& mesh
 )
 {
-    autoPtr<labelList> s(new labelList(2));
+    autoPtr<labelList> s(new labelList(label(2)));
     s()[0] = mesh.nCells();
     s()[1] = mesh.nPoints();
     return s;

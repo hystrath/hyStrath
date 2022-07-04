@@ -314,7 +314,7 @@ void noTimeCounterTCC::updateCollisionCellOccupancy()
 
             //- assign 0th parent a new family number
             scalar parent = 0;
-            labelList familyList(1,cellI);
+            labelList familyList(label(1),cellI);
 
             familyN++;
 
@@ -577,7 +577,7 @@ void noTimeCounterTCC::collide()
                     // Select a possible second collision candidate from the
                     // nearest neighbour cell within the group with a candidate.
                     // If the same candidate is chosen, choose again.
-                    labelList parentList(1,0);
+                    labelList parentList(label(1),0);
                     parentList[0] = cellP;
                     label parent = 0;
                     label familyN = cO + 1;
