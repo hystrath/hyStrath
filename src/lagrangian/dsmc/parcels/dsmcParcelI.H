@@ -94,7 +94,7 @@ inline Foam::dsmcParcel::constantProperties::constantProperties
         dict.lookupOrDefault<labelList>
         (
             "electronicDegeneracyList",
-            labelList(1, 1)
+            labelList(label(1), 1)
         )
     )
 {

@@ -104,7 +104,7 @@ void associativeIonisationQK::setProperties()
         productsAssociativeIonisation.size()
     );
 
-    labelList productsIds(2, -1);
+    labelList productsIds(label(2), -1);
 
     forAll(productsAssociativeIonisation, p)
     {
@@ -885,7 +885,7 @@ void associativeIonisationQK::outputResults(const label& counterIndex)
 
         volume_ = 0.0;
 
-        labelList molsReactants(2, 0);
+        labelList molsReactants(label(2), 0);
 
         forAll(cellOccupancy, c)
         {

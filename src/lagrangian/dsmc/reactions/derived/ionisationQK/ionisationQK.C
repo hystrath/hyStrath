@@ -549,7 +549,7 @@ void ionisationQK::outputResults(const label& counterIndex)
 
         volume_ = 0.0;
 
-        labelList molsReactants(2, 0);
+        labelList molsReactants(label(2), 0);
 
         forAll(cellOccupancy, c)
         {
