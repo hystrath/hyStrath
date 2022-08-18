@@ -486,7 +486,7 @@ void dsmcWangPressureInlet::controlParcelsAfterCollisions()
             const vector& sF = mesh_.faceAreas()[faceI];
             const scalar fA = mag(sF);
 
-            const scalar deltaT = cloud_.deltaTValue(mesh_.boundaryMesh()[patchId_].faceCells()[faceI]);
+            const scalar deltaT = cloud_.deltaTValue(mesh_.boundaryMesh()[patchId_].faceCells()[f]);
 
             scalar mostProbableSpeed
             (
