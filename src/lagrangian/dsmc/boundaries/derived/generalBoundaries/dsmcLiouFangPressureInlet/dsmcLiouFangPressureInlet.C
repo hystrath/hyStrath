@@ -362,9 +362,12 @@ void dsmcLiouFangPressureInlet::controlParcelsAfterCollisions()
             mass[c] += cloud_.nParticles(celli)*cloud_.constProps(p->typeId()).mass();
         }
 
-        newInletVelocity[c] = momentum[c]/mass[c];
+        if(mass[c] > VSMALL)
+        {
+            newInletVelocity[c] = momentum[c]/mass[c];
 
-        inletVelocity_[c] = theta_*newInletVelocity[c] + (1.0 - theta_)*previousInletVelocity_[c];
+            inletVelocity_[c] = theta_*newInletVelocity[c] + (1.0 - theta_)*previousInletVelocity_[c];
+        }
     }
 
     if(faces_.size() > VSMALL)
