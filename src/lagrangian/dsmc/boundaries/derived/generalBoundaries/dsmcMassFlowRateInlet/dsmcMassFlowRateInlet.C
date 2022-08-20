@@ -369,7 +369,10 @@ void dsmcMassFlowRateInlet::controlParcelsAfterCollisions()
 
 //         inletVelocity_[c] = theta_*newInletVelocity[c] + (1.0 - theta_)*previousInletVelocity_[c];
 
-        inletVelocity_[c] = momentum_[c]/mass_[c];
+        if(mass_[c] > VSMALL)
+        {
+            inletVelocity_[c] = momentum_[c]/mass_[c];
+        }
 
         const vector& sF = mesh_.faceAreas()[faces_[c]];
         const scalar fA = mag(sF);
