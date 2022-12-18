@@ -347,7 +347,7 @@ tmp<volVectorField> lowReMag::lorentzForce() const
 }
 
 
-const volTensorField& lowReMag::sigma() const
+volTensorField lowReMag::sigma() const
 {
     if (!electricalConductivity_.valid())
     {

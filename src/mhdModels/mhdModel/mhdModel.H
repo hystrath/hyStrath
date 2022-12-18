@@ -226,8 +226,8 @@ public:
                 return thermo_;
             }
             
-            //- Return const access to the electrical conductivity field
-            virtual const volTensorField& sigma() const = 0;
+            //- Return the electrical conductivity field
+            virtual volTensorField sigma() const = 0;
             
             //- Return const access to the electric field
             virtual const volVectorField& E() const = 0;

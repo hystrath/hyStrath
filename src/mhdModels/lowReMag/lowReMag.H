@@ -154,8 +154,8 @@ public:
           //- Lorentz force: source term in the momentum equations
           virtual tmp<volVectorField> lorentzForce() const;
          
-          //- Return const access to the electrical conductivity field
-          virtual const volTensorField& sigma() const;
+          //- Return the electrical conductivity field
+          virtual volTensorField sigma() const;
          
           //- Return const access to the electric field
           virtual const volVectorField& E() const

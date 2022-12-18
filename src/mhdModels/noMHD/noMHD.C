@@ -304,7 +304,7 @@ const volVectorField& noMHD::B() const
 }
 
 
-const volTensorField& noMHD::sigma() const
+volTensorField noMHD::sigma() const
 {
     tmp<volTensorField> tsigma
     (
