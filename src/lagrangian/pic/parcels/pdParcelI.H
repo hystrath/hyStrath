@@ -50,22 +50,20 @@ inline Foam::pdParcel::constantProperties::constantProperties
     d_(readScalar(dict.lookup("diameter"))),
     rotationalDegreesOfFreedom_
     (
-        readScalar(dict.lookup("rotationalDegreesOfFreedom"))
+        dict.lookupOrDefault<scalar>("rotationalDegreesOfFreedom", 0)
     ),
     vibrationalDegreesOfFreedom_
     (
-        readScalar(dict.lookup("vibrationalModes"))
+        dict.lookupOrDefault<scalar>("vibrationalModes", 0)
     ),
     omega_(readScalar(dict.lookup("omega"))),
-    alpha_(readScalar(dict.lookup("alpha"))),
-    thetaV_(readScalar(dict.lookup("characteristicVibrationalTemperature"))),
-    charDissQuantumLevel_(readLabel(dict.lookup("charDissQuantumLevel"))),
-    thetaD_(readScalar(dict.lookup("dissociationTemperature"))),
-    Zref_(readScalar(dict.lookup("Zref"))),
-    TrefZv_(readScalar(dict.lookup("referenceTempForZref")))
-{
-
-}
+    alpha_(dict.lookupOrDefault<scalar>("alpha", 1.0)),
+    thetaV_(dict.lookupOrDefault<scalar>("characteristicVibrationalTemperature", 0.0)),
+    charDissQuantumLevel_(dict.lookupOrDefault<label>("charDissQuantumLevel", 0.0)),
+    thetaD_(dict.lookupOrDefault<scalar>("dissociationTemperature", 0.0)),
+    Zref_(dict.lookupOrDefault<scalar>("Zref", 0.0)),
+    TrefZv_(dict.lookupOrDefault<scalar>("referenceTempForZref", 0.0))
+{}
 
 inline Foam::pdParcel::trackingData::trackingData(pdCloud& cloud, label part)
 :

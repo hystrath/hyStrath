@@ -598,7 +598,7 @@ void Foam::pdCloud::evolve()
 
     /**************************************************************/
     /**               PD - Leapfrog method                      **/
-    Info << "2. Electromagnetics" << endl;
+//    Info << "2. Electromagnetics" << endl;
     //- calculate fields based on particles at (x,v-0.5)_{k}
     //Info << "       - calculating fields" << endl;
     emFields_.calculateFields();
@@ -607,7 +607,7 @@ void Foam::pdCloud::evolve()
     emFields_.calculateForces();
     //Info << "       - calculating lorentz force" << endl;
 
-    Info << "3. Particle Integration" << endl;
+//    Info << "3. Particle Integration" << endl;
 
     //Info << "       - leapfrog velocity" << endl;
     //- adjust velocity: (x,v-0.5) -> (x,v+0.5)
@@ -626,7 +626,7 @@ void Foam::pdCloud::evolve()
     /**                 DSMC - Collisions, Reactions             **/
     // Check for collisions and reactions at new location
 
-    Info << "4. Collisions" << endl;
+//    Info << "4. Collisions" << endl;
 
     // Apply controllers and boundary conditions before collisions
     controllers_.controlBeforeCollisions();
@@ -645,7 +645,7 @@ void Foam::pdCloud::evolve()
     /**************************************************************/
     /**        PIC/DSMC - Localisation, BC, Output, Cleanup      **/
 
-    Info << "5. Writing" << endl;
+//    Info << "5. Writing" << endl;
 
     //- check to see if measuring using stdFields
     if(stdMeasure_ && stdCount_ == stdFrequency_)
@@ -798,11 +798,11 @@ void Foam::pdCloud::info() const
     reduce(sysCharge, sumOp<List<scalar> >());
     reduce(sysMass, sumOp<List<scalar> >());
 
-    Info<< "Marker Cloud 4" << endl;
+//    Info<< "Marker Cloud 4" << endl;
 
     /** Output data **/
     Info<< "Cloud name: " << this->name() << nl
-        << "    Number of pd particles        = "
+        << "    Number of pd particles              = "
         << nPdParticles
         << endl;
 
@@ -837,7 +837,7 @@ void Foam::pdCloud::info() const
                 //<< mag(linearMomentum[tI]) << nl
                 //<< "    Potential energy of " << typeIdList()[tI] << "              = "
                 //<< potentialEnergy[tI] << nl
-                << "    Linear kinetic energy of " << typeIdList()[tI] << "   = "
+                << "    Linear kinetic energy of " << typeIdList()[tI] << "         = "
                 << linearKineticEnergy[tI] << nl
                 << "    Rotational energy " << typeIdList()[tI] << "                = "
                 << rotationalEnergy[tI] << nl
@@ -866,11 +866,11 @@ void Foam::pdCloud::info() const
                 << totalSysCharge << nl
                 //<< "    Average drift velocity of system        = "
                 //<< totalDriftVelocity << nl
-                << "    |Linear momentum| of system       = "
+                << "    |Linear momentum| of system             = "
                 << mag(totalLinearMomentum) << nl
                 //<< "    Potential energy of particle system     = "
                 //<< totalPotentialEnergy << nl
-                << "    Linear kinetic energy of system   = "
+                << "    Linear kinetic energy of system         = "
                 << totalLinearKineticEnergy << nl
                 << "    Rotational energy of system             = "
                 << totalRotationalEnergy << nl
