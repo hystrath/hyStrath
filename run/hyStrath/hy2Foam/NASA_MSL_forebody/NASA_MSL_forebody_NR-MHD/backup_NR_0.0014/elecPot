@@ -23,7 +23,8 @@ boundaryField
 {
     inlet
     {
-	      type		zeroGradient;
+	      type		fixedValue;
+	      value     uniform 0.0;
     }
     
     object
