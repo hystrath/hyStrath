@@ -112,9 +112,15 @@ else
     }
 }
 
-//- Fields for boundary conditions
-//volScalarField cp("cp", thermo.CpMix());
-//volScalarField gamma("gamma", cp/thermo.CvMix());
+// - Fields for boundary conditions
+
+// Switched back to using total specific heats for gamma, instead
+// of just translational-rotational. Reference doesn't explain why
+// the choice was made to use gammatr. - Alex Shepherd
+
+volScalarField cp("cp", thermo.CpMix());
+gamma = cp/thermo.CvMix();
+volScalarField c(sqrt(gamma*rPsi));
 
 //- In: G. V. Candler and I. Nompelis.
 //  "Computational Fluid Dynamics for Atmospheric Entry"
@@ -122,8 +128,9 @@ else
 //  + gamma = frozen translational-rotational specific heats of the gas mixture
 //  + convention in hy2Foam: translational-rotational specific heats of the gas
 //    mixture
-volScalarField gammatr("gammatr", thermo.Cp_t()/thermo.Cv_t());
-volScalarField c(sqrt(gammatr*rPsi));
+// volScalarField gammatr("gammatr", thermo.Cp_t()/thermo.Cv_t());
+// volScalarField c(sqrt(gammatr*rPsi));
+
 Mach = mag(U)/c;
 
 surfaceVectorField U_pos("U_pos", rhoU_pos/rho_pos);

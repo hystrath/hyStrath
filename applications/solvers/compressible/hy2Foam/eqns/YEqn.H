@@ -55,7 +55,8 @@ if (solveSpeciesEqns)
                 YiEqn += 
                     fvm::laplacian
                     (
-                       -speciesDiffusion().rhoD(speciei),
+                       - speciesDiffusion().rhoD(speciei)
+                       - turbulence->mut()/Sct_,
                         Yi,
                         "laplacian(rhoD,Yi)"
                     )

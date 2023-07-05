@@ -68,9 +68,28 @@ volScalarField Mach
         mesh,
         IOobject::NO_READ,
         IOobject::AUTO_WRITE
-    ),
-    mag(U)/sqrt(thermo.Cp_t()/thermo.Cv_t()/psi)
+    ),    
+    mag(U)/sqrt(thermo.CpMix()/thermo.CvMix()/psi)
 );
+
+// Changed to include total heat capacities, not just translational-rotational. - Alex Shepherd
+
+volScalarField gamma 
+(
+    IOobject
+    (
+        "gamma",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    thermo.CpMix()/thermo.CvMix()
+);
+
+// Write out heat capacity ratio. Usefull for post-processing.
+// Both Mach and gamma fields are updated in upwindInterpolation.H,
+// this wouldn't work otherwise. - Alex Shepherd
 
 volVectorField rhoU
 (

@@ -15,6 +15,16 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+/* Notes
+ *  - H2O has 3 rotational dof. Coeff for rot should be 1->1.5
+ *  - H2O2 has 3 rotational dof. Coeff for rot should be 1->1.5
+ *  - H has incorrect enthlapy of formation ratio. Corrected per NIST
+ *  - HO2 has 3 rotational dof. Coeff for rot should be 1->1.5
+ *  - NO2 has 3 rotational dof. Coeff for rot should be 1->1.5
+ *  - CO vibration mode changed from 2->1
+ */
+
+
 // Atoms and molecules data
 
 N2
@@ -841,7 +851,7 @@ CO
     {
         decoupledCvCoeffs    ( 1.5 1 1 0 0 -13290 0 );
         vibrationalList      ( 
-                                2  3122 
+                                1  3122 
                              );
         electronicList       ( 1  0 );              
     }
@@ -917,7 +927,7 @@ H
     }
     thermodynamics
     {
-        decoupledCvCoeffs    ( 1.5 0 0 0 0 25474 0 );
+        decoupledCvCoeffs    ( 1.5 0 0 0 0 26219 0 );
         vibrationalList      ( 0  0 );
         electronicList       ( 1  0 );                  
     }
@@ -1005,7 +1015,7 @@ H2O
     }
     thermodynamics
     {
-        decoupledCvCoeffs    ( 1.5 1 1 0 0 -29082 0 );
+        decoupledCvCoeffs    ( 1.5 1.5 1 0 0 -29082 0 );
         vibrationalList      ( 
                                 1  2294
                                 1  5180
@@ -1097,7 +1107,7 @@ HO2
     }
     thermodynamics
     {
-        decoupledCvCoeffs    ( 1.5 1 1 0 0 1263 0 );
+        decoupledCvCoeffs    ( 1.5 1.5 1 0 0 1263 0 );
         vibrationalList      ( 
                                 1  1577
                                 1  2059 
@@ -1130,7 +1140,7 @@ NO2
     }
     thermodynamics
     {
-        decoupledCvCoeffs    ( 1.5 1 1 0 0 3993 0 );
+        decoupledCvCoeffs    ( 1.5 1.5 1 0 0 3993 0 );
         vibrationalList      ( 
                                  1  930
                                  1  1900 
@@ -1177,7 +1187,7 @@ H2O2
     }
     thermodynamics
     {
-        decoupledCvCoeffs    ( 1.5 1 1 0 0 -16393 0 );
+        decoupledCvCoeffs    ( 1.5 1.5 1 0 0 -16393 0 );
         vibrationalList      ( 
                                  1  1250
                                  1  1970

@@ -73,3 +73,15 @@ if
     solveSpeciesEqns = true;
 }        
 
+//---------------------------------------------------------
+// Turbulent Schmidt Number - Alex Shepherd
+//---------------------------------------------------------
+
+scalar Sct_
+(
+    readScalar
+    (
+        thermo.transportDictionary().subDict("transportModels")
+            .subDict("diffusionModelParameters").lookup("TurbulentSchmidtNumber")
+    )
+);
