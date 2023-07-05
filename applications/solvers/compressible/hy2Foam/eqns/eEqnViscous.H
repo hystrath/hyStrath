@@ -5,7 +5,11 @@ if (!inviscid)
     fvScalarMatrix eEqnViscous
     (
         fvm::ddt(rho, e) - fvc::ddt(rho, e)
-      - fvm::laplacian(thermo.kappa()/thermo.CvMix(), e)
+      - fvm::laplacian
+        (
+            thermo.kappa() / thermo.CvMix() + turbulence->alphat(), 
+            e
+        )
       ==
         fvOptions(rho, e)
     );
