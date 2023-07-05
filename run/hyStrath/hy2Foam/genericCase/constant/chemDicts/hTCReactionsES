@@ -43,93 +43,101 @@ reactions
     // Reaction no 1
     /*oxygenReaction
     {
-        type     irreversibleArrheniusReaction; // nonEquilibriumReversibleArrheniusReaction;
-        reaction "O2 + O2 = 2O + O2";
+        type     nonEquilibriumReversiblethirdBodyArrheniusReaction;
+        reaction "O2 + M = 2O + M";
         forward
         {
-            A        7.2e18;
+            A        7.2e15;
             beta     -1.0;
             Ta       59340.0;
+            defaultEfficiency 1.0;
         }
         reverse
         {
-            A        4.0e17;
+            A        4.0e11;
             beta     -1.0;
-            Ta       0.0;        
+            Ta       0.0;     
+            defaultEfficiency 1.0;           
         }
     }
     
     // Reaction no 2
     hydrogenReaction
     {
-        type     irreversibleArrheniusReaction; // nonEquilibriumReversibleArrheniusReaction;
-        reaction "H2 + H2 = 2H + H2";
+        type     nonEquilibriumReversiblethirdBodyArrheniusReaction;
+        reaction "H2 + M = 2H + M";
         forward
         {
-            A        5.5e18;
+            A        5.5e15;
             beta     -1.0;
-            Ta       51987.0;
+            Ta       51987.0;     
+            defaultEfficiency 1.0;   
         }
         reverse
         {
-            A        1.8e18;
+            A        1.8e12;
             beta     -1.0;
-            Ta       0.0;        
+            Ta       0.0;     
+            defaultEfficiency 1.0;           
         }
     }
     
     // Reaction no 3
     waterReaction
     {
-        type     irreversibleArrheniusReaction; // nonEquilibriumReversibleArrheniusReaction;
-        reaction "H2O + H2O = OH + H + H2O";
+        type     nonEquilibriumReversiblethirdBodyArrheniusReaction;
+        reaction "H2O + M = OH + H + M";
         forward
         {
-            A        5.2e21;
+            A        5.2e18;
             beta     -1.5;
-            Ta       59386.0;
+            Ta       59386.0;     
+            defaultEfficiency 1.0;   
         }
         reverse
         {
-            A        4.4e20;
+            A        4.4e14;
             beta     -1.5;
-            Ta       0.0;        
+            Ta       0.0;     
+            defaultEfficiency 1.0;           
         }
     }
     
     // Reaction no 4
     hydroxylReaction
     {
-        type     irreversibleArrheniusReaction; // nonEquilibriumReversibleArrheniusReaction;
-        reaction "OH + OH = O + H + OH";
+        type     nonEquilibriumReversiblethirdBodyArrheniusReaction;
+        reaction "OH + M = O + H + M";
         forward
         {
-            A        8.5e18;
+            A        8.5e15;
             beta     -1.0;
             Ta       50830.0;
+            defaultEfficiency 1.0; 
         }
         reverse
         {
-            A        7.1e18;
+            A        7.1e12;
             beta     -1.0;
-            Ta       0.0;        
+            Ta       0.0;
+            defaultEfficiency 1.0;         
         }
     }
     
     // Reaction no 5
     oxygenAtomicHydrogenReaction
     {
-        type     irreversibleArrheniusReaction; // nonEquilibriumReversibleArrheniusReaction;
+        type     nonEquilibriumReversibleArrheniusReaction;
         reaction "O2 + H = OH + O";
         forward
         {
-            A        2.2e14;
+            A        2.2e11;
             beta     0.0;
             Ta       8455.0;
         }
         reverse
         {
-            A        1.5e13;
+            A        1.5e10;
             beta     0.0;
             Ta       0.0;        
         }
@@ -142,13 +150,13 @@ reactions
         reaction "H2 + O = OH + H";
         forward
         {
-            A        7.5e13;
+            A        7.5e10;
             beta     0.0;
             Ta       5586.0;
         }
         reverse
         {
-            A        3.0e13;
+            A        3.0e10;
             beta     0.0;
             Ta       4429.0;        
         }
@@ -157,17 +165,17 @@ reactions
     // Reaction no 7
     waterAtomicOxygenReaction
     {
-        type     irreversibleArrheniusReaction; // nonEquilibriumReversibleArrheniusReaction;
+        type     nonEquilibriumReversibleArrheniusReaction;
         reaction "H2O + O = OH + OH";
         forward
         {
-            A        5.8e13;
+            A        5.8e10;
             beta     0.0;
             Ta       9059.0;
         }
         reverse
         {
-            A        5.3e12;
+            A        5.3e9;
             beta     0.0;
             Ta       503.0;        
         }
@@ -176,17 +184,17 @@ reactions
     // Reaction no 8
     waterAtomicHydrogenReaction
     {
-        type     irreversibleArrheniusReaction; // nonEquilibriumReversibleArrheniusReaction;
+        type     nonEquilibriumReversibleArrheniusReaction;
         reaction "H2O + H = OH + H2";
         forward
         {
-            A        8.4e13;
+            A        8.4e10;
             beta     0.0;
             Ta       10116.0;
         }
         reverse
         {
-            A        2.0e13;
+            A        2.0e10;
             beta     0.0;
             Ta       2600.0;        
         }
