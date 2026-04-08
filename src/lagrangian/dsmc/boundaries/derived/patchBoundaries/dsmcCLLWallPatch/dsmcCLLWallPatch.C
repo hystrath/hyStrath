@@ -192,7 +192,7 @@ void dsmcCLLWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::trackingData& 
                                     + 2.0*rNormal*um*cos(thetaNormal)
                             );
 
-    scalar tangentialVelocity1 = (sqrt(1.0 - alphaT)*mag(normalisedIncidentTangentialVelocity1)
+    scalar tangentialVelocity1 = ((1-tangentialAccommodationCoefficient_) * mag(normalisedIncidentTangentialVelocity1)
                                 + rTangential1*cos(thetaTangential1));
 
     scalar tangentialVelocity2 = rTangential1*sin(thetaTangential1);
@@ -245,8 +245,8 @@ void dsmcCLLWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::trackingData& 
     vector uWallTangential1 = (velocity_ & tw1) * tw1;
     vector uWallTangential2 = (velocity_ & tw2) * tw2;
     vector UNormal = ((U & nw) * nw) + uWallNormal*alphaN;
-    vector UTangential1 = (U & tw1) * tw1 + uWallTangential1*alphaT;
-    vector UTangential2 = (U & tw2) * tw2 + uWallTangential2*alphaT;
+    vector UTangential1 = (U & tw1) * tw1 + uWallTangential1 * tangentialAccommodationCoefficient_;
+    vector UTangential2 = (U & tw2) * tw2 + uWallTangential2 * tangentialAccommodationCoefficient_;
 
     U = UNormal + UTangential1 + UTangential2;
 

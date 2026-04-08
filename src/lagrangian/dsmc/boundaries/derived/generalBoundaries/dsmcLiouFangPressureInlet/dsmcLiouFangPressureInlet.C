@@ -370,11 +370,6 @@ void dsmcLiouFangPressureInlet::controlParcelsAfterCollisions()
         }
     }
 
-    if(faces_.size() > VSMALL)
-    {
-        Pout << "dsmcLiouFangPressureInlet inlet velocity = " << inletVelocity_[(faces_.size()/2)].x() << endl;
-    }
-
     // compute number of parcels to insert
     forAll(accumulatedParcelsToInsert_, iD)
     {
