@@ -44,18 +44,22 @@ Foam::AppletonBray<ThermoType>::AppletonBray
     ),
     sigma_er_(1.0e-20)
 {
-    const scalar ec = constant::electromagnetic::e.value();
+    const scalar ec = constant::electromagnetic::e.value()*2.99792458e9; //electron charge in esu
     const scalar RR = constant::physicoChemical::R.value();
     const scalar NA = constant::physicoChemical::NA.value();
     const scalar pi = constant::mathematical::pi;
     const scalar kB = RR/NA;
     const scalar We = W(this->thermo_.composition().electronId());
+
+    //sigma_eIon expression in Scalabrin's thesis is in CGS-ESU units
+    //So, we put all the numbers in CGS-ESU units to get the value in cm2
+    //then, 1e-4 multiplied to convert from cm2 to m2
+    sigma_eIon_factor1_ = 1e-4*8.0*pi*pow4(ec)/(27.0*sqr(kB*1e7)); 
     
-    sigma_eIon_factor1_ = 8.0*pi*pow4(ec)/(27.0*sqr(kB));
-    
-    sigma_eIon_factor2_ = 9.0*pow3(kB)/(4.0*pi*pow6(ec));
+    sigma_eIon_factor2_ = 9.0*pow3(kB*1e7)/(4.0*pi*pow6(ec));
     
     Qhe_factor_ = 3.0*RR*NA*sqrt(8.0*RR/(pi*We));
+
 }
 
 
@@ -124,8 +128,8 @@ void Foam::AppletonBray<ThermoType>::correct()
                             (
                                 1.0
                               + sigma_eIon_factor2_
-                                  *pow3(TeCells[celli])/nDeCells[celli]
-                            );
+				*pow3(TeCells[celli])/(nDeCells[celli]*1e-6)
+			     ); //number density converted from m3 to cm3
                     }
 
                     QHECells[celli] += sigma_eIon*pDr[celli]/sqr(W(specier));
@@ -152,8 +156,8 @@ void Foam::AppletonBray<ThermoType>::correct()
                                 (
                                     1.0
                                  + sigma_eIon_factor2_
-                                      *pow3(pTe[facei])/pnDe[facei]
-                                );
+				    *pow3(pTe[facei])/(pnDe[facei]*1e-6)
+                                ); //number density converted from m3 to cm3
                         }
 
                         pQHE[facei] += sigma_eIon*ppDr[facei]/sqr(W(specier));
